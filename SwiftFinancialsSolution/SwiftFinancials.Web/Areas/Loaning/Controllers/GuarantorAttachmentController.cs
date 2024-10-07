@@ -5,11 +5,13 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Newtonsoft.Json;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -36,7 +38,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 10, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanGuarantorAttachmentHistoryByStatusAndFilterInPageAsync((int)LoanGuarantorAttachmentHistoryStatus.Attached, DateTime.Now.AddDays(-30), DateTime.Now.AddDays(-30), string.Empty, 0, 300);
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -48,7 +50,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<LoanGuarantorDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
@@ -56,9 +58,85 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var dataCapture = await _channelService.FindDataAttachmentPeriodAsync(id, GetServiceHeader());
+            var dataCapture = await _channelService.FindLoanGuarantorAttachmentHistoryEntriesByLoanGuarantorAttachmentHistoryIdAsync(id, GetServiceHeader());
 
             return View(dataCapture);
+        }
+
+        public async Task<ActionResult> CustomerAccountLookUp(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View("create");
+            }
+
+            var accounts = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
+
+            if (accounts != null)
+            {
+                loanGuarantorDTO.CustomerAccountFullAccountNumber = accounts.FullAccountNumber;
+                loanGuarantorDTO.CustomerAccountAccountId = accounts.Id;
+                loanGuarantorDTO.CustomerAccountAccountStatusDescription = accounts.StatusDescription;
+                loanGuarantorDTO.CustomerAccountAccountRemarks = accounts.Remarks;
+                loanGuarantorDTO.BookBalance = accounts.BookBalance;
+                loanGuarantorDTO.CustomerId = accounts.CustomerId;
+                loanGuarantorDTO.CustomerIndividualFirstName = accounts.CustomerFullName;
+                loanGuarantorDTO.CustomerAccounntCustomerTypeDescription = accounts.CustomerTypeDescription;
+                loanGuarantorDTO.CustomerIndividualPayrollNumbers = accounts.CustomerIndividualPayrollNumbers;
+                loanGuarantorDTO.CustomerPersonalIdentificationNumber = accounts.CustomerPersonalIdentificationNumber;
+                loanGuarantorDTO.CustomerReference1 = accounts.CustomerReference1;
+                loanGuarantorDTO.CustomerReference2 = accounts.CustomerReference2;
+                loanGuarantorDTO.CustomerReference3 = accounts.CustomerReference3;
+
+                var findLoanCaseId = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(loanGuarantorDTO.CustomerId, GetServiceHeader());
+
+                var loanCaseId = Guid.Empty;
+                var loaneeCustomerId = Guid.Empty;
+                var loanCaseLoanProductId = Guid.Empty;
+
+                foreach (var takeId in findLoanCaseId)
+                {
+                    loanCaseId = takeId.Id;
+                    loaneeCustomerId = takeId.CustomerId;
+                    loanCaseLoanProductId = takeId.LoanProductId;
+                }
+
+                Session["LoanProductId"] = loanCaseLoanProductId;
+
+                var guarantors = await _channelService.FindLoanGuarantorsByLoaneeCustomerIdAndLoanProductIdAsync(loaneeCustomerId, loanCaseLoanProductId, GetServiceHeader());
+
+                var sumAmountGuaranteed = guarantors.Sum(x => x.AmountGuaranteed);
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        CustomerAccountFullAccountNumber = loanGuarantorDTO.CustomerAccountFullAccountNumber,
+                        CustomerAccountAccountId = loanGuarantorDTO.CustomerAccountAccountId,
+                        CustomerAccountAccountStatusDescription = loanGuarantorDTO.CustomerAccountAccountStatusDescription,
+                        CustomerAccountAccountRemarks = loanGuarantorDTO.CustomerAccountAccountRemarks,
+                        BookBalance = loanGuarantorDTO.BookBalance,
+                        CustomerId = loanGuarantorDTO.CustomerId,
+                        CustomerIndividualFirstName = loanGuarantorDTO.CustomerIndividualFirstName,
+                        CustomerAccounntCustomerTypeDescription = loanGuarantorDTO.CustomerAccounntCustomerTypeDescription,
+                        CustomerIndividualPayrollNumbers = loanGuarantorDTO.CustomerIndividualPayrollNumbers,
+                        CustomerPersonalIdentificationNumber = loanGuarantorDTO.CustomerPersonalIdentificationNumber,
+                        CustomerReference1 = loanGuarantorDTO.CustomerReference1,
+                        CustomerReference2 = loanGuarantorDTO.CustomerReference2,
+                        CustomerReference3 = loanGuarantorDTO.CustomerReference3,
+
+                        Guarantors = guarantors,
+                        AmountGuaranteed = sumAmountGuaranteed
+                    }
+                });
+            }
+
+            return Json(new { success = false, message = "Customer account not found" });
         }
 
 
@@ -68,6 +146,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
+
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
 
             Guid parseId;
 
@@ -82,18 +163,46 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
+        public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO, string GuarantorsJson)
         {
+
+            ObservableCollection<LoanGuarantorDTO> loanGuarantors = JsonConvert.DeserializeObject<ObservableCollection<LoanGuarantorDTO>>(GuarantorsJson);
+
+            if (Session["LoanProductId"] != null)
+            {
+                loanGuarantorDTO.LoanProductId = (Guid)Session["LoanProductId"];
+            }
 
             loanGuarantorDTO.ValidateAll();
 
             if (!loanGuarantorDTO.HasErrors)
             {
-                //await _channelService.AttachLoanGuarantorsAsync()
+                string message = string.Format(
+                                      "Do you want to proceed and attach the selected Loan guarantors?"
+                                  );
 
-                TempData["message"] = "Successfully created Data Period";
+                DialogResult result = MessageBox.Show(
+                   message,
+                   "Attach Loan Guarantor",
+                   MessageBoxButtons.YesNo,
+                   MessageBoxIcon.Question,
+                   MessageBoxDefaultButton.Button1,
+                   MessageBoxOptions.ServiceNotification
+               );
 
-                return RedirectToAction("Index");
+                if (result == DialogResult.Yes)
+                {
+                    await _channelService.AttachLoanGuarantorsAsync(loanGuarantorDTO.CustomerAccountAccountId, loanGuarantorDTO.LoanProductId, loanGuarantors, 1234, GetServiceHeader());
+                    MessageBox.Show("Operation completed successfully.", "Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    //TempData["message"] = "Successfully created Data Period";
+
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    MessageBox.Show("Operation cancelled.", "Attach Guarantor", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    return View("Create", loanGuarantorDTO);
+                }
             }
             else
             {

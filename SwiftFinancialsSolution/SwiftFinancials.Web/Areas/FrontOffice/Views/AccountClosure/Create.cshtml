@@ -1,4 +1,4 @@
-﻿﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.AccountClosureRequestDTO
+﻿﻿﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.AccountClosureRequestDTO
 
 @{
     /**/
@@ -363,27 +363,29 @@
                             <hr />
 
 
-                            <!--Summary Section-->
-                            <!--<div class="row">
-                <div class="col-lg-4">
-                    <div class="form-group">
-                        @Html.Label("Investments Balance (R)", htmlAttributes: new { @class = "control-label" })
-                        <input type="text" class="form-control" readonly value="Ksh0.00" />
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="form-group">
-                        @Html.Label("Loans Balance", htmlAttributes: new { @class = "control-label" })
-                        <input type="text" class="form-control" readonly value="Ksh0.00" />
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="form-group">
-                        @Html.Label("Net Refundable", htmlAttributes: new { @class = "control-label" })
-                        <input type="text" class="form-control" readonly value="Ksh0.00" />
-                    </div>
-                </div>
-            </div>-->
+                            <div class="summary-section">
+                                <h3>Account Closure Summary</h3>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            @Html.Label("Investments Balance (R)", htmlAttributes: new { @class = "control-label" })
+                                            <input type="text" class="form-control" readonly value="@Model.InvestmentBalance.ToString("C2")" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            @Html.Label("Loans Balance (R)", htmlAttributes: new { @class = "control-label" })
+                                            <input type="text" class="form-control" readonly value="@Model.LoanBalance.ToString("C2")" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            @Html.Label("Net Refundable (R)", htmlAttributes: new { @class = "control-label" })
+                                            <input type="text" class="form-control" readonly value="@Model.NetRefundable.ToString("C2")" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="ibox-content bg-white text-info">
                                 <div class="col-lg-3" style="float: right;">
@@ -599,24 +601,18 @@
 
     <script>
         $(document).ready(function () {
-            // Handle tab click events
             $('#loanAccountsTab a').on('click', function (e) {
                 e.preventDefault();
 
-                // Remove 'active' and 'show' classes from all tabs and tab content
                 $('.nav-link').removeClass('active');
                 $('.tab-pane').removeClass('show active');
 
-                // Add 'active' class to the clicked tab
                 $(this).addClass('active');
 
-                // Get the href attribute of the clicked tab to determine which tab content to show
                 var target = $(this).attr('href');
 
-                // Show the corresponding tab content by adding 'show' and 'active' classes
                 $(target).addClass('show active');
 
-                // Debugging: Log the target to ensure it matches the content ID
                 console.log('Tab clicked:', target);
             });
         });

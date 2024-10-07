@@ -6,6 +6,22 @@
     ViewBag.Title = "Create In-House Cheque";
 }
 
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Cheque Writing</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "InHouse", new { Area = "FrontOffice" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Cheque Writing</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
 <style>
@@ -173,9 +189,9 @@
 
 
 
-        <!-- Step 2: Cheque Writing Charges Checkbox -->
         <div class="form-group">
-            @Html.CheckBoxFor(model => model.Chargeable) Chargeable? Apply Cheque Writing Charges
+            @Html.CheckBoxFor(model => model.Chargeable, new { id = "Chargeable" }) Chargeable? Apply Cheque Writing Charges
+            <input type="hidden" id="ChequeCharge" value="500" /> <!-- Hidden field with the default cheque charge -->
         </div>
 
 
@@ -201,6 +217,9 @@
                         <th>Amount in Words</th>
                         <th>Padded Amount</th>
                         <th>Reference</th>
+                        <th>Cheque Charge</th>
+                        <th>Select</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -356,7 +375,7 @@
     @Scripts.Render("~/plugins/jqueryValidate")
     @Scripts.Render("~/plugins/jqueryValidateUnobtrusive")
 
-    <script type="text/javascript">
+    <script>
         $(document).ready(function () {
             // Show/hide fields based on the selected source of funds
             $('#FundingDescription').change(function () {
@@ -375,12 +394,11 @@
                 }
             });
 
-
             // Add transaction to table
             $('#addTransaction').click(function () {
                 var branchName = $('#customerAccountLookup').val();
                 var chequeType = "Cheque";
-                var FundingDescription = $('input[name="SourceOfFunds"]:checked').val();
+                var funding = $('#FundingDescription').val();
                 var debitGlAccountName = $('#glAccountLookup').val();
                 var debitCustomerAccountNumber = $('#customerAccountLookup').val();
                 var payee = $('#Payee').val();
@@ -389,24 +407,33 @@
                 var paddedAmount = $('#Amount').val();
                 var reference = $('#Reference').val();
 
+                // Calculate cheque charge if chargeable
+                var chequeCharge = 0;
+                if ($('#Chargeable').prop('checked')) {
+                    chequeCharge = parseFloat($('#ChequeCharge').val());
+                }
+
+                // Create a new table row for the transaction
                 var newRow = `
-                                                                    <tr>
-                                                                            <td>${branchName}</td>
-                                                                            <td>${chequeType}</td>
-                                                                            <td>${funding}</td>
-                                                                            <td>${debitGlAccountName}</td>
-                                                                            <td>${debitCustomerAccountNumber}</td>
-                                                                            <td>${payee}</td>
-                                                                            <td>${amount}</td>
-                                                                            <td>${amountInWords}</td>
-                                                                            <td>${paddedAmount}</td>
-                                                                            <td>${reference}</td>
-                                                                    </tr>`;
+                <tr>
+                    <td><input type="checkbox" class="select-transaction" /></td>
+                    <td>${branchName}</td>
+                    <td>${chequeType}</td>
+                    <td>${funding}</td>
+                    <td>${debitGlAccountName}</td>
+                    <td>${debitCustomerAccountNumber}</td>
+                    <td>${payee}</td>
+                    <td>${amount}</td>
+                    <td>${amountInWords}</td>
+                    <td>${paddedAmount}</td>
+                    <td>${reference}</td>
+                    <td>${chequeCharge}</td>
+                </tr>`;
 
-
-
-
+                // Append the new row to the table
                 $('#transactionsTable tbody').append(newRow);
+
+                // Clear the form fields after adding the transaction
                 clearFormFields();
             });
 
@@ -423,19 +450,17 @@
 
             // Clear form fields after adding transaction
             function clearFormFields() {
-                $('#branchName').val('');
-                $('#chequeType').val('');
-                $('#funding').val('');
-                $('#debitGlAccountName').val('');
-                $('#debitGlAccountName').val('');
-                $('#debitCustomerAccountNumber').val('');
-                $('#paddedAmount').val('');
-                $('#Amount').val('');
+                $('#FundingDescription').val('');
+                $('#glAccountLookup').val('');
+                $('#customerAccountLookup').val('');
                 $('#Payee').val('');
+                $('#Amount').val('');
+                $('#WordifiedAmount').val('');
                 $('#Reference').val('');
                 $('#Chargeable').prop('checked', false);
             }
         });
+
     </script>
 
     <script>
@@ -577,6 +602,28 @@
         });
     });
     </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Flag to track whether all items are selected
+            var allSelected = false;
+
+            // Handle Select All button click
+            $('#toggle-select-all').click(function () {
+                allSelected = !allSelected; // Toggle the flag
+
+                if (allSelected) {
+                    // Select all checkboxes
+                    $('.select-row').prop('checked', true);
+                    $(this).text('Deselect All'); // Change button text to 'Deselect All'
+                } else {
+                    // Deselect all checkboxes
+                    $('.select-row').prop('checked', false);
+                    $(this).text('Select All');
+                }
+            });
+        });
+    </script>
+
 
 
 

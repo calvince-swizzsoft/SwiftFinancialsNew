@@ -109,15 +109,46 @@
 </div>
 
 
-<div id="tabs-container">
-    <ul class="nav-tabs">
-        <li>@Html.ActionLink("Restructuring", "create", "LoanRestructuring")</li>
-        <li>@Html.ActionLink("Guarantor Attachment", "create", "GuarantorAttachment")</li>
-        <li>@Html.ActionLink("Guarantor Substitution", "create", "GuarantorSubstitution")</li>
-        <li>@Html.ActionLink("Guarantor Relieving", "Index", "GuarantorRelieving")</li>
-        <li>@Html.ActionLink("Guarantor Management", "Index", "GuarantorManagement")</li>
-    </ul>
-</div>
+
+<br />
+<nav class="navbar navbar-expand-lg bg-white nav-3d shadow">
+    <a class="navbar-brand" href="#">
+        <i class="fa fa-money" aria-hidden="true"></i>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "LoanRestructuring")" class="nav-link">
+                    <i class="fa fa-pencil"></i> Loan Restructuring
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorAttachment")" class="nav-link">
+                    <i class="fa fa-check-circle"></i> Guarantor Attachment
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorSubstitution")" class="nav-link">
+                    <i class="fa fa-thumbs-up"></i> Guarantor Substitution
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorRelieving")" class="nav-link">
+                    <i class="fa fa-search"></i> Guarantor Relieving
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorManagement")" class="nav-link">
+                    <i class="fa fa-times-circle"></i> Guarantor Management
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
 
 
 <div class="wrapper wrapper-content">
@@ -133,14 +164,22 @@
                             <strong>Attempt Failed !</strong> @TempData["AccountStatus"]
                         </div>
                     }
-                   
-                    
+
+
                     @if (TempData["AccountProductCode"] != null)
                     {
                         <div class="alert alert-danger">
                             <strong>Attempt Failed !</strong> @TempData["AccountProductCode"]
                         </div>
                     }
+
+                    @if (TempData["Create"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["Create"]
+                        </div>
+                    }
+
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -324,67 +363,30 @@
                                         <div class="row">
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.NumberOfPeriods, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.NumberOfPeriods)
-                                                    @Html.EditorFor(model => model.NumberOfPeriods, new
-                                                    {
-                                                        htmlAttributes = new
-                                                        {
-                                                            @class = "form-control required",
-                                                            @readonly = "readonly"
-                                                        }
-                                                    })
-                                                    @Html.ValidationMessageFor(model => model.NumberOfPeriods, "", new { @class = "text-danger" })
+                                                    <label>Payment Per Period</label>
+                                                    <input type="text" name="PaymentPerPeriod" class="form-control" />
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.PaymentPerPeriod, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.PaymentPerPeriod)
-                                                    @Html.EditorFor(model => model.PaymentPerPeriod, new
-                                                    {
-                                                        htmlAttributes = new
-                                                        {
-                                                            @class = "form-control required",
-                                                            @placeholder = "Kshs. 0.00"
-                                                        }
-                                                    })
-                                                    @Html.ValidationMessageFor(model => model.PaymentPerPeriod, "", new { @class = "text-danger" })
+                                                    <label>Number of Periods</label>
+                                                    <input type="text" name="NumberOfPeriods" class="form-control" />
                                                 </div>
                                             </div>
 
 
                                             <div class="col-md-6 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.Reference)
-                                                    @Html.EditorFor(model => model.Reference, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @placeholder = "Enter text..."
-                                                   }
-                                               })
-                                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                                    <label>Reference</label>
+                                                    <input type="text" name="Reference" class="form-control" />
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#loanCasesModal">
-                                                    Open Loan Calculator
-                                                </a>
-                                            </div>
-                                        </div>
-
-
-                                        <br />
                                         <br />
 
-                                        <h2>Repayment Schedule</h2>
+                                        <h3>Repayment Schedule</h3>
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
@@ -615,9 +617,6 @@
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
-
-
-
 
     <script>
         $(document).ready(function () {

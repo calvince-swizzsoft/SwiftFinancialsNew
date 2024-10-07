@@ -53,16 +53,45 @@
     </div>
 </div>
 
-<div id="tabs-container">
-    <ul class="nav-tabs">
-        <li>@Html.ActionLink("Loan Registration", "Index", "LoanRegistration")</li>
-        <li>@Html.ActionLink("Loan Appraisal", "Index", "AppraiseLoan")</li>
-        <li>@Html.ActionLink("Loan Approval", "Index", "ApproveLoan")</li>
-        <li>@Html.ActionLink("Loan Verification", "Index", "LoanVerification")</li>
-        <li>@Html.ActionLink("Loan Cancellation", "Index", "LoanCancellation")</li>
+<br />
+<nav class="navbar navbar-expand-lg bg-white nav-3d shadow">
+    <a class="navbar-brand" href="#">
+        <i class="fa fa-money" aria-hidden="true"></i>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "LoanRegistration")" class="nav-link">
+                    <i class="fa fa-pencil"></i> Loan Registration
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "AppraiseLoan")" class="nav-link">
+                    <i class="fa fa-check-circle"></i> Loan Appraisal
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "ApproveLoan")" class="nav-link">
+                    <i class="fa fa-thumbs-up"></i> Loan Approval
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "LoanVerification")" class="nav-link">
+                    <i class="fa fa-search"></i> Loan Verification
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "LoanCancellation")" class="nav-link">
+                    <i class="fa fa-times-circle"></i> Loan Cancellation
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
-    </ul>
-</div>
 
 <div class="wrapper wrapper-content">
     <div class="row">

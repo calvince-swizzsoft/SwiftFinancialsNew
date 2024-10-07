@@ -2,38 +2,32 @@
 @model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanGuarantorDTO
 @{
     ViewBag.Title = "Guarantor Attachment";
+
+    var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
+    var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 }
 
 
 
 <style>
-    .table-wrapper {
-        height: 300px; /* Set the height of the scrollable area */
-        overflow-y: auto;
-        overflow-x: hidden;
-        border: solid 1px;
-        border-radius: 7px;
-        border-color: #333333;
+
+    .table-wrapper::-webkit-scrollbar {
+        width: 8px;
     }
 
-
-
-        .table-wrapper::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .table-wrapper::-webkit-scrollbar-thumb {
-            background-color: #007bff;
-            border-radius: 10px;
-        }
+    .table-wrapper::-webkit-scrollbar-thumb {
+        background-color: #007bff;
+        border-radius: 10px;
+    }
 
     #ChargeSplits {
         width: 100%;
+        height: 900px;
         border-collapse: collapse;
         font-family: Arial, sans-serif;
         position: sticky;
         top: 0;
-        background-color: #f9f9f9; /* Background color of the header */
+        background-color: #f9f9f9;
         z-index: 1;
     }
 
@@ -67,6 +61,109 @@
         padding: 15px;
         border-radius: 8px;
     }
+
+
+
+
+
+
+
+
+    .table-wrapper {
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        margin-top: 20px;
+        position: relative;
+    }
+
+    .table-scroll {
+        max-height: 480px;
+        overflow-y: auto;
+    }
+    /*
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        overflow: hidden;
+    }*/
+
+    /*  thead {
+        background-color: #007bff;
+        color: #fff;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }*/
+
+    /* th, td {
+        padding: 15px;
+        border-bottom: 1px solid #dee2e6;
+        transition: background 0.3s;
+    }
+
+    th {
+        position: relative;
+    }
+
+        th:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: #007bff;
+            transform: translateY(100%);
+            z-index: -1;
+            transition: transform 0.3s;
+        }
+
+    tr:hover {
+        background-color: rgba(0, 123, 255, 0.1);
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover td {
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    td {
+        border: none;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+        td:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+
+        td:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+    .button {
+        padding: 10px 15px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transition: background 0.3s;
+    }
+
+        .button:hover {
+            background-color: #218838;
+        }*/
+
+    h3 {
+        font-size: 1.3rem;
+    }
 </style>
 
 
@@ -91,15 +188,45 @@
 </div>
 
 
-<div id="tabs-container">
-    <ul class="nav-tabs">
-        <li>@Html.ActionLink("Restructuring", "create", "LoanRestructuring")</li>
-        <li>@Html.ActionLink("Guarantor Attachment", "create", "GuarantorAttachment")</li>
-        <li>@Html.ActionLink("Guarantor Substitution", "create", "GuarantorSubstitution")</li>
-        <li>@Html.ActionLink("Guarantor Relieving", "Index", "GuarantorRelieving")</li>
-        <li>@Html.ActionLink("Guarantor Management", "Index", "GuarantorManagement")</li>
-    </ul>
-</div>
+
+<br />
+<nav class="navbar navbar-expand-lg bg-white nav-3d shadow">
+    <a class="navbar-brand" href="#">
+        <i class="fa fa-money" aria-hidden="true"></i>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "LoanRestructuring")" class="nav-link">
+                    <i class="fa fa-pencil"></i> Loan Restructuring
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorAttachment")" class="nav-link">
+                    <i class="fa fa-check-circle"></i> Guarantor Attachment
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorSubstitution")" class="nav-link">
+                    <i class="fa fa-thumbs-up"></i> Guarantor Substitution
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorRelieving")" class="nav-link">
+                    <i class="fa fa-search"></i> Guarantor Relieving
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorManagement")" class="nav-link">
+                    <i class="fa fa-times-circle"></i> Guarantor Management
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
 
 <div class="wrapper wrapper-content">
@@ -134,7 +261,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "GuarantorAttachment", new { Area = "Loaning" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "GuarantorAttachment", new { Area = "Loaning" }, FormMethod.Post, new { id = "guarantorForm" }))
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
@@ -143,7 +270,7 @@
                                     @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.CustomerAccountAccountId)
-                                        @Html.TextBoxFor(model => model.CustomerIndividualIdentityCardNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                        @Html.TextBoxFor(model => model.CustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#fullAccountNumberLookupModal"><span class="fa fa-search"></span></a>
                                         </span>
@@ -239,93 +366,67 @@
 
 
                             @*Tabs*@
-                            <div class="tab-header" style="color: black;">
-                                <div class="tab-button active" style="pointer-events: none; cursor: default; font-size: medium;">
-                                    Guarantors
+                            <div class="tab-header">
+                                <div class="tab-button active">
+                                    <h3>Guarantors</h3>
                                 </div>
                             </div>
 
                             <div id="section1" class="tab active" style="display: block;">
                                 <div class="table-wrapper">
-                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                        <thead style="color: cadetblue; text-align: center; font-weight: bold;">
-                                            <tr>
-                                                <th>Status</th>
-                                                <th>Customer Name</th>
-                                                <th>Mobile Line</th>
-                                                <th>Total Shares</th>
-                                                <th>Committed Shares</th>
-                                                <th>Amount Guaranteed</th>
-                                                <th>Principal Attached</th>
-                                                <th>Interest Attached</th>
-                                                <th>Identity Card Number</th>
-                                                <th>Payroll Numbers</th>
-                                                <th>Loan Number</th>
-                                                <th>Case Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (ViewBag.LoanGuarantors != null)
-                                            {
-                                                foreach (var guarantors in ViewBag.LoanGuarantors)
-                                                {
-                                                    <tr>
-                                                        @*<td>@guarantors.Customer.FullName</td>
-                                                            <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
-                                                            <td>@guarantors.Customer.Reference1</td>
-                                                            <td>@guarantors.AppraisalFactor</td>
-                                                            <td style="text-align: right;">@guarantors.TotalShares</td>
-                                                            <td style="text-align: right;">@guarantors.CommittedShares</td>
-                                                            <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
-                                                            <td>@guarantors.CreatedDate</td>*@
-                                                    </tr>
-                                                }
-                                            }
-                                        </tbody>
-                                    </table>
+                                    <div class="table-scroll">
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Status</th>
+                                                    <th>Customer Name</th>
+                                                    <th>Total Shares</th>
+                                                    <th>Committed Shares</th>
+                                                    <th>Amount Guaranteed</th>
+                                                    <th>Principal Attached</th>
+                                                    <th>Interest Attached</th>
+                                                    <th>Payroll Numbers</th>
+                                                    @*<th>Loan Number</th>
+                                        <th>Case Status</th>*@
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                             <br />
                             <br />
 
+                            <input type="hidden" id="guarantorsData" name="GuarantorsJson" />
+
                             <div class="amount-section">
                                 <div class="row">
-                                    <div class="col-lg-2"></div>
-
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.AmountGuaranteed, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.AmountGuaranteed, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @placeholder = "Kshs. 0.00" } })
-                                            @Html.ValidationMessageFor(model => model.AmountGuaranteed, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.PrincipalAttached, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.PrincipalAttached, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00" } })
-                                            @Html.ValidationMessageFor(model => model.PrincipalAttached, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.InterestAttached, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.InterestAttached, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00" } })
-                                            @Html.ValidationMessageFor(model => model.InterestAttached, "", new { @class = "text-danger" })
                                         </div>
-                                    </div>
-
-                                    <div class="col-lg-1 mt-3">
-                                        <input type="submit" class="btn btn-primary" style="border-radius: 7px;" value="Update" />
                                     </div>
                                 </div>
 
                                 <div class="row mt-4">
-                                    <div class="col-lg-2"></div>
-                                    <div class="col-lg-3"></div>
-
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-5">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Apportioned, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.Apportioned, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00" } })
@@ -333,7 +434,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-5">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Shortage, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.Shortage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00" } })
@@ -341,8 +442,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-1 mt-3">
-                                        <input type="submit" class="btn btn-primary" style="border-radius: 7px;" value="Reset" />
+                                    <div class="col-lg-2 mt-3">
+                                        <input type="submit" onclick="sendFormData()" class="btn btn-primary" style="border-radius: 7px; margin-top: 10px;" value="Reset;" />
                                     </div>
                                 </div>
                             </div>
@@ -351,19 +452,19 @@
                             <div class="amount-section">
                                 <div class="row">
                                     <div class="col-lg-2"></div>
-                                    <div class="col-lg-3"   ></div>
                                     <div class="col-lg-3"></div>
-                                    
+                                    <div class="col-lg-3"></div>
+
 
                                     <div class="col-md-3 form-group">
-                                        @Html.LabelFor(model => model.AttachTo, new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.AttachToId)
-                                            @Html.TextBoxFor(model => model.AttachTo, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#AttachToLookupModal"><span class="fa fa-search"></span></a>
-                                            </span>
-                                        </div>
+                                        @*@Html.LabelFor(model => model.AttachTo, new { @class = "control-label" })
+                            <div class="input-group" data-autoclose="true">
+                                @Html.HiddenFor(model => model.AttachToId)
+                                @Html.TextBoxFor(model => model.AttachTo, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                <span class="input-group-addon">
+                                    <a data-toggle="modal" data-target="#AttachToLookupModal"><span class="fa fa-search"></span></a>
+                                </span>
+                            </div>*@
                                     </div>
 
                                     <div class="col-lg-1 mt-3">
@@ -399,144 +500,26 @@
                 </tbody>
             </table>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Modal Structure -->
-<div class="modal fade" id="loanCasesModal" tabindex="-1" role="dialog" aria-labelledby="loanCasesModalLabel" aria-hidden="true" style="width: 100%;">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="loanCasesModalLabel" style="text-align: center;">Loan Calculator</h2>
-            </div>
-            <div class="modal-body">
-                <style>
-                    .calculator {
-                        background-color: white;
-                        padding: 20px;
-                        border-radius: 10px;
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                        width: 100%;
-                    }
-
-                        .calculator h2 {
-                            margin-top: 0;
-                            font-size: 24px;
-                            text-align: center;
-                        }
-
-                    .form-group {
-                        margin-bottom: 15px;
-                    }
-
-                        .form-group label {
-                            display: block;
-                            font-size: 14px;
-                            margin-bottom: 5px;
-                        }
-
-                        .form-group input {
-                            width: 100%;
-                            padding: 8px;
-                            border: 1px solid #ccc;
-                            border-radius: 4px;
-                        }
-
-                    .result {
-                        margin-top: 20px;
-                        color: cadetblue;
-                    }
-
-                        .result h3 {
-                            margin: 10px 0;
-                            font-size: 18px;
-                            text-align: center;
-                        }
-
-                        .result p {
-                            font-size: 16px;
-                            text-align: center;
-                        }
-
-                    button {
-                        padding: 10px;
-                        background-color: #007bff;
-                        color: white;
-                        border: none;
-                        border-radius: 4px;
-                        font-size: 16px;
-                        cursor: pointer;
-                        border: solid;
-                    }
-                </style>
-
-
-                <div class="calculator">
-                    <div class="form-group">
-                        <label for="loanAmount">Loan Amount</label>
-                        <input type="number" id="loanAmount" placeholder="Enter loan amount">
+            <form id="modalFilterForm">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        @Html.Label("Product Code", "Product Code")
+                        @Html.DropDownList("productCode", ProductCode, new { @class = "form-control", id = "productCode" })
                     </div>
-                    <div class="form-group">
-                        <label for="interestRate">Annual Percentage Rate (APR) (%)</label>
-                        <input type="number" id="interestRate" placeholder="Enter APR">
-                    </div>
-                    <div class="form-group">
-                        <label for="loanTerm">Loan Term (years)</label>
-                        <input type="number" id="loanTerm" placeholder="Enter loan term">
-                    </div>
-                    <div class="form-group">
-                        <label for="periodsPerYear">Payments per Year</label>
-                        <input type="number" id="periodsPerYear" placeholder="Enter payments per year (e.g., 12 for monthly)">
-                    </div>
-                    <button onclick="calculateLoan()" style="width: 100%;">Calculate</button>
 
-                    <div class="result">
-                        <h3>Results</h3>
-                        <p id="monthlyPayment">Payment per Period: Kshs. 0.00</p>
-                        <p id="totalPayment">Total Payment: Kshs. 0.00</p>
-                        <p id="totalInterest">Total Interest Paid: Kshs. 0.00</p>
-                        <p id="apr">Annual Percentage Rate (APR): 0.00%</p>
-                        <p id="yearlyPayment">Yearly Payment: Kshs. 0.00</p>
+                    <div class="form-group col-md-4">
+                        @Html.Label("RecordStatus", "Record Status")
+                        @Html.DropDownList("recordStatus", RecordStatus, new { @class = "form-control", id = "recordStatus" })
+                    </div>
+
+                    <div class="form-group col-md-4" style="align-content:center;">
+                        <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
                     </div>
                 </div>
+            </form>
 
-                <script>
-                    function calculateLoan() {
-                        var loanAmount = parseFloat(document.getElementById('loanAmount').value);
-                        var interestRate = parseFloat(document.getElementById('interestRate').value);
-                        var loanTerm = parseFloat(document.getElementById('loanTerm').value);
-                        var periodsPerYear = parseInt(document.getElementById('periodsPerYear').value);
-
-                        var monthlyRate = (interestRate / 100) / periodsPerYear;
-                        var totalPeriods = loanTerm * periodsPerYear;
-
-                        var x = Math.pow(1 + monthlyRate, totalPeriods);
-                        var paymentPerPeriod = (loanAmount * x * monthlyRate) / (x - 1);
-
-                        var totalPayment = paymentPerPeriod * totalPeriods;
-                        var totalInterest = totalPayment - loanAmount;
-
-                        var apr = ((totalInterest / totalPeriods) / loanAmount) * periodsPerYear * 100;
-
-                        var yearlyPayment = paymentPerPeriod * periodsPerYear;
-
-                        document.getElementById('monthlyPayment').innerText = 'Payment per Period: Kshs. ' + paymentPerPeriod.toFixed(2);
-                        document.getElementById('totalPayment').innerText = 'Total Payment: Kshs. ' + totalPayment.toFixed(2);
-                        document.getElementById('totalInterest').innerText = 'Total Interest Paid: Kshs. ' + totalInterest.toFixed(2);
-                        document.getElementById('apr').innerText = 'Annual Percentage Rate (APR): ' + apr.toFixed(2) + '%';
-                        document.getElementById('yearlyPayment').innerText = 'Yearly Payment: Kshs. ' + yearlyPayment.toFixed(2);
-                    }
-                </script>
-            </div>
             <div class="modal-footer">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    Close Calculator
-                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -555,168 +538,145 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-
-
+    <script src="~/Scripts/js/navlink.js"></script>
 
     <script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
+        var defaultProductCode = $('#productCode').val();
+        var defaultRecordStatus = $('#recordStatus').val();
+        $('#customerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        //Ensure to include the filters in the Ajax request
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+                { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus }
 
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
+            );
+        },
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-                    var form = $(this);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
 
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
 
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
+            $('td:eq(5)', nRow).html(dt_Created);
+            $('td:eq(6)', nRow).html(selectUrl);
 
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "10%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "10%" },
+            { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "10%" },
+            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
 
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-
-            //Customers Lookup
-            $('#customerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/loaning/LoanRestructuring/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "7%" },
-                    { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "7%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Account Status", "sWidth": "5%" },
-                    { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "5%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "7%" },
-                    { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "5%" },
-                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "5%", "bSortable": false }
-                ],
-                "aaSorting": [[0, "desc"]]
-            });
-
-            $("#s tbody").on("click", "tr", function () {
-                var data = companiesGrid.row(this).data();
-
-                $('#CustomerId').val(data.Id);
-                $('input[name=CustomerId]').val(data.Id);
-                $('input[name=CustomerFullName]').val(data.FullName);
-                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-                $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-                $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-                $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-
-
-                $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-                $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-                $('#CompaniesLookup').modal('hide');
-            });
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#modalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#customerAccountsGrid').DataTable().ajax.reload();
         });
 
+        function selectCustomerAccounts(id) {
+            $.ajax({
+                url: '/Loaning/GuarantorAttachment/CustomerAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        // Populate fields with the returned data
+                        $('#CustomerAccountFullAccountNumber').val(response.data.CustomerAccountFullAccountNumber);
+                        $('#CustomerAccountAccountId').val(response.data.CustomerAccountAccountId);
+                        $('#CustomerAccountAccountStatusDescription').val(response.data.CustomerAccountAccountStatusDescription);
+                        $('#CustomerAccountAccountRemarks').val(response.data.CustomerAccountAccountRemarks);
+                        $('#BookBalance').val(response.data.BookBalance);
+                        $('#CustomerId').val(response.data.CustomerId);
+                        $('#CustomerIndividualFirstName').val(response.data.CustomerIndividualFirstName);
+                        $('#CustomerAccounntCustomerTypeDescription').val(response.data.CustomerAccounntCustomerTypeDescription);
+                        $('#CustomerIndividualPayrollNumbers').val(response.data.CustomerIndividualPayrollNumbers);
+                        $('#CustomerPersonalIdentificationNumber').val(response.data.CustomerPersonalIdentificationNumber);
+                        $('#CustomerReference1').val(response.data.CustomerReference1);
+                        $('#CustomerReference2').val(response.data.CustomerReference2);
+                        $('#CustomerReference3').val(response.data.CustomerReference3);
+                        $('#AmountGuaranteed').val(response.data.AmountGuaranteed);
+
+                        // Insert guarantors data into the table
+                        var guarantors = response.data.Guarantors;
+                        var tbody = $('#ChargeSplits tbody');
+                        tbody.empty();  // Clear any previous data
+
+                        guarantors.forEach(function (guarantor) {
+                            // Assuming guarantor object contains the necessary fields
+                            var row = '<tr>' +
+                                '<td>' + guarantor.StatusDescription + '</td>' +
+                                '<td>' + guarantor.CustomerIndividualFirstName + guarantor.CustomerIndividualLastName + '</td>' +
+                                '<td>' + guarantor.TotalShares + '</td>' +
+                                '<td>' + guarantor.CommittedShares + '</td>' +
+                                '<td>' + guarantor.AmountGuaranteed + '</td>' +
+                                '<td>' + guarantor.PrincipalAttached + '</td>' +
+                                '<td>' + guarantor.InterestAttached + '</td>' +
+                                '<td>' + guarantor.CustomerIndividualPayrollNumbers + '</td>' +
+                                '</tr>';
+                            tbody.append(row);
+                        });
+
+                        // Close the modal
+                        $('#fullAccountNumberLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
 
 
 
+
+
+        function gatherGuarantorData() {
+            var guarantors = [];
+            $('#ChargeSplits tbody tr').each(function () {
+                var row = $(this);
+                var guarantor = {
+                    StatusDescription: row.find('td:eq(0)').text(),
+                    CustomerIndividualFirstName: row.find('td:eq(1)').text(), // Assuming it's a combined First and Last Name
+                    TotalShares: row.find('td:eq(2)').text(),
+                    CommittedShares: row.find('td:eq(3)').text(),
+                    AmountGuaranteed: row.find('td:eq(4)').text(),
+                    PrincipalAttached: row.find('td:eq(5)').text(),
+                    InterestAttached: row.find('td:eq(6)').text(),
+                    CustomerIndividualPayrollNumbers: row.find('td:eq(7)').text()
+                };
+                guarantors.push(guarantor);
+            });
+
+            // Serialize guarantor data into hidden input for form submission
+            $('#guarantorsData').val(JSON.stringify(guarantors));
+        }
 
         function sendFormData() {
-            // Create an object to hold the form data
-            let formData = {
-                PaymentPerPeriod: document.querySelector('[name="PaymentPerPeriod"]').value,
-                Reference: document.querySelector('[name="Reference"]').value
-            };
+            // Gather all guarantor data before submitting
+            gatherGuarantorData();
 
-            // Send the data to the first controller using fetch
-            fetch('/LoanRestructuring/Create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value // Include this line if you are using Anti-Forgery Token
-                },
-                body: JSON.stringify(formData)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the response data here
-                    console.log('Form Data Submitted:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+            // Submit the form
+            $('guarantorForm').submit();  // Assuming there's only one form on the page. If you have multiple forms, you can use a more specific selector like $('#formId').submit();
         }
+
     </script>
 }

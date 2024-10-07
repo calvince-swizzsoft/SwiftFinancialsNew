@@ -12,6 +12,60 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class WellknownchargesController : MasterController
     {
+        public async Task<ActionResult> Index()
+        {
+            await ServeNavigationMenus();
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var pageCollectionInfo = await _channelService.FindDebitBatchesByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(debitBatch => debitBatch.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<DebitBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+        public async Task<ActionResult> Details(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
+
+            return View(debitBatchDTO);
+        }
+
+
+        public async Task<ActionResult> Wellknowncharges(SystemTransactionTypeInCommissionDTO systemTransactionTypeInCommissionDTO)
+        {
+          //  Session["ComplementFixedAmount"] = systemTransactionTypeInCommissionDTO.ComplementFixedAmount;
+            Session["SystemTransactionType"] = systemTransactionTypeInCommissionDTO.SystemTransactionType;
+            Session["ComplementType"] = systemTransactionTypeInCommissionDTO.ComplementType;
+            
+            return View("Create",systemTransactionTypeInCommissionDTO);
+        }
+
+
         // GET: Accounts/Wellknowncharges/Create
         public async Task<ActionResult> Create()
         {

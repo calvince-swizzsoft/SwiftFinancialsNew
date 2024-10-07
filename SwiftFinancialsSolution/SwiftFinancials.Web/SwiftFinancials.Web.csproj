@@ -99,6 +99,10 @@
     <Reference Include="LazyCache, Version=0.7.1.44, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LazyCache.0.7.1.44\lib\net45\LazyCache.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -474,6 +478,7 @@
     <Compile Include="Areas\Accounts\Controllers\AlternatechannelManagementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternateChannelsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternatePeriodsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BackOfficeTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BackOfficeTransfersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankReconciliation_PeriodsController.cs" />
@@ -534,6 +539,7 @@
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\Admin\Controllers\DynamicReportingController.cs" />
     <Compile Include="Areas\Admin\Controllers\SSRSReportSettingController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SSRSReportSettingLoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemTransactiontypesController.cs" />
     <Compile Include="Areas\Admin\Data\ReportRepository.cs" />
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
@@ -635,10 +641,8 @@
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Registry\Controllers\FindEducationRegisterAsync.cs" />
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
-    <Compile Include="Areas\Registry\Controllers\NextofKinController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
-    <Compile Include="Areas\Registry\Controllers\StationLinkageController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\DocumentsModel\Document.cs" />
@@ -679,6 +683,7 @@
     <Compile Include="Identity\SmsService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="PDF\CreatePdf.cs" />
     <Compile Include="PDF\PdfHeaderFooter.cs" />
     <Compile Include="PDF\RegisteredLoans.cs" />
@@ -711,6 +716,8 @@
     <Content Include="Areas\Reports\Views\Report\Edit.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Index.cshtml" />
     <Content Include="Areas\Reports\Views\Report\_Reports.cshtml" />
+    <Content Include="bin\SwiftFinancials.Web.dll" />
+    <Content Include="bin\SwiftFinancials.Web.pdb" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -1166,7 +1173,6 @@
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Edit.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Approve.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\verify.cshtml" />
-    <Content Include="Areas\FrontOffice\Views\Cheques\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\Cheques\Banking.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Create.cshtml" />
@@ -1391,13 +1397,34 @@
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\ChequeBanking.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\ChequeClearance.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\Printing.cshtml" />
     <Content Include="Areas\Accounts\Views\BackOfficeTransfers\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Accounts\Views\TransactionJournals\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SSRSReportSetting\Create.cshtml" />
+    <Content Include="Areas\Reports\Views\SSRSReports\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SSRSReportSetting\EditReport.cshtml" />
+    <Content Include="Areas\Accounts\Views\BackOfficeTransfer\Create.cshtml" />
+    <Content Include="Files\CustomerReport20240831072056.pdf" />
+    <Content Include="Files\CustomerReport20240831072101.pdf" />
+    <Content Include="Files\CustomerReport20240831072118.pdf" />
+    <Content Include="Files\CustomerReport20240831072133.pdf" />
+    <Content Include="Files\CustomerReport20240831072149.pdf" />
+    <Content Include="Files\CustomerReport20240831072157.pdf" />
+    <Content Include="Files\CustomerReport20240831072206.pdf" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\Cheques.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SSRSReportSettingLogin\Login.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\relieveguarantor.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\guarantorSubstitution.cshtml" />
+    <Content Include="Areas\Loaning\Views\GuarantorAttachment\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\ActionDropDown.css" />
+    <Content Include="Scripts\css\BackOfficeNavigationMenu.css" />
     <Content Include="Scripts\css\CaptureSpecimenForm.css" />
     <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\Marquee.css" />
@@ -1405,6 +1432,7 @@
     <Content Include="Scripts\css\SSRSModal.css" />
     <Content Include="Scripts\css\tabbing.css" />
     <Content Include="Scripts\css\tabbing2.css" />
+    <Content Include="Scripts\css\ViewbagTable.css" />
     <Content Include="Scripts\css\WebCam.css" />
     <Content Include="Scripts\css\_layout.css" />
     <Content Include="Scripts\home-index.js" />

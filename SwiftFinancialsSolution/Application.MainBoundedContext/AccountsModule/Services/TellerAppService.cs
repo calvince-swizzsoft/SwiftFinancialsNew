@@ -312,7 +312,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                                 teller.TotalCredits = statisticsTuple.Item1;
                                 teller.TotalDebits = statisticsTuple.Item2;
-                                teller.ItemsCount = statisticsTuple.Item3;
+
+                                teller.OpeningBalance = statisticsTuple.Item3;
+                                teller.ClosingBalance = statisticsTuple.Item4;
+                                teller.ItemsCount = statisticsTuple.Item5;
                             }
                             break;
                         case TellerType.AgentPointOfSale:

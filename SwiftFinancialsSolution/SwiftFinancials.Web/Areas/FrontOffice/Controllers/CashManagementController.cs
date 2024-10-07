@@ -284,94 +284,116 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
-
         [HttpPost]
         public async Task<ActionResult> Create(FiscalCountDTO fiscalCountDTO)
         {
             fiscalCountDTO.ValidateAll();
 
-            ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(fiscalCountDTO.TransactionType.ToString());
-
             if (!fiscalCountDTO.HasErrors)
             {
-
                 int treasuryTransactionType = fiscalCountDTO.TransactionType;
-
                 TransactionModel transactionModel = new TransactionModel();
 
                 CurrentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
                 var activeUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
                 ActiveTreasury = await _channelService.FindTreasuryByBranchIdAsync((Guid)activeUser.BranchId, true, GetServiceHeader());
 
                 fiscalCountDTO.BranchId = ActiveTreasury.BranchId;
-
-        
-
                 fiscalCountDTO.PostingPeriodId = CurrentPostingPeriod.Id;
-
-                //fiscalCountDTO.Id = ActiveTreasury.Id;
                 fiscalCountDTO.ChartOfAccountId = ActiveTreasury.ChartOfAccountId;
-
                 transactionModel.TotalValue = fiscalCountDTO.TotalValue;
-
-
                 transactionModel.TransactionCode = fiscalCountDTO.TransactionCode;
                 transactionModel.PostingPeriodId = CurrentPostingPeriod.Id;
                 transactionModel.PrimaryDescription = fiscalCountDTO.TransactionTypeDescription;
                 transactionModel.ValueDate = DateTime.Today;
 
-                switch ((TreasuryTransactionType)treasuryTransactionType)
+                ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
+
+                try
                 {
+                    switch ((TreasuryTransactionType)treasuryTransactionType)
+                    {
+                        case TreasuryTransactionType.BankToTreasury:
+                            var sendingBank = await _channelService.FindBankAsync(fiscalCountDTO.Id, GetServiceHeader());
+                            if (sendingBank == null)
+                            {
+                                MessageBox.Show("Sending bank not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                return View(fiscalCountDTO);
+                            }
 
-                    case TreasuryTransactionType.BankToTreasury:
+                            var bankLinkages = await _channelService.FindBankLinkagesAsync(GetServiceHeader());
+                            var matchingBankLinkage = bankLinkages.FirstOrDefault(li => li.BankName == sendingBank.Description);
+                            if (matchingBankLinkage == null)
+                            {
+                                MessageBox.Show("No matching bank linkage found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                return View(fiscalCountDTO);
+                            }
 
+                            transactionModel.DebitChartOfAccountId = matchingBankLinkage.ChartOfAccountId;
+                            transactionModel.CreditChartOfAccountId = ActiveTreasury.ChartOfAccountId;
+                            break;
 
-                        var creditChartOfAccountId = ActiveTreasury.ChartOfAccountId;
-                        var balance = ActiveTreasury.BookBalance;
+                        case TreasuryTransactionType.TreasuryToTeller:
+                            transactionModel.DebitChartOfAccountId = ActiveTreasury.ChartOfAccountId;
+                            var teller = await _channelService.FindTellerAsync(fiscalCountDTO.Id, false, GetServiceHeader());
+                            if (teller == null)
+                            {
+                                MessageBox.Show("Teller not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                return View(fiscalCountDTO);
+                            }
+                            transactionModel.CreditChartOfAccountId = (Guid)teller.ChartOfAccountId;
+                            break;
 
-                        var sendingBank = await _channelService.FindBankAsync(fiscalCountDTO.Id, GetServiceHeader());
+                        case TreasuryTransactionType.TreasuryToBank:
+                            transactionModel.DebitChartOfAccountId = ActiveTreasury.ChartOfAccountId;
+                            var receivingBank = await _channelService.FindBankAsync(fiscalCountDTO.Id, GetServiceHeader());
+                            if (receivingBank == null)
+                            {
+                                MessageBox.Show("Receiving bank not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                return View(fiscalCountDTO);
+                            }
+                            var linkages = await _channelService.FindBankLinkagesAsync(GetServiceHeader());
+                            var linkage = linkages.FirstOrDefault(l => l.Id == receivingBank.Id);
+                            if (linkage == null)
+                            {
+                                MessageBox.Show("No matching bank linkage found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                return View(fiscalCountDTO);
+                            }
+                            transactionModel.CreditChartOfAccountId = linkage.ChartOfAccountId;
+                            break;
 
-                        var bankLinkages = await _channelService.FindBankLinkagesAsync(GetServiceHeader());
+                        case TreasuryTransactionType.TreasuryToTreasury:
+                            transactionModel.DebitChartOfAccountId = ActiveTreasury.ChartOfAccountId;
+                            var treasury = await _channelService.FindTreasuryAsync(fiscalCountDTO.Id, true, GetServiceHeader());
+                            if (treasury == null)
+                            {
+                                MessageBox.Show("Receiving treasury not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                return View(fiscalCountDTO);
+                            }
+                            transactionModel.CreditChartOfAccountId = treasury.ChartOfAccountId;
+                            break;
+                    }
 
-                        var matchingBankLinkage = bankLinkages.FirstOrDefault(linkage => linkage.BankName == sendingBank.Description);
+                    transactionModel.fiscalCountDTO = fiscalCountDTO;
+                    await ProcessTreasuryTransactionAsync(transactionModel);
 
-
-
-                        transactionModel.DebitChartOfAccountId = matchingBankLinkage.ChartOfAccountId;
-                        transactionModel.CreditChartOfAccountId = creditChartOfAccountId;
-
-
-
-                       
-
-                        break;
-
-                    case TreasuryTransactionType.TreasuryToTeller:
-
-                        transactionModel.DebitChartOfAccountId = ActiveTreasury.ChartOfAccountId;
-
-                        var teller = await _channelService.FindTellerAsync(fiscalCountDTO.Id, false, GetServiceHeader());
-
-                        transactionModel.CreditChartOfAccountId = (Guid)teller.ChartOfAccountId;
-
-                        break;
-
+                    MessageBox.Show("Transaction processed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    return RedirectToAction("SuccessPage");
                 }
-
-                transactionModel.fiscalCountDTO = fiscalCountDTO;
-
-                await ProcessTreasuryTransactionAsync(transactionModel);
-
-                return View(fiscalCountDTO);
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Application Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    return View(fiscalCountDTO);
+                }
             }
             else
             {
-                var errorMessages = fiscalCountDTO.ErrorMessages;
-                ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(fiscalCountDTO.TransactionType.ToString());
+                MessageBox.Show("There are errors in the form. Please correct them.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                 return View(fiscalCountDTO);
             }
         }
+
+
 
 
 
@@ -404,7 +426,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                         MessageBox.Show(
                                           message,
-                                          "Treasury to Teller",
+                                          "Bank To Treasury",
                                           MessageBoxButtons.OK,
                                           MessageBoxIcon.Information,
                                           MessageBoxDefaultButton.Button1,
@@ -431,7 +453,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             System.Windows.Forms.MessageBoxDefaultButton.Button1,
                             System.Windows.Forms.MessageBoxOptions.ServiceNotification
                             );
-                        
+
+                        break;
                     }
 
                     var bankToTellerJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
@@ -458,7 +481,64 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     }
 
 
-                    break; 
+                    break;
+
+
+                case TreasuryTransactionType.TreasuryToBank:
+
+
+                    var treasuryToBankJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
+
+                    var treasuryAcc = await _channelService.FindChartOfAccountAsync(transactionModel.CreditChartOfAccountId, GetServiceHeader());
+
+                    var updateTreasuryAcc = await _channelService.UpdateChartOfAccountAsync(treasuryAcc, GetServiceHeader());
+
+                    if (updateTreasuryAcc)
+                    {
+
+                        string message = $"Operation success";
+
+                        MessageBox.Show(
+                                          message,
+                                          "Treasury to Bank",
+                                          MessageBoxButtons.OK,
+                                          MessageBoxIcon.Information,
+                                          MessageBoxDefaultButton.Button1,
+                                          MessageBoxOptions.ServiceNotification
+                                      );
+                    }
+
+
+                    break;
+
+
+                case TreasuryTransactionType.TreasuryToTreasury:
+
+
+                    var treasuryToTreasuryJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
+
+                    var treasuryAc = await _channelService.FindChartOfAccountAsync(transactionModel.CreditChartOfAccountId, GetServiceHeader());
+
+                    var updateTreasuryAc = await _channelService.UpdateChartOfAccountAsync(treasuryAc, GetServiceHeader());
+
+                    if (updateTreasuryAc)
+                    {
+
+                        string message = $"Operation success";
+
+                        MessageBox.Show(
+                                          message,
+                                          "Treasury to Treasury",
+                                          MessageBoxButtons.OK,
+                                          MessageBoxIcon.Information,
+                                          MessageBoxDefaultButton.Button1,
+                                          MessageBoxOptions.ServiceNotification
+                                      );
+                    }
+
+
+
+                    break;
 
 
 
