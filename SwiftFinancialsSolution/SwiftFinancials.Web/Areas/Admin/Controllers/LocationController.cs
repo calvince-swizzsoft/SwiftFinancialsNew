@@ -67,7 +67,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (!locationDTO.HasErrors)
             {
                 await _channelService.AddLocationAsync(locationDTO, GetServiceHeader());
-
+                TempData["Success"] = "Location Created Successfully";
+                TempData["Message"] = "Success,Login Verified Successfully! Welcome back,success";
                 return RedirectToAction("Index");
             }
             else

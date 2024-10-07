@@ -82,7 +82,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (!companyBindingModel.HasErrors)
             {
                 await _channelService.AddCompanyAsync(companyBindingModel.MapTo<CompanyDTO>(), GetServiceHeader());
-
+                
                 return RedirectToAction("Index");
             }
             else
