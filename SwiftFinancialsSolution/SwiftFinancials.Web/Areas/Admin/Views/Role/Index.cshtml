@@ -81,13 +81,34 @@
                 "sAjaxSource": "@(Url.Action("Index", "Role", new { Area = "Admin"}))",
                 "sServerMethod": "POST",
                 // Callback settings
+                //"fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                //    var editUrl = '<a  href="/Admin/Role/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                //    var viewUrl = '<a  href="/Admin/Role/Details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+
+                //    $('td:eq(1)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+
+                //    return nRow;
+                //},
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                     var editUrl = '<a  href="/Admin/Role/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/Admin/Role/Details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/admin/Role/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/admin/Role/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
 
-                    $('td:eq(1)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
+                    //$('td:eq(6)', nRow).html(dropdownHtml);
+                    $('td:eq(1)', nRow).html(dropdownHtml);
+                    //$('td:eq(1)', nRow).html(viewUrl + '&nbsp;' + editUrl);
                     return nRow;
                 },
                 // Display settings
