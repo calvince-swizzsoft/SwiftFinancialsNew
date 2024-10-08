@@ -627,5 +627,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Items Count")]
         public int ItemsCount { get; set; }
+
+        [DataMember]
+        [Display(Name = "Total Cheques")]
+        public decimal TellerTotalCheques { get; set; }
     }
 }
