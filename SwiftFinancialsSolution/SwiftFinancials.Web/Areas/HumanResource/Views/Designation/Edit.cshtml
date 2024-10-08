@@ -4,6 +4,7 @@
     /**/
 
     ViewBag.Title = "Create Designation";
+    var systemTransactionType = ViewBag.TransactionTypeSelectList as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -53,39 +54,127 @@
                     {
                         @Html.AntiForgeryToken()
 
-                    <div class="form-horizontal">
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- Name field -->
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Name:</label>
+                                            <div class="col-sm-10">
+                                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                        </div>
 
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-sm">
-                                        <div class="col-md-offset-2">
-                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        <!-- Remarks field -->
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Remarks:</label>
+                                            <div class="col-sm-10">
+                                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                        </div>
+
+                                        <!-- Transaction Threshold Details -->
+                                        <div class="card mt-3">
+                                            <div class="card-header">
+                                                Transaction Threshold Details
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-2 col-form-label">Type:</label>
+                                                            <div class="col-sm-10">
+                                                                @Html.DropDownListFor(model => model.Type,
+                                                                    ViewBag.TransactionTypeSelectList as List<SelectListItem>,
+                                                                    "-- Select Type --",
+                                                                    new { @class = "form-control" })
+                                                                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-2 col-form-label">Threshold:</label>
+                                                            <div class="col-sm-10">
+                                                                @Html.EditorFor(model => model.Threshold,
+                                                                    new { htmlAttributes = new { @class = "form-control text-right" } })
+                                                                @Html.ValidationMessageFor(model => model.Threshold, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-2">
+                                                    <div class="col-md-12 text-right">
+                                                        <button type="button" id="addThreshold" class="btn btn-success">Add</button>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Transaction Threshold Preferences Table -->
+                                                <div class="table-responsive mt-3">
+                                                    <table id="thresholdTable" class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Type</th>
+                                                                <th>Threshold</th>
+                                                                <th>Created By</th>
+                                                                <th>Created Date</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (Model.TransactionThresholds != null)
+                                                            {
+                                                                for (var i = 0; i < Model.TransactionThresholds.Count; i++)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            @Html.HiddenFor(m => m.TransactionThresholds[i].Type)
+                                                                            @Model.TransactionThresholds[i].TypeDescription
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.HiddenFor(m => m.TransactionThresholds[i].Threshold)
+                                                                            @Model.TransactionThresholds[i].Threshold
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.HiddenFor(m => m.TransactionThresholds[i].CreatedBy)
+                                                                            @Model.TransactionThresholds[i].CreatedBy
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.HiddenFor(m => m.TransactionThresholds[i].CreatedDate)
+                                                                            @Model.TransactionThresholds[i].CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                                                                        </td>
+                                                                        <td>
+                                                                            <button type="button" class="btn btn-danger btn-sm remove-threshold">Remove</button>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Designation is locked checkbox -->
+                                        <div class="form-group mt-3 d-flex justify-content-end">
+                                            <div class="custom-control custom-checkbox">
+                                                @Html.CheckBoxFor(model => model.IsLocked, new { @class = "custom-control-input", id = "IsLocked" })
+                                                <label class="custom-control-label" for="IsLocked">Designation is locked?</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Update button -->
+                                        <div class="form-group mt-3 d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-primary">Update</button>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-                        </fieldset>
-
-                    </div>
+                        </div>
                     }
+
+
                 </div>
             </div>
         </div>
@@ -202,4 +291,127 @@
                 }
             });
         });</script>
+
+    <script>
+$(document).ready(function() {
+    // Get the current count of thresholds for indexing
+    let thresholdIndex = @(Model.TransactionThresholds?.Count ?? 0);
+
+    // Handle Add button click
+    $('#addThreshold').click(function() {
+        const type = $('#Type option:selected');
+        const threshold = $('#Threshold').val();
+
+        if (!type.val() || !threshold) {
+            alert('Please fill in both Type and Threshold fields');
+            return;
+        }
+
+        // Check if the type has already been added
+        let alreadyExists = false;
+        $('#thresholdTable tbody tr').each(function() {
+            const existingType = $(this).find('input[name*="Type"]').val();
+            if (existingType === type.val()) {
+                alreadyExists = true;
+                return false;  // Exit loop early
+            }
+        });
+
+        if (alreadyExists) {
+            alert('This transaction type has already been added.');
+            return;
+        }
+
+        // Create new row with hidden inputs for model binding
+        const newRow = $('<tr>');
+
+        // Type column
+        const typeCell = $('<td>').append(
+            $('<input>').attr({
+                type: 'hidden',
+                name: `TransactionThresholds[${thresholdIndex}].Type`,
+                value: type.val()
+            }),
+            $('<input>').attr({
+                type: 'hidden',
+                name: `TransactionThresholds[${thresholdIndex}].TypeText`,
+                value: type.text()
+            }),
+            type.text()
+        );
+
+        // Threshold column
+        const thresholdCell = $('<td>').append(
+            $('<input>').attr({
+                type: 'hidden',
+                name: `TransactionThresholds[${thresholdIndex}].Threshold`,
+                value: threshold
+            }),
+            threshold
+        );
+
+        // Created By column
+        const createdBy = '@Model.ActiveUser';
+        const createdByCell = $('<td>').append(
+            $('<input>').attr({
+                type: 'hidden',
+                name: `TransactionThresholds[${thresholdIndex}].CreatedBy`,
+                value: createdBy
+            }),
+            createdBy
+        );
+
+        // Created Date column
+        const createdDate = new Date().toISOString();
+        const createdDateCell = $('<td>').append(
+            $('<input>').attr({
+                type: 'hidden',
+                name: `TransactionThresholds[${thresholdIndex}].CreatedDate`,
+                value: createdDate
+            }),
+            new Date().toLocaleString()
+        );
+
+        // Action column
+        const actionCell = $('<td>').append(
+            $('<button>')
+                .addClass('btn btn-danger btn-sm remove-threshold')
+                .text('Remove')
+        );
+
+        // Append all cells to the row
+        newRow.append(typeCell, thresholdCell, createdByCell, createdDateCell, actionCell);
+
+        // Add new row to table
+        $('#thresholdTable tbody').append(newRow);
+
+        // Clear input fields
+        $('#Type').val('');
+        $('#Threshold').val('');
+
+        thresholdIndex++;
+    });
+
+    // Handle Remove button click using event delegation
+    $('#thresholdTable').on('click', '.remove-threshold', function() {
+        const row = $(this).closest('tr');
+        const currentIndex = row.index();
+
+        // Remove the row
+        row.remove();
+
+        // Reindex remaining rows
+        $('#thresholdTable tbody tr').each(function(newIndex) {
+            $(this).find('input[type="hidden"]').each(function() {
+                const name = $(this).attr('name');
+                const newName = name.replace(/\[\d+\]/, `[${newIndex}]`);
+                $(this).attr('name', newName);
+            });
+        });
+
+        thresholdIndex--;
+    });
+});
+    </script>
+
 }

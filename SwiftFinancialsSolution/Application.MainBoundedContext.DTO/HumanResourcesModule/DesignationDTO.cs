@@ -3,6 +3,7 @@ using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -13,7 +14,9 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         public DesignationDTO()
         {
             AddAllAttributeValidators();
-            
+            TransactionThresholds = new ObservableCollection<TransactionThresholdDTO>();
+
+
         }
 
         [DataMember]
@@ -86,5 +89,34 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
                 _children = new HashSet<DesignationDTO>(value);
             }
         }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public short Type { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string TypeDescription
+        {
+            get
+            {
+                return EnumHelper.GetDescription((SystemTransactionCode)Type);
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Threshold")]
+        public decimal Threshold { get; set; }
+
+        [DataMember]
+        [Display(Name = "UserName")]
+        public string ActiveUser { get; set; }
+
+        public ObservableCollection<TransactionThresholdDTO> TransactionThresholds { get; set; }
+
+
     }
+
+   
+
 }
