@@ -37,6 +37,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -69,7 +70,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (!BankDTO.HasErrors)
             {
                 await _channelService.AddBankAsync(BankDTO, GetServiceHeader());
-
+                TempData["SuccessMessage"] = "Bank Created successfully";
                 return RedirectToAction("Index");
             }
             else
@@ -98,7 +99,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (!BankBindingModel.HasErrors)
             {
                 await _channelService.UpdateBankAsync(BankBindingModel, GetServiceHeader());
-
+                TempData["SuccessMessage"] = "Bank Edited successfully";
                 return RedirectToAction("Index");
             }
             else
@@ -107,12 +108,12 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             }
         }
 
-       /* [HttpGet]
-        public async Task<JsonResult> GetBanksAsync()
-        {
-            var banksDTOs = await _channelService.FindBanksAsync(GetServiceHeader());
+        /* [HttpGet]
+         public async Task<JsonResult> GetBanksAsync()
+         {
+             var banksDTOs = await _channelService.FindBanksAsync(GetServiceHeader());
 
-            return Json(banksDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+             return Json(banksDTOs, JsonRequestBehavior.AllowGet);
+         }*/
     }
 }
