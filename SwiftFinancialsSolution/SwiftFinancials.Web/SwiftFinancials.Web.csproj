@@ -540,6 +540,7 @@
     <Compile Include="Areas\Admin\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureViewModel.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\AutomatedClearingController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashManagementController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashTransferController.cs" />
@@ -1411,6 +1412,10 @@
     <Content Include="Files\CustomerReport20240831072206.pdf" />
     <Content Include="Areas\FrontOffice\Views\Cheques\Cheques.cshtml" />
     <Content Include="Areas\FrontOffice\Views\Cheques\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\PrintCheque.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AutomatedClearing\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AutomatedClearing\Catalogue.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\bank.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

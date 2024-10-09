@@ -1,0 +1,171 @@
+﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ElectronicJournalDTO
+
+@{
+    ViewBag.Title = "Journals ";
+}
+<style>
+    .wrapper-content {
+        background-color: #f3f3f4;
+        padding: 20px;
+    }
+
+    .ibox {
+        background-color: #ffffff;
+        border: 1px solid #e7eaec;
+        border-radius: 4px;
+    }
+
+    .ibox-title {
+        border-bottom: 1px solid #e7eaec;
+        padding: 15px;
+    }
+
+    .ibox-content {
+        padding: 15px;
+    }
+
+    #ChequesGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #ChequesGrid th {
+            background-color: #f5f5f6;
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #ChequesGrid td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+    .filter-section {
+        background-color: #e6f2ff;
+        padding: 10px;
+        margin-top: 20px;
+        border: 1px solid #b8d6ff;
+        border-radius: 4px;
+    }
+
+        .filter-section input, .filter-section select {
+            margin-right: 10px;
+            padding: 5px;
+        }
+
+    .btn-primary {
+        background-color: #1ab394;
+        border-color: #1ab394;
+        color: #FFFFFF;
+        padding: 6px 12px;
+        border-radius: 3px;
+    }
+</style>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Automated-Clearing</h2>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="ChequesGrid" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Processed Entries</th>
+                                    <th>File Name</th>
+                                    <th>File Serial Number</th>
+                                    <th>Date of File Exchange</th>
+                                    <th>Closed By</th>
+                                    <th>Closed Date</th>
+                                    <th>Created By</th>
+                                    <th>Created Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="9">Loading data from server</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="filter-section">
+                        <select id="statusFilter">
+                            <option value="">All</option>
+                            <option value="Closed">Closed</option>
+                            <option value="Open">Open</option>
+                        </select>
+                        <input type="text" id="startDate" placeholder="Start Date">
+                        <input type="text" id="endDate" placeholder="End Date">
+                        <input type="text" id="searchText" placeholder="Enter Text..">
+                        <button class="btn btn-primary" id="refreshBtn">Refresh</button>
+                        <button class="btn btn-primary" id="importBtn">Import</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/dataPicker")
+
+    <script>
+    $(document).ready(function () {
+        
+
+        // Initialize datepickers
+        $('#startDate, #endDate').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true
+        });
+
+        // Add event listener for the Refresh button
+        $('#refreshBtn').on('click', function () {
+            table.ajax.reload();
+        });
+
+        // Add event listener for the Import button
+        $('#importBtn').on('click', function () {
+            // Trigger the file input when the import button is clicked
+            $('#chequeImage').click();
+        });
+
+        // Handle file upload after selecting a file
+        $('#chequeImage').on('change', function () {
+            var formData = new FormData();
+            formData.append('chequeImage', $('#chequeImage')[0].files[0]);
+
+            $.ajax({
+                url: '@Url.Action("UploadCheques", "AutomatedClearing", new { Area = "FrontOffice" })', // Server action for handling upload
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.success) {
+                        alert('Cheque image uploaded successfully!');
+                        table.ajax.reload(); // Optionally reload the table
+                    } else {
+                        alert('Failed to upload cheque image.');
+                    }
+                },
+                error: function () {
+                    alert('Error uploading the cheque image.');
+                }
+            });
+        });
+
+        // Add event listeners for filters
+        $('#statusFilter, #startDate, #endDate, #searchText').on('change keyup', function () {
+            table.ajax.reload();
+        });
+    });
+    </script>
+
+}
