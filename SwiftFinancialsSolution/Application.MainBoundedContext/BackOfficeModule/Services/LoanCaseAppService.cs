@@ -1697,8 +1697,17 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 {
                     var existingLoanCases = FindLoanCasesByCustomerIdAndLoanProductId(customerLoanAccount.CustomerId, customerLoanAccount.CustomerAccountTypeTargetProductId, serviceHeader);
 
+                    LoanCaseDTO lcDTO = new LoanCaseDTO();
+
+
                     if (existingLoanCases != null && existingLoanCases.Any(x => x.Status.In((int)LoanCaseStatus.Registered, (int)LoanCaseStatus.Appraised, (int)LoanCaseStatus.Deferred, (int)LoanCaseStatus.Approved, (int)LoanCaseStatus.Audited)))
-                        throw new InvalidOperationException("Sorry, but selected customer has a loan case for the selected product currently undergoing processing!");
+                    {
+                        bool success = false;
+
+                        lcDTO.ErrorMessageResult = success ? "" : string.Format("Sorry, but selected customer has a loan case for the selected product currently undergoing processing!");
+
+                        return success;
+                    }
 
                     _customerAccountAppService.FetchCustomerAccountBalances(new List<CustomerAccountDTO> { customerLoanAccount }, serviceHeader, true);
 
@@ -2506,12 +2515,12 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                                 _journalEntryPostingService.PerformDoubleEntry(relievingInterestJournal, destinationLoanProduct.InterestReceivableChartOfAccountId, sourceLoanProduct.InterestReceivableChartOfAccountId, destinationCustomerAccount, sourceCustomerAccount, serviceHeader);
                                 journals.Add(relievingInterestJournal);
 
-                                    #region Do we need to send alerts?
+                                #region Do we need to send alerts?
 
-                                    _brokerService.ProcessGuarantorRelievingAccountAlerts(DMLCommand.None, serviceHeader, loanGuarantorAttachmentHistoryEntryDTO);
+                                _brokerService.ProcessGuarantorRelievingAccountAlerts(DMLCommand.None, serviceHeader, loanGuarantorAttachmentHistoryEntryDTO);
 
-                                    #endregion
-                                });
+                                #endregion
+                            });
                         }
                     }
                 }
@@ -2548,7 +2557,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
             }
         }
 
-        public LoanGuarantorDTO AddNewLoanGuarantor(LoanGuarantorDTO loanGuarantorDTO, ServiceHeader serviceHeader)
+        public LoanGuarantorDTO AddNewLoanGuarantor(LoanGuarantorDTO loanGuarantorDTO, ServiceHeader serviceHeader) //Management
         {
             if (loanGuarantorDTO != null)
             {

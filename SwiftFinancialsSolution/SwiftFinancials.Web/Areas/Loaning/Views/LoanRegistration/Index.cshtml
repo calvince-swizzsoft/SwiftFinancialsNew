@@ -4,6 +4,7 @@
     ViewBag.Title = "Loan Cases";
 
     var LoanCaseFilter = ViewBag.LoanCaseFilterSelectList as List<SelectListItem>;
+    var LoanCaseStatus = ViewBag.LoanCaseStatusSelectList as List<SelectListItem>;
 }
 
 
@@ -11,16 +12,16 @@
     #tabs-container {
         background-color: #f5f5f5;
         border-bottom: 1px solid #ddd;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
         margin-bottom: 20px;
-        overflow-x: auto; /* Allow horizontal scrolling if necessary */
+        overflow-x: auto; 
     }
 
     .nav-tabs {
-        padding: 10px 0; /* Adjusted padding */
+        padding: 10px 0; 
         list-style: none;
         margin: 0;
-        white-space: nowrap; /* Prevent line breaks */
+        white-space: nowrap; 
     }
 
         .nav-tabs li {
@@ -32,7 +33,7 @@
             text-decoration: none;
             font-size: 14px;
             color: #333;
-            font-weight: bold; /* Set font weight to bold */
+            font-weight: bold; 
             padding: 10px 15px;
             border-bottom: 2px solid transparent;
             transition: border-bottom-color 0.3s ease-in-out;
@@ -42,6 +43,18 @@
                 border-bottom-color: #007bff;
                 color: #007bff;
             }
+
+
+    .amount-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .form-group{
+        border-radius: 10px;
+    }
 </style>
 
 
@@ -62,16 +75,45 @@
     </div>
 </div>
 
-<div id="tabs-container">
-    <ul class="nav-tabs">
-        <li>@Html.ActionLink("Loan Registration", "Index", "LoanRegistration")</li>
-        <li>@Html.ActionLink("Loan Appraisal", "Index", "AppraiseLoan")</li>
-        <li>@Html.ActionLink("Loan Approval", "Index", "ApproveLoan")</li>
-        <li>@Html.ActionLink("Loan Verification", "Index", "LoanVerification")</li>
-        <li>@Html.ActionLink("Loan Cancellation", "Index", "LoanCancellation")</li>
-        <li>@Html.ActionLink("Reports", "Index", "Reports")</li>
-    </ul>
-</div>
+
+<br />
+<nav class="navbar navbar-expand-lg bg-white nav-3d shadow">
+    <a class="navbar-brand" href="#">
+        <i class="fa fa-money" aria-hidden="true"></i>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "LoanRegistration")" class="nav-link">
+                    <i class="fa fa-pencil"></i> Loan Registration
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "AppraiseLoan")" class="nav-link">
+                    <i class="fa fa-check-circle"></i> Loan Appraisal
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "ApproveLoan")" class="nav-link">
+                    <i class="fa fa-thumbs-up"></i> Loan Approval
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "LoanVerification")" class="nav-link">
+                    <i class="fa fa-search"></i> Loan Verification
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "LoanCancellation")" class="nav-link">
+                    <i class="fa fa-times-circle"></i> Loan Cancellation
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
 
 <div class="wrapper wrapper-content">
@@ -79,7 +121,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Cases</h2>
+                    <h2>Loan Registration</h2>
 
                     @if (TempData["Edit"] != null)
                     {
@@ -104,18 +146,18 @@
                     @Html.ActionLink("Register Loan", "Create", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
 
 
-                    <a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#loanCasesModal">
-                        Export Loan Cases
-                    </a>
+                    @*<a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#loanCasesModal">
+                            Export Loan Cases
+                        </a>*@
 
 
-                    @using (Html.BeginForm("ExportToExcel", "LoanRegistration", FormMethod.Post))
-                    {
-                        @* Include necessary hidden fields or input elements for jQueryDataTablesModel *@
-                        @Html.Hidden("sEcho", "1") @* or bind it to your model *@
+                    @*@using (Html.BeginForm("ExportToExcel", "LoanRegistration", FormMethod.Post))
+                        {*@
+                    @* Include necessary hidden fields or input elements for jQueryDataTablesModel *@
+                    @Html.Hidden("sEcho", "1") @* or bind it to your model *@
 
-                        <button type="submit" class="btn btn-primary">Export to Excel</button>
-                    }
+                    @*<button type="submit" class="btn btn-primary">Export to Excel</button>
+                        }*@
 
 
 
@@ -145,6 +187,50 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="amount-section">
+                        <form id="filterForm">
+                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        <label for="filterType">Loan Status</label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Status, LoanCaseStatus,
+                                            new { @class = "form-control input-md", @id = "loanCaseStatus" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        <label for="filterType">Loan Filter</label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.filterText, LoanCaseFilter,
+                                            new { @class = "form-control input-md", @id = "filterType" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3" style="margin-top: 27px;">
+                                    <div class="form-group spacing-form-group">
+                                        <div class="input-group text-box">
+                                            @Html.TextBox("filterValue", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "filterValue" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1" style="margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; "/>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -162,7 +248,6 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#LoanRegistrationsGrid').DataTable({
                 // Ajax settings
@@ -171,6 +256,14 @@
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "LoanRegistration", new { Area = "Loaning"}))",
                 "sServerMethod": "POST",
+
+                "fnServerParams": function (aoData) {
+                    // Add filter type and value to server params
+                    aoData.push({ "name": "loanCaseStatus", "value": $('#loanCaseStatus').val() });
+                    aoData.push({ "name": "filterType", "value": $('#filterType').val() });
+                    aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
+                },
+
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
@@ -198,31 +291,13 @@
                     var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
                     var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
 
-
-                    //var dropdownHtml = `
-                    //    <div class="dropdown">
-                    //        <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    //            Action
-                    //        </button>
-                    //        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    //            <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
-                    //            <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
-                    //        </div>
-                    //    </div>`;
-
-
-                    //$('td:eq(8)', nRow).html(dt_Created);
-                    //$('td:eq(9)', nRow).html(dropdownHtml);
-
-
-
                     // Generate dropdown HTML with conditional logic based on status
                     var dropdownHtml = `
-                <div class="dropdown">
-                    <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Actions
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
                     // Buttons to be included
                     var viewButton = `<a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
@@ -268,6 +343,11 @@
                 "aaSorting": [[0, "desc"]],
             }
             );
+
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#LoanRegistrationsGrid').DataTable().ajax.reload();
+            });
         });
 
         $(document).ajaxStart(function () {

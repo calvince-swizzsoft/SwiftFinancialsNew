@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Companies";
 }
 
@@ -54,6 +53,26 @@
     </div>
 </div>
 
+<!-- Success Modal -->
+<div id="successModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="successMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Styles {
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
 }
@@ -62,8 +81,18 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-
         $(document).ready(function () {
+            // Check for TempData success message and show the modal if it exists
+            @if (TempData["Success"] != null)
+            {
+                <text>
+                    $(document).ready(function () {
+                        $('#successMessage').text('@TempData["Success"]');
+                        $('#successModal').modal('show');
+                    });
+                </text>
+            }
+
             $('#companiesGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
@@ -73,8 +102,7 @@
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
@@ -100,15 +128,15 @@
                 },
                 // Display settings
                 "aoColumns": [
-                 { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
                     { "mDataProp": "AddressAddressLine1", "sTitle": "Address 1", "sWidth": "10%" },
                     { "mDataProp": "AddressMobileLine", "sTitle": "Mobile No.", "sWidth": "10%" },
                     { "mDataProp": "AddressEmail", "sTitle": "Email", "sWidth": "15%" },
                     { "mDataProp": "EnforceTwoFactorAuthentication", "sTitle": "Enforce Two Factor Authentication?", "sWidth": "15%", "bSortable": false },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
         });
 
         $(document).ajaxStart(function () {
@@ -118,5 +146,4 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
 }

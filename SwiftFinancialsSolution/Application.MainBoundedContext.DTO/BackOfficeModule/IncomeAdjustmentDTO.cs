@@ -49,6 +49,12 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
+
+        // Additional DTO
+        [DataMember]
+        [Display(Name = "Amount")]
+        public decimal Amount { get; set; }
+
         [DataMember]
         public string ErrorMessageResult { get; set; }
     }

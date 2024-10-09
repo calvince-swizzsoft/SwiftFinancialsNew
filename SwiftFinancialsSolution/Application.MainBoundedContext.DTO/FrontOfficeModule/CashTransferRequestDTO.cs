@@ -1,14 +1,21 @@
-﻿using Infrastructure.Crosscutting.Framework.Utils;
+﻿using Application.Seedwork;
+using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 {
-    public class CashTransferRequestDTO
+    public class CashTransferRequestDTO : BindingModelBase<CashTransferRequestDTO>
     {
+
+        public CashTransferRequestDTO()
+        {
+            AddAllAttributeValidators();
+        }
+
         [Display(Name = "Id")]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } 
 
         [Display(Name = "Employee")]
         public Guid? EmployeeId { get; set; }
@@ -79,16 +86,59 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "From")]
         public string CreatedBy { get; set; }
 
+        //[DataMember]
+        //[Display(Name = "TransactionType")]
+        //public int TransactionType { get; set; }
 
+        //[DataMember]
+        //[Display(Name = "TransactionType")]
+        //public string TransactionTypeDescription
+        //{
+        //    get
+        //    {
+        //        return Enum.IsDefined(typeof(TreasuryTransactionType), TransactionType) ? EnumHelper.GetDescription((TreasuryTransactionType)TransactionType) : string.Empty;
+        //    }
+        //}
 
-
-
-
-        // Additional DTOs
         [DataMember]
-        public ExternalChequeDTO ExternalCheque;
+        [Display(Name = "Cash Balance Status")]
+        public int TellerCashBalanceStatusValue { get; set; } // Changed the name to avoid conflict
 
         [DataMember]
-        public InHouseChequeDTO InHouseChequeDTO;
+        [Display(Name = "Cash Balance Status")]
+        public string TellerCashBalanceStatus
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(TellerCashBalanceStatus), TellerCashBalanceStatusValue)
+                    ? EnumHelper.GetDescription((TellerCashBalanceStatus)TellerCashBalanceStatusValue)
+                    : string.Empty;
+            }
+        }
+
+
+        [Display(Name = "Opening Balance")]
+        public decimal OpeningBalance { get; set; }
+
+        [Display(Name = "Closing Balance")]
+        public decimal ClosingBalance { get; set; }
+
+        [Display(Name = "Total Payments")]
+        public decimal TotalDebits { get; set; }
+
+        [Display(Name = "Total Receipts")]
+        public decimal TotalCredits { get; set; }
+
+        [Display(Name = "Expected Cash")]
+        public decimal BookBalance { get; set; }
+
+        [Display(Name = "Cheques Pensing Transfer")]
+        public decimal UntransferredChequesValue { get; set; }
+
+        [DataMember]
+        [Display(Name = "Closing Balance Status")]
+        public string ClosingBalanceStatus { get; set; }
+
+
     }
 }

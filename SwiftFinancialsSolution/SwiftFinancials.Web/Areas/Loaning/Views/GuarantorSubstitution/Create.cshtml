@@ -2,6 +2,9 @@
 @model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanGuarantorDTO
 @{
     ViewBag.Title = "Guarantor Substitution";
+
+    var CustomerFilter = ViewBag.CustomerFilter as List<SelectListItem>;
+    var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 }
 
 
@@ -61,6 +64,40 @@
             background-color: #f1f1f1;
         }
 
+    #savingsAccountsTable {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+        position: sticky;
+        top: 0;
+        background-color: #f9f9f9; /* Background color of the header */
+        z-index: 1;
+    }
+
+        #savingsAccountsTable thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #savingsAccountsTable th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #savingsAccountsTable th {
+            font-weight: bold;
+        }
+
+        #savingsAccountsTable tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #savingsAccountsTable tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
     .amount-section {
         margin-top: 20px;
         background-color: #e0f0ff;
@@ -93,15 +130,46 @@
 </div>
 
 
-<div id="tabs-container">
-    <ul class="nav-tabs">
-        <li>@Html.ActionLink("Restructuring", "create", "LoanRestructuring")</li>
-        <li>@Html.ActionLink("Guarantor Attachment", "create", "GuarantorAttachment")</li>
-        <li>@Html.ActionLink("Guarantor Substitution", "create", "GuarantorSubstitution")</li>
-        <li>@Html.ActionLink("Guarantor Relieving", "Index", "GuarantorRelieving")</li>
-        <li>@Html.ActionLink("Guarantor Management", "Index", "GuarantorManagement")</li>
-    </ul>
-</div>
+
+<br />
+<nav class="navbar navbar-expand-lg bg-white nav-3d shadow">
+    <a class="navbar-brand" href="#">
+        <i class="fa fa-money" aria-hidden="true"></i>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "LoanRestructuring")" class="nav-link">
+                    <i class="fa fa-pencil"></i> Loan Restructuring
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorAttachment")" class="nav-link">
+                    <i class="fa fa-check-circle"></i> Guarantor Attachment
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorSubstitution")" class="nav-link">
+                    <i class="fa fa-thumbs-up"></i> Guarantor Substitution
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorRelieving")" class="nav-link">
+                    <i class="fa fa-search"></i> Guarantor Relieving
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorManagement")" class="nav-link">
+                    <i class="fa fa-times-circle"></i> Guarantor Management
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
 
 
 <div class="wrapper wrapper-content">
@@ -109,7 +177,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Guarantor Attachment</h2>
+                    <h2>Guarantor Substitution</h2>
 
                     @if (TempData["AccountStatus"] != null)
                     {
@@ -295,7 +363,7 @@
                             <div id="savingsAccounts" class="tab-pane" style="margin-left: 20px;">
                                 <row>
                                     <div style="max-height: 500px; overflow-y: auto;">
-                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                        <table id="savingsAccountsTable" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
                                             <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                                 <tr>
                                                     <th>Account Status</th>
@@ -320,33 +388,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if (ViewBag.SavingsAccounts != null)
-                                                {
-                                                    foreach (var savings in ViewBag.SavingsAccounts)
-                                                    {
-                                                        <tr>
-                                                            <td>@savings.StatusDescription</td>
-                                                            <td>@savings.RecordStatusDescription</td>
-                                                            <td>@savings.CustomerTypeDescription</td>
-                                                            <td>@savings.CustomerIndividualGenderDescription</td>
-                                                            <td>@savings.CustomerIndividualIdentityCardTypeDescription</td>
-                                                            <td>@savings.CustomerIndividualIdentityCardNumber</td>
-                                                            <td>@savings.PaddedCustomerSerialNumber</td>
-                                                            <td>@savings.CustomerFullName</td>
-                                                            <td>@savings.CustomerAddressMobileLine</td>
-                                                            <td>@savings.CustomerAddressEmail</td>
-                                                            <td>@savings.CustomerReference1</td>
-                                                            <td>@savings.CustomerReference2</td>
-                                                            <td>@savings.CustomerAccountTypeTargetProductDescription</td>
-                                                            <td>@savings.CustomerAccountTypeTargetProductLoanProductSectionDescription</td>
-                                                            <td>@savings.FullAccountNumber</td>
-                                                            <td style="text-align: right;">@savings.BookBalance</td>
-                                                            <td style="text-align: right;">@savings.AvailableBalance</td>
-                                                            <td style="text-align: right;">@savings.PrincipalBalance</td>
-                                                            <td style="text-align: right;">@savings.InterestBalance</td>
-                                                        </tr>
-                                                    }
-                                                }
+                                                <!--Rows will be dynamically inserted here-->
                                             </tbody>
                                         </table>
                                     </div>
@@ -599,6 +641,25 @@
                 </tbody>
             </table>
 
+
+            <form id="modalFilterForm" style="align-items: center; justify-content: center;">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        @Html.Label("Customer Filter", "Customer Filter")
+                        @Html.DropDownList("customerFilter", CustomerFilter, new { @class = "form-control", id = "customerFilter" })
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        @Html.Label("Record Status", "Record Status")
+                        @Html.DropDownList("recordStatus", RecordStatus, new { @class = "form-control", id = "recordStatus" })
+                    </div>
+
+                    <div class="form-group col-md-2" style="align-content:center; margin-top: 22px;">
+                        <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                    </div>
+                </div>
+            </form>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
@@ -623,6 +684,24 @@
                 </tbody>
             </table>
 
+            <form id="modalFilterForm2" style="align-items: center; justify-content: center;">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        @Html.Label("Customer Filter", "Customer Filter")
+                        @Html.DropDownList("customerFilter", CustomerFilter, new { @class = "form-control", id = "customerFilter" })
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        @Html.Label("Record Status", "Record Status")
+                        @Html.DropDownList("recordStatus", RecordStatus, new { @class = "form-control", id = "recordStatus" })
+                    </div>
+
+                    <div class="form-group col-md-1" style="align-content:center; margin-top: 22px;">
+                        <input type="submit" value="Refresh" id="applyFilter2" class="btn btn-primary" style="width: 80px; height: auto; " />
+                    </div>
+                </div>
+            </form>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
@@ -642,356 +721,251 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-
     <script src="~/Scripts/js/navlink.js"></script>
+
+
 
     <script>
         $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-
-            //Customer Accounts Lookup
-            $('#GuarantorsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/loaning/GuarantorSubstitution/GuarantorLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "5%" },
-                    { "mDataProp": "FullName", "sTitle": "Customer", "sWidth": "5%" },
-                    { "mDataProp": "IndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "7%" },
-                    { "mDataProp": "AddressMobileLine", "sTitle": "Mobile Line", "sWidth": "5%" },
-                    { "mDataProp": "AddressEmail", "sTitle": "E-Mail", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "5%", "bSortable": false }
-                ],
-                "aaSorting": [[0, "desc"]]
-            });
-
-            $("#s tbody").on("click", "tr", function () {
-                var data = companiesGrid.row(this).data();
-
-                $('#CustomerId').val(data.Id);
-                $('input[name=CustomerId]').val(data.Id);
-                $('input[name=CustomerFullName]').val(data.FullName);
-                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-                $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-                $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-                $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-
-
-                $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-                $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-                $('#CompaniesLookup').modal('hide');
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
             });
         });
 
 
 
 
-        $('#submit-btn').click(function () {
-            var selectedRowsData = [];
-            $('.rowCheckbox:checked').each(function () {
-                var rowData = {
-                    Id: $(this).data('id'),
-                    // Add other properties you want to include
-                };
-                selectedRowsData.push(rowData);
-            });
-
-            // Send the selected rows data to the backend using AJAX
-            $.ajax({
-                url: '/Loaning/GuarantorSubstitution/Create',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(selectedRowsData),
-                success: function (response) {
-                    // Handle success response
-                },
-                error: function (xhr, status, error) {
-                    // Handle error response
-                }
-            });
-        });
-
-    </script>
-
-    <script>
-           //Customers Lookup
-    $('#customersGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/loaning/GuarantorSubstitution/CustomerLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                // Display settings
-        "aoColumns": [
-            { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "5%" },
-            { "mDataProp": "FullName", "sTitle": "Customer", "sWidth": "5%" },
-            { "mDataProp": "IndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "7%" },
-            { "mDataProp": "AddressMobileLine", "sTitle": "Mobile Line", "sWidth": "5%" },
-            { "mDataProp": "AddressEmail", "sTitle": "E-Mail", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "5%", "bSortable": false }
-        ],
-        "aaSorting": [[0, "desc"]]
-            });
-
-            $("#s tbody").on("click", "tr", function () {
-                var data = companiesGrid.row(this).data();
-
-                $('#CustomerId').val(data.Id);
-                $('input[name=CustomerId]').val(data.Id);
-                $('input[name=CustomerFullName]').val(data.FullName);
-                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-                $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-                $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-                $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
 
 
-                $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-                $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-                $('#CompaniesLookup').modal('hide');
-            });
-    </script>
+        ////////// Customer accounts lookup modal/////////
+        // Set Default Value for Filters
+        var defaultcustomerFilter = $('#customerFilter').val();
+        var defaultrecordStatus = $('#recordStatus').val();
 
-    <script>
-    $(document).ready(function () {
-    // Function to save the state of the header checkbox to local storage
-    function saveCheckboxState(key, state) {
-        // Implementation for saving checkbox state goes here
-    }
 
-    // Function to load the state of the header checkbox from local storage
-    function loadCheckboxState(key) {
-        // Implementation for loading checkbox state goes here
-    }
-
-    $(document).ready(function () {
-        // Event listener for header checkbox
-        $('#headerCheckbox').on('change', function () {
-            // Check or uncheck all row checkboxes based on the header checkbox state
-            $('.rowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
-                var checkboxKey = $(this).attr('id');
-                // Save the state of the checkbox to local storage
-                saveCheckboxState(checkboxKey, $(this).prop('checked'));
-            });
-            // Save the state of the header checkbox to local storage
-            saveCheckboxState('headerCheckbox', $(this).prop('checked'));
-        });
-
-        // Event listener for individual row checkboxes
-        $('#LoanProductsGrid').on('change', '.rowCheckbox', function () {
-            // Save the state of the checkbox to local storage
-            var checkboxKey = $(this).attr('id');
-            saveCheckboxState(checkboxKey, $(this).prop('checked'));
-
-            // Uncheck header checkbox if any row checkbox is unchecked
-            if (!$(this).prop('checked')) {
-                $('#headerCheckbox').prop('checked', false);
-                // Save the state of the header checkbox to local storage
-                saveCheckboxState('headerCheckbox', false);
-            } else {
-                // Check if all row checkboxes are checked and check the header checkbox accordingly
-                var allChecked = $('.rowCheckbox:checked').length === $('.rowCheckbox').length;
-                $('#headerCheckbox').prop('checked', allChecked);
-                // Save the state of the header checkbox to local storage
-                saveCheckboxState('headerCheckbox', allChecked);
-            }
-        });
-
-        // Load the state of the header checkbox from local storage after the page is loaded
-        $('#headerCheckbox').prop('checked', loadCheckboxState('headerCheckbox'));
-    });
-
-    // Initialize the DataTable
-    var table = $('#LoanProductsGrid').DataTable({
-        // Ajax settings
+        $('#customersGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("FindCustomerGuarantors", "GuarantorSubstitution", new { Area = "Loaning"}))",
-
+        "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry"}))",
         "sServerMethod": "POST",
-        // Callback settings
+        //Ensure to include the filters in the Ajax request
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "customerFilter", "value": $('#customerFilter').val() || defaultcustomerFilter },
+                { "name": "recordStatus", "value": $('#recordStatus').val() || defaultrecordStatus }
+            );
+        },
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
             var h = ("0" + createdDate.getHours()).slice(-2);
             var m = ("0" + createdDate.getMinutes()).slice(-2);
             var s = ("0" + createdDate.getSeconds()).slice(-2);
+
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
             aData.CreatedDate = dt_Created;
 
-            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
-            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
-            var checkboxHTML = '<input type="checkbox" class="rowCheckbox" data-id="' + aData.Id + '"';
-            if (aData.AutomateLedgerFeeCalculation === true) {
-                checkboxHTML += ' checked';
-            }
-            checkboxHTML += '>';
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomer(\'' + aData.Id + '\')">Select</button>';
 
-            $('td:eq(0)', nRow).html(checkboxHTML);
+            $('td:eq(4)', nRow).html(dt_Created);
+            $('td:eq(5)', nRow).html(selectUrl);
 
             return nRow;
         },
-        // Display settings
         "aoColumns": [
-            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.09%" },
-            { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "50%", "bSortable": false }
-            { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "TotalShares", "sTitle": "Total Shares", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "CommittedShares", "sTitle": "Committed Shares", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "AmountGuaranteed", "sTitle": "Amount Guaranteed", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "AmountPledged", "sTitle": "Amount Pledged", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "GuarantorCustomerFullName", "sTitle": "Customer", "sWidth": "15%", "bSortable": false }
-            { "mDataProp": "CustomerPersonalIdentificationNumber", "sTitle": "Identity Card Number", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "CustomerIndividualPayrollNumbers", "sTitle": "Payroll Numbers", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "LoanCaseLoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "LoanCasePaddedCaseNumber", "sTitle": "Loan Number", "sWidth": "5%", "bSortable": false }
-        ],
-        "aaSorting": [[0, "desc"]],
-        "initComplete": function(settings, json) {
-            // Load the state of the header checkbox from local storage after DataTable initialization is complete
-            $('#headerCheckbox').prop('checked', loadCheckboxState('headerCheckbox'));
-        }
+            { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "10%" },
+            { "mDataProp": "Reference2", "sTitle": "Membership Number", "sWidth": "10%" },
+            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
+            { "mDataProp": "FullName", "sTitle": "Customer", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
     });
 
-    // Place the header checkbox anywhere on the grid
-    $('#LoanProductsGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="headerCheckbox"> Select $ Deselect All</div>');
-
-    // Event listener for header checkbox
-    $('#headerCheckbox').on('change', function () {
-        // Check or uncheck all row checkboxes based on the header checkbox state
-        $('.rowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
-            var checkboxKey = $(this).attr('id');
-            // Save the state of the checkbox to local storage
-            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#modalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#CreditCustomerAccountsGrid').DataTable().ajax.reload();
         });
-        // Save the state of the header checkbox to local storage
-        saveCheckboxState('headerCheckbox', $(this).prop('checked'));
-    });
 
-    // Event listener for individual row checkboxes
-    $('#LoanProductsGrid').on('change', '.rowCheckbox', function () {
-        // Save the state of the checkbox to local storage
-        var checkboxKey = $(this).attr('id');
-        saveCheckboxState(checkboxKey, $(this).prop('checked'));
-
-        // Uncheck header checkbox if any row checkbox is unchecked
-        if (!$(this).prop('checked')) {
-            $('#headerCheckbox').prop('checked', false);
-            // Save the state of the header checkbox to local storage
-            saveCheckboxState('headerCheckbox', false);
+    function selectCustomer(id) {
+    $.ajax({
+        url: '/Loaning/GuarantorSubstitution/CustomerLookUp',
+        type: 'POST',
+        data: { Id: id },
+        success: function (response) {
+            if (response.success) {
+                // Populate fields with the returned data
+                $('#LoaneeCustomerId').val(response.data.LoaneeCustomerId);
+                $('#LoaneeCustomerIndividualFirstName').val(response.data.LoaneeCustomerIndividualFirstName);
+                $('#CustomerNonIndividualDescription').val(response.data.CustomerNonIndividualDescription);
+                $('#EmployerDescription').val(response.data.EmployerDescription);
+                $('#EmployerId').val(response.data.EmployerId);
+                $('#StationDescription').val(response.data.StationDescription);
+                $('#StationId').val(response.data.StationId);
+                $('#CustomerPersonalIdentificationNumber').val(response.data.CustomerPersonalIdentificationNumber);
+                $('#CustomerReference1').val(response.data.CustomerReference1);
+                $('#CustomerReference2').val(response.data.CustomerReference2);
+                $('#CustomerReference3').val(response.data.CustomerReference3);
+                // Close the modal
+                $('#CustomerLookupModal').modal('hide');
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function () {
+            alert('An error occurred while processing your request.');
         }
     });
+   }
+
+
+
+
+
+
+
+
+
+        ////////// Guarantor accounts lookup modal/////////
+        // Set Default Value for Filters
+        var defaultcustomerFilter = $('#customerFilter').val();
+        var defaultrecordStatus = $('#recordStatus').val();
+
+        $('#GuarantorsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry"}))",
+        "sServerMethod": "POST",
+        //Ensure to include the filters in the Ajax request
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "customerFilter", "value": $('#customerFilter').val() || defaultcustomerFilter },
+                { "name": "recordStatus", "value": $('#recordStatus').val() || defaultrecordStatus }
+            );
+        },
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectGuarantor(\'' + aData.Id + '\')">Select</button>';
+
+            $('td:eq(4)', nRow).html(dt_Created);
+            $('td:eq(5)', nRow).html(selectUrl);
+
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "10%" },
+            { "mDataProp": "Reference2", "sTitle": "Membership Number", "sWidth": "10%" },
+            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
+            { "mDataProp": "FullName", "sTitle": "Customer", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
     });
+
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#modalFilterForm2').on('submit', function (e) {
+            e.preventDefault();
+            $('#CreditCustomerAccountsGrid').DataTable().ajax.reload();
+        });
+
+        function selectGuarantor(id) {
+    $.ajax({
+        url: '/Loaning/GuarantorSubstitution/GuarantorLookUp',
+        type: 'POST',
+        data: { Id: id },
+        success: function (response) {
+            if (response.success) {
+                // Populate fields with the returned data
+                $('#GuarantorId').val(response.data.GuarantorId);
+                $('#GuarantorFullName').val(response.data.GuarantorFullName);
+                $('#GuarantorTypeDescription').val(response.data.GuarantorTypeDescription);
+                $('#GuarantorEmployerDescription').val(response.data.GuarantorEmployerDescription);
+                $('#GuarantorEmployerId').val(response.data.GuarantorEmployerId);
+                $('#GuarantorStationDescription').val(response.data.GuarantorStationDescription);
+                $('#GuarantorStationId').val(response.data.GuarantorStationId);
+                $('#GuarantorIdentificationNumber').val(response.data.GuarantorIdentificationNumber);
+                $('#GuarantorRef1').val(response.data.GuarantorRef1);
+                $('#GuarantorRef2').val(response.data.GuarantorRef2);
+                $('#GuarantorRef3').val(response.data.GuarantorRef3);
+                // Close the modal
+                $('#substituteGuarantorLookupModal').modal('hide');
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function () {
+            alert('An error occurred while processing your request.');
+        }
+    });
+        }
+
+
+
+
+        // Function to make an AJAX call and update the table
+function fetchCustomerData(customerId) {
+    $.ajax({
+        url: '@Url.Action("CustomerLookUp", "GuarantorSubstitution")', 
+        type: 'GET',
+        data: { id: customerId },
+        success: function (response) {
+            if (response.success) {
+                $('#savingsAccountsTable tbody').empty();
+
+                const savingsAccounts = response.data.SavingsAccounts;
+                if (savingsAccounts && savingsAccounts.length > 0) {
+                    savingsAccounts.forEach(function (account) {
+                        const row = `
+                            <tr>
+                                <td>${account.StatusDescription}</td>
+                                <td>${account.RecordStatusDescription}</td>
+                                <td>${account.CustomerTypeDescription}</td>
+                                <td>${account.CustomerIndividualGenderDescription}</td>
+                                <td>${account.CustomerIndividualIdentityCardTypeDescription}</td>
+                                <td>${account.CustomerIndividualIdentityCardNumber}</td>
+                                <td>${account.PaddedCustomerSerialNumber}</td>
+                                <td>${account.CustomerFullName}</td>
+                                <td>${account.CustomerAddressMobileLine}</td>
+                                <td>${account.CustomerAddressEmail}</td>
+                                <td>${account.CustomerReference1}</td>
+                                <td>${account.CustomerReference2}</td>
+                                <td>${account.CustomerAccountTypeTargetProductDescription}</td>
+                                <td>${account.CustomerAccountTypeTargetProductLoanProductSectionDescription}</td>
+                                <td>${account.FullAccountNumber}</td>
+                                <td style="text-align: right;">${account.BookBalance}</td>
+                                <td style="text-align: right;">${account.AvailableBalance}</td>
+                                <td style="text-align: right;">${account.PrincipalBalance}</td>
+                                <td style="text-align: right;">${account.InterestBalance}</td>
+                            </tr>
+                        `;
+
+                        $('#savingsAccountsTable tbody').append(row);
+                    });
+                } else {
+                    $('#savingsAccountsTable tbody').append('<tr><td colspan="19" style="text-align:center;">No Savings Accounts found</td></tr>');
+                }
+            } else {
+                alert("Customer not found!");
+            }
+        },
+        error: function () {
+            alert("An error occurred while fetching data.");
+        }
+    });
+}
+
     </script>
 }

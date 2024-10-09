@@ -85,5 +85,6 @@ namespace SwiftFinancials.Presentation.Contracts.FrontOfficeModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginUpdateExternalChequePayablesByExternalChequeId(Guid externalChequeId, List<ExternalChequePayableDTO> externalChequePayables, AsyncCallback callback, Object state);
         bool EndUpdateExternalChequePayablesByExternalChequeId(IAsyncResult result);
+        void BeginFindUnTransferredExternalChequesByTellerId(Guid tellerId, AsyncCallback asyncCallback, IExternalChequeService service);
     }
 }

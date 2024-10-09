@@ -35,10 +35,9 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "System Roles", Icon="fa fa-low-vision", ControllerName="Role", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 4},
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "System Users", Icon="fa fa-user", ControllerName="Membership", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 5 },
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Access Controls", Icon="fa fa-cog", ControllerName="Module", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 6 },
-                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Reports Setting", Icon="fa fa-calculator", ControllerName="ReportSetting", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 7},
-                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Locations", Icon="fa fa-low-vision", ControllerName="Location", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 8},
-                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "System Permission", Icon="fa fa-users", ControllerName="SystemTransactiontypes", ActionName="Create", AreaName = "Admin", Code = 0x00004E20 + 9},
-                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Report Setting", Icon="fa fa-cogs", ControllerName="SSRSReportSetting", ActionName="Create", AreaName = "Admin", Code = 0x00004E20 + 10},
+                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Locations", Icon="fa fa-low-vision", ControllerName="Location", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 7},
+                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "System Permission", Icon="fa fa-users", ControllerName="SystemTransactiontypes", ActionName="Create", AreaName = "Admin", Code = 0x00004E20 + 8},
+                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Report Setting", Icon="fa fa-cogs", ControllerName="SSRSReportSetting", ActionName="Create", AreaName = "Admin", Code = 0x00004E20 + 9},
 
 
                 //Registry - area 21,000
@@ -232,7 +231,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loan Cases", Icon="fa fa-address-book", ControllerName="LoanRegistration", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 6},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loaning", Icon="fa fa-book", ControllerName="LoanRestructuring", ActionName="Create", AreaName = "Loaning", Code = 0x00005DC0 + 7},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Data Capture", Icon="fa fa-database", ControllerName="DataCapture", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 8},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Back Office Transfers", Icon="fa fa-database", ControllerName="BackOfficeTransfers", ActionName="Create", AreaName = "Accounts", Code = 0x00005DC0 + 8},
+                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Back Office Transfer", Icon="fa fa-database", ControllerName="BackOfficeTransfer", ActionName="Create", AreaName = "Accounts", Code = 0x00005DC0 + 8},
                 //new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Reports", Icon="fa fa-database", ControllerName="Reports", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 9},
                 //.
                 //.

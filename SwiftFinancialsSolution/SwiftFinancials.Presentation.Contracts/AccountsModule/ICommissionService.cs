@@ -100,7 +100,6 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginMapSystemTransactionTypeToCommissions(int systemTransactionType, CommissionDTO[] commissions, ChargeDTO chargeDTO, AsyncCallback callback, Object state);
         bool EndMapSystemTransactionTypeToCommissions(IAsyncResult result);
-
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginUpdateCommissionSplit(CommissionSplitDTO commissionSplitDTO, AsyncCallback callback, Object state);

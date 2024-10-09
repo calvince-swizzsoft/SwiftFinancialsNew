@@ -28,23 +28,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
+            ViewBag.LoanCaseStatusSelectList = GetLoanCaseStatusSelectList(string.Empty);
 
             return View();
         }
 
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int loanCaseStatus, string filterValue, int filterType)
         {
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
 
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 10, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(loanCaseStatus, filterValue, filterType, pageIndex, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
 
             var page = pageCollectionInfo.PageCollection;
 
@@ -119,7 +122,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 // Start the headers after the logo
                 int headerRowStart = 5; // Adjust this if the logo is larger or smaller
 
-                
+
                 var headers = new[] { "CASE NUMBER", "CUSTOMER NAME", "AMOUNT APPLIED", "BRANCH", "PAYMENT PER PERIOD", "RECEIVED DATE", "CREATED DATE" };
                 for (int i = 0; i < headers.Length; i++)
                 {
@@ -539,6 +542,17 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.TakeHomeType = loanProduct.TakeHomeType;
                 loanCaseDTO.TakeHomePercentage = loanProduct.TakeHomePercentage;
                 loanCaseDTO.TakeHomeFixedAmount = loanProduct.TakeHomeFixedAmount;
+
+
+                if (loanCaseDTO.BranchCompanyEnforceBudgetControl && loanCaseDTO.AmountApplied > loanCaseDTO.BranchBudgetBalance)
+                {
+
+                    TempData["BudgetBalanceLow"] = "Amount applied will exceed the branch budget balance!";
+
+                    return View("Create", loanCaseDTO);
+                }
+
+
 
                 // Calculate Loan Balance
                 // Calculate Investments Balace
@@ -1165,7 +1179,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var takeBranchId = Guid.Empty;
 
             var findBranch = await _channelService.FindBranchesAsync(GetServiceHeader());
-            foreach(var id in findBranch)
+            foreach (var id in findBranch)
             {
                 takeBranchId = id.Id;
             }
@@ -1257,12 +1271,19 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             loanCaseDTO.Remarks = Session["Remarks"].ToString();
 
 
+            if (loanCaseDTO.BranchCompanyEnforceBudgetControl && loanCaseDTO.AmountApplied > loanCaseDTO.BranchBudgetBalance)
+            {
+
+                TempData["BudgetBalanceLow"] = "Amount applied will exceed the branch budget balance!";
+
+                return View("Create", loanCaseDTO);
+            }
 
             loanCaseDTO.ValidateAll();
 
             if (!loanCaseDTO.HasErrors)
             {
-                if (loanCaseDTO.AmountApplied < 1)
+                if (loanCaseDTO.AmountApplied <= 50)
                 {
                     TempData["lessAmountApplied"] = "The amount you are applying for is too low. Enter amount greater than " + loanCaseDTO.AmountApplied;
                     return View("create", loanCaseDTO);
@@ -1318,6 +1339,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
             else
             {
+                await ServeNavigationMenus();
+
                 var errorMessages = loanCaseDTO.ErrorMessages;
                 ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());

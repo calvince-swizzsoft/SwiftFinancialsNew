@@ -1,15 +1,12 @@
-﻿
-@{
-    ViewBag.Title = "Create End of Day";
-}
+﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.CashTransferRequestDTO
 
 @{
-    ViewBag.Title = "End of Day";
+    ViewBag.Title = "End Of Day";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>End of Day</h2>
+        <h2>Cash Transactions</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -18,7 +15,7 @@
                 @Html.ActionLink("Home", "Index", "EndOfDay", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>End of Day</strong>
+                <strong>Create</strong>
             </li>
         </ol>
     </div>
@@ -28,64 +25,107 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-                <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
+                <div class="ibox-content bg-white">
                     <form>
-                        <div class="form-horizontal">
-                            <div style="border: 1px solid #ddd; padding: 20px; border-radius: 4px;">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="openingBalance">Opening Balance:</label>
-                                            <input type="text" id="openingBalance" class="form-control" readonly value="£0.00">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="totalReceipts">Total Receipts:</label>
-                                            <input type="text" id="totalReceipts" class="form-control" readonly value="£0.00">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="totalPayments">Total Payments:</label>
-                                            <input type="text" id="totalPayments" class="form-control" readonly value="£0.00">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="expectedCash">Expected Cash:</label>
-                                            <input type="text" id="expectedCash" class="form-control" readonly value="£0.00">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="chequesPendingTransfer">Cheques Pending Transfer:</label>
-                                            <input type="text" id="chequesPendingTransfer" class="form-control" readonly value="£0.00">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="closingBalance">Closing Balance:</label>
-                                            <input type="text" id="closingBalance" class="form-control" readonly value="£0.00">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="excess">Excess:</label>
-                                            <input type="text" id="excess" class="form-control" readonly value="£10,000.00">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs mb-4">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#cashTransfer">Cash Transfer</a>
+                            </li>
+                        </ul>
 
-                            <div class="form-group" style="margin-top: 20px; text-align: right;">
-                                <button type="submit" class="btn btn-primary" style="background-color: #007bff; border: 2px solid #0056b3; padding: 10px 20px; font-weight: bold;">Update</button>
+                        <div class="tab-content">
+                            <!-- Cash Transfer Tab -->
+                            <div id="cashTransfer" class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <!-- Left Panel -->
+                                        <div class="card h-100">
+                                            <div class="card-body d-flex flex-column">
+                                                <!-- Amount Field -->
+                                                @Html.HiddenFor(model => model.EmployeeId, new { htmlAttributes = new { @id = "employeeId" } })
+                                                <div class="form-group mb-4">
+                                                    @Html.LabelFor(model => model.Amount, "Amount", new { @class = "font-bold" })
+                                                    @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control form-control-lg", @id = "amount" } })
+                                                    @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                                                </div>
+
+                                                <div class="form-group mb-4">
+                                                    <label>Treasury</label>
+                                                    <input type="text" class="form-control" readonly value="HeadOffice">
+                                                </div>
+
+                                                <!-- Reference Field -->
+                                                <div class="form-group mt-auto">
+                                                    @Html.LabelFor(model => model.Reference, "Reference", new { @class = "font-bold" })
+                                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter reference", @id = "reference" } })
+                                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-8">
+                                        <!-- Right Panel -->
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.OpeningBalance, new { @class = "font-bold" })
+                                                    @Html.TextBoxFor(model => model.OpeningBalance, new { @class = "form-control", @id = "openingBalance", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.OpeningBalance, "", new { @class = "text-danger" })
+                                                </div>
+
+
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.TotalCredits, new { @class = "font-bold" })
+                                                    @Html.TextBoxFor(model => model.TotalCredits, new { @class = "form-control", @id = "totalCredits", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.TotalCredits, "", new { @class = "text-danger" })
+                                                </div>
+
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.TotalDebits, new { @class = "font-bold" })
+                                                    @Html.TextBoxFor(model => model.TotalDebits, new { @class = "form-control", @id = "totalDebits", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.TotalDebits, "", new { @class = "text-danger" })
+                                                </div>
+
+
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.BookBalance, new { @class = "font-bold" })
+                                                    @Html.TextBoxFor(model => model.BookBalance, new { @class = "form-control", @id = "bookBalance", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.BookBalance, "", new { @class = "text-danger" })
+                                                </div>
+
+
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.UntransferredChequesValue, new { @class = "font-bold" })
+                                                    @Html.TextBoxFor(model => model.UntransferredChequesValue, new { @class = "form-control", @id = "untrasferredChequesValue", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.UntransferredChequesValue, "", new { @class = "text-danger" })
+                                                </div>
+
+                                                <div class="form-group mb-3">
+                                                    @Html.LabelFor(model => model.ClosingBalance, new { @class = "font-bold" })
+                                                    @Html.TextBoxFor(model => model.ClosingBalance, new { @class = "form-control", @id = "closingBalance", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.ClosingBalance, "", new { @class = "text-danger" })
+                                                </div>
+
+                                                <div class="form-group mb-3">
+                                                    @Html.TextBoxFor(model => model.TellerCashBalanceStatusValue, new { @class = "form-control", @id = "cashBalanceStatusValue", @readonly = "readonly" })
+                                                    @Html.LabelFor(model => model.TellerCashBalanceStatus, new { @class = "font-bold" })
+                                                    @Html.TextBoxFor(model => model.TellerCashBalanceStatus, new { @class = "form-control", @id = "closingBalanceStatus", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.TellerCashBalanceStatus, "", new { @class = "text-danger" })
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12 text-right">
+                                        <button type="submit" id="cashTransferButton" class="btn btn-primary">Update</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -95,3 +135,199 @@
     </div>
 </div>
 
+<style>
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .form-control {
+        height: calc(1.5em + 0.75rem + 2px);
+        padding: 0.375rem 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+    }
+
+    .form-control-lg {
+        height: calc(1.5em + 1rem + 2px);
+        padding: 0.5rem 1rem;
+        font-size: 1.25rem;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .h-100 {
+        height: 100%;
+    }
+
+    .d-flex {
+        display: flex;
+    }
+
+    .flex-column {
+        flex-direction: column;
+    }
+
+    .nav-tabs {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .nav-tabs .nav-link {
+            border: 1px solid transparent;
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+        }
+
+            .nav-tabs .nav-link.active {
+                color: #495057;
+                background-color: #fff;
+                border-color: #dee2e6 #dee2e6 #fff;
+            }
+
+    .tab-content {
+        padding-top: 20px;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.075);
+    }
+</style>
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+
+$('#cashTransferButton').on('click', function () {
+
+    var cashTransferRequestDTO = {
+        amount: $('#amount').val(),
+        reference: $('#reference').val(),
+        employeeId: $('#employeeId').val(),
+        tellerCashBalanceStatus: $('#closingBalanceStatus').val(),
+        tellerCashBalanceStatusValue: $('#cashBalanceStatusValue').val(),
+        untransferredChequesValue: $('#untransferredChequesValue').val()
+
+    }
+
+
+    $.ajax({
+        url: '@Url.Action("Create", "EndOfDay")',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(cashTransferRequestDTO),
+        success: function (response) {
+            if (response && response.success) {
+                alert(response.message);
+            } else {
+                alert("Error: " + (response.message || "An unexpected error occurred."));
+            }
+        },
+        error: function () {
+            alert("An unexpected error occurred.");
+        }
+    });
+});
+
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            function updateBalanceStatus() {
+                var amount = parseFloat($('#amount').val()) || 0;
+                var closingBalance = parseFloat($('#closingBalance').val()) || 0;
+
+                var status;
+                var statusValue;
+
+                if (amount < closingBalance) {
+                    status = 'Shortage';
+                    statusValue = 0x5001; // Assuming this represents Shortage
+                } else if (amount > closingBalance) {
+                    status = 'Excess';
+                    statusValue = 0x5002; // Assuming this represents Excess
+                } else {
+                    status = 'Balanced';
+                    statusValue = 0x5000; // Assuming this represents Balanced
+                }
+
+                $('#closingBalanceStatus').val(status);
+                $('#cashBalanceStatusValue').val(statusValue); // Changed ID to match the hidden field
+
+            }
+
+            $('#amount').on('input', function () {
+                updateBalanceStatus();
+            });
+
+            // Initial call to set the status on page load
+            updateBalanceStatus();
+        });
+    </script>
+
+}

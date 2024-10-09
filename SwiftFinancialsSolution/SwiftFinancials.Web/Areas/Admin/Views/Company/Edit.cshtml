@@ -1,11 +1,14 @@
 ﻿@model Application.MainBoundedContext.DTO.AdministrationModule.CompanyBindingModel
-
 @{
-    ViewBag.Title = "Edit Company";
+    ViewBag.Title = "Company";
+    var DebitTypes = ViewBag.DebitTypes;
+    var InvestmentProducts = ViewBag.InvestmentProducts;
+    var SavingsProducts = ViewBag.SavingsProducts;
 }
+
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Companies</h2>
+    <div class="col-lg-12">
+        <h1>Companies</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -19,12 +22,31 @@
         </ol>
     </div>
 </div>
+<style>
+    .animated-tabs {
+        font-size: 0.75rem; /* Smaller font size */
+    }
 
+        .animated-tabs .nav-link {
+            transition: all 0.3s ease-in-out; /* Smooth transition for hover effect */
+            padding: 8px 12px; /* Adjust padding for a compact look */
+        }
+
+            /* Hover effect for the tabs */
+            .animated-tabs .nav-link:hover {
+                color: #ffffff; /* Text color on hover */
+                background-color: #007bff; /* Background color change */
+                transform: scale(1.1); /* Slightly scale up */
+                border-radius: 5px; /* Rounded corners for a smooth look */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            }
+</style>
 <div class="wrapper wrapper-content" style="padding: 20px;">
     <div class="row">
         <div class="col-md-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h5>Edit Company</h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -37,320 +59,406 @@
                 <div class="ibox-content bg-white text-info" style="padding: 20px;">
                     @using (Html.BeginForm("Edit", "Company", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
-                        @Html.AntiForgeryToken()
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;" } })
-                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "", @style = "border-radius: 5px;" } })
-                                    @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "", @style = "border-radius: 5px;" } })
-                                    @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "", @style = "border-radius: 5px;" } })
-                                    @Html.ValidationMessageFor(model => model.MembershipTerminationNoticePeriod, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.ApplicationDisplayName, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.ApplicationDisplayName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Display Name.", @required = "", @style = "border-radius: 5px;" } })
-                                    @Html.ValidationMessageFor(model => model.ApplicationDisplayName, "", new { @class = "text-danger" })
-                                </div>
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
+                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;" } })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "font-bold" })
+                                @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "", @style = "border-radius: 5px;" } })
+                                @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Vision, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Vision, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Vision.", @required = "", @style = "border-radius: 5px;" } })
-                            @Html.ValidationMessageFor(model => model.Vision, "", new { @class = "text-danger" })
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "font-bold" })
+                                @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "", @style = "border-radius: 5px;" } })
+                                @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
+                            </div>
                         </div>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Mission, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Mission, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Mission.", @required = "", @style = "border-radius: 5px;" } })
-                            @Html.ValidationMessageFor(model => model.Mission, "", new { @class = "text-danger" })
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "font-bold" })
+                                @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "", @style = "border-radius: 5px;" } })
+                                @Html.ValidationMessageFor(model => model.MembershipTerminationNoticePeriod, "", new { @class = "text-danger" })
+                            </div>
                         </div>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Motto, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Motto, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Motto.", @required = "", @style = "border-radius: 5px;" } })
-                            @Html.ValidationMessageFor(model => model.Motto, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Vision, htmlAttributes: new { @class = "font-bold" })
+                        @Html.EditorFor(model => model.Vision, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Vision.", @required = "", @style = "border-radius: 5px;" } })
+                        @Html.ValidationMessageFor(model => model.Vision, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Mission, htmlAttributes: new { @class = "font-bold" })
+                        @Html.EditorFor(model => model.Mission, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Mission.", @required = "", @style = "border-radius: 5px;" } })
+                        @Html.ValidationMessageFor(model => model.Mission, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Motto, htmlAttributes: new { @class = "font-bold" })
+                        @Html.EditorFor(model => model.Motto, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Motto.", @required = "", @style = "border-radius: 5px;" } })
+                        @Html.ValidationMessageFor(model => model.Motto, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.RecoveryPriority, htmlAttributes: new { @class = "font-bold" })
+                        @Html.DropDownListFor(model => model.RecoveryPriority, new List<SelectListItem>
+                        {
+                            new SelectListItem { Text = "DirectDebits", Value = "DirectDebits" },
+                            new SelectListItem { Text = "Investments", Value = "Investments" },
+                            new SelectListItem { Text = "Loans", Value = "Loans" },
+                            new SelectListItem { Text = "Savings", Value = "Savings" }
+                        }, new { @class = "form-control", @style = "border-radius: 5px;" })
+                        @Html.ValidationMessageFor(model => model.RecoveryPriority, "", new { @class = "text-danger" })
+                    </div>
+                    <ul class="nav nav-tabs d-flex flex-nowrap animated-tabs" style="margin-bottom: 20px;">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#address">Address</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#mandatoryDebitTypes">Debit Types</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#mandatoryInvestmentProducts">Investment Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#mandatorySavingsProducts">Savings Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#flags">Flags</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="address" class="tab-pane active">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "City", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Land line", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line", @required = "", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.RecoveryPriority, htmlAttributes: new { @class = "font-bold" })
-                            @Html.DropDownListFor(model => model.RecoveryPriority, new List<SelectListItem>
-                            {
-                                new SelectListItem { Text = "DirectDebits", Value = "DirectDebits" },
-                                new SelectListItem { Text = "Investments", Value = "Investments" },
-                                new SelectListItem { Text = "Loans", Value = "Loans" },
-                                new SelectListItem { Text = "Savings", Value = "Savings" }
-                            }, new { @class = "form-control", @style = "border-radius: 5px;" })
-                            @Html.ValidationMessageFor(model => model.RecoveryPriority, "", new { @class = "text-danger" })
-                        </div>
-
-                        <ul class="nav nav-tabs" style="margin-bottom: 20px;">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#address">Address</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#mandatoryDebitTypes">Mandatory Debit Types</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#mandatoryInvestmentProducts">Mandatory Investment Products</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#mandatorySavingsProducts">Mandatory Savings Products</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#flags">Flags</a>
-                            </li>
-                        </ul>
-
                         <div class="tab-content">
-                            <div id="address" class="tab-pane active">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1", @style = "border-radius: 5px;" } })
-                                            @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2", @style = "border-radius: 5px;" } })
-                                            @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street", @style = "border-radius: 5px;" } })
-                                            @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "City", @style = "border-radius: 5px;" } })
-                                            @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code", @style = "border-radius: 5px;" } })
-                                            @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "", @style = "border-radius: 5px;" } })
-                                            @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Land line", @style = "border-radius: 5px;" } })
-                                            @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line", @required = "", @style = "border-radius: 5px;" } })
-                                            @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="flags" class="tab-pane" style="margin-left: 20px;">
-                                <fieldset>
-                                    <div class="row">
-                                        <div class="col-lg-4">
+                            <div id="mandatoryInvestmentProducts" class="tab-pane active">
+                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                        <thead style="background-color: #4682b4; color: #fff;">
+                                            <tr>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.allInvestments != null)
+                    {
+                        var selectedInvestmentProducts = ViewBag.SelectedInvestmentProducts as List<Guid> ?? new List<Guid>();
 
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.EnforceCustomerAccountMakerChecker, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.EnforceCustomerAccountMakerChecker, "Enforce customer account maker/checker?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassRefundBatchAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassRefundBatchAudit, "Bypass refund batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassInterAccountTransferBatchAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassInterAccountTransferBatchAudit, "Bypass inter-account transfer batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.RecoverArrearsOnCashDeposit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.RecoverArrearsOnCashDeposit, "Recover arrears on cash deposit?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.IsFileTrackingEnforced, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.IsFileTrackingEnforced, "Enforce file tracking?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassJournalVoucherAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassJournalVoucherAudit, "Bypass journal voucher verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassWireTransferBatchAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassWireTransferBatchAudit, "Bypass wire transfer batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.RecoverArrearsOnExternalChequeClearance, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.RecoverArrearsOnExternalChequeClearance, "Recover arrears on external cheque clearance?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.ApplicationMembershipTextAlertsEnabled, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.ApplicationMembershipTextAlertsEnabled, "Membership text alerts enabled?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassCreditBatchAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassCreditBatchAudit, "Bypass credit batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassExpensePayableAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassExpensePayableAudit, "Bypass expense payable verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.RecoverArrearsOnFixedDepositPayment, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.RecoverArrearsOnFixedDepositPayment, "Recover arrears on fixed deposit payment?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.ExcludeChequeMaturityDateInTransactionReceipt, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.ExcludeChequeMaturityDateInTransactionReceipt, "Exclude cheque maturity date in TxRcpt?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassLoanDisbursementBatchAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassLoanDisbursementBatchAudit, "Bypass disbursement batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.EnforceTwoFactorAuthentication, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.EnforceTwoFactorAuthentication, "Enforce Two Factor Authentication?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassGeneralLedgerAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassGeneralLedgerAudit, "Bypass general ledger verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.TrackGuarantorCommittedInvestments, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.TrackGuarantorCommittedInvestments, "Track guarantor committed investments?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.EnforceSystemLock, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.EnforceSystemLock, "Company is locked?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassDebitBatchAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassDebitBatchAudit, "Bypass debit batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassJournalReversalBatchAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassJournalReversalBatchAudit, "Bypass reversal batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.ExcludeChargesInTransactionReceipt, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.ExcludeChargesInTransactionReceipt, "Exclude charges in TxRcpt?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.TransferNetRefundableAmountToSavingsAccountOnDeathClaimSettlement, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.TransferNetRefundableAmountToSavingsAccountOnDeathClaimSettlement, "Transfer net refundable amount to savings account on death claim settlement?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                </fieldset>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                            <div>
-                                @Html.ActionLink("Back to List", "Index", "Company", new { Area = "Admin" }, new { @class = "btn btn-success" })
-                            </div>
-                            <div>
-                                <button type="submit" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer;">Finish</button>
-                            </div>
-                        </div>
-
+                        foreach (var invest in ViewBag.allInvestments)
+                        {
+                                            <tr style="background-color: #f5f5f5;">
+                                                <td>
+                                                    <input type="checkbox"
+                                                           class="investment-checkbox"
+                                                           name="investmentproducts"
+                                                           value="@invest.Id"
+                                                           @(selectedInvestmentProducts.Contains(invest.Id) ? "checked" : "") />
+                                                    @invest.Description
+                                                </td>
+                                            </tr>
+                        }
                     }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
-                  
+                            <div id="mandatoryDebitTypes" class="tab-pane active">
+                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                        <thead style="background-color: #4682b4; color: #fff;">
+                                            <tr>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.debit != null)
+                    {
+                        var selectedDebitTypes = ViewBag.SelectedDebitTypes as List<Guid> ?? new List<Guid>();
 
+                        foreach (var debitype in ViewBag.debit)
+                        {
+                                            <tr style="background-color: #f5f5f5;">
+                                                <td>
+                                                    <input type="checkbox"
+                                                           class="debit-checkbox"
+                                                           name="debittypes"
+                                                           value="@debitype.Id"
+                                                           @(selectedDebitTypes.Contains(debitype.Id) ? "checked" : "") />
+                                                    @debitype.Description
+                                                </td>
+                                            </tr>
+                        }
+                    }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div id="mandatorySavingsProducts" class="tab-pane active">
+                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                        <thead style="background-color: #4682b4; color: #fff;">
+                                            <tr>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.allSavings != null)
+                    {
+                        var selectedSavingsProducts = ViewBag.SelectedSavingsProducts as List<Guid> ?? new List<Guid>();
+
+                        foreach (var save in ViewBag.allSavings)
+                        {
+                                            <tr style="background-color: #f5f5f5;">
+                                                <td>
+                                                    <input type="checkbox"
+                                                           class="savings-checkbox"
+                                                           name="savingsproducts"
+                                                           value="@save.Id"
+                                                           @(selectedSavingsProducts.Contains(save.Id) ? "checked" : "") />
+                                                    @save.Description
+                                                </td>
+                                            </tr>
+                        }
+                    }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="flags" class="tab-pane" style="margin-left: 20px;">
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-4">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.EnforceCustomerAccountMakerChecker, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.EnforceCustomerAccountMakerChecker, "Enforce customer account maker/checker?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.BypassRefundBatchAudit, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.BypassRefundBatchAudit, "Bypass refund batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.BypassInterAccountTransferBatchAudit, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.BypassInterAccountTransferBatchAudit, "Bypass inter-account transfer batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.RecoverArrearsOnCashDeposit, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.RecoverArrearsOnCashDeposit, "Recover arrears on cash deposit?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.IsFileTrackingEnforced, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.IsFileTrackingEnforced, "Enforce file tracking?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.BypassJournalVoucherAudit, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.BypassJournalVoucherAudit, "Bypass journal voucher verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.BypassWireTransferBatchAudit, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.BypassWireTransferBatchAudit, "Bypass wire transfer batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.RecoverArrearsOnExternalChequeClearance, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.RecoverArrearsOnExternalChequeClearance, "Recover arrears on external cheque clearance?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.ApplicationMembershipTextAlertsEnabled, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.ApplicationMembershipTextAlertsEnabled, "Membership text alerts enabled?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.BypassCreditBatchAudit, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.BypassCreditBatchAudit, "Bypass credit batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.BypassExpensePayableAudit, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.BypassExpensePayableAudit, "Bypass expense payable verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.RecoverArrearsOnFixedDepositPayment, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.RecoverArrearsOnFixedDepositPayment, "Recover arrears on fixed deposit payment?", new { @class = "font-bold", @style = "color: #1ab394;" })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer;">Edit</button>
+                    </div>
+                        }
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
+@*<script src="~/Scripts/js/navlink.js"></script>*@
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
-
+    @Scripts.Render("~/Scripts/js/navlink.js")
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('.nav-link').on('click', function (e) {
-                e.preventDefault();
+    $(document).ready(function () {
+        $('#submitButton').on('click', function () {
+            var debitTypes = [];
+            var investmentProducts = [];
+            var savingsProducts = [];
 
-                console.log(this);
+            // Gather selected debit types
+            $('.debit-checkbox:checked').each(function () {
+                debitTypes.push($(this).val());
+            });
 
-                var target = $(this).attr('href');
+            // Gather selected investment products
+            $('.investment-checkbox:checked').each(function () {
+                investmentProducts.push($(this).val());
+            });
 
-                console.log(target);
+            // Gather selected savings products
+            $('.savings-checkbox:checked').each(function () {
+                savingsProducts.push($(this).val());
+            });
 
-                $('.tab-pane').removeClass('active');
-                $(target).addClass('active');
-
-                $('.nav-link').removeClass('active');
-                $(this).addClass('active');
+            $.ajax({
+                url: '@Url.Action("Edit", "Company")', // Update with your controller name
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    debittypes: debitTypes,
+                    investmentproducts: investmentProducts,
+                    savingsproducts: savingsProducts
+                }),
+                success: function (response) {
+                    // Handle success
+                    alert("Data submitted successfully!");
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    alert("An error occurred: " + error);
+                }
             });
         });
+    });
     </script>
 
 }
