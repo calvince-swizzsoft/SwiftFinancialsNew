@@ -37,6 +37,17 @@
                             </button>
                         </div>
                     }
+
+                    @*@if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger fade in">
+                            <button class="close" data-dismiss="alert">
+                                ×
+                            </button>
+                            <i class="fa-fw fa fa-times"></i>
+                            <strong>Error!</strong> @TempData["Error"]
+                        </div>
+                    }*@
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
