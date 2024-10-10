@@ -93,7 +93,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, BranchDTO branchBindingModel)
         {
             branchBindingModel.ValidateAll();

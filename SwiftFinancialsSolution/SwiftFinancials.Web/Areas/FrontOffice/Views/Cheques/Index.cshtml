@@ -3,7 +3,7 @@
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Cheques</h2>
+        <h1>Cheques</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -26,7 +26,9 @@
                 <a href="@Url.Action("Index", "InHouse", new { Area = "FrontOffice" })" class="nav-link">
                     <i class="fa fa-cog"></i> In-House Cheques
                 </a>
-
+                <a href="@Url.Action("Journals", "AutomatedClearing", new { Area = "FrontOffice" })" class="nav-link">
+                    <i class="fa fa-cog"></i> Automated-Clearing
+                </a>
 
 
 
@@ -212,7 +214,6 @@
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
             aData.CreatedDate = dt_Created;
 
-            // Format MaturityDate
             if (aData.MaturityDate) {
                 var maturityDate = new Date(parseInt(aData.MaturityDate.replace("/Date(", "").replace(")/", ""), 10));
                 var dt_Maturity = $.datepicker.formatDate('dd/mm/yy', maturityDate);
@@ -224,7 +225,6 @@
             return nRow;
         },
 
-        // Display settings
         "aoColumns": [
             { "mDataProp": "TellerDescription", "sTitle": "Teller Name", "sWidth": "15%" },
             { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "20%" },

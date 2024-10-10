@@ -356,5 +356,12 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         public string errormassage;
 
+        [DataMember]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; }
     }
 }
