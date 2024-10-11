@@ -35,11 +35,11 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <p>
-                        <strong>@Html.DisplayNameFor(model => model.Name)</strong><br>
-
-                        @Html.DisplayFor(model => model.Name)<br>
-                    </p>
+                    <div class="form-group form-group-sm">
+                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name",@disabled = "disabled" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
 
                     <p>
                         @Html.ActionLink("Edit", "Edit", "Role", new { id = Model.Id, Area = "Admin" }, new { @class = "btn btn-primary" })

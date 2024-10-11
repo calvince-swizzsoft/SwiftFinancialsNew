@@ -73,7 +73,7 @@
                 "sAjaxSource": "@(Url.Action("Index", "Designation", new { Area = "HumanResource"}))",
                 "sServerMethod": "POST",
                 // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                "fnRowCallback": function (nRow, aData) {
 
                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);

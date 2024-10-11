@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
@@ -68,163 +67,77 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
+        // GET: Accounts/Wellknowncharges/Create
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
 
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
+            // Load dropdown lists for the view
             ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
-            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
             ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
+            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
 
             return View();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Create(SystemTransactionTypeInCommissionDTO systemTransactionTypeInCommissionDTO, ObservableCollection<CommissionDTO> selectedRows, ChargeDTO chargeDTO)
+        [HttpGet]
+        public async Task<ActionResult> FindCommissionsAsync()
         {
-           // systemTransactionTypeInCommissionDTO.ComplementFixedAmount =Convert.ToInt32( Session["ComplementFixedAmount"].ToString());
-            systemTransactionTypeInCommissionDTO.SystemTransactionType = Convert.ToInt32(Session["SystemTransactionType"].ToString());
-            systemTransactionTypeInCommissionDTO.ComplementType= Convert.ToInt32(Session["ComplementType"].ToString());
-
-            //debitTypeDTO.ProductCode = Convert.ToInt32(Session["ProductCode"].ToString());
-            //debitTypeDTO.IsLocked = (bool)Session["isLocked"];
-
-
-            systemTransactionTypeInCommissionDTO.ValidateAll();
-            int SystemTransactionType = systemTransactionTypeInCommissionDTO.SystemTransactionType;
-            if (!systemTransactionTypeInCommissionDTO.HasErrors)
-            {
-               await _channelService.MapSystemTransactionTypeToCommissionsAsync(SystemTransactionType, selectedRows, chargeDTO, GetServiceHeader());
-
-                ViewBag.SystemTransactionType = GetSystemTransactionTypeList(systemTransactionTypeInCommissionDTO.SystemTransactionType.ToString());
-                //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
-                //ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
-                //ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
-                ViewBag.Chargetype = GetChargeTypeSelectList(systemTransactionTypeInCommissionDTO.ComplementType.ToString());
-
-                //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(systemTransactionTypeInCommissionDTO.RecoverySource.ToString());
-                TempData["Successfully"] = "Successfully Created Well known charges ";
-                
-                await ServeNavigationMenus();
-                return View("Create");
-
-            }
-            else
-            {
-                var errorMessages = systemTransactionTypeInCommissionDTO.ErrorMessages;
-                //ViewBag.SystemTransactionType = GetSystemTransactionTypeList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
-                //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
-                //ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
-                //ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
-                //ViewBag.Chargetype = GetChargeTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
-
-                //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(systemTransactionTypeInCommissionDTO.RecoverySource.ToString());
-                return View(systemTransactionTypeInCommissionDTO);
-            }
+            var branchesDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            return Json(branchesDTOs);
         }
-
-        public async Task<ActionResult> Edit(Guid id)
-        {
-            await ServeNavigationMenus();
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
-            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
-
-            return View(debitBatchDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, DebitBatchDTO debitBatchDTO)
-        {
-            debitBatchDTO.ValidateAll();
-
-            if (!debitBatchDTO.HasErrors)
-            {
-                await _channelService.UpdateDebitBatchAsync(debitBatchDTO, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = debitBatchDTO.ErrorMessages;
-                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
-                return View(debitBatchDTO);
-            }
-        }
-
-        public async Task<ActionResult> Verify(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
-
-            return View(debitBatchDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(Guid id, DebitBatchDTO debitBatchDTO)
-        {
-            debitBatchDTO.ValidateAll();
-
-            if (!debitBatchDTO.HasErrors)
-            {
-                await _channelService.AuditDebitBatchAsync(debitBatchDTO, 1, GetServiceHeader());
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = debitBatchDTO.ErrorMessages;
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
-                return View(debitBatchDTO);
-            }
-        }
-
-        public async Task<ActionResult> Authorize(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
-
-            return View(debitBatchDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Authorize(Guid id, DebitBatchDTO debitBatchDTO)
-        {
-            var batchAuthOption = debitBatchDTO.BatchAuthOption;
-            debitBatchDTO.ValidateAll();
-
-            if (!debitBatchDTO.HasErrors)
-            {
-                await _channelService.AuthorizeDebitBatchAsync(debitBatchDTO, 1, batchAuthOption, GetServiceHeader());
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = debitBatchDTO.ErrorMessages;
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
-                return View(debitBatchDTO);
-            }
-        }
-
-
 
         [HttpGet]
-        public async Task<JsonResult> GetDebitBatchesAsync()
+        public async Task<ActionResult> GetAction(int systemTransactionTypeId)
         {
-            var debitBatchDTOs = await _channelService.FindDebitBatchesAsync(GetServiceHeader());
+            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            var linkedTransactionTypes = await _channelService.GetCommissionsForSystemTransactionTypeAsync(systemTransactionTypeId, GetServiceHeader());
 
-            return Json(debitBatchDTOs, JsonRequestBehavior.AllowGet);
+            // Identify unlinked commissions
+            var unlinkedTransactionTypes = commissionDTOs.Where(c => !linkedTransactionTypes.Any(l => l.Id == c.Id)).ToList();
+
+            return Json(new
+            {
+                linkedTransactionTypes = linkedTransactionTypes.Select(c => new { c.Id, c.Description, c.MaximumCharge, c.IsLocked, c.CreatedDate }),
+                unlinkedTransactionTypes = unlinkedTransactionTypes.Select(c => new { c.Id, c.Description, c.MaximumCharge, c.IsLocked, c.CreatedDate }),
+                commissionDTOs
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(SystemTransactionTypeInCommissionDTO systemTransactionTypeInCommissionDTO, List<Guid> selectedRows)
+        {
+            var commissions = new ObservableCollection<CommissionDTO>(selectedRows.Select(rowId => new CommissionDTO { Id = rowId }));
+
+            if (!systemTransactionTypeInCommissionDTO.HasErrors)
+            {
+                await _channelService.MapSystemTransactionTypeToCommissionsAsync(
+                    systemTransactionTypeInCommissionDTO.SystemTransactionType,
+                    commissions,
+                    new ChargeDTO
+                    {
+                        FixedAmount = systemTransactionTypeInCommissionDTO.ComplementFixedAmount,
+                        Percentage = systemTransactionTypeInCommissionDTO.ComplementPercentage,
+                        Type = systemTransactionTypeInCommissionDTO.ComplementType
+                    },
+                    GetServiceHeader()
+                );
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Successfully created well-known charges.",
+                    redirectUrl = Url.Action("Create", "Wellknowncharges", new { Area = "Accounts" })
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    success = false,
+                    errorMessage = string.Join(", ", systemTransactionTypeInCommissionDTO.ErrorMessages)
+                });
+            }
         }
     }
-
 }

@@ -15,10 +15,6 @@ namespace SwiftFinancials.Web.Attributes
 {
     public class RoleBasedAccessControlAttribute : AuthorizeAttribute
     {
-
-
-
-
         private IChannelService channelService;
         public IChannelService _channelService
         {
@@ -113,9 +109,6 @@ namespace SwiftFinancials.Web.Attributes
                 }
 
                 var foundRoles = new ObservableCollection<RoleDTO>();
-
-
-
                 if (moduleAccessCachedList != null)
                 {
                     foreach (var accessRight in moduleAccessCachedList)

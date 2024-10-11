@@ -24,6 +24,10 @@
                     <i class="fa fa-cog"></i> In-House Cheques
                 </a>
 
+                <a href="@Url.Action("Journals", "AutomatedClearing", new { Area = "FrontOffice" })" class="nav-link">
+                    <i class="fa fa-cog"></i> Automated-Clearing
+                </a>
+
 
 
 
@@ -31,6 +35,30 @@
         </div>
 
     </div>
+</div>
+
+<div class="ibox-title">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            <strong>Success !</strong> @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @*<div class="ibox-tools">
+            <a class="collapse-link">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="close-link">
+                <i class="fa fa-times"></i>
+            </a>
+        </div>*@
 </div>
 <style>
 
@@ -91,7 +119,7 @@
 </style>
 
 
-<div class="row wrapper border-bottom white-bg page-heading">
+@*<div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h2>External Cheques</h2>
         <ol class="breadcrumb">
@@ -103,7 +131,7 @@
             </li>
         </ol>
     </div>
-</div>
+</div>*@
 
 
 
@@ -112,8 +140,15 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>External Cheques</h2>
+                    <hr />
                     @Html.ActionLink("Cheque Banking", "Banking", "Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
                     @Html.ActionLink("Cheque Clearance", "ChequeClearance", "Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+                    <div class="bottom-button">
+
+                        
+
+                    </div>
 
                     @{ ViewBag.Title = "Cheques"; }
 
@@ -159,6 +194,8 @@
         </div>
     </div>
 </div>
+
+
 
 
 
@@ -222,7 +259,6 @@
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
             aData.CreatedDate = dt_Created;
 
-            // Format MaturityDate
             if (aData.MaturityDate) {
                 var maturityDate = new Date(parseInt(aData.MaturityDate.replace("/Date(", "").replace(")/", ""), 10));
                 var dt_Maturity = $.datepicker.formatDate('dd/mm/yy', maturityDate);
@@ -234,7 +270,6 @@
             return nRow;
         },
 
-        // Display settings
         "aoColumns": [
             { "mDataProp": "TellerDescription", "sTitle": "Teller Name", "sWidth": "15%" },
             { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "20%" },
