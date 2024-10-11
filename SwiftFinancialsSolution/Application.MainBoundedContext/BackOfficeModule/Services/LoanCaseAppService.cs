@@ -1589,6 +1589,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                     var destinationLoanProduct = _loanProductAppService.FindLoanProduct(destinationLoanProductId, serviceHeader);
 
                     var loanGuarantorAttachmentHistory = LoanGuarantorAttachmentHistoryFactory.CreateLoanGuarantorAttachmentHistory(sourceCustomerAccount.Id, sourceCustomerAccount.PrincipalBalance, sourceCustomerAccount.InterestBalance);
+
                     loanGuarantorAttachmentHistory.Status = (byte)LoanGuarantorAttachmentHistoryStatus.Attached;
                     loanGuarantorAttachmentHistory.CreatedBy = serviceHeader.ApplicationUserName;
                     loanGuarantorAttachmentHistories.Add(loanGuarantorAttachmentHistory);
