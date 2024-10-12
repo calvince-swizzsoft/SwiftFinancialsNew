@@ -37,6 +37,11 @@ namespace SwiftFinancials.Presentation.Contracts.FrontOfficeModule
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindCashTransferRequestsByStatusAndFilterInPage(string text, DateTime startDate, DateTime endDate, int status, int customerFlter, int pageIndex, int pageSize, AsyncCallback callback, Object state);
+        PageCollectionInfo<CashTransferRequestDTO> EndFindCashTransferRequestsByStatusAndFilterInPage(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindCashTransferRequest(Guid cashTransferRequestId, AsyncCallback callback, Object state);
         CashTransferRequestDTO EndFindCashTransferRequest(IAsyncResult result);
 

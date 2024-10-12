@@ -280,6 +280,24 @@ namespace SwiftFinancials.Web.Controllers
 
 
 
+        [NonAction]
+        protected List<SelectListItem> GetCashTransferStatusSelectList(string selectedValue)
+        {
+            List<SelectListItem> cashTransferStatusSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CashTransferRequestStatus)).Cast<CashTransferRequestStatus>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            cashTransferStatusSelectList.AddRange(items);
+
+            return cashTransferStatusSelectList;
+        }
+
+
 
 
 

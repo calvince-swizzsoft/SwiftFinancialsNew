@@ -64,6 +64,13 @@ namespace DistributedServices.MainBoundedContext
             return await _cashTransferRequestAppService.FindCashTransferRequestsAsync(employeeId, startDate, endDate, status, pageIndex, pageSize, serviceHeader);
         }
 
+        public async Task<PageCollectionInfo<CashTransferRequestDTO>> FindCashTransferRequestsByStatusAndFilterInPageAsync(string text, DateTime startDate, DateTime endDate, int status, int customerFilter, int pageIndex, int pageSize)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return await _cashTransferRequestAppService.FindAllCashTransferRequestsAsync(startDate, endDate, text, status, customerFilter, pageIndex, pageSize, serviceHeader);
+        }
+
         public async Task<List<CashTransferRequestDTO>> FindMatureCashTransferRequestsByEmployeeIdAsync(Guid employeeId)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
