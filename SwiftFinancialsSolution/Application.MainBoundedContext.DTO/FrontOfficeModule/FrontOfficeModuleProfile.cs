@@ -102,7 +102,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
             CreateMap<SuperSaverPayable, SuperSaverPayableDTO>();
 
             //CashTransferRequest => CashTransferRequestDTO
-            CreateMap<CashTransferRequest, CashTransferRequestDTO>();
+            CreateMap<CashTransferRequest, CashTransferRequestDTO>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => (int)src.Status));
 
             //CashTransferRequestDTO => CashTransferRequestBindingModel
             CreateMap<CashTransferRequestDTO, CashTransferRequestBindingModel>();
