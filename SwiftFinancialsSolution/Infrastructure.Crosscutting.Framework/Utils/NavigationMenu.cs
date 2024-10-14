@@ -292,12 +292,20 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
 
                 // Dashboard - area 29,000
-                new NavigationMenu{Description = "Dashboard", IsArea = true, Code = 0x00007148},
+                new NavigationMenu{Description = "Member Information", IsArea = true, Code = 0x00007148},
                 // menu-items (children)
                 new NavigationMenu{AreaCode = 0x00007148, IsArea = false, Description = "Setup", Icon="fa fa-bars", Code = 0x00007148 + 1},
                 new NavigationMenu{AreaCode = 0x00007148, IsArea = false, Description = "Operations", Icon="fa fa-bars", Code = 0x00007148 + 2},
-                
-                
+
+                //Setup
+                new NavigationMenu{AreaCode = 0x00007148 + 1, IsArea = false, Description = "Messaging Groups", Icon="fa fa-comments-o", ControllerName="MessagingGroups", ActionName="Index", AreaName = "Dashboard", Code = 0x00007148 + 3},
+
+                // Operations
+                new NavigationMenu{AreaCode = 0x00007148 + 2, IsArea = false, Description = "Loaning", Icon="fa fa-money", ControllerName="Applications", ActionName="Index", AreaName = "Dashboard", Code = 0x00007148 + 4},
+                new NavigationMenu{AreaCode = 0x00007148 + 2, IsArea = false, Description = "Messaging", Icon="fa fa-comments-o", ControllerName="TextAlerts", ActionName="Index", AreaName = "Dashboard", Code = 0x00007148 + 5},
+                new NavigationMenu{AreaCode = 0x00007148 + 2, IsArea = false, Description = "Utilities", Icon="fa fa-bars", ControllerName="FinancialPosition", ActionName="Create", AreaName = "Dashboard", Code = 0x00007148 + 6},
+
+
                 // Control - area 30,000
                 new NavigationMenu{Description = "Control", IsArea = true, Code = 0x00007530},
                 // menu-items (children)
