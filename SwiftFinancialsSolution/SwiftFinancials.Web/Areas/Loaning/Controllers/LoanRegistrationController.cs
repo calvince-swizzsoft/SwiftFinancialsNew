@@ -23,7 +23,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
     public class LoanRegistrationController : MasterController
     {
-
+     
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
