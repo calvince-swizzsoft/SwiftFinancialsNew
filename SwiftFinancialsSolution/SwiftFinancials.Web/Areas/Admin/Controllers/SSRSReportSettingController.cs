@@ -209,6 +209,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return RedirectToAction("Create");
         }
 
+
+
         private async Task AddCategoryToDatabaseAsync(string reportCategory)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))

@@ -79,7 +79,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Employee")]
-        [ValidGuid]
+        //[ValidGuid]
         public Guid? EmployeeId { get; set; }
 
         [DataMember]
@@ -200,7 +200,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Excess G/L Account")]
-        [ValidGuid]
+        //[ValidGuid]
         public Guid? ExcessChartOfAccountId { get; set; }
 
         [DataMember]
@@ -596,6 +596,18 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Commission Commission Personal File Number")]
         public string CommissionCustomerAccountCustomerReference3 { get; set; }
 
+        public int CommissionCustomerAccountCustomerFilter { get; set; }
+
+        [DataMember]
+        [Display(Name = "Commission Customer Account Product Code")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CustomerFilter), CommissionCustomerAccountCustomerAccountTypeProductCode) ? EnumHelper.GetDescription((CustomerFilter)CommissionCustomerAccountCustomerFilter) : string.Empty;
+            }
+        }
+
         [DataMember]
         [Display(Name = "Application User Name")]
         public string ApplicationUserName { get; set; }
@@ -627,5 +639,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Items Count")]
         public int ItemsCount { get; set; }
+
+        [DataMember]
+        [Display(Name = "Total Cheques")]
+        public decimal TellerTotalCheques { get; set; }
+
+       
     }
 }

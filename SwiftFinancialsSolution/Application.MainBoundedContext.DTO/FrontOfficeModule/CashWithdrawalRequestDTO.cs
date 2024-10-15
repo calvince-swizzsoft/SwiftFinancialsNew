@@ -302,5 +302,29 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public DateTime CreatedDate { get; set; }
 
         public List<CashDepositRequestDTO> CashDepositRequests { get; set; }
+
+        public int CustomerFilter { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CustomerFilter), CustomerFilter) ? EnumHelper.GetDescription((CustomerFilter)CustomerFilter) : string.Empty;
+            }
+        }
+
+        public int CashTransferStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public string CashTransferStatusDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CashTransferRequestStatus), CashTransferStatus) ? EnumHelper.GetDescription((CashTransferRequestStatus)CashTransferStatus) : string.Empty;
+            }
+        }
     }
 }

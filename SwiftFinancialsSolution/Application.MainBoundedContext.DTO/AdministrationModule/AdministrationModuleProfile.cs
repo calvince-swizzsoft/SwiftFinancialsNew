@@ -125,14 +125,18 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         static string ProcessPayoutRecoveryPriority(Branch branch)
         {
             var tuple = EnumValueDescriptionCache.GetValues(typeof(RecoveryPriority));
-
-            if (!string.IsNullOrWhiteSpace(branch.Company.RecoveryPriority))
+            //branch.Company.RecoveryPriority = "debittype";
+            if ((branch.Company)!=null)
             {
-                var buffer = branch.Company.RecoveryPriority.Split(new char[] { ',' });
-
-                if (buffer != null && buffer.Length == tuple.Item2.Length)
+                if (!string.IsNullOrWhiteSpace(branch.Company.RecoveryPriority))
                 {
-                    return string.Join(",", buffer);
+                    var buffer = branch.Company.RecoveryPriority.Split(new char[] { ',' });
+
+                    if (buffer != null && buffer.Length == tuple.Item2.Length)
+                    {
+                        return string.Join(",", buffer);
+                    }
+                    else return string.Join(",", tuple.Item2);
                 }
                 else return string.Join(",", tuple.Item2);
             }

@@ -15,13 +15,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
     public class TellerController : MasterController
     {
 
-        // TellerController.cs
-
-
         public async Task<ActionResult> Index(TellerDTO tellerDTO)
         {
             await ServeNavigationMenus();
-            await _channelService.FindTellersByTypeAsync(tellerDTO.Type, tellerDTO.Reference, true, GetServiceHeader());
+            await _channelService.FindTellersByTypeAsync(tellerDTO.Type, tellerDTO.Reference, true, GetServiceHeader());          
             ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
 
             return View();
@@ -39,12 +36,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await _channelService.FindTellersByTypeAsync(tellerDTO.Type, tellerDTO.Reference, true, GetServiceHeader());
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
+      
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
             ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
-
-            // var teller = tellerDTO.Type;
 
             int teller = tellerDTO.Type;
 
@@ -86,17 +81,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
             Guid parseId;
-            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
+            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList("Employee");
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
                 return View();
             }
-            //var employees = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
-            //bool includeBalances = false;
-            //bool includeProductDescription = false;
-            //bool includeInterestBalanceForLoanAccounts = false;
-            //bool considerMaturityPeriodForInvestmentAccounts = false;
+           
             var employee = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
 
             TellerDTO tellerDTO = new TellerDTO();
@@ -107,35 +100,61 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 tellerDTO.EmployeeId = employee.Id;
                 tellerDTO.EmployeeCustomerIndividualFirstName = employee.CustomerIndividualFirstName;
                 tellerDTO.FloatCustomerAccountId = employee.CustomerId;
-
-
-
             }
             return View(tellerDTO);
         }
 
+
         [HttpPost]
         public async Task<ActionResult> Create(TellerDTO tellerDTO)
         {
+            // Set ChartOfAccountId and ShortageChartOfAccountId based on TellerType
+            UpdateTellerAccounts(tellerDTO);
 
             tellerDTO.ValidateAll();
 
             if (!tellerDTO.HasErrors)
             {
-                await _channelService.AddTellerAsync(tellerDTO, GetServiceHeader());
-                ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
-                TempData["SuccessMessage"] = "Create successful.";
+                var createdTeller = await _channelService.AddTellerAsync(tellerDTO, GetServiceHeader());
 
-                return RedirectToAction("Index");
+                if (createdTeller != null)
+                {
+                    TempData["SuccessMessage"] = "Teller created successfully.";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["Error"] = "Sorry, teller creation failed.";
+                }
             }
             else
             {
-                var errorMessages = tellerDTO.ErrorMessages;
-                ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
-                TempData["Error"] = "Failed successful.";
-                return View("Create");
+                TempData["Error"] = string.Join("<br/>", tellerDTO.ErrorMessages);
+            }
+
+            // If we reach here, there were errors.
+            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            return View("Create");
+        }
+
+        private void UpdateTellerAccounts(TellerDTO tellerDTO)
+        {
+            switch ((TellerType)tellerDTO.Type)
+            {
+                case TellerType.InhousePointOfSale:
+                case TellerType.AutomatedTellerMachine:
+                    tellerDTO.ShortageChartOfAccountId = tellerDTO.ChartOfAccountId;
+                    break;
+
+                case TellerType.AgentPointOfSale:
+                    tellerDTO.ChartOfAccountId = tellerDTO.CommissionCustomerAccountCustomerAccountTypeTargetProductId;
+                    tellerDTO.ShortageChartOfAccountId = tellerDTO.CommissionCustomerAccountCustomerAccountTypeTargetProductId;
+                    break;
             }
         }
+
         public async Task<ActionResult> Find(Guid id ,TellerDTO teller)
         {
             await ServeNavigationMenus();
@@ -234,5 +253,28 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return Json(tellersDTOs, JsonRequestBehavior.AllowGet);
 
         }
+
+  
+
+        public async Task<JsonResult> GetEmployeeDetailsJson(Guid? employeeId)
+        {
+            Guid parseId;
+
+            if (!Guid.TryParse(employeeId.ToString(), out parseId))
+            {
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+
+            var employee = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
+
+            if (employee == null)
+            {
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(employee, JsonRequestBehavior.AllowGet);
+        }
+
+
     }
 }

@@ -21,18 +21,6 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @if (TempData["Success"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Success"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
-                    }
                     @Html.ActionLink("Create Location", "Create", "Location", new { Area = "Admin" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -50,9 +38,17 @@
                     </div>
                     <div class="table-responsive">
                         <table id="locationsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Is Locked</th>
+                                    <th>Created Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="7" class="dataTables_empty">
+                                    <td colspan="4" class="dataTables_empty">
                                         Loading data from server
                                     </td>
                                 </tr>
@@ -60,6 +56,26 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <strong>Success!</strong> <span id="successMessage"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -73,42 +89,55 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#locationsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "Location", new { Area = "Admin"}))",
                 "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                "fnRowCallback": function (nRow, aData) {
+                    // Format CreatedDate
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/admin/Location/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/admin/Location/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    // Create action dropdown
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/admin/Location/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/admin/Location/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
 
                     $('td:eq(2)', nRow).html(dt_Created);
-                    $('td:eq(3)', nRow).html(viewUrl + '&nbsp;' + editUrl);
-
+                    $('td:eq(3)', nRow).html(dropdownHtml);
                     return nRow;
                 },
-                // Display settings
                 "aoColumns": [
-                 { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "IsLocked", "sTitle": "Is Locked", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
+                ],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
+
+            // Show success modal if there's a success message
+            @if (TempData["Success"] != null)
+            {
+                <text>
+                    $('#successMessage').text('@TempData["Success"]');
+                    $('#successModal').modal('show');
+                </text>
+            }
         });
 
         $(document).ajaxStart(function () {
@@ -118,6 +147,4 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
 }
-

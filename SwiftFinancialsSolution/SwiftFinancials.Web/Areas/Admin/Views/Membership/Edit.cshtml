@@ -18,6 +18,9 @@
             </li>
         </ol>
     </div>
+    <div class="col-lg-2">
+
+    </div>
 </div>
 
 <div class="wrapper wrapper-content">
@@ -34,12 +37,47 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-muted text-info">
+                <div class="ibox-content">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["Success"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
                     @using (Html.BeginForm("Edit", "Membership", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                        
+
+                        <h1>Company Linkage</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#companyLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="text-center">
+                                        <div style="margin-top: 20px">
+                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
                         <h1>User details</h1>
                         <fieldset>
                             <div class="row">
@@ -64,11 +102,6 @@
                                         @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "Phone number" } })
                                         @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.LockoutEnabled, htmlAttributes: new { @class = "control-label" })
-                                        @Html.LabelFor(model => model.LockoutEnabled, new { htmlAttributes = new { @class = "form-control required", placeholder = "Phone number" } })
-                                        @Html.ValidationMessageFor(model => model.LockoutEnabled, "", new { @class = "text-danger" })
-                                    </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="text-center">
@@ -79,26 +112,7 @@
                                 </div>
                             </div>
                         </fieldset>
-                        <h1>Company Linkage</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CompanyId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.CompanyId)
-                                        @Html.ValidationMessageFor(model => model.CompanyId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.CompanyDescription, new { htmlAttributes = new { @class = "CompaniesLookup form-control required", placeholder = "Description.." } })
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
+
                         <h1>Role Linkage</h1>
                         <fieldset>
                             <div class="row">
@@ -107,7 +121,7 @@
                                         @Html.LabelFor(model => model.RoleId, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.HiddenFor(model => model.RoleId)
                                         @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.RoleName, new { htmlAttributes = new { @class = "rolesLookup form-control required", placeholder = "Name.." } })
+                                        @Html.EditorFor(model => model.RoleName, new { htmlAttributes = new { @class = "rolesLookup form-control required", placeholder = "Role.." } })
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -126,18 +140,42 @@
     </div>
 </div>
 
+<div class="modal  fade" id="companyLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Companies Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="companiesGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
 }
 
 @section Scripts{
+    @Scripts.Render("~/plugins/dataTables")
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
     <script>
         $(document).ready(function () {
+
             $("#wizard").steps();
             $("#form").steps({
                 bodyTag: "fieldset",
@@ -205,7 +243,55 @@
                 }
             });
 
-             //roles typehead starts here
+             $('#companiesGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Branch", new { Area = "Admin"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/admin/membership/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                // Display settings
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Name" },
+                    { "mDataProp": "AddressAddressLine1", "sTitle": "Address 1"},
+                    { "mDataProp": "AddressMobileLine", "sTitle": "Mobile No." },
+                    { "mDataProp": "AddressEmail", "sTitle": "Email" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date"},
+                    { "mDataProp": "CreatedDate", "sTitle": "", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+        });
+
+            $("#s tbody").on("click", "tr", function () {
+                var data = companiesGrid.row(this).data();
+
+                $('#BranchId').val(data.Id);
+                $('input[name=BranchId]').val(data.Id);
+                $('input[name=CompanyDescription]').val(data.Description);
+                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
+
+                $('#companyLookupModal').modal('hide');
+            });
+
+
+            //roles typehead starts here
             $('.rolesLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
@@ -246,7 +332,7 @@
             $('.CompaniesLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetCompaniesAsync", "Company", new { Area = "Registry" })',
+                        '@Url.Action("GetCompaniesAsync", "Company", new { Area = "Admin" })',
                         { query: query },
                         function (Companies) {
                             var newCompaniesData = [];
@@ -279,5 +365,6 @@
                 }
             });
         });
+
     </script>
 }

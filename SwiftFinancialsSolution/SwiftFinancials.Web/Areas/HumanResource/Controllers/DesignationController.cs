@@ -4,8 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -32,7 +35,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindDesignationsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var pageCollectionInfo = await _channelService.FindDesignationsByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -82,9 +87,16 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
         public async Task<ActionResult> Edit(Guid id)
         {
+
+            ViewBag.TransactionTypeSelectList = GetSystemTransactionTypeList(string.Empty);
+            
             await ServeNavigationMenus();
 
             var designationDTO = await _channelService.FindDesignationAsync(id, GetServiceHeader());
+
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            designationDTO.ActiveUser = user.UserName;
 
             return View(designationDTO);
         }
@@ -93,17 +105,108 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, DesignationDTO designationBindingModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _channelService.UpdateDesignationAsync(designationBindingModel, GetServiceHeader());
+                designationBindingModel.ValidateAll();
+                if (!designationBindingModel.HasErrors)
+                {
+                    // Check if TransactionThresholds are not null and try updating
+                    if (designationBindingModel.TransactionThresholds != null)
+                    {
+                        var updateDesignationResult = await _channelService.UpdateDesignationAsync(designationBindingModel, GetServiceHeader());
 
-                return RedirectToAction("Index");
+                        if (updateDesignationResult)
+                        {
+                            var updateThresholdResult = await _channelService.UpdateTransactionThresholdCollectionByDesignationIdAsync(
+                                designationBindingModel.Id,
+                                designationBindingModel.TransactionThresholds,
+                                GetServiceHeader()
+                            );
+
+                            if (updateThresholdResult)
+                            {
+                                // Show success message when both operations succeed
+                                MessageBox.Show("Designation and transaction thresholds updated successfully.",
+                                                "Success",
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Information,
+                                                MessageBoxDefaultButton.Button1,
+                                                MessageBoxOptions.ServiceNotification);
+                                return RedirectToAction("Index");
+                            }
+                            else
+                            {
+                                // Show error message if updating thresholds fails
+                                MessageBox.Show("Failed to update transaction thresholds.",
+                                                "Error",
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Error,
+                                                MessageBoxDefaultButton.Button1,
+                                                MessageBoxOptions.ServiceNotification);
+                            }
+                        }
+                        else
+                        {
+                            // Show error message if updating designation fails
+                            MessageBox.Show("Failed to update designation.",
+                                            "Error",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Error,
+                                            MessageBoxDefaultButton.Button1,
+                                            MessageBoxOptions.ServiceNotification);
+                        }
+                    }
+                    else
+                    {
+                        // If TransactionThresholds are null, try updating designation without them
+                        var updateDesignationResult = await _channelService.UpdateDesignationAsync(designationBindingModel, GetServiceHeader());
+
+                        if (updateDesignationResult)
+                        {
+                            // Show success message when designation is updated
+                            MessageBox.Show("Designation updated successfully without transaction thresholds.",
+                                            "Success",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Information,
+                                            MessageBoxDefaultButton.Button1,
+                                            MessageBoxOptions.ServiceNotification);
+                            return RedirectToAction("Index");
+                        }
+                        else
+                        {
+                            // Show error message if updating designation fails
+                            MessageBox.Show("Failed to update designation without thresholds.",
+                                            "Error",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Error,
+                                            MessageBoxDefaultButton.Button1,
+                                            MessageBoxOptions.ServiceNotification);
+                        }
+                    }
+                }
+                else
+                {
+                    // If ModelState is invalid, return the view with validation errors
+                    ViewBag.TransactionTypeSelectList = GetSystemTransactionTypeList(string.Empty);
+                    return View(designationBindingModel);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return View(designationBindingModel);
+                // General error handling: show the error message
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}",
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error,
+                                MessageBoxDefaultButton.Button1,
+                                MessageBoxOptions.ServiceNotification);
             }
+
+            // In case of any failures, return the view with the model
+            ViewBag.TransactionTypeSelectList = GetSystemTransactionTypeList(string.Empty);
+            return View(designationBindingModel);
         }
+
 
         [HttpGet]
         public async Task<JsonResult> GetDesignationsAsync()

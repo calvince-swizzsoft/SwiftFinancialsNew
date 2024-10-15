@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -19,7 +22,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
     public class GuarantorAttachmentController : MasterController
     {
-
+        string connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -91,6 +94,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanGuarantorDTO.CustomerReference1 = accounts.CustomerReference1;
                 loanGuarantorDTO.CustomerReference2 = accounts.CustomerReference2;
                 loanGuarantorDTO.CustomerReference3 = accounts.CustomerReference3;
+                loanGuarantorDTO.EmployerDescription = accounts.CustomerStationZoneDivisionEmployerDescription;
 
                 var findLoanCaseId = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(loanGuarantorDTO.CustomerId, GetServiceHeader());
 
@@ -129,9 +133,43 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         CustomerReference1 = loanGuarantorDTO.CustomerReference1,
                         CustomerReference2 = loanGuarantorDTO.CustomerReference2,
                         CustomerReference3 = loanGuarantorDTO.CustomerReference3,
+                        EmployerDescription = loanGuarantorDTO.EmployerDescription,
 
                         Guarantors = guarantors,
                         AmountGuaranteed = sumAmountGuaranteed
+                    }
+                });
+            }
+
+            return Json(new { success = false, message = "Customer account not found" });
+        } 
+        
+        
+        public async Task<ActionResult> AttachToCustomerAccountLookUp(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View("create");
+            }
+
+            var accounts = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
+
+            if (accounts != null)
+            {
+                loanGuarantorDTO.AttachTo = accounts.CustomerFullName;
+                loanGuarantorDTO.AttachToId = accounts.Id; 
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        AttachTo = loanGuarantorDTO.AttachTo,
+                        AttachToId = loanGuarantorDTO.AttachToId,
                     }
                 });
             }
@@ -192,9 +230,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 if (result == DialogResult.Yes)
                 {
-                    await _channelService.AttachLoanGuarantorsAsync(loanGuarantorDTO.CustomerAccountAccountId, loanGuarantorDTO.LoanProductId, loanGuarantors, 1234, GetServiceHeader());
+                    var loanguarantorAttachmentHistory = await _channelService.AttachLoanGuarantorsAsync(loanGuarantorDTO.CustomerAccountAccountId, loanGuarantorDTO.LoanProductId, loanGuarantors, 1234, GetServiceHeader());
+
                     MessageBox.Show("Operation completed successfully.", "Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    //TempData["message"] = "Successfully created Data Period";
+
+                    Session.Clear();
 
                     return RedirectToAction("Index");
                 }
@@ -206,18 +246,73 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
             else
             {
-                //var errorMessages = dataPeriodDTO.ErrorMessages.ToString();
-
-                //TempData["BugdetBalance"] = errorMessages;
-
-                TempData["messageError"] = "Could not create Data Period";
-
-                //ViewBag.MonthSelectList = GetMonthsAsync(dataPeriodDTO.MonthDescription);
+                var errorMessages = loanGuarantorDTO.ErrorMessages.ToString();
 
                 await ServeNavigationMenus();
 
                 return View();
             }
+        }
+
+
+
+        public async Task<ActionResult> ModifyLoaneeGuarantorAmount(Guid? id, decimal AmountGuaranteed)
+        {
+            await ServeNavigationMenus();
+
+            LoanGuarantorDTO loanGuarantorDTO = new LoanGuarantorDTO();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var findLoanGuarantorDetails = await _channelService.FindLoanGuarantorAsync(parseId, GetServiceHeader());
+
+            if (findLoanGuarantorDetails != null)
+            {
+                loanGuarantorDTO = findLoanGuarantorDetails as LoanGuarantorDTO;
+
+                loanGuarantorDTO.AmountGuaranteed = AmountGuaranteed;
+
+                await UpdateLoanGuarantorAmount(loanGuarantorDTO.AmountGuaranteed, loanGuarantorDTO.Id);
+
+                return View(loanGuarantorDTO);
+            }
+
+            return RedirectToAction("Create");
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateLoanGuarantorAmount(decimal AmountGuaranteed, Guid loanGuarantorId)
+        {
+            if (AmountGuaranteed <= 0)
+            {
+                MessageBox.Show("Amount guaranteed cannot be 0 or less than 0.", "Attach Guarantor", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                return RedirectToAction("Create");
+            }
+
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                await conn.OpenAsync();
+                var updateQuery = "UPDATE swiftFin_LoanGuarantors Set AmountGuaranteed = @AmountGuaranteed WHERE Id = @Id";
+
+                using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@AmountGuaranteed", AmountGuaranteed);
+                    cmd.Parameters.AddWithValue("@Id", loanGuarantorId);
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+
+            return Json(new { success = true, message = "Amount guaranteed modified successfully." });
         }
     }
 }

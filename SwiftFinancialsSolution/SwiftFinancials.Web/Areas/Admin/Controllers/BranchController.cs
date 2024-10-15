@@ -37,6 +37,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -69,9 +70,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (!branchDTO.HasErrors)
             {
                 var companyDTO = await _channelService.FindCompanyAsync(branchDTO.CompanyId, GetServiceHeader());
-                  branchDTO.companyDTO=companyDTO;
+                branchDTO.companyDTO = companyDTO;
                 var h = await _channelService.AddBranchAsync(branchDTO, GetServiceHeader());
-                TempData["SuccessMessage"] = "Branch " + h.Description + " created successfully";
+                TempData["SuccessMessage"] = "Branch " + h.Description + " Created successfully";
                 return RedirectToAction("Index");
             }
             else
@@ -92,7 +93,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, BranchDTO branchBindingModel)
         {
             branchBindingModel.ValidateAll();
@@ -100,8 +100,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (!branchBindingModel.HasErrors)
             {
                 await _channelService.UpdateBranchAsync(branchBindingModel, GetServiceHeader());
-
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"] = "Branch " + branchBindingModel.Description + " Edited successfully";
+                await ServeNavigationMenus();
+                return View("Index");
             }
             else
             {

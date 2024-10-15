@@ -68,9 +68,11 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             // Pass the full list and linked items to ViewBag
             ViewBag.SelectedDebitTypes = debitTypeDTOs.Select(d => d.Id).ToList();
-            ViewBag.SelectedInvestmentProducts = linkedProducts.InvestmentProductCollection.Select(i => i.Id).ToList();
-            ViewBag.SelectedSavingsProducts = linkedProducts.SavingsProductCollection.Select(s => s.Id).ToList();
-
+            if (linkedProducts != null)
+            {
+                ViewBag.SelectedInvestmentProducts = linkedProducts.InvestmentProductCollection.Select(i => i.Id).ToList();
+                ViewBag.SelectedSavingsProducts = linkedProducts.SavingsProductCollection.Select(s => s.Id).ToList();
+            }
             // Pass all products to the view
             ViewBag.allInvestments = allInvestmentProducts;
             ViewBag.allSavings = allSavingsProducts;

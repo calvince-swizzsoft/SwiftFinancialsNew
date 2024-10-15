@@ -114,6 +114,21 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
             }
         }
 
+
+        public async Task<PageCollectionInfo<CashTransferRequestDTO>> FindAllCashTransferRequestsAsync(DateTime startDate, DateTime endDate, string text, int status, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var filter = CashTransferRequestSpecifications.CashTransferRequestWithDateRangeStatusAndFullText(startDate, endDate, status, text, customerFilter);
+
+                ISpecification<CashTransferRequest> spec = filter;
+
+                var sortFields = new List<string> { "SequentialId" };
+
+                return await _cashTransferRequestRepository.AllMatchingPagedAsync<CashTransferRequestDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+            }
+        }
+
         public async Task<CashTransferRequestDTO> FindCashTransferRequestAsync(Guid cashTransferRequestId, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
