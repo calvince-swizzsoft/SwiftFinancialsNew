@@ -565,6 +565,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<CashTransferRequestDTO>> FindCashTransferRequestsByFilterInPageAsync(Guid employeeId, DateTime startDate, DateTime endDate, int status, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
+        Task<PageCollectionInfo<CashTransferRequestDTO>> FindCashTransferRequestsByStatusAndFilterInPageAsync(DateTime startDate, DateTime endDate, string text, int status, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+
         #endregion
 
         #region CashDepositRequestDTO

@@ -18,6 +18,7 @@
     <RootNamespace>SwiftFinancials.Web</RootNamespace>
     <AssemblyName>SwiftFinancials.Web</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
@@ -1295,7 +1296,6 @@
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Customer\Delegates.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatechannelManagement\History.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Create.cshtml" />
@@ -1349,7 +1349,6 @@
     <Content Include="Areas\FrontOffice\Views\EndOfDay\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\SundryPayments\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\Transfers\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\Customer\AccountAlerts.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Verify.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Terminate.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Liquidation.cshtml" />
@@ -1957,6 +1956,7 @@
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="File\" />
     <Folder Include="Views\Control\" />
+    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\Lookup\" />
     <Folder Include="Views\Reporting\" />
   </ItemGroup>
@@ -1970,6 +1970,7 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="packages.config" />
+    <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DistributedServices.Seedwork\DistributedServices.Seedwork.csproj">

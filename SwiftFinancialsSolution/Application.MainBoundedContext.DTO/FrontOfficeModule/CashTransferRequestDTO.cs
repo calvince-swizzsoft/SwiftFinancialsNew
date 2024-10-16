@@ -58,10 +58,11 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         {
             get
             {
-                return Enum.IsDefined(typeof(CashTransferRequestStatus), (int)Status) ? EnumHelper.GetDescription((CashTransferRequestStatus)Status) : string.Empty;
+                return Enum.IsDefined(typeof(CashTransferRequestStatus), Status) ? EnumHelper.GetDescription((CashTransferRequestStatus)Status) : string.Empty;
             }
         }
 
+  
         [Display(Name = "Utilized")]
         public bool Utilized { get; set; }
 

@@ -33,6 +33,7 @@ using SwiftFinancials.Presentation.Contracts;
 using DistributedServices.Seedwork.ErrorHandlers;
 using SwiftFinancials.Presentation.Infrastructure.Disposable;
 using DistributedServices.Seedwork.EndpointBehaviors;
+using System.Runtime.Remoting.Channels;
 
 namespace SwiftFinancials.Presentation.Infrastructure.Services
 {
@@ -6948,6 +6949,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginFindCashTransferRequestsByFilterInPage(employeeId, startDate, endDate, status, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
+        public Task<PageCollectionInfo<CashTransferRequestDTO>> FindCashTransferRequestsByStatusAndFilterInPageAsync(DateTime startDate, DateTime endDate, string text, int status, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<CashTransferRequestDTO>>();
+
+            ICashTransferRequestService service = GetService<ICashTransferRequestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<CashTransferRequestDTO> response = ((ICashTransferRequestService)result.AsyncState).EndFindCashTransferRequestsByStatusAndFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCashTransferRequestsByStatusAndFilterInPage(text, startDate, endDate, status, customerFilter, pageIndex, pageSize, asyncCallback, service);
 
             return tcs.Task;
         }

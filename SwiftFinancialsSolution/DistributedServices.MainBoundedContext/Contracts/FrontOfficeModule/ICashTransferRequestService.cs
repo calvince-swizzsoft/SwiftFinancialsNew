@@ -31,6 +31,11 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        Task<PageCollectionInfo<CashTransferRequestDTO>> FindCashTransferRequestsByStatusAndFilterInPageAsync(string text, DateTime startDate, DateTime endDate, int status, int customerFilter, int pageIndex, int pageSize);
+
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         Task<CashTransferRequestDTO> FindCashTransferRequestAsync(Guid cashTransferRequestId);
 
         [OperationContract()]
