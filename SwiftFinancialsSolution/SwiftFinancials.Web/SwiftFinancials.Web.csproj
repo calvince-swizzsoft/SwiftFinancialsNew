@@ -512,6 +512,7 @@
     <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\debitTypeSavingsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\DefaultController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\FixedDepositTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\GLAccountController.cs" />
@@ -1419,13 +1420,19 @@
     <Content Include="Areas\FrontOffice\Views\Cheques\Cheques.cshtml" />
     <Content Include="Areas\FrontOffice\Views\Cheques\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\InHouse\PrintCheque.cshtml" />
-    <Content Include="Areas\FrontOffice\Views\AutomatedClearing\Index.cshtml" />
-    <Content Include="Areas\FrontOffice\Views\AutomatedClearing\Catalogue.cshtml" />
     <Content Include="Areas\FrontOffice\Views\InHouse\bank.pdf" />
     <Content Include="Areas\Admin\Views\SSRSReportSettingLogin\Login.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\relieveguarantor.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\guarantorSubstitution.cshtml" />
     <Content Include="Areas\Loaning\Views\GuarantorAttachment\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AutomatedClearing\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AutomatedClearing\Processing.cshtml" />
+    <Content Include="ElectronicJournalDTO\bank_348a5c82-0e59-43ee-826c-fb8fd7cec8d9.pdf" />
+    <Content Include="ElectronicJournalDTO\bank_54493b6e-3ac4-4e69-ad80-fc44cdda782e.pdf" />
+    <Content Include="ElectronicJournalDTO\bank_7f75a036-a622-482c-874e-efc3bae3f184.pdf" />
+    <Content Include="ElectronicJournalDTO\bank_9bd09654-0371-4920-89a8-f93f19e7d69b.pdf" />
+    <Content Include="ElectronicJournalDTO\bank_ff172d8c-d502-43d2-9af0-5056a7a13be2.pdf" />
+    <Content Include="bin.rar" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1861,6 +1868,7 @@
     <Content Include="calculator.html" />
     <Content Include="loan-calculator.html" />
     <Content Include="ToDoList.html" />
+    <Content Include="UploadedCheques\2.png" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1909,6 +1917,21 @@
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Views\Account\ForceChangePassword.cshtml" />
     <Content Include="Views\Account\Lockout.cshtml" />
+    <Content Include="UploadedCheques\bank.pdf" />
+    <Content Include="UploadedCheques\bank_0a5ced31-e172-4823-8a90-80425ff30750.pdf" />
+    <Content Include="UploadedCheques\bank_1075dae3-db11-4ddb-811f-24294cd7c2a8.pdf" />
+    <Content Include="UploadedCheques\bank_12cd2f72-cab1-47db-8f98-e28fc6c3e20b.pdf" />
+    <Content Include="UploadedCheques\bank_21c2c8ca-c303-4d27-93b2-cfd6743f067b.pdf" />
+    <Content Include="UploadedCheques\bank_31c109de-4425-4c3d-b87c-45c5154276fd.pdf" />
+    <Content Include="UploadedCheques\bank_33f8641c-28f7-441a-a6a9-21207732ce46.pdf" />
+    <Content Include="UploadedCheques\bank_5b03eb18-7740-4ba8-b249-e24a5625eadc.pdf" />
+    <Content Include="UploadedCheques\bank_6c88bec8-bb9b-4ddd-9ee4-f30fdc67d1d0.pdf" />
+    <Content Include="UploadedCheques\bank_7f3006c6-ba02-47ff-bcad-adc245423a9d.pdf" />
+    <Content Include="UploadedCheques\bank_85d668d5-8fbe-4156-ad6a-7e7e0e9c3369.pdf" />
+    <Content Include="UploadedCheques\bank_a7f1f13c-c986-42f4-b98e-b1e76ce97878.pdf" />
+    <Content Include="UploadedCheques\bank_b3d58210-93a3-4327-b4cf-a61f4a81570b.pdf" />
+    <Content Include="UploadedCheques\bank_be37d048-64b2-4d9b-ba0f-5af34d7fa986.pdf" />
+    <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1933,6 +1956,7 @@
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="File\" />
+    <Folder Include="Views\Control\" />
     <Folder Include="Views\Lookup\" />
     <Folder Include="Views\Reporting\" />
   </ItemGroup>

@@ -129,7 +129,6 @@
             <p><sctrong>Bank Account:</sctrong> @cheque.BankAccount</p>
             <p><strong>Debit G/L Account Name</strong> @cheque.DebitChartOfAccountAccountName</p>
 
-            <!-- Add other relevant cheque details here -->
         </div>}
 </div>
 
@@ -214,7 +213,7 @@
         <br />
         <hr />
 
-        <div class="form-group">
+        <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
             <input type="submit" value="Print Cheque" class="btn btn-primary btn-update" />
             <a href="@Url.Action("Index", "InHouseCheque")" class="btn btn-secondary">Cancel</a>
         </div>
@@ -319,32 +318,28 @@
 
     <script>
        $(document).ready(function () {
-    // Initialize the DataTable for Payee Lookup
     $('#PayeeGrid').DataTable({
-        // Server-side processing settings
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "@Url.Action("GetPayeeLookupData", "InHouse", new { Area = "FrontOffice" })", // AJAX source URL
-            "type": "POST", // HTTP method to be used
+            "url": "@Url.Action("GetPayeeLookupData", "InHouse", new { Area = "FrontOffice" })", 
+            "type": "POST", 
             "data": function (d) {
-                // Add any additional parameters you need here
-                d.searchText = $('#searchText').val(); // Add searchText if needed for filtering
+                d.searchText = $('#searchText').val(); 
             }
         },
 
-        // Column definitions
         "columns": [
             { "data": "Payee", "title": "Branch Name", "width": "15%" },
             { "data": "Amount", "title": "Payee", "width": "10%" },
             { "data": "Funding", "title": "Funding", "width": "10%" },
             { "data": "Reference", "title": "Reference", "width": "10%" },
             { "data": "WordifiedAmount", "title": "Debit Chart Of Account Name", "width": "10%" },
+
             { "data": "CreatedDate", "title": "Created Date", "width": "1%" },
             {
                 "data": null, "title": "", "width": "10%", "sortable": false,
                 "render": function (data, type, row) {
-                    // Render the "Select" button for each row
                     return '<a href="#" class="btn btn-outline-info select-payee" ' +
                         'data-id="' + row.Id + '" ' +
                         'data-payee="' + row.Payee + '" ' +
@@ -352,35 +347,33 @@
                         'data-amount="' + row.Amount + '" ' +
                         'data-wordified-amount="' + row.WordifiedAmount + '" ' +
                         'data-padded-amount="' + row.PaddedAmount + '">' +
+
                         'Select</a>';
                 }
             }
         ],
 
-        // Sorting by BranchDescription in descending order
         "order": [[0, "desc"]]
     });
 
-    // Event handler for selecting a payee from the lookup modal
     $('#PayeeGrid').on('click', '.select-payee', function (e) {
         e.preventDefault();
 
-        // Get the data from the selected row (via data attributes)
         var payeeId = $(this).data('id');
         var payee = $(this).data('payee');
         var reference = $(this).data('reference');
         var amount = $(this).data('amount');
         var wordifiedAmount = $(this).data('wordified-amount');
         var paddedAmount = $(this).data('padded-amount');
+        var chequeNumber = $(this).data('ChequeNumber')
 
-        // Populate the main form fields with the selected data
         $('#Payee').val(payee);
         $('#Amount').val(amount);
         $('#Reference').val(reference);
         $('#WordifiedAmount').val(wordifiedAmount);
         $('#PaddedAmount').val(paddedAmount);
+        $('#ChequeNumber').val('chequeNumber');
 
-        // Close the modal
         $('#PayeeLookupModal').modal('hide');
     });
 });
@@ -389,25 +382,19 @@
 
     <script>
     $(document).ready(function () {
-        // Initialize the DataTable
         $('#bankLinkageGrid').DataTable({
-            // Ajax settings
             "sPaginationType": "full_numbers",
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "@(Url.Action("Index", "BankLinkage", new { Area = "Accounts"}))",
             "sServerMethod": "POST",
 
-            // Callback settings
             "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                // Parse and format the created date
                 var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                 var formattedDate = createdDate.toLocaleDateString('en-GB') + " " + createdDate.toLocaleTimeString('en-GB');
 
-                // Create the Select button with data attributes
                 var selectUrl = '<a href="#" class="btn btn-outline-info select-bank" data-bank-id="' + aData.Id + '" data-bank-name="' + aData.BankName + '" data-branch="' + aData.BranchDescription + '" data-gl-account="' + aData.ChartOfAccountAccountName + '" data-bank-account-number="' + aData.BankAccountNumber + '">Select</a>';
 
-                // Update the row data
                 $('td:eq(5)', nRow).html(formattedDate);
                 $('td:eq(6)', nRow).html(selectUrl);
 
@@ -427,18 +414,15 @@
             "aaSorting": [[0, "desc"]]
         });
 
-        // Handle the selection of a bank from the lookup
         $('#bankLinkageGrid').on('click', '.select-bank', function (e) {
             e.preventDefault();
 
-            // Retrieve data from the clicked button's data attributes
             var bankId = $(this).data('bank-id');
             var bankName = $(this).data('bank-name');
             var branch = $(this).data('branch');
             var glAccount = $(this).data('gl-account');
             var bankAccountNumber = $(this).data('bank-account-number');
 
-            // Set values in the form fields
             $('#BankName').val(bankName);
             $('#BranchDescription').val(branch);
             $('#DebitChartOfAccountAccountName').val(glAccount);
@@ -451,7 +435,83 @@
     </script>
 
 
+    <style>
+        .card {
+            margin-bottom: 20px;
+        }
 
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .form-group-lg {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border-radius: .25rem;
+        }
+
+        /* The .nav class is incorrectly nested, so I'll fix that */
+        .nav {
+            display: flex;
+            flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+            padding: 0;
+            margin: 5px;
+            margin-bottom: 0;
+            border: 2px solid black;
+            border-radius: 8px;
+            margin-top: 20px;
+            gap: 10px; /* Space between links */
+            text-align: center; /* Centers the text inside links */
+            padding: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            text-decoration: none;
+            color: #007bff; /* Default text color */
+            transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+            border-radius: 4px; /* Rounded corners */
+            font-size: 14px; /* Adjust font size for better fit */
+            white-space: nowrap; /* Prevents text from wrapping inside the link */
+        }
+
+            .nav-link:hover {
+                color: #fff; /* Text color on hover */
+                background-color: #0056b3; /* Background color on hover */
+            }
+
+            .nav-link i {
+                margin-right: 8px; /* Space between icon and text */
+                font-size: 16px; /* Adjust icon size */
+            }
+
+            .nav-link.disabled {
+                pointer-events: none;
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+        .col-lg-2 {
+            display: flex;
+            align-items: center; /* Center the title vertically */
+            justify-content: center; /* Center the title horizontally if needed */
+            padding: 0; /* Remove default padding if necessary */
+            border-radius: 4px; /* Rounded corners */
+        }
+
+        .bottom-button {
+            border: 2px solid gray; /* Border color set to gray */
+            padding: 10px; /* Padding inside the border */
+            border-radius: 5px; /* Rounded corners (optional) */
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #00e0ff;
+        }
+
+    </style>
 
 
 

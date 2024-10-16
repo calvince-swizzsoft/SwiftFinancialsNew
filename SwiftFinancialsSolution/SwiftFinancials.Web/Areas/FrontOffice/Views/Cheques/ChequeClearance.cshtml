@@ -45,7 +45,7 @@
                     </div>
                 </div>
 
-                
+
                 <div class="ibox-content">
                     <div class="sk-spinner sk-spinner-double-bounce">
                         <div class="sk-double-bounce1"></div>
@@ -83,27 +83,25 @@
                         </table>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="bottom-button row mt-3">
                         <div class="col-lg-4">
                             <select id="payUnpayOption" class="form-control">
                                 <option value="clear">Clear (Pay)</option>
                                 <option value="unpay">UnPay</option>
                             </select>
                         </div>
-
                         <div class="col-lg-4">
 
                         </div>
 
+                            <div class="col-lg-4" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                <button id="updateButton" class="btn btn-primary">Update</button>
+                                @*<button id="refreshButton" class="btn btn-info">Refresh</button>*@
 
-                        <div class="col-lg-4">
-                            <button id="updateButton" class="btn btn-primary">Update</button>
-                            <button id="refreshButton" class="btn btn-info">Refresh</button>
+                            </div>
 
                         </div>
-
                     </div>
-                </div>
             </div>
         </div>
     </div>
@@ -186,9 +184,9 @@
             var clearingOption;
 
             if (action === 'clear') {
-                clearingOption = 1; 
+                clearingOption = 1;
             } else if (action === 'unpay') {
-                clearingOption = 2; 
+                clearingOption = 2;
             }
 
             $('.select-row:checked').each(function () {
@@ -196,7 +194,12 @@
             });
 
             if (selectedCheques.length === 0) {
-                alert("Please select at least one cheque.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Cheques Selected',
+                    text: 'Please select at least one cheque to proceed.',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
 
@@ -211,21 +214,56 @@
                 contentType: 'application/json; charset=utf-8',
                 success: function (response) {
                     if (response.success) {
-                        alert("Cheques updated successfully.");
-                        chequeTable.ajax.reload(); 
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Cheques updated successfully.',
+                            showConfirmButton: true,
+                            timer: 3000
+                        }).then(function () {
+                            chequeTable.ajax.reload(); 
+                        });
                     } else {
-                        alert("Failed to update cheques: " + response.message);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to update cheques: ' + response.message,
+                            confirmButtonText: 'OK'
+                        });
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert("An error occurred while updating cheques: " + error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while updating cheques: ' + error,
+                        confirmButtonText: 'OK'
+                    });
                 }
             });
         });
     });
     </script>
 
-     <script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var allSelected = false;
+
+            $('#toggle-select-all').click(function () {
+                allSelected = !allSelected;
+
+                if (allSelected) {
+                    $('.select-row').prop('checked', true);
+                    $(this).text('Deselect All');
+                } else {
+                    $('.select-row').prop('checked', false);
+                    $(this).text('Select All');
+                }
+            });
+        });
+    </script>
+
+    <script>
         $(document).ready(function () {
             $('#refreshButton').on('click', function () {
                 location.reload();
@@ -235,6 +273,77 @@
     </script>
 
 
+
+    <!-- Include SweetAlert2 CSS & JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+
+    .nav {
+        display: flex;
+        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+        padding: 0;
+        margin: 5px;
+        margin-bottom:0;
+        border: 2px solid Black;
+        border-radius:8px;
+        margin-top:20px;
+        gap: 10px; /* Space between links */
+        text-align: center; /* Centers the text inside links */
+
+        padding:10px;
+    }
+
+    .nav-link {
+        display: flex;
+
+
+        text-decoration: none;
+        color: #007bff; /* Default text color */
+        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+
+        border-radius: 4px; /* Rounded corners */
+        font-size: 14px; /* Adjust font size for better fit */
+        white-space: nowrap; /* Prevents text from wrapping inside the link */
+
+       @* border: 1px solid #007bff;*@ /* Border color and style */
+    }
+
+        .nav-link:hover {
+            color: #fff; /* Text color on hover */
+            background-color: #0056b3; /* Background color on hover */
+        }
+
+        .nav-link i {
+            margin-right: 8px; /* Space between icon and text */
+            font-size: 16px; /* Adjust icon size */
+        }
+
+        .nav-link.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .col-lg-2 {
+        display: flex;
+        align-items: center; /* Center the title vertically */
+        justify-content: center; /* Center the title horizontally if needed */
+        padding: 0; /* Remove default padding if necessary */
+        border-radius: 4px; /* Rounded corners */
+        @*border: 1px solid black;*@ /* Border color and style */
+    }
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+    </style>
 
 
 }
