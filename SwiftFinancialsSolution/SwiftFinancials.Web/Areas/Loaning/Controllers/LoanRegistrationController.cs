@@ -1292,7 +1292,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
                 string message = string.Format(
-                                    "{0}.\nDo you want to proceed loan application for ?",
+                                    "Do you want to proceed loan application for ?\n{0}",
                                     loanCaseDTO.CustomerIndividualFirstName
                                 );
 

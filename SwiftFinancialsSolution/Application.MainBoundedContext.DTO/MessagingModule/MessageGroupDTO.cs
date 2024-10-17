@@ -1,7 +1,9 @@
 ﻿
+using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -49,5 +51,27 @@ namespace Application.MainBoundedContext.DTO.MessagingModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+
+        // Additional DTO
+        public ObservableCollection<CustomerDTO> customer { get; set; }
+
+
+        [DataMember]
+        [Display(Name ="Customer")]
+        public string Customer { get; set; }
+        
+        [DataMember]
+        [Display(Name ="Customer")]
+        public Guid CustomerID { get; set; } 
+        
+        [DataMember]
+        [Display(Name ="Mobile Line")]
+        public string CustomerMobileNumber { get; set; }
+        
+        [DataMember]
+        [Display(Name ="E-mail Address")]
+        public string CustomerEmailAddress { get; set; }
     }
 }
