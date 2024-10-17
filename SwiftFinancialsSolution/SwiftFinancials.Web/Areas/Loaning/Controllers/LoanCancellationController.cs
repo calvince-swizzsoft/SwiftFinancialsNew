@@ -175,9 +175,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 string message = string.Format(
                                   "Do you want to proceed with loan cancellation for: \n{0}?",
-                                  findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualLastName.ToUpper() +
-                                  "\nAmount Applied: Kshs. " + loanCaseDTO.AmountApplied + "\nAmount Appraised: Kshs." + loanCaseDTO.AppraisedAmount + "\nVerification Remarks: " + loanCaseDTO.AuditRemarks.ToUpper() +
-                                  "\nLoan Product: " + loanCaseDTO.LoanProductDescription.ToUpper() + "\nLoan Purpose: " + loanCaseDTO.LoanPurposeDescription.ToUpper()
+                                  findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " +
+                                  findLoanCaseDetails.CustomerIndividualLastName.ToUpper()
                               );
 
                 // Show the message box with Yes/No options
@@ -211,6 +210,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
             else
             {
+                await ServeNavigationMenus();
+
                 var errorMessages = loanCaseDTO.ErrorMessages;
                 ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());

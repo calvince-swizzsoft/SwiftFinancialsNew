@@ -326,9 +326,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 string message = string.Format(
                                    "Do you want to proceed with loan appraisal for: \n{0}?",
-                                       findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualLastName.ToUpper() +
-                                  "\nAmount Applied: Kshs. " + loanCaseDTO.AmountApplied + "\nAmount Appraised: Kshs." + loanCaseDTO.AppraisedAmount + "\nVerification Remarks: " + loanCaseDTO.AuditRemarks.ToUpper() +
-                                  "\nLoan Product: " + loanCaseDTO.LoanProductDescription.ToUpper() + "\nLoan Purpose: " + loanCaseDTO.LoanPurposeDescription.ToUpper()
+                                       findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " +
+                                       findLoanCaseDetails.CustomerIndividualLastName.ToUpper()
                                );
 
                 // Show the message box with Yes/No options
