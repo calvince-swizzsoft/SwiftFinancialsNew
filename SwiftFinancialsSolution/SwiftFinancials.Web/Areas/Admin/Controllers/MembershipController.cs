@@ -53,6 +53,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
+
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
@@ -166,7 +168,23 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             await ServeNavigationMenus();
 
             string CompanyDescription = string.Empty;
+            Guid parseId;
 
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+
+            UserBindingModel userBindingModel4 = new UserBindingModel();
+
+            if (branch != null)
+            {
+                userBindingModel4.BranchId = branch.Id;
+                userBindingModel4.BranchDescription = branch.Description;
+
+            }
             string roleName = string.Empty;
 
             var user = await _applicationUserManager.FindByIdAsync(id.ToString());

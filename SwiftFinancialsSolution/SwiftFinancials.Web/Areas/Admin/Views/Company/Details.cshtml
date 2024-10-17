@@ -118,7 +118,7 @@
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div id="address" class="tab-pane active">
+                            <div id="address" class="tab-pane">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -390,6 +390,11 @@
     </script>
     <script>
     $(document).ready(function () {
+        // Make checkboxes readonly by preventing them from being clicked
+        $('.debit-checkbox, .investment-checkbox, .savings-checkbox').on('click', function (e) {
+            e.preventDefault();
+        });
+
         $('#submitButton').on('click', function () {
             var debitTypes = [];
             var investmentProducts = [];

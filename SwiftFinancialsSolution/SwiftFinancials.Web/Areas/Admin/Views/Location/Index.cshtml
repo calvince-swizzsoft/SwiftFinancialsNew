@@ -21,6 +21,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+
                     @Html.ActionLink("Create Location", "Create", "Location", new { Area = "Admin" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -90,6 +91,17 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+
+             @if (TempData["Success"] != null)
+            {
+                <text>
+                    $(document).ready(function () {
+                        $('#successMessage').text('@TempData["Success"]');
+                        $('#successModal').modal('show');
+                    });
+                </text>
+            }
+
             $('#locationsGrid').DataTable({
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,

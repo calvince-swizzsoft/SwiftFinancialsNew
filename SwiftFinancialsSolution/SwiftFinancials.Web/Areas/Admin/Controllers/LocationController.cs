@@ -97,6 +97,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (!locationBindingModel.HasErrors)
             {
                 await _channelService.UpdateLocationAsync(locationBindingModel, GetServiceHeader());
+                TempData["Success"] = "Location Edited Successfully";
 
                 return RedirectToAction("Index");
             }
