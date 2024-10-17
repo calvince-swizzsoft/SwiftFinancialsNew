@@ -106,6 +106,53 @@
         display: flex;
         width: 100%;
     }
+
+
+
+
+    .navbar {
+        background-color: rgba(255, 255, 255, 0.9); /* White with transparency */
+        padding: 15px 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+        .nav-menu li {
+            position: relative;
+            margin: 0 15px;
+        }
+
+    .nav-link {
+        text-decoration: none;
+        color: #333; /* Dark gray for text */
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        background-color: transparent; /* Clear background for default state */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        .nav-link:hover {
+            background-color: rgba(0, 123, 255, 0.2); /* Light blue on hover */
+            color: #007bff; /* Blue for active link */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
 </style>
 
 
@@ -132,42 +179,14 @@
 
 
 <br />
-<nav class="navbar navbar-expand-lg bg-white nav-3d shadow">
-    <a class="navbar-brand" href="#">
-        <i class="fa fa-money" aria-hidden="true"></i>
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a href="@Url.Action("Create", "LoanRestructuring")" class="nav-link">
-                    <i class="fa fa-pencil"></i> Loan Restructuring
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="@Url.Action("Create", "GuarantorAttachment")" class="nav-link">
-                    <i class="fa fa-check-circle"></i> Guarantor Attachment
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="@Url.Action("Create", "GuarantorSubstitution")" class="nav-link">
-                    <i class="fa fa-thumbs-up"></i> Guarantor Substitution
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="@Url.Action("Create", "GuarantorRelieving")" class="nav-link">
-                    <i class="fa fa-search"></i> Guarantor Relieving
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="@Url.Action("Create", "GuarantorManagement")" class="nav-link">
-                    <i class="fa fa-times-circle"></i> Guarantor Management
-                </a>
-            </li>
-        </ul>
-    </div>
+<nav class="navbar">
+    <ul class="nav-menu">
+        <li>@Html.ActionLink("Loan Restructuring", "Create", "LoanRestructuring", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Attachment", "Create", "GuarantorAttachment", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Substitution", "Create", "GuarantorSubstitution", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Relieving", "Create", "GuarantorRelieving", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Management", "Create", "GuarantorManagement", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+    </ul>
 </nav>
 
 
@@ -918,7 +937,7 @@
         // Function to make an AJAX call and update the table
 function fetchCustomerData(customerId) {
     $.ajax({
-        url: '@Url.Action("CustomerLookUp", "GuarantorSubstitution")', 
+        url: '@Url.Action("CustomerLookUp", "GuarantorSubstitution")',
         type: 'GET',
         data: { id: customerId },
         success: function (response) {
