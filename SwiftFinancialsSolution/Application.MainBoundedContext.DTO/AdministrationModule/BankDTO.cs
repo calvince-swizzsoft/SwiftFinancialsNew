@@ -2,11 +2,9 @@
 using Application.Seedwork;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.MainBoundedContext.DTO.AdministrationModule
 {
@@ -15,6 +13,7 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         public BankDTO()
         {
             AddAllAttributeValidators();
+            BankBranches = new ObservableCollection<BankBranchDTO>();
         }
 
         [DataMember]
@@ -26,12 +25,12 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         public int Code { get; set; }
 
         [DataMember]
-        [Display(Name = "Code")]
+        [Display(Name = "Padded Code")]
         public string PaddedCode
         {
             get
             {
-                return string.Format("{0}", Code).PadLeft(2, '0');
+                return Code.ToString().PadLeft(2, '0');
             }
         }
 
@@ -44,27 +43,27 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
-        HashSet<BankBranchDTO> _bankBranches;
+        // Using ObservableCollection for BankBranches
+        private ObservableCollection<BankBranchDTO> _bankBranches;
+
         [DataMember]
         [Display(Name = "Bank Branches")]
-        public virtual ICollection<BankBranchDTO> BankBranches
+        public ObservableCollection<BankBranchDTO> BankBranches
         {
             get
             {
                 if (_bankBranches == null)
                 {
-                    _bankBranches = new HashSet<BankBranchDTO>();
+                    _bankBranches = new ObservableCollection<BankBranchDTO>();
                 }
                 return _bankBranches;
             }
-            private set
+            set
             {
-                _bankBranches = new HashSet<BankBranchDTO>(value);
+                _bankBranches = value;
             }
         }
 
-
-        [DataMember]
-        public BankBranchDTO BankBranch { get; set; }
+        // Other properties and methods...
     }
 }

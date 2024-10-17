@@ -118,7 +118,7 @@
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div id="address" class="tab-pane active">
+                            <div id="address" class="tab-pane">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -183,7 +183,7 @@
                                 </div>
                             </div>
                             <div class="tab-content">
-                                <div id="mandatoryDebitTypes" class="tab-pane active">
+                                <div id="mandatoryDebitTypes" class="tab-pane">
                                     <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
                                         <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
                                             <thead style="background-color: #4682b4; color: #fff;">
@@ -212,7 +212,7 @@
                                     </div>
                                 </div>
 
-                                <div id="mandatoryInvestmentProducts" class="tab-pane active">
+                                <div id="mandatoryInvestmentProducts" class="tab-pane">
                                     <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
                                         <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
                                             <thead style="background-color: #4682b4; color: #fff;">
@@ -242,7 +242,7 @@
                                     </div>
                                 </div>
 
-                                <div id="mandatorySavingsProducts" class="tab-pane active">
+                                <div id="mandatorySavingsProducts" class="tab-pane">
                                     <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
                                         <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
                                             <thead style="background-color: #4682b4; color: #fff;">
@@ -390,6 +390,11 @@
     </script>
     <script>
     $(document).ready(function () {
+        // Make checkboxes readonly by preventing them from being clicked
+        $('.debit-checkbox, .investment-checkbox, .savings-checkbox').on('click', function (e) {
+            e.preventDefault();
+        });
+
         $('#submitButton').on('click', function () {
             var debitTypes = [];
             var investmentProducts = [];
