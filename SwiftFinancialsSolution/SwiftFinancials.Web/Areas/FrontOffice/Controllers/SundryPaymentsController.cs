@@ -197,6 +197,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
             ViewBag.TransactionTypeSelectList = GetGeneralTransactionTypeSelectList(string.Empty);
 
+            ViewBag.AccountClosureRequestStatus = GetAccountClosureSelectList(string.Empty);
+
+            ViewBag.AccountClosureRequestCustomerAccountCustomerFilter = GetCustomerFilterSelectList(string.Empty);
+
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -205,7 +209,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
 
-            ViewBag.TrasnactionTypeSelectList = GetGeneralTransactionTypeSelectList(string.Empty);
+            ViewBag.TransactionTypeSelectList = GetGeneralTransactionTypeSelectList(string.Empty);
+
+            ViewBag.AccountClosureRequestStatus = GetAccountClosureSelectList(string.Empty);
+
+            ViewBag.AccountClosureCustomerAcountCustomerFilter = GetCustomerFilterSelectList(string.Empty);
 
             return View();
         }
@@ -322,6 +330,50 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 return View(expensePayableDTO);
             }
+        }
+
+        [HttpPost] 
+        public async Task<JsonResult> FetchAccountClosureRequestsTable(JQueryDataTablesModel jQueryDataTablesModel, int status)
+
+        {
+            int customerFilter = 1;
+
+            bool includeProductDescription = true; 
+            //var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+
+            //var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
+            //var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            DateTime startDate = DateTime.Now;
+
+            DateTime endDate = DateTime.Now;
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByStatusAndFilterInPageAsync(startDate, endDate, status, jQueryDataTablesModel.sSearch, customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, includeProductDescription, GetServiceHeader());
+
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+                    totalRecordCount = pageCollectionInfo.ItemsCount;
+
+
+                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                }
+                else return this.DataTablesJson(items: new List<AccountClosureRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
     }
 }

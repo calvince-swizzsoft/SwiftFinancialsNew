@@ -391,6 +391,22 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public decimal InvestmentBalance { get; set; }
         public decimal LoanBalance { get; set; }
 
+        public decimal CustomerAccountBookBalance {get; set;}
+
+        public int CustomerAccountCustomerFilter { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public string CustomerAccountCustomerFilterDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CustomerFilter), CustomerAccountCustomerFilter) ? EnumHelper.GetDescription((CustomerFilter)CustomerAccountCustomerFilter) : string.Empty;
+            }
+        }
+
+
+
 
     }
 }
