@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
@@ -37,11 +38,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Registered, jQueryDataTablesModel.sSearch, (int)LoanCaseFilter.CustomerFirstName, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Registered, jQueryDataTablesModel.sSearch, (int)LoanCaseFilter.CustomerFirstName, (jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength), jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(LoanCase => LoanCase.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -70,6 +73,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
+            //var AttachedLoans = await FindAttachedLoans(parseId);
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
 
@@ -90,12 +94,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanRegistrationTermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
                 loanCaseDTO.BranchDescription = loaneeCustomer.BranchDescription;
                 loanCaseDTO.Reference = loaneeCustomer.Reference;
+                loanCaseDTO.LoanProductSectionDescription = loaneeCustomer.LoanRegistrationLoanProductSectionDescription;
+                loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loaneeCustomer.LoanRegistrationInvestmentsMultiplier;
 
-                Session["selectedLoanCase"] = loanCaseDTO;
+                Session["selectedLoanCase"] = loaneeCustomer;
 
                 //// Standing Orders
                 ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
-                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true, true, GetServiceHeader());
+                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
 
                 foreach (var accounts in customerAccounts)
                 {
@@ -122,7 +128,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 //// Income History
                 //// Payouts
-                var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchStatus.Posted, parseId, GetServiceHeader());
+                var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchStatus.Posted, loaneeCustomer.CustomerId, GetServiceHeader());
                 if (payouts != null)
                 {
                     ViewBag.Payouts = payouts;
@@ -135,7 +141,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
                 //// Loan Applications
-                var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(parseId, GetServiceHeader());
+                var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(loaneeCustomer.CustomerId, GetServiceHeader());
                 if (loanApplications != null)
                 {
                     ViewBag.LoanApplications = loanApplications;
@@ -143,7 +149,30 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 //// Collaterals...
                 // No method fetching by customerId
+
+
+
+                // Guarantors
+                var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(parseId, GetServiceHeader());
+                if (loanGuarantors != null)
+                {
+                    ViewBag.LoanGuarantors = loanGuarantors;
+                }
+
+
+
+
+                // Repayment Schedule .....................................
+                ViewBag.APR = loaneeCustomer.LoanInterestAnnualPercentageRate;
+                ViewBag.InterestCalculationMode = loaneeCustomer.LoanInterestCalculationModeDescription;
+                ViewBag.AmountApplied = loaneeCustomer.AmountApplied;
+                ViewBag.TermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
             }
+
+
+
+
+
 
             loanCaseDTO.LoanRegistrationOutstandingLoansBalance = await GetOutstandingLoansBalanceAsync();
             loanCaseDTO.LoanRegistrationTotalIncome = await CalculateTotalIncomeAdditionsAsync();
@@ -152,46 +181,214 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             loanCaseDTO.LoanRegistrationAbilityToPayOverLoanTerm = await CalculateAbilityOverLoanPeriodAsync();
             loanCaseDTO.TakeHomeFixedAmount = await CalculateTwoThirdsToRepayLoanAsync();
 
+            Session["Model"] = loaneeCustomer;
+
             return View(loanCaseDTO);
         }
 
 
-        [HttpPost]
-        public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO)
+
+
+
+        //public async Task<ActionResult> FindAttachedLoans(Guid Id)
+        //{
+        //    var attachedLoans = await _channelService.FindAttachedLoansByLoanCaseIdAsync(Id, GetServiceHeader());
+
+        //    return Json(new
+        //    {
+        //        success = true,
+        //        data = new
+        //        {
+        //            AttachedLoans = attachedLoans
+        //        }
+        //    });
+        //}
+
+
+
+        public async Task<ActionResult> IncomeAdjustmentsLookUp(Guid? id, IncomeAdjustmentDTO model)
         {
-            var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
+            await ServeNavigationMenus();
 
-            loanDTO.AppraisedAmount = loanCaseDTO.AppraisedAmount;
-            loanDTO.SystemAppraisalRemarks = loanCaseDTO.SystemAppraisalRemarks;
-            loanDTO.AppraisalRemarks = loanCaseDTO.AppraisalRemarks;
-            loanDTO.AppraisedAmountRemarks = loanCaseDTO.AppraisedAmountRemarks;
+            Guid parseId;
 
-            loanDTO.ValidateAll();
-
-            if (loanDTO.AppraisedAmount == 0 || loanDTO.SystemAppraisalRemarks == string.Empty || loanDTO.AppraisalRemarks == string.Empty)
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-                TempData["AppraisedAmount"] = "Appraised amount, System Appraisal Remarks and Appraisal Remarks required to appraise loan.";
-                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
-                return View();
+                return View("create");
             }
 
-            if (!loanDTO.HasErrors)
+            var incomeAdjustment = await _channelService.FindIncomeAdjustmentAsync(parseId, GetServiceHeader());
+            if (incomeAdjustment != null)
             {
-                var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanDTO, loanCaseDTO.LoanAppraisalOption, 1, GetServiceHeader());
+                model.Id = incomeAdjustment.Id;
+                model.Description = incomeAdjustment.Description;
+                model.Type = incomeAdjustment.Type;
+                model.typeTypeDescription = incomeAdjustment.TypeDescription;
 
-                TempData["approve"] = "Loan Appraisal Successful";
 
-                return RedirectToAction("Index");
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        IncomeAdjustment = model.Description,
+                        Id = model.Id,
+                        Type = model.Type,
+                        TypeDescription = model.typeTypeDescription
+                    }
+                });
+            }
+
+            return Json(new { success = false, message = "Income Adjustment not found" });
+        }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(Guid? id, LoanCaseDTO mainModel)
+        {
+            await ServeNavigationMenus();
+
+            IncomeAdjustmentsDTOs = TempData["IncomeAdjustmentsDTOs"] as ObservableCollection<IncomeAdjustmentDTO>;
+
+            if (IncomeAdjustmentsDTOs == null)
+                IncomeAdjustmentsDTOs = new ObservableCollection<IncomeAdjustmentDTO>();
+
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                await ServeNavigationMenus();
+
+                return Json(new
+                {
+                    success = false,
+                    message = $"Could not find attached Income Adjustment."
+                });
+            }
+
+
+            foreach (var incomeAdjustmentDTO in mainModel.incomeAdjustmentDTO)
+            {
+                incomeAdjustmentDTO.Id = parseId;
+                incomeAdjustmentDTO.Description = incomeAdjustmentDTO.Description;
+                incomeAdjustmentDTO.typeTypeDescription = incomeAdjustmentDTO.typeTypeDescription;
+                incomeAdjustmentDTO.Amount = incomeAdjustmentDTO.Amount;
+                incomeAdjustmentDTO.Type = incomeAdjustmentDTO.Type;
+
+                IncomeAdjustmentsDTOs.Add(incomeAdjustmentDTO);
+
+                Session["IncomeAdjustment"] = mainModel.incomeAdjustmentDTO;
+            };
+
+            return Json(new { success = true, entries = IncomeAdjustmentsDTOs });
+        }
+
+
+
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO, ObservableCollection<LoanAppraisalFactorDTO> incomeAdjustments)
+        {
+            //var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
+
+            //loanDTO.AppraisedAmount = loanCaseDTO.AppraisedAmount;
+            //loanDTO.SystemAppraisalRemarks = loanCaseDTO.SystemAppraisalRemarks;
+            //loanDTO.AppraisalRemarks = loanCaseDTO.AppraisalRemarks;
+            //loanDTO.AppraisedAmountRemarks = loanCaseDTO.AppraisedAmountRemarks;
+
+            //loanCaseDTO = Session["Model"] as LoanCaseDTO;
+
+            //loanCaseDTO.AppraisalRemarks = loanCaseDTO.AppraisalRemarks;
+
+            var findLoanCaseDetails = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
+
+            loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
+            loanCaseDTO.LoanPurposeId = findLoanCaseDetails.LoanPurposeId;
+            loanCaseDTO.SavingsProductId = findLoanCaseDetails.SavingsProductId;
+            loanCaseDTO.AppraisedDate = DateTime.Now;
+
+            loanCaseDTO.ValidateAll();
+
+
+            if (!loanCaseDTO.HasErrors)
+            {
+
+                string message = string.Format(
+                                   "Do you want to proceed with loan appraisal for: \n{0}?",
+                                   findLoanCaseDetails.CustomerIndividualSalutationDescription + " " + findLoanCaseDetails.CustomerIndividualFirstName + " " + findLoanCaseDetails.CustomerIndividualLastName
+                               );
+
+                // Show the message box with Yes/No options
+                DialogResult result = MessageBox.Show(
+                    message,
+                    "Loan Appraisal",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                if (result == DialogResult.Yes)
+                {
+                    var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
+
+                    await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
+
+                    MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Appraisal", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                    //TempData["approve"] = "Loan Appraisal Successful";
+
+                    string message2 = string.Format(
+                                  "Would you like to print?"
+                              );
+
+                    // Show the message box with Yes/No options
+                    DialogResult result2 = MessageBox.Show(
+                        message2,
+                        "Loan Appraisal",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+
+                    if (result2 == DialogResult.Yes)
+                    {
+
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index");
+                    }
+
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    await ServeNavigationMenus();
+
+                    ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
+
+                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Appraisal", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    return View(loanCaseDTO);
+                }
             }
             else
             {
-                var errorMessages = loanDTO.ErrorMessages.ToString();
+                await ServeNavigationMenus();
+
+                var errorMessages = loanCaseDTO.ErrorMessages.ToString();
 
                 TempData["BugdetBalance"] = errorMessages;
 
                 ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
 
-                TempData["approveError"] = "Loan Appraisal Unsuccessful";
+                //TempData["approveError"] = "Loan Appraisal Unsuccessful";
+                MessageBox.Show(Form.ActiveForm, "Operation Unsuccessful.", "Loan Appraisal", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
                 return View(loanCaseDTO);
             }

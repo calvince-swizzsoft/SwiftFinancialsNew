@@ -71,6 +71,8 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<StandingOrderDTO> standingOrdersDTOs;
 
+        public ObservableCollection<IncomeAdjustmentDTO> IncomeAdjustmentsDTOs;
+
 
         public ObservableCollection<Guid> customerAccountsIds;
 
@@ -1958,6 +1960,22 @@ namespace SwiftFinancials.Web.Controllers
             loancaseStatus.AddRange(items);
 
             return loancaseStatus;
+        } 
+        
+        protected List<SelectListItem> GetMessagingGroupTargetSelectList(string selectedValue)
+        {
+            List<SelectListItem> messageGroupTarget = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(MessageGroupTarget)).Cast<MessageGroupTarget>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            messageGroupTarget.AddRange(items);
+
+            return messageGroupTarget;
         }
     }
 }

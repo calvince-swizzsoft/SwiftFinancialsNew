@@ -1,4 +1,5 @@
-﻿using Infrastructure.Crosscutting.Framework.Utils;
+﻿using Application.MainBoundedContext.DTO.MessagingModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -461,6 +462,8 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         public string GuarantorDesc { get; set; }
 
 
-       
+       // Additional
+
+        public MessageGroupDTO messageGroup { get; set; }
     }
 }
