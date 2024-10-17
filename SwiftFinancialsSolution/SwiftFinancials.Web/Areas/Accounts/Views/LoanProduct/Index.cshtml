@@ -63,51 +63,62 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
+    $(document).ready(function () {
+        $('#LoanProductsGrid').DataTable({
+            // Ajax settings
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts"}))",
+            "sServerMethod": "POST",
+            // Callback settings
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                var h = ("0" + createdDate.getHours()).slice(-2);
+                var m = ("0" + createdDate.getMinutes()).slice(-2);
+                var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-        $(document).ready(function () {
-            $('#LoanProductsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                aData.CreatedDate = dt_Created;
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+                // Create dropdown HTML for actions
+                var dropdownHtml = `
+                    <div class="dropdown">
+                        <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton${aData.Id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Action
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton${aData.Id}">
+                            <a class="dropdown-item" href="/accounts/LoanProduct/details/${aData.Id}">View</a>
+                            <a class="dropdown-item" href="/accounts/LoanProduct/edit/${aData.Id}">Edit</a>
+                        </div>
+                    </div>`;
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+                // Insert the formatted dates and dropdown into the row
+                $('td:eq(3)', nRow).html(dt_Created);
+                $('td:eq(4)', nRow).html(dropdownHtml);
 
-                    var editUrl = '<a  href="/accounts/LoanProduct/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/LoanProduct/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Loan Product Name", "sWidth": "15%" },
-                    { "mDataProp": "LoanRegistrationLoanProductSectionDescription", "sTitle": "Loan Product Section", "sWidth": "15%" },
-                    { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term in Months", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
+                return nRow;
+            },
+            // Display settings
+            "aoColumns": [
+                { "mDataProp": "Description", "sTitle": "Loan Product Name", "sWidth": "15%" },
+                { "mDataProp": "LoanRegistrationLoanProductSectionDescription", "sTitle": "Loan Product Section", "sWidth": "15%" },
+                { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term in Months", "sWidth": "15%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
+            ],
+            "aaSorting": [[0, "desc"]]
         });
-        });
+    });
 
-        $(document).ajaxStart(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
-        $(document).ajaxStop(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
+    $(document).ajaxStart(function () {
+        $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+    });
+
+    $(document).ajaxStop(function () {
+        $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+    });
     </script>
+
 
 }

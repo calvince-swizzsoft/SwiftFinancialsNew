@@ -11,6 +11,7 @@ using System.Web.Mvc;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using System.Collections.ObjectModel;
+using System.Web;
 
 namespace SwiftFinancials.Web.Areas.Admin.Controllers
 {
@@ -99,7 +100,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CompanyBindingModel companyBindingModel, string[] debittypes, string[] savingsproducts, string[] investmentproducts)
+        public async Task<ActionResult> Create(CompanyBindingModel companyBindingModel, string[] debittypes, string[] savingsproducts, string[] investmentproducts, HttpPostedFileBase Companylogo)
         {
             //cheat
             var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();

@@ -1,17 +1,18 @@
 ﻿@model Application.MainBoundedContext.DTO.AdministrationModule.BankDTO
 
 @{
-    ViewBag.Title = "Bank";
+    ViewBag.Title = "Create Bank";
 }
-<div class="row wrapper border-bottom white-bg  page-heading">
+
+<div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Edit Banks</h2>
+        <h2>Edit Bank</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Bank", new { Area = "Admin" }, null)
+                @Html.ActionLink("Banks", "Index", "Bank", new { Area = "Admin" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Edit</strong>
@@ -21,46 +22,188 @@
 </div>
 
 <div class="wrapper wrapper-content white-bg">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="ibox-content bg-muted">
-                    @using (Html.BeginForm("Edit", "Bank", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                    @Html.AntiForgeryToken()
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
-                                @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="form-group form-group-lg">
-                                <input type="submit" value="Edit" class="btn btn-primary" />
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Name" } })
-                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                            </div>
-
-                        </div>
-                    </div>
-                    }
-                </div>
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>Edit Bank</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
             </div>
+        </div>
+        <div class="ibox-content">
+            @using (Html.BeginForm("Edit", "Bank", new { Area = "Admin" }, FormMethod.Post, new { @class = "form-horizontal", @id = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.Description, "Description:", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter description..." } })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.Code, "Code:", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter code..." } })
+                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <h4>Branch Details</h4>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.Label("Code", new { @class = "control-label" })
+                        <input type="text" class="form-control" id="branchCode" placeholder="Enter branch code..." />
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Label("Address Line 1", new { @class = "control-label" })
+                        <input type="text" class="form-control" id="branchAddressLine1" placeholder="Enter address line 1..." />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.Label("Address Line 2", new { @class = "control-label" })
+                        <input type="text" class="form-control" id="branchAddressLine2" placeholder="Enter address line 2..." />
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Label("Street", new { @class = "control-label" })
+                        <input type="text" class="form-control" id="branchStreet" placeholder="Enter street..." />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.Label("Postal Code", new { @class = "control-label" })
+                        <input type="text" class="form-control" id="branchPostalCode" placeholder="Enter postal code..." />
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Label("City", new { @class = "control-label" })
+                        <input type="text" class="form-control" id="branchCity" placeholder="Enter city..." />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.Label("Email", new { @class = "control-label" })
+                        <input type="text" class="form-control" id="branchEmail" placeholder="Enter email..." />
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Label("Land Line", new { @class = "control-label" })
+                        <input type="text" class="form-control" id="branchLandline" placeholder="Enter landline..." />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.Label("Mobile Line", new { @class = "control-label" })
+                        <input type="text" class="form-control" id="branchMobileLine" placeholder="Enter mobile line..." />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" id="addBranchBtn" class="btn btn-primary">Add Branch</button>
+                </div>
+
+                <div class="form-group">
+                    <table id="branchTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Address Line 1</th>
+                                <th>Address Line 2</th>
+                                <th>Street</th>
+                                <th>Postal Code</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Land Line</th>
+                                <th>Mobile Line</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-success" />
+                </div>
+            }
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(function () {
+        let branchIndex = 0;
+
+        $('#addBranchBtn').click(function () {
+            const branchData = {
+                Code: $('#branchCode').val().trim(),
+                AddressLine1: $('#branchAddressLine1').val().trim(),
+                AddressLine2: $('#branchAddressLine2').val().trim(),
+                Street: $('#branchStreet').val().trim(),
+                PostalCode: $('#branchPostalCode').val().trim(),
+                City: $('#branchCity').val().trim(),
+                Email: $('#branchEmail').val().trim(),
+                Landline: $('#branchLandline').val().trim(),
+                MobileLine: $('#branchMobileLine').val().trim()
+            };
+
+            if (!branchData.Code || !branchData.AddressLine1 || !branchData.City) {
+                alert("Please fill in all required fields (Code, Address Line 1, City).");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("Add", "Bank", new { Area = "Admin" })',
+                type: 'POST',
+                data: branchData,
+                success: function (response) {
+                    if (response.success) {
+                        // Add the new branch to the table dynamically
+                        const newRow = `
+                            <tr data-branch-id="${branchIndex}">
+                                <td>${branchData.Code}</td>
+                                <td>${branchData.AddressLine1}</td>
+                                <td>${branchData.AddressLine2}</td>
+                                <td>${branchData.Street}</td>
+                                <td>${branchData.PostalCode}</td>
+                                <td>${branchData.City}</td>
+                                <td>${branchData.Email}</td>
+                                <td>${branchData.Landline}</td>
+                                <td>${branchData.MobileLine}</td>
+                                <td><button type="button" class="btn btn-danger removeBranchBtn">Remove</button></td>
+                            </tr>`;
+                        $('#branchTable tbody').append(newRow);
+                        branchIndex++;
+                        clearBranchInputs();
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '.removeBranchBtn', function () {
+            const row = $(this).closest('tr');
+            const branchId = row.data('branch-id');
+
+            $.ajax({
+                url: '@Url.Action("Remove", "Bank", new { Area = "Admin" })',
+                type: 'POST',
+                data: { id: branchId },
+                success: function (response) {
+                    if (response.success) {
+                        row.remove();
+                    }
+                }
+            });
+        });
+
+        function clearBranchInputs() {
+            $('#branchCode, #branchAddressLine1, #branchAddressLine2, #branchStreet, #branchPostalCode, #branchCity, #branchEmail, #branchLandline, #branchMobileLine').val('');
+        }
+    });
+</script>

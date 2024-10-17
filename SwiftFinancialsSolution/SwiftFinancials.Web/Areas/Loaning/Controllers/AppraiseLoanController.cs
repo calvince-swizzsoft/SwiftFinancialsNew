@@ -160,6 +160,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 }
 
 
+                // Loan Accounts
+                var findloanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
+                var LoanAccounts = findloanAccounts.Where(L => L.CustomerAccountTypeProductCode == (int)ProductCode.Loan);
+                if (LoanAccounts != null)
+                {
+                    ViewBag.CustomerAccounts = LoanAccounts;
+                }
 
 
                 // Repayment Schedule .....................................
@@ -319,7 +326,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 string message = string.Format(
                                    "Do you want to proceed with loan appraisal for: \n{0}?",
-                                   findLoanCaseDetails.CustomerIndividualSalutationDescription + " " + findLoanCaseDetails.CustomerIndividualFirstName + " " + findLoanCaseDetails.CustomerIndividualLastName
+                                       findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " +
+                                       findLoanCaseDetails.CustomerIndividualLastName.ToUpper()
                                );
 
                 // Show the message box with Yes/No options

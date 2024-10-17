@@ -187,22 +187,21 @@
                         </div>`;
 
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
-                    $('td:eq(9)', nRow).html(dt_Created);
-                    $('td:eq(10)', nRow).html(cancelUrl);
+                    $('td:eq(8)', nRow).html(dt_Created);
+                    $('td:eq(9)', nRow).html(cancelUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "5%" },
+                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "15" },
                     { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "20%" },
-                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "5%" },
-                    { "mDataProp": "CustomerReference2", "sTitle": "Membership Number", "sWidth": "5%" },
-                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%" },
+                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "20%" },
+                    { "mDataProp": "CustomerReference2", "sTitle": "Membership Number", "sWidth": "10%" },
                     { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%" },
-                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%" },
-                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
+                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "25%" },
+                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "10%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
                     { "mDataProp": "ApprovedDate", "sTitle": "Approved Date", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "15%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]

@@ -1,5 +1,4 @@
-﻿
-$(document).ready(function () {
+﻿$(document).ready(function () {
     $('.nav-link').on('click', function (e) {
         e.preventDefault();
 
