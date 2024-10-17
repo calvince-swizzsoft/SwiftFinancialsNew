@@ -33,12 +33,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int searchRecordCount = 0;
 
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindExternalChequesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindExternalChequesByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -52,6 +54,56 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else return this.DataTablesJson(items: new List<ExternalChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
+
+        [HttpPost]
+        public async Task<ActionResult> FindExternalChequesByDate(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
+        {
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindExternalChequesByDateRangeAndFilterInPageAsync(
+                startDate,
+                endDate,
+                jQueryDataTablesModel.sSearch,
+                pageIndex,
+                pageSize,
+                GetServiceHeader()
+            );
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: pageCollectionInfo.PageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<ExternalChequeDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+        }
+
+
 
 
         public async Task<ActionResult> Cheques()
@@ -114,15 +166,20 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 if (bankLinkageDTO != null)
                 {
                     externalChequeDTO.BankName = bankLinkageDTO.BankName;
-                    externalChequeDTO.BranchDescription = bankLinkageDTO.BankBranchName;
-                    externalChequeDTO.ChartOfAccountAccountName = bankLinkageDTO.ChartOfAccountAccountName;
+                    externalChequeDTO.BranchDescription = bankLinkageDTO.BranchDescription;
+                    externalChequeDTO.BankLinkageChartOfAccountAccountName = bankLinkageDTO.ChartOfAccountAccountName;
                     externalChequeDTO.BankLinkageChartOfAccountId = bankLinkageDTO.ChartOfAccountId;
-                    externalChequeDTO.CustomerAccountCustomerId = bankLinkageDTO.ChartOfAccountId;
-                    externalChequeDTO.BankLinkageChartOfAccountAccountName = bankLinkageDTO.ChartOfAccountName;
-                    externalChequeDTO.BankLinkageChartOfAccountAccountType = bankLinkageDTO.ChartOfAccountAccountType;
-                    externalChequeDTO.BankLinkageChartOfAccountAccountCode = bankLinkageDTO.ChartOfAccountAccountCode;
-                    externalChequeDTO.BankLinkageChartOfAccountCostCenterDescription = bankLinkageDTO.ChartOfAccountCostCenterDescription;
+                    externalChequeDTO.ChartOfAccountAccountName = bankLinkageDTO.ChartOfAccountAccountName;
                     externalChequeDTO.BankLinkageChartOfAccountCostCenterId = bankLinkageDTO.ChartOfAccountCostCenterId;
+                    externalChequeDTO.BankLinkageChartOfAccountCostCenterDescription = bankLinkageDTO.ChartOfAccountCostCenterDescription;
+                    externalChequeDTO.BankLinkageChartOfAccountAccountCode = bankLinkageDTO.ChartOfAccountAccountCode;
+                    externalChequeDTO.BankLinkageChartOfAccountAccountType = bankLinkageDTO.ChartOfAccountAccountType;
+
+                    TempData["BankLinkageChartOfAccountId"] = externalChequeDTO.BankLinkageChartOfAccountId;
+                    TempData["ChartOfAccountAccountName"] = externalChequeDTO.ChartOfAccountAccountName;
+
+                    TempData["BankLinkageDTO"] = bankLinkageDTO;
+                    TempData["ExternalChequeDTO"] = (externalChequeDTO);
 
                     return View(externalChequeDTO);
                 }
@@ -132,8 +189,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     return Json(new { Error = "Bank details could not be found." });
                 }
             }
+            return View(externalChequeDTO);
 
-            return View();
         }
 
 
@@ -166,54 +223,84 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> BankSelectedCheques(List<Guid> selectedChequeIds, BankLinkageDTO bankLinkageDTO, int moduleNavigationItemCode)
+        public async Task<JsonResult> BankSelectedCheques(List<Guid> selectedChequeIds, BankLinkageDTO bankLinkageDTO)
         {
-            var serviceHeader = GetServiceHeader();
-
-            if (serviceHeader == null)
-            {
-                return Json(new { success = false, message = "Service header is missing." });
-            }
-
             if (selectedChequeIds == null || !selectedChequeIds.Any())
             {
-                return Json(new { success = false, message = "No cheques selected for banking." });
+                return Json(new { success = false, message = "No cheques selected." });
             }
+
+            var serviceHeader = GetServiceHeader();
+            bool isSuccess = true;
+            string errorMessage = string.Empty;
 
             try
             {
-                var chequesToBank = selectedChequeIds.Select(id => new ExternalChequeDTO { Id = id }).ToList();
-
-                if (!chequesToBank.Any())
-                {
-                    return Json(new { success = false, message = "Selected cheques could not be found." });
-                }
-
-                var result = await _channelService.BankExternalChequesAsync(
-                    new ObservableCollection<ExternalChequeDTO>(chequesToBank),
-                    bankLinkageDTO,
-                    moduleNavigationItemCode,
+                var pageCollectionInfo = await _channelService.FindUnBankedExternalChequesByFilterInPageAsync(
+                    string.Empty,
+                    0,
+                    int.MaxValue,
                     serviceHeader
                 );
 
-                if (result)
+                if (pageCollectionInfo == null || !pageCollectionInfo.PageCollection.Any())
                 {
-                    return Json(new { success = true, message = "Cheques successfully banked." });
+                    return Json(new { success = false, message = "No uncleared cheques found." });
                 }
-                else
+
+                var selectedCheques = pageCollectionInfo.PageCollection
+                    .Where(cheque => selectedChequeIds.Contains(cheque.Id))
+                    .ToList();
+
+                if (!selectedCheques.Any())
                 {
-                    return Json(new { success = false, message = "Failed to bank the cheques. Ensure valid data and try again." });
+                    return Json(new { success = false, message = "Selected cheques not found in unbanked cheques." });
                 }
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Json(new { success = false, message = ex.Message });
+
+                foreach (var cheque in selectedCheques)
+                {
+                    cheque.BankLinkageChartOfAccountId = (Guid)TempData["BankLinkageChartOfAccountId"];
+                    cheque.ChartOfAccountAccountName = TempData["ChartOfAccountAccountName"].ToString();
+                    bankLinkageDTO = TempData["BankLinkageDTO"] as BankLinkageDTO;
+                }
+
+                if (!isSuccess)
+                {
+                    return Json(new { success = false, message = errorMessage });
+                }
+
+                var externalChequeDTOs = new ObservableCollection<ExternalChequeDTO>(selectedCheques.Select(cheque => new ExternalChequeDTO
+                {
+                    Id = cheque.Id,
+                    Number = cheque.Number,
+                    Amount = cheque.Amount,
+                    BankLinkageChartOfAccountId = cheque.BankLinkageChartOfAccountId,
+                    BankLinkageChartOfAccountAccountName = cheque.BankLinkageChartOfAccountName,
+                }).ToList());
+
+                var result = await _channelService.BankExternalChequesAsync(
+                    externalChequeDTOs,
+                    bankLinkageDTO,
+                    moduleNavigationItemCode: 123,
+                    serviceHeader
+                );
+
+                if (!result)
+                {
+                    isSuccess = false;
+                    errorMessage = "Failed to bank the cheques. Ensure valid data and try again.";
+                }
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "An error occurred while banking the cheques: " + ex.Message });
+                return Json(new { success = false, message = $"Error occurred: {ex.Message}" });
             }
+
+            return Json(new { success = isSuccess, message = isSuccess ? "Cheques processed successfully." : errorMessage });
         }
+
+
+
 
 
         public async Task<ActionResult> ChequeClearance()
@@ -250,7 +337,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
-
         [HttpPost]
         public async Task<JsonResult> ClearSelectedCheques(List<Guid> selectedChequeIds, int clearingOption, string actionType, UnPayReasonDTO unPayReasonDTO = null)
         {
@@ -266,9 +352,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             try
             {
                 var pageCollectionInfo = await _channelService.FindUnClearedExternalChequesByFilterInPageAsync(
-                    string.Empty, 
-                    0, 
-                    int.MaxValue, 
+                    string.Empty,
+                    0,
+                    int.MaxValue,
                     serviceHeader
                 );
 
@@ -288,11 +374,32 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 foreach (var cheque in selectedCheques)
                 {
+                    bool chequeProcessed = false;
+
                     if (actionType.ToLower() == "clear")
                     {
-                        var result = await _channelService.ClearExternalChequeAsync(cheque, clearingOption, /* ModuleNavigationItemCode */ 1, null, serviceHeader);
+                        var result = await _channelService.ClearExternalChequeAsync(
+                            cheque,
+                            clearingOption,
+                            /* ModuleNavigationItemCode */ 1,
+                            null,
+                            serviceHeader
+                        );
 
-                        if (!result)
+                        if (result)
+                        {
+                            var markClearedResult = await _channelService.MarkExternalChequeClearedAsync(cheque.Id, serviceHeader);
+                            if (markClearedResult)
+                            {
+                                chequeProcessed = true;
+                            }
+                            else
+                            {
+                                isSuccess = false;
+                                errorMessage += $"Failed to mark cheque with ID {cheque.Id} as cleared. ";
+                            }
+                        }
+                        else
                         {
                             isSuccess = false;
                             errorMessage += $"Failed to clear cheque with ID {cheque.Id}. ";
@@ -305,13 +412,37 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             return Json(new { success = false, message = "UnPay reason is required." });
                         }
 
-                        var result = await _channelService.ClearExternalChequeAsync(cheque, clearingOption, /* ModuleNavigationItemCode */ 1, unPayReasonDTO, serviceHeader);
+                        var result = await _channelService.ClearExternalChequeAsync(
+                            cheque,
+                            clearingOption,
+                            /* ModuleNavigationItemCode */ 1,
+                            unPayReasonDTO,
+                            serviceHeader
+                        );
 
-                        if (!result)
+                        if (result)
+                        {
+                            var markClearedResult = await _channelService.MarkExternalChequeClearedAsync(cheque.Id, serviceHeader);
+                            if (markClearedResult)
+                            {
+                                chequeProcessed = true;
+                            }
+                            else
+                            {
+                                isSuccess = false;
+                                errorMessage += $"Failed to mark cheque with ID {cheque.Id} as cleared. ";
+                            }
+                        }
+                        else
                         {
                             isSuccess = false;
                             errorMessage += $"Failed to unpay cheque with ID {cheque.Id}. ";
                         }
+                    }
+
+                    if (chequeProcessed)
+                    {
+                        // Optionally log successful processing
                     }
                 }
             }
@@ -322,6 +453,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return Json(new { success = isSuccess, message = isSuccess ? "Cheques processed successfully." : errorMessage });
         }
+
+
+
+
 
 
 

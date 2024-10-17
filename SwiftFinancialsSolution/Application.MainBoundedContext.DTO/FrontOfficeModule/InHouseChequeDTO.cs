@@ -24,7 +24,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "Branch")]
-        [ValidGuid]
+        // [ValidGuid]
         public Guid BranchId { get; set; }
 
         [Display(Name = "Branch Name")]
@@ -32,7 +32,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "Cheque Type")]
-        [ValidGuid]
+        //[ValidGuid]
         public Guid? ChequeTypeId { get; set; }
 
         [DataMember]
@@ -41,7 +41,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "Debit G/L Account")]
-        [ValidGuid]
+        // [ValidGuid]
         public Guid DebitChartOfAccountId { get; set; }
 
         [DataMember]
@@ -229,7 +229,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public string CostCenter { get; set; }
         [DataMember]
         [Display(Name = "costCenterId")]
-        [ValidGuid]
+        // [ValidGuid]
         public Guid? CostCenterId { get; set; }
 
         public CostCenterDTO costCenterDTO;
@@ -245,5 +245,11 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Bank Account")]
         public string BankAccount { get; set; }
+
+        [Display(Name = "Available Balance")]
+        public decimal AvailableBalance { get; set; }
+
+
     }
+
 }

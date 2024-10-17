@@ -1123,8 +1123,8 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Section")]
-        public int LoanProductSectionSection { get; set; } 
-        
+        public int LoanProductSectionSection { get; set; }
+
         [DataMember]
         [Display(Name = "Section")]
         public string LoanProductSectionDescription { get; set; }
@@ -1173,11 +1173,11 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Maximum Loan")]
         public decimal LoanRegistrationMaximumLoan { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Outstanding Loans Balance")]
         public decimal LoanRegistrationOutstandingLoansBalance { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Maxmimum Entitled")]
         public decimal LoanRegistrationMaximumEntitled { get; set; }
@@ -1185,40 +1185,40 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Net Income")]
         public decimal LoanRegistrationNetIncome { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Total Allowance")]
-        public decimal LoanRegistrationTotalAllowance { get; set; } 
-        
+        public decimal LoanRegistrationTotalAllowance { get; set; }
+
         [DataMember]
         [Display(Name = "Total Deduction")]
         public decimal LoanRegistrationTotalDeduction { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Total Income")]
-        public decimal LoanRegistrationTotalIncome { get; set; } 
-        
-        
+        public decimal LoanRegistrationTotalIncome { get; set; }
+
+
         [DataMember]
         [Display(Name = "Ability to Pay")]
         public decimal LoanRegistrationAbilityToPay { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Ability to Pay Over Loan Term")]
-        public decimal LoanRegistrationAbilityToPayOverLoanTerm { get; set; } 
-        
+        public decimal LoanRegistrationAbilityToPayOverLoanTerm { get; set; }
+
         [DataMember]
         [Display(Name = "Loan + Interest")]
         public decimal LoanRegistrationLoanPlusInterest { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Loan Part")]
         public decimal LoanRegistrationLoanPart { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Interest Part")]
         public decimal LoanRegistrationInterestPart { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Account Status")]
         public string AccountStatus { get; set; }
@@ -1233,22 +1233,55 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Payment Per Period")]
-        public double PaymentPerPeriod { get; set; } 
-        
+        public double PaymentPerPeriod { get; set; }
+
         [DataMember]
         [Display(Name = "Number Of Periods")]
         public int NumberOfPeriods { get; set; }
 
 
+
+        // Additional DTOs
         [DataMember]
         public List<IncomeAdjustmentDTO> incomeAdjustmentDTO { get; set; }
 
 
         // Reports DTOs
         [DataMember]
-        public DateTime EndDate { get; set; } 
-        
+        public DateTime EndDate { get; set; }
+
         [DataMember]
         public DateTime StartDate { get; set; }
+
+
+
+        // 
+        [DataMember]
+        [Display(Name = "Security Qualification")]
+        public double LoanQualificationSecurityQualification { get; set; }  
+        
+        [DataMember]
+        [Display(Name = "System Recommendation")]
+        public double LoanQualificationSystemRecommendation { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Income Qualification")]
+        public double LoanQualificationIncomeQualification { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Investments Qualification")]
+        public double LoanQualificationInvestmentsQualification { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Attached Loans Balance")]
+        public double LoanQualificationAttachedLoansBalance { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Total Loans + Interest")]
+        public double LoanQualificationTotalLoansPlusInterest { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Loan Amount")]
+        public double LoanQualificationLoanAmount { get; set; }
     }
 }

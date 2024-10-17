@@ -22,5 +22,6 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
         Task<List<CashTransferRequestDTO>> FindMatureCashTransferRequestsAsync(Guid employeeId, ServiceHeader serviceHeader);
 
         Task<bool> UtilizeCashTransferRequestAsync(Guid cashTransferRequestId, ServiceHeader serviceHeader);
+        Task<PageCollectionInfo<CashTransferRequestDTO>> FindAllCashTransferRequestsAsync(DateTime startDate, DateTime endDate, string text, int status, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader);
     }
 }

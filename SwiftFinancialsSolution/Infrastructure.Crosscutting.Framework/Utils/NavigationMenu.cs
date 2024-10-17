@@ -215,61 +215,54 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
 
 
-                            //...... Loaning - area 24,000
-                new NavigationMenu{Description = "Back Office", IsArea = true, Code = 0x00005DC0},
-                // menu-items (children)
-                new NavigationMenu{AreaCode = 0x00005DC0, IsArea = false, Description = "Setup", Icon="fa fa-bars", Code = 0x00005DC0 + 1},
-                new NavigationMenu{AreaCode = 0x00005DC0, IsArea = false, Description = "Operations", Icon="fa fa-bars", Code = 0x00005DC0 + 2},
+                                       // Back Office - area 24,000
+            new NavigationMenu { Description = "Back Office", IsArea = true, Code = 0x00005DC0 }, // 24000
 
-                // Setup
-                new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loan Purposes", Icon="fa fa-bars", ControllerName="LoanPurpose", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 3},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loaning Remarks", Icon="fa fa-bars", ControllerName="LoaningRemark", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 4},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Income Adjustments", Icon="fa fa-bars", ControllerName="IncomeAdjustments", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 5},
-                
-                                        // Operations
-                //... Application...//
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loan Cases", Icon="fa fa-address-book", ControllerName="LoanRegistration", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 6},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loaning", Icon="fa fa-book", ControllerName="LoanRestructuring", ActionName="Create", AreaName = "Loaning", Code = 0x00005DC0 + 7},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Data Capture", Icon="fa fa-database", ControllerName="DataCapture", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 8},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Back Office Transfer", Icon="fa fa-database", ControllerName="BackOfficeTransfer", ActionName="Create", AreaName = "Accounts", Code = 0x00005DC0 + 8},
-                //new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Reports", Icon="fa fa-database", ControllerName="Reports", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 9},
-                //.
-                //.
-                //.
-                //.
-                //.
+            // Back Office Sub-Menus
+            new NavigationMenu { AreaCode = 0x00005DC0, IsArea = false, Description = "Setup", Icon = "fa fa-bars", Code = 0x00005DC0 + 1 }, // 24001
+            new NavigationMenu { AreaCode = 0x00005DC0, IsArea = false, Description = "Operations", Icon = "fa fa-bars", Code = 0x00005DC0 + 2 }, // 24002
+
+            // Setup Sub-Menus
+            new NavigationMenu { AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loan Purposes", Icon = "fa fa-bars", ControllerName = "LoanPurpose", ActionName = "Index", AreaName = "Loaning", Code = 0x00005DC0 + 3 }, // 24003
+            new NavigationMenu { AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loaning Remarks", Icon = "fa fa-bars", ControllerName = "LoaningRemark", ActionName = "Index", AreaName = "Loaning", Code = 0x00005DC0 + 4 }, // 24004
+            new NavigationMenu { AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Income Adjustments", Icon = "fa fa-bars", ControllerName = "IncomeAdjustments", ActionName = "Index", AreaName = "Loaning", Code = 0x00005DC0 + 5 }, // 24005
+
+            // Operations Sub-Menus
+            new NavigationMenu { AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loan Cases", Icon = "fa fa-address-book", ControllerName = "LoanRegistration", ActionName = "Index", AreaName = "Loaning", Code = 0x00005DC0 + 6 }, // 24006
+            new NavigationMenu { AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loaning", Icon = "fa fa-book", ControllerName = "LoanRestructuring", ActionName = "Create", AreaName = "Loaning", Code = 0x00005DC0 + 7 }, // 24007
+            new NavigationMenu { AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Data Capture", Icon = "fa fa-database", ControllerName = "DataCapture", ActionName = "Index", AreaName = "Loaning", Code = 0x00005DC0 + 8 }, // 24008
+            new NavigationMenu { AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Back Office Transfer", Icon = "fa fa-database", ControllerName = "BackOfficeTransfer", ActionName = "Create", AreaName = "Accounts", Code = 0x00005DC0 + 9 }, // 24009
+
 
 
 
            // Front Office - area 25,000
-                   new NavigationMenu{Description = "Front Office", IsArea = true, Code = 0x000061A8},
+            new NavigationMenu{Description = "Front Office", IsArea = true, Code = 0x000061A8},
 
-                    new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Treasuries", Icon="fa fa-bars", Code = 0x000061A8 + 1},
-                    new NavigationMenu{AreaCode = 0x000061A8 + 1, IsArea = false, Description = "Treasuries", Icon="fa fa-calculator", ControllerName="Treasury", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 2},
-                    new NavigationMenu{AreaCode = 0x000061A8 + 1, IsArea = false, Description = "Cash Management", Icon="fa fa-money", ControllerName="CashManagement", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 3},
-                    new NavigationMenu{AreaCode = 0x000061A8 + 1, IsArea = false, Description = "Cash Withdrawals", Icon="fa fa-money", ControllerName="CashWithdrawalRequest", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 4},
+            new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Treasuries", Icon="fa fa-bars", Code = 0x000061A8 + 1},
+            new NavigationMenu{AreaCode = 0x000061A8 + 1, IsArea = false, Description = "Treasuries", Icon="fa fa-calculator", ControllerName="Treasury", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 2},
+            new NavigationMenu{AreaCode = 0x000061A8 + 1, IsArea = false, Description = "Cash Management", Icon="fa fa-money", ControllerName="CashManagement", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 3},
+            new NavigationMenu{AreaCode = 0x000061A8 + 1, IsArea = false, Description = "Cash Withdrawals", Icon="fa fa-money", ControllerName="CashWithdrawalRequest", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 4},
+            new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Tellers", Icon="fa fa-bars", Code = 0x000061A8 + 5},
+            new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "Tellers", Icon="fa fa-calculator", ControllerName="Teller", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 6},
+            new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "Saving Receipts/Payments", Icon="fa fa-money", ControllerName="CashDeposit", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 7},
+            new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "Sundry Receipts/Payments", Icon="fa fa-money", ControllerName="SundryPayments", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 8},  
+            //new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cash Withdrawal", Icon="fa fa-money", ControllerName="CashWithdrawal", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 7},
+            //new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cash Transfer", Icon="fa fa-money", ControllerName="CashTransfer", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 8},
+            //new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cash Withdrawal Approval", Icon="fa fa-money", ControllerName="CashWithdrawal", ActionName="Approval", AreaName = "FrontOffice", Code = 0x000061A8 + 9},
+            new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Customer Receipts", Icon="fa fa-money", ControllerName="CustomerReceipts", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 9},
+            new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cheques/Cash Transfers", Icon="fa fa-money", ControllerName="Transfers", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 10},
+            new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "End of Day", Icon="fa fa-money", ControllerName="EndOfDay", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 11},
 
-                    new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Tellers", Icon="fa fa-bars", Code = 0x000061A8 + 5},
-
-                 new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "Tellers", Icon="fa fa-calculator", ControllerName="Teller", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 6},
-                new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "Saving Receipts/Payments", Icon="fa fa-money", ControllerName="CashDeposit", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 7},
-                new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "Sundry Receipts/Payments", Icon="fa fa-money", ControllerName="SundryPayments", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 8},
-                
-                //new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cash Withdrawal", Icon="fa fa-money", ControllerName="CashWithdrawal", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 7},
-                //new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cash Transfer", Icon="fa fa-money", ControllerName="CashTransfer", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 8},
-                //new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cash Withdrawal Approval", Icon="fa fa-money", ControllerName="CashWithdrawal", ActionName="Approval", AreaName = "FrontOffice", Code = 0x000061A8 + 9},
-                new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Customer Receipts", Icon="fa fa-money", ControllerName="CustomerReceipts", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 9},
-                new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cheques/Cash Transfers", Icon="fa fa-money", ControllerName="Transfers", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 10},
-                new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "End of Day", Icon="fa fa-money", ControllerName="EndOfDay", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 11},
-
-                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Fiscal Counts", Icon="fa fa-calculator", ControllerName="FiscalCount", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 12},
-                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Cheques", Icon="fa fa-bars", ControllerName="Cheques", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 13},
-                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Fixed Deposits", Icon="fa fa-calculator", ControllerName="FixedDeposit", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 14},
-                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Expense Payables", Icon="fa fa-bars", ControllerName="ExpensePayable", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 15},
-                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Account Closure", Icon="fa fa-calculator", ControllerName="AccountClosure", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 16},
+            new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Fiscal Counts", Icon="fa fa-calculator", ControllerName="FiscalCount", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 12},
+            new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Cheques", Icon="fa fa-bars", ControllerName="Cheques", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 13},
+            new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Fixed Deposits", Icon="fa fa-calculator", ControllerName="FixedDeposit", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 14},
+            new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Expense Payables", Icon="fa fa-bars", ControllerName="ExpensePayable", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 15},
+            new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Account Closure", Icon="fa fa-calculator", ControllerName="AccountClosure", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 16},
 
 
-                //messaging - area 26,000
+
+             //messaging - area 26,000
                 new NavigationMenu{Description = "Messaging", IsArea = true, Code = 0x00006590},
                 new NavigationMenu{AreaCode = 0x00006590, IsArea = false, Description = "Text Alerts", Icon="fa fa-comments", ControllerName="TextAlert", ActionName="Index", AreaName = "Messaging", Code = 0x00006590 + 1},
                 new NavigationMenu{AreaCode = 0x00006590, IsArea = false, Description = "Email Alerts", Icon="fa fa-envelope", ControllerName="EmailAlert", ActionName="Index", AreaName = "Messaging", Code = 0x00006590 + 2},
@@ -283,6 +276,46 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Reports", Icon="fa fa-bars", ControllerName="Report", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 1},
                 new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Generate Reports", Icon="fa fa-clipboard", ControllerName="SSRSReports", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 2},
              
+
+
+
+
+
+            //              // Member Information - area 29,000
+            //new NavigationMenu { Description = "Member Information", IsArea = true, Code = 0x00007148 }, // 29000
+
+            //// Member Information Sub-Menus
+            //new NavigationMenu { AreaCode = 0x00007148, IsArea = false, Description = "Setup", Icon = "fa fa-bars", Code = 0x00007148 + 1 }, // 29001
+            //new NavigationMenu { AreaCode = 0x00007148, IsArea = false, Description = "Operations", Icon = "fa fa-bars", Code = 0x00007148 + 2 }, // 29002
+
+            //// Setup Sub-Menus
+            //new NavigationMenu { AreaCode = 0x00007148 + 1, IsArea = false, Description = "Messaging Groups", Icon = "fa fa-comments-o", ControllerName = "MessagingGroups", ActionName = "Index", AreaName = "Dashboard", Code = 0x00007148 + 3 }, // 29003
+
+            //// Operations Sub-Menus
+            //new NavigationMenu { AreaCode = 0x00007148 + 2, IsArea = false, Description = "Loaning", Icon = "fa fa-money", ControllerName = "Applications", ActionName = "Index", AreaName = "Dashboard", Code = 0x00007148 + 4 }, // 29004
+            //new NavigationMenu { AreaCode = 0x00007148 + 2, IsArea = false, Description = "Messaging", Icon = "fa fa-comments-o", ControllerName = "TextAlerts", ActionName = "Index", AreaName = "Dashboard", Code = 0x00007148 + 5 }, // 29005
+            //new NavigationMenu { AreaCode = 0x00007148 + 2, IsArea = false, Description = "Utilities", Icon = "fa fa-bars", ControllerName = "FinancialPosition", ActionName = "Create", AreaName = "Dashboard", Code = 0x00007148 + 6 }, // 29006
+
+
+
+
+            //    // Control - area 30,000
+            //    new NavigationMenu{Description = "Control", IsArea = true, Code = 0x00007530},
+            //    // menu-items (children)
+            //    new NavigationMenu{AreaCode = 0x00007530, IsArea = false, Description = "Setup", Icon="fa fa-bars", Code = 0x00007530 + 1},
+            //    new NavigationMenu{AreaCode = 0x00007530, IsArea = false, Description = "Operations", Icon="fa fa-bars", Code = 0x00007530 + 2},
+                
+
+            //    // Micro-Credit - area 31,000
+            //    new NavigationMenu{Description = "Micro-Credit", IsArea = true, Code = 0x00007918},
+            //    // menu-items (children)
+            //    new NavigationMenu{AreaCode = 0x00007918, IsArea = false, Description = "Setup", Icon="fa fa-bars", Code = 0x00007918 + 1},
+            //    new NavigationMenu{AreaCode = 0x00007918, IsArea = false, Description = "Operations", Icon="fa fa-bars", Code = 0x00007918 + 2},
+
+
+
+
+
             /*
                 //test - area 62,000
                 new NavigationMenu{Description = "Grandfather", IsArea = true, Code = 0xF230},

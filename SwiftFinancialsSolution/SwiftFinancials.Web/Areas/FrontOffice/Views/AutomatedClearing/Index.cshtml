@@ -1,0 +1,207 @@
+﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ElectronicJournalDTO
+
+@{
+    ViewBag.Title = "Journal ";
+}
+
+<style>
+    .wrapper-content {
+        background-color: #f3f3f4;
+        padding: 20px;
+    }
+
+    .ibox {
+        background-color: #ffffff;
+        border: 1px solid #e7eaec;
+        border-radius: 4px;
+    }
+
+    .ibox-title {
+        border-bottom: 1px solid #e7eaec;
+        padding: 15px;
+    }
+
+    .ibox-content {
+        padding: 15px;
+    }
+
+    #ChequesGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #ChequesGrid th {
+            background-color: #f5f5f6;
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #ChequesGrid td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+    .filter-section {
+        background-color: #e6f2ff;
+        padding: 10px;
+        margin-top: 20px;
+        border: 1px solid #b8d6ff;
+        border-radius: 4px;
+    }
+
+        .filter-section input,
+        .filter-section select {
+            margin-right: 10px;
+            padding: 5px;
+        }
+
+    .btn-primary {
+        background-color: #1ab394;
+        border-color: #1ab394;
+        color: #FFFFFF;
+        padding: 6px 12px;
+        border-radius: 3px;
+    }
+
+    .btn-link {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+        margin-bottom: 15px; /* Add some spacing */
+    }
+</style>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Automated-Clearing</h2>
+                    <!-- Link to the processing page -->
+                    <a href="@Url.Action("Processing", "AutomatedClearing", new { Area = "FrontOffice" })" class="btn-link">Go to Processing Page</a>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="ChequesGrid" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Processed Entries</th>
+                                    <th>File Name</th>
+                                    <th>File Serial Number</th>
+                                    <th>Date of File Exchange</th>
+                                    <th>Closed By</th>
+                                    <th>Closed Date</th>
+                                    <th>Created By</th>
+                                    <th>Created Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="9">Loading data from server</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="filter-section">
+                        <select id="statusFilter">
+                            <option value="">All</option>
+                            <option value="Closed">Closed</option>
+                            <option value="Open">Open</option>
+                        </select>
+                        <input type="text" id="startDate" placeholder="Start Date">
+                        <input type="text" id="endDate" placeholder="End Date">
+                        <input type="text" id="searchText" placeholder="Enter Text..">
+                        <button class="btn btn-primary" id="refreshBtn">Refresh</button>
+                        <button class="btn btn-primary" id="importBtn">Import</button>
+                        <input type="file" id="chequeImage" style="display: none;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/dataPicker")
+
+    <script>
+    $(document).ready(function () {
+        // Initialize datepickers
+        $('#startDate, #endDate').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true
+        });
+
+        // Event listener for the Import button
+        $('#importBtn').on('click', function () {
+            // Trigger the hidden file input
+            $('#chequeImage').click();
+        });
+
+        // Handle file input change and upload
+        $('#chequeImage').on('change', function () {
+            var formData = new FormData();
+            formData.append('chequeImage', $('#chequeImage')[0].files[0]);
+
+            // Append filter values to the formData
+            formData.append('status', $('#statusFilter').val());
+            formData.append('startDate', $('#startDate').val());
+            formData.append('endDate', $('#endDate').val());
+            formData.append('searchText', $('#searchText').val());
+
+            // Perform an AJAX request to upload the file
+            $.ajax({
+                url: '@Url.Action("UploadCheques", "AutomatedClearing", new { Area = "FrontOffice" })',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    alert('Cheque image uploaded and journal parsed successfully!');
+                    console.log(response); // Check the structure of the response
+
+                    if (response.success) {
+                        if (response.chequeData && response.chequeData.length > 0) {
+                            updateTable(response.chequeData);
+                        } else {
+                            alert('No data returned to display.');
+                        }
+                    } else {
+                        alert('Failed to upload cheque image: ' + response.message);
+                    }
+                },
+
+                error: function () {
+                    alert('Error uploading the cheque image.');
+                }
+            });
+        });
+
+        // Function to update table with new data
+        function updateTable(chequeData) {
+            var tableBody = $('#ChequesGrid tbody');
+            tableBody.empty();  // Clear existing rows
+
+            // Loop through each cheque entry and create a new row
+            $.each(chequeData, function (index, entry) {
+                var row = '<tr>' +
+                    '<td>' + entry.Status + '</td>' +
+                    '<td>' + entry.ProcessedEntries + '</td>' +
+                    '<td>' + entry.FileName + '</td>' +
+                    '<td>' + entry.FileSerialNumber + '</td>' +
+                    '<td>' + entry.DateOfFileExchange + '</td>' +
+                    '<td>' + entry.ClosedBy + '</td>' +
+                    '<td>' + entry.ClosedDate + '</td>' +
+                    '<td>' + entry.CreatedBy + '</td>' +
+                    '<td>' + entry.CreatedDate + '</td>' +
+                    '</tr>';
+                tableBody.append(row);
+            });
+        }
+
+    });
+    </script>
+}

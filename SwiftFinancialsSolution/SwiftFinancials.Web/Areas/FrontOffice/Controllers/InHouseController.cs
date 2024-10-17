@@ -2,26 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
-using SwiftFinancials.Web.Helpers;
 using System.Collections.ObjectModel;
+using SwiftFinancials.Web.Helpers;
 
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
     public class InHouseController : MasterController
     {
-
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
-
             return View();
         }
 
@@ -32,12 +29,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int searchRecordCount = 0;
 
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindInHouseChequesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindInHouseChequesByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -52,257 +51,63 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             else return this.DataTablesJson(items: new List<InHouseChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
-        
-
-
-        public async Task<ActionResult> Create(Guid? id, bool isCustomerAccount = false)
-        {
-            await ServeNavigationMenus();
-
-            InHouseChequeDTO inHouseChequeDTO = new InHouseChequeDTO();
-
-            if (id.HasValue && id != Guid.Empty)
-            {
-                if (isCustomerAccount)
-                {
-                    // Fetch Customer Account details if the flag is set to true
-                    var customerAccount = await _channelService.FindCustomerAccountAsync(
-                        id.Value,
-                        includeBalances: true,
-                        includeProductDescription: true,
-                        includeInterestBalanceForLoanAccounts: true,
-                        considerMaturityPeriodForInvestmentAccounts: true,
-                        GetServiceHeader()
-                    );
-
-                    if (customerAccount != null)
-                    {
-                        // Populate the DTO with relevant customer account data
-                        inHouseChequeDTO.DebitChartOfAccountAccountName = customerAccount.CustomerReference1;
-                        inHouseChequeDTO.BranchDescription = customerAccount.BranchDescription;
-                    }
-                    else
-                    {
-                        TempData["ErrorMessage"] = "Customer account details could not be found.";
-                        return RedirectToAction("Index");
-                    }
-                }
-                else
-                {
-                    // Fetch G/L Account details if the flag is not set (default behavior)
-                    var chartOfAccount = await _channelService.FindChartOfAccountAsync(id.Value, GetServiceHeader());
-
-                    if (chartOfAccount != null)
-                    {
-                        inHouseChequeDTO.DebitChartOfAccountAccountName = chartOfAccount.ParentAccountName;
-                        inHouseChequeDTO.CostCenter = chartOfAccount.CostCenterDescription;
-                    }
-                    else
-                    {
-                        TempData["ErrorMessage"] = "G/L Account details could not be found.";
-                        return RedirectToAction("Index");
-                    }
-                }
-            }
-
-            return View(inHouseChequeDTO);
-        }
-
-
-
-
-        public async Task<ActionResult> GetGLAccounts()
-        {
-            try
-            {
-                var glAccounts = await _channelService.FindChartOfAccountsAsync(GetServiceHeader());
-
-                // Ensure that you are returning the data in the correct format
-                return Json(new
-                {
-                    draw = Request["draw"],
-                    recordsTotal = glAccounts.Count(),
-                    recordsFiltered = glAccounts.Count(), 
-                    data = glAccounts.Select(a => new
-                    {
-                        a.ParentAccountName,
-                        a.CostCenterDescription,
-                        a.Id
-                    })
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                // Log the error (optional)
-                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-
-
-
-        public async Task<ActionResult> GetCustomerAccounts(Guid customerId)
-        {
-            try
-            {
-                // Call the service to retrieve the customer accounts by customer ID
-                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(
-                    customerId,
-                    includeBalances: true,
-                    includeProductDescription: true,
-                    includeInterestBalanceForLoanAccounts: true,
-                    considerMaturityPeriodForInvestmentAccounts: true,
-                    GetServiceHeader()
-                );
-
-                if (customerAccounts == null || !customerAccounts.Any())
-                {
-                    return Json(new { error = "No customer accounts found for the specified customer." }, JsonRequestBehavior.AllowGet);
-                }
-
-                var customerAccountsList = customerAccounts.Select(account => new
-                {
-                    CustomerReference1 = account.CustomerReference1,
-                    AvailableBalance = account.AvailableBalance,
-                    CustomerFullName = account.CustomerFullName,
-                    BranchDescription = account.BranchDescription,
-                    ProductName = account.CustomerAccountTypeProductCodeDescription,
-                    Membership = account.CustomerReference2,
-                    CreatedDate = account.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss"),
-                    SelectButton = $"<a href='#' onclick='selectCustomerAccount(\"{account.CustomerReference1}\", \"{account.AvailableBalance}\")' class='btn btn-outline-info'>Select</a>"
-                }).ToList();
-
-                return Json(new { data = customerAccountsList }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = $"An error occurred while retrieving customer accounts: {ex.Message}" }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-
-
-
-
-
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(InHouseChequeDTO inHouseChequeDTO, int moduleNavigationItemCode)
+        public async Task<ActionResult> FindExternalChequesByDate(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
-            // 1. Validate the model
-            if (inHouseChequeDTO == null)
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindInHouseChequesByDateRangeAndFilterInPageAsync(
+                startDate,
+                endDate,
+                jQueryDataTablesModel.sSearch,
+                pageIndex,
+                pageSize,
+                GetServiceHeader()
+            );
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                ModelState.AddModelError("", "Invalid cheque data.");
-                return await ReloadCreateView(inHouseChequeDTO);
-            }
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-            // 2. Perform server-side validation
-            if (string.IsNullOrEmpty(inHouseChequeDTO.Payee))
-            {
-                ModelState.AddModelError("", "Payee name is required.");
-            }
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
-            if (inHouseChequeDTO.Amount <= 0)
-            {
-                ModelState.AddModelError("", "Invalid cheque amount.");
-            }
-
-            if (inHouseChequeDTO.DebitCustomerAccountId == Guid.Empty && inHouseChequeDTO.DebitChartOfAccountAccountName == null)
-            {
-                ModelState.AddModelError("", "Either Customer Account or G/L Account must be selected.");
-            }
-
-            // If validation fails, return the view with errors
-            if (!ModelState.IsValid)
-            {
-                return await ReloadCreateView(inHouseChequeDTO);
-            }
-
-            // 3. Call the service method to add the cheque
-            try
-            {
-                ServiceHeader serviceHeader = CreateServiceHeader();
-                var result = await _channelService.AddInHouseChequeAsync(inHouseChequeDTO, moduleNavigationItemCode, serviceHeader);
-
-                if (result != null)
-                {
-                    TempData["SuccessMessage"] = "Cheque added successfully.";
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Failed to add the cheque.");
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the exception (optional)
-                ModelState.AddModelError("", $"An error occurred: {ex.Message}");
-            }
-
-            return await ReloadCreateView(inHouseChequeDTO);
-        }
-
-
-        private async Task<ActionResult> ReloadCreateView(InHouseChequeDTO inHouseChequeDTO)
-        {
-            // Reload customer account data in case of failure or validation issues
-            await ServeNavigationMenus();
-
-            // Reload any dropdowns or data needed for the view
-            var customerAccountsList = new List<SelectListItem>();
-
-            // Simulate fetching account data (you might need to re-query based on your business logic)
-            if (inHouseChequeDTO.DebitCustomerAccountId.HasValue && inHouseChequeDTO.DebitCustomerAccountId != Guid.Empty)
-            {
-                // Call FindCustomerAccountAsync with the non-nullable Guid value
-                var customerAccountDTO = await _channelService.FindCustomerAccountAsync(
-                    inHouseChequeDTO.DebitCustomerAccountId.Value, 
-                    includeBalances: true,
-                    includeProductDescription: true,
-                    includeInterestBalanceForLoanAccounts: true,
-                    considerMaturityPeriodForInvestmentAccounts: true,
-                    GetServiceHeader()
+                return this.DataTablesJson(
+                    items: pageCollectionInfo.PageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
                 );
-
-                if (customerAccountDTO != null)
-                {
-                    // Populate customer account dropdown
-                    customerAccountsList.Add(new SelectListItem
-                    {
-                        Text = customerAccountDTO.CustomerFullName,
-                        Value = customerAccountDTO.CustomerId.ToString()
-                    });
-
-                    // You can also update the DTO fields, e.g.:
-                    inHouseChequeDTO.DebitCustomerAccountBranchCode = customerAccountDTO.BranchCode;
-                    inHouseChequeDTO.DebitCustomerAccountCustomerSerialNumber = customerAccountDTO.CustomerSerialNumber;
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Customer account details could not be found.";
-                }
             }
             else
             {
-                TempData["ErrorMessage"] = "Invalid Customer Account ID.";
+                return this.DataTablesJson(
+                    items: new List<InHouseChequeDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-
-            // Reload the ViewBag data for the dropdowns
-            ViewBag.CustomerAccounts = new SelectList(customerAccountsList, "Value", "Text");
-
-            // Return the view with the DTO
-            return View("Create", inHouseChequeDTO);
         }
-
-
-        private ServiceHeader CreateServiceHeader()
+        public async Task<ActionResult> Details()
         {
-            // Implement your logic to create a service header
-            return new ServiceHeader();
+            await ServeNavigationMenus();
+            return View();
+
         }
 
-        public async Task<ActionResult> Printing(Guid? id)
+
+
+
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
 
@@ -312,7 +117,266 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var parseId = id.Value;
 
-                var bankLinkageDTO = await _channelService.FindBankLinkageAsync(parseId, GetServiceHeader());
+                var branchDTO = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+
+                if (branchDTO != null)
+                {
+                    inHouseChequeDTO.BranchId = branchDTO.Id;
+                    inHouseChequeDTO.BranchDescription = branchDTO.Description;
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Branch details could not be found.";
+                    return RedirectToAction("Index");  
+                }
+            }
+            else
+            {
+                inHouseChequeDTO.BranchId = Guid.Parse("143570C6-48BB-E811-A814-000C29142092");
+                inHouseChequeDTO.BranchDescription = "HEAD OFFICE";
+            }
+
+            TempData["BranchId"] = inHouseChequeDTO.BranchId;
+            TempData["BranchDescription"] = inHouseChequeDTO.BranchDescription;
+
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"];
+                ViewBag.ChequePrintData = TempData["ChequePrintData"] as InHouseChequeDTO;
+            }
+
+            return View(inHouseChequeDTO);
+        }
+
+
+
+
+
+
+        public async Task<ActionResult> GetGLAccounts()
+        {
+            try
+            {
+                var glAccounts = await _channelService.FindChartOfAccountsAsync(GetServiceHeader());
+                return Json(new
+                {
+                    draw = Request["draw"],
+                    recordsTotal = glAccounts.Count(),
+                    recordsFiltered = glAccounts.Count(),
+                    data = glAccounts.Select(a => new
+                    {
+                        a.ParentAccountName,
+                        a.CostCenterDescription,
+                        a.CostCenterId,
+                        a.AccountCode,
+                        a.AccountName,
+                        a.AccountTypeDescription,
+                        a.Id
+                    })
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetCustomerAccountDetails(Guid customerAccountId)
+        {
+            try
+            {
+                var customerAccount = await _channelService.FindCustomerAccountAsync(customerAccountId, includeBalances: true);
+                if (customerAccount == null)
+                {
+                    return Json(new { success = false, message = "Customer account not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        customerAccountId = customerAccount.Id,
+                        customerAccountFullAccountNumber = customerAccount.FullAccountNumber,
+                        availableBalance = customerAccount.AvailableBalance,
+                        accountId = customerAccount.CustomerId,
+                        DebitCustomerAccountCustomerAccountTypeProductCode = customerAccount.CustomerAccountTypeProductCode,
+                        DebitCustomerAccountCustomerAccountTypeTargetProductId = customerAccount.CustomerAccountTypeTargetProductId,
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the customer account details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetChequeTypeDetails(Guid chequeTypeId)
+        {
+            try
+            {
+                var chequeType = await _channelService.FindChequeTypeAsync(chequeTypeId);
+                if (chequeType == null)
+                {
+                    return Json(new { success = false, message = "Cheque type not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    chequeTypeId = chequeType.Id,
+                    chequeTypeDescription = chequeType.Description
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching cheque type details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public async Task<ActionResult> GetBranches()
+        {
+            try
+            {
+                var branches = await _channelService.FindBranchesAsync(GetServiceHeader());
+                return Json(new
+                {
+                    draw = Request["draw"],
+                    recordsTotal = branches.Count(),
+                    recordsFiltered = branches.Count(),
+                    data = branches.Select(b => new
+                    {
+                        b.Id,
+                        b.Description
+                    })
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+
+
+        [HttpPost]
+        public JsonResult AddEntry(InHouseChequeDTO chequeEntry)
+        {
+            try
+            {
+                if (TempData["ChequeEntries"] == null)
+                {
+                    TempData["ChequeEntries"] = new List<InHouseChequeDTO>();
+                }
+
+                var chequeEntries = TempData["ChequeEntries"] as List<InHouseChequeDTO>;
+
+                if (chequeEntry.BranchId == Guid.Empty)
+                {
+                    chequeEntry.BranchId = Guid.Parse("143570C6-48BB-E811-A814-000C29142092");  
+                }
+
+                if (string.IsNullOrEmpty(chequeEntry.BranchDescription))
+                {
+                    chequeEntry.BranchDescription = "HEAD OFFICE";  
+                }
+
+                chequeEntries.Add(chequeEntry);
+
+                TempData["ChequeEntries"] = chequeEntries;
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, errorMessage = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult RemoveEntries(List<Guid> entryIds) 
+        {
+            try
+            {
+                if (TempData["ChequeEntries"] == null)
+                {
+                    return Json(new { success = false, errorMessage = "No entries found." });
+                }
+
+                var chequeEntries = TempData["ChequeEntries"] as List<InHouseChequeDTO>;
+
+                chequeEntries.RemoveAll(entry => entryIds.Contains(entry.Id)); 
+
+                TempData["ChequeEntries"] = chequeEntries;
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, errorMessage = ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Create()
+        {
+            try
+            {
+                var chequeEntries = TempData["ChequeEntries"] as List<InHouseChequeDTO>;
+
+                if (chequeEntries == null || chequeEntries.Count == 0)
+                {
+                    return RedirectToAction("Index"); 
+                }
+
+                var serviceHeader = GetServiceHeader();
+                var moduleNavigationItemCode = 1234;
+
+                var result = await _channelService.AddInHouseChequesAsync(
+                    new ObservableCollection<InHouseChequeDTO>(chequeEntries),
+                    moduleNavigationItemCode,
+                    serviceHeader);
+
+                if (result)
+                {
+                    TempData.Remove("ChequeEntries");
+
+                    TempData["SuccessMessage"] = "Cheque entries submitted successfully.";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to submit the cheque entries.";
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+
+
+
+
+
+
+
+        public async Task<ActionResult> Printing(Guid? id)
+        {
+            await ServeNavigationMenus();
+
+            var inHouseChequeDTO = new InHouseChequeDTO();
+
+            if (id.HasValue && id != Guid.Empty)
+            {
+                var bankLinkageDTO = await _channelService.FindBankLinkageAsync(id.Value, GetServiceHeader());
 
                 if (bankLinkageDTO != null)
                 {
@@ -332,51 +396,43 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return View();
         }
-        //[HttpPost]
-        //public async Task<ActionResult> Index(DataTableParameters parameters)
-        //{
-        //    // Set the page index and page size based on DataTable parameters
-        //    var pageIndex = (parameters.iDisplayStart / parameters.iDisplayLength) + 1;
-        //    var pageSize = parameters.iDisplayLength;
 
-        //    // Optionally, create a service header (if needed)
-        //    ServiceHeader serviceHeader = null; // Initialize if required
+        [HttpPost]
+        public async Task<ActionResult> GetPayeeLookupData(string searchText, int start, int length)
+        {
+            try
+            {
+                var pageIndex = start / length;  
+                var serviceHeader = GetServiceHeader(); 
 
-        //    // Fetch the paginated data using the provided method
-        //    var result = await _channelService.FindInHouseChequesInPageAsync(pageIndex, pageSize, serviceHeader);
+                var cheques = await _channelService.FindInHouseChequesByFilterInPageAsync(searchText, pageIndex, length, serviceHeader);
 
-        //    // Filter the records (if search term is provided)
-        //    if (!string.IsNullOrEmpty(parameters.sSearch))
-        //    {
-        //        result.Items = result.Items.Where(x => x.Payee.Contains(parameters.sSearch)
-        //                                            || x.Reference.Contains(parameters.sSearch)
-        //                                            || x.BranchDescription.Contains(parameters.sSearch)).ToList();
-        //    }
+                var data = cheques.PageCollection.Select(c => new
+                {
+                    c.Amount,
+                    c.Payee,
+                    c.Funding,
+                    c.Reference,
+                    c.WordifiedAmount,
+                    c.PaddedAmount,
+                    c.ChequeNumber,
+                    CreatedDate = c.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss tt"),
+                    c.Id
+                });
 
-        //    // Prepare the result for DataTables
-        //    var jsonData = new
-        //    {
-        //        sEcho = parameters.sEcho, // Ensure DataTable sync
-        //        iTotalRecords = result.TotalCount, // Total records in the system
-        //        iTotalDisplayRecords = result.TotalCount, // Total records after filtering
-        //        aaData = result.Items.Select(x => new
-        //        {
-        //            x.BranchDescription,
-        //            x.Payee,
-        //            x.Funding,
-        //            x.Reference,
-        //            x.DebitChartOfAccountAccountName,
-        //            CreatedDate = x.CreatedDate.ToString("o"), // ISO format for client-side parsing
-        //            Id = x.Id, // For the select button
-        //            x.Amount,
-        //            x.WordifiedAmount,
-        //            x.PaddedAmount
-        //        })
-        //    };
-
-        //    // Return the result as JSON
-        //    return Json(jsonData);
-        //}
+                return Json(new
+                {
+                    draw = Request["draw"],
+                    recordsTotal = cheques.ItemsCount,
+                    recordsFiltered = cheques.ItemsCount,
+                    data
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(500, "An error occurred while fetching payee data: " + ex.Message);
+            }
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -385,47 +441,71 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (ModelState.IsValid)
             {
                 var bankLinkageDTO = new BankLinkageDTO();
-                int moduleNavigationItemCode = 123; 
-                ServiceHeader serviceHeader = new ServiceHeader();
+                int moduleNavigationItemCode = 123;
+                ServiceHeader serviceHeader = GetServiceHeader();
 
                 bool result = await _channelService.PrintInHouseChequeAsync(model, bankLinkageDTO, moduleNavigationItemCode, serviceHeader);
 
                 if (result)
                 {
+                    TempData["ChequePrintData"] = model;
                     TempData["SuccessMessage"] = "Cheque printed successfully!";
-                    return RedirectToAction("Index");
+
+                    return RedirectToAction("PrintCheque");
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Failed to print the cheque. Please try again.");
+                    ModelState.AddModelError("", "Failed to print the cheque.");
                 }
             }
-
             return View(model);
         }
 
-        
+        public ActionResult PrintCheque()
+        {
+            if (TempData["ChequePrintData"] != null)
+            {
+                ViewBag.ChequePrintData = TempData["ChequePrintData"];
+                ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            }
+            else
+            {
+                return RedirectToAction("Create");
+            }
+
+            return View();
+        }
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Printing(InHouseChequeDTO model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var bankLinkageDTO = new BankLinkageDTO();
+        //        int moduleNavigationItemCode = 123;
+        //        ServiceHeader serviceHeader = GetServiceHeader();
+
+        //        bool result = await _channelService.PrintInHouseChequeAsync(model, bankLinkageDTO, moduleNavigationItemCode, serviceHeader);
+
+        //        if (result)
+        //        {
+        //            // Store the cheque data in TempData for use in the Index view
+        //            TempData["ChequePrintData"] = model;
+        //            TempData["SuccessMessage"] = "Cheque printed successfully!";
+        //            return RedirectToAction("Create");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("", "Failed to print the cheque.");
+        //        }
+        //    }
+        //    return View(model);
+        //}
+
 
 
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

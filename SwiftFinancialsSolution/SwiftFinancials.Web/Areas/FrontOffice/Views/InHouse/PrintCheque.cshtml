@@ -1,0 +1,130 @@
+﻿<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<button onclick="printAndDownload()">Print and Download</button>
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <div id="successMessage" class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Confirmation for printing and downloading cheque details
+            swal({
+                title: "Print and Download Cheque",
+                text: "Do you want to print and download the cheque details?",
+                icon: "question",
+                buttons: true
+            })
+                .then((willPrintAndDownload) => {
+                    if (willPrintAndDownload) {
+                        printCheque(); // Initiate printing
+
+                        // Confirmation for downloading PDF
+                        swal({
+                            title: "Download Cheque Details",
+                            text: "Do you want to download the cheque details as a PDF?",
+                            icon: "info",
+                            buttons: true
+                        }).then((willDownload) => {
+                            if (willDownload) {
+                                generatePDF(); // Generate PDF
+                            }
+                        });
+                    }
+                });
+        });
+    </script>
+}
+
+@if (ViewBag.ChequePrintData != null)
+{
+    var cheque = ViewBag.ChequePrintData;
+    <div id="chequeDetails">
+        <h3>Cheque Details</h3>
+        <p><strong>Payee:</strong> @cheque.Payee</p>
+        <p><strong>Amount:</strong> @cheque.Amount</p>
+        <p><strong>Date:</strong> @cheque.CreatedDate.ToShortDateString()</p>
+        <p><strong>Cheque Number:</strong> @cheque.ChequeNumber</p>
+        <p><strong>Reference:</strong> @cheque.Reference</p>
+        <p><strong>Wordified Amount:</strong> @cheque.WordifiedAmount</p>
+        <p><strong>Padded Amount:</strong> @cheque.PaddedAmount</p>
+        <p><strong>Bank Name:</strong> @cheque.BankName</p>
+        <p><strong>Bank Branch:</strong> @cheque.BranchDescription</p>
+        <p><strong>Bank Account:</strong> @cheque.BankAccount</p>
+        <p><strong>Debit G/L Account Name:</strong> @cheque.DebitChartOfAccountAccountName</p>
+    </div>
+}
+
+<script>
+    function generatePDF() {
+        var { jsPDF } = window.jspdf;
+        var doc = new jsPDF();
+
+        var chequeDetails = document.getElementById("chequeDetails").innerText;
+        var lines = chequeDetails.split('\n');
+        var yPosition = 10;
+
+        // Loop through each line of cheque details and add it to the PDF
+        lines.forEach(line => {
+            doc.text(10, yPosition, line);
+            yPosition += 10;
+        });
+
+        // Save the PDF
+        doc.save("ChequeDetails.pdf");
+    }
+
+    function printCheque() {
+        var printContents = document.getElementById("chequeDetails").innerHTML;
+        var printWindow = window.open('', '_blank', 'height=600,width=800');
+
+        if (printWindow) {
+            printWindow.document.write('<html><head><title>Print Cheque</title>');
+            printWindow.document.write('<style>body { font-family: Arial, sans-serif; }</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(printContents);
+            printWindow.document.write('</body></html>');
+
+            printWindow.document.close();
+            printWindow.focus();
+
+            setTimeout(function () {
+                printWindow.print();
+                printWindow.close();
+            }, 3000);
+        } else {
+            alert('Unable to open the print window. Please disable popup blockers and try again.');
+        }
+    }
+
+    function printAndDownload() {
+        swal({
+            title: "Print and Download Cheque",
+            text: "Do you want to print and download the cheque details?",
+            icon: "question",
+            buttons: true
+        })
+            .then((willPrintAndDownload) => {
+                if (willPrintAndDownload) {
+                    printCheque(); // Print the cheque
+
+                    swal({
+                        title: "Download Cheque Details",
+                        text: "Do you want to download the cheque details as a PDF?",
+                        icon: "info",
+                        buttons: true
+                    }).then((willDownload) => {
+                        if (willDownload) {
+                            generatePDF(); // Generate and download PDF
+                        }
+                    });
+                }
+            });
+    }
+</script>

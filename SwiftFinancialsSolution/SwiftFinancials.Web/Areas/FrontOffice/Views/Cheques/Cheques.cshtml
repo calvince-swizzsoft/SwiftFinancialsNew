@@ -8,7 +8,7 @@
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
-           
+
         </ol>
     </div>
 </div>
@@ -24,6 +24,10 @@
                     <i class="fa fa-cog"></i> In-House Cheques
                 </a>
 
+                <a href="@Url.Action("Index", "AutomatedClearing", new { Area = "FrontOffice" })" class="nav-link">
+                    <i class="fa fa-cog"></i> Automated-Clearing
+                </a>
+
 
 
 
@@ -31,6 +35,30 @@
         </div>
 
     </div>
+</div>
+
+<div class="ibox-title">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            <strong>Success !</strong> @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @*<div class="ibox-tools">
+            <a class="collapse-link">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="close-link">
+                <i class="fa fa-times"></i>
+            </a>
+        </div>*@
 </div>
 <style>
 
@@ -91,19 +119,19 @@
 </style>
 
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>External Cheques</h2>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
-            </li>
-            <li class="breadcrumb-item active">
-                <strong>List</strong>
-            </li>
-        </ol>
-    </div>
-</div>
+@*<div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>External Cheques</h2>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+                </li>
+                <li class="breadcrumb-item active">
+                    <strong>List</strong>
+                </li>
+            </ol>
+        </div>
+    </div>*@
 
 
 
@@ -112,8 +140,11 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>External Cheques</h2>
+                    <hr />
                     @Html.ActionLink("Cheque Banking", "Banking", "Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
                     @Html.ActionLink("Cheque Clearance", "ChequeClearance", "Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+
 
                     @{ ViewBag.Title = "Cheques"; }
 
@@ -154,11 +185,27 @@
                             </tbody>
                         </table>
                     </div>
+
+                </div>
+                <div class="bottom-button" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                    <div class="col-md-5">
+                        <label for="startDate">Start Date:</label>
+                        <input type="text" id="startDate" class="form-control" />
+                    </div>
+                    <div class="col-md-5">
+                        <label for="endDate">End Date:</label>
+                        <input type="text" id="endDate" class="form-control" />
+                    </div>
+                    <button id="refreshButton" class="btn btn-info">Refresh</button>
+
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 
 
 
@@ -222,7 +269,6 @@
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
             aData.CreatedDate = dt_Created;
 
-            // Format MaturityDate
             if (aData.MaturityDate) {
                 var maturityDate = new Date(parseInt(aData.MaturityDate.replace("/Date(", "").replace(")/", ""), 10));
                 var dt_Maturity = $.datepicker.formatDate('dd/mm/yy', maturityDate);
@@ -234,7 +280,6 @@
             return nRow;
         },
 
-        // Display settings
         "aoColumns": [
             { "mDataProp": "TellerDescription", "sTitle": "Teller Name", "sWidth": "15%" },
             { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "20%" },
@@ -253,6 +298,112 @@
 });
 
     </script>
+    <script>
+    $(document).ready(function () {
+        $('#startDate').datepicker();
+        $('#endDate').datepicker();
+
+        function loadCheques() {
+            var startDate = $('#startDate').datepicker('getDate');
+            var endDate = $('#endDate').datepicker('getDate');
+            var text = $('#searchInput').val(); 
+
+            if (!startDate || !endDate) {
+                alert("Please select both a start date and an end date.");
+                return;
+            }
+
+            var formattedStartDate = startDate.toISOString().split('T')[0];
+            var formattedEndDate = endDate.toISOString().split('T')[0];
+
+            var url = '@(Url.Action("FindExternalChequesByDate", "Cheques", new { Area = "FrontOffice" }))';
+            url += '?startDate=' + formattedStartDate + '&endDate=' + formattedEndDate + '&text=' + text;
+
+            $('#ChequesGrid').DataTable().ajax.url(url).load();
+        }
+
+        $('#searchButton').click(function () {
+            loadCheques();
+        });
+
+        $('#refreshButton').on('click', function () {
+            loadCheques();
+        });
+    });
+    </script>
+
+
+
+    <style>
+
+    .nav {
+        display: flex;
+        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+        padding: 0;
+        margin: 5px;
+        margin-bottom:0;
+        border: 2px solid Black;
+        border-radius:8px;
+        margin-top:20px;
+        gap: 10px; /* Space between links */
+        text-align: center; /* Centers the text inside links */
+
+        padding:10px;
+    }
+
+    .nav-link {
+        display: flex;
+
+
+        text-decoration: none;
+        color: #007bff; /* Default text color */
+        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+
+        border-radius: 4px; /* Rounded corners */
+        font-size: 14px; /* Adjust font size for better fit */
+        white-space: nowrap; /* Prevents text from wrapping inside the link */
+
+       @* border: 1px solid #007bff;*@ /* Border color and style */
+    }
+
+        .nav-link:hover {
+            color: #fff; /* Text color on hover */
+            background-color: #0056b3; /* Background color on hover */
+        }
+
+        .nav-link i {
+            margin-right: 8px; /* Space between icon and text */
+            font-size: 16px; /* Adjust icon size */
+        }
+
+        .nav-link.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .col-lg-2 {
+        display: flex;
+        align-items: center; /* Center the title vertically */
+        justify-content: center; /* Center the title horizontally if needed */
+        padding: 0; /* Remove default padding if necessary */
+        border-radius: 4px; /* Rounded corners */
+        @*border: 1px solid black;*@ /* Border color and style */
+    }
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+    </style>
+
+
+
 }
 
 

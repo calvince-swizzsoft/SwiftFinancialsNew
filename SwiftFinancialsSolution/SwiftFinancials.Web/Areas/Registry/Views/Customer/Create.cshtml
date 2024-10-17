@@ -95,7 +95,7 @@
                                                 new SelectListItem { Text = "Corporation-Particulars", Value = "Corporation" },
                                                 new SelectListItem { Text = "Micro-credit-Particulars", Value = "MicroCredit" }
                                             }, "Value", "Text"),
-                                            new { @class = "form-control input-md", @id = "customerTypeDropdown", onchange = "onCustomerTypeChange(this)" })
+                                            new { @class = "form-control input-md", @id = "customerTypeDropdown" })
                                         @Html.ValidationMessageFor(model => model.TypeDescription)
                                     </div>
                                 </div>
@@ -167,80 +167,89 @@
 
 
                         <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap;" id="myTab">
+                            <!-- Dynamic Navigation Links -->
+                            <li class="nav-item dynamic-tab" id="link-IndividualParticulars" style="display: none;">
+                                <a class="nav-link tab-pane" href="#IndividualParticulars" data-toggle="tab">Individual-Particulars</a>
+                            </li>
+                            <li class="nav-item dynamic-tab" id="link-Partnership" style="display: none;">
+                                <a class="nav-link tab-pane" href="#Partnership" data-toggle="tab">Partnership-Particulars</a>
+                            </li>
+                            <li class="nav-item dynamic-tab" id="link-Corporation" style="display: none;">
+                                <a class="nav-link tab-pane" href="#Corporation" data-toggle="tab">Corporation-Particulars</a>
+                            </li>
+                            <li class="nav-item dynamic-tab" id="link-MicroCredit" style="display: none;">
+                                <a class="nav-link tab-pane" href="#MicroCredit" data-toggle="tab">Micro-credit-Particulars</a>
+                            </li>
 
+                            <!-- Always Visible Navigation Links -->
                             <li class="nav-item">
-                                <a class="nav-link" href="#IndividualParticulars" data-toggle="tab">Individual-Particulars</a>
+                                <a class="nav-link tab-pane" href="#address" data-toggle="tab">Address</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#address" data-toggle="tab">Address</a>
+                                <a class="nav-link tab-pane" href="#SpecimenCapture" data-toggle="tab">Specimen Capture</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#SpecimenCapture" data-toggle="tab">Specimen Capture</a>
-                            </li>
-                        </ul>
+                        </ul> <!-- Tab Content -->
 
                         <div class="tab-content">
 
-                            <div id="address" class="tab-pane" role="tabpanel">
-                                <div class="tab-content">
-                                    <fieldset>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
-                                                    @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
-                                                </div>
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
-                                                    @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
-                                                </div>
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city" } })
-                                                    @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
-                                                </div>
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
-                                                    @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
-                                                </div>
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Land line" } })
-                                                    @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street" } })
-                                                    @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
-                                                    @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </div>
-                            </div>
 
-                            <div id="IndividualParticulars" class="tab-pane active" role="tabpanel">
+                            <div id="address" class="tab-pane" role="tabpanel">
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
+                                                @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
+                                                @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city" } })
+                                                @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
+                                                @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Land line" } })
+                                                @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street" } })
+                                                @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
+                                                @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div id="IndividualParticulars" class="tab-pane">
                                 <div class="row">
                                     <div class="col-4">
                                         <div class="form-group form-group-lg">
@@ -369,6 +378,7 @@
                                             <label for="passportPhoto" class="mb-2">Passport Photo (via Webcam)</label>
                                             <video id="webcam" autoplay style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);"></video>
                                             <button type="button" class="btn btn-primary mt-3" onclick="captureImage()">Capture Passport Photo</button>
+
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -413,9 +423,10 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-4">
+                            @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                            {
                                 <input type="submit" value="Create" class="btn btn-primary" style="width: 150px;" />
-                            </div>
+                            }
                         </div>
                     }
                 </div>
@@ -626,7 +637,6 @@
 }
 
 
-
 <script>
     // JavaScript code to handle webcam capture for passport photo
     function captureImage() {
@@ -674,3 +684,29 @@
     }
 </script>
 
+
+<!-- jQuery Script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var activeTabId = ''; // Variable to store the ID of the active tab
+
+        // Handle dropdown change
+        $('#customerTypeDropdown').change(function () {
+            var selectedValue = $(this).val(); // Get selected value
+
+            if (selectedValue) {
+                // Hide the currently active tab link
+                if (activeTabId) {
+                    $('#' + activeTabId).hide();
+                }
+
+                // Show the new selected tab link
+                activeTabId = 'link-' + selectedValue; // Update the active tab ID
+                $('#' + activeTabId).show();
+                // Activate the selected tab
+                $('#' + activeTabId + ' a').tab('show');
+            }
+        });
+    });
+</script>

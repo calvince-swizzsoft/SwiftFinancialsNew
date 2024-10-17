@@ -16,7 +16,9 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         [Description("deposit")]
         CashDeposit = 0,
         [Description("withdrawal")]
-        CashWithdrawal = 1 
+        CashWithdrawal = 1,
+        [Description("transfer")]
+        CashTransfer = 2
     }
 
 

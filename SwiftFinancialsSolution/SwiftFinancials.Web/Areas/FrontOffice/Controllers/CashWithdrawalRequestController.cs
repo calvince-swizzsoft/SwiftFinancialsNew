@@ -103,6 +103,46 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<JsonResult> CashTransferRequestsIndex(JQueryDataTablesModel jQueryDataTablesModel, int? status, int? customerFilter)
+        {
+
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            DateTime startDate = DateTime.MinValue;
+
+            DateTime endDate = DateTime.MaxValue;
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            //pageIndex++;
+
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            //var pageCollectionInfo = await _channelService.FindCashTransferRequestsByFilterInPageAsync(employeeId, startDate, endDate, status, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            var pageCollectionInfo = await _channelService.FindCashTransferRequestsByStatusAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, (int)status, (int)customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<CashWithdrawalRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+        }
+
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -128,9 +168,16 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 //var model = new CashWithdrawalRequestDTO
                 //{
-                    // Initialize with empty list if no data is available
-                   // CashDepositRequests = observableCollection1.ToList()
+                // Initialize with empty list if no data is available
+                // CashDepositRequests = observableCollection1.ToList()
                 //};
+
+                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+
+                ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
+
+                ViewBag.CashTransferStatus = GetCashTransferStatusSelectList(string.Empty);
+                ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
 
 
                 return View();
@@ -174,6 +221,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
             ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
+
+            ViewBag.CashTransferStatus = GetCashTransferStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
 
             return View(cashWithdrawalRequestDTO);
         }
@@ -335,6 +385,21 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     //}
 
                     return HandleAuthorizationResult(depositAuthorization, isApproval);
+
+                case FrontOfficeCashRequestType.CashTransfer:
+                    
+                    var cashTransferRequest = await _channelService.FindCashTransferRequestAsync(id, GetServiceHeader());
+
+                    cashTransferRequest.Remarks = remarks;
+   
+                    int cashTransferRequestAcknowledgeOption = (customerTransactionAuthOption == 1) ? 2 : 3;
+
+
+
+
+                    var transferAuthorization = await _channelService.AcknowledgeCashTransferRequestAsync(cashTransferRequest, cashTransferRequestAcknowledgeOption, GetServiceHeader());
+
+                    return HandleAuthorizationResult(transferAuthorization, isApproval);
 
                 default:
                     return RedirectToAction("Create");

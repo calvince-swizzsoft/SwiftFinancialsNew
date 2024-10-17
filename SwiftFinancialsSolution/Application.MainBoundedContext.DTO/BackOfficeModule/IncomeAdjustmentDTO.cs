@@ -57,5 +57,9 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         public string ErrorMessageResult { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string typeTypeDescription { get; set; }
     }
 }
