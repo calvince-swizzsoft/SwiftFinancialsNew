@@ -69,6 +69,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 await _channelService.AddDepartmentAsync(departmentDTO, GetServiceHeader());
 
+                TempData["SuccessMessage"] = "Department created successfully!";
+
                 return RedirectToAction("Index");
             }
             else
@@ -78,6 +80,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 return View(departmentDTO);
             }
         }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -95,6 +98,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateDepartmentAsync(departmentBindingModel, GetServiceHeader());
+
+                TempData["SuccessMessage"] = "Department updated successfully!"; 
 
                 return RedirectToAction("Index");
             }

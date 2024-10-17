@@ -3,6 +3,12 @@
 @{
     ViewBag.Title = "Appraise Loan";
     var loanAppraisalOption = ViewBag.LoanAppraisalOptionSelectList as List<SelectListItem>;
+
+
+    var apr = ViewBag.APR;
+    var icm = ViewBag.InterestCalculationMode;
+    var amountApplied = ViewBag.AmountApplied;
+    var termInMonths = ViewBag.TermInMonths;
 }
 
 
@@ -56,45 +62,113 @@
     }
 
 
-
-    #ChargeSplits {
-        width: 100%;
-        border-collapse: collapse;
-        font-family: Arial, sans-serif;
-    }
-
-        #ChargeSplits thead {
-            background-color: white;
-            color: #333;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        #ChargeSplits th, #ChargeSplits td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        #ChargeSplits th {
-            font-weight: bold;
-        }
-
-        #ChargeSplits tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        #ChargeSplits tbody tr:hover {
-            background-color: #f1f1f1;
-        }
-
     .incomeAdjustment-section {
         margin-top: 20px;
         background-color: #e0f0ff;
         padding: 15px;
         border-radius: 8px;
     }
+
+
+
+    #repaymentScheduledataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #repaymentScheduledataTable th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #repaymentScheduledataTable th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky; /* Makes the header sticky */
+            top: 0; /* Fixes the header at the top of the scrollable area */
+            z-index: 1; /* Keeps header above other content */
+        }
+
+        #repaymentScheduledataTable tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #repaymentScheduledataTable td {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        #repaymentScheduledataTable tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
+
+        #repaymentScheduledataTable tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        #repaymentScheduledataTable tr:last-child td {
+            border-bottom: none;
+        }
+
+    .no-data-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+
+    #incomeAdjustmentsdataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #incomeAdjustmentsdataTable th, td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    #incomeAdjustmentsdataTable th {
+        background: linear-gradient(to bottom, #4a90e2, #003366);
+        color: white;
+        text-transform: uppercase;
+        font-size: 1.1em;
+        position: sticky; /* Makes the header sticky */
+        top: 0; /* Fixes the header at the top of the scrollable area */
+        z-index: 1; /* Keeps header above other content */
+    }
+
+    #incomeAdjustmentsdataTable tr:hover td {
+        background: rgba(74, 144, 226, 0.2);
+        transform: translateY(-2px);
+    }
+
+    #incomeAdjustmentsdataTable td {
+        background: #f9f9f9;
+        color: #333;
+    }
+
+    #incomeAdjustmentsdataTable tr:nth-child(even) td {
+        background: #f2f2f2;
+    }
+
+    #incomeAdjustmentsdataTable tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    #incomeAdjustmentsdataTable tr:last-child td {
+        border-bottom: none;
+    }
+
 </style>
 
+<link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
 
 
@@ -146,7 +220,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
+                    @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post, new { id = "LoanAppraisalForm" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -179,7 +253,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.CustomerId)
-                                                @Html.EditorFor(model => model.CustomerFullName, new
+                                                @Html.EditorFor(model => model.CustomerIndividualFirstName, new
                                                 {
                                                     htmlAttributes = new
                                                     {
@@ -333,13 +407,10 @@
                                     <div id="section1" class="tab active">
                                         <!-- Standing Orders -->
                                         <div class="tab-content">
-                                            <h2 style="color: cadetblue;">Standing Orders</h2>
-
-                                            <br />
-
-                                            <row>
-                                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <div class="table-container">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Standing Orders</h3>
+                                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead>
                                                         <tr>
                                                             <th>Trigger</th>
                                                             <th>Beneficiary Product Name</th>
@@ -372,12 +443,7 @@
                                                         }
                                                     </tbody>
                                                 </table>
-
-                                                @if (TempData["EmptystandingOrders"] != null)
-                                                {
-                                                    <p style="color: red; font-style:italic; text-align: center;"><strong>@TempData["EmptystandingOrders"]</strong></p>
-                                                }
-                                            </row>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -392,13 +458,10 @@
 
                                         <!--Payouts-->
                                         <div id="payouts" class="sub-tab-content">
-                                            <h2 style="color: cadetblue;">Payouts</h2>
-
-                                            <br />
-
-                                            <row>
-                                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <div class="table-container">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Payouts</h3>
+                                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead>
                                                         <tr>
                                                             <th>Batch Number</th>
                                                             <th>Batch Reference</th>
@@ -414,57 +477,20 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @if (ViewBag.StandingOrders != null)
-                                                        {
-                                                            foreach (var standingOrder in ViewBag.StandingOrders)
-                                                            {
-                                                                <tr>
-
-
-
-
-
-
-
-                                                                    <!--<td>@standingOrder.TriggerDescription</td>
-                                                                    <td>@standingOrder.BeneficiaryProductDescription</td>
-                                                                    <td style="text-align: right;">@standingOrder.LoanAmount</td>
-                                                                    <td style="text-align: right;">@standingOrder.PaymentPerPeriod</td>
-                                                                    <td style="text-align: right;">@standingOrder.Principal</td>
-                                                                    <td style="text-align: right;">@standingOrder.Interest</td>
-                                                                    <td style="text-align: right;">-->
-                                                                    @*@standingOrder.PrincipalArrears*@
-                                                                    <!--</td>
-                                                                    <td style="text-align: right;">-->
-                                                                    @*@standingOrder.InterestArrears*@
-                                                                    <!--</td>
-                                                                    <td>@standingOrder.ChargeTypeDescription</td>
-                                                                    <td>@standingOrder.ChargeFixedAmount</td>
-                                                                    <td>@standingOrder.ChargePercentage</td>-->
-                                                                </tr>
-                                                            }
-                                                        }
+                                                        <!--Look back later-->
                                                     </tbody>
                                                 </table>
-
-                                                @if (TempData["standingOrder"] != null)
-                                                {
-                                                    <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
-                                                }
-                                            </row>
+                                            </div>
                                         </div>
 
 
 
                                         <!--Salary-->
                                         <div id="salary" class="sub-tab-content">
-                                            <h2 style="color: cadetblue;">Salary</h2>
-
-                                            <br />
-
-                                            <row>
-                                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <div class="table-container">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Salary</h3>
+                                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead>
                                                         <tr>
                                                             <th>Posting Period</th>
                                                             <th>Month</th>
@@ -476,44 +502,10 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @if (ViewBag.StandingOrders != null)
-                                                        {
-                                                            foreach (var standingOrder in ViewBag.StandingOrders)
-                                                            {
-                                                                <tr>
-
-
-
-
-
-
-
-                                                                    <!--<td>@standingOrder.TriggerDescription</td>
-                                                                    <td>@standingOrder.BeneficiaryProductDescription</td>
-                                                                    <td style="text-align: right;">@standingOrder.LoanAmount</td>
-                                                                    <td style="text-align: right;">@standingOrder.PaymentPerPeriod</td>
-                                                                    <td style="text-align: right;">@standingOrder.Principal</td>
-                                                                    <td style="text-align: right;">@standingOrder.Interest</td>
-                                                                    <td style="text-align: right;">-->
-                                                                    @*@standingOrder.PrincipalArrears*@
-                                                                    <!--</td>
-                                                                    <td style="text-align: right;">-->
-                                                                    @*@standingOrder.InterestArrears*@
-                                                                    <!--</td>
-                                                                    <td>@standingOrder.ChargeTypeDescription</td>
-                                                                    <td>@standingOrder.ChargeFixedAmount</td>
-                                                                    <td>@standingOrder.ChargePercentage</td>-->
-                                                                </tr>
-                                                            }
-                                                        }
+                                                        <!--Look back later-->
                                                     </tbody>
                                                 </table>
-
-                                                @if (TempData["standingOrder"] != null)
-                                                {
-                                                    <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
-                                                }
-                                            </row>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -523,11 +515,10 @@
                                     <div id="section3" class="tab">
                                         <!-- Loan Applications -->
                                         <div class="tab-content">
-                                            <h2 style="color: cadetblue;">Loan Applications</h2>
-
-                                            <row>
-                                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <div class="table-container">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Loan Applications</h3>
+                                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead>
                                                         <tr>
                                                             <th>Loan Number</th>
                                                             <th>Status</th>
@@ -546,30 +537,21 @@
                                                             foreach (var loanApplications in ViewBag.LoanApplications)
                                                             {
                                                                 <tr>
-                                                                    <td>@loanApplications.TriggerDescription</td>
-                                                                    <td>@loanApplications.BeneficiaryProductDescription</td>
-                                                                    <td style="text-align: right;">@loanApplications.LoanAmount</td>
-                                                                    <td style="text-align: right;">@loanApplications.PaymentPerPeriod</td>
-                                                                    <td style="text-align: right;">@loanApplications.Principal</td>
-                                                                    <td style="text-align: right;">@loanApplications.Interest</td>
-                                                                    <td style="text-align: right;">@loanApplications.Interest</td>
-                                                                    <td style="text-align: right;">
-                                                                        @loanApplications.PrincipalArrears
-                                                                    </td>
-                                                                    <td style="text-align: right;">
-                                                                        @loanApplications.InterestArrears
-                                                                    </td>
+                                                                    <td>@loanApplications.CaseNumber</td>
+                                                                    <td>@loanApplications.StatusDescription</td>
+                                                                    <td>@loanApplications.CustomerFullName</td>
+                                                                    <td>@loanApplications.CustomerReference3</td>
+                                                                    <td>@loanApplications.LoanProductDescription</td>
+                                                                    <td>@loanApplications.ReceivedDate</td>
+                                                                    <td style="text-align: right;">@loanApplications.AmountApplied</td>
+                                                                    <td style="text-align: right;">@loanApplications.AppraisedAmount</td>
+                                                                    <td>@loanApplications.SystemAppraisalRemarks</td>
                                                                 </tr>
                                                             }
                                                         }
                                                     </tbody>
                                                 </table>
-
-                                                @if (TempData["standingOrder"] != null)
-                                                {
-                                                    <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
-                                                }
-                                            </row>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -589,155 +571,95 @@
                                     <div id="section5" class="tab">
                                         <!-- Loan Guarantors Section -->
                                         <div class="tab-content">
-                                            <h2 style="color: cadetblue;">
-                                                Attach Loan Guarantors
-                                            </h2>
-                                            <br />
-                                            <fieldset>
-                                                <div class="row">
-                                                    <div class="col-md-4 form-group">
-                                                        @Html.LabelFor(model => model.GuarantorId, new { @class = "control-label" })
-                                                        <div class="input-group" data-autoclose="true">
-                                                            @Html.HiddenFor(model => model.GuarantorId)
-                                                            @Html.TextBoxFor(model => model.GuarantorName, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Guarantor..." })
-                                                            <span class="input-group-addon">
-                                                                <a data-toggle="modal" data-target="#GuarantorLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-5 form-group">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GuarantorEmployerId, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.HiddenFor(model => model.GuarantorEmployerId)
-                                                            @Html.EditorFor(model => model.GuarantorEmployerDescription, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Employer Name...", @readonly = "readonly" } })
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 form-group">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GuarantorStationDescription, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.HiddenFor(model => model.GuarantorStationId)
-                                                            @Html.EditorFor(model => model.GuarantorStationDescription, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Station Name...", @readonly = "readonly" } })
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-md-3 form-group">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GuarantorIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => model.GuarantorIdentificationNumber, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "ID Number...", @readonly = "readonly" } })
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 form-group">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GuarantorReference1, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => model.GuarantorReference1, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "XXXX-XXX-XXXXX", @readonly = "readonly" } })
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 form-group">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GuarantorReference2, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => model.GuarantorReference2, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "XXXXX", @readonly = "readonly" } })
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 form-group">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GuarantorReference3, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => model.GuarantorReference3, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "XXXXXXXX", @readonly = "readonly" } })
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-md-3 form-group">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.AppraisalFactor, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => model.AppraisalFactor, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "eg. 1,2..." } })
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 form-group">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GuarantorTotalshares, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => model.GuarantorTotalshares, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 form-group">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GuarantorCommittedShares, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => model.GuarantorCommittedShares, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 form-group">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GuarantorAmountGuaranteed, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => model.GuarantorAmountGuaranteed, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Kshs.0.00" } })
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-md-6 form-group">
-                                                        @using (Html.BeginForm("Create", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "btn btn-primary" }))
+                                            <div class="table-container">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Guarantors</h3>
+                                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Guarantor Name</th>
+                                                            <th>Employer</th>
+                                                            <th>Account Number</th>
+                                                            <th>Appraisal Factor</th>
+                                                            <th>Total Shares</th>
+                                                            <th>Committed Shares</th>
+                                                            <th>Amount Guaranteed</th>
+                                                            <th>Date Guaranteed</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (ViewBag.LoanGuarantors != null)
                                                         {
-                                                            <input type="submit" style="width:150px;" class="btn btn-primary" value="Add" />
-                                                        }
-                                                    </div>
-                                                </div>
-
-                                                <br />
-
-                                                <row>
-                                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                            <tr>
-                                                                <th style="width: 10%;">Customer Name</th>
-                                                                <th style="width: 5%;">ID Type</th>
-                                                                <th style="width: 5%;">ID Number</th>
-                                                                <th style="width: 5%;">Payroll Number</th>
-                                                                <th style="width: 5%;">Total Shares</th>
-                                                                <th style="width: 5%;">Committed shares</th>
-                                                                <th style="width: 5%;">Amount Guaranteed</th>
-                                                                <th style="width: 5%;">Amount Pledged</th>
-                                                                <th style="width: 2%;">Appraisal Factor</th>
-                                                                <th style="width: 5%;">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @if (ViewBag.ChargeSplitDTOs != null)
+                                                            foreach (var guarantors in ViewBag.LoanGuarantors)
                                                             {
-                                                                foreach (var commissionSplit in ViewBag.ChargeSplitDTOs)
-                                                                {
-                                                                    <tr data-id="@commissionSplit.Id">
-                                                                        <td>@commissionSplit.ChartOfAccountAccountName</td>
-                                                                        <td>@commissionSplit.Description</td>
-                                                                        <td style="text-align: right;">@commissionSplit.Percentage</td>
-                                                                        <td>@commissionSplit.Leviable</td>
-                                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
-                                                                    </tr>
-                                                                }
+                                                                <tr>
+                                                                    <td>@guarantors.Customer.FullName</td>
+                                                                    <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
+                                                                    <td>@guarantors.Customer.Reference1</td>
+                                                                    <td>@guarantors.AppraisalFactor</td>
+                                                                    <td style="text-align: right;">@guarantors.TotalShares</td>
+                                                                    <td style="text-align: right;">@guarantors.CommittedShares</td>
+                                                                    <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
+                                                                    <td>@guarantors.CreatedDate</td>
+                                                                </tr>
                                                             }
-                                                        </tbody>
-                                                    </table>
-
-                                                    @if (TempData["tPercentage"] != null)
-                                                    {
-                                                        <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
-                                                    }
-                                                </row>
-                                            </fieldset>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                
+                                
+                                    <div id="section6" class="tab">
+                                        <div class="tab-content">
+                                            <div class="table-container">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Loan Accounts</h3>
+                                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Account Status</th>
+                                                            <th>Full Account Number</th>
+                                                            <th>Account Number</th>
+                                                            <th>Membership Number</th>
+                                                            <th>Personal File Number</th>
+                                                            <th>Company</th>
+                                                            <th>Branch</th>
+                                                            <th>Product</th>
+                                                            <th>Section</th>
+                                                            <th>Book Balance</th>
+                                                            <th>Available Balance</th>
+                                                            <th>Principal Balance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (ViewBag.CustomerAccounts != null)
+                                                        {
+                                                            foreach (var customerAccount in ViewBag.CustomerAccounts)
+                                                            {
+                                                                <tr>
+                                                                    <td>@customerAccount.StatusDescription</td>
+                                                                    <td>@customerAccount.FullAccountNumber</td>
+                                                                    <td>@customerAccount.CustomerReference1</td>
+                                                                    <td>@customerAccount.CustomerReference2</td>
+                                                                    <td>@customerAccount.CustomerReference3</td>
+                                                                    <td>@customerAccount.BranchCompanyDescription</td>
+                                                                    <td>@customerAccount.BranchDescription</td>
+                                                                    <td>@customerAccount.CustomerAccountTypeTargetProductDescription</td>
+                                                                    <td>@customerAccount.CustomerAccountTypeTargetProductLoanProductSectionDescription</td>
+                                                                    <td style="text-align: right;">@customerAccount.BookBalance</td>
+                                                                    <td style="text-align: right;">@customerAccount.AvailableBalance</td>
+                                                                    <td style="text-align: right;">@customerAccount.PrincipalBalance</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </fieldset>
                             </div>
-
 
                             <div id="LoanQualification" class="tab-pane" style="margin-left: 20px;">
                                 <fieldset>
@@ -746,7 +668,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanProductInvestmentsBalance, htmlAttributes: new { @class = "control-label" })
                                                 @Html.ValidationMessageFor(model => model.LoanProductInvestmentsBalance, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @id = "LoanProductInvestmentsBalance", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @id = "LoanProductInvestmentsBalance", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
 
@@ -754,7 +676,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationInvestmentsMultiplier, htmlAttributes: new { @class = "control-label" })
                                                 @Html.ValidationMessageFor(model => model.LoanRegistrationInvestmentsMultiplier, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.LoanRegistrationInvestmentsMultiplier, new { htmlAttributes = new { @id = "LoanRegistrationInvestmentsMultiplier", @class = "form-control required", @placeholder = "Kshs.0.00" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationInvestmentsMultiplier, new { htmlAttributes = new { @id = "LoanRegistrationInvestmentsMultiplier", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
 
@@ -762,7 +684,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationMaximumLoan, htmlAttributes: new { @class = "control-label" })
                                                 @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumLoan, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.LoanRegistrationMaximumLoan, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationMaximumLoan, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
                                     </div>
@@ -771,116 +693,117 @@
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanProductSectionDescription, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.LoanProductSectionSection)
-                                                @Html.EditorFor(model => model.LoanProductSectionDescription, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Enter text..." } })
+                                                @Html.HiddenFor(model => model.LoanProductSectionDescription)
+                                                @Html.EditorFor(model => model.LoanProductSectionDescription, new { htmlAttributes = new { @id = "LoanProductSectionDescription", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationOutstandingLoansBalance, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationOutstandingLoansBalance)
-                                                @Html.EditorFor(model => model.LoanRegistrationOutstandingLoansBalance, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationOutstandingLoansBalance, new { htmlAttributes = new { @id = "LoanRegistrationOutstandingLoansBalance", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationMaximumEntitled, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationMaximumEntitled)
-                                                @Html.EditorFor(model => model.LoanRegistrationMaximumEntitled, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationMaximumEntitled, new { htmlAttributes = new { @id = "LoanRegistrationMaximumEntitled", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-lg-12">
+                                        <div class="col-lg-12 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationNetIncome, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationNetIncome)
-                                                @Html.EditorFor(model => model.LoanRegistrationNetIncome, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationNetIncome, new { htmlAttributes = new { @id = "NetIncome", @class = "form-control required", @placeholder = "Kshs.0.00" } })
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationTotalAllowance, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationTotalAllowance)
-                                                @Html.EditorFor(model => model.LoanRegistrationTotalAllowance, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationTotalAllowance, new { htmlAttributes = new { @id = "TotalAllowance", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationTotalDeduction, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationTotalDeduction)
-                                                @Html.EditorFor(model => model.LoanRegistrationTotalDeduction, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationTotalDeduction, new { htmlAttributes = new { @id = "TotalDeduction", @class = "form-control required", @placeholder = "Kshs.0.00", @disabled = "disabled" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationTotalIncome, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationTotalIncome)
-                                                @Html.EditorFor(model => model.LoanRegistrationTotalIncome, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationTotalIncome, new { htmlAttributes = new { @id = "TotalIncome", @class = "form-control required", @placeholder = "Kshs.0.00", @disabled = "disabled" } })
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.TakeHomeFixedAmount, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.TakeHomeFixedAmount)
-                                                @Html.EditorFor(model => model.TakeHomeFixedAmount, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.TakeHomeFixedAmount, new { htmlAttributes = new { @id = "TakeHomeValue", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationAbilityToPay, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationAbilityToPay)
-                                                @Html.EditorFor(model => model.LoanRegistrationAbilityToPay, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationAbilityToPay, new { htmlAttributes = new { @id = "AbilityToPay", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationAbilityToPayOverLoanTerm, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationAbilityToPayOverLoanTerm)
-                                                @Html.EditorFor(model => model.LoanRegistrationAbilityToPayOverLoanTerm, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationAbilityToPayOverLoanTerm, new { htmlAttributes = new { @id = "AbilityToPayOverLoanTerm", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationLoanPlusInterest, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationLoanPlusInterest)
-                                                @Html.EditorFor(model => model.LoanRegistrationLoanPlusInterest, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationLoanPlusInterest, new { htmlAttributes = new { @id = "LoanPlusInterest", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationLoanPart, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationLoanPart)
-                                                @Html.EditorFor(model => model.LoanRegistrationLoanPart, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationLoanPart, new { htmlAttributes = new { @id = "LoanRegistrationLoanPart", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationInterestPart, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationInterestPart)
-                                                @Html.EditorFor(model => model.LoanRegistrationInterestPart, new { htmlAttributes = new { @id = "LoanRegistrationMaximumLoan", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationInterestPart, new { htmlAttributes = new { @id = "LoanRegistrationInterestPart", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
                                     </div>
                                 </fieldset>
+
 
                                 <br />
 
@@ -893,7 +816,7 @@
                                                     @Html.LabelFor(model => model.incomeAdjustmentDTO[0].Description, new { @class = "control-label" })
                                                     <div class="input-group" data-autoclose="true">
                                                         @Html.HiddenFor(model => model.incomeAdjustmentDTO[0].Id)
-                                                        @Html.TextBoxFor(model => model.incomeAdjustmentDTO[0].Description, new { @id = "IAName", @class = "form-control input-md alpha alphaspace required", @placeholder = "Link Income Adjustment..." })
+                                                        @Html.TextBoxFor(model => model.incomeAdjustmentDTO[0].Description, new { @id = "Description", @class = "form-control input-md alpha alphaspace required", @placeholder = "Link Income Adjustment...", @disabled = "disabled" })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#incomeAdjustmentsLookupModal"><span class="fa fa-search"></span></a>
                                                         </span>
@@ -901,27 +824,24 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.incomeAdjustmentDTO[0].TypeDescription, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.LabelFor(model => model.incomeAdjustmentDTO[0].Type, htmlAttributes: new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.incomeAdjustmentDTO[0].Type)
-                                                    @Html.EditorFor(model => model.incomeAdjustmentDTO[0].TypeDescription, new { htmlAttributes = new { @id = "Type", @class = "form-control required", @placeholder = "" } })
+                                                    @Html.EditorFor(model => model.incomeAdjustmentDTO[0].typeTypeDescription, new { htmlAttributes = new { @id = "TypeDescription", @class = "form-control required", @disabled = "disabled" } })
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.incomeAdjustmentDTO[0].Amount, htmlAttributes: new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.incomeAdjustmentDTO[0].Amount)
                                                     @Html.EditorFor(model => model.incomeAdjustmentDTO[0].Amount, new { htmlAttributes = new { @id = "Amount", @class = "form-control required", @placeholder = "Kshs.0.00", Type = "Number" } })
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="row mt-3">
-                                            <div class="col-lg-4">
-                                                <input type="button" class="btn btn-primary" id="addEntryButton" value="Add Entry" style="width: 150px;" />
-                                                <input type="button" class="btn btn-success" id="submitAllButton" value="Submit All" style="width: 150px; margin-left: 10px;" />
+                                            <div class="col-lg-2" style="margin-top: 20px;">
+                                                <input type="button" class="btn btn-primary" id="addEntryBtn" value="Add" style="width: 150px;" />
                                             </div>
                                         </div>
                                     </div>
@@ -930,19 +850,22 @@
                                 <br />
 
                                 <fieldset>
-                                    <h2>Income Adjustments</h2>
-                                    <table id="IncomeAdjustmentsTBL" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Type</th>
-                                                <th>Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- New entries will be added here -->
-                                        </tbody>
-                                    </table>
+                                    <div class="table-container">
+                                        <h3 style="font-size: 1.9rem; text-align: center;">Income Adjustments</h3>
+                                        <table id="incomeAdjustmentsdataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                    <th>Amount</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Dynamic data will be inserted here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </fieldset>
                             </div>
 
@@ -959,9 +882,9 @@
 
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "control-label" })
-                                                @Html.ValidationMessageFor(model => model.CustomerReference1, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.CustomerReference1, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.LabelFor(model => model.LoanQualificationSystemRecommendation, htmlAttributes: new { @class = "control-label" })
+                                                @Html.ValidationMessageFor(model => model.LoanQualificationSystemRecommendation, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.LoanQualificationSystemRecommendation, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                             </div>
                                         </div>
 
@@ -987,8 +910,8 @@
                                     <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new
+                                                @Html.LabelFor(model => model.LoanQualificationSecurityQualification, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.LoanQualificationSecurityQualification, new
                                            {
                                                htmlAttributes = new
                                                {
@@ -998,32 +921,31 @@
                                                    @readonly = "readonly"
                                                }
                                            })
-                                                @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
+                                                @Html.ValidationMessageFor(model => model.LoanQualificationSecurityQualification, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.CustomerReference2, new
+                                                @Html.LabelFor(model => model.LoanQualificationIncomeQualification, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.LoanQualificationIncomeQualification, new
                                            {
                                                htmlAttributes = new
                                                {
                                                    @id = "CustomerPersonalIdentificationNumber",
                                                    @class = "form-control required",
-                                                   @placeholder = "Personal Identification Number",
-                                                   @readonly = "readonly"
+                                                   @disabled = "disabled"
                                                }
                                            })
-                                                @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
+                                                @Html.ValidationMessageFor(model => model.LoanQualificationIncomeQualification, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @id = "GuarantorIndividualPayrollNumbers", @class = "form-control required", @placeholder = "Payroll Number", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(model => model.LoanQualificationInvestmentsQualification, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.LoanQualificationInvestmentsQualification, new { htmlAttributes = new { @id = "GuarantorIndividualPayrollNumbers", @class = "form-control required", @placeholder = "Payroll Number", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.LoanQualificationInvestmentsQualification, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -1031,16 +953,16 @@
                                     <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.TotalAttachedLoansBalance, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.TotalAttachedLoansBalance, new { htmlAttributes = new { @id = "GuarantorCustomerSerialNumber", @class = "form-control", @placeholder = "Serial Number", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.TotalAttachedLoansBalance, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(model => model.LoanQualificationAttachedLoansBalance, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.LoanQualificationAttachedLoansBalance, new { htmlAttributes = new { @id = "GuarantorCustomerSerialNumber", @class = "form-control", @placeholder = "Serial Number", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.LoanQualificationAttachedLoansBalance, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.AppraisedAmount, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AppraisedAmount, new { htmlAttributes = new { @id = "GuarantorCustomerSerialNumber", @class = "form-control", @placeholder = "Serial Number", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.AppraisedAmount, new { htmlAttributes = new { @id = "GuarantorCustomerSerialNumber", @class = "form-control", @placeholder = "Kshs 0.00" } })
                                                 @Html.ValidationMessageFor(model => model.AppraisedAmount, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -1057,29 +979,30 @@
                                     <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.SystemAppraisalRemarks, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.SystemAppraisalRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text..." } })
-                                                @Html.ValidationMessageFor(model => model.SystemAppraisalRemarks, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(model => model.LoanQualificationLoanAmount, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.LoanQualificationLoanAmount, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                                @Html.ValidationMessageFor(model => model.LoanQualificationLoanAmount, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.PaymentPerPeriod, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.PaymentPerPeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text..." } })
+                                                @Html.EditorFor(model => model.PaymentPerPeriod, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
                                                 @Html.ValidationMessageFor(model => model.PaymentPerPeriod, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
                                         <div class="col-lg-4">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.PaymentPerPeriod, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.PaymentPerPeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text..." } })
-                                                @Html.ValidationMessageFor(model => model.PaymentPerPeriod, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(model => model.LoanQualificationTotalLoansPlusInterest, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.LoanQualificationTotalLoansPlusInterest, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                                @Html.ValidationMessageFor(model => model.LoanQualificationTotalLoansPlusInterest, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
 
+                                    <br />
                                     <br />
 
                                     <div class="tab-header" style="color: black;">
@@ -1094,25 +1017,80 @@
                                     <div id="section11" class="tab active">
                                         <!-- Attached Loans -->
                                         <div class="tab-content">
-                                            <p>Attached Loans</p>
+                                            <div class="table-container">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Attached Loans</h3>
+                                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Select?</th>
+                                                            <th>Full Account Number</th>
+                                                            <th>Product Name</th>
+                                                            <th>Principal Balance</th>
+                                                            <th>Interest Balance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!--Look back later-->
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
 
 
                                     <div id="section12" class="tab">
-                                        <!-- Repayment Schedule -->
                                         <div class="tab-content">
-                                            <p>Repayment Schedule</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <input type="submit" class="btn btn-primary" style="width: 150px;" name="name" value="Update" />
+                                            <div class="table-container">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Repayment Schedule</h3>
+                                                <table id="repaymentScheduledataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Period</th>
+                                                            <th>Due Date</th>
+                                                            <th>Starting Balance</th>
+                                                            <th>Payment</th>
+                                                            <th>Interest Payment</th>
+                                                            <th>Principal Payment</th>
+                                                            <th>Ending Balance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </fieldset>
 
+                                <br />
+                                <br />
+
+                                <fieldset class="incomeAdjustment-section">
+                                    <div style="border: solid 0px; align-content: center; justify-content: center; width: 100%; margin-top: 20px;">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.LoanAppraisalOption, htmlAttributes: new { @class = "" })
+                                                    @Html.DropDownListFor(model => model.LoanAppraisalOption, loanAppraisalOption, "-- Select loan appraisal action --", new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.LoanAppraisalOption)
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6" style="margin-top: 20px;">
+                                                <input type="submit" id="submitFormData" class="btn btn-primary" style="width: 150px;" name="name" value="Update" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                @*@using (Html.BeginForm("Create", "AppraiseLoan", new { Area = "Accounts" }, FormMethod.Post, new { @id = "submitForm" }))
+                                    {
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <input type="submit" id="submitFormData" class="btn btn-primary" style="width: 150px;" name="name" value="Update" />
+                                            </div>
+                                        </div>
+                                    }*@
                             </div>
                         </div>
                     }
@@ -1145,6 +1123,8 @@
         </div>
     </div>
 </div>
+
+<link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -1211,7 +1191,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/loaning/AppraiseLoan/IncomeAdjustmentsLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectIncomeAdjustment(\'' + aData.Id + '\')">Select</button>';
 
                     $('td:eq(3)', nRow).html(dt_Created);
                     $('td:eq(4)', nRow).html(selectUrl);
@@ -1230,24 +1210,99 @@
                 "aaSorting": [[0, "desc"]]
             });
 
-            $("#s tbody").on("click", "tr", function () {
-                var data = companiesGrid.row(this).data();
-
-                $('#CustomerId').val(data.Id);
-                $('input[name=CustomerId]').val(data.Id);
-                $('input[name=CustomerFullName]').val(data.FullName);
-                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-                $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-                $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-                $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
 
 
-                $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-                $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-                $('#CompaniesLookup').modal('hide');
+        function selectIncomeAdjustment(id) {
+            $.ajax({
+                url: '/Loaning/AppraiseLoan/IncomeAdjustmentsLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        // Populate fields with the returned data
+                        $('#Description').val(response.data.IncomeAdjustment);
+                        $('#TypeDescription').val(response.data.TypeDescription);
+                        $('#IncomeAdjustmentId').val(response.data.Id); // Hidden field for the ID
+
+                        // Close the modal
+                        $('#incomeAdjustmentsLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
             });
+        }
     </script>
 
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var addedIncomeAdjustments = [];
+
+            $('#addEntryBtn').click(function (event) {
+                event.preventDefault();
+
+                // Retrieve the entered values
+                var description = $('#Description').val();
+                var typeDescription = $('#TypeDescription').val();
+                var amount = $('#Amount').val(); // Assuming you have an input field with ID "Amount" for the user to enter the amount
+                var incomeAdjustmentId = $('#IncomeAdjustmentId').val(); // Hidden field for the selected Income Adjustment ID
+
+                // Validation: ensure amount is entered
+                if (!amount) {
+                    alert('Please enter an amount.');
+                    return;
+                }
+
+                // Check if the Income Adjustment Id is already in the list
+                var existingEntry = addedIncomeAdjustments.find(function (entry) {
+                    return entry.id === incomeAdjustmentId;
+                });
+
+                if (existingEntry) {
+                    alert('Income Adjustment has already been added.');
+                    return;
+                }
+
+                // If not already added, add the Id and amount to the list
+                addedIncomeAdjustments.push({ id: incomeAdjustmentId, amount: amount });
+
+                var tableBody = $("#incomeAdjustmentsdataTable tbody");
+                var newRow = `
+                                    <tr data-id="${incomeAdjustmentId}">
+                                        <td>${description}</td>
+                                        <td>${typeDescription}</td>
+                                        <td style="text-align: right;">${amount}</td>
+                                        <td><button type="button" class="btn btn-danger remove-entry" data-id="${incomeAdjustmentId}">Remove</button></td>
+                                    </tr>`;
+                tableBody.append(newRow);
+
+                // Clear the input fields after adding to the table
+                $('#Description').val('');
+                $('#TypeDescription').val('');
+                $('#Amount').val('');
+                $('#IncomeAdjustmentId').val('');
+            });
+
+
+        });
+
+
+        $(document).on('click', '.remove-entry', function () {
+            var incomeAdjustmentId = $(this).data('id');
+
+            $(this).closest('tr').remove();
+
+            // Remove the corresponding entry from the addedIncomeAdjustments array
+            addedIncomeAdjustments = addedIncomeAdjustments.filter(function (entry) {
+                return entry.id !== incomeAdjustmentId;
+            });
+        });
+    </script>
 
 
     <script>
@@ -1344,69 +1399,130 @@
         });
     </script>
 
-
     <script>
-    $(document).ready(function() {
-        $('#addEntryButton').click(function() {
-            // Get values from input fields
-            var description = $('#IAName').val();
-            var type = $('#Type').val();
-            var amount = $('#Amount').val();
-
-            // Validate inputs
-            if (!description || !type || !amount) {
-                alert("Income Adjustment, Type and Amount are required to proceed.");
-                return;
+        $(document).ready(function () {
+            // Function to calculate total income
+            function calculateTotalIncome() {
+                let netIncome = parseFloat($("#NetIncome").val()) || 0;
+                let totalAllowance = parseFloat($("#TotalAllowance").val()) || 0;
+                let totalIncome = netIncome + totalAllowance;
+                $("#TotalIncome").val(totalIncome.toFixed(2));
             }
 
-            // Create a new row
-            var newRow = `<tr>
-                <td>${description}</td>
-                <td>${type}</td>
-                <td>${amount}</td>
-            </tr>`;
+            // Function to calculate take-home value
+            function calculateTakeHomeValue() {
+                let netIncome = parseFloat($("#NetIncome").val()) || 0;
+                let totalDeduction = parseFloat($("#TotalDeduction").val()) || 0;
+                let takeHome = netIncome - totalDeduction;
+                $("#TakeHomeValue").val(takeHome.toFixed(2));
+            }
 
-            // Prepend the new row to the table
-            $('#IncomeAdjustmentsTBL tbody').prepend(newRow);
+            // Function to calculate ability to pay
+            function calculateAbilityToPay() {
+                let takeHome = parseFloat($("#TakeHomeValue").val()) || 0;
+                let abilityToPay = takeHome * 0.4;  // Assuming 40% ability to pay rule
+                $("#AbilityToPay").val(abilityToPay.toFixed(2));
+            }
 
-            // Clear the input fields after adding the entry
-            $('#IAName').val('');
-            $('#Type').val('');
-            $('#Amount').val('');
+            // Calculate total income and other fields when net income or allowance changes
+            $("#NetIncome, #TotalAllowance, #TotalDeduction").on("input", function () {
+                calculateTotalIncome();
+                calculateTakeHomeValue();
+                calculateAbilityToPay();
+            });
         });
+    </script>
 
-        $('#submitAllButton').click(function() {
-            var entries = [];
 
-            // Gather all entries from the table
-            $('#IncomeAdjustmentsTBL tbody tr').each(function() {
-                var entry = {
-                    Id: $(this).find('td:nth-child(1)').text(), // Use appropriate data if available
-                    Description: $(this).find('td:nth-child(1)').text(),
-                    Type: $(this).find('td:nth-child(2)').text(),
-                    Amount: $(this).find('td:nth-child(3)').text()
-                };
-                entries.push(entry);
-            });
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var APR = @apr;
+        var ICM = '@icm';
+        var AmountApplied = @amountApplied;
+        var TermInMonths = @termInMonths;
 
-            // Convert entries to JSON
-            var jsonData = JSON.stringify(entries);
+        // Convert APR to monthly interest rate
+        var monthlyInterestRate = APR / 12 / 100;
 
-            // Send the data to the server
-            $.ajax({
-                url: '@Url.Action("YourActionMethod", "YourController")', // Change to your action method
-                type: 'POST',
-                contentType: 'application/json',
-                data: jsonData,
-                success: function(response) {
-                    alert('Entries submitted successfully!');
-                    // Optionally, clear the table or handle the response
-                    $('#IncomeAdjustmentsTBL tbody').empty(); // Clear entries if desired
-                },
-                error: function(error) {
-                    alert('Error submitting entries.');
-                }
-            });
+        var remainingBalance = AmountApplied;
+        var emi = 0;
+        var schedule = [];
+
+        for (var i = 1; i <= TermInMonths; i++) {
+            var interestPayment = 0;
+            var principalPayment = 0;
+
+            switch (ICM) {
+                case "Reducing Balance":
+                    emi = (AmountApplied * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, TermInMonths))
+                          / (Math.pow(1 + monthlyInterestRate, TermInMonths) - 1);
+                    interestPayment = remainingBalance * monthlyInterestRate;
+                    principalPayment = emi - interestPayment;
+                    break;
+
+                case "Straight Line":
+                    interestPayment = (AmountApplied * APR / 100) / TermInMonths;
+                    principalPayment = AmountApplied / TermInMonths;
+                    emi = principalPayment + interestPayment;
+                    break;
+
+                case "Amortization (Straight Line)":
+                    emi = AmountApplied / TermInMonths + (AmountApplied * monthlyInterestRate);
+                    interestPayment = (AmountApplied - ((AmountApplied / TermInMonths) * (i - 1))) * monthlyInterestRate;
+                    principalPayment = emi - interestPayment;
+                    break;
+
+                case "Amortization (Diminishing Balance)":
+                    emi = (AmountApplied * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, TermInMonths))
+                          / (Math.pow(1 + monthlyInterestRate, TermInMonths) - 1);
+                    interestPayment = remainingBalance * monthlyInterestRate;
+                    principalPayment = emi - interestPayment;
+                    break;
+
+                case "Fixed Interest":
+                    interestPayment = AmountApplied * APR / 100 / TermInMonths;
+                    principalPayment = AmountApplied / TermInMonths;
+                    emi = interestPayment + principalPayment;
+                    break;
+
+                default:
+                    console.error("Invalid Interest Calculation Mode.");
+                    return;
+            }
+
+            // Create the schedule entry
+            var entry = {
+                Period: i,
+                DueDate: new Date(new Date().setMonth(new Date().getMonth() + i)).toLocaleDateString(),
+                StartingBalance: remainingBalance.toFixed(2),
+                Payment: emi.toFixed(2),
+                InterestPayment: interestPayment.toFixed(2),
+                PrincipalPayment: principalPayment.toFixed(2),
+                EndingBalance: (remainingBalance - principalPayment).toFixed(2)
+            };
+
+            // Push the entry to the schedule array
+            schedule.push(entry);
+
+            // Update the remaining balance
+            remainingBalance -= principalPayment;
+        }
+
+        // Render the table rows dynamically
+        var tableBody = document.querySelector("#repaymentScheduledataTable tbody");
+        schedule.forEach(function(item) {
+            var row = `
+                <tr>
+                    <td>${item.Period}</td>
+                    <td>${item.DueDate}</td>
+                    <td>${item.StartingBalance}</td>
+                    <td>${item.Payment}</td>
+                    <td>${item.InterestPayment}</td>
+                    <td>${item.PrincipalPayment}</td>
+                    <td>${item.EndingBalance}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
         });
     });
     </script>

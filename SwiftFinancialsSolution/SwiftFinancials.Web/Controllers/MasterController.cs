@@ -22,6 +22,7 @@ using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Presentation.Infrastructure.Models;
+using Domain.MainBoundedContext.AdministrationModule.Aggregates.BankBranchAgg;
 //using Application.MainBoundedContext.FrontOfficeModule.Services;
 
 namespace SwiftFinancials.Web.Controllers
@@ -38,8 +39,9 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<CommissionDTO> CommissionDTOs;
 
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
+        public ObservableCollection<BankBranchDTO> bankBranches;
 
-        
+
         public ObservableCollection<OverDeductionBatchEntryDTO> OverDeductionBatchEntryDTOs;
 
         public ObservableCollection<CreditBatchEntryDTO> CreditBatchEntryDTOs;
@@ -70,6 +72,8 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<LoanProductDTO> loanProductDTOs;
 
         public ObservableCollection<StandingOrderDTO> standingOrdersDTOs;
+
+        public ObservableCollection<IncomeAdjustmentDTO> IncomeAdjustmentsDTOs;
 
 
         public ObservableCollection<Guid> customerAccountsIds;
@@ -1958,6 +1962,22 @@ namespace SwiftFinancials.Web.Controllers
             loancaseStatus.AddRange(items);
 
             return loancaseStatus;
+        } 
+        
+        protected List<SelectListItem> GetMessagingGroupTargetSelectList(string selectedValue)
+        {
+            List<SelectListItem> messageGroupTarget = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(MessageGroupTarget)).Cast<MessageGroupTarget>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            messageGroupTarget.AddRange(items);
+
+            return messageGroupTarget;
         }
     }
 }

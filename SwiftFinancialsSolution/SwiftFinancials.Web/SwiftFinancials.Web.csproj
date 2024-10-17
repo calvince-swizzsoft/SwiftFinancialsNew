@@ -549,6 +549,7 @@
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureViewModel.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\MessagingGroupsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AutomatedClearingController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
@@ -1439,6 +1440,7 @@
     <Content Include="Scripts\css\BackOfficeNavigationMenu.css" />
     <Content Include="Scripts\css\CaptureSpecimenForm.css" />
     <Content Include="Scripts\css\login.css" />
+    <Content Include="Scripts\css\MainTabs.css" />
     <Content Include="Scripts\css\Marquee.css" />
     <Content Include="Scripts\css\SSRSGenerateReportIndex.css" />
     <Content Include="Scripts\css\SSRSModal.css" />
@@ -1941,7 +1943,6 @@
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
-    <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
@@ -1969,6 +1970,8 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Areas\Dashboard\Views\MessagingGroups\Index.cshtml" />
+    <Content Include="Areas\Dashboard\Views\MessagingGroups\Create.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
