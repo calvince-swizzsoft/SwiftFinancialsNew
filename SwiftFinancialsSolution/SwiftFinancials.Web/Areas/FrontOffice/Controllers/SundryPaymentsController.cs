@@ -9,11 +9,140 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using System.Threading.Tasks;
+using Application.MainBoundedContext.DTO.AdministrationModule;
+using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
+using Infrastructure.Crosscutting.Framework.Utils;
+using SwiftFinancials.Presentation.Infrastructure.Models;
+using System.Windows.Forms;
+using Microsoft.AspNet.Identity;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
     public class SundryPaymentsController : MasterController
     {
+
+
+        EmployeeDTO _selectedEmployee;
+
+        CustomerAccountDTO _selectedCustomerAccount;
+
+        BranchDTO _selectedBranch;
+
+        TellerDTO _selectedTeller;
+
+        CustomerDTO _selectedCustomer;
+
+        PostingPeriodDTO _currentPostingPeriod;
+
+        private readonly string _connectionString;
+
+
+
+        decimal PreviousTellerBalance;
+        decimal NewTellerBalance;
+        private PageCollectionInfo<GeneralLedgerTransaction> TellerStatements;
+
+
+
+        private bool IsBusy { get; set; }
+        public PostingPeriodDTO CurrentPostingPeriod
+        {
+
+            get { return _currentPostingPeriod; }
+
+            set
+            {
+                if (_currentPostingPeriod != value)
+                {
+                    _currentPostingPeriod = value;
+                }
+            }
+        }
+
+        public CustomerDTO SelectedCustomer
+
+        {
+
+            get { return _selectedCustomer; }
+
+            set
+            {
+                if (_selectedCustomer != value)
+                {
+
+                    _selectedCustomer = value;
+                }
+            }
+        }
+
+        public EmployeeDTO SelectedEmployee
+        {
+            get { return _selectedEmployee; }
+            set
+            {
+                if (_selectedEmployee != value)
+                {
+                    _selectedEmployee = value;
+
+                }
+            }
+        }
+
+
+        public CustomerAccountDTO SelectedCustomerAccount
+        {
+            get { return _selectedCustomerAccount; }
+            set
+            {
+                if (_selectedCustomerAccount != value)
+                {
+                    _selectedCustomerAccount = value;
+
+                }
+            }
+        }
+
+        public BranchDTO SelectedBranch
+        {
+            get { return _selectedBranch; }
+            set
+            {
+                if (_selectedBranch != value)
+                {
+                    _selectedBranch = value;
+
+                }
+            }
+        }
+
+        public TellerDTO SelectedTeller
+        {
+            get { return _selectedTeller; }
+            set
+            {
+                if (_selectedTeller != value)
+                {
+                    _selectedTeller = value;
+
+                }
+            }
+        }
+
+        GeneralTransactionType _generalTransactionType;
+        public GeneralTransactionType GeneralTransactionType
+        {
+            get { return _generalTransactionType; }
+            set
+            {
+                if (_generalTransactionType != value)
+                {
+                    _generalTransactionType = value;
+
+                }
+            }
+        }
+
         // GET: FrontOffice/SundryPayments
         public async Task<ActionResult> Index()
         {
@@ -21,6 +150,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
             return View();
         }
+
 
 
         [HttpPost]
@@ -81,67 +211,116 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO)
-
-
+        public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO)
         {
 
 
-            customerAccountDTO.ValidateAll();
+             _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+
+            var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+
+            _selectedBranch = await _channelService.FindBranchAsync(SelectedTeller.EmployeeBranchId, GetServiceHeader());
+
+            expensePayableDTO.BranchId = SelectedTeller.EmployeeBranchId;
 
 
-            if (!customerAccountDTO.HasErrors)
+            expensePayableDTO.ValidateAll();
+
+
+            if (!expensePayableDTO.HasErrors)
             {
-                decimal totalValue = customerAccountDTO.TotalValue;
-                int frontOfficeTransactionType = customerAccountDTO.Type;
+                decimal totalValue = expensePayableDTO.TotalValue;
+                int generalTransactionType = expensePayableDTO.TransactionType;
 
-                await _channelService.ComputeTellerCashTariffsAsync(customerAccountDTO, totalValue, frontOfficeTransactionType, GetServiceHeader());
+                var transactionModel = new TransactionModel();
+                transactionModel.TotalValue = totalValue;
+                transactionModel.BranchId = expensePayableDTO.BranchId;
 
-                if (customerAccountDTO.TypeDescription.Equals("Cash Withdrawal"))
+                transactionModel.PostingPeriodId = CurrentPostingPeriod.Id;
+                //transactionModel.DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
+                transactionModel.PrimaryDescription = "ok";
+                transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount);
+                transactionModel.Reference = string.Format("{0}", SelectedTeller.ChartOfAccountId);
+
+                
+
+                //await _channelService.ComputeTellerCashTariffsAsync(customerAccountDTO, totalValue, frontOfficeTransactionType, GetServiceHeader());
+
+                switch ((GeneralTransactionType)expensePayableDTO.TransactionType)
                 {
+                    case GeneralTransactionType.CashPayment:
 
-                    CashWithdrawalRequestDTO cashWithdrawalRequestDTO = new CashWithdrawalRequestDTO();
+                        transactionModel.TransactionCode = (int)SystemTransactionCode.GeneralCashPayment;
 
-                    cashWithdrawalRequestDTO.ValidateAll();
+                        if (SelectedTeller != null && !SelectedTeller.IsLocked)
+                            transactionModel.DebitChartOfAccountId = expensePayableDTO.ChartOfAccountId;
+                        transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
 
-                    await _channelService.AddCashWithdrawalRequestAsync(cashWithdrawalRequestDTO, GetServiceHeader());
+                        var journal = await _channelService.AddJournalAsync(transactionModel, null, GetServiceHeader());
 
+
+                        if (journal != null)
+                        {
+
+                            MessageBox.Show(
+                                                               "Operation Success",
+                                                               "Customer Receipts",
+                                                               MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+                                                           );
+
+                            return Json(new { success = true, message = "Operation Success" });
+                        }
+
+                        else
+                        {
+
+                            MessageBox.Show(
+                                                               "Operation Failed",
+                                                               "Custmer Receipts",
+                                                               MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+                                                           );
+
+                           return Json(new { success = false, message = "Operation Failed" });
+                        }
+
+
+
+                        break;
+
+                    case GeneralTransactionType.CashPaymentAccountClosure:
+                
+                        if (SelectedCustomerAccount != null)
+                        {
+                            transactionModel.DebitCustomerAccount = SelectedCustomerAccount;
+                            transactionModel.DebitCustomerAccountId = SelectedCustomerAccount.Id;
+                            transactionModel.CreditCustomerAccountId = SelectedCustomerAccount.Id;
+                            transactionModel.CreditCustomerAccount = SelectedCustomerAccount;
+                            transactionModel.CreditChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
+                        }
+
+                        if (SelectedTeller != null && !SelectedTeller.IsLocked)
+                            transactionModel.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
+
+                        break;
                 }
 
-                else if (customerAccountDTO.TypeDescription.Equals("Cash Deposit"))
-                {
-
-
-                    CashDepositRequestDTO cashDepositRequestDTO = new CashDepositRequestDTO();
-
-                    cashDepositRequestDTO.ValidateAll();
-
-                    await _channelService.AddCashDepositRequestAsync(cashDepositRequestDTO, GetServiceHeader());
-
-                }
-
-                else if (customerAccountDTO.TypeDescription.Equals("Cheque Deposit"))
-                {
-
-
-                    ExternalChequeDTO chequeDepositDTO = new ExternalChequeDTO();
-                    chequeDepositDTO.ValidateAll();
-
-                    await _channelService.AddExternalChequeAsync(chequeDepositDTO, GetServiceHeader());
-
-                }
-
-                ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(customerAccountDTO.CustomerAccountManagementActionDescription.ToString());
-
+                
                 return RedirectToAction("Create");
             }
             else
             {
-                var errorMessages = customerAccountDTO.ErrorMessages;
+                var errorMessages = expensePayableDTO.ErrorMessages;
                 // ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(cashDepositRequestDTO.CustomerAccountCustomerTypeDescription.ToString());
-                ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(customerAccountDTO.Type.ToString());
+                ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(expensePayableDTO.Type.ToString());
 
-                return View(customerAccountDTO);
+                return View(expensePayableDTO);
             }
         }
     }

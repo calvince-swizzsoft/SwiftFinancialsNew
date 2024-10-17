@@ -51,6 +51,52 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             else return this.DataTablesJson(items: new List<InHouseChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> FindExternalChequesByDate(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
+        {
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindInHouseChequesByDateRangeAndFilterInPageAsync(
+                startDate,
+                endDate,
+                jQueryDataTablesModel.sSearch,
+                pageIndex,
+                pageSize,
+                GetServiceHeader()
+            );
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: pageCollectionInfo.PageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<InHouseChequeDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+        }
         public async Task<ActionResult> Details()
         {
             await ServeNavigationMenus();
@@ -67,34 +113,29 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var inHouseChequeDTO = new InHouseChequeDTO();
 
-            // Check if an ID is provided, if not, use the default HEAD OFFICE branch
             if (id.HasValue && id != Guid.Empty)
             {
                 var parseId = id.Value;
 
-                // Fetch branch details based on the provided branch ID
                 var branchDTO = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
 
                 if (branchDTO != null)
                 {
-                    // Populate the DTO with the fetched branch details
                     inHouseChequeDTO.BranchId = branchDTO.Id;
                     inHouseChequeDTO.BranchDescription = branchDTO.Description;
                 }
                 else
                 {
                     TempData["ErrorMessage"] = "Branch details could not be found.";
-                    return RedirectToAction("Index");  // Handle error or redirect as necessary
+                    return RedirectToAction("Index");  
                 }
             }
             else
             {
-                // No ID provided, use the hardcoded default branch
                 inHouseChequeDTO.BranchId = Guid.Parse("143570C6-48BB-E811-A814-000C29142092");
                 inHouseChequeDTO.BranchDescription = "HEAD OFFICE";
             }
 
-            // Store the branch data in TempData if necessary
             TempData["BranchId"] = inHouseChequeDTO.BranchId;
             TempData["BranchDescription"] = inHouseChequeDTO.BranchDescription;
 
@@ -182,7 +223,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     return Json(new { success = false, message = "Cheque type not found." }, JsonRequestBehavior.AllowGet);
                 }
 
-                // Returning the required data for the form fields
                 return Json(new
                 {
                     success = true,
@@ -192,7 +232,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             catch (Exception)
             {
-                // Log the error for debugging
                 return Json(new { success = false, message = "An error occurred while fetching cheque type details." }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -228,59 +267,49 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             try
             {
-                // Initialize TempData if it is null
                 if (TempData["ChequeEntries"] == null)
                 {
                     TempData["ChequeEntries"] = new List<InHouseChequeDTO>();
                 }
 
-                // Retrieve existing cheque entries from TempData
                 var chequeEntries = TempData["ChequeEntries"] as List<InHouseChequeDTO>;
 
-                // Set the branch ID and description for each entry if not already set
                 if (chequeEntry.BranchId == Guid.Empty)
                 {
-                    chequeEntry.BranchId = Guid.Parse("143570C6-48BB-E811-A814-000C29142092");  // Default to HEAD OFFICE branch ID
+                    chequeEntry.BranchId = Guid.Parse("143570C6-48BB-E811-A814-000C29142092");  
                 }
 
                 if (string.IsNullOrEmpty(chequeEntry.BranchDescription))
                 {
-                    chequeEntry.BranchDescription = "HEAD OFFICE";  // Default to HEAD OFFICE description
+                    chequeEntry.BranchDescription = "HEAD OFFICE";  
                 }
 
-                // Add the new cheque entry
                 chequeEntries.Add(chequeEntry);
 
-                // Store the updated list back into TempData
                 TempData["ChequeEntries"] = chequeEntries;
 
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                // Return the error message if something goes wrong
                 return Json(new { success = false, errorMessage = ex.Message });
             }
         }
 
         [HttpPost]
-        public JsonResult RemoveEntries(List<Guid> entryIds) // Assuming entry IDs are of type Guid
+        public JsonResult RemoveEntries(List<Guid> entryIds) 
         {
             try
             {
-                // Initialize TempData if it is null
                 if (TempData["ChequeEntries"] == null)
                 {
                     return Json(new { success = false, errorMessage = "No entries found." });
                 }
 
-                // Retrieve existing cheque entries from TempData
                 var chequeEntries = TempData["ChequeEntries"] as List<InHouseChequeDTO>;
 
-                // Remove the specified entries
-                chequeEntries.RemoveAll(entry => entryIds.Contains(entry.Id)); // Assuming Id is a property of InHouseChequeDTO
+                chequeEntries.RemoveAll(entry => entryIds.Contains(entry.Id)); 
 
-                // Store the updated list back into TempData
                 TempData["ChequeEntries"] = chequeEntries;
 
                 return Json(new { success = true });
@@ -301,7 +330,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (chequeEntries == null || chequeEntries.Count == 0)
                 {
-                    return RedirectToAction("Index"); // Redirect back to the Index view with error message
+                    return RedirectToAction("Index"); 
                 }
 
                 var serviceHeader = GetServiceHeader();
@@ -316,7 +345,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     TempData.Remove("ChequeEntries");
 
-                    // Redirect to Index with success message
                     TempData["SuccessMessage"] = "Cheque entries submitted successfully.";
                     return RedirectToAction("Index");
                 }
@@ -374,13 +402,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             try
             {
-                var pageIndex = start / length;  // DataTable sends the starting index, so we calculate the pageIndex.
-                var serviceHeader = GetServiceHeader(); // Assuming a method to get the ServiceHeader.
+                var pageIndex = start / length;  
+                var serviceHeader = GetServiceHeader(); 
 
-                // Fetch in-house cheques with the filter (payee name or reference) using pagination.
                 var cheques = await _channelService.FindInHouseChequesByFilterInPageAsync(searchText, pageIndex, length, serviceHeader);
 
-                // Convert to the format required by DataTables (returning the JSON data)
                 var data = cheques.PageCollection.Select(c => new
                 {
                     c.Amount,
@@ -389,6 +415,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     c.Reference,
                     c.WordifiedAmount,
                     c.PaddedAmount,
+                    c.ChequeNumber,
                     CreatedDate = c.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss tt"),
                     c.Id
                 });
@@ -403,11 +430,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             catch (Exception ex)
             {
-                // Handle the exception (e.g., logging the error).
                 return new HttpStatusCodeResult(500, "An error occurred while fetching payee data: " + ex.Message);
             }
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -417,16 +442,16 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var bankLinkageDTO = new BankLinkageDTO();
                 int moduleNavigationItemCode = 123;
-                ServiceHeader serviceHeader = GetServiceHeader(); 
+                ServiceHeader serviceHeader = GetServiceHeader();
 
                 bool result = await _channelService.PrintInHouseChequeAsync(model, bankLinkageDTO, moduleNavigationItemCode, serviceHeader);
 
                 if (result)
                 {
-                    // Store the cheque data in TempData for use in the Index view
                     TempData["ChequePrintData"] = model;
                     TempData["SuccessMessage"] = "Cheque printed successfully!";
-                    return RedirectToAction("Create");
+
+                    return RedirectToAction("PrintCheque");
                 }
                 else
                 {
@@ -435,6 +460,49 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             return View(model);
         }
+
+        public ActionResult PrintCheque()
+        {
+            if (TempData["ChequePrintData"] != null)
+            {
+                ViewBag.ChequePrintData = TempData["ChequePrintData"];
+                ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            }
+            else
+            {
+                return RedirectToAction("Create");
+            }
+
+            return View();
+        }
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Printing(InHouseChequeDTO model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var bankLinkageDTO = new BankLinkageDTO();
+        //        int moduleNavigationItemCode = 123;
+        //        ServiceHeader serviceHeader = GetServiceHeader();
+
+        //        bool result = await _channelService.PrintInHouseChequeAsync(model, bankLinkageDTO, moduleNavigationItemCode, serviceHeader);
+
+        //        if (result)
+        //        {
+        //            // Store the cheque data in TempData for use in the Index view
+        //            TempData["ChequePrintData"] = model;
+        //            TempData["SuccessMessage"] = "Cheque printed successfully!";
+        //            return RedirectToAction("Create");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("", "Failed to print the cheque.");
+        //        }
+        //    }
+        //    return View(model);
+        //}
 
 
 

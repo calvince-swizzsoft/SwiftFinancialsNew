@@ -49,7 +49,7 @@
                     </div>
                 </div>
 
-                <!-- New Input Fields Section -->
+
                 <div class="ibox-content bg-white">
                     <div class="form-group">
                         <div class="row">
@@ -85,7 +85,6 @@
                                 <input type="hidden" name="BankLinkageChartOfAccountAccountCode" value="@Model.BankLinkageChartOfAccountAccountCode" />
                                 <input type="hidden" name="BankLinkageChartOfAccountAccountType" value="@Model.BankLinkageChartOfAccountAccountType" />
 
-                                <!-- Other form fields -->
                             </form>
 
 
@@ -93,7 +92,6 @@
                     </div>
 
                 </div>
-                <!-- End of New Input Fields Section -->
                 <!-- Bank Lookup Modal -->
                 <div class="modal fade" id="bankLinkageLookupModal" role="dialog" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
@@ -115,6 +113,8 @@
                         </div>
                     </div>
                 </div>
+                <button id="toggle-select-all" class="btn btn-primary">Select All</button>
+
 
                 <!-- Table Section -->
                 <div class="ibox-content">
@@ -152,14 +152,13 @@
 
                     </div>
 
-                    <div class="col-lg-4">
-                        <button id="toggle-select-all" class="btn btn-primary">Select All</button>
+                    <div class="bottom-button" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
                         <button id="bankSelectedButton" class="btn btn-success">Bank</button>
-                        <button id="refreshButton" class="btn btn-info">Refresh</button>
+                        @*<button id="refreshButton" class="btn btn-info">Refresh</button>*@
 
                     </div>
 
-                   
+
 
 
                 </div>
@@ -291,79 +290,107 @@
 
 
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        $(document).ready(function () {
-    var chequeTable = $('#ChequesGrid').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@Url.Action("BankCheques", "Cheques", new { Area = "FrontOffice" })",
-        "sServerMethod": "POST",
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            $('td:eq(0)', nRow).html('<input type="checkbox" class="select-row" value="' + aData.Id + '"/>');
+    $(document).ready(function () {
+        var chequeTable = $('#ChequesGrid').DataTable({
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@Url.Action("BankCheques", "Cheques", new { Area = "FrontOffice" })",
+            "sServerMethod": "POST",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                $('td:eq(0)', nRow).html('<input type="checkbox" class="select-row" value="' + aData.Id + '"/>');
 
-            if (aData.MaturityDate) {
-                var maturityDate = new Date(parseInt(aData.MaturityDate.replace("/Date(", "").replace(")/", ""), 10));
-                $('td:eq(9)', nRow).html($.datepicker.formatDate('dd/mm/yy', maturityDate));
-            }
+                if (aData.MaturityDate) {
+                    var maturityDate = new Date(parseInt(aData.MaturityDate.replace("/Date(", "").replace(")/", ""), 10));
+                    $('td:eq(9)', nRow).html($.datepicker.formatDate('dd/mm/yy', maturityDate));
+                }
 
-            if (aData.WriteDate) {
-                var writeDate = new Date(parseInt(aData.WriteDate.replace("/Date(", "").replace(")/", ""), 10));
-                $('td:eq(11)', nRow).html($.datepicker.formatDate('dd/mm/yy', writeDate));
-            }
-        },
-        "aoColumns": [
-            { "mDataProp": "Id", "bSortable": false },
-            { "mDataProp": "TellerDescription" },
-            { "mDataProp": "CustomerAccountCustomerFullName" },
-            { "mDataProp": "PaddedNumber" },
-            { "mDataProp": "Amount" },
-            { "mDataProp": "Drawer" },
-            { "mDataProp": "DrawerBank" },
-            { "mDataProp": "DrawerBankBranch" },
-            { "mDataProp": "ChequeTypeDescription" },
-            { "mDataProp": "MaturityDate" },
-            { "mDataProp": "CustomerAccountFullAccountNumber" },
-            { "mDataProp": "WriteDate" }
-        ]
-    });
-
-    $('#toggle-select-all').on('click', function () {
-        var rows = chequeTable.rows({ 'search': 'applied' }).nodes();
-        $('input[type="checkbox"]', rows).prop('checked', true);
-    });
-
-    $('#bankSelectedButton').on('click', function () {
-        var selectedCheques = [];
-        $('#ChequesGrid input.select-row:checked').each(function () {
-            selectedCheques.push($(this).val());
-        });
-
-        if (selectedCheques.length === 0) {
-            alert("No cheques selected!");
-            return;
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("BankSelectedCheques", "Cheques", new { Area = "FrontOffice" })",
-            data: JSON.stringify({ selectedChequeIds: selectedCheques }),
-            contentType: "application/json",
-            success: function (response) {
-                if (response.success) {
-                    alert("Cheques banked successfully!");
-                } else {
-                    alert("Error: " + response.message);
+                if (aData.WriteDate) {
+                    var writeDate = new Date(parseInt(aData.WriteDate.replace("/Date(", "").replace(")/", ""), 10));
+                    $('td:eq(11)', nRow).html($.datepicker.formatDate('dd/mm/yy', writeDate));
                 }
             },
-            error: function () {
-                alert("An error occurred while processing your request.");
+            "aoColumns": [
+                { "mDataProp": "Id", "bSortable": false },
+                { "mDataProp": "TellerDescription" },
+                { "mDataProp": "CustomerAccountCustomerFullName" },
+                { "mDataProp": "PaddedNumber" },
+                { "mDataProp": "Amount" },
+                { "mDataProp": "Drawer" },
+                { "mDataProp": "DrawerBank" },
+                { "mDataProp": "DrawerBankBranch" },
+                { "mDataProp": "ChequeTypeDescription" },
+                { "mDataProp": "MaturityDate" },
+                { "mDataProp": "CustomerAccountFullAccountNumber" },
+                { "mDataProp": "WriteDate" }
+            ]
+        });
+
+        // Toggle select all rows
+        $('#toggle-select-all').on('click', function () {
+            var rows = chequeTable.rows({ 'search': 'applied' }).nodes();
+            $('input[type="checkbox"]', rows).prop('checked', true);
+        });
+
+        // Bank selected cheques
+        $('#bankSelectedButton').on('click', function () {
+            var selectedCheques = [];
+            $('#ChequesGrid input.select-row:checked').each(function () {
+                selectedCheques.push($(this).val());
+            });
+
+            if (selectedCheques.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Cheques Selected',
+                    text: 'Please select at least one cheque to proceed.',
+                    showConfirmButton: true
+                });
+                return;
             }
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("BankSelectedCheques", "Cheques", new { Area = "FrontOffice" })",
+                data: JSON.stringify({ selectedChequeIds: selectedCheques }),
+                contentType: "application/json",
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Cheques banked successfully!',
+                            showConfirmButton: true,
+                            timer: 3000
+                        }).then(function () {
+                            chequeTable.ajax.reload(); 
+
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                            showConfirmButton: true,
+                            timer: 5000
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while processing your request.',
+                        showConfirmButton: true
+                    });
+                }
+            });
         });
     });
-});
-
     </script>
+
 
 
 
@@ -386,14 +413,83 @@
             });
         });
     </script>
-    <script>
-        $(document).ready(function () {
-            $('#refreshButton').on('click', function () {
-                location.reload();
-            });
+    @*<script>
+            $(document).ready(function () {
+                $('#refreshButton').on('click', function () {
+                    location.reload();
+                });
 
-        });
-    </script>
+            });
+        </script>*@
+
+    <style>
+
+    .nav {
+        display: flex;
+        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+        padding: 0;
+        margin: 5px;
+        margin-bottom:0;
+        border: 2px solid Black;
+        border-radius:8px;
+        margin-top:20px;
+        gap: 10px; /* Space between links */
+        text-align: center; /* Centers the text inside links */
+
+        padding:10px;
+    }
+
+    .nav-link {
+        display: flex;
+
+
+        text-decoration: none;
+        color: #007bff; /* Default text color */
+        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+
+        border-radius: 4px; /* Rounded corners */
+        font-size: 14px; /* Adjust font size for better fit */
+        white-space: nowrap; /* Prevents text from wrapping inside the link */
+
+       @* border: 1px solid #007bff;*@ /* Border color and style */
+    }
+
+        .nav-link:hover {
+            color: #fff; /* Text color on hover */
+            background-color: #0056b3; /* Background color on hover */
+        }
+
+        .nav-link i {
+            margin-right: 8px; /* Space between icon and text */
+            font-size: 16px; /* Adjust icon size */
+        }
+
+        .nav-link.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .col-lg-2 {
+        display: flex;
+        align-items: center; /* Center the title vertically */
+        justify-content: center; /* Center the title horizontally if needed */
+        padding: 0; /* Remove default padding if necessary */
+        border-radius: 4px; /* Rounded corners */
+        @*border: 1px solid black;*@ /* Border color and style */
+    }
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+    </style>
+
 
 
 }

@@ -1,8 +1,9 @@
 ﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ElectronicJournalDTO
 
 @{
-    ViewBag.Title = "Journals ";
+    ViewBag.Title = "Journal ";
 }
+
 <style>
     .wrapper-content {
         background-color: #f3f3f4;
@@ -49,7 +50,8 @@
         border-radius: 4px;
     }
 
-        .filter-section input, .filter-section select {
+        .filter-section input,
+        .filter-section select {
             margin-right: 10px;
             padding: 5px;
         }
@@ -61,6 +63,13 @@
         padding: 6px 12px;
         border-radius: 3px;
     }
+
+    .btn-link {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+        margin-bottom: 15px; /* Add some spacing */
+    }
 </style>
 
 <div class="wrapper wrapper-content">
@@ -69,6 +78,8 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Automated-Clearing</h2>
+                    <!-- Link to the processing page -->
+                    <a href="@Url.Action("Processing", "AutomatedClearing", new { Area = "FrontOffice" })" class="btn-link">Go to Processing Page</a>
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -104,6 +115,7 @@
                         <input type="text" id="searchText" placeholder="Enter Text..">
                         <button class="btn btn-primary" id="refreshBtn">Refresh</button>
                         <button class="btn btn-primary" id="importBtn">Import</button>
+                        <input type="file" id="chequeImage" style="display: none;" />
                     </div>
                 </div>
             </div>
@@ -117,55 +129,79 @@
 
     <script>
     $(document).ready(function () {
-        
-
         // Initialize datepickers
         $('#startDate, #endDate').datepicker({
             format: 'dd/mm/yyyy',
             autoclose: true
         });
 
-        // Add event listener for the Refresh button
-        $('#refreshBtn').on('click', function () {
-            table.ajax.reload();
-        });
-
-        // Add event listener for the Import button
+        // Event listener for the Import button
         $('#importBtn').on('click', function () {
-            // Trigger the file input when the import button is clicked
+            // Trigger the hidden file input
             $('#chequeImage').click();
         });
 
-        // Handle file upload after selecting a file
+        // Handle file input change and upload
         $('#chequeImage').on('change', function () {
             var formData = new FormData();
             formData.append('chequeImage', $('#chequeImage')[0].files[0]);
 
+            // Append filter values to the formData
+            formData.append('status', $('#statusFilter').val());
+            formData.append('startDate', $('#startDate').val());
+            formData.append('endDate', $('#endDate').val());
+            formData.append('searchText', $('#searchText').val());
+
+            // Perform an AJAX request to upload the file
             $.ajax({
-                url: '@Url.Action("UploadCheques", "AutomatedClearing", new { Area = "FrontOffice" })', // Server action for handling upload
+                url: '@Url.Action("UploadCheques", "AutomatedClearing", new { Area = "FrontOffice" })',
                 type: 'POST',
                 data: formData,
                 contentType: false,
                 processData: false,
                 success: function (response) {
+                    alert('Cheque image uploaded and journal parsed successfully!');
+                    console.log(response); // Check the structure of the response
+
                     if (response.success) {
-                        alert('Cheque image uploaded successfully!');
-                        table.ajax.reload(); // Optionally reload the table
+                        if (response.chequeData && response.chequeData.length > 0) {
+                            updateTable(response.chequeData);
+                        } else {
+                            alert('No data returned to display.');
+                        }
                     } else {
-                        alert('Failed to upload cheque image.');
+                        alert('Failed to upload cheque image: ' + response.message);
                     }
                 },
+
                 error: function () {
                     alert('Error uploading the cheque image.');
                 }
             });
         });
 
-        // Add event listeners for filters
-        $('#statusFilter, #startDate, #endDate, #searchText').on('change keyup', function () {
-            table.ajax.reload();
-        });
+        // Function to update table with new data
+        function updateTable(chequeData) {
+            var tableBody = $('#ChequesGrid tbody');
+            tableBody.empty();  // Clear existing rows
+
+            // Loop through each cheque entry and create a new row
+            $.each(chequeData, function (index, entry) {
+                var row = '<tr>' +
+                    '<td>' + entry.Status + '</td>' +
+                    '<td>' + entry.ProcessedEntries + '</td>' +
+                    '<td>' + entry.FileName + '</td>' +
+                    '<td>' + entry.FileSerialNumber + '</td>' +
+                    '<td>' + entry.DateOfFileExchange + '</td>' +
+                    '<td>' + entry.ClosedBy + '</td>' +
+                    '<td>' + entry.ClosedDate + '</td>' +
+                    '<td>' + entry.CreatedBy + '</td>' +
+                    '<td>' + entry.CreatedDate + '</td>' +
+                    '</tr>';
+                tableBody.append(row);
+            });
+        }
+
     });
     </script>
-
 }

@@ -17,24 +17,19 @@
 
 <script>
     $(document).ready(function () {
-        // Initially activate the first tab
         $('.nav-tabs li:first-child a').addClass('active');
         $('#tab1').addClass('active');
 
-        // Handle tab click event
         $('.tab-link').on('click', function (e) {
             e.preventDefault();
 
-            // Deactivate all tabs
             $('.tab-link').removeClass('active');
             $('.tab-content').removeClass('active');
 
-            // Activate the clicked tab
             $(this).addClass('active');
             $($(this).attr('href')).addClass('active');
         });
 
-        // Datepicker Initialization
         $('#ValueDate').datepicker({
             format: 'dd/mm/yyyy',
             todayHighlight: true,
@@ -69,49 +64,47 @@
                     <div>
                         @if (ViewBag.SuccessMessage != null)
                         {
-                    <div id="successMessage" class="alert alert-success">
-                        @ViewBag.SuccessMessage
-                    </div>
-                                    <script>
-                                        $(document).ready(function () {
-                                            // Show a confirmation dialog
-                                            var wantToPrint = confirm("Do you want to print the cheque?");
-                                            if (wantToPrint) {
-                                                // Call the print function
-                                                printCheque();
-                                            }
-                                        });
+                            <div id="successMessage" class="alert alert-success">
+                                @ViewBag.SuccessMessage
+                            </div>
+                            <script>
+                                $(document).ready(function () {
+                                    var wantToPrint = confirm("Do you want to print the cheque?");
+                                    if (wantToPrint) {
+                                        printCheque();
+                                    }
+                                });
 
-                                        function printCheque() {
-                                            var printContents = document.getElementById("chequeDetails").innerHTML;
-                                            var originalContents = document.body.innerHTML;
+                                function printCheque() {
+                                    var printContents = document.getElementById("chequeDetails").innerHTML;
+                                    var originalContents = document.body.innerHTML;
 
-                                            document.body.innerHTML = printContents;
-                                            window.print();
-                                            document.body.innerHTML = originalContents; // Restore original content
-                                        }
+                                    document.body.innerHTML = printContents;
+                                    window.print();
+                                    document.body.innerHTML = originalContents; 
+                                }
 
-                                    </script>}
+                            </script>
+}
 
                         @if (ViewBag.ChequePrintData != null)
                         {
                             var cheque = ViewBag.ChequePrintData;
-                    <div id="chequeDetails">
-                        <h3>Cheque Details</h3>
-                        <p><strong>Payee:</strong> @cheque.Payee</p>
-                        <p><strong>Amount:</strong> @cheque.Amount</p>
-                        <p><strong>Date:</strong> @cheque.CreatedDate.ToShortDateString()</p>
-                        <p><strong>Cheque Number:</strong> @cheque.ChequeNumber</p>
-                        <p><strong>Reference:</strong> @cheque.Reference</p>
-                        <p><strong>Wordified Amount:</strong> @cheque.WordifiedAmount</p>
-                        <p><strong>Padded Amount:</strong> @cheque.PaddedAmount</p>
-                        <p><strong>Bank Name:</strong> @cheque.BankName</p>
-                        <p><strong>Bank Branch:</strong> @cheque.BranchDescription</p>
-                        <p><sctrong>Bank Account:</sctrong> @cheque.BankAccount</p>
-                        <p><strong>Debit G/L Account Name</strong> @cheque.DebitChartOfAccountAccountName</p>
+                            <div id="chequeDetails">
+                                <h3>Cheque Details</h3>
+                                <p><strong>Payee:</strong> @cheque.Payee</p>
+                                <p><strong>Amount:</strong> @cheque.Amount</p>
+                                <p><strong>Date:</strong> @cheque.CreatedDate.ToShortDateString()</p>
+                                <p><strong>Cheque Number:</strong> @cheque.ChequeNumber</p>
+                                <p><strong>Reference:</strong> @cheque.Reference</p>
+                                <p><strong>Wordified Amount:</strong> @cheque.WordifiedAmount</p>
+                                <p><strong>Padded Amount:</strong> @cheque.PaddedAmount</p>
+                                <p><strong>Bank Name:</strong> @cheque.BankName</p>
+                                <p><strong>Bank Branch:</strong> @cheque.BranchDescription</p>
+                                <p><sctrong>Bank Account:</sctrong> @cheque.BankAccount</p>
+                                <p><strong>Debit G/L Account Name</strong> @cheque.DebitChartOfAccountAccountName</p>
 
-                        <!-- Add other relevant cheque details here -->
-                    </div>}
+                            </div>}
                     </div>
 
                     @if (TempData["ErrorMessage"] != null)
@@ -269,13 +262,17 @@
 
                                         <br />
 
-                                        <div class="row d-flex justify-content-end">
+                                        <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
                                             <div class="form-group form-group-lg">
+                                                <div class="col-lg-3">
+
+                                                </div>
                                                 <div class="custom-control custom-checkbox">
                                                     @Html.CheckBoxFor(model => model.Chargeable, new { @class = "custom-control-input", id = "applyCharges" })
                                                     <label class="custom-control-label" for="applyCharges">Chargeable?</label>
                                                 </div>
                                             </div>
+                                            
                                             <div class="col-lg-3">
                                                 <div class="form-group form-group-sm">
                                                     <button id="addEntryButton" class="btn btn-primary">Add</button>
@@ -301,7 +298,6 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- Dynamic rows will be appended here -->
                                             </tbody>
                                         </table>
 
@@ -319,10 +315,9 @@
                                     </div>
                                 </div>
                             </fieldset>
-                            <div class="form-group">
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
 
                                 <input type="submit" value="Update" class="btn btn-primary btn-update" />
-                                <a href="@Url.Action("Index", "InHouseCheque")" class="btn btn-secondary">Cancel</a>
                             </div>
 
 
@@ -330,7 +325,6 @@
                         }
                     </div>
                 </div>
-
 
                 <style>
                     .card {
@@ -349,6 +343,65 @@
                     .form-control {
                         border-radius: .25rem;
                     }
+
+                    /* The .nav class is incorrectly nested, so I'll fix that */
+                    .nav {
+                        display: flex;
+                        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+                        padding: 0;
+                        margin: 5px;
+                        margin-bottom: 0;
+                        border: 2px solid black;
+                        border-radius: 8px;
+                        margin-top: 20px;
+                        gap: 10px; /* Space between links */
+                        text-align: center; /* Centers the text inside links */
+                        padding: 10px;
+                    }
+
+                    .nav-link {
+                        display: flex;
+                        text-decoration: none;
+                        color: #007bff; /* Default text color */
+                        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+                        border-radius: 4px; /* Rounded corners */
+                        font-size: 14px; /* Adjust font size for better fit */
+                        white-space: nowrap; /* Prevents text from wrapping inside the link */
+                    }
+
+                        .nav-link:hover {
+                            color: #fff; /* Text color on hover */
+                            background-color: #0056b3; /* Background color on hover */
+                        }
+
+                        .nav-link i {
+                            margin-right: 8px; /* Space between icon and text */
+                            font-size: 16px; /* Adjust icon size */
+                        }
+
+                        .nav-link.disabled {
+                            pointer-events: none;
+                            opacity: 0.6;
+                            cursor: not-allowed;
+                        }
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #00e0ff;
+                    }
+
                 </style>
 
 
@@ -523,28 +576,24 @@
 
     <script>
         $(document).ready(function () {
-            // Hide the fields initially
             $('.gl-fields').hide();
             $('.customer-fields').hide();
 
-            // Function to toggle fields
             $('#FundingDescription').change(function () {
                 var selectedOption = $(this).val();
 
                 if (selectedOption === 'Debit G/L Account') {
-                    $('.gl-fields').show();  // Show G/L Account fields
-                    $('.customer-fields').hide();  // Hide Customer Account fields
+                    $('.gl-fields').show();  
+                    $('.customer-fields').hide();  
                 } else if (selectedOption === 'Debit Customer Account') {
-                    $('.customer-fields').show();  // Show Customer Account fields
-                    $('.gl-fields').hide();  // Hide G/L Account fields
+                    $('.customer-fields').show();  
+                    $('.gl-fields').hide();  
                 } else {
-                    // Hide all fields if no valid option is selected
                     $('.gl-fields').hide();
                     $('.customer-fields').hide();
                 }
             });
 
-            // Trigger change event on page load to set the initial state
             $('#FundingDescription').trigger('change');
         });
 
@@ -579,19 +628,16 @@ $(document).ready(function () {
         "order": [[0, "asc"]]
     });
 
-    // Handle the click event for the Select button
     $('#glAccountDetailsTable tbody').on('click', '.select-gl-account', function () {
         var table = $('#glAccountDetailsTable').DataTable();
-        var data = table.row($(this).parents('tr')).data(); // Get the selected row data
+        var data = table.row($(this).parents('tr')).data();
 
-        // Populate the form fields with the selected data
         $('#DebitChartOfAccountAccountName').val(data.AccountName);
         $('#CostCenter').val(data.CostCenterDescription);
         $('#CostCenterId').val(data.CostCenterId);
         $('#DebitChartOfAccountId').val(data.Id);
 
 
-        // Close the modal
         $('#glAccountLookup').modal('hide');
     });
 });
@@ -600,7 +646,6 @@ $(document).ready(function () {
 
     <script>
     $(document).ready(function () {
-        // Initialize DataTable for Customer Accounts
         $('#CustomerAccountsGrid').DataTable({
             "sPaginationType": "full_numbers",
             "bProcessing": true,
@@ -632,7 +677,6 @@ $(document).ready(function () {
                     "sTitle": "Created Date",
                     "sWidth": "15%",
                     "mRender": function (data) {
-                        // Parse the date and format it
                         var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
                         var h = ("0" + createdDate.getHours()).slice(-2);
                         var m = ("0" + createdDate.getMinutes()).slice(-2);
@@ -653,30 +697,25 @@ $(document).ready(function () {
             "aaSorting": [[0, "desc"]]
         });
 
-        // Handle the selection of a customer account
         $('#CustomerAccountsGrid tbody').on('click', '.select-customer-account', function () {
             var customerAccountId = $(this).data('id');
 
-            // Make an AJAX GET request to fetch the customer account details
             $.ajax({
                 url: '@Url.Action("GetCustomerAccountDetails", "InHouse", new { Area = "FrontOffice" })',
                 type: 'GET',
                 data: { customerAccountId: customerAccountId },
                 success: function (response) {
-                    console.log(response); // Check the structure of the response in the console
+                    console.log(response); 
 
                     if (response.success) {
-                        // Populate the form fields with the selected customer account details
                         $('#DebitCustomerAccountFullAccountNumber').val(response.data.customerAccountFullAccountNumber);
                         $('#AvailableBalance').val(response.data.availableBalance);
                         $('#DebitCustomerAccountId').val(response.data.customerAccountId);
                         $('#DebitCustomerAccountCustomerAccountTypeProductCode').val(response.data.DebitCustomerAccountCustomerAccountTypeProductCode);
                         $('#DebitCustomerAccountCustomerAccountTypeTargetProductId').val(response.data.DebitCustomerAccountCustomerAccountTypeTargetProductId);
 
-                        // Optionally show the branch description somewhere in your view
                         $('#branchDescription').show();
 
-                        // Close the modal
                         $('#customerAccountLookup').modal('hide');
                     } else {
                         alert(response.message);
@@ -697,7 +736,6 @@ $(document).ready(function () {
 
     <script>
         $(document).ready(function () {
-    // Initialize the DataTable
     $('#ChequeTypeGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
@@ -705,7 +743,6 @@ $(document).ready(function () {
         "sAjaxSource": '@Url.Action("Index", "ChequeType", new { Area = "Accounts" })',
         "sServerMethod": "POST",
 
-        // Modify the rows and add a Select button
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             var selectButton = '<a href="#" class="btn btn-outline-info select-cheque-type" data-cheque-type-id="' + aData.Id + '" data-cheque-type-description="' + aData.Description + '">Select</a>';
             $('td:eq(2)', nRow).html(selectButton);
@@ -721,7 +758,6 @@ $(document).ready(function () {
             return nRow;
         },
 
-        // Define columns
         "aoColumns": [
             { "mDataProp": "Description", "sTitle": "Cheque Type", "sWidth": "20%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
@@ -730,29 +766,24 @@ $(document).ready(function () {
         "aaSorting": [[0, "desc"]]
     });
 
-    // Handle cheque type selection
     $('#ChequeTypeGrid').on('click', '.select-cheque-type', function (e) {
         e.preventDefault();
 
-        // Get the cheque type ID and description from the button's data attributes
         var chequeTypeId = $(this).data('cheque-type-id');
         var chequeTypeDescription = $(this).data('cheque-type-description');
 
-        // Make the AJAX request to get the cheque type details (optional)
         $.ajax({
-            url: '@Url.Action("GetChequeTypeDetails", "InHouse")', // Ensure this points to the correct action/controller
+            url: '@Url.Action("GetChequeTypeDetails", "InHouse")', 
             type: 'GET',
             data: { chequeTypeId: chequeTypeId },
             success: function (response) {
                 if (response.success) {
-                    // Populate the form fields
                     $('#ChequeTypeDescription').val(response.chequeTypeDescription);
                     $('#ChequeTypeId').val(response.chequeTypeId);
 
-                    // Close the modal after selection
                     $('#ChequeTypeLookupModal').modal('hide');
                 } else {
-                    alert(response.message); // Display any error messages
+                    alert(response.message); 
                 }
             },
             error: function () {
@@ -774,9 +805,8 @@ $(document).ready(function () {
 
     <script>
         $(document).ready(function () {
-            const existingEntries = new Set(); // Set to track unique entries
+            const existingEntries = new Set(); 
 
-            // Function to convert number to words in Shillings (unchanged)
             function numberToWords(amount) {
                 const words = [
                     '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
@@ -799,32 +829,27 @@ $(document).ready(function () {
                 };
 
                 const finalResult = convert(amount) + ' Shillings';
-                return finalResult.charAt(0).toUpperCase() + finalResult.slice(1); // Capitalize first letter
+                return finalResult.charAt(0).toUpperCase() + finalResult.slice(1); 
             }
 
-            // Function to pad the amount with XXXXX (unchanged)
             function padAmount(amount) {
                 return 'XXXXX ' + amount;
             }
 
-            // Handle the add button click
             $('#addEntryButton').click(function (e) {
-                e.preventDefault(); // Prevent the default form submission
+                e.preventDefault(); 
 
-                // Gather form data
-                var amountValue = parseFloat($('#Amount').val()) || 0; // Parse amount as float
-                var wordifiedAmount = numberToWords(amountValue); // Convert amount to words
-                var paddedAmount = padAmount($('#Amount').val()); // Pad the amount
+                var amountValue = parseFloat($('#Amount').val()) || 0; 
+                var wordifiedAmount = numberToWords(amountValue); 
+                var paddedAmount = padAmount($('#Amount').val()); 
 
-                // Create a unique identifier for the entry
                 var uniqueEntry = `${$('#DebitChartOfAccountAccountName').val()}-${$('#DebitCustomerAccountFullAccountNumber').val()}-${$('#ChequeTypeDescription').val()}`;
 
                 if (existingEntries.has(uniqueEntry)) {
                     alert("This entry already exists.");
-                    return; // Prevent further execution if entry exists
+                    return; 
                 }
 
-                // Add the unique entry to the set
                 existingEntries.add(uniqueEntry);
 
                 var formData = {
@@ -842,25 +867,22 @@ $(document).ready(function () {
                     AvailableBalance: $('#AvailableBalance').val(),
                     ChequeTypeDescription: $('#ChequeTypeDescription').val(),
                     ChequeTypeId: $('#ChequeTypeId').val(),
-                    Amount: amountValue, // Store as number
-                    WordifiedAmount: wordifiedAmount, // Add wordified amount
-                    PaddedAmount: paddedAmount, // Add padded amount
+                    Amount: amountValue, 
+                    WordifiedAmount: wordifiedAmount, 
+                    PaddedAmount: paddedAmount, 
                     Payee: $('#Payee').val(),
                     Reference: $('#Reference').val(),
                     Chargeable: $('#applyCharges').prop('checked')
                 };
 
-                // Send the form data to the server using AJAX
                 $.ajax({
-                    url: '/InHouse/AddEntry', // Adjust the URL to your controller action
+                    url: '/InHouse/AddEntry', 
                     type: 'POST',
                     data: formData,
                     success: function (response) {
                         if (response.success) {
-                            // Display success message
                             $('#popupMessage').show().delay(2000).fadeOut();
 
-                            // Optionally, append the new entry to the table
                             var newRow = '<tr>' +
                                 '<td><input type="checkbox" /></td>' +
                                 '<td>' + formData.BranchDescription + '</td>' +
@@ -870,20 +892,18 @@ $(document).ready(function () {
                                 '<td>' + formData.DebitCustomerAccountFullAccountNumber + '</td>' +
                                 '<td>' + formData.Payee + '</td>' +
                                 '<td>' + formData.Amount + '</td>' +
-                                '<td>' + formData.WordifiedAmount + '</td>' +  // Add wordified amount
-                                '<td>' + formData.PaddedAmount + '</td>' +    // Add padded amount
+                                '<td>' + formData.WordifiedAmount + '</td>' +  
+                                '<td>' + formData.PaddedAmount + '</td>' +    
                                 '<td>' + formData.Reference + '</td>' +
                                 '</tr>';
                             $('#ExpensePayableEntries tbody').append(newRow);
                         }
                     },
                     error: function (xhr, status, error) {
-                        // Handle error
                         alert('Error: ' + error);
                     }
                 });
 
-                // Clear form fields after adding transaction
                 function clearFormFields() {
                     $('#DebitChartOfAccountAccountName').val('');
                     $('#CostCenter').val('');
@@ -898,7 +918,6 @@ $(document).ready(function () {
                 clearFormFields();
             });
 
-            // Remove selected transaction
             $('#removeTransaction').click(function () {
                 $('input[name="selectedTransaction"]:checked').closest('tr').remove();
                 $('#removeTransaction').prop('disabled', true);
@@ -921,7 +940,6 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         timer: 2000
                     }).then(() => {
-                        // Redirect or update page as needed
                     });
                 } else {
                     Swal.fire({
@@ -947,38 +965,32 @@ $(document).ready(function () {
 
     <script>
         $(document).ready(function () {
-            // Event listener for the Add button
             $('#addEntryButton').on('click', function (e) {
                 e.preventDefault();
-                // Logic to add an entry to the table goes here
                 $('#removeTransaction').prop('disabled', false);
                 $('#popupMessage').fadeIn().delay(2000).fadeOut();
             });
 
-            // Event listener for the Remove button
             $('#removeTransaction').on('click', function () {
-                // Collect IDs of entries to remove
                 const entriesToRemove = [];
                 $('#ExpensePayableEntries tbody tr').each(function () {
                     if ($(this).find('input[type="checkbox"]').is(':checked')) {
-                        const entryId = $(this).data('entry-id'); // Assuming each row has a data-entry-id attribute
+                        const entryId = $(this).data('entry-id'); 
                         if (entryId) {
                             entriesToRemove.push(entryId);
                         }
-                        $(this).remove(); // Remove the row from the table
+                        $(this).remove(); 
                     }
                 });
 
-                // Send AJAX request to remove entries from TempData
                 if (entriesToRemove.length > 0) {
                     $.ajax({
-                        url: '/InHouse/RemoveEntries', // Adjust the URL to your controller action
+                        url: '/InHouse/RemoveEntries', 
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(entriesToRemove),
                         success: function (response) {
                             if (response.success) {
-                                // Successfully removed entries
                                 if ($('#ExpensePayableEntries tbody tr').length === 0) {
                                     $('#removeTransaction').prop('disabled', true);
                                 }
@@ -992,15 +1004,12 @@ $(document).ready(function () {
                     });
                 }
 
-                // Disable the remove button if no entries left
                 if ($('#ExpensePayableEntries tbody tr').length === 0) {
                     $('#removeTransaction').prop('disabled', true);
                 }
             });
 
-            // Checkboxes in the table to select entries
             $('#ExpensePayableEntries').on('change', 'input[type="checkbox"]', function () {
-                // Enable the Remove button if any checkbox is checked
                 const hasChecked = $('#ExpensePayableEntries tbody input[type="checkbox"]:checked').length > 0;
                 $('#removeTransaction').prop('disabled', !hasChecked);
             });
