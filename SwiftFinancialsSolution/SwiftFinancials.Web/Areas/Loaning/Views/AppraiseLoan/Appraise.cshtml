@@ -608,9 +608,58 @@
                                             </div>
                                         </div>
                                     </div>
+                                
+                                
+                                
+                                    <div id="section6" class="tab">
+                                        <div class="tab-content">
+                                            <div class="table-container">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Loan Accounts</h3>
+                                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Account Status</th>
+                                                            <th>Full Account Number</th>
+                                                            <th>Account Number</th>
+                                                            <th>Membership Number</th>
+                                                            <th>Personal File Number</th>
+                                                            <th>Company</th>
+                                                            <th>Branch</th>
+                                                            <th>Product</th>
+                                                            <th>Section</th>
+                                                            <th>Book Balance</th>
+                                                            <th>Available Balance</th>
+                                                            <th>Principal Balance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (ViewBag.CustomerAccounts != null)
+                                                        {
+                                                            foreach (var customerAccount in ViewBag.CustomerAccounts)
+                                                            {
+                                                                <tr>
+                                                                    <td>@customerAccount.StatusDescription</td>
+                                                                    <td>@customerAccount.FullAccountNumber</td>
+                                                                    <td>@customerAccount.CustomerReference1</td>
+                                                                    <td>@customerAccount.CustomerReference2</td>
+                                                                    <td>@customerAccount.CustomerReference3</td>
+                                                                    <td>@customerAccount.BranchCompanyDescription</td>
+                                                                    <td>@customerAccount.BranchDescription</td>
+                                                                    <td>@customerAccount.CustomerAccountTypeTargetProductDescription</td>
+                                                                    <td>@customerAccount.CustomerAccountTypeTargetProductLoanProductSectionDescription</td>
+                                                                    <td style="text-align: right;">@customerAccount.BookBalance</td>
+                                                                    <td style="text-align: right;">@customerAccount.AvailableBalance</td>
+                                                                    <td style="text-align: right;">@customerAccount.PrincipalBalance</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </fieldset>
                             </div>
-
 
                             <div id="LoanQualification" class="tab-pane" style="margin-left: 20px;">
                                 <fieldset>

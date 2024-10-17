@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
@@ -29,7 +30,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
-           int totalRecordCount = 0;
+            int totalRecordCount = 0;
 
             int searchRecordCount = 0;
 
@@ -37,7 +38,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 1, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 1, (jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength), jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -60,16 +61,98 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(loanCaseDTO);
         }
 
-        public async Task<ActionResult> Cancel(Guid id)
+        public async Task<ActionResult> Cancel(Guid id, LoanCaseDTO loanCaseDTO)
         {
             await ServeNavigationMenus();
 
-            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
 
-            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
-            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
-            ViewBag.LoanCancellationOptionSelectList = GetLoanCancellationOptionSelectList(string.Empty);
+            var loaneeCustomer = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            if (loaneeCustomer != null)
+            {
+                loanCaseDTO = loaneeCustomer as LoanCaseDTO;
+
+                //// Standing Orders
+                ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
+                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
+
+                foreach (var accounts in customerAccounts)
+                {
+                    customerAccountId.Add(accounts.Id);
+                }
+
+                List<StandingOrderDTO> allStandingOrders = new List<StandingOrderDTO>();
+
+                // Iterate through each account ID and collect standing orders
+                foreach (var Ids in customerAccountId)
+                {
+                    var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
+                    if (standingOrders != null && standingOrders.Any())
+                    {
+                        allStandingOrders.AddRange(standingOrders); // Add standing orders to the collection
+                    }
+                    else
+                    {
+                        TempData["EmptystandingOrders"] = "Selected Customer has no Standing Orders.";
+                    }
+                }
+                ViewBag.StandingOrders = allStandingOrders;
+
+
+                //// Income History
+                //// Payouts
+                var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchStatus.Posted, loaneeCustomer.CustomerId, GetServiceHeader());
+                if (payouts != null)
+                {
+                    ViewBag.Payouts = payouts;
+                }
+
+
+                ////Salary
+                // No method fetching by customerId
+
+
+
+                //// Loan Applications
+                var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(loaneeCustomer.CustomerId, GetServiceHeader());
+                if (loanApplications != null)
+                {
+                    ViewBag.LoanApplications = loanApplications;
+                }
+
+                //// Collaterals...
+                // No method fetching by customerId
+
+
+
+                // Guarantors
+                var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
+                if (loanGuarantors != null)
+                {
+                    ViewBag.LoanGuarantors = loanGuarantors;
+                }
+
+
+                // Loan Accounts
+                var findloanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
+                var LoanAccounts = findloanAccounts.Where(L => L.CustomerAccountTypeProductCode == (int)ProductCode.Loan);
+                if (LoanAccounts != null)
+                {
+                    ViewBag.CustomerAccounts = LoanAccounts;
+                }
+
+
+
+                // Repayment Schedule .....................................
+                ViewBag.APR = loaneeCustomer.LoanInterestAnnualPercentageRate;
+                ViewBag.InterestCalculationMode = loaneeCustomer.LoanInterestCalculationModeDescription;
+                ViewBag.AmountApplied = loaneeCustomer.AmountApplied;
+                ViewBag.TermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
+
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+                ViewBag.LoanCancellationOptionSelectList = GetLoanCancellationOptionSelectList(string.Empty);
+            }
 
             return View(loanCaseDTO);
         }
@@ -78,17 +161,53 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Cancel(LoanCaseDTO loanCaseDTO)
         {
-            var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
+            var findLoanCaseDetails = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
-            loanDTO.ValidateAll();
+            loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
+            loanCaseDTO.LoanPurposeId = findLoanCaseDetails.LoanPurposeId;
+            loanCaseDTO.SavingsProductId = findLoanCaseDetails.SavingsProductId;
+            loanCaseDTO.AuditedDate = DateTime.Now;
 
-            if (!loanDTO.HasErrors)
+            loanCaseDTO.ValidateAll();
+
+            if (!loanCaseDTO.HasErrors)
             {
-                await _channelService.CancelLoanCaseAsync(loanDTO, loanCaseDTO.LoanCancellationOption, GetServiceHeader());
 
-                TempData["Cancel"] = "Loan Cancellation Successful";
+                string message = string.Format(
+                                  "Do you want to proceed with loan cancellation for: \n{0}?",
+                                  findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualLastName.ToUpper() +
+                                  "\nAmount Applied: Kshs. " + loanCaseDTO.AmountApplied + "\nAmount Appraised: Kshs." + loanCaseDTO.AppraisedAmount + "\nVerification Remarks: " + loanCaseDTO.AuditRemarks.ToUpper() +
+                                  "\nLoan Product: " + loanCaseDTO.LoanProductDescription.ToUpper() + "\nLoan Purpose: " + loanCaseDTO.LoanPurposeDescription.ToUpper()
+                              );
 
-                return RedirectToAction("Index");
+                // Show the message box with Yes/No options
+                DialogResult result = MessageBox.Show(
+                    message,
+                    "Loan Cancellation",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                if (result == DialogResult.Yes)
+                {
+
+                    await _channelService.CancelLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanCancellationOption, GetServiceHeader());
+
+                    MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Cancellation", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    await ServeNavigationMenus();
+
+                    ViewBag.LoanCancellationOptionSelectList = GetLoanCancellationOptionSelectList(loanCaseDTO.LoanCancellationOption.ToString());
+
+                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Cancellation", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    return View(loanCaseDTO);
+                }
             }
             else
             {
@@ -98,7 +217,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
                 ViewBag.LoanCancellationOptionSelectList = GetLoanCancellationOptionSelectList(loanCaseDTO.LoanCancellationOption.ToString());
 
-                TempData["CancelError"] = "Loan Cancellation Unsuccessful";
+                MessageBox.Show(Form.ActiveForm, "Operation Unsuccessful.", "Loan Cancellation", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
                 return View(loanCaseDTO);
             }

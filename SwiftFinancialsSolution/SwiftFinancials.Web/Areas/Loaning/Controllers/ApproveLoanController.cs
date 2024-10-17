@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
@@ -36,7 +39,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Appraised, jQueryDataTablesModel.sSearch, (int)LoanCaseFilter.CustomerFirstName, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Appraised, jQueryDataTablesModel.sSearch, (int)LoanCaseFilter.CustomerFirstName, (jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength), jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -72,22 +75,100 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(string.Empty);
 
-            var loan = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
-            if (loan != null)
+            var loaneeCustomer = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            if (loaneeCustomer != null)
             {
-                loanCaseDTO.CaseNumber = loan.CaseNumber;
-                loanCaseDTO.CustomerIndividualFirstName = loan.CustomerIndividualSalutationDescription + " " + loan.CustomerIndividualFirstName + " " +
-                    loan.CustomerIndividualLastName;
-                loanCaseDTO.CustomerReference1 = loan.CustomerReference1;
-                loanCaseDTO.CustomerReference2 = loan.CustomerReference2;
-                loanCaseDTO.CustomerReference3 = loan.CustomerReference3;
-                loanCaseDTO.LoanRegistrationTermInMonths = loan.LoanRegistrationTermInMonths;
-                loanCaseDTO.LoanRegistrationMaximumAmount = loan.LoanRegistrationMaximumAmount;
-                loanCaseDTO.MaximumAmountPercentage = loan.MaximumAmountPercentage;
-                loanCaseDTO.LoanProductDescription = loan.LoanProductDescription;
-                loanCaseDTO.LoanPurposeDescription = loan.LoanPurposeDescription;
-                loanCaseDTO.AmountApplied = loan.AmountApplied;
-                loanCaseDTO.AppraisedAmount = loan.AppraisedAmount;
+                //loanCaseDTO.CaseNumber = loaneeCustomer.CaseNumber;
+                //loanCaseDTO.CustomerIndividualFirstName = loaneeCustomer.CustomerIndividualSalutationDescription + " " + loaneeCustomer.CustomerIndividualFirstName + " " +
+                //    loaneeCustomer.CustomerIndividualLastName;
+                //loanCaseDTO.CustomerReference1 = loaneeCustomer.CustomerReference1;
+                //loanCaseDTO.CustomerReference2 = loaneeCustomer.CustomerReference2;
+                //loanCaseDTO.CustomerReference3 = loaneeCustomer.CustomerReference3;
+                //loanCaseDTO.LoanRegistrationTermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
+                //loanCaseDTO.LoanRegistrationMaximumAmount = loaneeCustomer.LoanRegistrationMaximumAmount;
+                //loanCaseDTO.MaximumAmountPercentage = loaneeCustomer.MaximumAmountPercentage;
+                //loanCaseDTO.LoanProductDescription = loaneeCustomer.LoanProductDescription;
+                //loanCaseDTO.LoanPurposeDescription = loaneeCustomer.LoanPurposeDescription;
+                //loanCaseDTO.AmountApplied = loaneeCustomer.AmountApplied;
+                //loanCaseDTO.AppraisedAmount = loaneeCustomer.AppraisedAmount;
+
+                loanCaseDTO = loaneeCustomer as LoanCaseDTO;
+
+                //// Standing Orders
+                ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
+                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
+
+                foreach (var accounts in customerAccounts)
+                {
+                    customerAccountId.Add(accounts.Id);
+                }
+
+                List<StandingOrderDTO> allStandingOrders = new List<StandingOrderDTO>();
+
+                // Iterate through each account ID and collect standing orders
+                foreach (var Ids in customerAccountId)
+                {
+                    var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
+                    if (standingOrders != null && standingOrders.Any())
+                    {
+                        allStandingOrders.AddRange(standingOrders); // Add standing orders to the collection
+                    }
+                    else
+                    {
+                        TempData["EmptystandingOrders"] = "Selected Customer has no Standing Orders.";
+                    }
+                }
+                ViewBag.StandingOrders = allStandingOrders;
+
+
+                //// Income History
+                //// Payouts
+                var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchStatus.Posted, loaneeCustomer.CustomerId, GetServiceHeader());
+                if (payouts != null)
+                {
+                    ViewBag.Payouts = payouts;
+                }
+
+
+                ////Salary
+                // No method fetching by customerId
+
+
+
+                //// Loan Applications
+                var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(loaneeCustomer.CustomerId, GetServiceHeader());
+                if (loanApplications != null)
+                {
+                    ViewBag.LoanApplications = loanApplications;
+                }
+
+                //// Collaterals...
+                // No method fetching by customerId
+
+
+
+                // Guarantors
+                var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
+                if (loanGuarantors != null)
+                {
+                    ViewBag.LoanGuarantors = loanGuarantors;
+                }
+
+                // Loan Accounts
+                var findloanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
+                var LoanAccounts = findloanAccounts.Where(L => L.CustomerAccountTypeProductCode == (int)ProductCode.Loan);
+                if (LoanAccounts != null)
+                {
+                    ViewBag.CustomerAccounts = LoanAccounts;
+                }
+
+
+
+                // Repayment Schedule .....................................
+                ViewBag.APR = loaneeCustomer.LoanInterestAnnualPercentageRate;
+                ViewBag.InterestCalculationMode = loaneeCustomer.LoanInterestCalculationModeDescription;
+                ViewBag.AmountApplied = loaneeCustomer.AmountApplied;
+                ViewBag.TermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
             }
 
             return View(loanCaseDTO);
@@ -101,33 +182,62 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
-            loanDTO.ApprovedAmount = loanCaseDTO.ApprovedAmount;
-            loanDTO.ApprovedAmountRemarks = loanCaseDTO.ApprovedAmountRemarks;
-            loanDTO.ApprovalRemarks = loanCaseDTO.ApprovalRemarks;
+            var findLoanCaseDetails = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
-            if (loanDTO.ApprovedAmount == 0 || loanDTO.ApprovedAmountRemarks == null || loanDTO.ApprovalRemarks == null)
+            loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
+            loanCaseDTO.LoanPurposeId = findLoanCaseDetails.LoanPurposeId;
+            loanCaseDTO.SavingsProductId = findLoanCaseDetails.SavingsProductId;
+            loanCaseDTO.ApprovedDate = DateTime.Now;
+
+            loanCaseDTO.ValidateAll();
+
+            if (!loanCaseDTO.HasErrors)
             {
-                TempData["ApprovalCheck"] = "Approved Amount, Approved Amount Remarks and Approval Remarks required to approve loan.";
+                string message = string.Format(
+                                 "Do you want to proceed with loan approval for: \n{0}?",
+                                     findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualLastName.ToUpper() +
+                                  "\nAmount Applied: Kshs. " + loanCaseDTO.AmountApplied + "\nAmount Appraised: Kshs." + loanCaseDTO.AppraisedAmount + "\nVerification Remarks: " + loanCaseDTO.AuditRemarks.ToUpper() +
+                                  "\nLoan Product: " + loanCaseDTO.LoanProductDescription.ToUpper() + "\nLoan Purpose: " + loanCaseDTO.LoanPurposeDescription.ToUpper()
+                             );
 
-                return View();
-            }
+                // Show the message box with Yes/No options
+                DialogResult result = MessageBox.Show(
+                    message,
+                    "Loan Approval",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
 
-            loanDTO.ValidateAll();
+                if (result == DialogResult.Yes)
+                {
+                    await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
 
-            if (!loanDTO.HasErrors)
-            {
-                await _channelService.ApproveLoanCaseAsync(loanDTO, loanApprovalOption, GetServiceHeader());
+                    //TempData["approve"] = "Loan Approval Successful";
+                    MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-                TempData["approve"] = "Loan Approval Successful";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    await ServeNavigationMenus();
 
-                return RedirectToAction("Index");
+                    ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanApprovalOption.ToString());
+
+                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    return View(loanCaseDTO);
+                }
             }
             else
             {
+                await ServeNavigationMenus();
+
                 var errorMessages = loanDTO.ErrorMessages;
                 ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
 
-                TempData["approveError"] = "Loan Approval Unsuccessful";
+                MessageBox.Show(Form.ActiveForm, "Operation Unsuccessful.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
 
                 return View(loanCaseDTO);
             }
