@@ -822,6 +822,9 @@
                                             <li class="inner-nav-item">
                                                 <a class="inner-nav-link" data-toggle="tab" href="#cashWithdrawalRequests">Withdrawal Requests</a>
                                             </li>
+                                            <li class="inner-nav-item">
+                                                <a class="inner-nav-link" data-toggle="tab" href="#cashTransferRequests">Transfer Requests</a>
+                                            </li>
                                         </ul>
 
                                         <div class="inner-tab-content">
@@ -846,6 +849,22 @@
 
                                                 <div class="table-responsive">
                                                     <table id="cashWithdrawalRequestsTable" class="table table-striped table-bordered table-hover" style="width:100%;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="dataTables_empty">
+                                                                    Loading data from server
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+
+                                            <div id="cashTransferRequests" class="inner-tab-pane">
+
+                                                <div class="table-responsive">
+                                                    <table id="cashTransferRequestsTable" class="table table-striped table-bordered table-hover" style="width:100%;">
                                                         <tbody>
                                                             <tr>
                                                                 <td class="dataTables_empty">
@@ -1543,17 +1562,13 @@
             },
 
     "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-        //var writeDate = new Date(parseInt(aData.WriteDate.replace("/Date(", "").replace(")/", ""), 10));
-        //var paidFlaggedDate = new Date(parseInt(aData.PaidFlaggedDate.replace("/Date(", "").replace(")/", ""), 10));
+
         var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
 
         var formatDate = function(date) {
             return $.datepicker.formatDate('dd/mm/yy', date);
         };
 
-        // Format dates
-        //aData.WriteDate = formatDate(writeDate);
-        //aData.PaidDate = formatDate(paidFlaggedDate);
         aData.CreatedDate = formatDate(createdDate);
 
         // Update row content
@@ -1986,15 +2001,37 @@
         $(document).on('click', '.select-action-button', function (e) {
             e.preventDefault();
 
-            const rowData = $('#cashDepositRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
+            // Retrieve the row element closest to the button
+            const $row = $(this).closest('tr');
+
+            // Get the closest table and the DataTable API instance for the table
+            const $table = $row.closest('table');
+            const table = $table.DataTable();
+
+            // Get the row data using DataTables API
+            const rowData = table.row($row).data();
             const requestId = rowData.Id; // Get the ID of the selected item
+
+            console.log("Selected Request ID:", requestId);
 
             // Show the modal
             $('#paymentModal').modal('show');
 
-            // Set up the modal buttons for approval and rejection
+            // Get the table ID
+            const tableId = $table.attr('id');
+            console.log("Table ID is:", tableId);
+
+            // Set up modal buttons for approval and rejection
             $('#paymentBtn').off('click').on('click', function () {
-                handleCashDepositRequest(requestId); // Handle approve
+                if (tableId === 'cashDepositRequestsTable') {
+                    handleCashDepositRequest(requestId); // Handle cash deposit approval
+                } else if (tableId === 'cashWithdrawalRequestsTable') {
+                    handleCashWithdrawalRequest(requestId); // Handle cash withdrawal approval
+                } else if (tableId === 'cashTransferRequestsTable') {
+                    handleCashTransferRequest(requestId); // Handle cash transfer approval
+                } else {
+                    console.error('Unknown table ID:', tableId);
+                }
             });
         });
 
@@ -2052,6 +2089,23 @@
            });
 
 
+        // Use event delegation to handle clicks on dynamically generated buttons
+        $(document).on('click', '.select-action-button', function (e) {
+            e.preventDefault();
+
+            const rowData = $('#cashWithdrawalRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
+            const requestId = rowData.Id; // Get the ID of the selected item
+
+            // Show the modal
+            $('#paymentModal').modal('show');
+
+            // Set up the modal buttons for approval and rejection
+            $('#paymentBtn').off('click').on('click', function () {
+                handleCashWithdrawalRequest(requestId); // Handle approve
+            });
+        });
+
+
         async function handleCashWithdrawalRequest(cashWithdrawalRequestId) {
             console.log("cashWithdrawalRequest is", cashWithdrawalRequestId);
 
@@ -2071,5 +2125,84 @@
                 console.error("Error occurred while processing the request: ", error);
             }
         }
+
+
+              $('#cashTransferRequestsTable').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("CashTransferRequestsIndex", "CashDeposit", new { Area = "FrontOffice"}))",
+                  "sServerMethod": "POST",
+                  "fnServerParams": function (aoData) {
+                      aoData.push(
+                          { "name": "status", "value": 2},
+
+                      );
+                  },
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+
+            var requestType = 1;
+            var dropDownHtml = `
+            <button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;">
+                Select
+            </button>
+        `;
+
+            $('td:eq(6)', nRow).html(dropDownHtml);
+            return nRow;
+        },
+                  "aoColumns": [
+                      { "mDataProp": "EmployeeCustomerFullName", "sTitle": "Employee Name", "sWidth": "15%" },
+                      { "mDataProp": "StatusDescription", "sTitle": "Authorization Status", "sWidth": "15%" },
+                      { "mDataProp": "Amount", "sTitle": "Amounts", "sWidth": "10%" },
+                      { "mDataProp": "TellerCashBalanceStatus", "sTitle": "Teller C/Balance Status", "sWidth": "15%" },
+                      { "mDataProp": "TellerCashBalanceStatusValue", "sTitle": "Teller C/Balance", "sWidth": "10%" },
+                      { "mDataProp": "CreatedBy", "sTitle": "Created By", "sWidth": "10%" },
+                      { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%", "bSortable": false }
+
+        ],
+        "aaSorting": [[1, "desc"]]
+              });
+
+
+        // Use event delegation to handle clicks on dynamically generated buttons
+        //$(document).on('click', '.select-action-button', function (e) {
+        //    e.preventDefault();
+
+        //    const rowData = $('#cashTransferRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
+        //    const requestId = rowData.Id; // Get the ID of the selected item
+
+        //    // Show the modal
+        //    $('#paymentModal').modal('show');
+
+        //    // Set up the modal buttons for approval and rejection
+        //    $('#paymentBtn').off('click').on('click', function () {
+        //        handleCashTransferRequest(requestId); // Handle approve
+        //    });
+        //});
+
+
+
+        async function handleCashTransferRequest(cashTransferRequestId) {
+            console.log("cashTransferRequest is", cashTransferRequestId);
+
+            try {
+                const result = await $.ajax({
+                    url: '/CashDeposit/PayAuthorizedTransferRequestAsync',
+                    type: 'POST',
+                    data: { cashTransferRequestId }
+                });
+
+                console.log(result);
+                $('#paymentModal').modal('hide');
+                // Optionally, show a success message or update the UI here
+
+            } catch (error) {
+                // Handle the error
+                console.error("Error occurred while processing the request: ", error);
+            }
+        }
+
     </script>
 }

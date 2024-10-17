@@ -104,7 +104,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> CashTransferRequestsIndex(JQueryDataTablesModel jQueryDataTablesModel, int status, int customerFilter)
+        public async Task<JsonResult> CashTransferRequestsIndex(JQueryDataTablesModel jQueryDataTablesModel, int? status, int? customerFilter)
         {
 
             int totalRecordCount = 0;
@@ -126,7 +126,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             //var pageCollectionInfo = await _channelService.FindCashTransferRequestsByFilterInPageAsync(employeeId, startDate, endDate, status, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
-            var pageCollectionInfo = await _channelService.FindCashTransferRequestsByStatusAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, status, customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCashTransferRequestsByStatusAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, (int)status, (int)customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -385,6 +385,21 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     //}
 
                     return HandleAuthorizationResult(depositAuthorization, isApproval);
+
+                case FrontOfficeCashRequestType.CashTransfer:
+                    
+                    var cashTransferRequest = await _channelService.FindCashTransferRequestAsync(id, GetServiceHeader());
+
+                    cashTransferRequest.Remarks = remarks;
+   
+                    int cashTransferRequestAcknowledgeOption = (customerTransactionAuthOption == 1) ? 2 : 3;
+
+
+
+
+                    var transferAuthorization = await _channelService.AcknowledgeCashTransferRequestAsync(cashTransferRequest, cashTransferRequestAcknowledgeOption, GetServiceHeader());
+
+                    return HandleAuthorizationResult(transferAuthorization, isApproval);
 
                 default:
                     return RedirectToAction("Create");

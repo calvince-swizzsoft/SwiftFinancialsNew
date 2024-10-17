@@ -198,9 +198,27 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public ExpensePayableEntryDTO ExpensePayableEntry { get; set; }
         public string errormassage;
 
+
+        [DataMember]
+        [Display(Name = "GeneralTransactionType")]
+        public int TransactionType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string TransactionTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(GeneralTransactionType), TransactionType) ? EnumHelper.GetDescription((GeneralTransactionType)TransactionType) : string.Empty;
+            }
+        }
+
+
     }
+
+
 
     // new G/L validation
 
-    
+
 }

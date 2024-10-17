@@ -1428,6 +1428,111 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<JsonResult> PayAuthorizedTransferRequestAsync(Guid cashTransferRequestId)
+
+        { 
+            try
+            {
+
+                var cashTransfer = await _channelService.FindCashTransferRequestAsync(cashTransferRequestId, GetServiceHeader());
+
+
+                if (cashTransfer.Utilized)
+                {
+
+                    var response = new
+                    {
+                        Status = "Fail",
+                        Message = "The selected transfer has been utilized",
+                        Timestamp = DateTime.Now
+                    };
+
+
+                    MessageBox.Show(response.Message,
+                     "Cash Transaction",
+                     MessageBoxButtons.OK,
+                     MessageBoxIcon.Information,
+                     MessageBoxDefaultButton.Button1,
+                     MessageBoxOptions.ServiceNotification
+
+                     );
+
+                    return Json(response);
+
+                }
+               
+             var success = await _channelService.UtilizeCashTransferRequestAsync(cashTransferRequestId, GetServiceHeader());
+
+                if (success)
+                {
+
+                    var response = new
+                    {
+                        Status = "Success",
+                        Message = "Cash Transfer Utilized successfully.",
+                        Timestamp = DateTime.Now
+                    };
+
+
+                    MessageBox.Show(response.Message,
+                     "Cash Transaction",
+                     MessageBoxButtons.OK,
+                     MessageBoxIcon.Information,
+                     MessageBoxDefaultButton.Button1,
+                     MessageBoxOptions.ServiceNotification
+
+                     );
+
+                    return Json(response);
+
+                }
+                else
+                {
+
+                    var response = new
+                    {
+                        Status = "Fail",
+                        Message = "Cash Transfer Utilization failed",
+                        Timestamp = DateTime.Now
+                    };
+
+
+                    MessageBox.Show(response.Message,
+                     "Cash Transaction",
+                     MessageBoxButtons.OK,
+                     MessageBoxIcon.Information,
+                     MessageBoxDefaultButton.Button1,
+                     MessageBoxOptions.ServiceNotification
+
+                     );
+
+                    return Json(response);
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var errorResponse = new
+                {
+                    Status = "Error",
+                    Message = ex.Message,
+                    Timestamp = DateTime.Now
+                };
+                MessageBox.Show("Error",
+                "Cash Transaction",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation,
+                MessageBoxDefaultButton.Button1,
+                MessageBoxOptions.ServiceNotification
+
+                );
+                return Json(errorResponse);
+            }
+        }
+
+
         [HttpGet]
         public async Task<JsonResult> GetTellersAsync()
         {
@@ -1673,6 +1778,49 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
                 pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.PaidDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<CashWithdrawalRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CashTransferRequestsIndex(JQueryDataTablesModel jQueryDataTablesModel, int status)
+        {
+
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            DateTime startDate = DateTime.MinValue;
+
+            DateTime endDate = DateTime.MaxValue;
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+
+            _selectedTeller = await GetCurrentTeller();
+
+            var pageCollectionInfo = await _channelService.FindCashTransferRequestsByFilterInPageAsync((Guid)SelectedTeller.EmployeeId, startDate, endDate, status, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+
+            //var pageCollectionInfo = await _channelService.FindCashWithdrawalRequestsByFilterInPageAsync(startDate, endDate, 2, "", 2, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 

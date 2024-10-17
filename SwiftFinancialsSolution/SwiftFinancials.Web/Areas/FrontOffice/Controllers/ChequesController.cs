@@ -56,6 +56,56 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<ActionResult> FindExternalChequesByDate(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
+        {
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindExternalChequesByDateRangeAndFilterInPageAsync(
+                startDate,
+                endDate,
+                jQueryDataTablesModel.sSearch,
+                pageIndex,
+                pageSize,
+                GetServiceHeader()
+            );
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: pageCollectionInfo.PageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<ExternalChequeDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+        }
+
+
+
+
         public async Task<ActionResult> Cheques()
         {
             await ServeNavigationMenus();
@@ -209,11 +259,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 foreach (var cheque in selectedCheques)
                 {
-                    Console.WriteLine($"Validating cheque {cheque.Number}");
                     cheque.BankLinkageChartOfAccountId = (Guid)TempData["BankLinkageChartOfAccountId"];
                     cheque.ChartOfAccountAccountName = TempData["ChartOfAccountAccountName"].ToString();
                     bankLinkageDTO = TempData["BankLinkageDTO"] as BankLinkageDTO;
-
                 }
 
                 if (!isSuccess)
@@ -254,6 +302,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
+
         public async Task<ActionResult> ChequeClearance()
         {
             await ServeNavigationMenus();
@@ -286,7 +335,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else return this.DataTablesJson(items: new List<ExternalChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
-
 
 
         [HttpPost]
@@ -405,6 +453,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return Json(new { success = isSuccess, message = isSuccess ? "Cheques processed successfully." : errorMessage });
         }
+
+
 
 
 
