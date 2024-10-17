@@ -383,16 +383,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                            @Html.DropDownListFor(model => model.LoanInterestRecoveryMode, loanInterestRecoveryModes, new { @class = "form-control input-md" })
-                                                            @Html.ValidationMessageFor(model => model.LoanInterestRecoveryMode)
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                               
                                                 <div class="col-lg-3">
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "control-label" })
@@ -1522,7 +1513,7 @@
                 $.ajax({
                     url: '@Url.Action("ProcessSelectedProducts", "LoanProduct", new { Area = "Accounts" })',
                     type: 'POST',
-                    data: { selectedProductIds: selectedProducts },
+                    data: { selectedSavingProductIds: selectedProducts },
                     success: function (response) {
                         if (response.success) {
                             console.log('Products successfully updated.');
@@ -1710,7 +1701,7 @@ $(document).ready(function () {
         $.ajax({
             url: '@Url.Action("ProcessSelectedInvestmentProducts", "LoanProduct", new { Area = "Accounts" })',
             type: 'POST',
-            data: { selectedProductIds: selectedInvestmentProducts },
+            data: { selectedInvestmentProductIds: selectedInvestmentProducts },
             success: function (response) {
                 if (response.success) {
                     console.log('Investment products updated successfully in session.');
