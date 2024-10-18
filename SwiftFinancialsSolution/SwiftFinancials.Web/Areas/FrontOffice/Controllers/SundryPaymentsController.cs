@@ -233,6 +233,26 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             expensePayableDTO.BranchId = SelectedTeller.EmployeeBranchId;
 
 
+            switch ((GeneralTransactionType)expensePayableDTO.TransactionType)
+            {
+
+
+                case GeneralTransactionType.CashPayment:
+
+                    break;
+                
+                case GeneralTransactionType.CashPaymentAccountClosure:
+
+                    expensePayableDTO.TotalValue = expensePayableDTO.AccountClosureRequest.NetRefundable;
+
+                    expensePayableDTO.ChartOfAccountId = expensePayableDTO.AccountClosureRequest.CustomerAccountTypeTargetProductChartOfAccountId;
+
+                    expensePayableDTO.BranchId = expensePayableDTO.AccountClosureRequest.BranchId;
+
+                    break;
+            }
+
+
             expensePayableDTO.ValidateAll();
 
 
@@ -265,10 +285,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             transactionModel.DebitChartOfAccountId = expensePayableDTO.ChartOfAccountId;
                         transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
 
-                        var journal = await _channelService.AddJournalAsync(transactionModel, null, GetServiceHeader());
+                        var cashPaymentJournal = await _channelService.AddJournalAsync(transactionModel, null, GetServiceHeader());
 
 
-                        if (journal != null)
+                        if (cashPaymentJournal != null)
                         {
 
                             MessageBox.Show(
@@ -303,18 +323,56 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         break;
 
                     case GeneralTransactionType.CashPaymentAccountClosure:
-                
-                        if (SelectedCustomerAccount != null)
-                        {
-                            transactionModel.DebitCustomerAccount = SelectedCustomerAccount;
-                            transactionModel.DebitCustomerAccountId = SelectedCustomerAccount.Id;
-                            transactionModel.CreditCustomerAccountId = SelectedCustomerAccount.Id;
-                            transactionModel.CreditCustomerAccount = SelectedCustomerAccount;
-                            transactionModel.CreditChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
-                        }
+
+                        transactionModel.TransactionCode = (int)SystemTransactionCode.AccountClosure;
 
                         if (SelectedTeller != null && !SelectedTeller.IsLocked)
-                            transactionModel.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
+                            transactionModel.DebitChartOfAccountId = expensePayableDTO.ChartOfAccountId;
+                        transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
+
+                        //if (SelectedCustomerAccount != null)
+                        //{
+                        //    transactionModel.DebitCustomerAccount = SelectedCustomerAccount;
+                        //    transactionModel.DebitCustomerAccountId = SelectedCustomerAccount.Id;
+                        //    transactionModel.CreditCustomerAccountId = SelectedCustomerAccount.Id;
+                        //    transactionModel.CreditCustomerAccount = SelectedCustomerAccount;
+                        //    transactionModel.CreditChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
+                        //}
+
+                        //if (SelectedTeller != null && !SelectedTeller.IsLocked)
+                        //    transactionModel.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
+
+                        var cashPaymentAccountClosureJournal = await _channelService.AddJournalAsync(transactionModel, null, GetServiceHeader());
+
+                        if (cashPaymentAccountClosureJournal != null)
+                        {
+
+                            MessageBox.Show(
+                                                               "Operation Success",
+                                                               "Customer Receipts",
+                                                               MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+                                                           );
+
+                            return Json(new { success = true, message = "Operation Success" });
+                        }
+
+                        else
+                        {
+
+                            MessageBox.Show(
+                                                               "Operation Failed",
+                                                               "Custmer Receipts",
+                                                               MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+                                                           );
+
+                            return Json(new { success = false, message = "Operation Failed" });
+                        }
 
                         break;
                 }
@@ -333,10 +391,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost] 
-        public async Task<JsonResult> FetchAccountClosureRequestsTable(JQueryDataTablesModel jQueryDataTablesModel, int status)
+        public async Task<JsonResult> FetchAccountClosureRequestsTable(JQueryDataTablesModel jQueryDataTablesModel, int status, int customerFilter, DateTime startDate, DateTime endDate)
 
         {
-            int customerFilter = 1;
+            //int customerFilter = 1;
 
             bool includeProductDescription = true; 
             //var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
@@ -348,9 +406,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int searchRecordCount = 0;
 
-            DateTime startDate = DateTime.Now;
+            //DateTime startDate = DateTime.Now;
 
-            DateTime endDate = DateTime.Now;
+            //DateTime endDate = DateTime.Now;
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
