@@ -98,7 +98,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
                 var bankDTO = await _channelService.AddBankAsync(BankDTO, GetServiceHeader());
                 await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, BankDTO.BankBranches,GetServiceHeader());
-
+                
                 return RedirectToAction("Index");
             }
             return View(BankDTO);
