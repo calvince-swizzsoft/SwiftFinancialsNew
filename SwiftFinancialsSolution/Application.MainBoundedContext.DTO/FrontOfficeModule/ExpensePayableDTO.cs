@@ -1,4 +1,5 @@
-﻿using Application.Seedwork;
+﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.Seedwork;
 
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Extensions;
@@ -212,6 +213,11 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
                 return Enum.IsDefined(typeof(GeneralTransactionType), TransactionType) ? EnumHelper.GetDescription((GeneralTransactionType)TransactionType) : string.Empty;
             }
         }
+
+        public CustomerAccountDTO CustomerAccount { get; set; }
+
+        public AccountClosureRequestDTO AccountClosureRequest { get; set; }
+
 
 
     }

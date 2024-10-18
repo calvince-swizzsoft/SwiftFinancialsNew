@@ -41,7 +41,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
 
-            var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
+            //var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
+            var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
 
             int totalRecordCount = 0;
