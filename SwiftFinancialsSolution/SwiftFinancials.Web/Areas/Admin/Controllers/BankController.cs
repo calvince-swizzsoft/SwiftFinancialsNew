@@ -1,9 +1,12 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AdministrationModule;
+using Domain.MainBoundedContext.AdministrationModule.Aggregates.BankBranchAgg;
+using Newtonsoft.Json;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -37,6 +40,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+
                 pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
@@ -61,24 +65,43 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             return View();
         }
-
         [HttpPost]
-        public async Task<ActionResult> Create(BankDTO BankDTO)
+        public JsonResult Add(BankDTO bank,string branchdetails)
+        {
+
+            foreach (var branch in bank.BankBranches)
+            {
+                bank.Description = branch.Description;
+            }
+            return Json(new { success = true, data = JournalVoucherEntryDTOs });
+
+        }
+        [HttpPost]
+        public JsonResult Remove(Guid id, BankDTO bank)
+        {
+            foreach (var branch in bank.BankBranches)
+            {
+                bank.Description = branch.Description;
+
+            }
+            return Json(new { success = true, data = JournalVoucherEntryDTOs });
+
+        }
+        [HttpPost]
+        public async Task<ActionResult> Create(BankDTO BankDTO, string branchDetails)
         {
             BankDTO.ValidateAll();
-
             if (!BankDTO.HasErrors)
             {
-                await _channelService.AddBankAsync(BankDTO, GetServiceHeader());
-                TempData["SuccessMessage"] = "Bank Created successfully";
+                var bankBranches = JsonConvert.DeserializeObject<List<BankBranchDTO>>(branchDetails);
+                BankDTO.BankBranches = new ObservableCollection<BankBranchDTO>(bankBranches);
+
+                var bankDTO = await _channelService.AddBankAsync(BankDTO, GetServiceHeader());
+                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, BankDTO.BankBranches,GetServiceHeader());
+
                 return RedirectToAction("Index");
             }
-            else
-            {
-                var errorMessages = BankDTO.ErrorMessages;
-
-                return View(BankDTO);
-            }
+            return View(BankDTO);
         }
 
         public async Task<ActionResult> Edit(Guid id)

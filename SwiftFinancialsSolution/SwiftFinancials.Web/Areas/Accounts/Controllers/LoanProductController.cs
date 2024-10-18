@@ -47,12 +47,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<LoanProductDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+        
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
+            // Fetching the loan product details
             var loanProductDTO = await _channelService.FindLoanProductAsync(id, GetServiceHeader());
 
+            // Fetching additional related data
+            var appraisalProducts = await _channelService.FindAppraisalProductsByLoanProductIdAsync(id, GetServiceHeader());
+            var loanCycles = await _channelService.FindLoanCyclesByLoanProductIdAsync(id, GetServiceHeader());
+            var loanProductDeductibles = await _channelService.FindLoanProductDeductiblesByLoanProductIdAsync(id, GetServiceHeader());
+            var auxiliaryAppraisalFactors = await _channelService.FindLoanProductAuxilliaryAppraisalFactorsByLoanProductIdAsync(id, GetServiceHeader());
+            var dynamicCharges = await _channelService.FindDynamicChargesByLoanProductIdAsync(id, GetServiceHeader());
+
+           
             return View(loanProductDTO);
         }
 
@@ -160,9 +170,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public ActionResult StoreSelectedCharges(List<ChargeDTO> selectedCharges)
+        public ActionResult StoreSelectedCharges(List<DynamicChargeDTO> selectedCharges)
         {
-            TempData["selectedCharges"] = selectedCharges;
+            var observableCharges = new ObservableCollection<DynamicChargeDTO>(selectedCharges);
+            Session["selectedCharges"] = observableCharges; // Store as ObservableCollection
 
             return Json(new { success = true });
         }
@@ -170,10 +181,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public ActionResult StoreSelectedProducts(List<Guid> selectedProductIds)
         {
-            TempData["SelectedProducts"] = selectedProductIds;
+            Session["SelectedProducts"] = selectedProductIds;
 
             return Json(new { success = true });
         }
+
 
         [HttpPost]
         public ActionResult ProcessSelectedLoans(List<Guid> selectedLoanIds)
@@ -183,41 +195,44 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return Json(new { success = false, message = "No loans selected." });
             }
 
-            TempData["SelectedLoans"] = selectedLoanIds;
+            Session["SelectedLoans"] = selectedLoanIds;
 
             return Json(new { success = true, message = "Loans stored in TempData successfully." });
         }
 
+
         [HttpPost]
-        public ActionResult ProcessSelectedProducts(List<Guid> selectedProductIds1)
+        public ActionResult ProcessSelectedInvestmentProducts(List<Guid> selectedInvestmentProductIds)
         {
-            if (selectedProductIds1 == null || !selectedProductIds1.Any())
+            if (selectedInvestmentProductIds == null || !selectedInvestmentProductIds.Any())
             {
                 return Json(new { success = false, message = "No products selected." });
             }
 
-            TempData["SelectedProducts"] = selectedProductIds1;
-
-            return Json(new { success = true, message = "Products stored in TempData successfully." });
-        }
-
-        [HttpPost]
-        public ActionResult ProcessSelectedInvestmentProducts(List<Guid> selectedProductIds)
-        {
-            if (selectedProductIds == null || !selectedProductIds.Any())
-            {
-                return Json(new { success = false, message = "No products selected." });
-            }
-
-            TempData["SelectedInvestmentProducts"] = selectedProductIds;
+            Session["SelectedInvestmentProducts"] = selectedInvestmentProductIds;
 
             return Json(new { success = true, message = "Investment products stored in TempData successfully." });
         }
 
         [HttpPost]
+        public ActionResult ProcessSelectedProducts(List<Guid> selectedSavingProductIds)
+        {
+            if (selectedSavingProductIds == null || !selectedSavingProductIds.Any())
+            {
+                return Json(new { success = false, message = "No products selected." });
+            }
+
+            Session["SelectedSavingProducts"] = selectedSavingProductIds;
+
+            return Json(new { success = true, message = "Products stored in TempData successfully." });
+        }
+
+        
+
+        [HttpPost]
         public ActionResult SaveSelection(List<Guid> selectedIds, bool isChecked)
         {
-            var selectedProducts = TempData["selectedIds"] as List<Guid> ?? new List<Guid>();
+            var selectedProducts = Session["selectedIds"] as List<Guid> ?? new List<Guid>();
 
             if (isChecked)
             {
@@ -234,7 +249,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 selectedProducts.RemoveAll(id => selectedIds.Contains(id));
             }
 
-            TempData["selectedIds"] = selectedProducts;
+            Session["selectedIds"] = selectedProducts;
 
             return Json(new { success = true, message = "Selection updated successfully." });
         }
@@ -244,36 +259,136 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(LoanProductDTO LoanProductDTO)
         {
-            // Fetching data from session and temp data
-            var deductiles = Session["deductiles"] as ObservableCollection<LoanProductDeductibleDTO>;
-            var cycles = Session["cycles"] as ObservableCollection<LoanCycleDTO>;
-            var auxiliaryAppraisal = Session["auxiliaryAppraisal"] as ObservableCollection<LoanProductAuxilliaryAppraisalFactorDTO>;
-            var lendingConditions = Session["lendingConditions"] as ObservableCollection<LoanProductAuxiliaryConditionDTO>;
-            var selectedCharges = TempData["selectedCharges"] as ObservableCollection<DynamicChargeDTO>;
-            var selectedLoanIds = TempData["SelectedLoans"] as List<Guid>;
-            var selectedProductIds = TempData["SelectedProducts"] as List<Guid>;
-            var selectedProductIds1 = TempData["SelectedProducts"] as List<Guid>;
-            var selectedInvestmentProductIds = TempData["SelectedInvestmentProducts"] as List<Guid>;
-            var selectedIds = TempData["selectedIds"] as List<Guid>;
             if (!LoanProductDTO.HasErrors)
             {
+                var deductiles = Session["deductiles"] as ObservableCollection<LoanProductDeductibleDTO>;
+                var cycles = Session["cycles"] as ObservableCollection<LoanCycleDTO>;
+                var auxiliaryAppraisal = Session["auxiliaryAppraisal"] as ObservableCollection<LoanProductAuxilliaryAppraisalFactorDTO>;
+
+                var lendingConditions = Session["lendingConditions"] as ObservableCollection<LoanProductAuxiliaryConditionDTO>;
+
+                var selectedCharges = Session["selectedCharges"] as ObservableCollection<DynamicChargeDTO>;
+                var selectedProductIds = Session["SelectedProducts"] as List<Guid>;
+                var selectedLoanIds = Session["SelectedLoans"] as List<Guid>;
+                var selectedInvestmentProductIds = Session["SelectedInvestmentProducts"] as List<Guid>;
+                var selectedSavingProductIds = Session["SelectedSavingProducts"] as List<Guid>;
+                var selectedIds = Session["selectedIds"] as List<Guid>;
+
+
+
+
                 try
                 {
-                    // Create LoanProduct
                     var loanProduct = await _channelService.AddLoanProductAsync(LoanProductDTO, GetServiceHeader());
                     if (!loanProduct.HasErrors)
                     {
-                        // Update related entities
-                        await UpdateLoanProductEntities(loanProduct.Id, deductiles, cycles, auxiliaryAppraisal, selectedCharges);
+                        await _channelService.UpdateLoanProductDeductiblesByLoanProductIdAsync(loanProduct.Id, deductiles, GetServiceHeader());
+                        await _channelService.UpdateLoanCyclesByLoanProductIdAsync(loanProduct.Id, cycles, GetServiceHeader());
+                        await _channelService.UpdateLoanProductAuxilliaryAppraisalFactorsByLoanProductIdAsync(loanProduct.Id, auxiliaryAppraisal, GetServiceHeader());
+                        // Check if charges exist
+                        if (selectedCharges != null)
+                        {
+                            var chargesList = selectedCharges.ToList(); // Convert to List<DynamicChargeDTO>
+                            await _channelService.UpdateDynamicChargesByLoanProductIdAsync(loanProduct.Id, selectedCharges, GetServiceHeader());
+                        }
+                        if (selectedProductIds != null && selectedProductIds.Any())
+                        {
+                            var loanProductCollection = new List<LoanProductDTO>();
+                            foreach (var productId in selectedProductIds)
+                            {
+                                var loanProductIds = new LoanProductDTO
+                                {
+                                    Id = productId // Assuming LoanProductDTO has this property
+                                };
+                                loanProductCollection.Add(loanProduct);
+                            }
 
-                        // Process selected loan and product IDs
-                        await ProcessSelectedLoanProductIds(selectedLoanIds, "loan");
-                        await ProcessSelectedLoanProductIds(selectedProductIds, "product");
-                        await ProcessSelectedLoanProductIds(selectedProductIds1, "product");
-                        await ProcessSelectedLoanProductIds(selectedInvestmentProductIds, "investment");
+                            var appraisalProductsTuple = new ProductCollectionInfo
+                            {
+                                LoanProductCollection = loanProductCollection
+                            };
 
-                        return Json(new { success = true, message = "Loan product created successfully." });
+                            await _channelService.UpdateAppraisalProductsByLoanProductIdAsync(loanProduct.Id, appraisalProductsTuple, GetServiceHeader());
+                        }
+
+                         if (selectedLoanIds != null && selectedLoanIds.Any())
+                        {
+                            var eligibileIncomeDeductionLoanProductCollection = new List<LoanProductDTO>();
+                            foreach (var productId in selectedLoanIds)
+                            {
+                                var loanProductIds = new LoanProductDTO
+                                {
+                                    Id = productId
+                                };
+                                eligibileIncomeDeductionLoanProductCollection.Add(loanProductIds);
+                            }
+                            var appraisalProductsTuple = new ProductCollectionInfo
+                            {
+                                EligibileIncomeDeductionLoanProductCollection = eligibileIncomeDeductionLoanProductCollection
+                            };
+                            await _channelService.UpdateAppraisalProductsByLoanProductIdAsync(loanProduct.Id, appraisalProductsTuple, GetServiceHeader());
+                        }
+
+                         if (selectedInvestmentProductIds != null && selectedInvestmentProductIds.Any())
+                        {
+                            var eligibileIncomeDeductionInvestmentProductCollection = new List<InvestmentProductDTO>();
+                            foreach ( var productId in selectedInvestmentProductIds)
+                            {
+                                var investementProductIds = new InvestmentProductDTO
+                                {
+                                    ProductId = productId
+                                };
+                                eligibileIncomeDeductionInvestmentProductCollection.Add(investementProductIds);
+                            }
+                            var appraisalProductsTuple = new ProductCollectionInfo
+                            {
+                                EligibileIncomeDeductionInvestmentProductCollection = eligibileIncomeDeductionInvestmentProductCollection
+                            };
+                            await _channelService.UpdateAppraisalProductsByLoanProductIdAsync(loanProduct.Id, appraisalProductsTuple, GetServiceHeader());
+
+                        }
+
+                         if (selectedSavingProductIds != null && selectedSavingProductIds.Any())
+                        {
+                            var eligibileIncomeDeductionSavingsProductCollection = new List<SavingsProductDTO>();
+                            foreach ( var productId in selectedSavingProductIds)
+                            {
+                                var savingProductIds = new SavingsProductDTO
+                                {
+                                    Id = productId
+                                };
+                                eligibileIncomeDeductionSavingsProductCollection.Add(savingProductIds);
+                            }
+                            var appraisalProductsTuple = new ProductCollectionInfo
+                            {
+                                EligibileIncomeDeductionSavingsProductCollection = eligibileIncomeDeductionSavingsProductCollection
+                            };
+                            await _channelService.UpdateAppraisalProductsByLoanProductIdAsync(loanProduct.Id, appraisalProductsTuple, GetServiceHeader());
+
+                        }
+
+                         if (selectedIds != null && selectedIds.Any())
+                        {
+                            var investmentProductCollection = new List<InvestmentProductDTO>();
+                            foreach ( var productId in selectedIds)
+                            {
+                                var investmentProductIds = new InvestmentProductDTO
+                                {
+                                    Id = productId
+                                };
+                                investmentProductCollection.Add(investmentProductIds);
+                            }
+                            var appraisalProductsTuple = new ProductCollectionInfo
+                            {
+                                InvestmentProductCollection = investmentProductCollection
+                            };
+                            await _channelService.UpdateAppraisalProductsByLoanProductIdAsync(loanProduct.Id, appraisalProductsTuple, GetServiceHeader());
+
+                        }
+
+
                     }
+                    return Json(new { success = true, message = "Loan product created successfully." });
                 }
                 catch (Exception ex)
                 {
@@ -281,59 +396,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     return Json(new { success = false, message = "An error occurred while creating the loan product.", errors = new[] { ex.Message } });
                 }
             }
-
-            var errorMessages = LoanProductDTO.ErrorMessages;
-            return Json(new { success = false, message = "Validation failed.", errors = errorMessages });
-        }
-
-        // Method to update deductibles, cycles, and other related entities
-        private async Task UpdateLoanProductEntities(Guid loanProductId, ObservableCollection<LoanProductDeductibleDTO> deductiles, ObservableCollection<LoanCycleDTO> cycles, ObservableCollection<LoanProductAuxilliaryAppraisalFactorDTO> auxiliaryAppraisal, ObservableCollection<DynamicChargeDTO> selectedCharges)
-        {
-            if (deductiles != null && deductiles.Any())
+            else
             {
-                await _channelService.UpdateLoanProductDeductiblesByLoanProductIdAsync(loanProductId, deductiles, GetServiceHeader());
-            }
-
-            if (cycles != null && cycles.Any())
-            {
-                await _channelService.UpdateLoanCyclesByLoanProductIdAsync(loanProductId, cycles, GetServiceHeader());
-            }
-
-            if (auxiliaryAppraisal != null && auxiliaryAppraisal.Any())
-            {
-                await _channelService.UpdateLoanProductAuxilliaryAppraisalFactorsByLoanProductIdAsync(loanProductId, auxiliaryAppraisal, GetServiceHeader());
-            }
-
-            if (selectedCharges != null && selectedCharges.Any())
-            {
-                await _channelService.UpdateDynamicChargesByLoanProductIdAsync(loanProductId, selectedCharges, GetServiceHeader());
+                var errorMessages = LoanProductDTO.ErrorMessages;
+                return Json(new { success = false, message = "Validation failed.", errors = errorMessages });
             }
         }
 
-        // Method to handle updating loan products based on selected IDs
-        private async Task ProcessSelectedLoanProductIds(List<Guid> selectedIds, string type)
-        {
-            if (selectedIds != null && selectedIds.Any())
-            {
-                foreach (var id in selectedIds)
-                {
-                    try
-                    {
-                        var loanProductDTO = new LoanProductDTO { Id = id };
-                        bool updateResult = await _channelService.UpdateLoanProductAsync(loanProductDTO, GetServiceHeader());
-
-                        if (!updateResult)
-                        {
-                            // Log or handle unsuccessful update
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Log the exception for the current item
-                    }
-                }
-            }
-        }
 
         public async Task<ActionResult> Edit(Guid id)
         {

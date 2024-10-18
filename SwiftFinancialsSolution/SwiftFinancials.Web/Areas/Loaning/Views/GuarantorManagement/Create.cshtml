@@ -38,6 +38,53 @@
         #ChargeSplits tbody tr:hover {
             background-color: #f1f1f1;
         }
+
+
+
+
+    .navbar {
+        background-color: rgba(255, 255, 255, 0.9); /* White with transparency */
+        padding: 15px 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+        .nav-menu li {
+            position: relative;
+            margin: 0 15px;
+        }
+
+    .nav-link {
+        text-decoration: none;
+        color: #333; /* Dark gray for text */
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        background-color: transparent; /* Clear background for default state */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        .nav-link:hover {
+            background-color: rgba(0, 123, 255, 0.2); /* Light blue on hover */
+            color: #007bff; /* Blue for active link */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
 </style>
 
 
@@ -61,6 +108,21 @@
 
     </div>
 </div>
+
+
+
+<br />
+<nav class="navbar">
+    <ul class="nav-menu">
+        <li>@Html.ActionLink("Loan Restructuring", "Create", "LoanRestructuring", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Attachment", "Create", "GuarantorAttachment", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Substitution", "Create", "GuarantorSubstitution", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Relieving", "Create", "GuarantorRelieving", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Management", "Create", "GuarantorManagement", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+    </ul>
+</nav>
+
+
 
 <div class="wrapper wrapper-content">
     <div class="row">
