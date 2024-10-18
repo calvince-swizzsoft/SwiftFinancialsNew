@@ -49,6 +49,26 @@
             min-width: 1000px; /* Ensure the table has a minimum width to trigger scrolling */
         }
 
+        .dataTables_filter {
+            width: 100%;
+        }
+
+            .dataTables_filter label {
+                width: 100%;
+                display: flex;
+            }
+
+            .dataTables_filter input {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+
+        /* Ensure the search input takes up full width within its column */
+        .col-md-6 .dataTables_filter {
+            width: 100%;
+            padding-right: 15px;
+        }
+
     </style>
 </head>
 
@@ -163,13 +183,15 @@
                                         <div class="form-row">
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    @Html.HiddenFor(model => model.AccountClosureRequest.CustomerAccountTypeTargetProductChartOfAccountId)
+                                                    @Html.HiddenFor(model => model.AccountClosureRequest.CustomerAccountTypeTargetProductChartOfAccountId, new { @id = "AccountClosureRequestCustomerAccountTypeTargetProductChartOfAccountId" })
+                                                    @Html.HiddenFor(model => model.AccountClosureRequest.Id, new { @id = "AccountClosureRequestId" })
+                                                    @Html.HiddenFor(model => model.AccountClosureRequest.BranchId, new { @id = "AccountClosureRequestBranchId" })
                                                     @Html.HiddenFor(model => model.AccountClosureRequest.CustomerAccountId, new { @id = "AccountClosureRequestCustomerAccountId" })
                                                     @Html.LabelFor(model => model.AccountClosureRequest.CustomerAccountFullAccountNumber, new { @class = "control-label" })
                                                     <div class="input-group" data-autoclose="true">
-                                                        @Html.TextBoxFor(model => model.AccountClosureRequest.CustomerAccountFullAccountNumber, new { @id = "AccountClosureRequestFullAccountNumber", @class = "form-control", @readonly = "readonly" })
+                                                        @Html.TextBoxFor(model => model.AccountClosureRequest.CustomerAccountFullAccountNumber, new { @id = "AccountClosureRequestCustomerFullAccountNumber", @class = "form-control", @readonly = "readonly" })
                                                         <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#AccountClosureRequestsLookupModal" onclick="captureDetails();">
+                                                            <a data-toggle="modal" data-target="#AccountClosureRequestsLookupModal">
                                                                 <span class="fa fa-search"></span>
                                                             </a>
                                                         </span>
@@ -197,12 +219,13 @@
                                             <div class="form-group col-md-4">
                                                 @Html.HiddenFor(model => model.AccountClosureRequest.CustomerAccountCustomerId)
                                                 @Html.LabelFor(model => model.AccountClosureRequest.CustomerAccountCustomerFullName, new { @class = "control-label" })
-                                                @Html.TextBoxFor(model => model.AccountClosureRequest.CustomerAccountCustomerFullName, new { @id = "AccountClosureRequestCustomerFullName", @class = "form-control", @readonly = "readonly" })
+                                                @Html.TextBoxFor(model => model.AccountClosureRequest.CustomerAccountCustomerFullName, new { @id = "AccountClosureRequestCustomerAccountCustomerFullName", @class = "form-control", @readonly = "readonly"})
                                             </div>
                                             <div class="form-group col-md-4">
 
                                                 @Html.LabelFor(model => model.AccountClosureRequest.CustomerAccountCustomerType)
-                                                @Html.TextBoxFor(model => model.AccountClosureRequest.CustomerAccountCustomerTypeDescription, new { @id = "AccountClosureRequestCustomerAccountType", @class = "form-control", @readonly = "readonly" })
+                                                @Html.HiddenFor(model => model.AccountClosureRequest.CustomerAccountCustomerType, new { @id = "AccountClosureRequestCustomerAccountCustomerTypeDescript" })
+                                                @Html.TextBoxFor(model => model.AccountClosureRequest.CustomerAccountCustomerTypeDescription, new { @id = "AccountClosureRequestCustomerAccountCustomerTypeDescription", @class = "form-control", @readonly = "readonly" })
                                             </div>
                                             <div class="form-group col-md-4">
 
@@ -242,13 +265,13 @@
                                             <div class="form-group col-md-6">
 
                                                 @Html.LabelFor(model => model.AccountClosureRequest.CustomerAccountBookBalance, new { @class = "control-label" })
-                                                @Html.LabelFor(model => model.AccountClosureRequest.CustomerAccountBookBalance, new { @id = "AccountClosureRequestCustomerAccountBookBalance", @class = "form-control", @readonly = "readonly" })
+                                                @Html.TextBoxFor(model => model.AccountClosureRequest.CustomerAccountBookBalance, new { @id = "AccountClosureRequestCustomerAccountBookBalance", @class = "form-control", @readonly = "readonly" })
                                             </div>
                                             <div class="form-group col-md-6">
 
                                                 @Html.LabelFor(model => model.AccountClosureRequest.NetRefundable, new { @class = "control-label" })
-                                                @Html.LabelFor(model => model.AccountClosureRequest.NetRefundable, new { @id = "AccountClosureRequestCustomerAccountNetRefundable", @class = "form-control", @readonly = "readonly" })
-                                                @*@Html.LabelFor(model => model.AccountClosureRequest.NetRefundableValidation)*@
+                                                @Html.TextBoxFor(model => model.AccountClosureRequest.NetRefundable, new { @id = "AccountClosureRequestCustomerAccountNetRefundable", @class = "form-control", @readonly = "readonly" })
+                                                 @Html.ValidationMessageFor(model => model.AccountClosureRequest.NetRefundableValidation)
                                             </div>
                                         </div>
                                     </div>
@@ -528,61 +551,113 @@
                 </div>
 
                 <!-- Filter Form -->
-                <div class="blue-section mt-4">
-                    <form id="filterForm">
-                        <div class="row mb-3">
-                            <div class="col-md-2">
-                                <!-- Items per page dropdown (added dynamically) -->
-                                <div id="itemsPerPageContainer">
-                                    <!-- Placeholder for dynamically generated dropdown -->
-                                </div>
+                <div class="blue-section mt-1">
+                    <form id="AccountClosureModalFilterForm">
+                        <div class="row align-items-end mb-3">
+                            <div class="col-md-3">
+                                <div id="items-dropdown"></div>
                             </div>
-                            <div class="col-md-10">
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination justify-content-end">
-                                        <!-- Pagination items inserted dynamically -->
-                                    </ul>
-                                </nav>
+                            <div class="col-md-9">
+                                <div id="page-control"></div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="statusFilter">Status</label>
+
+                        <div class="row align-items-end mb-3">
+                            <div class="col-md-4">
+                                <div class="form-group mb-0">
+                                    <label for="AccountClosureRequestStatusFilter">Status</label>
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                         @Html.DropDownListFor(m => m.AccountClosureRequest.Status, AccountClosureRequestStatus,
-                                        new { @class = "form-control", @id = "AccountClosureStatusFilter" })
+                                        new { @class = "form-control", @id = "AccountClosureRequestStatusFilter" })
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="startDate">Start Date:</label>
-                                    <input type="date" id="startDate" class="form-control" value="3/16/2012" />
+                            <div class="col-md-4">
+                                <div class="form-group mb-0">
+                                    <label for="startDate">Start Date</label>
+                                    <input type="date" id="startDate" class="form-control" />
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="endDate">End Date:</label>
-                                    <input type="date" id="endDate" class="form-control" value="3/16/2018" />
+                            <div class="col-md-4">
+                                <div class="form-group mb-0">
+                                    <label for="endDate">End Date</label>
+                                    <input type="date" id="endDate" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-end">
+                            <div class="col-md-3">
+                                <div class="form-group mb-0">
+                                    <label for="AccountClosureRequestCustomerFilter">Customer Filter</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(m => m.AccountClosureRequest.CustomerAccountCustomerFilter, AccountClosureRequestCustomerAccountCustomerFilter,
+                                        new { @class = "form-control", @id = "AccountClosureRequestCustomerFilter" })
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    @*<label for="searchField">Search</label>
-                                    <input type="text" id="searchField" class="form-control" placeholder="Enter Text..." />*@
-                                </div>
+                                <div id="searchField" class="form-group mb-0"></div>
                             </div>
-                            <div class="col-md-1">
-                                <div class="form-group">
-                                    <label>&nbsp;</label> <!-- Empty label for alignment -->
-                                    <button type="button" id="refreshButton" class="btn btn-primary form-control">Refresh</button>
+                            <div class="col-md-3">
+                                <div class="form-group mb-0">
+                                    <button type="submit" id="refreshButton" class="btn btn-success form-control">Refresh</button>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
+
+                <style>
+                    .blue-section {
+                        background-color: #e6f3ff;
+                        padding: 15px;
+                        border-radius: 5px;
+                    }
+
+                    .row.align-items-end {
+                        display: flex;
+                        align-items: flex-end;
+                    }
+
+                        .row.align-items-end > div {
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                    #searchField {
+                        width: 100%;
+                    }
+
+                        #searchField .dataTables_filter {
+                            margin-bottom: 0;
+                            width: 100%;
+                        }
+
+                            #searchField .dataTables_filter label {
+                                width: 100%;
+                                margin-bottom: 0;
+                                display: flex;
+                            }
+
+                            #searchField .dataTables_filter input {
+                                width: 100% !important;
+                                margin-left: 0 !important;
+                                height: calc(1.5em + .75rem + 2px); /* Match Bootstrap's form-control height */
+                            }
+
+                    #items-dropdown .dataTables_length {
+                        margin-bottom: 0;
+                    }
+
+                    #page-control .dataTables_paginate {
+                        float: right;
+                    }
+
+            
+                </style>
             </div>
 
             <div class="modal-footer">
@@ -801,7 +876,25 @@
 
     <script>
 
-$(document).ready(function () {
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#AccountClosureModalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#AccountClosureRequestsGrid').DataTable().ajax.reload();
+        });
+
+        $(document).ready(function () {
+
+            const today = new Date().toISOString().split('T')[0];
+            const defaultStartDate = new Date();
+            defaultStartDate.setDate(defaultStartDate.getDate() - 30);
+            const formattedStartDate = defaultStartDate.toISOString().split('T')[0];
+
+            const requestData = [
+                { "name": "startDate", "value": $('#startDate').val() || formattedStartDate },
+                { "name": "endDate", "value": $('#endDate').val() || today }
+            ];
+
+
     var table = $('#AccountClosureRequestsGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
@@ -811,8 +904,10 @@ $(document).ready(function () {
         "fnServerParams": function (aoData) {
             // Pass selected filters as parameters
             aoData.push(
-                { "name": "status", "value": $('#statusFilter').val() || 1 },
-                { "name": "customerFilter", "value": $('#customerFilter').val() || 2 }
+                { "name": "status", "value": $('#AccountClosureRequestStatusFilter').val() || 1 },
+                { "name": "customerFilter", "value": $('#AccountClosureRequestCustomerFilter').val() || 2 },
+                { "name": "startDate", "value": $('#startDate').val() || formattedStartDate },
+                { "name": "endDate", "value": $('#endDate').val() || today }
             );
         },
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -821,21 +916,38 @@ $(document).ready(function () {
             //        Select
             //    </button>
             //`;
-
-            var selectUrl = '<a onclick="setAccountClosureRequestDetails({ ' +
+            
+            var selectUrl = '<button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;" onclick="setAccountClosureRequestDetails({ ' +
                 'BranchDescription: \'' + aData.BranchDescription + '\', ' +
                 'StatusDescription: \'' + aData.StatusDescription + '\', ' +
-                'AccountClosureRequestCustomerAccountFullAccountNumber: \'' + aData.CustomerAccountFullAccountNumber + '\', ' +
+                'AccountClosureRequestCustomerFullAccountNumber: \'' + aData.CustomerAccountFullAccountNumber + '\', ' +
                 'AccountClosureRequestCustomerAccountTypeTargetProductDescription: \'' + aData.CustomerAccountTypeTargetProductDescription + '\', ' +
                 'AccountClosureRequestCustomerAccountCustomerFullName: \'' + aData.CustomerAccountCustomerFullName + '\', ' +
                 'AccountClosureRequestCustomerAccountCustomerReference1: \'' + aData.CustomerAccountCustomerReference1 + '\', ' +
                 'AccountClosureRequestCustomerAccountCustomerReference2: \'' + aData.CustomerAccountCustomerReference2 + '\', ' +
                 'AccountClosureRequestCustomerAccountCustomerReference3: \'' + aData.CustomerAccountCustomerReference3 + '\', ' +
                 'CreatedBy: \'' + aData.CreatedBy + '\', ' +
-                'CreatedDate: \'' + aData.CreatedDate + '\' ' +
-                '})" class="btn btn-outline-info">Select</a>';
+                'CreatedDate: \'' + aData.CreatedDate + '\', ' + // Missing comma added here
+                'AccountClosureRequestCustomerAccountCustomerIdentificationNumber: \'' + aData.CustomerAccountCustomerIdentificationNumber + '\', ' +
+                'AccountClosureRequestCustomerAccountStatus: \'' + aData.StatusDescription + '\', ' + // Status is reused
+                'AccountClosureRequestCustomerAccountProductName: \'' + aData.CustomerAccountTypeTargetProductDescription + '\', ' + // Product name is reused
+                'AccountClosureRequestCustomerAccountCustomerIndividualPayrollNumbers: \'' + aData.CustomerAccountCustomerIndividualPayrollNumbers + '\', ' +
+                'AccountClosureRequestCustomerAccountNetRefundable: \'' + aData.NetRefundable + '\', ' +
+                'AccountClosureRequestReason: \'' + aData.Reason + '\', ' +
+                'AccountClosureRequestCustomerAccountId: \'' + aData.CustomerAccountId + '\', ' +
+                'AccountClosureRequestCustomerAccountBookBalance: \'' + aData.CustomerAccountBookBalance + '\', ' + // Last field doesn't need a trailing comma
+                'AccountClosureRequestId: \'' + aData.Id + '\', ' +
+                'AccountClosureRequestBranch: \'' + aData.BranchId + '\', ' +
+                'AccountClosureRequestBranchDescription: \'' + aData.BranchDescription + '\', ' +
+                'AccountClosureRequestCustomerAccountRemarks: \'' + aData.CustomerAccountRemarks + '\', ' +
+                'AccountClosureRequestCustomerAccountCustomerType: \'' + aData.CustomerAccountCustomerType + '\', ' +
+                'AccountClosureRequestCustomerAccountCustomerTypeDescription: \'' + aData.CustomerAccountCustomerTypeDescription + '\', ' +
+                'AccountClosureRequestCustomerAccountTypeTargetProductChartOfAccountId: \'' + aData.CustomerAccountTypeTargetProductChartOfAccountId + '\' ' +
+                '})" class="btn btn-outline-info">Select</button>';
 
-            $('td:eq(8)', nRow).html(selectUrl);
+
+
+            $('td:eq(9)', nRow).html(selectUrl);
             return nRow;
 
         },
@@ -848,7 +960,7 @@ $(document).ready(function () {
             { "mDataProp": "CustomerAccountCustomerReference1", "sTitle": "Account Number", "sWidth": "10%" },
             { "mDataProp": "CustomerAccountCustomerReference2", "sTitle": "Membership Number", "sWidth": "10%" },
             { "mDataProp": "CustomerAccountCustomerReference3", "sTitle": "Personal Identification Number", "sWidth": "10%" },
-            { "mDataProp": "CreatedBy", "sTitle": "Created By", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created By", "sWidth": "10%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%", "bSortable": false }
         ],
 
@@ -856,17 +968,17 @@ $(document).ready(function () {
         "dom": 'lftip',  // Only the table is rendered initially (search and length will be manually added)
         "initComplete": function (settings, json) {
 
-            $('#AccountClosureRequestsGrid_length').appendTo('.blue-section .row:first-child .col-md-2');
+            $('#AccountClosureRequestsGrid_length').appendTo('.blue-section .row:first-child #items-dropdown');
 
             // Move DataTables search bar
-            $('#AccountClosureRequestsGrid_filter').appendTo('.blue-section .row:last-child .col-md-6');
+            $('#AccountClosureRequestsGrid_filter').appendTo('.blue-section #searchField');
             $('#AccountClosureRequestsGrid_filter input').attr('placeholder', 'Search...');
-           /* $('#AccountClosureRequestsGrid_filter label').contents().filter(function () {*/
-            //    return this.nodeType === 3; // Text nodes only
-            //}).remove(); // Remove the "Search:" text
+             $('#AccountClosureRequestsGrid_filter label').contents().filter(function () {
+                 return this.nodeType === 3; // Text nodes only
+              }).remove(); // Remove the "Search:" text
 
             // Move pagination
-            $('#AccountClosureRequestsGrid_paginate').appendTo('.blue-section .row:first-child .col-md-10');
+            $('#AccountClosureRequestsGrid_paginate').appendTo('.blue-section .row:first-child #page-control');
         }
     });
 });
@@ -886,21 +998,43 @@ $(document).ready(function () {
 
     <script>
 
+
         function setAccountClosureRequestDetails(data) {
+            console.log("captured data is", data);
+
+            // Hide the modal
+            $('#AccountClosureRequestsLookupModal').modal('hide');
+
             // Bind the data to the form fields using jQuery
-            $('#BranchDescription').val(data.BranchDescription);
+            $('#AccountClosureRequestBranchDescription').val(data.AccountClosureRequestBranchDescription);
+            $('#AccountClosureRequestBranchId').val(data.AccountClosureRequestBranch);
+            $('#AccountClosureRequestId').val(data.AccountClosureRequestId);
             $('#StatusDescription').val(data.StatusDescription);
-            $('#CustomerAccountFullAccountNumber').val(data.CustomerAccountFullAccountNumber);
-            $('#CustomerAccountTypeTargetProductDescription').val(data.CustomerAccountTypeTargetProductDescription);
-            $('#CustomerAccountCustomerFullName').val(data.CustomerAccountCustomerFullName);
-            $('#CustomerAccountCustomerReference1').val(data.CustomerAccountCustomerReference1);
-            $('#CustomerAccountCustomerReference2').val(data.CustomerAccountCustomerReference2);
-            $('#CustomerAccountCustomerReference3').val(data.CustomerAccountCustomerReference3);
+            $('#AccountClosureRequestCustomerFullAccountNumber').val(data.AccountClosureRequestCustomerAccountFullAccountNumber);
+            $('#AccountClosureRequestCustomerAccountTypeTargetProductDescription').val(data.AccountClosureRequestCustomerAccountTypeTargetProductDescription);
+            $('#AccountClosureRequestCustomerAccountCustomerFullName').val(data.AccountClosureRequestCustomerAccountCustomerFullName);
+            $('#AccountClosureRequestCustomerAccountCustomerReference1').val(data.AccountClosureRequestCustomerAccountCustomerReference1);
+            $('#AccountClosureRequestCustomerAccountCustomerReference2').val(data.AccountClosureRequestCustomerAccountCustomerReference2);
+            $('#AccountClosureRequestCustomerAccountCustomerReference3').val(data.AccountClosureRequestCustomerAccountCustomerReference3);
             $('#CreatedBy').val(data.CreatedBy);
             $('#CreatedDate').val(data.CreatedDate);
+            
 
-            // Additional actions can be performed here if necessary (e.g., triggering form submission)
+            // Additional fields based on the provided selectUrl data
+            $('#AccountClosureRequestCustomerAccountCustomerIdentificationNumber').val(data.AccountClosureRequestCustomerAccountCustomerIdentificationNumber);
+            $('#AccountClosureRequestCustomerAccountStatus').val(data.AccountClosureRequestCustomerAccountStatus);
+            $('#AccountClosureRequestCustomerAccountProductName').val(data.AccountClosureRequestCustomerAccountProductName);
+            $('#AccountClosureRequestCustomerAccountCustomerIndividualPayrollNumbers').val(data.AccountClosureRequestCustomerAccountCustomerIndividualPayrollNumbers);
+            $('#AccountClosureRequestCustomerAccountNetRefundable').val(data.AccountClosureRequestCustomerAccountNetRefundable);
+            $('#AccountClosureRequestReason').val(data.AccountClosureRequestReason);
+            $('#AccountClosureRequestCustomerAccountId').val(data.AccountClosureRequestCustomerAccountId);
+            $('#AccountClosureRequestCustomerAccountBookBalance').val(data.AccountClosureRequestCustomerAccountBookBalance);
+            $('#AccountClosureRequestCustomerAccountRemarks').val(data.AccountClosureRequestCustomerAccountRemarks);
+            $('#AccountClosureRequestCustomerAccountTypeTargetProductChartOfAccountId').val(data.AccountClosureRequestCustomerAccountTypeTargetProductChartOfAccountId);
+
         }
+
+
 
 
     </script>
