@@ -178,95 +178,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerBindingModel customerBindingModel, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl, HttpPostedFileBase uploadedPassportPhoto)
-        {
-            switch (customerBindingModel.Type)
-            {
-                case (int)CustomerType.Individual:
-                    // Populate the dropdown lists for the Individual type
-                    PopulateIndividualDropdownLists(customerBindingModel);
-
-                    // Validate file uploads
-                    if (signaturePhoto == null || idCardFrontPhoto == null || idCardBackPhoto == null)
-                    {
-                        TempData["ErrorMessage"] = "Please provide all required files.";
-                        return View("Create", customerBindingModel);
-                    }
-
-                    // Parse dates from form data
-                    ParseIndividualDates(customerBindingModel);
-
-                    // Set BranchId if available
-                    var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-                    if (userDTO.BranchId != null)
-                    {
-                        customerBindingModel.BranchId = (Guid)userDTO.BranchId;
-                    }
-
-                    // Validate the customer model
-                    customerBindingModel.ValidateAll();
-
-                    if (!customerBindingModel.HasErrors)
-                    {
-                        // Add the customer and handle success/error messages
-                        var result = await AddIndividualCustomerAsync(customerBindingModel, passportPhotoDataUrl, uploadedPassportPhoto, signaturePhoto, idCardFrontPhoto, idCardBackPhoto);
-                        if (result)
-                        {
-                            TempData["SuccessMessage"] = $"Successfully Created Customer {customerBindingModel.FullName}";
-                            return RedirectToAction("Index");
-                        }
-                        else
-                        {
-                            TempData["ErrorMessage"] = "Failed to create customer. Invalid data provided.";
-                            return View("Create", customerBindingModel);
-                        }
-                    }
-                    else
-                    {
-                        TempData["Error2"] = customerBindingModel.ErrorMessages;
-                        return View("Create", customerBindingModel);
-                    }
-
-                case (int)CustomerType.Corporation:
-                    if (ModelState.IsValid)
-                    {
-                        // Logic for Corporation type
-                        return RedirectToAction("Index");
-                    }
-                    break;
-
-                case (int)CustomerType.MicroCredit:
-                    customerBindingModel.ValidateAll();
-                    if (!customerBindingModel.HasErrors)
-                    {
-                        // Logic for MicroCredit type
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        AddModelErrors(customerBindingModel.ErrorMessages);
-                        return View(customerBindingModel);
-                    }
-                    break;
-
-                case (int)CustomerType.Partnership:
-                    if (ModelState.IsValid)
-                    {
-                        // Logic for Partnership type
-                        return RedirectToAction("Index");
-                    }
-                    break;
-
-                default:
-                    TempData["ErrorMessage"] = "Unsupported customer type.";
-                    return View("Index", customerBindingModel);
-            }
-
-            return View("Index", customerBindingModel);
-        }
-
-        // Helper methods to clean up code and improve readability
-        private void PopulateIndividualDropdownLists(CustomerBindingModel customerBindingModel)
+        public async Task<ActionResult> Create(CustomerBindingModel customerBindingModel, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl)
         {
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.TypeDescription.ToString());
             ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());
@@ -277,109 +189,140 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(customerBindingModel.IndividualNationality.ToString());
             ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
-        }
 
-        private void ParseIndividualDates(CustomerBindingModel customerBindingModel)
-        {
-            customerBindingModel.IndividualBirthDate = DateTime.ParseExact(Request["birthdate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            customerBindingModel.RegistrationDate = DateTime.ParseExact(Request["registrationdate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            customerBindingModel.IndividualEmploymentDate = DateTime.ParseExact(Request["employmentdate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-        }
+            var registrationdate = Request["registrationdate"];
+            var birthdate = Request["birthdate"];
+            var employmentdate = Request["employmentdate"];
 
-        private async Task<bool> AddIndividualCustomerAsync(CustomerBindingModel customerBindingModel, string passportPhotoDataUrl, HttpPostedFileBase uploadedPassportPhoto, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto)
-        {
-            var mandatoryProducts = new ProductCollectionInfo
+            var filesCount = Request.Files.Count;
+            var signatureFile = Request.Files["signaturePhoto"];
+            var idFrontFile = Request.Files["idCardFrontPhoto"];
+            var idBackFile = Request.Files["idCardBackPhoto"];
+
+            if (signaturePhoto == null || idCardFrontPhoto == null || idCardBackPhoto == null)
             {
-                InvestmentProductCollection = (await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader())).ToList(),
-                SavingsProductCollection = (await _channelService.FindMandatorySavingsProductsAsync(false, GetServiceHeader())).ToList()
-            };
+                var errorMsg = $"Missing files: {nameof(signaturePhoto)} is null: {signaturePhoto == null}, {nameof(idCardFrontPhoto)} is null: {idCardFrontPhoto == null}, {nameof(idCardBackPhoto)} is null: {idCardBackPhoto == null}.";
+                throw new Exception(errorMsg);
+            }
 
-            var result = await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(),
-                (await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader())).ToList(),
-                mandatoryProducts.InvestmentProductCollection,
-                mandatoryProducts.SavingsProductCollection,
-                mandatoryProducts, 1, GetServiceHeader());
-
-            if (result.ErrorMessageResult == null)
+            // Process date fields for all customer types
+            if (DateTime.TryParseExact(birthdate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedBirthDate))
             {
-                var document = new Document { Id = Guid.NewGuid(), CustomerId = result.Id };
-                string passportImageURL = passportPhotoDataUrl;
-                HttpPostedFileBase uploadedPassportPhotoImage = uploadedPassportPhoto;
+                customerBindingModel.IndividualBirthDate = parsedBirthDate;
+            }
 
-                if (string.IsNullOrEmpty(passportImageURL) && uploadedPassportPhotoImage != null)
+            if (DateTime.TryParseExact(registrationdate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedRegistrationDate))
+            {
+                customerBindingModel.RegistrationDate = parsedRegistrationDate;
+            }
+
+            if (DateTime.TryParseExact(employmentdate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedEmploymentDate))
+            {
+                customerBindingModel.IndividualEmploymentDate = parsedEmploymentDate;
+            }
+
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            var roles = userDTO.Roles;
+
+            if (userDTO.BranchId != null)
+            {
+                customerBindingModel.BranchId = (Guid)userDTO.BranchId;
+            }
+
+            customerBindingModel.ValidateAll();
+
+            var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();
+            var mandatorySavingsProducts = new List<SavingsProductDTO>();
+            var mandatoryDebitTypes = new List<DebitTypeDTO>();
+            var mandatoryProducts = new ProductCollectionInfo();
+
+            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
+            var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
+            var savingsProducts = await _channelService.FindMandatorySavingsProductsAsync(false, GetServiceHeader());
+
+            mandatoryProducts.InvestmentProductCollection = investmentProducts.ToList();
+            mandatoryProducts.SavingsProductCollection = savingsProducts.ToList();
+
+            if (!customerBindingModel.HasErrors)
+            {
+                var result = await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), investmentProducts.ToList(), savingsProducts.ToList(), mandatoryProducts, 1, GetServiceHeader());
+
+                if (result.ErrorMessageResult != null)
                 {
-                    var passportFilePath = Path.Combine(Server.MapPath("~/Uploads/PassportPhotos"), Guid.NewGuid() + Path.GetExtension(uploadedPassportPhotoImage.FileName));
-                    uploadedPassportPhotoImage.SaveAs(passportFilePath);
-                    passportImageURL = passportFilePath;
+                    TempData["DefaultError"] = result.ErrorMessageResult.ToString();
+                    return View();
                 }
 
-                ProcessDocumentUploads(document, passportImageURL, uploadedPassportPhoto, signaturePhoto, idCardFrontPhoto, idCardBackPhoto);
+                // Handle Document Upload to DB
+                var document = new Document
+                {
+                    Id = Guid.NewGuid(),
+                    CustomerId = result.Id
+                };
+
+                // Process the passport photo from the data URL
+                if (!string.IsNullOrEmpty(passportPhotoDataUrl))
+                {
+                    var base64Data = passportPhotoDataUrl.Split(',')[1];
+                    var imageBytes = Convert.FromBase64String(base64Data);
+                    document.PassportPhoto = imageBytes;
+                }
+
+                // Process other uploaded files
+                if (signaturePhoto != null && signaturePhoto.ContentLength > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        signaturePhoto.InputStream.CopyTo(memoryStream);
+                        document.SignaturePhoto = memoryStream.ToArray();
+                    }
+                }
+
+                if (idCardFrontPhoto != null && idCardFrontPhoto.ContentLength > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        idCardFrontPhoto.InputStream.CopyTo(memoryStream);
+                        document.IDCardFrontPhoto = memoryStream.ToArray();
+                    }
+                }
+
+                if (idCardBackPhoto != null && idCardBackPhoto.ContentLength > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        idCardBackPhoto.InputStream.CopyTo(memoryStream);
+                        document.IDCardBackPhoto = memoryStream.ToArray();
+                    }
+                }
+
                 await SaveDocumentAsync(document);
-                return true;
+
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.TypeDescription.ToString());
+                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());
+                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IndividualIdentityCardType.ToString());
+                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.IndividualSalutation.ToString());
+                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.IndividualGender.ToString());
+                ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(customerBindingModel.IndividualMaritalStatus.ToString());
+                ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(customerBindingModel.IndividualNationality.ToString());
+                ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
+                ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
+
+                TempData["SuccessMessage"] = customerBindingModel != null && !string.IsNullOrEmpty(customerBindingModel.FullName)
+                    ? $"Successfully Created Customer {customerBindingModel.FullName}"
+                    : "Failed to create customer. Invalid data provided.";
+
+                return RedirectToAction("Index");
             }
-
-            TempData["DefaultError"] = result.ErrorMessageResult.ToString();
-            return false;
-        }
-
-        private void ProcessDocumentUploads(Document document, string passportPhotoDataUrl, HttpPostedFileBase uploadedPassportPhoto, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto)
-        {
-            byte[] passportPhotoData = null;
-
-            if (!string.IsNullOrEmpty(passportPhotoDataUrl))
+            else
             {
-                var base64Data = passportPhotoDataUrl.Split(',')[1];
-                passportPhotoData = Convert.FromBase64String(base64Data);
-            }
-            else if (uploadedPassportPhoto != null && uploadedPassportPhoto.ContentLength > 0)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    uploadedPassportPhoto.InputStream.CopyTo(memoryStream);
-                    passportPhotoData = memoryStream.ToArray();
-                }
-            }
+                TempData["Error2"] = customerBindingModel.ErrorMessages;
+                await ServeNavigationMenus();
 
-            if (passportPhotoData != null)
-            {
-                document.PassportPhoto = passportPhotoData;
-            }
-
-            if (signaturePhoto != null && signaturePhoto.ContentLength > 0)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    signaturePhoto.InputStream.CopyTo(memoryStream);
-                    document.SignaturePhoto = memoryStream.ToArray();
-                }
-            }
-
-            if (idCardFrontPhoto != null && idCardFrontPhoto.ContentLength > 0)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    idCardFrontPhoto.InputStream.CopyTo(memoryStream);
-                    document.IDCardFrontPhoto = memoryStream.ToArray();
-                }
-            }
-
-            if (idCardBackPhoto != null && idCardBackPhoto.ContentLength > 0)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    idCardBackPhoto.InputStream.CopyTo(memoryStream);
-                    document.IDCardBackPhoto = memoryStream.ToArray();
-                }
+                return View("Create", customerBindingModel);
             }
         }
 
-        private void AddModelErrors(IEnumerable<string> errorMessages)
-        {
-            foreach (var error in errorMessages)
-            {
-                ModelState.AddModelError(string.Empty, error);
-            }
-        }
 
 
         // Save Documents ......................
