@@ -165,6 +165,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
 
+            ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
+
             var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(false, GetServiceHeader());
             var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
             var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(false, GetServiceHeader());
@@ -208,6 +210,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     mandatoryProducts.SavingsProductCollection,
                     mandatoryProducts, 1, GetServiceHeader()
                 );
+                PartnershipMemberDTO partnershipMemberDTO = new PartnershipMemberDTO();
+                await _channelService.UpdatePartnershipMemberCollectionByPartnershipIdAsync(partnershipMemberDTO.Id, customerBindingModel.partnershipMemberCollection, GetServiceHeader());
 
                 if (result.ErrorMessageResult != null)
                 {

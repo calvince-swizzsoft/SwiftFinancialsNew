@@ -646,5 +646,6 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [Display(Name = "Id")]
         public Guid RefereeId { get; set; }
+        public ObservableCollection<PartnershipMemberDTO> partnershipMemberCollection;
     }
 }
