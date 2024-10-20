@@ -71,10 +71,27 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             foreach (var branch in bank.BankBranches)
             {
-                bank.Description = branch.Description;
+                bankBranches.Add(branch);
             }
-            return Json(new { success = true, data = JournalVoucherEntryDTOs });
+            return Json(new { success = true, data = bankBranches });
 
+        }
+      
+        [HttpPost]
+        public async Task<ActionResult> Create(BankDTO BankDTO)
+        {
+            BankDTO.ValidateAll();
+            if (!BankDTO.HasErrors)
+            {
+            //    var bankBranches = JsonConvert.DeserializeObject<List<BankBranchDTO>>(branchDetails);
+            //    BankDTO.BankBranches = new ObservableCollection<BankBranchDTO>(bankBranches);
+
+                var bankDTO = await _channelService.AddBankAsync(BankDTO, GetServiceHeader());
+                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, BankDTO.BankBranches,GetServiceHeader());
+                
+                return RedirectToAction("Index");
+            }
+            return View(BankDTO);
         }
         [HttpPost]
         public JsonResult Remove(Guid id, BankDTO bank)
@@ -87,23 +104,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return Json(new { success = true, data = JournalVoucherEntryDTOs });
 
         }
-        [HttpPost]
-        public async Task<ActionResult> Create(BankDTO BankDTO, string branchDetails)
-        {
-            BankDTO.ValidateAll();
-            if (!BankDTO.HasErrors)
-            {
-                var bankBranches = JsonConvert.DeserializeObject<List<BankBranchDTO>>(branchDetails);
-                BankDTO.BankBranches = new ObservableCollection<BankBranchDTO>(bankBranches);
-
-                var bankDTO = await _channelService.AddBankAsync(BankDTO, GetServiceHeader());
-                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, BankDTO.BankBranches,GetServiceHeader());
-                
-                return RedirectToAction("Index");
-            }
-            return View(BankDTO);
-        }
-
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();

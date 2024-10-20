@@ -55,48 +55,48 @@
                 <h4>Branch Details</h4>
                 <div class="form-group row">
                     <div class="col-md-6">
-                        @Html.Label("Code", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchCode" placeholder="Enter branch code..." />
+                        @Html.Label("BankCode", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BankBranches[0].BankCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter bank code..." } })
                     </div>
                     <div class="col-md-6">
                         @Html.Label("Address Line 1", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchAddressLine1" placeholder="Enter address line 1..." />
+                        @Html.EditorFor(model => model.BankBranches[0].AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter address line 1..." } })
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         @Html.Label("Address Line 2", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchAddressLine2" placeholder="Enter address line 2..." />
+                        @Html.EditorFor(model => model.BankBranches[0].AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter address line 2..." } })
                     </div>
                     <div class="col-md-6">
                         @Html.Label("Street", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchStreet" placeholder="Enter street..." />
+                        @Html.EditorFor(model => model.BankBranches[0].AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter street..." } })
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         @Html.Label("Postal Code", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchPostalCode" placeholder="Enter postal code..." />
+                        @Html.EditorFor(model => model.BankBranches[0].AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter postal code..." } })
                     </div>
                     <div class="col-md-6">
                         @Html.Label("City", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchCity" placeholder="Enter city..." />
+                        @Html.EditorFor(model => model.BankBranches[0].AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter city..." } })
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         @Html.Label("Email", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchEmail" placeholder="Enter email..." />
+                        @Html.EditorFor(model => model.BankBranches[0].AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter email..." } })
                     </div>
                     <div class="col-md-6">
                         @Html.Label("Land Line", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchLandline" placeholder="Enter landline..." />
+                        @Html.EditorFor(model => model.BankBranches[0].AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter landline..." } })
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         @Html.Label("Mobile Line", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchMobileLine" placeholder="Enter mobile line..." />
+                        @Html.EditorFor(model => model.BankBranches[0].AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter mobile line..." } })
                     </div>
                 </div>
 
@@ -125,38 +125,43 @@
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Button -->
-                <div style="text-align: right; margin-top: 20px;">
-                    <button type="button" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="openModal()">Create</button>
-                </div> <!-- Modal Structure -->
-                <div id="confirmationModal" style="display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center;">
-                    <div style="background-color: white; padding: 20px; border-radius: 8px; width: 300px; text-align: center;">
-                        <h3>Confirm Submission</h3>
-                        <p>Are you sure you want to proceed with the submission?</p>
-                        <button onclick="proceed()" style="padding: 10px 20px; font-size: 14px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">Proceed</button>
-                        <button onclick="closeModal()" style="padding: 10px 20px; font-size: 14px; font-weight: bold; background-color: #d9534f; color: white; border: none; border-radius: 5px; cursor: pointer;">Decline</button>
+                <div class="form-group form-group-sm">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create" class="btn btn-primary" />
                     </div>
                 </div>
-
-                <script>
-                    function openModal() {
-                        document.getElementById('confirmationModal').style.display = 'flex';
-                    }
-
-                    function closeModal() {
-                        document.getElementById('confirmationModal').style.display = 'none';
-                    }
-
-                    function proceed() {
-                        // Close the modal
-                        closeModal();
-                        // Submit the form
-                        document.querySelector('form').submit();
-                    }
-                </script>
-
+                <!-- Button -->
+                <!--<div style="text-align: right; margin-top: 20px;">
+            <button type="button" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="openModal()">Create</button>
+        </div>-->
             }
+
+            <!-- Modal Structure -->
+            <div id="confirmationModal" style="display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center;">
+                <div style="background-color: white; padding: 20px; border-radius: 8px; width: 300px; text-align: center;">
+                    <h3>Confirm Submission</h3>
+                    <p>Are you sure you want to proceed with the submission?</p>
+                    <button onclick="proceed()" style="padding: 10px 20px; font-size: 14px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">Proceed</button>
+                    <button onclick="closeModal()" style="padding: 10px 20px; font-size: 14px; font-weight: bold; background-color: #d9534f; color: white; border: none; border-radius: 5px; cursor: pointer;">Decline</button>
+                </div>
+            </div>
+
+            <script>
+                function openModal() {
+                    document.getElementById('confirmationModal').style.display = 'flex';
+                }
+
+                function closeModal() {
+                    document.getElementById('confirmationModal').style.display = 'none';
+                }
+
+                function proceed() {
+                    // Close the modal
+                    closeModal();
+                    // Submit the form
+                    document.querySelector('form').submit();
+                }
+            </script>
         </div>
     </div>
 </div>
@@ -165,64 +170,64 @@
 
 <script>
     $(function () {
-        let branchIndex = 0;
         const branches = [];
 
         $('#addBranchBtn').click(function () {
             const branchData = {
-                Code: $('#branchCode').val().trim(),
-                AddressLine1: $('#branchAddressLine1').val().trim(),
-                AddressLine2: $('#branchAddressLine2').val().trim(),
-                Street: $('#branchStreet').val().trim(),
-                PostalCode: $('#branchPostalCode').val().trim(),
-                City: $('#branchCity').val().trim(),
-                Email: $('#branchEmail').val().trim(),
-                Landline: $('#branchLandline').val().trim(),
-                MobileLine: $('#branchMobileLine').val().trim()
+                Code: $('#BankBranches_0__BankCode').val().trim(),
+                AddressLine1: $('#BankBranches_0__AddressAddressLine1').val().trim(),
+                AddressLine2: $('#BankBranches_0__AddressAddressLine2').val().trim(),
+                Street: $('#BankBranches_0__AddressStreet').val().trim(),
+                PostalCode: $('#BankBranches_0__AddressPostalCode').val().trim(),
+                City: $('#BankBranches_0__AddressCity').val().trim(),
+                Email: $('#BankBranches_0__AddressEmail').val().trim(),
+                LandLine: $('#BankBranches_0__AddressLandLine').val().trim(),
+                MobileLine: $('#BankBranches_0__AddressMobileLine').val().trim()
             };
 
-            if (!branchData.Code || !branchData.AddressLine1 || !branchData.City) {
-                alert("Please fill in all required fields (Code, Address Line 1, City).");
-                return;
+            if (branchData.Code) {
+                branches.push(branchData);
+                addBranchToTable(branchData);
+                clearBranchInputs();
+            } else {
+                alert("Please enter the branch code.");
             }
-
-            branches.push(branchData);
-
-            const newRow = `
-                <tr data-branch-id="${branchIndex}">
-                    <td>${branchData.Code}</td>
-                    <td>${branchData.AddressLine1}</td>
-                    <td>${branchData.AddressLine2}</td>
-                    <td>${branchData.Street}</td>
-                    <td>${branchData.PostalCode}</td>
-                    <td>${branchData.City}</td>
-                    <td>${branchData.Email}</td>
-                    <td>${branchData.Landline}</td>
-                    <td>${branchData.MobileLine}</td>
-                    <td><button type="button" class="btn btn-danger removeBranchBtn">Remove</button></td>
-                </tr>`;
-            $('#branchTable tbody').append(newRow);
-            branchIndex++;
-            clearBranchInputs();
         });
 
-        $(document).on('click', '.removeBranchBtn', function () {
-            const row = $(this).closest('tr');
-            const branchId = row.data('branch-id');
-            branches.splice(branchId, 1);
-            row.remove();
-        });
-
-        $('#form').submit(function () {
-            $('<input>').attr({
-                type: 'hidden',
-                name: 'branchDetails',
-                value: JSON.stringify(branches)
-            }).appendTo('#form');
-        });
+        function addBranchToTable(branch) {
+            $('#branchTable tbody').append(`
+                <tr>
+                    <td>${branch.Code}</td>
+                    <td>${branch.AddressLine1}</td>
+                    <td>${branch.AddressLine2}</td>
+                    <td>${branch.Street}</td>
+                    <td>${branch.PostalCode}</td>
+                    <td>${branch.City}</td>
+                    <td>${branch.Email}</td>
+                    <td>${branch.LandLine}</td>
+                    <td>${branch.MobileLine}</td>
+                    <td><button type="button" class="btn btn-danger remove-branch">Remove</button></td>
+                </tr>
+            `);
+        }
 
         function clearBranchInputs() {
-            $('#branchCode, #branchAddressLine1, #branchAddressLine2, #branchStreet, #branchPostalCode, #branchCity, #branchEmail, #branchLandline, #branchMobileLine').val('');
+            $('#BankBranches_0__BankCode').val('');
+            $('#BankBranches_0__AddressAddressLine1').val('');
+            $('#BankBranches_0__AddressAddressLine2').val('');
+            $('#BankBranches_0__AddressStreet').val('');
+            $('#BankBranches_0__AddressPostalCode').val('');
+            $('#BankBranches_0__AddressCity').val('');
+            $('#BankBranches_0__AddressEmail').val('');
+            $('#BankBranches_0__AddressLandLine').val('');
+            $('#BankBranches_0__AddressMobileLine').val('');
         }
+
+        $('#branchTable').on('click', '.remove-branch', function () {
+            const row = $(this).closest('tr');
+            const index = row.index();
+            branches.splice(index, 1);
+            row.remove();
+        });
     });
 </script>
