@@ -1426,7 +1426,6 @@
     <Content Include="ElectronicJournalDTO\bank_9bd09654-0371-4920-89a8-f93f19e7d69b.pdf" />
     <Content Include="ElectronicJournalDTO\bank_ff172d8c-d502-43d2-9af0-5056a7a13be2.pdf" />
     <Content Include="bin.rar" />
-    <Content Include="Areas\Registry\Views\Director\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
