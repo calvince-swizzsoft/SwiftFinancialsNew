@@ -506,7 +506,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                         // Format the message
                                         string message = string.Format(
-                                            "{0} Authorization Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
+                                            "Txn Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
                                             EnumHelper.GetDescription(CashDepositCategory.AboveMaximumAllowed),
                                             string.Format(_nfi, "{0:C}", targetCashDepositRequest.Amount),
                                             targetCashDepositRequest.StatusDescription,
@@ -762,7 +762,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                             if (targetCashWithdrawalRequest != null)
                                             {
                                                 var result = MessageBox.Show(
-                                                    string.Format("{0} Authorization Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
+                                                    string.Format("Txn Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
                                                     targetCashWithdrawalRequest.TypeDescription,
                                                     string.Format(_nfi, "{0:C}", targetCashWithdrawalRequest.Amount),
                                                     targetCashWithdrawalRequest.StatusDescription),
@@ -1119,8 +1119,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Create(CustomerTransactionModel transactionModel)
         {
 
-            SelectedCustomerAccount = transactionModel.CustomerAccount;
-            //SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, false, true, false, false, GetServiceHeader());
+            //SelectedCustomerAccount = transactionModel.CustomerAccount;
+            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, false, true, false, false, GetServiceHeader());
             SelectedBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
 
@@ -1231,7 +1231,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                   MessageBoxOptions.ServiceNotification
 
                   );
-
 
                 return View();
 
@@ -1569,10 +1568,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 return null;
             }
-
-
-
-
         }
 
         public async Task<JsonResult> GetBankDetailsJson(Guid? id)
@@ -1710,9 +1705,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             //var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
             //DateTime startDate = postingPeriod.DurationStartDate;
-
             //DateTime endDate = postingPeriod.DurationStartDate;
 
             DateTime startDate = DateTime.MinValue;
@@ -1828,6 +1821,31 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else return this.DataTablesJson(items: new List<CashWithdrawalRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
+
+        //public async Task<JsonResult> GetCustomerAccountDetailsJson(Guid? id)
+        //{
+        //    Guid parseId;
+
+        //    if (!Guid.TryParse(id.ToString(), out parseId))
+        //    {
+        //        return Json(null, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    bool includeBalances = true;
+        //    bool includeProductDescription = true;
+        //    bool includeInterestBalanceForLoanAccounts = true;
+        //    bool considerMaturityPeriodForInvestmentAccounts = true;
+
+        //    var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+
+        //    if (customerAccount == null)
+        //    {
+        //        return Json(null, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    return Json(customerAccount, JsonRequestBehavior.AllowGet);
+        //}
     }
 }
 
