@@ -8,6 +8,13 @@
 
     var AccountClosureRequestCustomerAccountCustomerFilter = ViewBag.AccountClosureRequestCustomerAccountCustomerFilter as List<SelectListItem>;
 
+    var creditBatchTypes = ViewBag.CreditBatchTypeSelectList as List<SelectListItem>;
+
+
+    var creditBatchEntryFilters = ViewBag.CreditBatchEntryFilterSelectList as List<SelectListItem>;
+
+
+
 }
 
 <head>
@@ -30,7 +37,7 @@
 
 
         .blue-section {
-       /*     margin-top: 20px;*/
+            /*     margin-top: 20px;*/
             background-color: #e0f0ff;
             padding: 15px;
             border-radius: 8px;
@@ -68,7 +75,6 @@
             width: 100%;
             padding-right: 15px;
         }
-
     </style>
 </head>
 
@@ -219,7 +225,7 @@
                                             <div class="form-group col-md-4">
                                                 @Html.HiddenFor(model => model.AccountClosureRequest.CustomerAccountCustomerId)
                                                 @Html.LabelFor(model => model.AccountClosureRequest.CustomerAccountCustomerFullName, new { @class = "control-label" })
-                                                @Html.TextBoxFor(model => model.AccountClosureRequest.CustomerAccountCustomerFullName, new { @id = "AccountClosureRequestCustomerAccountCustomerFullName", @class = "form-control", @readonly = "readonly"})
+                                                @Html.TextBoxFor(model => model.AccountClosureRequest.CustomerAccountCustomerFullName, new { @id = "AccountClosureRequestCustomerAccountCustomerFullName", @class = "form-control", @readonly = "readonly" })
                                             </div>
                                             <div class="form-group col-md-4">
 
@@ -271,52 +277,67 @@
 
                                                 @Html.LabelFor(model => model.AccountClosureRequest.NetRefundable, new { @class = "control-label" })
                                                 @Html.TextBoxFor(model => model.AccountClosureRequest.NetRefundable, new { @id = "AccountClosureRequestCustomerAccountNetRefundable", @class = "form-control", @readonly = "readonly" })
-                                                 @Html.ValidationMessageFor(model => model.AccountClosureRequest.NetRefundableValidation)
+                                                @Html.ValidationMessageFor(model => model.AccountClosureRequest.NetRefundableValidation)
                                             </div>
                                         </div>
                                     </div>
 
                                     <div id="cashPickupTab" class="tab-pane fade" role="tabpanel">
                                         <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <label for="entryBeneficiary" class="text-success">Entry Beneficiary:</label>
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" id="entryBeneficiary">
-                                                    <div class="input-group-append">
-                                                        <button class="btn btn-outline-secondary" type="button">
-                                                            <i class="fa fa-search"></i>
-                                                        </button>
+                                            <div class="col-md-6">
+
+                                                <div class="form-group">
+
+                                                    @Html.HiddenFor(model => model.CreditBatchEntry.Id, new { @id = "CreditBatchEntryId" })
+                                                    @Html.HiddenFor(model => model.CreditBatchEntry.CreditBatchCreditTypeChartOfAccountId, new {@id = "CreditBatchCreditTypeChartOfAccountId" })  
+                                                    @Html.LabelFor(model => model.CreditBatchEntry.Beneficiary, new { @class = "control-label" })
+
+                                                    <div class="input-group" data-autoclose="true">
+                                                        @Html.TextBoxFor(model => model.CreditBatchEntry.Beneficiary, new { @id = "CreditBatchEntryBeneficiary", @class = "form-control", @readonly = "readonly" })
+                                                        <span class="input-group-addon">
+                                                            <a data-toggle="modal" data-target="#CreditBatchEntriesLookupModal">
+                                                                <span class="fa fa-search"></span>
+                                                            </a>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label for="entryReference" class="text-success">Entry Reference:</label>
-                                                <input type="text" class="form-control" id="entryReference">
+                                                @Html.LabelFor(model => model.CreditBatchEntry.Reference, new { @class = "control-label" })
+
+                                                @Html.TextBoxFor(model => model.CreditBatchEntry.Reference, new { @id = "CreditBatchEntryReference", @class = "form-control", @readonly = "readonly" })
+
                                             </div>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
-                                                <label for="batchNumber" class="text-success">Batch Number:</label>
-                                                <input type="text" class="form-control" id="batchNumber">
+                                                @Html.LabelFor(model => model.CreditBatchEntry.CreditBatchBatchNumber, new { @class = "control-label" })
+
+                                                @Html.TextBoxFor(model => model.CreditBatchEntry.CreditBatchBatchNumber, new { @id = "CreditBatchEntryBatchBatchNumber", @class = "form-control", @readonly = "readonly" })
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label for="batchReference" class="text-success">Batch Reference:</label>
-                                                <input type="text" class="form-control" id="batchReference">
+                                                @Html.LabelFor(model => model.CreditBatchEntry.CreditBatchReference, new { @class = "control-label" })
+                                                @Html.TextBoxFor(model => model.CreditBatchEntry.CreditBatchReference, new { @id = "CreditBatchEntryBatchReference", @class = "form-control", @readonly = "readonly" })
                                             </div>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
-                                                <label for="batchMonth" class="text-success">Batch Month:</label>
-                                                <input type="text" class="form-control" id="batchMonth">
+                                                @*<label for="batchMonth" class="text-success">Batch Month:</label>*@
+                                                @Html.LabelFor(model => model.CreditBatchEntry.CreditBatchMonth, new { @class = "control-label" })
+                                                @Html.TextBoxFor(model => model.CreditBatchEntry.CreditBatchMonth, new { @id = "CreditBatchEntryBatchMonth", @class = "form-control", @readonly = "readonly" })
+                                                @*<input type="text" class="form-control" id="batchMonth">*@
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label for="entryAmount" class="text-success">Entry Amount:</label>
-                                                <input type="number" class="form-control" id="entryAmount">
+                                                @*<label for="entryAmount" class="text-success">Entry Amount:</label>*@
+                                                @Html.LabelFor(model => model.CreditBatchEntry.Amount, new { @class = "control-label" })
+                                                @Html.TextBoxFor(model => model.CreditBatchEntry.Amount, new { @id = "CreditBatchEntryAmount", @class = "form-control", @readonly = "readonly" })
+                                                @*<input type="number" class="form-control" id="entryAmount">*@
                                             </div>
                                         </div>
                                         <div class="form-group">
+
                                             <label for="netPayable" class="text-success">Net Payable:</label>
-                                            <input type="number" class="form-control" id="netPayable" value="0.00" readonly>
+                                            <input type="number" class="form-control" id="CreditBatchEntryNetPayable" readonly>
                                         </div>
                                     </div>
 
@@ -529,6 +550,145 @@
     </div>
 </div>
 
+
+
+<div class="modal fade" id="CreditBatchEntriesLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Credit Batch Entries Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <!-- Table for Account Closure Requests -->
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table id="CreditBatchEntriesGrid" class="table table-striped table-bordered table-hover" style="min-width: 1000px;">
+                        <tbody>
+                            <tr>
+                                <td class="dataTables_empty">Loading data from server</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Filter Form -->
+                <div class="blue-section1 mt-1">
+                    <form id="CreditBatchEntryModalFilterForm">
+                        <div class="row align-items-end mb-3">
+                            <div class="col-md-3">
+                                <div id="items-dropdown1"></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div id="page-control1"></div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-end mb-3">
+                            <div class="col-md-4">
+                                <div class="form-group mb-0">
+                                    <label for="CreditBatchTypeFilter">Type</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(m => m.CreditBatchEntry.CreditBatchType, creditBatchTypes,
+                                        new { @class = "form-control", @id = "CreditBatchEntryBatchType" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-0">
+                                    <label for="startDate">Start Date</label>
+                                    <input type="date" id="CreditBatchEntryStartDate" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-0">
+                                    <label for="endDate">End Date</label>
+                                    <input type="date" id="CreditBatchEntryEndDate" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-end">
+                            <div class="col-md-3">
+                                <div class="form-group mb-0">
+                                    <label for="CreditBatchEntryFilter">Credit Batch Filter</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(m => m.CreditBatchEntry.CreditBatchEntryFilter, creditBatchEntryFilters,
+                                        new { @class = "form-control", @id = "CreditBatchEntryFilter" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="searchField1" class="form-group mb-0"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group mb-0">
+                                    <button type="submit" id="refreshButton" class="btn btn-success form-control">Refresh</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <style>
+                    .blue-section1 {
+                        background-color: #e6f3ff;
+                        padding: 15px;
+                        border-radius: 5px;
+                    }
+
+                    .row.align-items-end {
+                        display: flex;
+                        align-items: flex-end;
+                    }
+
+                        .row.align-items-end > div {
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                    #searchField1 {
+                        width: 100%;
+                    }
+
+                        #searchField1 .dataTables_filter {
+                            margin-bottom: 0;
+                            width: 100%;
+                        }
+
+                            #searchField1 .dataTables_filter label {
+                                width: 100%;
+                                margin-bottom: 0;
+                                display: flex;
+                            }
+
+                            #searchField1 .dataTables_filter input {
+                                width: 100% !important;
+                                margin-left: 0 !important;
+                                height: calc(1.5em + .75rem + 2px); /* Match Bootstrap's form-control height */
+                            }
+
+                    #items-dropdown1 .dataTables_length {
+                        margin-bottom: 0;
+                    }
+
+                    #page-control1 .dataTables_paginate {
+                        float: right;
+                    }
+                </style>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="modal fade" id="AccountClosureRequestsLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -655,8 +815,6 @@
                     #page-control .dataTables_paginate {
                         float: right;
                     }
-
-            
                 </style>
             </div>
 
@@ -791,6 +949,7 @@
     </script>
 
     <script>
+
     $('#tellerGlTable').DataTable({
     "sPaginationType": "full_numbers",
     "bProcessing": true,
@@ -911,12 +1070,7 @@
             );
         },
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            //var selectHtml = `
-            //    <button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;">
-            //        Select
-            //    </button>
-            //`;
-            
+       
             var selectUrl = '<button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;" onclick="setAccountClosureRequestDetails({ ' +
                 'BranchDescription: \'' + aData.BranchDescription + '\', ' +
                 'StatusDescription: \'' + aData.StatusDescription + '\', ' +
@@ -1018,7 +1172,7 @@
             $('#AccountClosureRequestCustomerAccountCustomerReference3').val(data.AccountClosureRequestCustomerAccountCustomerReference3);
             $('#CreatedBy').val(data.CreatedBy);
             $('#CreatedDate').val(data.CreatedDate);
-            
+
 
             // Additional fields based on the provided selectUrl data
             $('#AccountClosureRequestCustomerAccountCustomerIdentificationNumber').val(data.AccountClosureRequestCustomerAccountCustomerIdentificationNumber);
@@ -1034,8 +1188,142 @@
 
         }
 
+    </script>
 
 
+    <script>
+
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#CreditBatchEntryModalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#CreditBatchEntriesGrid').DataTable().ajax.reload();
+        });
+
+        $(document).ready(function () {
+
+            const today = new Date().toISOString().split('T')[0];
+            const defaultStartDate = new Date();
+            defaultStartDate.setDate(defaultStartDate.getDate() - 30);
+            const formattedStartDate = defaultStartDate.toISOString().split('T')[0];
+
+            const requestData = [
+                { "name": "startDate", "value": $('#CreditBatchEntryStartDate').val() || formattedStartDate },
+                { "name": "endDate", "value": $('#CreditBatchEntryEndDate').val() || today }
+            ];
+
+
+    var table = $('#CreditBatchEntriesGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("FetchCreditBatchEntriesTable", "SundryPayments", new { Area = "FrontOffice"}))",
+        "sServerMethod": "POST",
+        "fnServerParams": function (aoData) {
+            // Pass selected filters as parameters
+            aoData.push(
+                { "name": "creditBatchType", "value": $('#CreditBatchEntryBatchType').val() || 56028 },
+                { "name": "creditBatchEntryFilter", "value": $('#CreditBatchEntryFilter').val() || 2 },
+                { "name": "startDate", "value": $('#CreditBatchEntryStartDate').val() || formattedStartDate },
+                { "name": "endDate", "value": $('#CreditBatchEntryEndDate').val() || today }
+            );
+        },
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            
+            var selectUrl = '<button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;" onclick="setCreditBatchEntryDetails({ ' +
+                'CreditBatchEntryBeneficiary: \'' + aData.Beneficiary + '\', ' +
+                'CreditBatchEntryBatchBatchNumber: \'' + aData.CreditBatchBatchNumber + '\', ' +
+                'CreditBatchEntryReference: \'' + aData.Reference + '\', ' +
+                'CreditBatchEntryBatchReference: \'' + aData.CreditBatchReference + '\', ' +
+                'CreditBatchEntryBatchMonth: \'' + aData.CreditBatchMonth + '\', ' +
+                'CreditBatchEntry: \'' + aData.CustomerAccountCustomerReference1 + '\', ' +
+                'CreditBatchEntryAmount: \'' + (aData.Principal + aData.Interest) + '\', ' +
+                'CreditBatchEntryId: \'' + aData.Id + '\', ' +
+                'CreditBatchCreditTypeChartOfAccountId: \'' + aData.CreditBatchCreditTypeChartOfAccountId + '\' ' +
+              /*  'ProductChartOfAccountId: \'' + aData.ProductChartOfAccountId + '\' ' +*/
+                '})">Select</button>';
+
+            $('td:eq(9)', nRow).html(selectUrl);
+            return nRow;
+
+        },
+        "aoColumns": [
+            { "mDataProp": "CreditBatchBranchDescription", "sTitle": "Branch", "sWidth": "8%" },
+            { "mDataProp": "CreditBatchBatchNumber", "sTitle": "Batch Number", "sWidth": "8%" },
+            { "mDataProp": "CreditBatchReference", "sTitle": "Batch Reference", "sWidth": "12%" },
+            { "mDataProp": "Status", "sTitle": "Status", "sWidth": "10%" },
+            { "mDataProp": "Principal", "sTitle": "Principal", "sWidth": "12%" },
+            { "mDataProp": "Interest", "sTitle": "Interest", "sWidth": "10%" },
+            { "mDataProp": "Beneficiary", "sTitle": "Beneficiary", "sWidth": "10%" },
+            { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
+            { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%", "bSortable": false }
+        ],
+
+        "aaSorting": [[1, "desc"]],
+        "dom": 'lftip',  // Only the table is rendered initially (search and length will be manually added)
+        "initComplete": function (settings, json) {
+
+            $
+                ('#CreditBatchEntriesGrid_length').appendTo('.blue-section1 .row:first-child #items-dropdown1');
+
+            // Move DataTables search bar
+            $('#CreditBatchEntriesGrid_filter').appendTo('.blue-section1 #searchField1');
+            $('#CreditBatchEntriesGrid_filter input').attr('placeholder', 'Search...');
+             $('#CreditBatchEntriesGrid_filter label').contents().filter(function () {
+                 return this.nodeType === 3; // Text nodes only
+              }).remove(); // Remove the "Search:" text
+
+            // Move pagination
+            $('#CreditBatchEntriesGrid_paginate').appendTo('.blue-section1 .row:first-child #page-control1');
+        }
+    });
+});
+
+
+
+        $(document).on('click', '.select-action-button', function (e) {
+            e.preventDefault();
+
+            const rowData = $('#CreditBatchEntriesGrid').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
+            const requestId = rowData.Id; // Get the ID of the selected item
+            var requestType = 2;
+        });
+
+    </script>
+
+
+    <script>
+
+
+        function setCreditBatchEntryDetails(data) {
+            console.log("captured data is", data);
+
+            // Hide the modal
+            $('#CreditBatchEntriesLookupModal').modal('hide');
+
+            // Bind the data to the form fields using jQuery
+            $('#CreditBatchEntryBeneficiary').val(data.CreditBatchEntryBeneficiary);
+            $('#CreditBatchEntryBatchBatchNumber').val(data.CreditBatchEntryBatchBatchNumber);
+            $('#CreditBatchEntryReference').val(data.CreditBatchEntryReference);
+            $('#CreditBatchEntryBatchReference').val(data.CreditBatchEntryBatchReference);
+            $('#CreditBatchEntryBatchMonth').val(data.CreditBatchEntryBatchMonth);
+            $('#CreditBatchEntryAmount').val(data.CreditBatchEntryAmount);
+            $('#CreditBatchId').val(data.CreditBatchId);
+
+            $('#CreditBatchCreditTypeChartOfAccountId').val(data.CreditBatchCreditTypeChartOfAccountId);
+
+            
+
+            $('#CreditBatchEntryNetPayable').val(calculateNetPayable(data.CreditBatchEntryAmount));
+        }
+    </script>
+
+    <script>
+
+        function calculateNetPayable(amount) {
+
+            return amount;
+        }
 
     </script>
 }

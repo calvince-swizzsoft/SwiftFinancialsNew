@@ -192,14 +192,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         public async Task<ActionResult> Create(Guid? id)
         {
-
-
             await ServeNavigationMenus();
+            
             ViewBag.TransactionTypeSelectList = GetGeneralTransactionTypeSelectList(string.Empty);
-
             ViewBag.AccountClosureRequestStatus = GetAccountClosureSelectList(string.Empty);
-
             ViewBag.AccountClosureRequestCustomerAccountCustomerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CreditBatchTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.CreditBatchEntryFilterSelectList = GetCreditBatchEntryFilterSelectList(string.Empty);
 
             Guid parseId;
 
@@ -210,10 +209,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             ViewBag.TransactionTypeSelectList = GetGeneralTransactionTypeSelectList(string.Empty);
-
             ViewBag.AccountClosureRequestStatus = GetAccountClosureSelectList(string.Empty);
-
             ViewBag.AccountClosureCustomerAcountCustomerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CreditBatchTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.CreditBatchEntryFilterSelectList = GetCreditBatchEntryFilterSelectList(string.Empty);
 
             return View();
         }
@@ -223,11 +222,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
 
 
-             _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
+            _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
-
             _selectedBranch = await _channelService.FindBranchAsync(SelectedTeller.EmployeeBranchId, GetServiceHeader());
 
             expensePayableDTO.BranchId = SelectedTeller.EmployeeBranchId;
@@ -235,8 +232,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             switch ((GeneralTransactionType)expensePayableDTO.TransactionType)
             {
-
-
                 case GeneralTransactionType.CashPayment:
 
                     break;
@@ -248,6 +243,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     expensePayableDTO.ChartOfAccountId = expensePayableDTO.AccountClosureRequest.CustomerAccountTypeTargetProductChartOfAccountId;
 
                     expensePayableDTO.BranchId = expensePayableDTO.AccountClosureRequest.BranchId;
+
+                    break;
+
+                case GeneralTransactionType.CashPickup:
+
+                    expensePayableDTO.TotalValue = expensePayableDTO.CreditBatchEntry.Amount;
+
+                    expensePayableDTO.ChartOfAccountId = expensePayableDTO.CreditBatchEntry.CreditBatchCreditTypeChartOfAccountId;
 
                     break;
             }
@@ -266,12 +269,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 transactionModel.BranchId = expensePayableDTO.BranchId;
 
                 transactionModel.PostingPeriodId = CurrentPostingPeriod.Id;
-                //transactionModel.DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
                 transactionModel.PrimaryDescription = "ok";
                 transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount);
                 transactionModel.Reference = string.Format("{0}", SelectedTeller.ChartOfAccountId);
-
-                
 
                 //await _channelService.ComputeTellerCashTariffsAsync(customerAccountDTO, totalValue, frontOfficeTransactionType, GetServiceHeader());
 
@@ -330,18 +330,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             transactionModel.DebitChartOfAccountId = expensePayableDTO.ChartOfAccountId;
                         transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
 
-                        //if (SelectedCustomerAccount != null)
-                        //{
-                        //    transactionModel.DebitCustomerAccount = SelectedCustomerAccount;
-                        //    transactionModel.DebitCustomerAccountId = SelectedCustomerAccount.Id;
-                        //    transactionModel.CreditCustomerAccountId = SelectedCustomerAccount.Id;
-                        //    transactionModel.CreditCustomerAccount = SelectedCustomerAccount;
-                        //    transactionModel.CreditChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
-                        //}
-
-                        //if (SelectedTeller != null && !SelectedTeller.IsLocked)
-                        //    transactionModel.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
-
                         var cashPaymentAccountClosureJournal = await _channelService.AddJournalAsync(transactionModel, null, GetServiceHeader());
 
                         if (cashPaymentAccountClosureJournal != null)
@@ -375,6 +363,51 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         }
 
                         break;
+
+
+                    case GeneralTransactionType.CashPickup:
+
+                        transactionModel.TransactionCode = (int)SystemTransactionCode.CreditBatchCashPickup;
+
+                        if (SelectedTeller != null && !SelectedTeller.IsLocked)
+                            transactionModel.DebitChartOfAccountId = expensePayableDTO.ChartOfAccountId;
+                        transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
+
+                        var cashPickupJournal = await _channelService.AddJournalAsync(transactionModel, null, GetServiceHeader());
+
+                        if (cashPickupJournal != null)
+                        {
+
+                            MessageBox.Show(
+                                                               "Operation Success",
+                                                               "Customer Receipts",
+                                                               MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+                                                           );
+
+                            return Json(new { success = true, message = "Operation Success" });
+                        }
+
+                        else
+                        {
+
+                            MessageBox.Show(
+                                                               "Operation Failed",
+                                                               "Custmer Receipts",
+                                                               MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+                                                           );
+
+                            return Json(new { success = false, message = "Operation Failed" });
+                        }
+
+
+
+                        break;
                 }
 
                 
@@ -394,22 +427,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<JsonResult> FetchAccountClosureRequestsTable(JQueryDataTablesModel jQueryDataTablesModel, int status, int customerFilter, DateTime startDate, DateTime endDate)
 
         {
-            //int customerFilter = 1;
-
+         
             bool includeProductDescription = true; 
-            //var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
-            //var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
-            //var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
-
+         
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
-
-            //DateTime startDate = DateTime.Now;
-
-            //DateTime endDate = DateTime.Now;
-
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
 
@@ -432,6 +455,41 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
                 }
                 else return this.DataTablesJson(items: new List<AccountClosureRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> FetchCreditBatchEntriesTable(JQueryDataTablesModel jQueryDataTablesModel, int creditBatchType, int creditBatchEntryFilter, DateTime startDate, DateTime endDate)
+        {
+          
+            bool includeProductDescription = true;
+     
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindCreditBatchEntriesByCreditBatchTypeInPageAsync(creditBatchType, startDate, endDate, jQueryDataTablesModel.sSearch, creditBatchEntryFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, includeProductDescription, GetServiceHeader());
+
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<CreditBatchEntryDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
     }
 }

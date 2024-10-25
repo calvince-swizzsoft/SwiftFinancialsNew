@@ -218,7 +218,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         public AccountClosureRequestDTO AccountClosureRequest { get; set; }
 
-
+        public CreditBatchEntryDTO CreditBatchEntry { get; set; }
 
     }
 
