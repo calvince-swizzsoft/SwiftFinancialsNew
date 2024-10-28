@@ -220,6 +220,14 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         public CreditBatchEntryDTO CreditBatchEntry { get; set; }
 
+        [DataMember]
+        [Display (Name = "Reference")]
+        public string CashReceiptReference { get; set; }
+
+        [DataMember]
+        [Display(Name = "Amount")]
+        public decimal CashReceiptAmount { get; set; }
+
     }
 
 

@@ -199,6 +199,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.AccountClosureRequestCustomerAccountCustomerFilter = GetCustomerFilterSelectList(string.Empty);
             ViewBag.CreditBatchTypeSelectList = GetCreditBatchesAsync(string.Empty);
             ViewBag.CreditBatchEntryFilterSelectList = GetCreditBatchEntryFilterSelectList(string.Empty);
+            ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(string.Empty);
 
             Guid parseId;
 
@@ -213,6 +214,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.AccountClosureCustomerAcountCustomerFilter = GetCustomerFilterSelectList(string.Empty);
             ViewBag.CreditBatchTypeSelectList = GetCreditBatchesAsync(string.Empty);
             ViewBag.CreditBatchEntryFilterSelectList = GetCreditBatchEntryFilterSelectList(string.Empty);
+
+            ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(string.Empty);
 
             return View();
         }
@@ -233,6 +236,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             switch ((GeneralTransactionType)expensePayableDTO.TransactionType)
             {
                 case GeneralTransactionType.CashPayment:
+
+
+                    break;
+                case GeneralTransactionType.CashReceipt:
+
+                    expensePayableDTO.TotalValue = expensePayableDTO.CashReceiptAmount;
 
                     break;
                 
@@ -405,6 +414,51 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             return Json(new { success = false, message = "Operation Failed" });
                         }
 
+
+
+                        break;
+                        
+                    case GeneralTransactionType.CashReceipt:
+
+
+                        transactionModel.Reference = expensePayableDTO.CashReceiptReference;
+                        transactionModel.TransactionCode = (int)SystemTransactionCode.GeneralCashReceipt;
+
+                        if (SelectedTeller != null && !SelectedTeller.IsLocked)
+                            transactionModel.DebitChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
+                        transactionModel.CreditChartOfAccountId = expensePayableDTO.ChartOfAccountId;
+
+                        var cashReceiptJournal = await _channelService.AddJournalAsync(transactionModel, null, GetServiceHeader());
+
+                        if (cashReceiptJournal != null)
+                        {
+
+                            MessageBox.Show(
+                                                               "Operation Success",
+                                                               "Customer Receipts",
+                                                               MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+                                                           );
+
+                            return Json(new { success = true, message = "Operation Success" });
+                        }
+
+                        else
+                        {
+
+                            MessageBox.Show(
+                                                               "Operation Failed",
+                                                               "Custmer Receipts",
+                                                               MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+                                                           );
+
+                            return Json(new { success = false, message = "Operation Failed" });
+                        }
 
 
                         break;
