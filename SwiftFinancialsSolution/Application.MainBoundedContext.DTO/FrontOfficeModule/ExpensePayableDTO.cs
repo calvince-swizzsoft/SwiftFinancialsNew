@@ -228,6 +228,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Amount")]
         public decimal CashReceiptAmount { get; set; }
 
+        public ExternalChequeDTO ExternalChequeDTO { get; set; }
+
     }
 
 

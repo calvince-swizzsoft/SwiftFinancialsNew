@@ -262,6 +262,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     expensePayableDTO.ChartOfAccountId = expensePayableDTO.CreditBatchEntry.CreditBatchCreditTypeChartOfAccountId;
 
                     break;
+
+                case GeneralTransactionType.ChequeReceipt:
+
+                    expensePayableDTO.TotalValue = expensePayableDTO.ExternalChequeDTO.Amount;
+
+                    expensePayableDTO.ChartOfAccountId = (Guid)expensePayableDTO.ExternalChequeDTO.ChartOfAccountId;
+                    
+                    
+                    break;
             }
 
 
@@ -462,9 +471,55 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
                         break;
+
+                    case GeneralTransactionType.ChequeReceipt:
+
+
+                        transactionModel.Reference = expensePayableDTO.ExternalChequeDTO.Reference;
+                        transactionModel.TransactionCode = (int)SystemTransactionCode.GeneralChequeReceipt;
+
+                        if (SelectedTeller != null && !SelectedTeller.IsLocked)
+                            transactionModel.DebitChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
+                        transactionModel.CreditChartOfAccountId = expensePayableDTO.ChartOfAccountId;
+
+                        var chequeReceiptJournal = await _channelService.AddJournalAsync(transactionModel, null, GetServiceHeader());
+
+                        if (chequeReceiptJournal != null)
+                        {
+
+                            MessageBox.Show(
+                                                               "Operation Success",
+                                                               "Customer Receipts",
+                                                               MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+                                                           );
+
+                            return Json(new { success = true, message = "Operation Success" });
+                        }
+
+                        else
+                        {
+
+                            MessageBox.Show(
+                                                               "Operation Failed",
+                                                               "Custmer Receipts",
+                                                               MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+                                                           );
+
+                            return Json(new { success = false, message = "Operation Failed" });
+                        }
+
+
+                        break;
+
                 }
 
-                
+
                 return RedirectToAction("Create");
             }
             else
