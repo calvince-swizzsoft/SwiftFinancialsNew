@@ -205,7 +205,7 @@
                     
                     <div class="card">
                         <div class="card-body">
-                            @using (Html.BeginForm("Create", "CashDeposit", new { Area = "FrontOffice" }, FormMethod.Post))
+                            @using (Html.BeginForm("Create", "CashDeposit", new { Area = "FrontOffice" }, FormMethod.Post, new { @id = "savingsReceiptsPaymentsForm" }))
                             {
                                 @Html.AntiForgeryToken()
 
@@ -383,14 +383,14 @@
                                                             <div class="form-group form-group-lg">
                                                                 @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductMaximumAllowedDeposit, new {@id = "CustomerAccountTypeTargetProductMaximumAllowedDeposit" })
                                                                 @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
-                                                                @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control" } })
+                                                                @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @id = "TotalValue", @class = "form-control" } })
                                                                 @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                                             </div>
 
 
                                                             <div class="form-group form-group-lg">
                                                                 @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
-                                                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control" } })
+                                                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @id = "Reference", @class = "form-control" } })
                                                                 @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                                             </div>
 
@@ -1214,7 +1214,7 @@
 
 
                                 <div class="form-group" style="margin-top: 20px; text-align: right;">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button id="submitButton" type="submit" class="btn btn-primary">Update</button>
                                 </div>
 
 
@@ -1410,6 +1410,92 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+
+
+    <script>
+
+        function resetAllFields() {
+        
+
+            $('#CustomerAccountNewAvailableBalance').val('');
+            $('#CustomerAccountAvailableBalance').val('');
+            $('#CustomerAccountBookBalance').val('');
+            $('#CustomerAccountCustomerFullName').val('');
+            $('#CustomerAccountId').val('');
+            $('#CustomerAccountTypeTargetProductId').val('')
+            $('#CustomerAccountCustomerStationZoneDivisionEmployerDescription').val('');
+            $('#CustomerAccountFullAccountNumber').val('');
+            $('#CustomerAccountCustomerStationDescription').val('');
+            $('#CustomerAccountCustomerReference1').val('');
+            $('#CustomerAccountCustomerIndividualIdentityCardNumber').val('');
+            $('#CustomerAccountCustomerIndividualPayrollNumbers').val('');
+            $('#CustomerAccountTypeTargetProductDescription').val('');
+            $('#CustomerAccountTypeProductCodeDescription').val('');
+            $('#CustomerAccountStatusDescription').val('');
+            $('#CustomerAccountRemarks').val('');
+            $('#CustomerAccountCustomerTypeDescription').val('');
+            $('#CustomerAccountBranchDescription').val('');
+            $('#CustomerAccountBranchId').val('');
+            $('#CustomerAccountCustomerSerialNumber').val('');
+            $('#CustomerAccountCustomerReference2').val('');
+            $('#CustomerAccountCustomerReference3').val('');
+            $('#CustomerAccountTypeTargetProductCode').val('');
+            $('#CustomerAccountTypeTargetProductParentId').val('');
+            $('#CustomerAccountTypeProductCode').val('');
+            $('#CustomerAccountTypeTargetProductParentId').val('');
+            $('#CustomerAccountTypeTargetProductChartOfAccountId').val('');
+
+            $('#CustomerAccountTypeTargetProductMaximumAllowedDeposit').val('');
+
+            $('#CustomerAccountTypeTargetProductMaximumAllowedWithdrawal').val('');
+
+            $('#TotalValue').val('');
+
+            $('#Reference').val('');
+
+
+
+
+            // Disable submit button
+            $('#submitButton').prop('disabled', true);
+        }
+
+        $(document).ready(function () {
+            $('#submitButton').click(function (e) {
+
+                e.preventDefault();
+                $.ajax({
+                    url: $('#savingsReceiptsPaymentsForm').attr('action'),
+                    type: 'POST',
+                    data: $('#savingsReceiptsPaymentsForm').serialize(),
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.redirect) {
+
+                            resetAllFields();
+                        } else if (response.success) {
+
+                            //alert('Customer Receipts: Operation Success');
+                            resetAllFields();
+                        } else {
+
+                            //alert('Customer Receipts: Operation Failed\n\n' + (response.errorMessages ? response.errorMessages.join('\n') : 'Unknown error'));
+                            //resetAllFields();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+
+                        //alert('An error occurred while submitting the form. Please try again.');
+                        //resetAllFields();
+                        console.error(error);
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
     <script>
 
         $('#data_3 .input-group.date').datepicker({
@@ -1501,7 +1587,6 @@
                         console.log(data);
                         console.log(JSON.stringify(data));
 
-                 
                         $('#CustomerAccountNewAvailableBalance').val(data.NewAvailableBalance);
                         $('#CustomerAccountAvailableBalance').val(data.AvailableBalance);
                         $('#CustomerAccountBookBalance').val(data.BookBalance);
@@ -1531,19 +1616,12 @@
                         $('#CustomerAccountTypeTargetProductChartOfAccountId').val(data.CustomerAccountTypeTargetProductChartOfAccountId);
 
                         $('#CustomerAccountTypeTargetProductMaximumAllowedDeposit').val(data.CustomerAccountTypeTargetProductMaximumAllowedDeposit);
-
                         $('#CustomerAccountTypeTargetProductMaximumAllowedWithdrawal').val(data.CustomerAccountTypeTargetProductMaximumAllowedWithdrawal);
-
-
-
-                      
-                           
-
-
 
 
                         // Hide the lookup modal after successful data retrieval
                         $('#customerLookupModal').modal('hide');
+                        $('#submitButton').prop('disabled', false);
                     } else {
                         console.error("No customer details found.");
                     }
@@ -1553,30 +1631,6 @@
                 }
             });
         }
-
-
-    //$("#s tbody").on("click", "tr", function () {
-    //    var data = CustomerAccountsGrid.row(this).data();
-    //    //$('#Id').val(data.Id);
-    //    //$('#Id').val(data.CustomerId);
-    //    //$('input[name=CustomerId]').val(data.Id);
-    //    $('input[name=FullAccountNumber]').val(data.FullAccountNumber);
-
-    //    var CustomerId = "";
-    //    CustomerId = CustomersMap[item].Id;
-
-    //    $('#CustomerAccountId').val(CustomersMap[item].CustomerAccountId);
-    //    $('#CustomerAccountTypeTargetProductId').val(CustomersMap[item].CustomerAccountTypeTargetProductId)
-    //    $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
-    //    $('#FullAccountNumber').val(CustomersMap[item].FullAccountNumber);
-    //    $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-    //    $('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
-    //    $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-    //    $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-    //    $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
-    //    $('#CustomerAccountTypeProductCodeDescription').val(CustomersMap[item].CustomerAccountTypeProductCodeDescription);
-    //    $('#customerLookupModal').modal('hide');
-    //});
 
    $('#ChequeBooksGrid').DataTable({
     // Ajax settings

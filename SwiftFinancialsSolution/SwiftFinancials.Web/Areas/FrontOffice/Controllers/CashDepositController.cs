@@ -1205,9 +1205,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                );
 
-                return View(SelectedCustomerAccount);
+                //return View(SelectedCustomerAccount);
 
-
+                return Json(new { success = false, message = "Operation Failed" });
             }
 
             try
@@ -1216,7 +1216,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 await ProcessCustomerTransactionAsync(transactionModel);
                 SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, false, true, false, false, GetServiceHeader());
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
-                return RedirectToAction("Create");
+                //return RedirectToAction("Create");
+                return Json(new { success = true, message = "Operation Success" });
             }
             catch (Exception)
             {
@@ -1232,7 +1233,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                   );
 
-                return View();
+                //return View();
+
+                return Json(new { success = false, message = "Operation Failed" });
 
             }
         }
