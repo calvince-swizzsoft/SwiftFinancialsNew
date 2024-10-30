@@ -363,5 +363,17 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "G/L Account Type")]
+        public int ChartOfAccountAccountType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Reference")]
+        public string Reference { get; set; }
+
+        [DataMember]
+        [Display(Name = "G/L Account")]
+        public Guid? ChartOfAccountId { get; set; }
     }
 }

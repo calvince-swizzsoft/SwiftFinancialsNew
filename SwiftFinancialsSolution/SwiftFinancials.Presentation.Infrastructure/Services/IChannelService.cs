@@ -246,27 +246,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #endregion
         #endregion
 
-        #region ModuleNavigationItemDTO
-
-        Task<bool> AddModuleNavigationItemsAsync(ObservableCollection<ModuleNavigationItemDTO> moduleNavigationItems, ServiceHeader serviceHeader = null);
-
-        Task<ObservableCollection<string>> GetRolesForModuleNavigationItemCodeAsync(int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
-
-        Task<bool> RemoveModuleNavigationItemFromRolesAsync(ModuleNavigationItemDTO moduleNavigationItem, ObservableCollection<string> roleNames, ServiceHeader serviceHeader = null);
-
-        Task<bool> AddModuleNavigationItemToRolesAsync(ModuleNavigationItemDTO moduleNavigationItem, ObservableCollection<string> roleNames, ServiceHeader serviceHeader = null);
-
-        Task<bool> IsModuleNavigationItemInRoleAsync(ModuleNavigationItemDTO moduleNavigationItem, string roleName, ServiceHeader serviceHeader = null);
-
-        Task<ObservableCollection<ModuleNavigationItemInRoleDTO>> GetModuleNavigationItemsInRoleAsync(string roleName, ServiceHeader serviceHeader = null);
-
-        Task<ObservableCollection<SystemPermissionTypeInRoleDTO>> GetSystemPermissionTypesInRoleAsync(string roleName, ServiceHeader serviceHeader = null);
-
-        Task<ObservableCollection<SystemPermissionTypeInBranchDTO>> GetSystemPermissionTypesInBranchAsync(Guid branchId, ServiceHeader serviceHeader = null);
-
-        Task<bool> MapModuleNavigationItemToRolesAsync(ModuleNavigationItemDTO moduleNavigationItem, ObservableCollection<string> roleNames, ServiceHeader serviceHeader = null);
-
-        #endregion
+      
 
         #region NavigationItemDTO
 

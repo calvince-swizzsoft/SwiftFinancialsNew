@@ -639,7 +639,6 @@
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
-    <Compile Include="Areas\Registry\Controllers\ConditionalLendingController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\DeviceViewModel.cs" />
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
@@ -1360,14 +1359,8 @@
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Closing.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\ConditonalLending\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\ConditonalLending\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
     <Content Include="Areas\Loaning\Views\GuarantorRelieving\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\ConditionalLending\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\ConditionalLending\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\NextofKin\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Processing.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Closing.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Edit.cshtml" />

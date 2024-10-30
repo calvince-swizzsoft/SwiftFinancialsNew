@@ -18,6 +18,7 @@ using SwiftFinancials.Presentation.Infrastructure.Services;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using System.Collections.ObjectModel;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
@@ -75,7 +76,7 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<IncomeAdjustmentDTO> IncomeAdjustmentsDTOs;
 
-
+       public ObservableCollection<PartnershipMemberDTO> partnershipMemberCollection;
         public ObservableCollection<Guid> customerAccountsIds;
 
         private IChannelService channelService;
@@ -579,6 +580,24 @@ namespace SwiftFinancials.Web.Controllers
             gender.AddRange(items);
 
             return gender;
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetPartnershipRelationshipsSelectList(string selectedValue)
+        {
+            List<SelectListItem> relationship = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(PartnershipRelationship)).Cast<PartnershipRelationship>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            relationship.AddRange(items);
+
+            return relationship;
         }
 
         [NonAction]
@@ -1978,6 +1997,30 @@ namespace SwiftFinancials.Web.Controllers
             messageGroupTarget.AddRange(items);
 
             return messageGroupTarget;
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetCreditBatchEntryFilterSelectList(string selectedValue)
+        {
+
+            List<SelectListItem> creditBatchEntryFilterSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CreditBatchEntryFilter)).Cast<CreditBatchEntryFilter>().Select(v => new SelectListItem
+            {
+
+
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+
+            creditBatchEntryFilterSelectList.AddRange(items);
+
+            return creditBatchEntryFilterSelectList;
+
+
         }
     }
 }
