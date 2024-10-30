@@ -1,0 +1,489 @@
+﻿
+@{
+    ViewBag.Title = "Print Loan Appraisal Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+    var formData = ViewBag.FormData;
+    var standingOrders = ViewBag.StandingOrders;
+    var payouts = ViewBag.Payouts;
+    var LoanApplications = ViewBag.LoanApplications;
+    var loanGuarantors = ViewBag.LoanGuarantors;
+    var loanAccounts = ViewBag.LoanAccounts;
+
+    // Repayment Schedule
+
+    var apr = ViewBag.APR;
+    var icm = ViewBag.ICM;
+    var amountApplied = ViewBag.AmountApplied;
+    var termInMonths = ViewBag.TIM;
+}
+
+<link href="~/Scripts/css/printAppraisalForm.css" rel="stylesheet" />
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1>Back Office</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Appraise", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Appraise", "AppraiseLoan", new { Area = "Loaning" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Appraise</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Print Loan Appraisal Form</h2>
+
+                    <button onclick="printAppraisalForm()">Print</button>
+
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    <div id="appraisalForm">
+                        <div class="container">
+                            <div class="printDate">
+                                <label style="text-align: right;">Print Date: @DateTime.Now</label>
+                            </div>
+                            <h2 style="text-align: center;">LOAN APPRAISAL FORM</h2>
+
+                            <table>
+                                <tr>
+                                    <th colspan="2">ACCOUNT</th>
+                                    <th>A/C NO: @formData.CustomerReference1</th>
+                                </tr>
+                                <tr>
+                                    <th>Customer</th>
+                                    <td colspan="2">@formData.CustomerFullName</td>
+                                </tr>
+                                <tr>
+                                    <th>Member No</th>
+                                    <td colspan="2">@formData.CustomerReference2</td>
+                                </tr>
+                                <tr>
+                                    <th>Email Address</th>
+                                    <td colspan="2">@formData.CustomerAddressEmail</td>
+                                </tr>
+                                <tr>
+                                    <th>Phone Number</th>
+                                    <td colspan="2">@formData.CustomerAddressMobileLine</td>
+                                </tr>
+                            </table>
+
+                            <div class="section-title">LOAN DETAILS</div>
+                            <table>
+                                <tr>
+                                    <th colspan="2">LOAN NO: @formData.CaseNumber</th>
+                                    <th>Loan Product: @formData.LoanProductDescription</th>
+                                </tr>
+                                <tr>
+                                    <th>Loan Purpose</th>
+                                    <td colspan="2">@formData.LoanPurposeDescription</td>
+                                </tr>
+                                <tr>
+                                    <th>Term (Months)</th>
+                                    <td colspan="2">@formData.LoanRegistrationTermInMonths</td>
+                                </tr>
+                                <tr>
+                                    <th>Amount Applied</th>
+                                    <td colspan="2">@formData.AmountApplied</td>
+                                </tr>
+                                <tr>
+                                    <th>System Recommendation</th>
+                                    <td colspan="2">@formData.LoanQualificationSystemRecommendation</td>
+                                </tr>
+                                <tr>
+                                    <th>Amount Appraised</th>
+                                    <td colspan="2">@formData.AppraisedAmount</td>
+                                </tr>
+                                <tr>
+                                    <th>Appraiser Remarks</th>
+                                    <td colspan="2">@formData.AppraisalRemarks</td>
+                                </tr>
+                            </table>
+
+
+                            <div class="section-title">CREDIT HISTORY</div>
+                            <table>
+                                <tr>
+                                    <th>Loan No</th>
+                                    <th>Status</th>
+                                    <th>Customer Name</th>
+                                    <th>Personal File Number</th>
+                                    <th>Loan Product</th>
+                                    <th>Received Date</th>
+                                    <th>Amount Applied</th>
+                                    <th>Appraised Amount</th>
+                                    <th>System Appraisal Remarks</th>
+                                </tr>
+                                <tbody>
+                                    @if (LoanApplications != null)
+                                    {
+                                        foreach (var loanApplications in LoanApplications)
+                                        {
+                                            <tr>
+                                                <td>@loanApplications.CaseNumber</td>
+                                                <td>@loanApplications.StatusDescription</td>
+                                                <td>@loanApplications.CustomerFullName</td>
+                                                <td>@loanApplications.CustomerReference3</td>
+                                                <td>@loanApplications.LoanProductDescription</td>
+                                                <td>@loanApplications.ReceivedDate</td>
+                                                <td style="text-align: right;">@loanApplications.AmountApplied</td>
+                                                <td style="text-align: right;">@loanApplications.AppraisedAmount</td>
+                                                <td>@loanApplications.SystemAppraisalRemarks</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+
+                            <div class="section-title">GUARANTORS</div>
+                            <table>
+                                <tr>
+                                    <th>Guarantor Name</th>
+                                    <th>Employer</th>
+                                    <th>Account Number</th>
+                                    <th>Appraisal Factor</th>
+                                    <th>Total Shares</th>
+                                    <th>Committed Shares</th>
+                                    <th>Amount Guaranteed</th>
+                                    <th>Date Guaranteed</th>
+                                </tr>
+                                <tbody>
+                                    @if (loanGuarantors != null)
+                                    {
+                                        foreach (var guarantors in loanGuarantors)
+                                        {
+                                            <tr>
+                                                <td>@guarantors.Customer.FullName</td>
+                                                <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
+                                                <td>@guarantors.Customer.Reference1</td>
+                                                <td>@guarantors.AppraisalFactor</td>
+                                                <td style="text-align: right;">@guarantors.TotalShares</td>
+                                                <td style="text-align: right;">@guarantors.CommittedShares</td>
+                                                <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
+                                                <td>@guarantors.CreatedDate</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+
+                            <div class="section-title">COLLATERALS</div>
+                            <table>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Title</th>
+                                    <th>MIME Type</th>
+                                    <th>Collateral Value</th>
+                                    <th>Collateral Advanced Rate</th>
+                                    <th>Collateral Status</th>
+                                    <th>Record Status</th>
+                                    <th>Modified By</th>
+                                    <th>Modified Date</th>
+                                    <th>Created By</th>
+                                    <th>Created Date</th>
+                                </tr>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+
+
+
+                            <div class="section-title">LOAN ACCOUNTS</div>
+                            <table>
+                                <tr>
+                                    <th>Account Status</th>
+                                    <th>Full Account Number</th>
+                                    <th>Account Number</th>
+                                    <th>Membership Number</th>
+                                    <th>Personal File Number</th>
+                                    <th>Company</th>
+                                    <th>Branch</th>
+                                    <th>Product</th>
+                                    <th>Section</th>
+                                    <th>Book Balance</th>
+                                    <th>Available Balance</th>
+                                    <th>Principal Balance</th>
+                                </tr>
+                                <tbody>
+                                    @if (loanAccounts != null)
+                                    {
+                                        foreach (var customerAccount in loanAccounts)
+                                        {
+                                            <tr>
+                                                <td>@customerAccount.StatusDescription</td>
+                                                <td>@customerAccount.FullAccountNumber</td>
+                                                <td>@customerAccount.CustomerReference1</td>
+                                                <td>@customerAccount.CustomerReference2</td>
+                                                <td>@customerAccount.CustomerReference3</td>
+                                                <td>@customerAccount.BranchCompanyDescription</td>
+                                                <td>@customerAccount.BranchDescription</td>
+                                                <td>@customerAccount.CustomerAccountTypeTargetProductDescription</td>
+                                                <td>@customerAccount.CustomerAccountTypeTargetProductLoanProductSectionDescription</td>
+                                                <td style="text-align: right;">@customerAccount.BookBalance</td>
+                                                <td style="text-align: right;">@customerAccount.AvailableBalance</td>
+                                                <td style="text-align: right;">@customerAccount.PrincipalBalance</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+
+                            <div class="section-title">ATTACHED LOANS</div>
+                            <table>
+                                <tr>
+                                    <th>Full Account Number</th>
+                                    <th>Product Name</th>
+                                    <th>Principal Balance</th>
+                                    <th>Interest Balance</th>
+                                </tr>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+
+                            <div class="section-title">REPAYMENT SCHEDULE</div>
+                            <table id="repaymentScheduledataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                <thead>
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Due Date</th>
+                                        <th>Starting Balance</th>
+                                        <th>Payment</th>
+                                        <th>Interest Payment</th>
+                                        <th>Principal Payment</th>
+                                        <th>Ending Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+
+
+                            <div class="signature">
+                                <table class="signature-table">
+                                    <tr>
+                                        <td class="label">Apprasied By:</td>
+                                        <td class="line">@formData.AppraisedBy</td>
+                                        <td class="label">Signature:</td>
+                                        <td class="line"></td>
+                                        <td class="label">Date:</td>
+                                        <td class="line">@DateTime.Now.ToLongDateString()</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var APR = @apr;
+        var ICM = '@icm';
+        var AmountApplied = @amountApplied;
+        var TermInMonths = @termInMonths;
+
+        var monthlyInterestRate = APR / 12 / 100;
+
+        var remainingBalance = AmountApplied;
+        var emi = 0;
+        var schedule = [];
+
+        for (var i = 1; i <= TermInMonths; i++) {
+            var interestPayment = 0;
+            var principalPayment = 0;
+
+            switch (ICM) {
+                case "Reducing Balance":
+                    emi = (AmountApplied * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, TermInMonths))
+                          / (Math.pow(1 + monthlyInterestRate, TermInMonths) - 1);
+                    interestPayment = remainingBalance * monthlyInterestRate;
+                    principalPayment = emi - interestPayment;
+                    break;
+
+                case "Straight Line":
+                    interestPayment = (AmountApplied * APR / 100) / TermInMonths;
+                    principalPayment = AmountApplied / TermInMonths;
+                    emi = principalPayment + interestPayment;
+                    break;
+
+                case "Amortization (Straight Line)":
+                    emi = AmountApplied / TermInMonths + (AmountApplied * monthlyInterestRate);
+                    interestPayment = (AmountApplied - ((AmountApplied / TermInMonths) * (i - 1))) * monthlyInterestRate;
+                    principalPayment = emi - interestPayment;
+                    break;
+
+                case "Amortization (Diminishing Balance)":
+                    emi = (AmountApplied * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, TermInMonths))
+                          / (Math.pow(1 + monthlyInterestRate, TermInMonths) - 1);
+                    interestPayment = remainingBalance * monthlyInterestRate;
+                    principalPayment = emi - interestPayment;
+                    break;
+
+                case "Fixed Interest":
+                    interestPayment = AmountApplied * APR / 100 / TermInMonths;
+                    principalPayment = AmountApplied / TermInMonths;
+                    emi = interestPayment + principalPayment;
+                    break;
+
+                default:
+                    console.error("Invalid Interest Calculation Mode.");
+                    return;
+            }
+
+            var entry = {
+                Period: i,
+                DueDate: new Date(new Date().setMonth(new Date().getMonth() + i)).toLocaleDateString(),
+                StartingBalance: remainingBalance.toFixed(2),
+                Payment: emi.toFixed(2),
+                InterestPayment: interestPayment.toFixed(2),
+                PrincipalPayment: principalPayment.toFixed(2),
+                EndingBalance: (remainingBalance - principalPayment).toFixed(2)
+            };
+
+            schedule.push(entry);
+
+            remainingBalance -= principalPayment;
+        }
+
+        var tableBody = document.querySelector("#repaymentScheduledataTable tbody");
+        schedule.forEach(function(item) {
+            var row = `
+                <tr>
+                    <td>${item.Period}</td>
+                    <td>${item.DueDate}</td>
+                    <td>${item.StartingBalance}</td>
+                    <td>${item.Payment}</td>
+                    <td>${item.InterestPayment}</td>
+                    <td>${item.PrincipalPayment}</td>
+                    <td>${item.EndingBalance}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    });
+</script>
+
+<script>
+    function printAppraisalForm() {
+        var printContents = document.getElementById('appraisalForm').innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        var printWindow = window.open('', '', 'height=700,width=900');
+
+        printWindow.document.write('<html><head><title>Print Appraisal Form</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write(`
+               #loanApplications {
+            height: auto;
+        }
+
+            #loanApplications th {
+                text-align: center;
+                text-transform: uppercase;
+            }
+
+
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #000;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .section-title {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            padding: 5px;
+            text-align: left;
+        }
+
+        .signature {
+            margin-top: 20px;
+        }
+
+        .signature-table {
+            width: 100%;
+            border: none;
+            text-align: left;
+        }
+
+            .signature-table td {
+                padding: 5px;
+                border: none;
+            }
+
+
+            .signature-table .line {
+                width: 25%;
+                border-bottom: 1px solid black;
+            }
+
+    `);
+        printWindow.document.write('</style>');
+        printWindow.document.write('</head><body>');
+        printWindow.document.write(printContents);
+        printWindow.document.write('</body></html>');
+
+        printWindow.document.close();
+        printWindow.focus(); 
+
+        setTimeout(function () {
+            printWindow.print(); 
+            printWindow.close(); 
+        }, 500);
+    }
+
+</script>
+

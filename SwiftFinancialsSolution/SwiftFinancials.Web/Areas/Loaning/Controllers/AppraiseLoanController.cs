@@ -68,6 +68,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
+            Session["loanCaseId"] = parseId;
+
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
             var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
 
@@ -80,22 +82,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (loaneeCustomer != null)
             {
-                loanCaseDTO.CaseNumber = loaneeCustomer.CaseNumber;
-                loanCaseDTO.CustomerId = loaneeCustomer.CustomerId;
-                loanCaseDTO.CustomerIndividualFirstName = loaneeCustomer.CustomerIndividualSalutationDescription + " " + loaneeCustomer.CustomerIndividualFirstName + " " + loaneeCustomer.CustomerIndividualLastName;
-                loanCaseDTO.CustomerReference2 = loaneeCustomer.CustomerReference2;
-                loanCaseDTO.CustomerReference1 = loaneeCustomer.CustomerReference1;
-                loanCaseDTO.LoanProductDescription = loaneeCustomer.LoanProductDescription;
-                loanCaseDTO.CustomerReference3 = loaneeCustomer.CustomerReference3;
-                loanCaseDTO.LoanPurposeDescription = loaneeCustomer.LoanPurposeDescription;
-                loanCaseDTO.LoanRegistrationMaximumAmount = loaneeCustomer.LoanRegistrationMaximumAmount;
-                loanCaseDTO.MaximumAmountPercentage = loaneeCustomer.MaximumAmountPercentage;
-                loanCaseDTO.AmountApplied = loaneeCustomer.AmountApplied;
-                loanCaseDTO.LoanRegistrationTermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
-                loanCaseDTO.BranchDescription = loaneeCustomer.BranchDescription;
-                loanCaseDTO.Reference = loaneeCustomer.Reference;
-                loanCaseDTO.LoanProductSectionDescription = loaneeCustomer.LoanRegistrationLoanProductSectionDescription;
-                loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loaneeCustomer.LoanRegistrationInvestmentsMultiplier;
+                //loanCaseDTO.CaseNumber = loaneeCustomer.CaseNumber;
+                //loanCaseDTO.CustomerId = loaneeCustomer.CustomerId;
+                //loanCaseDTO.CustomerIndividualFirstName = loaneeCustomer.CustomerIndividualSalutationDescription + " " + loaneeCustomer.CustomerIndividualFirstName + " " + loaneeCustomer.CustomerIndividualLastName;
+                //loanCaseDTO.CustomerReference2 = loaneeCustomer.CustomerReference2;
+                //loanCaseDTO.CustomerReference1 = loaneeCustomer.CustomerReference1;
+                //loanCaseDTO.LoanProductDescription = loaneeCustomer.LoanProductDescription;
+                //loanCaseDTO.CustomerReference3 = loaneeCustomer.CustomerReference3;
+                //loanCaseDTO.LoanPurposeDescription = loaneeCustomer.LoanPurposeDescription;
+                //loanCaseDTO.LoanRegistrationMaximumAmount = loaneeCustomer.LoanRegistrationMaximumAmount;
+                //loanCaseDTO.MaximumAmountPercentage = loaneeCustomer.MaximumAmountPercentage;
+                //loanCaseDTO.AmountApplied = loaneeCustomer.AmountApplied;
+                //loanCaseDTO.LoanRegistrationTermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
+                //loanCaseDTO.BranchDescription = loaneeCustomer.BranchDescription;
+                //loanCaseDTO.Reference = loaneeCustomer.Reference;
+                //loanCaseDTO.LoanProductSectionDescription = loaneeCustomer.LoanRegistrationLoanProductSectionDescription;
+                //loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loaneeCustomer.LoanRegistrationInvestmentsMultiplier;
+
+                loanCaseDTO = loaneeCustomer;
+
+
 
                 Session["selectedLoanCase"] = loaneeCustomer;
 
@@ -174,6 +180,20 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.InterestCalculationMode = loaneeCustomer.LoanInterestCalculationModeDescription;
                 ViewBag.AmountApplied = loaneeCustomer.AmountApplied;
                 ViewBag.TermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
+
+
+                // Print Data
+                Session["formData"] = loanCaseDTO;
+                Session["standingOrders"] = allStandingOrders;
+                Session["payouts"] = payouts;
+                Session["loanApplications"] = loanApplications;
+                Session["loanGuarantors"] = loanGuarantors;
+                Session["loanAccounts"] = LoanAccounts;
+
+                Session["APR"] = loanCaseDTO.LoanInterestAnnualPercentageRate;
+                Session["InterestCalculationMode"] = loanCaseDTO.LoanInterestCalculationModeDescription;
+                Session["AmountApplied"] = loanCaseDTO.AmountApplied;
+                Session["TermInMonths"] = loanCaseDTO.LoanRegistrationTermInMonths;
             }
 
 
@@ -192,25 +212,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             return View(loanCaseDTO);
         }
-
-
-
-
-
-        //public async Task<ActionResult> FindAttachedLoans(Guid Id)
-        //{
-        //    var attachedLoans = await _channelService.FindAttachedLoansByLoanCaseIdAsync(Id, GetServiceHeader());
-
-        //    return Json(new
-        //    {
-        //        success = true,
-        //        data = new
-        //        {
-        //            AttachedLoans = attachedLoans
-        //        }
-        //    });
-        //}
-
 
 
         public async Task<ActionResult> IncomeAdjustmentsLookUp(Guid? id, IncomeAdjustmentDTO model)
@@ -293,7 +294,72 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
+        public async Task<ActionResult> Print()
+        {
+            await ServeNavigationMenus();
 
+            Guid id = (Guid)Session["loanCaseId"];
+
+            var loanCase = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
+            LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
+
+            loanCaseDTO = loanCase as LoanCaseDTO;
+
+
+            //// Standing Orders
+            ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
+            var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loanCase.CustomerId, true, true, true, true, GetServiceHeader());
+
+            foreach (var accounts in customerAccounts)
+            {
+                customerAccountId.Add(accounts.Id);
+            }
+
+            List<StandingOrderDTO> allStandingOrders = new List<StandingOrderDTO>();
+
+            // Iterate through each account ID and collect standing orders
+            foreach (var Ids in customerAccountId)
+            {
+                var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
+                if (standingOrders != null && standingOrders.Any())
+                {
+                    allStandingOrders.AddRange(standingOrders); // Add standing orders to the collection
+                }
+                else
+                {
+                    TempData["EmptystandingOrders"] = "Selected Customer has no Standing Orders.";
+                }
+            }
+            ViewBag.StandingOrders = allStandingOrders;
+
+
+
+            //// Loan Applications
+            var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(loanCase.CustomerId, GetServiceHeader());
+            if (loanApplications != null)
+            {
+                ViewBag.LoanApplications = loanApplications;
+            }
+
+
+
+            // repayment schedule
+            var APR = loanCase.LoanInterestAnnualPercentageRate;
+            var AmountApplied = loanCase.AmountApplied;
+            var ICM = loanCase.LoanInterestCalculationModeDescription;
+            var TIM = loanCase.LoanRegistrationTermInMonths;
+
+
+            ViewBag.FormData = loanCaseDTO;
+
+            ViewBag.APR = APR;
+            ViewBag.AmountApplied = AmountApplied;
+            ViewBag.ICM = ICM;
+            ViewBag.TIM = TIM;
+
+            return View();
+        }
 
 
 
@@ -366,14 +432,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                     if (result2 == DialogResult.Yes)
                     {
-
+                        return RedirectToAction("Print");
                     }
                     else
                     {
                         return RedirectToAction("Index");
                     }
-
-                    return RedirectToAction("Index");
                 }
                 else
                 {
