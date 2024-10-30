@@ -10,6 +10,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using System.Collections.ObjectModel;
 using SwiftFinancials.Web.Helpers;
+using Microsoft.AspNet.Identity;  // Add this to access GetUserId()
 
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
@@ -105,8 +106,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
-
-
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
@@ -127,7 +126,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 else
                 {
                     TempData["ErrorMessage"] = "Branch details could not be found.";
-                    return RedirectToAction("Index");  
+                    return RedirectToAction("Index");
                 }
             }
             else
@@ -147,6 +146,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return View(inHouseChequeDTO);
         }
+
+
+        //public async Task<ActionResult> Create(Guid? id)
+        //{
+        //    await ServeNavigationMenus();
+
+        //    var inHouseChequeDTO = new InHouseChequeDTO();
+
+        //    var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+        //    if (userDTO.BranchId != null)
+        //    {
+        //        inHouseChequeDTO.BranchId = (Guid)userDTO.BranchId;
+        //    }
+
+        //    return View(inHouseChequeDTO);
+        //}
+
 
 
 

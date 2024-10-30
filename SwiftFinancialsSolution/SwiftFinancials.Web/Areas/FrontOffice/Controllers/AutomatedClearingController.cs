@@ -52,52 +52,27 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> UploadCheques(HttpPostedFileBase chequeImage, string status, string startDate, string endDate, string searchText)
+        public async Task<JsonResult> UploadElectronicJournal(HttpPostedFileBase chequeImage)
         {
-            if (chequeImage != null && chequeImage.ContentLength > 0)
+            if (chequeImage == null || chequeImage.ContentLength == 0)
             {
-                try
-                {
-                    // Logic for saving the file
-                    string uploadDirectory = Server.MapPath("~/UploadedCheques");
-                    if (!Directory.Exists(uploadDirectory))
-                    {
-                        Directory.CreateDirectory(uploadDirectory);
-                    }
-
-                    string uniqueFileName = Path.GetFileNameWithoutExtension(chequeImage.FileName) + "_" + Guid.NewGuid() + Path.GetExtension(chequeImage.FileName);
-                    string path = Path.Combine(uploadDirectory, uniqueFileName);
-                    chequeImage.SaveAs(path);
-
-                    await Task.Run(() =>
-                    {
-                    });
-
-                    var chequeData = new List<object>
-            {
-                new {
-                    Status = status, // Use the status sent by the user
-                    ProcessedEntries = 0, // Set to 0 or any default value since we're not processing
-                    FileName = uniqueFileName,
-                    FileSerialNumber = string.Empty, // Set to an appropriate default if needed
-                    DateOfFileExchange = DateTime.Now.ToString("dd/MM/yyyy"), // Set current date
-                    ClosedBy = string.Empty, // Set to an appropriate default if needed
-                    ClosedDate = string.Empty, // Set to an appropriate default if needed
-                    CreatedBy = string.Empty, // Set to an appropriate default if needed
-                    CreatedDate = DateTime.Now.ToString("dd/MM/yyyy") // Set current date
-                }
-            };
-
-                    // Return success and the data for table population
-                    return Json(new { success = true, chequeData = chequeData });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, message = "Error: " + ex.Message });
-                }
+                return Json(new { success = false, message = "Please select a file to upload." });
             }
 
-            return Json(new { success = false, message = "No file uploaded." });
+            string fileName = Path.GetFileName(chequeImage.FileName);
+
+            try
+            {
+                // Call the parsing method
+                ElectronicJournalDTO result = await _channelService.ParseElectronicJournalImportAsync(fileName, GetServiceHeader());
+
+                // Assuming you need to return this data to the client
+                return Json(new { success = true, chequeData = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
 

@@ -171,10 +171,16 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     accountClosureRequestDTO.CustomerAccountCustomerId = customer.CustomerId;
                     accountClosureRequestDTO.BranchId = customer.BranchId;
                     accountClosureRequestDTO.CustomerAccountId = customer.Id;
-                    accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountName = customer.StatusDescription;
+                    accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountName = customer.CustomerAccountTypeTargetProductChartOfAccountName;
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualLastName = customer.FullAccountNumber;
                     accountClosureRequestDTO.CustomerAccountCustomerNonIndividualDescription = customer.CustomerTypeDescription;
-
+                    accountClosureRequestDTO.CustomerAccountCustomerAccountTypeTargetProductId = customer.CustomerAccountTypeTargetProductId;
+                    accountClosureRequestDTO.CustomerAccountBranchId = customer.BranchId;
+                    accountClosureRequestDTO.BranchDescription = customer.BranchDescription;
+                    accountClosureRequestDTO.CustomerAccountCustomerAccountTypeProductCode = customer.CustomerAccountTypeProductCode;
+                    accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountId = customer.CustomerAccountTypeTargetProductChartOfAccountId;
+                    accountClosureRequestDTO.Status = customer.Status;
+                    accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountName = customer.StatusDescription;
                     var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
                         customer.CustomerId,
                         customer.CustomerAccountTypeTargetProductId,
@@ -347,36 +353,131 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(accountClosureRequestDTO);
         }
 
+        public async Task<ActionResult> GetCustomerDetails(Guid? id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+
+            var accountClosureRequestDTO = new AccountClosureRequestDTO();
+
+            if (id.HasValue && id != Guid.Empty)
+            {
+                var parseId = id.Value;
+
+                var customer = await _channelService.FindCustomerAccountAsync(
+                    parseId,
+                    includeBalances: false,
+                    includeProductDescription: true,
+                    includeInterestBalanceForLoanAccounts: true,
+                    considerMaturityPeriodForInvestmentAccounts: false,
+                    GetServiceHeader()
+                );
+
+                if (customer != null)
+                {
+                    // Populate AccountClosureRequestDTO properties here...
+                    accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
+                    accountClosureRequestDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
+                    accountClosureRequestDTO.CustomerAccountRemarks = customer.Remarks;
+                    accountClosureRequestDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;
+                    accountClosureRequestDTO.CustomerAccountCustomerNonIndividualDescription = customer.CustomerTypeDescription;
+                    accountClosureRequestDTO.CustomerAccountCustomerNonIndividualRegistrationNumber = customer.RecordStatusDescription;
+                    accountClosureRequestDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
+                    accountClosureRequestDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
+                    accountClosureRequestDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
+                    accountClosureRequestDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerFullName;
+                    accountClosureRequestDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;
+                    accountClosureRequestDTO.CustomerAccountCustomerId = customer.CustomerId;
+                    accountClosureRequestDTO.BranchId = customer.BranchId;
+                    accountClosureRequestDTO.CustomerAccountId = customer.Id;
+                    accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountName = customer.CustomerAccountTypeTargetProductChartOfAccountName;
+                    accountClosureRequestDTO.CustomerAccountCustomerIndividualLastName = customer.FullAccountNumber;
+                    accountClosureRequestDTO.CustomerAccountCustomerNonIndividualDescription = customer.CustomerTypeDescription;
+                    accountClosureRequestDTO.CustomerAccountCustomerAccountTypeTargetProductId = customer.CustomerAccountTypeTargetProductId;
+                    accountClosureRequestDTO.CustomerAccountBranchId = customer.BranchId;
+                    accountClosureRequestDTO.BranchDescription = customer.BranchDescription;
+                    accountClosureRequestDTO.CustomerAccountCustomerAccountTypeProductCode = customer.CustomerAccountTypeProductCode;
+                    accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountId = customer.CustomerAccountTypeTargetProductChartOfAccountId;
+                    accountClosureRequestDTO.Status = customer.Status;
+                    accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountName = customer.StatusDescription;
+
+                    // Retrieve Loan Accounts
+                    var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
+                        customer.Id,
+                        customer.CustomerAccountTypeTargetProductId,
+                        includeBalances: true,
+                        includeProductDescription: true,
+                        includeInterestBalanceForLoanAccounts: true,
+                        considerMaturityPeriodForInvestmentAccounts: true,
+                        serviceHeader: GetServiceHeader()
+                    );
+                    decimal totalLoanBalance = loanAccounts.Sum(l => l.InterestBalance);
+                    accountClosureRequestDTO.LoanBalance = totalLoanBalance;
+
+                    // Retrieve Investment Accounts
+                    var investmentAccounts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+                    decimal totalInvestmentBalance = investmentAccounts.Where(i => i.Id == customer.Id).Sum(i => i.PoolAmount);
+                    accountClosureRequestDTO.InvestmentBalance = totalInvestmentBalance;
+
+                    // Retrieve Guarantors
+                    var loanGuarantors = await _channelService.FindLoanGuarantorsByCustomerIdAsync(
+                        customer.Id,
+                        GetServiceHeader()
+                    );
+
+                    accountClosureRequestDTO.NetRefundable = totalInvestmentBalance - totalLoanBalance;
+
+                    // Limit results to top 3, if desired
+                    ViewBag.LoanAccounts = loanAccounts.Take(3).ToList();
+                    ViewBag.InvestmentAccounts = investmentAccounts.Where(i => i.Id == customer.Id).Take(3).ToList();
+                    ViewBag.LoanGuarantors = loanGuarantors.Take(3).ToList();
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Customer account details could not be found.";
+                    return View("Edit", accountClosureRequestDTO);
+                }
+            }
+
+            return View("Edit", accountClosureRequestDTO); // Pass DTO even in case of error for better handling
+        }
+
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
         {
-            int auditAccountClosureRequestAsync = 1;
+            accountClosureRequestDTO.Id = id; // Ensure the DTO has the correct ID
+            ServiceHeader serviceHeader = GetServiceHeader();
 
-            if (!accountClosureRequestDTO.HasErrors)
+            try
             {
-                try
-                {
-                    await _channelService.AuditAccountClosureRequestAsync(accountClosureRequestDTO, auditAccountClosureRequestAsync, GetServiceHeader());
+                bool updateSuccess = await _channelService.UpdateAccountClosureRequestAsync(accountClosureRequestDTO, serviceHeader);
 
-                    TempData["SuccessMessage"] = "Account closure request Edited successfully.";
+                if (updateSuccess)
+                {
+                    TempData["SuccessMessage"] = "Account closure request updated successfully.";
                     return RedirectToAction("Index");
                 }
-                catch (Exception ex)
+                else
                 {
-                    Debug.WriteLine($"Error verifying account closure request: {ex.Message}");
-
-                    TempData["ErrorMessage"] = "An error occurred while  the account closure request. Please try again.";
+                    TempData["ErrorMessage"] = "Failed to update the account closure request.";
                 }
             }
-            else
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "There were validation errors. Please review the form and try again.";
+                TempData["ErrorMessage"] = "An error occurred: " + ex.Message;
             }
 
             return View(accountClosureRequestDTO);
         }
+
+
+
+
 
 
 

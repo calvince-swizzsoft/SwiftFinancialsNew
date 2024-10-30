@@ -170,7 +170,7 @@
                                                     @Html.LabelFor(model => model.DebitChartOfAccountAccountName, new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.DebitChartOfAccountId, new { id = "DebitChartOfAccountId" })
                                                     <div class="input-group">
-                                                        @Html.EditorFor(model => model.DebitChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill...", id = "DebitChartOfAccountAccountName" } })
+                                                        @Html.EditorFor(model => model.DebitChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill...", id = "DebitChartOfAccountAccountName", @readonly ="" } })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#glAccountLookup">
                                                                 <span class="fa fa-search"></span>
@@ -185,7 +185,7 @@
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CostCenter, new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.CostCenterId, new { id = "CostCenterId" })
-                                                    @Html.EditorFor(model => model.CostCenter, new { htmlAttributes = new { @class = "form-control", placeholder = "Cost Center" } })
+                                                    @Html.EditorFor(model => model.CostCenter, new { htmlAttributes = new { @class = "form-control", placeholder = "Cost Center", @readonly =""} })
                                                     @Html.ValidationMessageFor(model => model.CostCenter, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -196,7 +196,7 @@
                                                     @Html.LabelFor(model => model.DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.DebitCustomerAccountId, new { id = "DebitCustomerAccountId" })
                                                     <div class="input-group">
-                                                        @Html.EditorFor(model => model.DebitCustomerAccountFullAccountNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "DebitCustomerAccountFullAccountNumber" } })
+                                                        @Html.EditorFor(model => model.DebitCustomerAccountFullAccountNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "DebitCustomerAccountFullAccountNumber", @readonly="" } })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#customerAccountLookup">
                                                                 <span class="fa fa-search"></span>
@@ -211,7 +211,7 @@
                                             <div class="col-lg-4 customer-fields">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.AvailableBalance, new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.AvailableBalance, new { htmlAttributes = new { @class = "form-control required", placeholder = "Available Balance", id = "AvailableBalance" } })
+                                                    @Html.EditorFor(model => model.AvailableBalance, new { htmlAttributes = new { @class = "form-control required", placeholder = "Available Balance", id = "AvailableBalance", @readonly="" } })
                                                     @Html.ValidationMessageFor(model => model.AvailableBalance, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -223,7 +223,7 @@
                                                     @Html.LabelFor(model => model.ChequeTypeDescription, "Cheque Type", new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.ChequeTypeId, new { id = "ChequeTypeId" })
                                                     <div class="input-group" data-autoclose="true">
-                                                        @Html.EditorFor(model => model.ChequeTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text...", id = "ChequeTypeDescription" } })
+                                                        @Html.EditorFor(model => model.ChequeTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text...", id = "ChequeTypeDescription", @readonly="" } })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#ChequeTypeLookupModal">
                                                                 <span class="fa fa-search"></span>
