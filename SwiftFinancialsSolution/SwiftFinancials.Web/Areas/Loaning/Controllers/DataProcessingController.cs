@@ -461,9 +461,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(DataAttachmentEntryDTO dataAttachmentEntryDTO)
         {
-
-            dataAttachmentEntryDTO.CustomerAccountId = (Guid)Session["customerAccountId"];
-
             await GetSequenceNumber(dataAttachmentEntryDTO.customerAccountDTO.Id, dataAttachmentEntryDTO.TransactionType);
 
             dataAttachmentEntryDTO.ValidateAll();
@@ -482,6 +479,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             else
             {
                 var errorMessages = dataAttachmentEntryDTO.ErrorMessages.ToString();
+
+                Session["dataAttachmentEntryDTOs"] = null;
+
 
                 TempData["BugdetBalance"] = errorMessages;
 
