@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.MainBoundedContext.DTO.AccountsModule;
-
+using System.Collections.ObjectModel;
 
 namespace Application.MainBoundedContext.DTO.BackOfficeModule
 {
@@ -372,8 +372,8 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public string AddressMobileLine { get; set; }
 
         [DataMember]
-        [Display(Name = "Branch")]
-        public string BranchDescription { get; set; }
+        [Display(Name = "Membership Period (Months)")]
+        public int MembershipPeriod { get; set; }
 
         // Selected Account Data Entry Details
         [Display(Name = "Full Account Number")]
@@ -399,5 +399,17 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Product")]
         public Guid SelectCustomerAccountTypeTargetProductId { get; set; }
+
+
+
+
+
+
+        [DataMember]
+        public ObservableCollection<DataAttachmentEntryDTO> DataAttachmentPerdiodEntryEntries { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer")]
+        public string SelectCustomerName { get; set; }
     }
 }

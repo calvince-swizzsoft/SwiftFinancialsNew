@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
@@ -61,22 +62,22 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return documents;
         }
 
-        public async Task<ActionResult> LoadDocumentUploadPartialAsync(Guid customerId)
-        {
+        //public async Task<ActionResult> LoadDocumentUploadPartialAsync(Guid customerId)
+        //{
 
-            if (Session["customerID"] != null)
-                customerId = (Guid)Session["customerID"];
+        //    if (Session["customerID"] != null)
+        //        customerId = (Guid)Session["customerID"];
 
-            var documents = await GetDocumentsAsync(customerId);
+        //    var documents = await GetDocumentsAsync(customerId);
 
-            if (documents == null || documents.Count == 0)
-            {
-                return View();
-            }
+        //    if (documents == null || documents.Count == 0)
+        //    {
+        //        return View();
+        //    }
 
 
-            return PartialView("_DocumentUploadPartial", documents);
-        }
+        //    return PartialView("_DocumentUploadPartial", documents);
+        //}
 
 
         public async Task<ActionResult> Index()
@@ -156,8 +157,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
-            
-            
+
+
             ViewBag.ProductCode2 = GetProductCodeSelectList(string.Empty);
             ViewBag.RecordStatus2 = GetRecordStatusSelectList(string.Empty);
 
@@ -176,8 +177,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 dataAttachmentEntryDTO.DataAttachmentPeriodId = dataPeriod.Id;
                 dataAttachmentEntryDTO.DataAttachmentPeriodDescription = dataPeriod.MonthDescription;
                 dataAttachmentEntryDTO.DataPeriodRemarks = dataPeriod.Remarks;
-
-                Session["DataAttachmentPeriod"] = dataAttachmentEntryDTO;
             }
 
             return View(dataAttachmentEntryDTO);
@@ -235,13 +234,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
 
-            if (Session["DataAttachmentPeriod"] != null)
-                dataAttachmentEntryDTO = Session["DataAttachmentPeriod"] as DataAttachmentEntryDTO;
-
-
-            if (Session["customerAccountLookUp"] != null)
-                dataAttachmentEntryDTO = Session["customerAccountLookUp"] as DataAttachmentEntryDTO;
-
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -254,19 +246,21 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var customer = await _channelService.FindCustomerAsync(CustomerAccount.CustomerId, GetServiceHeader());
             if (customer != null)
             {
-                Session["customerID"] = customer.Id;
-                TempData["Customer"] = customer.FullName.ToUpper();
-                //var documents = await GetDocumentsAsync(customer.Id);
+                var documents = await GetDocumentsAsync(customer.Id);
 
-                //if (documents == null || documents.Count == 0)
-                //{
-                //    return View();
-                //}
+                if (documents.Any())
+                {
+                    var document = documents.First();
+                    TempData["PassportPhoto"] = document.PassportPhoto;
+                    TempData["SignaturePhoto"] = document.SignaturePhoto;
+                    TempData["IDCardFrontPhoto"] = document.IDCardFrontPhoto;
+                    TempData["IDCardBackPhoto"] = document.IDCardBackPhoto;
 
-                //dataAttachmentEntryDTO.PassportPhoto = documents[0].PassportPhoto;
-                //dataAttachmentEntryDTO.SignaturePhoto = documents[0].SignaturePhoto;
-                //dataAttachmentEntryDTO.IDCardFrontPhoto = documents[0].IDCardFrontPhoto;
-                //dataAttachmentEntryDTO.IDCardBackPhoto = documents[0].IDCardBackPhoto;
+                    dataAttachmentEntryDTO.PassportPhoto = document.PassportPhoto;
+                    dataAttachmentEntryDTO.SignaturePhoto = document.SignaturePhoto;
+                    dataAttachmentEntryDTO.IDCardFrontPhoto = document.IDCardFrontPhoto;
+                    dataAttachmentEntryDTO.IDCardBackPhoto = document.IDCardBackPhoto;
+                }
 
                 dataAttachmentEntryDTO.CustomerAccountCustomerId = customer.Id;
                 dataAttachmentEntryDTO.CustomerAccountCustomerIndividualFirstName = customer.IndividualSalutationDescription + " " + customer.IndividualFirstName + " " +
@@ -277,7 +271,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionStationDescription = customer.StationDescription;
                 dataAttachmentEntryDTO.CustomerAccountCustomerSerialNumber = customer.SerialNumber;
                 dataAttachmentEntryDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
-                dataAttachmentEntryDTO.BranchDescription = customer.BranchDescription;
+                dataAttachmentEntryDTO.MembershipPeriod = customer.MembershipPeriod;
                 dataAttachmentEntryDTO.CustomerRemarks = customer.Remarks;
                 dataAttachmentEntryDTO.CustomerAccountCustomerPersonalIdentificationNumber = customer.PersonalIdentificationNumber;
                 dataAttachmentEntryDTO.Ref1 = customer.Reference1;
@@ -295,21 +289,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
                 var CustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(customer.Id, true, true, true, true, GetServiceHeader());
-                if (CustomerAccounts != null)
-                    ViewBag.CustomerAccounts = CustomerAccounts;
-                else
-                    TempData["customerAccount"] = "The selected customer has no associated/attached accounts";
-
-                dataAttachmentEntryDTO.CustomerDTO = customer;
-
-                Session["customerDetails"] = dataAttachmentEntryDTO;
-
-                foreach (var cId in CustomerAccounts)
-                {
-                    var idId = cId.Id;
-
-                    Session["customerAccountId"] = idId;
-                }
 
                 return Json(new
                 {
@@ -324,7 +303,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         Station = dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionStationDescription,
                         SerialNumber = dataAttachmentEntryDTO.CustomerAccountCustomerSerialNumber,
                         PayrollNumber = dataAttachmentEntryDTO.CustomerAccountCustomerIndividualPayrollNumbers,
-                        BranchDescription = dataAttachmentEntryDTO.BranchDescription,
+                        MembershipPeriod = dataAttachmentEntryDTO.MembershipPeriod,
                         Remarks = dataAttachmentEntryDTO.CustomerRemarks,
                         IDNumber = dataAttachmentEntryDTO.CustomerAccountCustomerPersonalIdentificationNumber,
                         Ref1 = dataAttachmentEntryDTO.Ref1,
@@ -342,11 +321,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                         CustomerAccounts = CustomerAccounts,
 
-                        // Specimen
-                        PassportPhoto = dataAttachmentEntryDTO.PassportPhoto,
-                        SignaturePhoto = dataAttachmentEntryDTO.SignaturePhoto,
-                        IDFront = dataAttachmentEntryDTO.IDCardFrontPhoto,
-                        IDBack = dataAttachmentEntryDTO.IDCardBackPhoto,
+                        PassportPhoto = dataAttachmentEntryDTO.PassportPhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.PassportPhoto) : null,
+                        SignaturePhoto = dataAttachmentEntryDTO.SignaturePhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.SignaturePhoto) : null,
+                        IDFront = dataAttachmentEntryDTO.IDCardFrontPhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.IDCardFrontPhoto) : null,
+                        IDBack = dataAttachmentEntryDTO.IDCardBackPhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.IDCardBackPhoto) : null
                     }
                 });
             }
@@ -407,6 +385,78 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
+        [HttpPost]
+        public async Task<ActionResult> Add(DataAttachmentEntryDTO dataAttachmentEntryDTO)
+        {
+            await ServeNavigationMenus();
+
+            var dataAttachmentEntryDTOs = Session["dataAttachmentEntryDTOs"] as ObservableCollection<DataAttachmentEntryDTO>;
+
+            if (dataAttachmentEntryDTOs == null)
+            {
+                dataAttachmentEntryDTOs = new ObservableCollection<DataAttachmentEntryDTO>();
+            }
+
+            var findCustomerName = await _channelService.FindCustomerAccountAsync(dataAttachmentEntryDTO.SelectCustomerAccountId, true, true, true, true, GetServiceHeader());
+
+            foreach (var dataAttachmentEntryEntries in dataAttachmentEntryDTO.DataAttachmentPerdiodEntryEntries)
+            {
+                var existingEntry = dataAttachmentEntryDTOs.FirstOrDefault(e => e.SelectCustomerAccountFullAccountNumber == dataAttachmentEntryEntries.SelectCustomerAccountFullAccountNumber);
+
+                if (existingEntry != null)
+                {
+                    Session["dataAttachmentEntryDTOs"] = null;
+                    MessageBox.Show(Form.ActiveForm, $"The selected Customer Account: \"{dataAttachmentEntryEntries.SelectCustomerAccountFullAccountNumber}\" has already been added to the Data Entries" +
+                        $" list.", "Data Processing", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                    return Json(new
+                    {
+                        success = false
+                    });
+                }
+
+                //dataAttachmentEntryEntries.SelectCustomerName = findCustomerName.CustomerFullName;
+                dataAttachmentEntryDTOs.Add(dataAttachmentEntryEntries);
+            }
+
+            // Update session values
+            Session["dataAttachmentEntryDTOs"] = dataAttachmentEntryDTOs;
+            Session["dataAttachmentEntryDTO"] = dataAttachmentEntryDTO;
+
+            // Return updated entries to the client
+            return Json(new { success = true, entries = dataAttachmentEntryDTOs });
+        }
+
+
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var dataAttachmentEntryDTOs = Session["dataAttachmentEntryDTOs"] as ObservableCollection<DataAttachmentEntryDTO>;
+
+            if (dataAttachmentEntryDTOs != null)
+            {
+                var entryToRemove = dataAttachmentEntryDTOs.FirstOrDefault(e => e.SelectCustomerAccountId == id);
+                if (entryToRemove != null)
+                {
+                    dataAttachmentEntryDTOs.Remove(entryToRemove);
+
+                    Session["dataAttachmentEntryDTO"] = dataAttachmentEntryDTOs;
+                }
+            }
+
+
+
+            return Json(new { success = true, data = dataAttachmentEntryDTOs });
+        }
+
+
+
+
 
         [HttpPost]
         public async Task<ActionResult> Create(DataAttachmentEntryDTO dataAttachmentEntryDTO)
@@ -421,6 +471,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             if (!dataAttachmentEntryDTO.HasErrors)
             {
                 await _channelService.AddDataAttachmentEntryAsync(dataAttachmentEntryDTO, GetServiceHeader());
+
+                Session["dataAttachmentEntryDTO"] = null;
+                Session["dataAttachmentEntryDTOs"] = null;
 
                 TempData["message"] = "Successfully created Data Attachment Entry";
 

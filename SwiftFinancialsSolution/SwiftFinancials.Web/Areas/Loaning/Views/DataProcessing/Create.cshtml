@@ -9,7 +9,7 @@
 
     var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
     var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
-    
+
     var RecordStatus2 = ViewBag.RecordStatus2 as List<SelectListItem>;
     var ProductCode2 = ViewBag.ProductCode2 as List<SelectListItem>;
 
@@ -61,6 +61,167 @@
         border-radius: 8px;
         margin-bottom: 20px;
     }
+
+
+
+
+
+
+
+    .tab {
+        overflow: hidden;
+        background-color: whitesmoke;
+        border-radius: 8px;
+        margin: 20px;
+    }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            color: black;
+            font-size: 16px;
+            border-radius: 8px 8px 0 0;
+            margin-right: 2px;
+        }
+
+            .tab button:hover {
+                background-color: lightgray;
+            }
+
+            .tab button.active {
+                background-color: lightgray;
+            }
+
+    .tabcontent {
+        display: none;
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-radius: 0 8px 8px 8px;
+        background-color: white;
+        margin: 0 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: auto;
+    }
+
+        .tabcontent h3 {
+            margin-top: 0;
+        }
+
+
+
+
+
+
+    #dataTableEntries {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #dataTableEntries th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #dataTableEntries th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky; /* Makes the header sticky */
+            top: 0; /* Fixes the header at the top of the scrollable area */
+            z-index: 1; /* Keeps header above other content */
+        }
+
+        #dataTableEntries tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #dataTableEntries td {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        #dataTableEntries tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
+
+        #dataTableEntries tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        #dataTableEntries tr:last-child td {
+            border-bottom: none;
+        }
+
+
+
+
+
+
+    
+    #documentImages {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background-color: #f5f5fa;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        perspective: 1200px;
+        width: 100%;
+    }
+
+    
+    .image-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 400px;
+        background: linear-gradient(145deg, #ffffff, #dcdce1);
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2), -8px -8px 20px rgba(255, 255, 255, 0.5);
+        transform-style: preserve-3d;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+        
+        .image-container h3 {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        
+        .image-container:hover {
+            transform: scale(1.05) rotateY(10deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), -8px -8px 20px rgba(255, 255, 255, 0.4);
+        }
+
+          /*  .image-container:hover img {
+                transform: translateY(-5px) rotateX(10deg);
+            }
+*/
 </style>
 
 
@@ -86,7 +247,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Process Data Period</h2>
+                    <h2>Data Period Processing</h2>
 
                     @if (TempData["messageError"] != null)
                     {
@@ -105,7 +266,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "DataProcessing", new { Area = "Loaning" }, FormMethod.Post))
+                    @using (Html.BeginForm("Add", "DataProcessing", new { Area = "Loaning" }, FormMethod.Post, new { id = "addDataAttachmentPeriodEntriesForm" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -190,8 +351,8 @@
 
                                             <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
+                                                    @Html.LabelFor(model => model.MembershipPeriod, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.MembershipPeriod, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
                                                 </div>
                                             </div>
 
@@ -236,105 +397,6 @@
 
                                     <br />
 
-                                    <script>
-                                        function openTab(evt, tabName) {
-                                            evt.preventDefault();
-                                            var i, tabcontent, tablinks;
-                                            tabcontent = document.getElementsByClassName("tabcontent");
-                                            for (i = 0; i < tabcontent.length; i++) {
-                                                tabcontent[i].style.display = "none";
-                                            }
-                                            tablinks = document.getElementsByClassName("tablinks");
-                                            for (i = 0; i < tablinks.length; i++) {
-                                                tablinks[i].className = tablinks[i].className.replace(" active", "");
-                                            }
-                                            document.getElementById(tabName).style.display = "block";
-                                            evt.currentTarget.className += " active";
-                                        }
-
-                                        function openSubTab(evt, subTabName) {
-                                            evt.preventDefault();
-                                            var i, subtabcontent, subtablinks;
-                                            subtabcontent = document.getElementsByClassName("subtabcontent");
-                                            for (i = 0; i < subtabcontent.length; i++) {
-                                                subtabcontent[i].style.display = "none";
-                                            }
-                                            subtablinks = document.getElementsByClassName("subtablinks");
-                                            for (i = 0; i < subtablinks.length; i++) {
-                                                subtablinks[i].className = subtablinks[i].className.replace(" active", "");
-                                            }
-                                            document.getElementById(subTabName).style.display = "block";
-                                            evt.currentTarget.className += " active";
-                                        }
-
-                                        function openSubSubTab(evt, subSubTabName) {
-                                            evt.preventDefault();
-                                            var i, subsubtabcontent, subsubtablinks;
-                                            subsubtabcontent = document.getElementsByClassName("subsubtabcontent");
-                                            for (i = 0; i < subsubtabcontent.length; i++) {
-                                                subsubtabcontent[i].style.display = "none";
-                                            }
-                                            subsubtablinks = document.getElementsByClassName("subsubtablinks");
-                                            for (i = 0; i < subsubtablinks.length; i++) {
-                                                subsubtablinks[i].className = subsubtablinks[i].className.replace(" active", "");
-                                            }
-                                            document.getElementById(subSubTabName).style.display = "block";
-                                            evt.currentTarget.className += " active";
-                                        }
-
-                                        // Set default open tabs
-                                        document.getElementById("MainTab1").style.display = "block";
-                                        document.getElementById("SubTab1-1").style.display = "block";
-                                        document.getElementById("SubSubTab1-1-1").style.display = "block";
-                                    </script>
-
-
-                                    <style>
-                                        .tab {
-                                            overflow: hidden;
-                                            background-color: whitesmoke;
-                                            border-radius: 8px;
-                                            margin: 20px;
-                                        }
-
-                                            .tab button {
-                                                background-color: inherit;
-                                                float: left;
-                                                border: none;
-                                                outline: none;
-                                                cursor: pointer;
-                                                padding: 14px 16px;
-                                                transition: 0.3s;
-                                                color: black;
-                                                font-size: 16px;
-                                                border-radius: 8px 8px 0 0;
-                                                margin-right: 2px;
-                                            }
-
-                                                .tab button:hover {
-                                                    background-color: lightgray;
-                                                }
-
-                                                .tab button.active {
-                                                    background-color: lightgray;
-                                                }
-
-                                        .tabcontent {
-                                            display: none;
-                                            padding: 16px;
-                                            border: 1px solid #ccc;
-                                            border-top: none;
-                                            border-radius: 0 8px 8px 8px;
-                                            background-color: white;
-                                            margin: 0 20px;
-                                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                                            height: auto;
-                                        }
-
-                                            .tabcontent h3 {
-                                                margin-top: 0;
-                                            }
-                                    </style>
 
 
                                     <div class="tab">
@@ -435,325 +497,175 @@
                                         </fieldset>
                                     </div>
 
-
-                                    <style>
-                                        .upload-container {
-                                            display: flex;
-                                            justify-content: space-between;
-                                            gap: 10px;
-                                        }
-
-                                        .upload-box {
-                                            width: 24%;
-                                            border: 2px solid #ccc;
-                                            border-radius: 4px;
-                                            padding: 10px;
-                                            background-color: white;
-                                            text-align: center;
-                                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                                            display: flex;
-                                            flex-direction: column;
-                                            justify-content: space-between;
-                                            height: 450px;
-                                        }
-
-                                            .upload-box label {
-                                                font-size: 14px;
-                                                margin-bottom: 8px;
-                                                font-weight: bold;
-                                            }
-
-                                            .upload-box .upload-area {
-                                                flex-grow: 1;
-                                                border: 2px dashed #ccc;
-                                                border-radius: 4px;
-                                                display: flex;
-                                                align-items: center;
-                                                justify-content: center;
-                                                color: #888;
-                                                font-size: 14px;
-                                            }
-                                    </style>
-
-
                                     <div id="MainTab3" class="tabcontent">
-                                        <div id="documentUploadContent"></div>
+                                        <div id="documentImages">
+                                            <div class="image-container">
+                                                <h3>Passport Photo</h3>
+                                                <img id="passportPhoto" alt="Passport Photo" />
+                                            </div>
+                                            <div class="image-container">
+                                                <h3>Signature Photo</h3>
+                                                <img id="signaturePhoto" alt="Signature Photo" />
+                                            </div>
+                                            <div class="image-container">
+                                                <h3>ID Card Front</h3>
+                                                <img id="idCardFront" alt="ID Card Front" />
+                                            </div>
+                                            <div class="image-container">
+                                                <h3>ID Card Back</h3>
+                                                <img id="idCardBack" alt="ID Card Back" />
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
 
 
                                 <!--Selected Account Data Entry Details-->
+                                <!-- Selected Account Data Entry Details -->
                                 <div id="selectedAccts" class="tab-pane" style="margin-left: 20px;">
                                     <fieldset>
                                         <div class="row">
                                             <div class="col-md-3 form-group">
-                                                @Html.LabelFor(model => model.SelectCustomerAccountFullAccountNumber, new { @class = "control-label" })
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                                 <div class="input-group" data-autoclose="true">
-                                                    @Html.HiddenFor(model => model.SelectCustomerAccountId)
-                                                    @Html.TextBoxFor(model => model.SelectCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                                    @Html.HiddenFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountId, new { @Id = "SelectCustomerAccountId" })
+                                                    @Html.TextBoxFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountFullAccountNumber, new { @id = "SelectCustomerAccountFullAccountNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
                                                     <span class="input-group-addon">
                                                         <a data-toggle="modal" data-target="#customerAccountLookUpModal"><span class="fa fa-search"></span></a>
                                                     </span>
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.SelectCustomerAccountStatus, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.SelectCustomerAccountStatus, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @readonly = "readonly"
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountStatus, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountStatus, new { htmlAttributes = new { @id = "SelectCustomerAccountStatus", @class = "form-control required", @readonly = "readonly" } })
                                             </div>
 
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.SelectCustomerAccountRemarks, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.SelectCustomerAccountRemarks, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @readonly = "readonly"
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountRemarks, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountRemarks, new { htmlAttributes = new { @id = "SelectCustomerAccountRemarks", @class = "form-control required", @readonly = "readonly" } })
                                             </div>
 
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.SelectCustomerAccountTypeTargetProductDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.SelectCustomerAccountTypeTargetProductId)
-                                                    @Html.EditorFor(model => model.SelectCustomerAccountTypeTargetProductDescription, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @readonly = "readonly"
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountTypeTargetProductDescription, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountTypeTargetProductId, new { @id = "SelectCustomerAccountTypeTargetProductId", })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "SelectCustomerAccountTypeTargetProductDescription", @class = "form-control required", @readonly = "readonly" } })
                                             </div>
                                         </div>
 
+                                        <!-- Additional Fields -->
                                         <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.TransactionType, new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.TransactionType, transactionType, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.TransactionType)
-                                                    </div>
+                                            <div class="col-lg-4 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].TransactionType, new { @class = "control-label" })
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.DataAttachmentPerdiodEntryEntries[0].TransactionType, transactionType, new { @class = "form-control input-md" })
+                                                    @Html.ValidationMessageFor(model => model.DataAttachmentPerdiodEntryEntries[0].TransactionType)
                                                 </div>
                                             </div>
 
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.SequenceNumber, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.SequenceNumber, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @placeholder = "Enter sequence number...",
-                                                       @readonly = "readonly"
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-4 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].SequenceNumber, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].SequenceNumber, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter sequence number...", @readonly = "readonly" } })
                                             </div>
 
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.Remarks, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @placeholder = "Enter text..."
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-4 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].Remarks, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].Remarks, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter text..." } })
                                             </div>
                                         </div>
 
-
+                                        <!-- Financial Fields -->
                                         <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CurrentAmount, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CurrentAmount, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @placeholder = "Kshs. 0.00"
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-4 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentAmount, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
                                             </div>
 
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CurrentBalance, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CurrentBalance, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @placeholder = "Kshs. 0.00",
-                                                       @Type = "Number",
-                                                       @readonly = "readonly"
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-4 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentBalance, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentBalance, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
                                             </div>
 
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CurrentAbility, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CurrentAbility, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @placeholder = "Kshs. 0.00",
-                                                       @Type = "Number",
-                                                       @readonly = "readonly"
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-4 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentAbility, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentAbility, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
                                             </div>
                                         </div>
 
-
+                                        <!-- New Financial Fields -->
                                         <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.NewAmount, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.NewAmount, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @placeholder = "Kshs. 0.00"
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-4 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewAmount, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
                                             </div>
 
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.NewBalance, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.NewBalance, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @placeholder = "Kshs. 0.00"
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-4 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewBalance, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewBalance, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
                                             </div>
 
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.NewAbility, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.NewAbility, new
-                                               {
-                                                   htmlAttributes = new
-                                                   {
-                                                       @class = "form-control required",
-                                                       @placeholder = "Kshs. 0.00"
-                                                   }
-                                               })
-                                                </div>
+                                            <div class="col-lg-4 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewAbility, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewAbility, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
                                             </div>
                                         </div>
 
+                                        <!-- Action Button -->
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="form-group form-group-sm">
-                                                    <input type="submit" value="Add" style="width: 150px;" class="btn btn-primary" disabled />
+                                                    <input type="submit" id="addEntryBtn" value="Add" style="width: 150px;" class="btn btn-primary" />
                                                 </div>
                                             </div>
                                         </div>
 
                                         <br />
 
-                                        <h3><i class="fa fa-table" aria-hidden="true"></i> Data Entries</h3>
-                                        <row>
-                                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                    <tr>
-                                                        <th>Full Account Number</th>
-                                                        <th>Customer Name</th>
-                                                        <th>Transaction Type</th>
-                                                        <th>Sequence Number</th>
-                                                        <th>Current Amount</th>
-                                                        <th>Current Balance</th>
-                                                        <th>Current Ability</th>
-                                                        <th>New Amount</th>
-                                                        <th>New Balance</th>
-                                                        <th>New Ability</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (ViewBag.ChargeSplitDTOs != null)
-                                                    {
-                                                        foreach (var commissionSplit in ViewBag.ChargeSplitDTOs)
-                                                        {
-                                                            <tr data-id="@commissionSplit.Id">
-                                                                <td>@commissionSplit.ChartOfAccountAccountName</td>
-                                                                <td>@commissionSplit.Description</td>
-                                                                <td style="text-align: right;">@commissionSplit.Percentage</td>
-                                                                <td>@commissionSplit.Leviable</td>
-                                                                <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
-                                                            </tr>
-                                                        }
-                                                    }
-                                                </tbody>
-                                            </table>
+                                        <!-- Data Entries Table -->
+                                        <div class="row">
+                                            <div class="table-container">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Data Entries</h3>
+                                                <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                        <tr>
+                                                            <th>Full Account Number</th>
+                                                            <th>Customer Name</th>
+                                                            <th>Transaction Type</th>
+                                                            <th>Sequence Number</th>
+                                                            <th>Current Amount</th>
+                                                            <th>Current Balance</th>
+                                                            <th>Current Ability</th>
+                                                            <th>New Amount</th>
+                                                            <th>New Balance</th>
+                                                            <th>New Ability</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
 
-                                            @if (TempData["tPercentage"] != null)
-                                            {
-                                                <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
-                                            }
-                                        </row>
                                     </fieldset>
-                                </div>
-                            </div>
-
-
-                            <br />
-                            <br />
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" onclick="sendFormData()" />
                                 </div>
                             </div>
                         </fieldset>
                     }
                 </div>
 
-                @*<div class="ibox-content bg-white text-info">
-                        @using (Html.BeginForm("Create", "DataProcessing", new { Area = "Loaning" }, FormMethod.Post))
-                        {
-                            <div class="col-lg-3">
-                                <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Create", "DataProcessing", new { Area = "Loaning" }, FormMethod.Post, new { id = "dataAttachmentPeriodEntryForm" }))
+                    {
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <input type="submit" name="create" value="Create" class="btn btn-primary" style="width: 150px;" />
                             </div>
-                        }
-                    </div>*@
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
@@ -910,11 +822,166 @@
     <script src="~/Scripts/js/navlink.js"></script>
     <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#addEntryBtn').click(function (event) {
+            event.preventDefault();
+
+            var formData = $('#addDataAttachmentPeriodEntriesForm').serialize();
+
+        $.ajax({
+            url: '@Url.Action("Add", "DataProcessing", new { Area = "Loaning" })',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    // Add new entries to the table
+                    updateEntriesTable(response.entries);
+
+                    // Display success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Entry added successfully.',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+
+                    // Clear the form fields with the specific class (e.g., .entry-field)
+                    $('.entry-field').val('');
+                } else {
+                    // Display error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.message,
+                        timer: 8000,
+                        showConfirmButton: true
+                    });
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    });
+});
+
+        function updateEntriesTable(entries) {
+            var tableBody = $("#dataTableEntries tbody");
+            tableBody.empty(); // Clear existing entries
+
+            $.each(entries, function (index, entry) {
+                var row = `<tr data-id="${entry.SelectCustomerAccountId}">
+                               <td>${entry.SelectCustomerAccountFullAccountNumber}</td>
+                               <td>${entry.SelectCustomerName}</td>
+                               <td>${entry.TransactionTypeDescription}</td>
+                               <td>${entry.SequenceNumber}</td>
+                               <td style="text-align: right;">${entry.CurrentAmount}</td>
+                               <td style="text-align: right;">${entry.CurrentBalance}</td>
+                               <td style="text-align: right;">${entry.CurrentAbility}</td>
+                               <td style="text-align: right;">${entry.NewAmount}</td>
+                               <td style="text-align: right;">${entry.NewBalance}</td>
+                               <td style="text-align: right;">${entry.NewAbility}</td>
+                               <td><button style="background-color: red; color: white;" type="button" class="btn btn-danger remove-entry" data-id="${entry.SelectCustomerAccountId}">Remove</button></td>
+                           </tr>`;
+                tableBody.append(row);
+            });
+        }
+
+
+        $(document).on("click", ".remove-entry", function (event) {
+            event.preventDefault();
+            var entryId = $(this).data("id");
+            removeEntry(entryId);
+        });
+
+
+
+        function removeEntry(id) {
+            $.ajax({
+                url: '@Url.Action("Remove", "DataProcessing")',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
+                    } else {
+                        alert("An error occurred while removing the entry.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the request.");
+                }
+            });
+        }
+    </script>
+
+
+
+
+
+    <script>
+        function openTab(evt, tabName) {
+            evt.preventDefault();
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubTab(evt, subTabName) {
+            evt.preventDefault();
+            var i, subtabcontent, subtablinks;
+            subtabcontent = document.getElementsByClassName("subtabcontent");
+            for (i = 0; i < subtabcontent.length; i++) {
+                subtabcontent[i].style.display = "none";
+            }
+            subtablinks = document.getElementsByClassName("subtablinks");
+            for (i = 0; i < subtablinks.length; i++) {
+                subtablinks[i].className = subtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubSubTab(evt, subSubTabName) {
+            evt.preventDefault();
+            var i, subsubtabcontent, subsubtablinks;
+            subsubtabcontent = document.getElementsByClassName("subsubtabcontent");
+            for (i = 0; i < subsubtabcontent.length; i++) {
+                subsubtabcontent[i].style.display = "none";
+            }
+            subsubtablinks = document.getElementsByClassName("subsubtablinks");
+            for (i = 0; i < subsubtablinks.length; i++) {
+                subsubtablinks[i].className = subsubtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subSubTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Set default open tabs
+        document.getElementById("MainTab1").style.display = "block";
+        document.getElementById("SubTab1-1").style.display = "block";
+        document.getElementById("SubSubTab1-1-1").style.display = "block";
+    </script>
+
+
+
+
     <script>
     document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".tablinks").forEach(function (tabButton) {
         tabButton.addEventListener("click", function () {
-            const tabContentId = this.getAttribute("onclick").match(/'([^']+)'/)[1]; // Extract the tab ID from the onclick attribute
+            const tabContentId = this.getAttribute("onclick").match(/'([^']+)'/)[1];
             if (tabContentId === "MainTab3") {
                 const documentUploadContent = document.getElementById("documentUploadContent");
                 if (!documentUploadContent.hasChildNodes()) {
@@ -997,7 +1064,7 @@
                         $('#CustomerAccountCustomerSerialNumber').val(response.data.SerialNumber);
                         $('#CustomerAccountCustomerIndividualPayrollNumbers').val(response.data.PayrollNumber);
                         $('#CustomerRemarks').val(response.data.Remarks);
-                        $('#BranchDescription').val(response.data.BranchDescription);
+                        $('#MembershipPeriod').val(response.data.MembershipPeriod);
                         $('#CustomerAccountCustomerPersonalIdentificationNumber').val(response.data.IDNumber);
                         $('#Ref1').val(response.data.Ref1);
                         $('#Ref2').val(response.data.Ref2);
@@ -1012,10 +1079,18 @@
                         $('#AddressLandLine').val(response.data.AddressLandLine);
                         $('#AddressMobileLine').val(response.data.AddressMobileLine);
 
-                        //$('#IDCardBackPhoto').val(response.data.IDBack);
-                        //$('#IDCardFrontPhoto').val(response.data.IDFront);
-                        //$('#SignaturePhoto').val(response.data.SignaturePhoto);
-                        //$('#PassportPhoto').val(response.data.PassportPhoto);
+                        if (response.data.PassportPhoto) {
+                            document.getElementById('passportPhoto').src = `data:image;base64,${response.data.PassportPhoto}`;
+                        }
+                        if (response.data.SignaturePhoto) {
+                            document.getElementById('signaturePhoto').src = `data:image;base64,${response.data.SignaturePhoto}`;
+                        }
+                        if (response.data.IDFront) {
+                            document.getElementById('idCardFront').src = `data:image;base64,${response.data.IDFront}`;
+                        }
+                        if (response.data.IDBack) {
+                            document.getElementById('idCardBack').src = `data:image;base64,${response.data.IDBack}`;
+                        }
 
 
                         var customerAccounts = response.data.CustomerAccounts;
