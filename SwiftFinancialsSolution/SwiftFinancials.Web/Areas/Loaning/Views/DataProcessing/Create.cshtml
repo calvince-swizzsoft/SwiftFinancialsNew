@@ -206,7 +206,7 @@
         
         .image-container img {
             width: 100%;
-            height: auto;
+            height: 280px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
@@ -216,12 +216,48 @@
         .image-container:hover {
             transform: scale(1.05) rotateY(10deg);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), -8px -8px 20px rgba(255, 255, 255, 0.4);
+            cursor: pointer;
         }
 
-          /*  .image-container:hover img {
-                transform: translateY(-5px) rotateX(10deg);
-            }
-*/
+
+
+
+    
+    .fullscreen-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+        .fullscreen-overlay img {
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+    .close-button {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 2rem;
+        color: #fff;
+        cursor: pointer;
+        z-index: 1001;
+        transition: color 0.3s ease;
+    }
+
+        .close-button:hover {
+            color: #f1c40f;
+        }
+
 </style>
 
 
@@ -497,25 +533,39 @@
                                         </fieldset>
                                     </div>
 
-                                    <div id="MainTab3" class="tabcontent">
+                                    <div id="MainTab3" class="tabcontent" title="Click on an image to view in full-screen">
                                         <div id="documentImages">
-                                            <div class="image-container">
+                                            <div class="image-container" onclick="openFullscreen('passportPhoto')">
                                                 <h3>Passport Photo</h3>
                                                 <img id="passportPhoto" alt="Passport Photo" />
                                             </div>
-                                            <div class="image-container">
+
+
+                                            <div class="image-container" onclick="openFullscreen('signaturePhoto')">
                                                 <h3>Signature Photo</h3>
                                                 <img id="signaturePhoto" alt="Signature Photo" />
                                             </div>
-                                            <div class="image-container">
+
+
+                                            <div class="image-container" onclick="openFullscreen('idCardFront')">
                                                 <h3>ID Card Front</h3>
                                                 <img id="idCardFront" alt="ID Card Front" />
                                             </div>
-                                            <div class="image-container">
+
+
+                                            <div class="image-container" onclick="openFullscreen('idCardBack')">
                                                 <h3>ID Card Back</h3>
                                                 <img id="idCardBack" alt="ID Card Back" />
                                             </div>
                                         </div>
+
+
+
+                                        <div id="fullscreenOverlay" class="fullscreen-overlay" onclick="closeFullscreen()">
+                                            <span class="close-button" onclick="closeFullscreen()">×</span>
+                                            <img id="fullscreenImage" alt="Full Screen Image" />
+                                        </div>
+
                                     </div>
 
                                 </div>
@@ -776,6 +826,9 @@
 
 
 
+
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -916,6 +969,23 @@
                 }
             });
         }
+
+
+
+        function openFullscreen(imageId) {
+            const image = document.getElementById(imageId);
+            const fullscreenOverlay = document.getElementById('fullscreenOverlay');
+            const fullscreenImage = document.getElementById('fullscreenImage');
+
+            fullscreenImage.src = image.src; 
+            fullscreenOverlay.style.display = 'flex'; 
+        }
+
+        function closeFullscreen() {
+            const fullscreenOverlay = document.getElementById('fullscreenOverlay');
+            fullscreenOverlay.style.display = 'none'; 
+        }
+
     </script>
 
 
