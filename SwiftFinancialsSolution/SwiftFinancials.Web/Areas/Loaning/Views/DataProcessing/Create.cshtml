@@ -206,7 +206,7 @@
 
         .image-container img {
             width: 100%;
-            height: 220px;
+            height: 280px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
@@ -257,6 +257,15 @@
         .close-button:hover {
             color: #f1c40f;
         }
+
+
+
+    .amount-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
 </style>
 
 
@@ -568,7 +577,6 @@
                                             <span class="close-button" onclick="closeFullscreen()" title="Close full-screen view">×</span>
                                             <img id="fullscreenImage" alt="Full Screen Image" />
                                         </div>
-
                                     </div>
 
                                 </div>
@@ -580,10 +588,10 @@
                                     <fieldset>
                                         <div class="row">
                                             <div class="col-md-3 form-group">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountFullAccountNumber, new { @class = "control-label" })
+                                                @Html.LabelFor(model => model.SelectCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                                 <div class="input-group" data-autoclose="true">
-                                                    @Html.HiddenFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountId, new { @Id = "SelectCustomerAccountId" })
-                                                    @Html.TextBoxFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountFullAccountNumber, new { @id = "SelectCustomerAccountFullAccountNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                                    @Html.HiddenFor(model => model.CustomerAccountId, new { @Id = "SelectCustomerAccountId" })
+                                                    @Html.TextBoxFor(model => model.SelectCustomerAccountFullAccountNumber, new { @id = "SelectCustomerAccountFullAccountNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
                                                     <span class="input-group-addon">
                                                         <a data-toggle="modal" data-target="#customerAccountLookUpModal"><span class="fa fa-search"></span></a>
                                                     </span>
@@ -591,77 +599,77 @@
                                             </div>
 
                                             <div class="col-lg-3 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountStatus, new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountStatus, new { htmlAttributes = new { @id = "SelectCustomerAccountStatus", @class = "form-control required", @readonly = "readonly" } })
+                                                @Html.LabelFor(model => model.SelectCustomerAccountStatus, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.SelectCustomerAccountStatus, new { htmlAttributes = new { @id = "SelectCustomerAccountStatus", @class = "form-control required", @readonly = "readonly" } })
                                             </div>
 
                                             <div class="col-lg-3 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountRemarks, new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountRemarks, new { htmlAttributes = new { @id = "SelectCustomerAccountRemarks", @class = "form-control required", @readonly = "readonly" } })
+                                                @Html.LabelFor(model => model.SelectCustomerAccountRemarks, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.SelectCustomerAccountRemarks, new { htmlAttributes = new { @id = "SelectCustomerAccountRemarks", @class = "form-control required", @readonly = "readonly" } })
                                             </div>
 
                                             <div class="col-lg-3 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountTypeTargetProductDescription, new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountTypeTargetProductId, new { @id = "SelectCustomerAccountTypeTargetProductId", })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].SelectCustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "SelectCustomerAccountTypeTargetProductDescription", @class = "form-control required", @readonly = "readonly" } })
+                                                @Html.LabelFor(model => model.SelectCustomerAccountTypeTargetProductDescription, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.SelectCustomerAccountTypeTargetProductId, new { @id = "SelectCustomerAccountTypeTargetProductId", })
+                                                @Html.EditorFor(model => model.SelectCustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "SelectCustomerAccountTypeTargetProductDescription", @class = "form-control required", @readonly = "readonly" } })
                                             </div>
                                         </div>
 
                                         <!-- Additional Fields -->
                                         <div class="row">
-                                            <div class="col-lg-4 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].TransactionType, new { @class = "control-label" })
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.TransactionType, new { @class = "control-label" })
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                    @Html.DropDownListFor(model => model.DataAttachmentPerdiodEntryEntries[0].TransactionType, transactionType, new { @class = "form-control input-md" })
-                                                    @Html.ValidationMessageFor(model => model.DataAttachmentPerdiodEntryEntries[0].TransactionType)
+                                                    @Html.DropDownListFor(model => model.TransactionType, transactionType, new { @class = "form-control input-md" })
+                                                    @Html.ValidationMessageFor(model => model.TransactionType)
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].SequenceNumber, new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].SequenceNumber, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter sequence number...", @readonly = "readonly" } })
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.SequenceNumber, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.SequenceNumber, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter sequence number...", @readonly = "readonly" } })
                                             </div>
 
-                                            <div class="col-lg-4 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].Remarks, new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].Remarks, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter text..." } })
+                                            <div class="col-lg-6 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter text..." } })
                                             </div>
                                         </div>
 
                                         <!-- Financial Fields -->
                                         <div class="row">
-                                            <div class="col-lg-4 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentAmount, new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.CurrentAmount, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.CurrentAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
                                             </div>
 
-                                            <div class="col-lg-4 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentBalance, new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentBalance, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.CurrentBalance, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.CurrentBalance, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
                                             </div>
 
-                                            <div class="col-lg-4 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentAbility, new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].CurrentAbility, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.CurrentAbility, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.CurrentAbility, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
                                             </div>
                                         </div>
 
                                         <!-- New Financial Fields -->
                                         <div class="row">
-                                            <div class="col-lg-4 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewAmount, new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.NewAmount, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.NewAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
                                             </div>
 
-                                            <div class="col-lg-4 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewBalance, new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewBalance, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.NewBalance, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.NewBalance, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
                                             </div>
 
-                                            <div class="col-lg-4 form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewAbility, new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DataAttachmentPerdiodEntryEntries[0].NewAbility, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
+                                            <div class="col-lg-3 form-group form-group-lg">
+                                                @Html.LabelFor(model => model.NewAbility, new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.NewAbility, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00" } })
                                             </div>
                                         </div>
 
@@ -673,13 +681,13 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <br />
 
                                         <!-- Data Entries Table -->
                                         <div class="row">
                                             <div class="table-container">
                                                 <h3 style="font-size: 1.9rem; text-align: center;">Data Entries</h3>
+                                                <div id="noDataMessage" class="no-dataTableEntries-message mt-2">No data available to be displayed in table</div>
                                                 <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
                                                     <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                                         <tr>
@@ -693,30 +701,35 @@
                                                             <th>New Amount</th>
                                                             <th>New Balance</th>
                                                             <th>New Ability</th>
+                                                            <th>Remarks</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody id="entriesBody">
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
-
                                     </fieldset>
+
+                                    <div class="amount-section mt-4">
+                                        <div class="row align-items-center" style="padding: 10px; border-radius: 5px;">
+                                            <div class="col-lg-8">
+                                                <input type="text" id="tableFilterInput" placeholder="Enter Text.." class="form-control"
+                                                       style="border: 1px solid #ccc; border-radius: 5px; padding: 10px;" />
+                                            </div>
+
+                                            <div class="col-lg-2 text-center">
+                                                <button id="refreshButton" class="btn"
+                                                        style="width: 150px; font-weight: bold; border-radius: 5px;">
+                                                    Refresh
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
-                    }
-                </div>
-
-                <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "DataProcessing", new { Area = "Loaning" }, FormMethod.Post, new { id = "addDataAttachmentPeriodEntriesForm" }))
-                    {
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <input type="submit" name="create" value="Create" class="btn btn-primary" style="width: 150px;" />
-                            </div>
-                        </div>
                     }
                 </div>
             </div>
@@ -879,72 +892,71 @@
     <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
 
-    <script type="text/javascript">
-    $(document).ready(function () {
-        $('#addEntryBtn').click(function (event) {
-            event.preventDefault();
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Get entries from the ViewBag and populate the table
+    var entries = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.entries));
+    var entriesBody = document.getElementById("entriesBody");
+    var noDataMessage = document.getElementById("noDataMessage");
 
-            var formData = $('#addDataAttachmentPeriodEntriesForm').serialize();
+    function populateTable(entries) {
+        // Clear the current table rows
+        entriesBody.innerHTML = "";
 
-        $.ajax({
-            url: '@Url.Action("Add", "DataProcessing", new { Area = "Loaning" })',
-            type: 'POST',
-            data: formData,
-            success: function (response) {
-                if (response.success) {
-                    // Add new entries to the table
-                    updateEntriesTable(response.entries);
+        if (entries && entries.length > 0) {
+            // Populate the table with entries
+            entries.forEach(function(entry) {
+                var row = document.createElement("tr");
 
-                    // Display success message
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Entry added successfully.',
-                        timer: 1000,
-                        showConfirmButton: false
-                    });
+                // Set a unique identifier for the row using SelectCustomerAccountId
+                row.setAttribute("data-account-id", entry.Id);
 
-                    // Clear the form fields with the specific class (e.g., .entry-field)
-                    $('.entry-field').val('');
-                } else {
-                    // Display error message
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: response.message,
-                        timer: 8000,
-                        showConfirmButton: true
-                    });
-                }
-            },
-            error: function () {
-                alert('An error occurred while processing your request.');
-            }
+                row.innerHTML = `
+                    <td>${entry.FullAccountNumber}</td>
+                    <td>${entry.SelectCustomerName}</td>
+                    <td>${entry.TransactionTypeDescription}</td>
+                    <td>${entry.SequenceNumber}</td>
+                    <td>${entry.CurrentAmount}</td>
+                    <td>${entry.CurrentBalance}</td>
+                    <td>${entry.CurrentAbility}</td>
+                    <td>${entry.NewAmount}</td>
+                    <td>${entry.NewBalance}</td>
+                    <td>${entry.NewAbility}</td>
+                    <td>${entry.Remarks}</td>
+                    <td><button style="background-color: red;" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+                `;
+                entriesBody.appendChild(row);
+            });
+            noDataMessage.style.display = "none";
+        } else {
+            noDataMessage.style.display = "block";
+        }
+    }
+
+    populateTable(entries);
+
+    // Filter functionality
+    document.getElementById("refreshButton").addEventListener("click", function () {
+        var filterText = document.getElementById("tableFilterInput").value.toLowerCase();
+
+        var filteredEntries = entries.filter(function(entry) {
+            return (
+                (entry.FullAccountNumber && entry.FullAccountNumber.toLowerCase().includes(filterText)) ||
+                (entry.CustomerName && entry.CustomerName.toLowerCase().includes(filterText)) ||
+                (entry.TransactionType && entry.TransactionType.toLowerCase().includes(filterText)) ||
+                (entry.SequenceNumber && entry.SequenceNumber.toString().includes(filterText)) ||
+                (entry.CurrentAmount && entry.CurrentAmount.toString().includes(filterText)) ||
+                (entry.CurrentBalance && entry.CurrentBalance.toString().includes(filterText)) ||
+                (entry.CurrentAbility && entry.CurrentAbility.toString().includes(filterText)) ||
+                (entry.NewAmount && entry.NewAmount.toString().includes(filterText)) ||
+                (entry.NewBalance && entry.NewBalance.toString().includes(filterText)) ||
+                (entry.NewAbility && entry.NewAbility.toString().includes(filterText))
+            );
         });
+
+        populateTable(filteredEntries);
     });
 });
-
-        function updateEntriesTable(entries) {
-            var tableBody = $("#dataTableEntries tbody");
-            tableBody.empty(); // Clear existing entries
-
-            $.each(entries, function (index, entry) {
-                var row = `<tr data-id="${entry.SelectCustomerAccountId}">
-                               <td>${entry.SelectCustomerAccountFullAccountNumber}</td>
-                               <td>${entry.SelectCustomerName}</td>
-                               <td>${entry.TransactionTypeDescription}</td>
-                               <td>${entry.SequenceNumber}</td>
-                               <td style="text-align: right;">${entry.CurrentAmount}</td>
-                               <td style="text-align: right;">${entry.CurrentBalance}</td>
-                               <td style="text-align: right;">${entry.CurrentAbility}</td>
-                               <td style="text-align: right;">${entry.NewAmount}</td>
-                               <td style="text-align: right;">${entry.NewBalance}</td>
-                               <td style="text-align: right;">${entry.NewAbility}</td>
-                               <td><button style="background-color: red; color: white;" type="button" class="btn btn-danger remove-entry" data-id="${entry.SelectCustomerAccountId}">Remove</button></td>
-                           </tr>`;
-                tableBody.append(row);
-            });
-        }
 
 
         $(document).on("click", ".remove-entry", function (event) {
@@ -1044,26 +1056,6 @@
         document.getElementById("MainTab1").style.display = "block";
         document.getElementById("SubTab1-1").style.display = "block";
         document.getElementById("SubSubTab1-1-1").style.display = "block";
-    </script>
-
-
-
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".tablinks").forEach(function (tabButton) {
-        tabButton.addEventListener("click", function () {
-            const tabContentId = this.getAttribute("onclick").match(/'([^']+)'/)[1];
-            if (tabContentId === "MainTab3") {
-                const documentUploadContent = document.getElementById("documentUploadContent");
-                if (!documentUploadContent.hasChildNodes()) {
-
-                    $("#documentUploadContent").load(`@Url.Action("LoadDocumentUploadPartial", "DataProcessing")`);
-                }
-            }
-        });
-    });
-});
     </script>
 
 

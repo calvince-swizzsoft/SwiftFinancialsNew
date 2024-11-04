@@ -177,6 +177,21 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 dataAttachmentEntryDTO.DataAttachmentPeriodId = dataPeriod.Id;
                 dataAttachmentEntryDTO.DataAttachmentPeriodDescription = dataPeriod.MonthDescription;
                 dataAttachmentEntryDTO.DataPeriodRemarks = dataPeriod.Remarks;
+
+                Session["DataAttachmentEntryDTO"] = dataAttachmentEntryDTO;
+
+
+                //JQueryDataTablesModel jqm = new JQueryDataTablesModel
+                //{
+                //    sEcho = 1
+                //};
+
+                //await GetDataAttachmentEntries(jqm, parseId);
+
+                var entries = await _channelService.FindDataAttachmentEntriesByDataAttachmentPeriodIdAndFilterInPageAsync(parseId, null, 0, int.MaxValue, true,
+                GetServiceHeader());
+
+                ViewBag.entries = entries.PageCollection;
             }
 
             return View(dataAttachmentEntryDTO);
@@ -185,7 +200,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
-        public async Task<ActionResult> GetSequenceNumber(Guid customerAccountId, int transactionType)
+        public async Task<int> GetSequenceNumber(Guid customerAccountId, int transactionType)
         {
             var sequenceNumber = await GetNextSequenceNumberAsync(customerAccountId, transactionType);
 
@@ -194,7 +209,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 SequenceNumber = sequenceNumber
             };
 
-            return View(model);
+            return model.SequenceNumber;
         }
 
         private async Task<int> GetNextSequenceNumberAsync(Guid customerAccountId, int transactionType)
@@ -350,7 +365,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
             if (customerAccount != null)
             {
-                dataAttachmentEntryDTO.SelectCustomerAccountId = customerAccount.Id;
+                dataAttachmentEntryDTO.CustomerAccountId = customerAccount.Id;
                 dataAttachmentEntryDTO.SelectCustomerAccountFullAccountNumber = customerAccount.FullAccountNumber;
                 dataAttachmentEntryDTO.SelectCustomerAccountStatus = customerAccount.StatusDescription;
                 dataAttachmentEntryDTO.Remarks = customerAccount.Remarks;
@@ -369,7 +384,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     success = true,
                     data = new
                     {
-                        SelectCustomerAccountId = dataAttachmentEntryDTO.SelectCustomerAccountId,
+                        SelectCustomerAccountId = dataAttachmentEntryDTO.CustomerAccountId,
                         SelectCustomerAccountFullAccountNumber = dataAttachmentEntryDTO.SelectCustomerAccountFullAccountNumber,
                         SelectCustomerAccountStatus = dataAttachmentEntryDTO.SelectCustomerAccountStatus,
                         Remarks = dataAttachmentEntryDTO.SelectCustomerAccountRemarks,
@@ -385,83 +400,146 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
+
+
+        public async Task<ActionResult> GetDataAttachmentEntries(JQueryDataTablesModel jQueryDataTablesModel, Guid id)
+        {
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayLength > 0 ? jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength : 0;
+
+            var sortAscending = (jQueryDataTablesModel.sSortDir_ != null && jQueryDataTablesModel.sSortDir_.Any() && jQueryDataTablesModel.sSortDir_.First() == "asc");
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindDataAttachmentEntriesByDataAttachmentPeriodIdAndFilterInPageAsync(id, null, pageIndex, jQueryDataTablesModel.iDisplayLength, true,
+                GetServiceHeader()
+            );
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? pageCollectionInfo.PageCollection.Count
+                    : totalRecordCount;
+
+                var orderedPageCollection = pageCollectionInfo.PageCollection
+                    .OrderByDescending(item => item.CreatedDate)
+                    .ToList();
+
+                return this.DataTablesJson(
+                    items: orderedPageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<DataAttachmentEntryDTO> { },
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+        }
+
+
+
         [HttpPost]
         public async Task<ActionResult> Add(DataAttachmentEntryDTO dataAttachmentEntryDTO)
         {
             await ServeNavigationMenus();
+            ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
 
-            var dataAttachmentEntryDTOs = Session["dataAttachmentEntryDTOs"] as ObservableCollection<DataAttachmentEntryDTO>;
 
-            if (dataAttachmentEntryDTOs == null)
+            ViewBag.ProductCode2 = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus2 = GetRecordStatusSelectList(string.Empty);
+
+            dataAttachmentEntryDTO.ValidateAll();
+
+            if (!dataAttachmentEntryDTO.HasErrors)
             {
-                dataAttachmentEntryDTOs = new ObservableCollection<DataAttachmentEntryDTO>();
+                await _channelService.AddDataAttachmentEntryAsync(dataAttachmentEntryDTO, GetServiceHeader());
+                return RedirectToAction("Create", dataAttachmentEntryDTO);
             }
-
-            var findCustomerName = await _channelService.FindCustomerAccountAsync(dataAttachmentEntryDTO.SelectCustomerAccountId, true, true, true, true, GetServiceHeader());
-
-            foreach (var dataAttachmentEntryEntries in dataAttachmentEntryDTO.DataAttachmentPerdiodEntryEntries)
+            else
             {
-                var existingEntry = dataAttachmentEntryDTOs.FirstOrDefault(e => e.SelectCustomerAccountFullAccountNumber == dataAttachmentEntryEntries.SelectCustomerAccountFullAccountNumber);
-
-                if (existingEntry != null)
-                {
-                    Session["dataAttachmentEntryDTOs"] = null;
-                    MessageBox.Show(Form.ActiveForm, $"The selected Customer Account: \"{dataAttachmentEntryEntries.SelectCustomerAccountFullAccountNumber}\" has already been added to the Data Entries" +
-                        $" list.", "Data Processing", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                    return Json(new
-                    {
-                        success = false
-                    });
-                }
-
-                //dataAttachmentEntryEntries.SelectCustomerName = findCustomerName.CustomerFullName;
-                dataAttachmentEntryDTOs.Add(dataAttachmentEntryEntries);
+                MessageBox.Show(Form.ActiveForm, $"Successfully Created Data Period for month", "Data Period Success Message", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                return View(dataAttachmentEntryDTO);
             }
-
-            // Update session values
-            Session["dataAttachmentEntryDTOs"] = dataAttachmentEntryDTOs;
-            Session["dataAttachmentEntryDTO"] = dataAttachmentEntryDTO;
-
-            // Return updated entries to the client
-            return Json(new { success = true, entries = dataAttachmentEntryDTOs });
         }
-
 
 
 
 
         [HttpPost]
-        public async Task<JsonResult> Remove(Guid id)
+        public async Task<ActionResult> Remove(Guid id)
         {
             await ServeNavigationMenus();
 
-            var dataAttachmentEntryDTOs = Session["dataAttachmentEntryDTOs"] as ObservableCollection<DataAttachmentEntryDTO>;
-
-            if (dataAttachmentEntryDTOs != null)
+            var removeEntries = new ObservableCollection<DataAttachmentEntryDTO>
             {
-                var entryToRemove = dataAttachmentEntryDTOs.FirstOrDefault(e => e.SelectCustomerAccountId == id);
-                if (entryToRemove != null)
-                {
-                    dataAttachmentEntryDTOs.Remove(entryToRemove);
+                new DataAttachmentEntryDTO { Id = id }
+            };
 
-                    Session["dataAttachmentEntryDTO"] = dataAttachmentEntryDTOs;
-                }
+            ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+
+
+            ViewBag.ProductCode2 = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus2 = GetRecordStatusSelectList(string.Empty);
+
+            string message = string.Format(
+                                 "Remove Entry?"
+                             );
+
+            // Show the message box with Yes/No options
+            DialogResult result = MessageBox.Show(
+                message,
+                "Data Processing",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button1,
+                MessageBoxOptions.ServiceNotification
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                await _channelService.RemoveDataAttachmentEntriesAsync(removeEntries, GetServiceHeader());
+                MessageBox.Show(Form.ActiveForm, $"Successfully removed entry", "Data Processing", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                return RedirectToAction("Create");
             }
-
-
-
-            return Json(new { success = true, data = dataAttachmentEntryDTOs });
+            else
+            {
+                MessageBox.Show(Form.ActiveForm, $"Operation Cancelled", "Data Processing", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                return RedirectToAction("Create");
+            }
         }
-
-
 
 
 
         [HttpPost]
         public async Task<ActionResult> Create(DataAttachmentEntryDTO dataAttachmentEntryDTO)
         {
-            await GetSequenceNumber(dataAttachmentEntryDTO.customerAccountDTO.Id, dataAttachmentEntryDTO.TransactionType);
+
+            dataAttachmentEntryDTO = Session["DataAttachmentEntryDTO"] as DataAttachmentEntryDTO;
+
+            var dataAttachmentEntryDTOs = Session["dataAttachmentEntryDTOs"] as ObservableCollection<DataAttachmentEntryDTO>;
+            if (dataAttachmentEntryDTOs == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
+            }
+
+            dataAttachmentEntryDTO.DataAttachmentPerdiodEntryEntries = dataAttachmentEntryDTOs;
 
             dataAttachmentEntryDTO.ValidateAll();
 
@@ -471,6 +549,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 Session["dataAttachmentEntryDTO"] = null;
                 Session["dataAttachmentEntryDTOs"] = null;
+                Session["DataAttachmentEntryDTO"] = null;
 
                 TempData["message"] = "Successfully created Data Attachment Entry";
 

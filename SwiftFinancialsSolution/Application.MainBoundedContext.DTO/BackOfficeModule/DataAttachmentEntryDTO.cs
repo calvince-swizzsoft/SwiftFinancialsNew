@@ -381,7 +381,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Customer Account")]
-        [ValidGuid]
         public Guid SelectCustomerAccountId { get; set; }
 
         [DataMember]
