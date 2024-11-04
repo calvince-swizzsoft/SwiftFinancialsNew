@@ -129,48 +129,4 @@
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
 
-    <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function () {
-    // Get entries from the ViewBag and populate the table
-    var entries = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.entries));
-    var entriesBody = document.getElementById("entriesBody");
-    var noDataMessage = document.getElementById("noDataMessage");
-
-    function populateTable(entries) {
-        // Clear the current table rows
-        entriesBody.innerHTML = "";
-
-        if (entries && entries.length > 0) {
-            // Populate the table with entries
-            entries.forEach(function(entry) {
-                var row = document.createElement("tr");
-
-                // Set a unique identifier for the row using SelectCustomerAccountId
-                row.setAttribute("data-account-id", entry.Id);
-
-                row.innerHTML = `
-                    <td>${entry.FullAccountNumber}</td>
-                    <td>${entry.CustomerName}</td>
-                    <td>${entry.TransactionTypeDescription}</td>
-                    <td>${entry.SequenceNumber}</td>
-                    <td>${entry.CurrentAmount}</td>
-                    <td>${entry.CurrentBalance}</td>
-                    <td>${entry.CurrentAbility}</td>
-                    <td>${entry.NewAmount}</td>
-                    <td>${entry.NewBalance}</td>
-                    <td>${entry.NewAbility}</td>
-                    <td>${entry.Remarks}</td>
-                    <td><button style="background-color: red;" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
-                `;
-                entriesBody.appendChild(row);
-            });
-            noDataMessage.style.display = "none";
-        } else {
-            noDataMessage.style.display = "block";
-        }
-    }
-
-    populateTable(entries);
-    </script>
-
 }
