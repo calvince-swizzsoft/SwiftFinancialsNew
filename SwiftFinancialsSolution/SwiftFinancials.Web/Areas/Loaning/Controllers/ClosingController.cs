@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
@@ -29,24 +30,44 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
-
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindDataAttachmentPeriodsInPageAsync(jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindDataAttachmentPeriodsInPageAsync(
+                pageIndex,
+                jQueryDataTablesModel.iDisplayLength,
+                GetServiceHeader()
+            );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? pageCollectionInfo.PageCollection.Count
+                    : totalRecordCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var orderedPageCollection = pageCollectionInfo.PageCollection
+                    .OrderByDescending(item => item.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                return this.DataTablesJson(
+                    items: orderedPageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<DataAttachmentPeriodDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<DataAttachmentPeriodDTO> { },
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
         }
 
 
@@ -80,26 +101,22 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var dataPeriod = await _channelService.FindDataAttachmentPeriodAsync(parseId, GetServiceHeader());
             if (dataPeriod != null)
             {
-                dataAttachmentPeriodDTO.Id = dataPeriod.Id;
-                dataAttachmentPeriodDTO.DataAttachmentPeriodDescription = dataPeriod.MonthDescription;
-                dataAttachmentPeriodDTO.Remarks = dataPeriod.Remarks;
-                dataAttachmentPeriodDTO.PostingPeriodId = dataPeriod.PostingPeriodId;
-
-                if (Session["jQueryDataTablesModel"] != null)
+                if (dataPeriod.Status == (int)DataAttachmentPeriodStatus.Closed)
                 {
-                    JQueryDataTablesModel jQueryDataTablesModel = new JQueryDataTablesModel();
+                    await ServeNavigationMenus();
 
-                    jQueryDataTablesModel = Session["jQueryDataTablesModel"] as JQueryDataTablesModel;
-
-                    await GetDataAttachmentPeriodEntries(jQueryDataTablesModel);
+                    MessageBox.Show(Form.ActiveForm, "The selected Data Period is already closed and therefore cannot be ammended or reopened", "Data Period Closing", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    return View("Index");
                 }
 
-                //var dataAttachmentPeriodEntries = await _channelService.FindDataAttachmentEntriesByDataAttachmentPeriodIdAndFilterInPageAsync(dataAttachmentPeriodDTO.Id,
-                //    string.Empty, 0, 200, true, GetServiceHeader());
-                //if (dataAttachmentPeriodEntries != null)
-                //    ViewBag.DataAttaPeriodsAndEntries = dataAttachmentPeriodEntries;
+                dataAttachmentPeriodDTO.Id = dataPeriod.Id;
+                dataAttachmentPeriodDTO.DataAttachmentPeriodDescription = dataPeriod.MonthDescription;
+                dataAttachmentPeriodDTO.PostingPeriodId = dataPeriod.PostingPeriodId;
 
-                Session["Id"] = dataAttachmentPeriodDTO.Id;
+                var entries = await _channelService.FindDataAttachmentEntriesByDataAttachmentPeriodIdAndFilterInPageAsync(parseId, null, 0, int.MaxValue, true,
+                GetServiceHeader());
+
+                ViewBag.Entries = entries.PageCollection;
             }
 
             return View(dataAttachmentPeriodDTO);
@@ -109,15 +126,50 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(DataAttachmentPeriodDTO dataAttachmentPeriodDTO)
         {
+            var findFullDetails = await _channelService.FindDataAttachmentPeriodAsync(dataAttachmentPeriodDTO.Id, GetServiceHeader());
+
+            dataAttachmentPeriodDTO.PostingPeriodId = findFullDetails.PostingPeriodId;
+            dataAttachmentPeriodDTO.AuthorizationRemarks = dataAttachmentPeriodDTO.Remarks;
+
             dataAttachmentPeriodDTO.ValidateAll();
 
             if (!dataAttachmentPeriodDTO.HasErrors)
             {
-                await _channelService.CloseDataAttachmentPeriodAsync(dataAttachmentPeriodDTO, GetServiceHeader());
+                string message = string.Format(
+                                 "Proceed to Close Data Period for the period {0}?",findFullDetails.PostingPeriodDescription
+                             );
 
-                TempData["message"] = "Successfully Closed Data Period";
+                // Show the message box with Yes/No options
+                DialogResult result = MessageBox.Show(
+                    message,
+                    "Data Period Closing",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
 
-                return RedirectToAction("Index");
+                if (result == DialogResult.Yes)
+                {
+
+                    await _channelService.CloseDataAttachmentPeriodAsync(dataAttachmentPeriodDTO, GetServiceHeader());
+
+                    MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully", "Data Period Closing", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    await ServeNavigationMenus();
+                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled", "Data Period Closing", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                    var entries = await _channelService.FindDataAttachmentEntriesByDataAttachmentPeriodIdAndFilterInPageAsync(findFullDetails.Id, null, 0, int.MaxValue, true,
+                GetServiceHeader());
+
+                    ViewBag.Entries = entries.PageCollection;
+
+                    return View(dataAttachmentPeriodDTO);
+                }
             }
             else
             {
@@ -125,47 +177,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 TempData["BugdetBalance"] = errorMessages;
 
-                TempData["messageError"] = "Could not Close Data Period";
+                MessageBox.Show(Form.ActiveForm, "Operation Failed", "Data Period Closing", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
 
                 await ServeNavigationMenus();
 
                 return View();
             }
-        }
-
-
-
-
-        [HttpPost]
-        public async Task<JsonResult> GetDataAttachmentPeriodEntries(JQueryDataTablesModel jQueryDataTablesModel)
-        {
-            int totalRecordCount = 0;
-
-            int searchRecordCount = 0;
-
-            Session["jQueryDataTablesModel"] = jQueryDataTablesModel;
-
-
-            DataAttachmentPeriodDTO dataAttachmentPeriodDTO = new DataAttachmentPeriodDTO();
-
-            dataAttachmentPeriodDTO.Id = (Guid)Session["Id"];
-
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindDataAttachmentEntriesByDataAttachmentPeriodIdAndFilterInPageAsync(dataAttachmentPeriodDTO.Id,
-                    string.Empty, 0, 200, true, GetServiceHeader());
-
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-            {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
-            else return this.DataTablesJson(items: new List<DataAttachmentEntryDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
     }
 }

@@ -115,17 +115,18 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/loaning/DataCapture/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/loaning/DataCapture/edit/${aData.Id}">Edit</a>
                             </div>
                         </div>`;
 
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(dropdownHtml);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
                     { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period","sWidth": "20%" },
                     { "mDataProp": "MonthDescription", "sTitle": "Month", "sWidth": "20" },
                     { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "20" },

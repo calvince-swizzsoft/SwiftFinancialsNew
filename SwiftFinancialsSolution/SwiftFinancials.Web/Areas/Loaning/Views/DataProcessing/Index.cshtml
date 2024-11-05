@@ -116,13 +116,14 @@
 
                     var process = '<a  href="/loaning/dataprocessing/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Process</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(process);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(process);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
                     { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period","sWidth": "20%" },
                     { "mDataProp": "MonthDescription", "sTitle": "Month", "sWidth": "20" },
                     { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "20" },

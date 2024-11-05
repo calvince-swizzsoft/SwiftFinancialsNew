@@ -1428,6 +1428,7 @@
     <Content Include="bin.rar" />
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Print.cshtml" />
     <Content Include="Areas\Loaning\Views\DataProcessing\_DocumentUploadPartial.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataCapture\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

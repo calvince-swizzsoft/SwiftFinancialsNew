@@ -4,6 +4,7 @@
 }
 
 <link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
+<link href="~/Scripts/css/NavigationLink.css" rel="stylesheet" />
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -19,14 +20,16 @@
     </div>
 </div>
 
-<div id="tabs-container">
-    <ul class="nav-tabs">
-        <li>@Html.ActionLink("Data Periods", "Index", "DataCapture")</li>
-        <li>@Html.ActionLink("Data Processing", "Index", "DataProcessing")</li>
-        <li>@Html.ActionLink("Closing", "Index", "Closing")</li>
-        <li>@Html.ActionLink("Catalogue", "Index", "Catalogue")</li>
+<br />
+<nav class="navbar">
+    <ul class="nav-menu">
+        <li>@Html.ActionLink("Data Periods", "Index", "DataCapture", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Data Processing", "Index", "DataProcessing", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Closing", "Index", "Closing", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Catalogue", "Index", "Catalogue", new { area = "Loaning" }, new { @class = "nav-link" })</li>
     </ul>
-</div>
+</nav>
+
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -113,13 +116,14 @@
 
                     var process = '<a  href="/loaning/closing/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Close</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(process);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(process);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
                     { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period","sWidth": "20%" },
                     { "mDataProp": "MonthDescription", "sTitle": "Month", "sWidth": "20" },
                     { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "20" },
