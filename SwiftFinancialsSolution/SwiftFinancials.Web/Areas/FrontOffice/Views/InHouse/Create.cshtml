@@ -81,11 +81,11 @@
 
                                     document.body.innerHTML = printContents;
                                     window.print();
-                                    document.body.innerHTML = originalContents; 
+                                    document.body.innerHTML = originalContents;
                                 }
 
                             </script>
-}
+                        }
 
                         @if (ViewBag.ChequePrintData != null)
                         {
@@ -141,7 +141,7 @@
                             <!-- Expense Payables -->
                             <fieldset>
                                 <div class="card mb-4">
-                                    <div class="card-body text-info">
+                                    <div class="card-body text-dark">
                                         <div class="row">
                                             <!-- Select Field -->
                                             <div class="col-lg-4">
@@ -170,7 +170,7 @@
                                                     @Html.LabelFor(model => model.DebitChartOfAccountAccountName, new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.DebitChartOfAccountId, new { id = "DebitChartOfAccountId" })
                                                     <div class="input-group">
-                                                        @Html.EditorFor(model => model.DebitChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill...", id = "DebitChartOfAccountAccountName", @readonly ="" } })
+                                                        @Html.EditorFor(model => model.DebitChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill...", id = "DebitChartOfAccountAccountName", @readonly = "" } })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#glAccountLookup">
                                                                 <span class="fa fa-search"></span>
@@ -185,7 +185,7 @@
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CostCenter, new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.CostCenterId, new { id = "CostCenterId" })
-                                                    @Html.EditorFor(model => model.CostCenter, new { htmlAttributes = new { @class = "form-control", placeholder = "Cost Center", @readonly =""} })
+                                                    @Html.EditorFor(model => model.CostCenter, new { htmlAttributes = new { @class = "form-control", placeholder = "Cost Center", @readonly = "" } })
                                                     @Html.ValidationMessageFor(model => model.CostCenter, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -196,7 +196,7 @@
                                                     @Html.LabelFor(model => model.DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.DebitCustomerAccountId, new { id = "DebitCustomerAccountId" })
                                                     <div class="input-group">
-                                                        @Html.EditorFor(model => model.DebitCustomerAccountFullAccountNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "DebitCustomerAccountFullAccountNumber", @readonly="" } })
+                                                        @Html.EditorFor(model => model.DebitCustomerAccountFullAccountNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "DebitCustomerAccountFullAccountNumber", @readonly = "" } })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#customerAccountLookup">
                                                                 <span class="fa fa-search"></span>
@@ -211,7 +211,7 @@
                                             <div class="col-lg-4 customer-fields">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.AvailableBalance, new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.AvailableBalance, new { htmlAttributes = new { @class = "form-control required", placeholder = "Available Balance", id = "AvailableBalance", @readonly="" } })
+                                                    @Html.EditorFor(model => model.AvailableBalance, new { htmlAttributes = new { @class = "form-control required", placeholder = "Available Balance", id = "AvailableBalance", @readonly = "" } })
                                                     @Html.ValidationMessageFor(model => model.AvailableBalance, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -223,7 +223,7 @@
                                                     @Html.LabelFor(model => model.ChequeTypeDescription, "Cheque Type", new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.ChequeTypeId, new { id = "ChequeTypeId" })
                                                     <div class="input-group" data-autoclose="true">
-                                                        @Html.EditorFor(model => model.ChequeTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text...", id = "ChequeTypeDescription", @readonly="" } })
+                                                        @Html.EditorFor(model => model.ChequeTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text...", id = "ChequeTypeDescription", @readonly = "" } })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#ChequeTypeLookupModal">
                                                                 <span class="fa fa-search"></span>
@@ -272,7 +272,7 @@
                                                     <label class="custom-control-label" for="applyCharges">Chargeable?</label>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="col-lg-3">
                                                 <div class="form-group form-group-sm">
                                                     <button id="addEntryButton" class="btn btn-primary">Add</button>
@@ -401,7 +401,6 @@
                         font-weight: bold;
                         background-color: #00e0ff;
                     }
-
                 </style>
 
 
@@ -583,11 +582,11 @@
                 var selectedOption = $(this).val();
 
                 if (selectedOption === 'Debit G/L Account') {
-                    $('.gl-fields').show();  
-                    $('.customer-fields').hide();  
+                    $('.gl-fields').show();
+                    $('.customer-fields').hide();
                 } else if (selectedOption === 'Debit Customer Account') {
-                    $('.customer-fields').show();  
-                    $('.gl-fields').hide();  
+                    $('.customer-fields').show();
+                    $('.gl-fields').hide();
                 } else {
                     $('.gl-fields').hide();
                     $('.customer-fields').hide();
@@ -705,7 +704,7 @@ $(document).ready(function () {
                 type: 'GET',
                 data: { customerAccountId: customerAccountId },
                 success: function (response) {
-                    console.log(response); 
+                    console.log(response);
 
                     if (response.success) {
                         $('#DebitCustomerAccountFullAccountNumber').val(response.data.customerAccountFullAccountNumber);
@@ -773,7 +772,7 @@ $(document).ready(function () {
         var chequeTypeDescription = $(this).data('cheque-type-description');
 
         $.ajax({
-            url: '@Url.Action("GetChequeTypeDetails", "InHouse")', 
+            url: '@Url.Action("GetChequeTypeDetails", "InHouse")',
             type: 'GET',
             data: { chequeTypeId: chequeTypeId },
             success: function (response) {
@@ -783,7 +782,7 @@ $(document).ready(function () {
 
                     $('#ChequeTypeLookupModal').modal('hide');
                 } else {
-                    alert(response.message); 
+                    alert(response.message);
                 }
             },
             error: function () {
@@ -805,7 +804,7 @@ $(document).ready(function () {
 
     <script>
         $(document).ready(function () {
-            const existingEntries = new Set(); 
+            const existingEntries = new Set();
 
             function numberToWords(amount) {
                 const words = [
@@ -824,12 +823,14 @@ $(document).ready(function () {
                         result = words[Math.floor(n / 100)] + ' Hundred' + (n % 100 !== 0 ? ' and ' + convert(n % 100) : '');
                     } else if (n < 1000000) {
                         result = convert(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 !== 0 ? ' ' + convert(n % 1000) : '');
+                    } else if (n >= 1000000) {
+                        result = convert(Math.floor(n / 1000000)) + ' Million' + (n % 1000000 !== 0 ? ' ' + convert(n % 1000000) : '');
                     }
                     return result;
                 };
 
                 const finalResult = convert(amount) + ' Shillings';
-                return finalResult.charAt(0).toUpperCase() + finalResult.slice(1); 
+                return finalResult.charAt(0).toUpperCase() + finalResult.slice(1);
             }
 
             function padAmount(amount) {
@@ -837,17 +838,17 @@ $(document).ready(function () {
             }
 
             $('#addEntryButton').click(function (e) {
-                e.preventDefault(); 
+                e.preventDefault();
 
-                var amountValue = parseFloat($('#Amount').val()) || 0; 
-                var wordifiedAmount = numberToWords(amountValue); 
-                var paddedAmount = padAmount($('#Amount').val()); 
+                var amountValue = parseFloat($('#Amount').val()) || 0;
+                var wordifiedAmount = numberToWords(amountValue);
+                var paddedAmount = padAmount($('#Amount').val());
 
                 var uniqueEntry = `${$('#DebitChartOfAccountAccountName').val()}-${$('#DebitCustomerAccountFullAccountNumber').val()}-${$('#ChequeTypeDescription').val()}`;
 
                 if (existingEntries.has(uniqueEntry)) {
                     alert("This entry already exists.");
-                    return; 
+                    return;
                 }
 
                 existingEntries.add(uniqueEntry);
@@ -867,16 +868,16 @@ $(document).ready(function () {
                     AvailableBalance: $('#AvailableBalance').val(),
                     ChequeTypeDescription: $('#ChequeTypeDescription').val(),
                     ChequeTypeId: $('#ChequeTypeId').val(),
-                    Amount: amountValue, 
-                    WordifiedAmount: wordifiedAmount, 
-                    PaddedAmount: paddedAmount, 
+                    Amount: amountValue,
+                    WordifiedAmount: wordifiedAmount,
+                    PaddedAmount: paddedAmount,
                     Payee: $('#Payee').val(),
                     Reference: $('#Reference').val(),
                     Chargeable: $('#applyCharges').prop('checked')
                 };
 
                 $.ajax({
-                    url: '/InHouse/AddEntry', 
+                    url: '/InHouse/AddEntry',
                     type: 'POST',
                     data: formData,
                     success: function (response) {
@@ -892,8 +893,8 @@ $(document).ready(function () {
                                 '<td>' + formData.DebitCustomerAccountFullAccountNumber + '</td>' +
                                 '<td>' + formData.Payee + '</td>' +
                                 '<td>' + formData.Amount + '</td>' +
-                                '<td>' + formData.WordifiedAmount + '</td>' +  
-                                '<td>' + formData.PaddedAmount + '</td>' +    
+                                '<td>' + formData.WordifiedAmount + '</td>' +
+                                '<td>' + formData.PaddedAmount + '</td>' +
                                 '<td>' + formData.Reference + '</td>' +
                                 '</tr>';
                             $('#ExpensePayableEntries tbody').append(newRow);
@@ -925,6 +926,59 @@ $(document).ready(function () {
         });
     </script>
 
+
+    <script>
+            $(document).ready(function () {
+                $('#addEntryButton').on('click', function (e) {
+                    e.preventDefault();
+                    $('#removeTransaction').prop('disabled', false);
+                    $('#popupMessage').fadeIn().delay(2000).fadeOut();
+                });
+
+                $('#removeTransaction').on('click', function () {
+                    const entriesToRemove = [];
+                    $('#ExpensePayableEntries tbody tr').each(function () {
+                        if ($(this).find('input[type="checkbox"]').is(':checked')) {
+                            const entryId = $(this).data('entry-id');
+                            if (entryId) {
+                                entriesToRemove.push(entryId);
+                            }
+                            $(this).remove();
+                        }
+                    });
+
+                    if (entriesToRemove.length > 0) {
+                        $.ajax({
+                            url: '/InHouse/RemoveEntries',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(entriesToRemove),
+                            success: function (response) {
+                                if (response.success) {
+                                    if ($('#ExpensePayableEntries tbody tr').length === 0) {
+                                        $('#removeTransaction').prop('disabled', true);
+                                    }
+                                } else {
+                                    alert('Error removing entries: ' + response.errorMessage);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                alert('Error: ' + error);
+                            }
+                        });
+                    }
+
+                    if ($('#ExpensePayableEntries tbody tr').length === 0) {
+                        $('#removeTransaction').prop('disabled', true);
+                    }
+                });
+
+                $('#ExpensePayableEntries').on('change', 'input[type="checkbox"]', function () {
+                    const hasChecked = $('#ExpensePayableEntries tbody input[type="checkbox"]:checked').length > 0;
+                    $('#removeTransaction').prop('disabled', !hasChecked);
+                });
+            });
+        </script>
 
 
     <script>
@@ -963,58 +1017,7 @@ $(document).ready(function () {
 
 
 
-    <script>
-        $(document).ready(function () {
-            $('#addEntryButton').on('click', function (e) {
-                e.preventDefault();
-                $('#removeTransaction').prop('disabled', false);
-                $('#popupMessage').fadeIn().delay(2000).fadeOut();
-            });
 
-            $('#removeTransaction').on('click', function () {
-                const entriesToRemove = [];
-                $('#ExpensePayableEntries tbody tr').each(function () {
-                    if ($(this).find('input[type="checkbox"]').is(':checked')) {
-                        const entryId = $(this).data('entry-id'); 
-                        if (entryId) {
-                            entriesToRemove.push(entryId);
-                        }
-                        $(this).remove(); 
-                    }
-                });
-
-                if (entriesToRemove.length > 0) {
-                    $.ajax({
-                        url: '/InHouse/RemoveEntries', 
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(entriesToRemove),
-                        success: function (response) {
-                            if (response.success) {
-                                if ($('#ExpensePayableEntries tbody tr').length === 0) {
-                                    $('#removeTransaction').prop('disabled', true);
-                                }
-                            } else {
-                                alert('Error removing entries: ' + response.errorMessage);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            alert('Error: ' + error);
-                        }
-                    });
-                }
-
-                if ($('#ExpensePayableEntries tbody tr').length === 0) {
-                    $('#removeTransaction').prop('disabled', true);
-                }
-            });
-
-            $('#ExpensePayableEntries').on('change', 'input[type="checkbox"]', function () {
-                const hasChecked = $('#ExpensePayableEntries tbody input[type="checkbox"]:checked').length > 0;
-                $('#removeTransaction').prop('disabled', !hasChecked);
-            });
-        });
-    </script>
 
 
 
