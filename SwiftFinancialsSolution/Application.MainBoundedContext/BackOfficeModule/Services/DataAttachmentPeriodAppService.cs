@@ -102,7 +102,9 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                     var dataAttachmentPeriods = _dataAttachmentPeriodRepository.AllMatching(spec, serviceHeader);
 
                     if (dataAttachmentPeriods != null && dataAttachmentPeriods.Any(x => x.Id != persisted.Id && x.Status == (int)DataAttachmentPeriodStatus.Closed || x.Status == (int)DataAttachmentPeriodStatus.Suspended))
+                    {
                         throw new InvalidOperationException("Sorry, but there is already a closed/suspended data period for the selected month!");
+                    }
                     else
                     {
                         var current = DataAttachmentPeriodFactory.CreateDataAttachmentPeriod(persisted.PostingPeriodId, dataAttachmentPeriodDTO.Month, dataAttachmentPeriodDTO.Remarks);

@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
+using SwiftFinancials.Web.Areas.Registry.DocumentsModel;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -17,6 +22,63 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
     public class DataProcessingController : MasterController
     {
+        private readonly string _connectionString;
+        public DataProcessingController()
+        {
+            // Get connection string from Web.config
+            _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+        }
+
+        // Get Documents ...........................
+        private async Task<List<Document>> GetDocumentsAsync(Guid id)
+        {
+            var documents = new List<Document>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto FROM swiftFin_SpecimenCapture WHERE CustomerId = @CustomerId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            documents.Add(new Document
+                            {
+                                PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
+                                SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
+                                IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
+                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
+                            });
+                        }
+                    }
+                }
+            }
+
+            return documents;
+        }
+
+        //public async Task<ActionResult> LoadDocumentUploadPartialAsync(Guid customerId)
+        //{
+
+        //    if (Session["customerID"] != null)
+        //        customerId = (Guid)Session["customerID"];
+
+        //    var documents = await GetDocumentsAsync(customerId);
+
+        //    if (documents == null || documents.Count == 0)
+        //    {
+        //        return View();
+        //    }
+
+
+        //    return PartialView("_DocumentUploadPartial", documents);
+        //}
+
 
         public async Task<ActionResult> Index()
         {
@@ -29,25 +91,46 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
-
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindDataAttachmentPeriodsInPageAsync(jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindDataAttachmentPeriodsInPageAsync(
+                pageIndex,
+                jQueryDataTablesModel.iDisplayLength,
+                GetServiceHeader()
+            );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? pageCollectionInfo.PageCollection.Count
+                    : totalRecordCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var orderedPageCollection = pageCollectionInfo.PageCollection
+                    .OrderByDescending(item => item.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                return this.DataTablesJson(
+                    items: orderedPageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<DataAttachmentPeriodDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<DataAttachmentPeriodDTO> { },
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
         }
+
 
 
         public async Task<ActionResult> Details(Guid? id)
@@ -72,6 +155,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
 
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+
+
+            ViewBag.ProductCode2 = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus2 = GetRecordStatusSelectList(string.Empty);
+
+
+
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -86,10 +178,67 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 dataAttachmentEntryDTO.DataAttachmentPeriodDescription = dataPeriod.MonthDescription;
                 dataAttachmentEntryDTO.DataPeriodRemarks = dataPeriod.Remarks;
 
-                Session["DataAttachmentPeriod"] = dataAttachmentEntryDTO;
+                Session["DataAttachmentEntryDTO"] = dataAttachmentEntryDTO;
+
+
+                //JQueryDataTablesModel jqm = new JQueryDataTablesModel
+                //{
+                //    sEcho = 1
+                //};
+
+                //await GetDataAttachmentEntries(jqm, parseId);
+
+                var entries = await _channelService.FindDataAttachmentEntriesByDataAttachmentPeriodIdAndFilterInPageAsync(parseId, null, 0, int.MaxValue, true,
+                GetServiceHeader());
+
+                ViewBag.entries = entries.PageCollection;
             }
 
             return View(dataAttachmentEntryDTO);
+        }
+
+
+
+
+        public async Task<int> GetSequenceNumber(Guid customerAccountId, int transactionType)
+        {
+            var sequenceNumber = await GetNextSequenceNumberAsync(customerAccountId, transactionType);
+
+            var model = new DataAttachmentEntryDTO
+            {
+                SequenceNumber = sequenceNumber
+            };
+
+            return model.SequenceNumber;
+        }
+
+        private async Task<int> GetNextSequenceNumberAsync(Guid customerAccountId, int transactionType)
+        {
+            int nextSequenceNumber;
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("GetNextSequenceNumber", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add(new SqlParameter("@CustomerAccountId", SqlDbType.UniqueIdentifier)).Value = customerAccountId;
+                    cmd.Parameters.Add(new SqlParameter("@TransactionType", SqlDbType.TinyInt)).Value = transactionType;
+
+                    var outputParameter = new SqlParameter("@NextSequenceNumber", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(outputParameter);
+
+                    await conn.OpenAsync();
+                    await cmd.ExecuteNonQueryAsync();
+
+                    nextSequenceNumber = (int)outputParameter.Value;
+                }
+            }
+
+            return nextSequenceNumber;
         }
 
 
@@ -100,13 +249,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
 
-            if (Session["DataAttachmentPeriod"] != null)
-                dataAttachmentEntryDTO = Session["DataAttachmentPeriod"] as DataAttachmentEntryDTO;
-
-
-              if (Session["customerAccountLookUp"] != null)
-                dataAttachmentEntryDTO = Session["customerAccountLookUp"] as DataAttachmentEntryDTO;
-
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -115,10 +257,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
 
-
-            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            var CustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
+            var customer = await _channelService.FindCustomerAsync(CustomerAccount.CustomerId, GetServiceHeader());
             if (customer != null)
             {
+                var documents = await GetDocumentsAsync(customer.Id);
+
+                if (documents.Any())
+                {
+                    var document = documents.First();
+                    TempData["PassportPhoto"] = document.PassportPhoto;
+                    TempData["SignaturePhoto"] = document.SignaturePhoto;
+                    TempData["IDCardFrontPhoto"] = document.IDCardFrontPhoto;
+                    TempData["IDCardBackPhoto"] = document.IDCardBackPhoto;
+
+                    dataAttachmentEntryDTO.PassportPhoto = document.PassportPhoto;
+                    dataAttachmentEntryDTO.SignaturePhoto = document.SignaturePhoto;
+                    dataAttachmentEntryDTO.IDCardFrontPhoto = document.IDCardFrontPhoto;
+                    dataAttachmentEntryDTO.IDCardBackPhoto = document.IDCardBackPhoto;
+                }
+
                 dataAttachmentEntryDTO.CustomerAccountCustomerId = customer.Id;
                 dataAttachmentEntryDTO.CustomerAccountCustomerIndividualFirstName = customer.IndividualSalutationDescription + " " + customer.IndividualFirstName + " " +
                     customer.IndividualLastName;
@@ -128,34 +286,67 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionStationDescription = customer.StationDescription;
                 dataAttachmentEntryDTO.CustomerAccountCustomerSerialNumber = customer.SerialNumber;
                 dataAttachmentEntryDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
-                dataAttachmentEntryDTO.CustomerAccountCustomerNonIndividualRegistrationDate = customer.RegistrationDate;
+                dataAttachmentEntryDTO.MembershipPeriod = customer.MembershipPeriod;
                 dataAttachmentEntryDTO.CustomerRemarks = customer.Remarks;
                 dataAttachmentEntryDTO.CustomerAccountCustomerPersonalIdentificationNumber = customer.PersonalIdentificationNumber;
                 dataAttachmentEntryDTO.Ref1 = customer.Reference1;
                 dataAttachmentEntryDTO.Ref2 = customer.Reference2;
                 dataAttachmentEntryDTO.Ref3 = customer.Reference3;
 
+                dataAttachmentEntryDTO.AddressAddressLine1 = customer.AddressAddressLine1;
+                dataAttachmentEntryDTO.AddressAddressLine2 = customer.AddressAddressLine2;
+                dataAttachmentEntryDTO.AddressStreet = customer.AddressStreet;
+                dataAttachmentEntryDTO.AddressCity = customer.AddressCity;
+                dataAttachmentEntryDTO.AddressPostalCode = customer.AddressPostalCode;
+                dataAttachmentEntryDTO.AddressEmail = customer.AddressEmail;
+                dataAttachmentEntryDTO.AddressLandLine = customer.AddressLandLine;
+                dataAttachmentEntryDTO.AddressMobileLine = customer.AddressMobileLine;
 
-                var CustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true, true, GetServiceHeader());
-                if (CustomerAccounts != null)
-                    ViewBag.CustomerAccounts = CustomerAccounts;
-                else
-                    TempData["customerAccount"] = "The selected customer has no associated/attached accounts";
 
-                dataAttachmentEntryDTO.CustomerDTO = customer;
+                var CustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(customer.Id, true, true, true, true, GetServiceHeader());
 
-                Session["customerDetails"] = dataAttachmentEntryDTO;
-
-                foreach(var cId in CustomerAccounts)
+                return Json(new
                 {
-                    var idId = cId.Id;
+                    success = true,
+                    data = new
+                    {
+                        CustomerAccountID = dataAttachmentEntryDTO.CustomerAccountCustomerId,
+                        CustomerAccount = dataAttachmentEntryDTO.CustomerAccountCustomerIndividualFirstName,
+                        EmployerID = dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionEmployerId,
+                        Employer = dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionEmployerDescription,
+                        StationID = dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionStationId,
+                        Station = dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionStationDescription,
+                        SerialNumber = dataAttachmentEntryDTO.CustomerAccountCustomerSerialNumber,
+                        PayrollNumber = dataAttachmentEntryDTO.CustomerAccountCustomerIndividualPayrollNumbers,
+                        MembershipPeriod = dataAttachmentEntryDTO.MembershipPeriod,
+                        Remarks = dataAttachmentEntryDTO.CustomerRemarks,
+                        IDNumber = dataAttachmentEntryDTO.CustomerAccountCustomerPersonalIdentificationNumber,
+                        Ref1 = dataAttachmentEntryDTO.Ref1,
+                        Ref2 = dataAttachmentEntryDTO.Ref2,
+                        Ref3 = dataAttachmentEntryDTO.Ref3,
 
-                    Session["customerAccountId"] = idId;
-                }
+                        AddressLine1 = dataAttachmentEntryDTO.AddressAddressLine1,
+                        AddressLine2 = dataAttachmentEntryDTO.AddressAddressLine2,
+                        AddressStreet = dataAttachmentEntryDTO.AddressStreet,
+                        AddressCity = dataAttachmentEntryDTO.AddressCity,
+                        AddressPostalCode = dataAttachmentEntryDTO.AddressPostalCode,
+                        AddressEmail = dataAttachmentEntryDTO.AddressEmail,
+                        AddressLandLine = dataAttachmentEntryDTO.AddressLandLine,
+                        AddressMobileLine = dataAttachmentEntryDTO.AddressMobileLine,
+
+                        CustomerAccounts = CustomerAccounts,
+
+                        PassportPhoto = dataAttachmentEntryDTO.PassportPhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.PassportPhoto) : null,
+                        SignaturePhoto = dataAttachmentEntryDTO.SignaturePhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.SignaturePhoto) : null,
+                        IDFront = dataAttachmentEntryDTO.IDCardFrontPhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.IDCardFrontPhoto) : null,
+                        IDBack = dataAttachmentEntryDTO.IDCardBackPhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.IDCardBackPhoto) : null
+                    }
+                });
             }
 
-            return View("create", dataAttachmentEntryDTO);
+            return Json(new { success = false, message = "Customer account not found" });
         }
+
 
 
         public async Task<ActionResult> CustomerAccountLookUp(Guid? id, DataAttachmentEntryDTO dataAttachmentEntryDTO)
@@ -163,12 +354,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
-
-            if (Session["customerDetails"] != null)
-                dataAttachmentEntryDTO = Session["customerDetails"] as DataAttachmentEntryDTO;
-
-            if (Session["DataAttachmentPeriod"] != null)
-                dataAttachmentEntryDTO = Session["DataAttachmentPeriod"] as DataAttachmentEntryDTO;
 
             Guid parseId;
 
@@ -180,27 +365,191 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
             if (customerAccount != null)
             {
-                dataAttachmentEntryDTO.customerAccountDTO = customerAccount;
                 dataAttachmentEntryDTO.CustomerAccountId = customerAccount.Id;
+                dataAttachmentEntryDTO.SelectCustomerAccountFullAccountNumber = customerAccount.FullAccountNumber;
+                dataAttachmentEntryDTO.SelectCustomerAccountStatus = customerAccount.StatusDescription;
+                dataAttachmentEntryDTO.Remarks = customerAccount.Remarks;
+                dataAttachmentEntryDTO.SelectCustomerAccountTypeTargetProductId = customerAccount.CustomerAccountTypeTargetProductId;
+                dataAttachmentEntryDTO.SelectCustomerAccountTypeTargetProductDescription = customerAccount.CustomerAccountTypeTargetProductDescription;
 
-                Session["customerAccountLookUp"] = dataAttachmentEntryDTO;
+                var findloanProductForLoanBalCalc = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(customerAccount.CustomerId, dataAttachmentEntryDTO.SelectCustomerAccountTypeTargetProductId,
+                    true, true, true, true, GetServiceHeader());
+
+                var bookBalance = findloanProductForLoanBalCalc.Sum(x => x.BookBalance);
+                var carryForwards = findloanProductForLoanBalCalc.Sum(i => i.CarryForwardsBalance);
+                var currentBalance = bookBalance + carryForwards;
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        SelectCustomerAccountId = dataAttachmentEntryDTO.CustomerAccountId,
+                        SelectCustomerAccountFullAccountNumber = dataAttachmentEntryDTO.SelectCustomerAccountFullAccountNumber,
+                        SelectCustomerAccountStatus = dataAttachmentEntryDTO.SelectCustomerAccountStatus,
+                        Remarks = dataAttachmentEntryDTO.SelectCustomerAccountRemarks,
+                        SelectCustomerAccountTypeTargetProductId = dataAttachmentEntryDTO.SelectCustomerAccountTypeTargetProductId,
+                        SelectCustomerAccountTypeTargetProductDescription = dataAttachmentEntryDTO.SelectCustomerAccountTypeTargetProductDescription,
+                        CurrentBalace = currentBalance
+                    }
+                });
             }
 
-            return View("create", dataAttachmentEntryDTO);
+            return Json(new { success = false, message = "Customer account not found" });
         }
 
 
-        [HttpPost]
-        public async Task<ActionResult> Create(DataAttachmentEntryDTO dataAttachmentEntryDTO)
-        {
 
-            dataAttachmentEntryDTO.CustomerAccountId = (Guid)Session["customerAccountId"];
+
+
+        public async Task<ActionResult> GetDataAttachmentEntries(JQueryDataTablesModel jQueryDataTablesModel, Guid id)
+        {
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayLength > 0 ? jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength : 0;
+
+            var sortAscending = (jQueryDataTablesModel.sSortDir_ != null && jQueryDataTablesModel.sSortDir_.Any() && jQueryDataTablesModel.sSortDir_.First() == "asc");
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindDataAttachmentEntriesByDataAttachmentPeriodIdAndFilterInPageAsync(id, null, pageIndex, jQueryDataTablesModel.iDisplayLength, true,
+                GetServiceHeader()
+            );
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? pageCollectionInfo.PageCollection.Count
+                    : totalRecordCount;
+
+                var orderedPageCollection = pageCollectionInfo.PageCollection
+                    .OrderByDescending(item => item.CreatedDate)
+                    .ToList();
+
+                return this.DataTablesJson(
+                    items: orderedPageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<DataAttachmentEntryDTO> { },
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+        }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(DataAttachmentEntryDTO dataAttachmentEntryDTO)
+        {
+            await ServeNavigationMenus();
+            ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+
+
+            ViewBag.ProductCode2 = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus2 = GetRecordStatusSelectList(string.Empty);
 
             dataAttachmentEntryDTO.ValidateAll();
 
             if (!dataAttachmentEntryDTO.HasErrors)
             {
                 await _channelService.AddDataAttachmentEntryAsync(dataAttachmentEntryDTO, GetServiceHeader());
+                return RedirectToAction("Create", dataAttachmentEntryDTO);
+            }
+            else
+            {
+                MessageBox.Show(Form.ActiveForm, $"Successfully Created Data Period for month", "Data Period Success Message", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                return View(dataAttachmentEntryDTO);
+            }
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var removeEntries = new ObservableCollection<DataAttachmentEntryDTO>
+            {
+                new DataAttachmentEntryDTO { Id = id }
+            };
+
+            ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+
+
+            ViewBag.ProductCode2 = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus2 = GetRecordStatusSelectList(string.Empty);
+
+            string message = string.Format(
+                                 "Remove Entry?"
+                             );
+
+            // Show the message box with Yes/No options
+            DialogResult result = MessageBox.Show(
+                message,
+                "Data Processing",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button1,
+                MessageBoxOptions.ServiceNotification
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                await _channelService.RemoveDataAttachmentEntriesAsync(removeEntries, GetServiceHeader());
+                MessageBox.Show(Form.ActiveForm, $"Successfully removed entry", "Data Processing", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                return RedirectToAction("Create");
+            }
+            else
+            {
+                MessageBox.Show(Form.ActiveForm, $"Operation Cancelled", "Data Processing", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                return RedirectToAction("Create");
+            }
+        }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Create(DataAttachmentEntryDTO dataAttachmentEntryDTO)
+        {
+
+            dataAttachmentEntryDTO = Session["DataAttachmentEntryDTO"] as DataAttachmentEntryDTO;
+
+            var dataAttachmentEntryDTOs = Session["dataAttachmentEntryDTOs"] as ObservableCollection<DataAttachmentEntryDTO>;
+            if (dataAttachmentEntryDTOs == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
+            }
+
+            dataAttachmentEntryDTO.DataAttachmentPerdiodEntryEntries = dataAttachmentEntryDTOs;
+
+            dataAttachmentEntryDTO.ValidateAll();
+
+            if (!dataAttachmentEntryDTO.HasErrors)
+            {
+                await _channelService.AddDataAttachmentEntryAsync(dataAttachmentEntryDTO, GetServiceHeader());
+
+                Session["dataAttachmentEntryDTO"] = null;
+                Session["dataAttachmentEntryDTOs"] = null;
+                Session["DataAttachmentEntryDTO"] = null;
 
                 TempData["message"] = "Successfully created Data Attachment Entry";
 
@@ -209,6 +558,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             else
             {
                 var errorMessages = dataAttachmentEntryDTO.ErrorMessages.ToString();
+
+                Session["dataAttachmentEntryDTOs"] = null;
+
 
                 TempData["BugdetBalance"] = errorMessages;
 

@@ -2,6 +2,9 @@
 @model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 @{
     ViewBag.Title = "Register Loan";
+
+
+    var CustomerFilter = ViewBag.CustomerFilter as List<SelectListItem>;
 }
 
 
@@ -85,6 +88,51 @@
         #ChargeSplits tbody tr:hover {
             background-color: #f1f1f1;
         }
+
+
+
+
+
+
+
+    .date-input-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .date-input {
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+        .date-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+    .ui-datepicker {
+        border: 1px solid #007bff;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+        .ui-datepicker .ui-datepicker-header {
+            background: #007bff;
+            color: white;
+        }
+
+
+
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
 </style>
 
 
@@ -155,8 +203,8 @@
                         <div class="alert alert-warning">
                             <strong>Attempt Failed !</strong> @TempData["lessAmountApplied"]
                         </div>
-                    } 
-                    
+                    }
+
                     @if (TempData["BudgetBalanceLow"] != null)
                     {
                         <div class="alert alert-warning">
@@ -201,8 +249,7 @@
                                        htmlAttributes = new
                                        {
                                            @class = "form-control required",
-                                           @readonly = "readonly",
-                                           @placeholder = "Employer..."
+                                           @readonly = "readonly"
                                        }
                                    })
                                         @Html.ValidationMessageFor(model => model.CustomerStationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
@@ -218,7 +265,6 @@
                                             htmlAttributes = new
                                             {
                                                 @class = "form-control required",
-                                                @placeholder = "Station...",
                                                 @readonly = "readonly"
     }
     })
@@ -239,7 +285,6 @@
                                             htmlAttributes = new
                                             {
                                                 @class = "form-control required",
-                                                @placeholder = "Account number...",
                                                 @readonly = "readonly"
     }
     })
@@ -247,7 +292,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-5 form-group">
+                                <div class="col-md-4 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.CustomerReference2)
@@ -256,7 +301,6 @@
                                             htmlAttributes = new
                                             {
                                                 @class = "form-control required",
-                                                @placeholder = "Membership number...",
                                                 @readonly = "readonly"
     }
     })
@@ -264,7 +308,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 form-group">
+                                <div class="col-md-4 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CustomerReference3, new
@@ -272,7 +316,6 @@
                                             htmlAttributes = new
                                             {
                                                 @class = "form-control",
-                                                @placeholder = "Personal File Number...",
                                                 @readonly = "readonly"
     }
     })
@@ -313,6 +356,10 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#collaterals"><i class="fa fa-table" aria-hidden="true"></i> Collaterals</a>
                                 </li>
+
+                                @*<li class="nav-item">
+                                        <a class="nav-link" href="#guarantors"><i class="fa fa-table" aria-hidden="true"></i> Guarantors</a>
+                                    </li>*@
                             </ul>
 
                             <div class="tab-content">
@@ -335,7 +382,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.InterestCalculationModeDescription, htmlAttributes: new { @class = "" })
                                                 @Html.HiddenFor(model => model.LoanInterestCalculationMode)
-                                                @Html.EditorFor(model => model.InterestCalculationModeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.InterestCalculationModeDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                                 @Html.ValidationMessageFor(model => model.InterestCalculationModeDescription, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -343,7 +390,7 @@
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control required", @placeholder = "00.0000%", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
                                                 @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -357,7 +404,6 @@
                                                     htmlAttributes = new
                                                     {
                                                         @class = "form-control required",
-                                                        @placeholder = "Section...",
                                                         @readonly = "readonly"
                                                     }
                                                 })
@@ -376,17 +422,26 @@
                                                {
                                                    @id = "LoanRegistrationTermInMonths",
                                                    @class = "form-control required",
-                                                   @placeholder = "Enter Number of Days...",
                                                    @readonly = "readonly"
                                                }
                                            })
                                             </div>
                                         </div>
 
+
+                                        <div class="col-md-3 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanProductInvestmentsBalance, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                                 @Html.ValidationMessageFor(model => model.LoanProductInvestmentsBalance, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -400,19 +455,10 @@
                                                     htmlAttributes = new
                                                     {
                                                         @class = "form-control",
-                                                        @placeholder = "Kshs. 0.00",
                                                         disabled = "disabled"
                                                     }
             })
                                                 @Html.ValidationMessageFor(model => model.LoanProductLoanBalance, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-3 form-group">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -423,7 +469,7 @@
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.MaximumAmountPercentage, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.MaximumAmountPercentage, new { htmlAttributes = new { @class = "form-control required", @placeholder = "00.0000%", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.MaximumAmountPercentage, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
                                                 @Html.ValidationMessageFor(model => model.MaximumAmountPercentage, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -431,7 +477,7 @@
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanProductLatestIncome, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.LoanProductLatestIncome, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanProductLatestIncome, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                                 @Html.ValidationMessageFor(model => model.LoanProductLatestIncome, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -479,11 +525,21 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6 form-group">
+                                        <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text..." } })
                                                 @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 form-group">
+                                            <div class="form-group spacing-form-group">
+                                                @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "control-label" })
+                                                <div class="input-group date">
+                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    <input type="text" name="valuedate" placeholder="dd/mm/yyyy" class="form-control date-input" id="ReceivedDate">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -617,20 +673,217 @@
 
                                 <div id="collaterals" class="tab-pane" style="margin-left: 20px;">
                                 </div>
+
+
+
+                                @*<div id="guarantors" class="tab-pane" style="margin-left: 20px;">
+                                                            <div class="row">
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.LoanGuarantorDTO[0].EmployerDescription, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].EmployerId)
+                                                                        @Html.EditorFor(model => model.LoanGuarantorDTO[0].GuarantorCustomerFullName, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                @class = "form-control required",
+                                                                                @readonly = "readonly"
+                                    }
+                                    })
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.LoanGuarantorDTO[0].StationDescription, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].StationId)
+                                                                        @Html.EditorFor(model => model.LoanGuarantorDTO[0].StationDescription, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                @class = "form-control required",
+                                                                                @readonly = "readonly"
+                                    }
+                                    })
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-4 form-group">
+                                                                    @Html.LabelFor(model => model.LoanGuarantorDTO[0].GuarantorCustomerFullName, new { @class = "control-label" })
+                                                                    <div class="input-group" data-autoclose="true">
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].Id)
+                                                                        @Html.TextBoxFor(model => model.LoanGuarantorDTO[0].GuarantorCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Guarantor..." })
+                                                                        <span class="input-group-addon">
+                                                                            <a data-toggle="modal" data-target="#guarantorLookupModal"><span class="fa fa-search"></span></a>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-3">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.LoanGuarantorDTO[0].CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].CustomerPersonalIdentificationNumber)
+                                                                        @Html.EditorFor(model => model.LoanGuarantorDTO[0].CustomerPersonalIdentificationNumber, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                @class = "form-control required",
+                                                                                @readonly = "readonly"
+                                    }
+                                    })
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-3">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.LoanGuarantorDTO[0].CustomerReference1, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].CustomerReference1)
+                                                                        @Html.EditorFor(model => model.LoanGuarantorDTO[0].CustomerReference1, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                @class = "form-control required",
+                                                                                @readonly = "readonly"
+                                    }
+                                    })
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-3">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.LoanGuarantorDTO[0].CustomerReference2, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].CustomerReference2)
+                                                                        @Html.EditorFor(model => model.LoanGuarantorDTO[0].CustomerReference2, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                @class = "form-control required",
+                                                                                @readonly = "readonly"
+                                    }
+                                    })
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-3">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.LoanGuarantorDTO[0].CustomerReference3, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].CustomerReference3)
+                                                                        @Html.EditorFor(model => model.LoanGuarantorDTO[0].CustomerReference3, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                @class = "form-control required",
+                                                                                @readonly = "readonly"
+                                    }
+                                    })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="row">
+                                                                <div class="col-lg-3">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.LoanGuarantorDTO[0].AppraisalFactor, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].AppraisalFactor)
+                                                                        @Html.EditorFor(model => model.LoanGuarantorDTO[0].AppraisalFactor, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                @class = "form-control required",
+                                                                                @readonly = "readonly"
+                                    }
+                                    })
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <div class="col-lg-3">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.LoanGuarantorDTO[0].TotalShares, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].TotalShares)
+                                                                        @Html.EditorFor(model => model.LoanGuarantorDTO[0].TotalShares, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                @class = "form-control required",
+                                                                                @readonly = "readonly"
+                                    }
+                                    })
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-3">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.LoanGuarantorDTO[0].CommittedShares, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].CommittedShares)
+                                                                        @Html.EditorFor(model => model.LoanGuarantorDTO[0].CommittedShares, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                @class = "form-control required",
+                                                                                @readonly = "readonly"
+                                    }
+                                    })
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-3">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.LoanGuarantorDTO[0].AmountGuaranteed, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.HiddenFor(model => model.LoanGuarantorDTO[0].AmountGuaranteed)
+                                                                        @Html.EditorFor(model => model.LoanGuarantorDTO[0].AmountGuaranteed, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                @class = "form-control required",
+                                                                                @placeholder = "Kshs 0.00"
+                                    }
+                                    })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-4">
+                                                                    <input type="submit" onclick="sendFormData()" class="btn btn-primary" value="Add" style="width: 150px;" />
+                                                                </div>
+                                                            </div>
+
+
+                                                            <table>
+                                                                <tr>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>*@
                             </div>
 
+                            <br />
                             <br />
 
                             <div class="row">
                                 <div class="col-lg-4">
-                                    <input type="submit" onclick="sendFormData()" class="btn btn-primary" value="Create" style="width: 150px;" />
+                                    <input type="submit" class="btn btn-primary" value="Create" style="width: 150px;" />
                                 </div>
                             </div>
                         </fieldset>
-
-
                     }
                 </div>
+
+
+                @*<div class="ibox-content bg-white">
+                        @using (Html.BeginForm("Create", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post))
+                        {
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <input type="submit" class="btn btn-primary" value="Create" style="width: 150px;" />
+                                </div>
+                            </div>
+                        }
+                    </div>*@
             </div>
         </div>
     </div>
@@ -643,6 +896,37 @@
             <div class="modal-header bg-primary">
                 <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
+
+            @*<div class="blue-section" style="margin-bottom: 40px;">
+                    <form id="modalFilterForm">
+                        <div class="form-row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    <label for="filterType">Customer Filter</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownList("customerFilter", CustomerFilter, new { @class = "form-control", id = "customerFilter" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4" style="margin-top: 27px;">
+                                <div class="form-group spacing-form-group">
+                                    <div class="input-group text-box">
+                                        @Html.TextBox("filterValue", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "filterValue" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1" style="margin-top:20px;">
+                                <div class="form-group form-group-sm">
+                                    <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>*@
+
             <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
@@ -771,7 +1055,6 @@
                     </tr>
                 </tbody>
             </table>
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
@@ -838,8 +1121,58 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="~/Scripts/js/navlink.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+
+    @*<script>
+            $('#customersGrid').DataTable({
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("CustomerIndex", "LoanRegistration", new { Area = "Loaning"}))",
+            "sServerMethod": "POST",
+
+                "fnServerParams": function (aoData) {
+                    // Add filter type and value to server params
+                    aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
+                    aoData.push({ "name": "customerFilter", "value": $('#filterValue').val() });
+                },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                var h = ("0" + createdDate.getHours()).slice(-2);
+                var m = ("0" + createdDate.getMinutes()).slice(-2);
+                var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                aData.CreatedDate = dt_Created;
+
+                var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomer(\'' + aData.Id + '\')">Select</button>';
+
+                $('td:eq(5)', nRow).html(dt_Created);
+                $('td:eq(6)', nRow).html(selectUrl);
+
+                return nRow;
+            },
+            "aoColumns": [
+                { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "7%" },
+                { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "7%" },
+                { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "5%" },
+                { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "7%" },
+                { "mDataProp": "IndividualPayrollNumbers", "sTitle": "Payroll Number", "sWidth": "5%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+            "aaSorting": [[0, "desc"]]
+        });
+
+            $('#modalFilterForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#customersGrid').DataTable().ajax.reload();
+            });
+        </script>*@
+
 
     <script>
         $(document).ready(function () {
@@ -1174,5 +1507,28 @@
         $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
         $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
     });
+
+
+
+
+
+
+        $(function () {
+            // Initialize the datetimepicker with the desired format and options
+            $('#ReceivedDate').datetimepicker({
+                format: 'd/m/Y H:i',      // Set the format to dd/mm/yyyy HH:MM
+                step: 15,                  // Optional: Set minute increments (e.g., 15 minutes)
+                maxDate: 0,                // Prevent future dates
+                maxTime: '23:59',          // Ensure max time doesn't exceed 24-hour format
+                datepicker: true,          // Enable date selection
+                timepicker: true,          // Enable time selection
+                hours24: true,             // Use 24-hour format for time
+                onShow: function (ct) {
+                    this.setOptions({
+                        maxDate: new Date(), // Dynamically set max date to current date
+                    });
+                }
+            });
+        });
     </script>
 }
