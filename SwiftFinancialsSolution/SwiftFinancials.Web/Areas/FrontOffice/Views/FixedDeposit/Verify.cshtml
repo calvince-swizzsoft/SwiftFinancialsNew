@@ -292,20 +292,14 @@
 
 
                             <div class="row">
+
+                                
                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.AuditedBy, "Audited By:", new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AuditedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        @Html.Label("Action:", new { @class = "control-label" })
-                                        <select id="Action" class="form-control">
-                                            <option value="Post">Post</option>
-                                            <option value="Reject">Reject</option>
-                                        </select>
-                                    </div>
+                                    <label for="fixingAction">Verify Action</label>
+                                    <select class="form-control" id="fixingAction" name="fixedDepositAuth">
+                                        <option value="Post">Post</option>
+                                        <option value="Reject">Reject</option>
+                                    </select>
                                 </div>
 
                                 <div class="col-md-4">
