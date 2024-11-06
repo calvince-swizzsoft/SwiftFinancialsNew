@@ -118,7 +118,7 @@
     }
 
     .form-control {
-        color: blue; /* Set the text color to blue */
+        color: black; /* Set the text color to blue */
     }
 
     .myfooter {
@@ -286,7 +286,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-<div class="wrapper wrapper-content white-bg">
+<div class="wrapper wrapper-content white-bg text-dark">
     <div class="row">
         <div class="col-md-12">
             <div class="ibox ">
@@ -301,7 +301,7 @@
                     </div>
                 </div>
 
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     <div class="main">
 
                         @using (Html.BeginForm("Edit", "LoanProduct", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
@@ -364,7 +364,140 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                   
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanInterestChargeMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanInterestChargeMode, (IEnumerable<SelectListItem>)ViewBag.LoanInterestChargeModeSelectList, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanInterestChargeMode)
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanInterestRecoveryMode, loanInterestRecoveryModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanInterestRecoveryMode)
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationLoanProductSection, loanRegistrationLoanProductSections, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductSection)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationGuarantorSecurityMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationGuarantorSecurityMode, loanRegistrationGuarantorSecurityModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationGuarantorSecurityMode)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationPaymentDueDate, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationPaymentDueDate, loanRegistrationPaymentDueDate, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationPaymentDueDate)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.TakeHomeType, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.TakeHomeType, takeHomeTypes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.TakeHomeType)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationPayoutRecoveryMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationPayoutRecoveryMode, loanRegistrationPayoutRecoveryModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationPayoutRecoveryMode)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationStandingOrderTrigger, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationStandingOrderTrigger, loanRegistrationStandingOrderTriggers, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationStandingOrderTrigger)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanInterestCalculationMode, new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanInterestCalculationMode, loanInterestCalculationModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanInterestCalculationMode)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationLoanProductCategory, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationLoanProductCategory, loanRegistrationLoanProductCategories, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductCategory)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, loanRegistrationAggregateCheckOffRecoveryModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationRoundingType, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationRoundingType, loanRegistrationRoundingTypes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationRoundingType)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.Priority, loanRegistrationRoundingTypes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.Priority)
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanInterestChargeMode, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanInterestChargeMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -372,16 +505,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                   
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanInterestRecoveryMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
                                                         @Html.ValidationMessageFor(model => model.LoanInterestRecoveryMode, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-lg-3">
-                                                    
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanRegistrationLoanProductSection, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -389,7 +522,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationGuarantorSecurityMode, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanRegistrationGuarantorSecurityMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -397,7 +530,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationPaymentDueDate, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanRegistrationPaymentDueDate, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -405,7 +538,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationPaymentFrequencyPerYear, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanRegistrationPaymentFrequencyPerYear, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -413,7 +546,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.TakeHomeType, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.TakeHomeType, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -421,7 +554,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                   
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationPayoutRecoveryMode, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanRegistrationPayoutRecoveryMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -429,7 +562,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationStandingOrderTrigger, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanRegistrationStandingOrderTrigger, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -475,7 +608,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                   
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanInterestCalculationMode, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanInterestCalculationMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -483,7 +616,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                  
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationLoanProductCategory, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanRegistrationLoanProductCategory, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -491,7 +624,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                   
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -499,7 +632,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationRoundingType, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanRegistrationRoundingType, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
@@ -521,7 +654,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                   
+
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.Priority, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })

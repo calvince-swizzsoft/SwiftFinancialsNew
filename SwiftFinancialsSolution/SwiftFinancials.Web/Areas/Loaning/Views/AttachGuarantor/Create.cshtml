@@ -71,7 +71,7 @@
 
 
                 <div class="ibox-content">
-                    @using (Html.BeginForm("Create", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Add", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
@@ -323,10 +323,7 @@
 
                             <div class="row">
                                 <div class="col-md-6 form-group">
-                                    @using (Html.BeginForm("Create", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "btn btn-primary" }))
-                                    {
-                                        <input type="submit" style="width:150px;" class="btn btn-primary" value="Add" />
-                                    }
+                                    <input type="submit" style="width:150px;" class="btn btn-primary" value="Add" />
                                 </div>
                             </div>
 
@@ -335,38 +332,38 @@
                             <row>
                                 <h3>Loan Guarantors</h3>
 
-                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Guarantor Name</th>
-                                                <th>Identity Card Type</th>
-                                                <th>Identity Card Number</th>
-                                                <th>Total shares</th>
-                                                <th>Committed shares</th>
-                                                <th>Amount Guaranteed</th>
-                                                <th>Appraisal Factor</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (ViewBag.LoanGuarantors != null)
+                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Guarantor Name</th>
+                                            <th>Identity Card Type</th>
+                                            <th>Identity Card Number</th>
+                                            <th>Total shares</th>
+                                            <th>Committed shares</th>
+                                            <th>Amount Guaranteed</th>
+                                            <th>Appraisal Factor</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.LoanGuarantors != null)
+                                        {
+                                            foreach (var loanGuarantors in ViewBag.LoanGuarantors)
                                             {
-                                                foreach (var loanGuarantors in ViewBag.LoanGuarantors)
-                                                {
-                                                    <tr data-id="@loanGuarantors.Customer.Id">
-                                                        <td data-title="Guarantor Name">@loanGuarantors.Customer.FullName</td>
-                                                        <td data-title="Identity Card Type">@loanGuarantors.Customer.IndividualIdentityCardTypeDescription</td>
-                                                        <td data-title="Identity Card Number">@loanGuarantors.Customer.IdentificationNumber</td>
-                                                        <td data-title="Total shares">@loanGuarantors.TotalShares</td>
-                                                        <td data-title="Committed shares">@loanGuarantors.CommittedShares</td>
-                                                        <td data-title="Amount Guaranteed">@loanGuarantors.AmountGuaranteed</td>
-                                                        <td data-title="Appraisal Factor">@loanGuarantors.AppraisalFactor</td>
-                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
-                                                    </tr>
-                                                }
+                                                <tr data-id="@loanGuarantors.Customer.Id">
+                                                    <td data-title="Guarantor Name">@loanGuarantors.Customer.FullName</td>
+                                                    <td data-title="Identity Card Type">@loanGuarantors.Customer.IndividualIdentityCardTypeDescription</td>
+                                                    <td data-title="Identity Card Number">@loanGuarantors.Customer.IdentificationNumber</td>
+                                                    <td data-title="Total shares">@loanGuarantors.TotalShares</td>
+                                                    <td data-title="Committed shares">@loanGuarantors.CommittedShares</td>
+                                                    <td data-title="Amount Guaranteed">@loanGuarantors.AmountGuaranteed</td>
+                                                    <td data-title="Appraisal Factor">@loanGuarantors.AppraisalFactor</td>
+                                                    <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                </tr>
                                             }
-                                        </tbody>
-                                    </table>
+                                        }
+                                    </tbody>
+                                </table>
                             </row>
 
                         </fieldset>

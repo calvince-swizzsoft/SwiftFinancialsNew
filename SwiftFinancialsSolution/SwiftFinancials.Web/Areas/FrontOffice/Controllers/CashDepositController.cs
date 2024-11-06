@@ -206,7 +206,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<JsonResult> FetchCustomerAccountsTable(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int customerFilter)
         {
 
-
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -217,6 +216,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
+            //productCode = 1;
 
             var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(productCode, jQueryDataTablesModel.sSearch, customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
             //var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeFilterInPageAsync(productCode, recordStatus, jQueryDataTablesModel.sSearch, 2, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
@@ -430,6 +430,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var proceedAuthorizedCashDepositRequest = default(bool);
             var proceedCashDepositAuthorizationRequest = default(bool);
 
+            SelectedCustomerAccount = transactionModel.CustomerAccount;
 
 
             System.Globalization.NumberFormatInfo _nfi = new CultureInfo("en-US", false).NumberFormat;
@@ -506,7 +507,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                         // Format the message
                                         string message = string.Format(
-                                            "{0} Authorization Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
+                                            "Txn Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
                                             EnumHelper.GetDescription(CashDepositCategory.AboveMaximumAllowed),
                                             string.Format(_nfi, "{0:C}", targetCashDepositRequest.Amount),
                                             targetCashDepositRequest.StatusDescription,
@@ -762,7 +763,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                             if (targetCashWithdrawalRequest != null)
                                             {
                                                 var result = MessageBox.Show(
-                                                    string.Format("{0} Authorization Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
+                                                    string.Format("Txn Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
                                                     targetCashWithdrawalRequest.TypeDescription,
                                                     string.Format(_nfi, "{0:C}", targetCashWithdrawalRequest.Amount),
                                                     targetCashWithdrawalRequest.StatusDescription),
@@ -1052,7 +1053,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         if (NewExternalCheque.HasErrors)
                         {
 
-                            MessageBox.Show("Operation Error", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                            string message = string.Join(Environment.NewLine, NewExternalCheque.ErrorMessages);
+                            //string message = NewExternalCheque.ErrorMessages[0];
+                            MessageBox.Show(message, "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             //_messageService.ShowExclamation(string.Join(Environment.NewLine, NewExternalCheque.ErrorMessages), this.DisplayName);
 
                             //ResetView();
@@ -1119,8 +1122,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Create(CustomerTransactionModel transactionModel)
         {
 
-            SelectedCustomerAccount = transactionModel.CustomerAccount;
-            //SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, false, true, false, false, GetServiceHeader());
+            //SelectedCustomerAccount = transactionModel.CustomerAccount;
+            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, false, true, false, false, GetServiceHeader());
             SelectedBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
 
@@ -1205,9 +1208,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                );
 
-                return View(SelectedCustomerAccount);
+                //return View(SelectedCustomerAccount);
 
-
+                return Json(new { success = false, message = "Operation Failed" });
             }
 
             try
@@ -1216,7 +1219,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 await ProcessCustomerTransactionAsync(transactionModel);
                 SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, false, true, false, false, GetServiceHeader());
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
-                return RedirectToAction("Create");
+                //return RedirectToAction("Create");
+                return Json(new { success = true, message = "Operation Success" });
             }
             catch (Exception)
             {
@@ -1232,8 +1236,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                   );
 
+                //return View();
 
-                return View();
+                return Json(new { success = false, message = "Operation Failed" });
 
             }
         }
@@ -1569,10 +1574,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 return null;
             }
-
-
-
-
         }
 
         public async Task<JsonResult> GetBankDetailsJson(Guid? id)
@@ -1710,9 +1711,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             //var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
             //DateTime startDate = postingPeriod.DurationStartDate;
-
             //DateTime endDate = postingPeriod.DurationStartDate;
 
             DateTime startDate = DateTime.MinValue;
@@ -1828,6 +1827,31 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else return this.DataTablesJson(items: new List<CashWithdrawalRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
+
+        //public async Task<JsonResult> GetCustomerAccountDetailsJson(Guid? id)
+        //{
+        //    Guid parseId;
+
+        //    if (!Guid.TryParse(id.ToString(), out parseId))
+        //    {
+        //        return Json(null, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    bool includeBalances = true;
+        //    bool includeProductDescription = true;
+        //    bool includeInterestBalanceForLoanAccounts = true;
+        //    bool considerMaturityPeriodForInvestmentAccounts = true;
+
+        //    var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+
+        //    if (customerAccount == null)
+        //    {
+        //        return Json(null, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    return Json(customerAccount, JsonRequestBehavior.AllowGet);
+        //}
     }
 }
 

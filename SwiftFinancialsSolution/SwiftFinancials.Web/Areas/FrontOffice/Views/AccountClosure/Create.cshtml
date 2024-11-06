@@ -480,73 +480,67 @@
 
 
 
-    <script>
+<script>
+    $('#CustomerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
 
-        $('#CustomerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+            // Change URL to point to Edit action
+            var selectUrl = '<a href="/FrontOffice/AccountClosure/Create/' + aData.Id + '" class="btn btn-outline-info">Select</a>';
 
-                    var selectUrl = '<a  href="/FrontOffice/AccountClosure/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+            $('td:eq(5)', nRow).html(dt_Created);
+            $('td:eq(6)', nRow).html(selectUrl);
 
-                    $('td:eq(5)', nRow).html(dt_Created);
+            return nRow;
+        },
 
-                    $('td:eq(6)', nRow).html(selectUrl);
+        "aoColumns": [
+            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "15%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
+            { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15%" },
+            { "mDataProp": "CustomerFullName", "sTitle": "Customer FullName", "sWidth": "15%" },
+            { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "15%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]]
+    });
 
-                    return nRow;
-                },
-            // Display settings
-            // lookup Display settings
-            "aoColumns": [
-                { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "15%" },
-                { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
-                { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15" },
-                { "mDataProp": "CustomerFullName", "sTitle": "Customer FullName", "sWidth": "15%" },
-                { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "15%" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
-                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }],
-
-            "aaSorting": [[0, "desc"]]
-        });
-
-    $("#s tbody").on("click", "tr", function () {
+    // Handle row selection and data population for Edit
+    $("#CustomerAccountsGrid tbody").on("click", "tr", function () {
         var data = CustomerAccountsGrid.row(this).data();
+
+        // Populate Edit form fields based on selected customer account details
         $('#Id').val(data.Id);
-        $('#Id').val(data.CustomerAccountCustomerId);
-        $('input[name=CustomerAccountCustomerId]').val(data.Id);
-        $('input[name=CustomerAccountCustomerIndividualLastName]').val(data.CustomerAccountFullAccountNumber);
+        $('#CustomerAccountCustomerId').val(data.CustomerAccountCustomerId);
+        $('input[name=CustomerAccountFullAccountNumber]').val(data.FullAccountNumber);
+        $('#CustomerStationZoneDivisionEmployerDescription').val(data.StationDescription);
+        $('#CustomerAccountCustomerIndividualLastName').val(data.FullAccountNumber);
+        $('#CustomerAccountTypeTargetProductChartOfAccountName').val(data.StationDescription);
+        $('#CustomerReference1').val(data.CustomerReference1);
+        $('#CustomerReference2').val(data.CustomerReference2);
+        $('#CustomerAccountCustomerIndividualFirstName').val(data.CustomerFullName);
+        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(data.IndividualIdentityCardNumber);
+        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(data.IndividualPayrollNumbers);
+        $('#CustomerAccountTypeTargetProductDescription').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CustomerAccountTypeProductCodeDescription').val(data.CustomerAccountTypeProductCodeDescription);
 
-        var CustomerAccountCustomerId = "";
-        CustomerAccountCustomerId = CustomersMap[item].Id;
-
-
-        $('#id').val(CustomersMap[item].CustomerAccountId);
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerAccountCustomerIndividualLastName').val(CustomersMap[item].CustomerAccountFullAccountNumber);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
-        $('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
-        $('#CustomerAccountCustomerIndividualFirstName').val(CustomersMap[item].CustomerAccountFullAccountNumber);
-        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
-        $('#CustomerAccountTypeProductCodeDescription').val(CustomersMap[item].CustomerAccountTypeProductCodeDescription);
+        // Close the modal after selecting
         $('#customerLookupModal').modal('hide');
     });
-    </script>
+</script>
 
     //ajax form submisstion
     <script>

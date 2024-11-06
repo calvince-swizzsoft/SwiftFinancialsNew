@@ -327,6 +327,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public decimal Balance { get; set; }
 
         [DataMember]
+        [Display(Name = "Amount")]
+        public decimal Amount { get; set; }
+
+        [DataMember]
         [Display(Name = "Beneficiary")]
         public string Beneficiary { get; set; }
 
@@ -380,6 +384,23 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [Display(Name = "Credit Customer Type")]
         public string CreditCustomerAccountTypeDescription { get; set; }
+
+
+        public int CreditBatchEntryFilter { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public string CreditBatchEntryFilterDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CreditBatchEntryFilter), CreditBatchEntryFilter) ? EnumHelper.GetDescription((CreditBatchEntryFilter)CreditBatchEntryFilter) : string.Empty;
+            }
+        }
+
+
+       
+
 
 
 

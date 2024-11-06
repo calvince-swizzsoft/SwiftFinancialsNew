@@ -174,7 +174,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Loan Origination</h1>
+        <h1>Back Office</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Appraise", "Home", new { Area = "" }, null)
@@ -253,7 +253,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.CustomerId)
-                                                @Html.EditorFor(model => model.CustomerIndividualFirstName, new
+                                                @Html.EditorFor(model => model.CustomerFullName, new
                                                 {
                                                     htmlAttributes = new
                                                     {
@@ -339,11 +339,11 @@
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-
-                                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @id = "CommittedShares", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.TextAreaFor(model => model.Reference, new { @id = "CommittedShares", @class = "form-control required",@readonly = "readonly", @placeholder = "Enter your reference here", @rows = 4, @cols = 50 })
                                                 @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
+
                                     </div>
 
                                     <div class="row" style="margin-bottom: 20px;">

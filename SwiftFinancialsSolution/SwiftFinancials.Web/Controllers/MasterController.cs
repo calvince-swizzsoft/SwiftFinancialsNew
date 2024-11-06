@@ -1998,5 +1998,29 @@ namespace SwiftFinancials.Web.Controllers
 
             return messageGroupTarget;
         }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetCreditBatchEntryFilterSelectList(string selectedValue)
+        {
+
+            List<SelectListItem> creditBatchEntryFilterSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CreditBatchEntryFilter)).Cast<CreditBatchEntryFilter>().Select(v => new SelectListItem
+            {
+
+
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+
+            creditBatchEntryFilterSelectList.AddRange(items);
+
+            return creditBatchEntryFilterSelectList;
+
+
+        }
     }
 }

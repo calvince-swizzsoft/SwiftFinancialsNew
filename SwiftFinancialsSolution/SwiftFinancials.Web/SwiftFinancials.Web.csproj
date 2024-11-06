@@ -639,7 +639,6 @@
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
-    <Compile Include="Areas\Registry\Controllers\ConditionalLendingController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\DeviceViewModel.cs" />
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
@@ -1360,14 +1359,8 @@
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Closing.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\ConditonalLending\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\ConditonalLending\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
     <Content Include="Areas\Loaning\Views\GuarantorRelieving\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\ConditionalLending\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\ConditionalLending\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\NextofKin\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Processing.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Closing.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Edit.cshtml" />
@@ -1433,6 +1426,9 @@
     <Content Include="ElectronicJournalDTO\bank_9bd09654-0371-4920-89a8-f93f19e7d69b.pdf" />
     <Content Include="ElectronicJournalDTO\bank_ff172d8c-d502-43d2-9af0-5056a7a13be2.pdf" />
     <Content Include="bin.rar" />
+    <Content Include="Areas\Loaning\Views\AppraiseLoan\Print.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataProcessing\_DocumentUploadPartial.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataCapture\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1442,6 +1438,8 @@
     <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\MainTabs.css" />
     <Content Include="Scripts\css\Marquee.css" />
+    <Content Include="Scripts\css\NavigationLink.css" />
+    <Content Include="Scripts\css\printAppraisalForm.css" />
     <Content Include="Scripts\css\SSRSGenerateReportIndex.css" />
     <Content Include="Scripts\css\SSRSModal.css" />
     <Content Include="Scripts\css\tabbing.css" />
@@ -1957,7 +1955,6 @@
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="File\" />
     <Folder Include="Views\Control\" />
-    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\Lookup\" />
     <Folder Include="Views\Reporting\" />
   </ItemGroup>

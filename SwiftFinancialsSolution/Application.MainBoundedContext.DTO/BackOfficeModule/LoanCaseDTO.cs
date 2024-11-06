@@ -1283,5 +1283,9 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Loan Amount")]
         public double LoanQualificationLoanAmount { get; set; }
+
+
+        [DataMember]
+        public ObservableCollection<LoanGuarantorDTO> LoanGuarantorDTO { get; set; }
     }
 }
