@@ -6,8 +6,6 @@
     var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 }
 
-
-
 <div class="page-header">
     <div class="container-fluid">
         <h1 class="margin-start">Customers</h1>
@@ -19,23 +17,6 @@
         </nav>
     </div>
 </div>
-
-@*<nav class="navbar">
-        <div class="container">
-            <ul class="nav-menu">
-                <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "ConditionalLending" ? "active" : "")">
-                    <a href="@Url.Action("Index", "ConditionalLending")" class="nav-link">Conditional Lending</a>
-                </li>
-                <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Create" && ViewContext.RouteData.Values["Controller"].ToString() == "StationLinkage" ? "active" : "")">
-                    <a href="@Url.Action("Create", "StationLinkage")" class="nav-link">Station Linkage</a>
-                </li>
-                <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Create" && ViewContext.RouteData.Values["Controller"].ToString() == "NextofKin" ? "active" : "")">
-                    <a href="@Url.Action("Create", "NextofKin")" class="nav-link">Next of Kin </a>
-                </li>
-
-            </ul>
-        </div>
-    </nav>*@
 
 <style>
     body {
@@ -67,7 +48,6 @@
         padding: 0;
         margin: 0;
     }
-
 
     .breadcrumb-item {
         font-size: 14px;
@@ -105,53 +85,19 @@
             background-color: #f0f0f0;
         }
 
-   
-
     .nav-item {
         margin-right: 0;
         margin-bottom: 5px;
     }
 
     .form-row {
-        border: 2px solid gray; /* Border color set to gray */
-        padding: 10px; /* Padding inside the border */
-        border-radius: 5px; /* Rounded corners (optional) */
-
-
+        border: 2px solid gray;
+        padding: 10px;
+        border-radius: 5px;
         font-size: 16px;
         font-weight: bold;
         background-color: #00e0ff;
     }
-</style>
-@*  End of narbar menu  *@
-
-
-<style>
-    .dropdown-item {
-        display: block;
-        padding: 10px 15px;
-        color: #333;
-        text-decoration: none;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-        .dropdown-item:hover {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        .dropdown-item:active {
-            background-color: #0056b3;
-            color: #fff;
-        }
-
-        .dropdown-item:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-        }
 </style>
 
 <div class="wrapper wrapper-content">
@@ -160,15 +106,15 @@
             <div class="ibox">
                 @if (TempData["SuccessMessage"] != null)
                 {
-                    <div class="alert alert-success">
-                        <strong>Success !</strong> @TempData["SuccessMessage"]
-
-                        <button type="button" class="close" data-dismiss="alert">
-                            <span>
-                                &times;
-                            </span>
-                        </button>
-                    </div>
+                    <script type="text/javascript">
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: '@TempData["SuccessMessage"]',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        });
+                    </script>
                 }
                 <div class="ibox-title">
                     @Html.ActionLink("Create Customer", "Create", "Customer", new { Area = "Registry" }, new { @class = "btn btn-primary" })
@@ -199,23 +145,19 @@
                     </div>
                     <form id="modalFilterForm">
                         <div class="form-row" style="display: flex; justify-content: space-between; align-items: center; gap: 30px;">
-
-                            <div class=" col-lg-2 form-group">
+                            <div class="col-lg-2 form-group">
                                 <div style="display: flex; gap: 30px;">
                                     <label for="recordStatus">Status</label>
-
                                     @Html.DropDownList("recordStatus", recordStatus, "Filter by Status", new { @class = "form-control", @id = "recordStatus" })
                                 </div>
                             </div>
-                            <div class=" col-lg-2 form-group">
+                            <div class="col-lg-2 form-group">
                                 <div style="display: flex; gap: 30px;">
                                     <label for="customerFilter">Advanced </label>
-
                                     @Html.DropDownList("customerFilter", customerFilter, "Search", new { @class = "form-control", @id = "customerFilter" })
                                 </div>
-
                             </div>
-                            <div class="  col-lg-2 form-group">
+                            <div class="col-lg-2 form-group">
                                 <input type="submit" value="Refresh" class="btn btn-primary" />
                             </div>
                         </div>
@@ -232,12 +174,11 @@
 
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
-        //Default Filters
         $(document).ready(function () {
             $('#CustomersGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
@@ -245,24 +186,18 @@
                 "sServerMethod": "POST",
                 "fnServerParams": function (aoData) {
                     aoData.push(
-                        { "name": "recordStatus", "value": $('#recordStatus').val() || null},
-                        { "name": "customerFilter", "value": $('#customerFilter').val() || null}
+                        { "name": "recordStatus", "value": $('#recordStatus').val() || null },
+                        { "name": "customerFilter", "value": $('#customerFilter').val() || null }
                     );
                 },
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/registry/Customer/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit/Approve/Verify/Reject</a>';
-                    var viewUrl = '<a  href="/registry/Customer/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var DelegatesUrl = '<a  href="/registry/Customer/delegates/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Delegates</a>';
                     var dropdownHtml = `
                         <div class="dropdown">
                             <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -273,25 +208,30 @@
                                 <a class="dropdown-item" href="/registry/Customer/edit/${aData.Id}">Edit</a>
                             </div>
                         </div>`;
-
                     $('td:eq(6)', nRow).html(dropdownHtml);
                     $('td:eq(5)', nRow).html(dt_Created);
-                    //$('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + DelegatesUrl);
 
                     return nRow;
                 },
-                // Display settings
                 "aoColumns": [
-                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "25%" },
+                    {
+                        "mData": null,
+                        "sTitle": "Name",
+                        "sWidth": "25%",
+                        "render": function (data, type, row) {
+                            return row.FullName || row.NonIndividualDescription || "";
+                        }
+                    },
                     { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "15%" },
                     { "mDataProp": "RecordStatusDescription", "sTitle": "RecordStatus", "sWidth": "10%" },
-                    { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
+                    { "mDataProp": "Reference2", "sTitle": "Membership Number", "sWidth": "10%" },
                     { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "20%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "20%", "bSortable": false }
+                ],
                 "aaSorting": [[0, "desc"]]
             });
-            // Refresh button click handler
+
             $('#modalFilterForm').on('submit', function (e) {
                 e.preventDefault();
                 $('#CustomersGrid').DataTable().ajax.reload();
@@ -305,9 +245,5 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
-
-
 }
-
 
