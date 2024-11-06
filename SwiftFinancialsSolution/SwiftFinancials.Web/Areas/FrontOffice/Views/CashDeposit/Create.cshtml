@@ -68,20 +68,38 @@
         }
 
 
-        /* Primary Tabs */
-        .nav-tabs .nav-link {
-        }
+        /* Inner Tabs */
 
-            .nav-tabs .nav-link.active {
-            }
-
-        /* inner Tabs */
+        /* General styling for all .inner-nav-tabs */
         .inner-nav-tabs .inner-nav-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #007bff;
+            background-color: transparent;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+            text-decoration: none;
         }
+
+            .inner-nav-tabs .inner-nav-link:hover {
+                color: #0056b3;
+                background-color: #e9ecef;
+            }
 
             .inner-nav-tabs .inner-nav-link.active {
+                color: #495057;
+                background-color: #fff;
+                border: 1px solid #dee2e6;
+                border-bottom-color: transparent; /* To match the Bootstrap look */
             }
 
+
+        /*.inner-nav-pills .inner-nav-link.active {
+            color: #fff;*/ /* White text for active pill */
+            /*background-color: #007bff;*/ /* Primary color background for active pill */
+        /*}*/
+
+    
 
         /* Tab Content */
         .tab-content > .tab-pane,
@@ -346,13 +364,13 @@
                 <div class="tab-content">
                     <div id="transaction" class="tab-pane active">
 
-                        <div class="form-group">
+                        @*<div class="form-group">*@
 
                             @Html.HiddenFor(model => model.CustomerAccount.Type, new { @id = "CustomerAccount_Type" }) <!-- Hidden field for TransactionType -->
-                        </div>
+                        @*</div>*@
 
                         <!-- inner Tabs (indented) -->
-                        <div style="margin-left: 20px;">
+                        @*<div style="margin-left: 20px;">*@
                             <ul class="nav inner-nav-tabs" style="margin-bottom: 20px;">
                                 <li class="nav-item">
                                     <a class="inner-nav-link active" data-toggle="tab" href="#cashDeposit" data-transaction-type="2">Cash Deposit</a>
@@ -360,7 +378,7 @@
                                 <li class="nav-item">
                                     <a class="inner-nav-link" data-toggle="tab" href="#cashWithdrawal" data-transaction-type="1">Cash Withdrawal</a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="inner-nav-item">
                                     <a class="inner-nav-link" data-toggle="tab" href="#chequeDeposit" data-transaction-type="3">Cheque Deposit</a>
                                 </li>
                                 <li class="nav-item">
@@ -371,7 +389,7 @@
                                 </li>
                             </ul>
 
-                            <div class="inner-tab-content border: 1px solid lightblue" style="border: 1px solid lightblue; padding: 20px; border-radius: 4px;">
+                            <div class="inner-tab-content">
                                 <!-- Cash Deposit Tab -->
                                 <div id="cashDeposit" class="inner-tab-pane active">
                                     <div class="row">
@@ -509,13 +527,12 @@
                                                         @Html.ValidationMessageFor(model => model.ChequeDeposit.ChequeTypeDescription, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
-
                                                 <div class="col-md-6">
                                                     <div class="form-group" id="data_3">
                                                         @Html.LabelFor(model => model.ChequeDeposit.MaturityDate, htmlAttributes: new { @class = "" })
                                                         <div class="input-group date">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                            @Html.TextBoxFor(model => model.ChequeDeposit.MaturityDate, new { htmlAttributes = new { @id = "ChequeDepositMaturityDate", @class = "form-control", type = "text" } })
+                                                            @Html.TextBoxFor(model => model.ChequeDeposit.MaturityDate, new { @id = "ChequeDepositMaturityDate", @class = "form-control", type = "text" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -633,7 +650,7 @@
                                 </div>
 
                             </div>
-                        </div>
+                        @*</div>*@
 
 
 
@@ -816,13 +833,13 @@
 
 
                         <ul class="nav inner-nav-tabs" style="margin-bottom: 20px;">
-                            <li class="inner-nav-item">
-                                <a class="inner-nav-link" id="cashDepositRequestsTab" data-toggle="tab" href="#cashDepositRequests">Deposit Requests</a>
+                            <li class="nav-item">
+                                <a class="inner-nav-link active" id="cashDepositRequestsTab" data-toggle="tab" href="#cashDepositRequests">Deposit Requests</a>
                             </li>
-                            <li class="inner-nav-item">
+                            <li class="nav-item">
                                 <a class="inner-nav-link" data-toggle="tab" href="#cashWithdrawalRequests">Withdrawal Requests</a>
                             </li>
-                            <li class="inner-nav-item">
+                            <li class="nav-item">
                                 <a class="inner-nav-link" data-toggle="tab" href="#cashTransferRequests">Transfer Requests</a>
                             </li>
                         </ul>
@@ -1535,6 +1552,7 @@
             $('#DrawerBankBranchName').val('');
             $('#ChequeDepositAmount').val('');
             $('#ChequeDepositNumber').val('');
+            $('#DrawerBankDescription').val('');
 
             $('#PaymentVoucherWriteDate').val('');
             $('#PaymentVoucherNumber').val('');
@@ -1907,8 +1925,28 @@
 
     </script>
 
+    @*<script>
+        $(document).ready(function () {
+            $('.inner-nav-link').on('click', function (e) {
+                e.preventDefault();
 
-    <script>
+                console.log(this);
+
+                var target = $(this).attr('href');
+
+                console.log(target);
+
+                $('.inner-tab-pane').removeClass('active');
+                $(target).addClass('active');
+
+                $('.inner-nav-link').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
+    </script>*@
+
+
+    @*<script>
         $(document).ready(function () {
             $('.nav-link').on('click', function (e) {
                 e.preventDefault();
@@ -1923,10 +1961,13 @@
                 $(target).addClass('active');
 
                 $('.nav-link').removeClass('active');
+                $('.inner-nav-link').removeClass('active');
                 $(this).addClass('active');
             });
         });
-    </script>
+
+     
+    </script>*@
 
     <script>
         $(document).ready(function () {
