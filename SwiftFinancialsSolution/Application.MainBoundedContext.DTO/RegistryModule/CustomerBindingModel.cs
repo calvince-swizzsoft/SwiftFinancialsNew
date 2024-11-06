@@ -1,4 +1,5 @@
-﻿using Application.Seedwork;
+﻿using Application.MainBoundedContext.DTO.MicroCreditModule;
+using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
@@ -646,6 +647,10 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [Display(Name = "Id")]
         public Guid RefereeId { get; set; }
-        public ObservableCollection<PartnershipMemberDTO> partnershipMemberCollection;
+        public ObservableCollection<PartnershipMemberDTO> partnershipMemberCollection { get; set; }
+        public ObservableCollection<CorporationMemberDTO> corporationMemberDTO { get; set; }
+        public ObservableCollection<MicroCreditGroupMemberDTO> microCreditGroupMemberDTOs { get; set; }
+      
+
     }
 }

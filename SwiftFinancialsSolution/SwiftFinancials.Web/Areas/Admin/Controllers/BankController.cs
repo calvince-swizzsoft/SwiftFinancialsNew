@@ -59,14 +59,14 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return View(BankDTO);
         }
 
-        public async Task<ActionResult> Create()
-        {
-            await ServeNavigationMenus();
+        //public async Task<ActionResult> Create()
+        //{
+        //    await ServeNavigationMenus();
 
-            return View();
-        }
+        //    return View();
+        //}
         [HttpPost]
-        public JsonResult Add(BankDTO bank,string branchdetails)
+        public JsonResult Add(BankDTO bank, string branchdetails)
         {
 
             foreach (var branch in bank.BankBranches)
@@ -76,23 +76,34 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return Json(new { success = true, data = bankBranches });
 
         }
-      
-        [HttpPost]
-        public async Task<ActionResult> Create(BankDTO BankDTO)
-        {
-            BankDTO.ValidateAll();
-            if (!BankDTO.HasErrors)
-            {
-            //    var bankBranches = JsonConvert.DeserializeObject<List<BankBranchDTO>>(branchDetails);
-            //    BankDTO.BankBranches = new ObservableCollection<BankBranchDTO>(bankBranches);
 
-                var bankDTO = await _channelService.AddBankAsync(BankDTO, GetServiceHeader());
-                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, BankDTO.BankBranches,GetServiceHeader());
-                
+        public async Task<ActionResult> Create()
+        {
+            await ServeNavigationMenus();
+            var bankDto = new BankDTO
+            {
+                BankBranches = new ObservableCollection<BankBranchDTO>()
+            };
+            return View(bankDto);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(BankDTO bank)
+        {
+            bank.ValidateAll();
+
+            if (!bank.HasErrors)
+            {
+                var bankDTO = await _channelService.AddBankAsync(bank, GetServiceHeader());
+                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, bank.BankBranches, GetServiceHeader());
+
                 return RedirectToAction("Index");
             }
-            return View(BankDTO);
+            return View(bank);
         }
+
         [HttpPost]
         public JsonResult Remove(Guid id, BankDTO bank)
         {

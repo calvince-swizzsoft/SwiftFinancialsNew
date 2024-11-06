@@ -54,7 +54,12 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [DataMember]
         [Display(Name = "Address Line 1")]
         public string AddressAddressLine1 { get; set; }
-
+        [DataMember]
+        [Display(Name = "Contact Person")]
+        public string ContactPerson { get; set; }
+        [DataMember]
+        [Display(Name = "Phone Number")]
+        public string PhoneNumber { get; set; }
         [DataMember]
         [Display(Name = "Address Line 2")]
         public string AddressAddressLine2 { get; set; }
