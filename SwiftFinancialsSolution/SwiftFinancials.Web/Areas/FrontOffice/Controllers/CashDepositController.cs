@@ -206,7 +206,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<JsonResult> FetchCustomerAccountsTable(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int customerFilter)
         {
 
-
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -217,6 +216,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
+            //productCode = 1;
 
             var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(productCode, jQueryDataTablesModel.sSearch, customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
             //var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeFilterInPageAsync(productCode, recordStatus, jQueryDataTablesModel.sSearch, 2, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
@@ -430,6 +430,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var proceedAuthorizedCashDepositRequest = default(bool);
             var proceedCashDepositAuthorizationRequest = default(bool);
 
+            SelectedCustomerAccount = transactionModel.CustomerAccount;
 
 
             System.Globalization.NumberFormatInfo _nfi = new CultureInfo("en-US", false).NumberFormat;
@@ -1052,7 +1053,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         if (NewExternalCheque.HasErrors)
                         {
 
-                            MessageBox.Show("Operation Error", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                            string message = string.Join(Environment.NewLine, NewExternalCheque.ErrorMessages);
+                            //string message = NewExternalCheque.ErrorMessages[0];
+                            MessageBox.Show(message, "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             //_messageService.ShowExclamation(string.Join(Environment.NewLine, NewExternalCheque.ErrorMessages), this.DisplayName);
 
                             //ResetView();

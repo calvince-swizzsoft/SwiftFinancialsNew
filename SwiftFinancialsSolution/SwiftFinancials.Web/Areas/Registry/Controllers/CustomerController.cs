@@ -76,12 +76,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
             else
             {
-                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
             }
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -167,21 +168,110 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
 
-            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(false, GetServiceHeader());
+            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
             var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
-            var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(false, GetServiceHeader());
-            var savingsProducts = await _channelService.FindMandatorySavingsProductsAsync(false, GetServiceHeader());
-            ViewBag.investment = investmentProducts;
-            ViewBag.savings = savingsProducts;
-            ViewBag.debit = debitTypes;
-            ViewBag.credit = creditTypes;
+            var investmentProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var savingsProducts = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+            ViewBag.investment = investment;
+            ViewBag.savings = savingsProductDTOs;
+            ViewBag.debit = debitypes;
+            ViewBag.creditTypes = creditTypes;
+
 
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerBindingModel customerBindingModel, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl)
+        public async Task<JsonResult> add(CustomerBindingModel customerBindingModel)
         {
+            PartnershipMemberDTO partnershipMemberDTO = new PartnershipMemberDTO();
+            ObservableCollection<PartnershipMemberDTO> partnerships = ViewBag.partnershipMemberDTO ?? new ObservableCollection<PartnershipMemberDTO>();
+
+            foreach (var partner in customerBindingModel.partnershipMemberCollection)
+            {
+                partnershipMemberDTO = new PartnershipMemberDTO
+                {
+                    FirstName = partner.FullName,
+                    CreatedDate = partner.CreatedDate,
+                    IdentityCardNumber = partner.IdentityCardNumber,
+                    AddressAddressLine1 = partner.AddressAddressLine1,
+                    AddressAddressLine2 = partner.AddressAddressLine2,
+                    AddressStreet = partner.AddressStreet,
+                    AddressPostalCode = partner.AddressPostalCode,
+                    AddressCity = partner.AddressCity,
+                    AddressEmail = partner.AddressEmail,
+                    AddressLandLine = partner.AddressLandLine,
+                    AddressMobileLine = partner.AddressMobileLine
+                };
+                TempData["h"] = customerBindingModel;
+                partnerships.Add(partnershipMemberDTO);
+            }
+
+            // Store the updated collection in ViewBag
+            ViewBag.partnershipMemberDTO = partnerships;
+
+            // Return the updated list as JSON
+            return Json(new { partnerships = partnerships });
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Create(CustomerBindingModel customerBindingModel, string[] debittypes, string[] savingsproducts, string[] investmentproducts, string typedescription, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl, string type)
+        {
+
+            if (typedescription == "Individual")
+            {
+                customerBindingModel.Type = 0;
+            }
+
+            if (typedescription == "Partnership")
+            {
+                customerBindingModel.Type = 1;
+            }
+            if (typedescription == "Corporation")
+            {
+                customerBindingModel.Type = 2;
+            }
+            if (typedescription == "MicroCredit")
+            {
+                customerBindingModel.Type =3 ;
+            }
+
+            //cheat
+            var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();
+            var mandatorySavingsProducts = new List<SavingsProductDTO>();
+            var mandatoryDebitTypes = new ObservableCollection<DebitTypeDTO>();
+            var mandatoryProducts = new ProductCollectionInfo();
+
+            SavingsProductDTO j = new SavingsProductDTO();
+            foreach (var k in savingsproducts)
+            {
+                j.Id = Guid.Parse(k);
+                mandatorySavingsProducts.Add(j);
+            }
+            mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
+
+
+
+            InvestmentProductDTO investmentProductDTO = new InvestmentProductDTO();
+            foreach (var invest in investmentproducts)
+            {
+                investmentProductDTO.Id = Guid.Parse(invest);
+                mandatoryInvestmentProducts.Add(investmentProductDTO);
+            }
+            mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
+
+
+            DebitTypeDTO debitTypeDTO = new DebitTypeDTO();
+            foreach (var debit in debittypes)
+            {
+                debitTypeDTO.Id = Guid.Parse(debit);
+                mandatoryDebitTypes.Add(debitTypeDTO);
+            }
+
             // Initialize ViewBag Select Lists based on Customer Type
             InitializeViewBagSelectLists(customerBindingModel);
 
@@ -195,41 +285,91 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 customerBindingModel.BranchId = (Guid)userDTO.BranchId;
             }
 
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
+            ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
+            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
+
+            ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
+
             customerBindingModel.ValidateAll();
 
             // Prepare mandatory products and services
-            var mandatoryProducts = await PrepareMandatoryProductCollection();
+            var mandatoryProduct = await PrepareMandatoryProductCollection();
 
             // Add customer and process errors
             if (!customerBindingModel.HasErrors)
             {
-                var result = await _channelService.AddCustomerAsync(
-                    customerBindingModel.MapTo<CustomerDTO>(),
-                    (await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader())).ToList(),
-                    mandatoryProducts.InvestmentProductCollection,
-                    mandatoryProducts.SavingsProductCollection,
-                    mandatoryProducts, 1, GetServiceHeader()
-                );
-                PartnershipMemberDTO partnershipMemberDTO = new PartnershipMemberDTO();
-                await _channelService.UpdatePartnershipMemberCollectionByPartnershipIdAsync(partnershipMemberDTO.Id, customerBindingModel.partnershipMemberCollection, GetServiceHeader());
-
-                if (result.ErrorMessageResult != null)
+                try
                 {
-                    TempData["DefaultError"] = result.ErrorMessageResult.ToString();
-                    return View();
+                    //customerBindingModel.Type = 2;
+                    var customerDTO = customerBindingModel.MapTo<CustomerDTO>();
+
+                    var result = await _channelService.AddCustomerAsync(
+                        customerDTO,
+                        mandatoryDebitTypes.ToList(),
+                        mandatoryProducts.InvestmentProductCollection,
+                        mandatoryProducts.SavingsProductCollection,
+                        mandatoryProducts,
+                        1,
+                        GetServiceHeader()
+                    );
+                    TempData["SuccessMessage"] = "customer created successfully";
+
+                    if (result == null || !string.IsNullOrEmpty(result.ErrorMessageResult))
+                    {
+                        TempData["DefaultError"] = result?.ErrorMessageResult ?? "An error occurred while creating the customer.";
+                        await ServeNavigationMenus();
+                        return View("Create", customerBindingModel);
+                    }
+
+                    // customerBindingModel.Type = 3;
+                    //// Process based on customer type
+                    //switch ((CustomerType)customerBindingModel.Type)
+                    //{
+                    //    case CustomerType.Individual:
+                    //        TempData["SuccessMessage"] = !string.IsNullOrEmpty(customerBindingModel.FullName)
+                    //            ? $"Successfully Created Customer {customerBindingModel.FullName}"
+                    //            : "Successfully created customer, but invalid data provided.";
+                    //        return RedirectToAction("index", customerBindingModel);
+
+                    //    case CustomerType.Partnership:
+                    //        await _channelService.UpdatePartnershipMemberCollectionByPartnershipIdAsync(result.Id, customerBindingModel.partnershipMemberCollection, GetServiceHeader());
+                    //        TempData["SuccessMessage"] = $"Partnership customer '{customerBindingModel.FullName}' created successfully.";
+                    //        return RedirectToAction("index", customerBindingModel);
+
+                    //    case CustomerType.Corporation:
+                    //        await _channelService.UpdateCorporationMemberCollectionByCorporationIdAsync(result.Id, customerBindingModel.corporationMemberDTO, GetServiceHeader());
+                    //        TempData["SuccessMessage"] = $"Corporation customer '{customerBindingModel.FullName}' created successfully.";
+                    //        return RedirectToAction("index", customerBindingModel);
+                    //    case CustomerType.MicroCredit:
+                    //        await _channelService.AddMicroCreditGroupMemberAsync(customerBindingModel.microCreditGroupMemberDTOs[0], GetServiceHeader());
+                    //        TempData["SuccessMessage"] = $"Corporation customer '{customerBindingModel.FullName}' created successfully.";
+                    //        return RedirectToAction("index", customerBindingModel);
+                    //    default:
+                    //        TempData["DefaultError"] = "Unknown customer type.";
+                    //        return RedirectToAction("index", customerBindingModel);
+                    //}
+                    // Handle Document Upload to DB
+                    //await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
+
+                    //// Refresh ViewBag Select Lists
+                    //InitializeViewBagSelectLists(customerBindingModel);
+
+                    return RedirectToAction("Index");
                 }
-
-                // Handle Document Upload to DB
-                await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
-
-                // Refresh ViewBag Select Lists
-                InitializeViewBagSelectLists(customerBindingModel);
-
-                TempData["SuccessMessage"] = !string.IsNullOrEmpty(customerBindingModel.FullName)
-                    ? $"Successfully Created Customer {customerBindingModel.FullName}"
-                    : "Failed to create customer. Invalid data provided.";
-
-                return RedirectToAction("Index");
+                catch (Exception ex)
+                {
+                    // Log the exception and return an error view
+                    TempData["DefaultError"] = $"An unexpected error occurred: {ex.Message}";
+                    await ServeNavigationMenus();
+                    return View("Create", customerBindingModel);
+                }
             }
             else
             {
@@ -237,6 +377,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 await ServeNavigationMenus();
                 return View("Create", customerBindingModel);
             }
+
         }
 
         private void InitializeViewBagSelectLists(CustomerBindingModel customerBindingModel)
@@ -399,36 +540,154 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, CustomerBindingModel customerBindingModel)
+        public async Task<ActionResult> Edit(CustomerBindingModel customerBindingModel, string[] debittypes, string[] savingsproducts, string[] investmentproducts, string typedescription, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl, string type)
         {
+
+            if (typedescription == "Individual")
+            {
+                customerBindingModel.Type = 0;
+            }
+
+            if (typedescription == "Partnership")
+            {
+                customerBindingModel.Type = 1;
+            }
+            if (typedescription == "Corporation")
+            {
+                customerBindingModel.Type = 2;
+            }
+            if (typedescription == "MicroCredit")
+            {
+                customerBindingModel.Type = 3;
+            }
+
+            ////cheat
+            //var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();
+            //var mandatorySavingsProducts = new List<SavingsProductDTO>();
+            //var mandatoryDebitTypes = new ObservableCollection<DebitTypeDTO>();
+            //var mandatoryProducts = new ProductCollectionInfo();
+
+            //SavingsProductDTO j = new SavingsProductDTO();
+            //foreach (var k in savingsproducts)
+            //{
+            //    j.Id = Guid.Parse(k);
+            //    mandatorySavingsProducts.Add(j);
+            //}
+            //mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
+
+
+
+            //InvestmentProductDTO investmentProductDTO = new InvestmentProductDTO();
+            //foreach (var invest in investmentproducts)
+            //{
+            //    investmentProductDTO.Id = Guid.Parse(invest);
+            //    mandatoryInvestmentProducts.Add(investmentProductDTO);
+            //}
+            //mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
+
+
+            //DebitTypeDTO debitTypeDTO = new DebitTypeDTO();
+            //foreach (var debit in debittypes)
+            //{
+            //    debitTypeDTO.Id = Guid.Parse(debit);
+            //    mandatoryDebitTypes.Add(debitTypeDTO);
+            //}
+
+            // Initialize ViewBag Select Lists based on Customer Type
+            InitializeViewBagSelectLists(customerBindingModel);
+
+            // Retrieve and parse dates from the request
+            ParseCustomerSpecificDates(customerBindingModel);
+
+            // Retrieve user information
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (userDTO.BranchId != null)
+            {
+                customerBindingModel.BranchId = (Guid)userDTO.BranchId;
+            }
+
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
+            ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
+            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
+
+            ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
+
             customerBindingModel.ValidateAll();
 
+            // Prepare mandatory products and services
+            var mandatoryProduct = await PrepareMandatoryProductCollection();
+
+            // Add customer and process errors
             if (!customerBindingModel.HasErrors)
             {
-                await _channelService.UpdateCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), GetServiceHeader());
-                TempData["SuccessMessage"] = $"Successfully Edited {customerBindingModel.RecordStatusDescription} Customer {customerBindingModel.FullName}";
-                ViewBag.recordstatus = GetRecordStatusSelectList(customerBindingModel.RecordStatus.ToString());
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
-                return RedirectToAction("Index");
+                try
+                {
+                    //customerBindingModel.Type = 2;
+                    var customerDTO = customerBindingModel.MapTo<CustomerDTO>();
+
+                    var result = await _channelService.UpdateCustomerAsync(customerDTO,
+                        GetServiceHeader()
+                    );
+                    TempData["SuccessMessage"] = "customer created successfully";
+
+                  
+                    // customerBindingModel.Type = 3;
+                    //// Process based on customer type
+                    //switch ((CustomerType)customerBindingModel.Type)
+                    //{
+                    //    case CustomerType.Individual:
+                    //        TempData["SuccessMessage"] = !string.IsNullOrEmpty(customerBindingModel.FullName)
+                    //            ? $"Successfully Created Customer {customerBindingModel.FullName}"
+                    //            : "Successfully created customer, but invalid data provided.";
+                    //        return RedirectToAction("index", customerBindingModel);
+
+                    //    case CustomerType.Partnership:
+                    //        await _channelService.UpdatePartnershipMemberCollectionByPartnershipIdAsync(result.Id, customerBindingModel.partnershipMemberCollection, GetServiceHeader());
+                    //        TempData["SuccessMessage"] = $"Partnership customer '{customerBindingModel.FullName}' created successfully.";
+                    //        return RedirectToAction("index", customerBindingModel);
+
+                    //    case CustomerType.Corporation:
+                    //        await _channelService.UpdateCorporationMemberCollectionByCorporationIdAsync(result.Id, customerBindingModel.corporationMemberDTO, GetServiceHeader());
+                    //        TempData["SuccessMessage"] = $"Corporation customer '{customerBindingModel.FullName}' created successfully.";
+                    //        return RedirectToAction("index", customerBindingModel);
+                    //    case CustomerType.MicroCredit:
+                    //        await _channelService.AddMicroCreditGroupMemberAsync(customerBindingModel.microCreditGroupMemberDTOs[0], GetServiceHeader());
+                    //        TempData["SuccessMessage"] = $"Corporation customer '{customerBindingModel.FullName}' created successfully.";
+                    //        return RedirectToAction("index", customerBindingModel);
+                    //    default:
+                    //        TempData["DefaultError"] = "Unknown customer type.";
+                    //        return RedirectToAction("index", customerBindingModel);
+                    //}
+                    // Handle Document Upload to DB
+                    //await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
+
+                    //// Refresh ViewBag Select Lists
+                    //InitializeViewBagSelectLists(customerBindingModel);
+
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception and return an error view
+                    TempData["DefaultError"] = $"An unexpected error occurred: {ex.Message}";
+                    await ServeNavigationMenus();
+                    return View("Create", customerBindingModel);
+                }
             }
             else
             {
-                ViewBag.recordstatus = GetRecordStatusSelectList(customerBindingModel.RecordStatus.ToString());
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
-                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());
-                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IndividualIdentityCardType.ToString());
-                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.IndividualSalutation.ToString());
-                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.IndividualGender.ToString());
-                ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(customerBindingModel.IndividualMaritalStatus.ToString());
-                ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(customerBindingModel.IndividualNationality.ToString());
-                ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
-                ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
-
-                return View(customerBindingModel);
+                TempData["Error2"] = customerBindingModel.ErrorMessages;
+                await ServeNavigationMenus();
+                return View("Create", customerBindingModel);
             }
-        }
 
+        }
         [HttpGet]
         public async Task<JsonResult> GetCustomersAsync()
         {

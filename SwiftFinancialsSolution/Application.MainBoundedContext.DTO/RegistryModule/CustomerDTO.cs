@@ -462,8 +462,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         public string GuarantorDesc { get; set; }
 
 
-       // Additional
-
-        public MessageGroupDTO messageGroup { get; set; }
+        // Additional
+    public MessageGroupDTO messageGroup { get; set; }
     }
 }
