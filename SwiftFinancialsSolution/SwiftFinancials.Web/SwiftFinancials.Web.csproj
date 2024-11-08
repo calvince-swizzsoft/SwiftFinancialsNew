@@ -640,8 +640,11 @@
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\Registry\Controllers\DelegateController.cs" />
     <Compile Include="Areas\Registry\Controllers\DeviceViewModel.cs" />
+    <Compile Include="Areas\Registry\Controllers\DirectorController.cs" />
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\DocumentController.cs" />
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Registry\Controllers\FindEducationRegisterAsync.cs" />
@@ -1426,6 +1429,10 @@
     <Content Include="ElectronicJournalDTO\bank_9bd09654-0371-4920-89a8-f93f19e7d69b.pdf" />
     <Content Include="ElectronicJournalDTO\bank_ff172d8c-d502-43d2-9af0-5056a7a13be2.pdf" />
     <Content Include="bin.rar" />
+    <Content Include="Areas\Registry\Views\Director\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Director\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Director\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Director\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1940,6 +1947,7 @@
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
     <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\Delegate\" />
     <Folder Include="Areas\HumanResource\Views\Document\" />
     <Folder Include="Areas\HumanResource\Views\Leave\" />
     <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
@@ -1948,6 +1956,7 @@
     <Folder Include="Areas\Loaning\Views\RepaymentSchedule\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
+    <Folder Include="Areas\Registry\Views\Document\" />
     <Folder Include="File\" />
     <Folder Include="Views\Control\" />
     <Folder Include="Views\Lookup\" />
