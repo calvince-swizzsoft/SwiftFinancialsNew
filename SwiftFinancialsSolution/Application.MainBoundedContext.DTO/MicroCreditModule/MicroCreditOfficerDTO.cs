@@ -235,5 +235,6 @@ namespace Application.MainBoundedContext.DTO.MicroCreditModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+        public string errormassage;
     }
 }
