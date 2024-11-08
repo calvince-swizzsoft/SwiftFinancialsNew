@@ -92,7 +92,6 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter text..." } })
-                                        <span id="postingPeriodMessage" class="text-danger" style="display: none;">Choose Posting Period</span>
                                     </div>
                                 </div>
                             </div>
@@ -182,181 +181,85 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
 
 
-            //Customers Lookup
-            $('#customersGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "PostingPeriod", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+    <script>
+        $('#customersGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "PostingPeriod", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
 
-                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
 
-                    var startDate = new Date(parseInt(aData.DurationStartDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + startDate.getHours()).slice(-2);
-                    var m = ("0" + startDate.getMinutes()).slice(-2);
-                    var s = ("0" + startDate.getSeconds()).slice(-2);
+            var startDate = new Date(parseInt(aData.DurationStartDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + startDate.getHours()).slice(-2);
+            var m = ("0" + startDate.getMinutes()).slice(-2);
+            var s = ("0" + startDate.getSeconds()).slice(-2);
 
-                    var dt_DurationStartDate = $.datepicker.formatDate('dd/mm/yy', startDate) + " " + h + ":" + m + ":" + s;
-                    aData.DurationStartDate = dt_DurationStartDate;
+            var dt_DurationStartDate = $.datepicker.formatDate('dd/mm/yy', startDate) + " " + h + ":" + m + ":" + s;
+            aData.DurationStartDate = dt_DurationStartDate;
 
 
-                    var EndDate = new Date(parseInt(aData.DurationEndDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + EndDate.getHours()).slice(-2);
-                    var m = ("0" + EndDate.getMinutes()).slice(-2);
-                    var s = ("0" + EndDate.getSeconds()).slice(-2);
+            var EndDate = new Date(parseInt(aData.DurationEndDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + EndDate.getHours()).slice(-2);
+            var m = ("0" + EndDate.getMinutes()).slice(-2);
+            var s = ("0" + EndDate.getSeconds()).slice(-2);
 
-                    var dt_DurationEndDate = $.datepicker.formatDate('dd/mm/yy', EndDate) + " " + h + ":" + m + ":" + s;
-                    aData.DurationEndDate = dt_DurationEndDate;
-
-
-                    var selectUrl = '<a  href="/loaning/datacapture/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(1)', nRow).html(dt_DurationStartDate);
-                    $('td:eq(2)', nRow).html(dt_DurationEndDate);
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
-                    { "mDataProp": "DurationStartDate", "sTitle": "Start Date", "sWidth": "5%" },
-                    { "mDataProp": "DurationEndDate", "sTitle": "End Date", "sWidth": "5%" },
-                    { "mDataProp": "IsActive", "sTitle": "Is Active?", "sWidth": "5%" },
-                    { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "5%", "bSortable": false }
-                ],
-                "aaSorting": [[0, "desc"]]
-            });
-
-            $("#s tbody").on("click", "tr", function () {
-                var data = companiesGrid.row(this).data();
-
-                $('#CustomerId').val(data.Id);
-                $('input[name=CustomerId]').val(data.Id);
-                $('input[name=CustomerFullName]').val(data.FullName);
-                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-                $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-                $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-                $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+            var dt_DurationEndDate = $.datepicker.formatDate('dd/mm/yy', EndDate) + " " + h + ":" + m + ":" + s;
+            aData.DurationEndDate = dt_DurationEndDate;
 
 
-                $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-                $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-                $('#CompaniesLookup').modal('hide');
-            });
-        });
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectPostingPeriods(\'' + aData.Id + '\')">Select</button>';
 
+            $('td:eq(1)', nRow).html(dt_DurationStartDate);
+            $('td:eq(2)', nRow).html(dt_DurationEndDate);
+            $('td:eq(5)', nRow).html(dt_Created);
+            $('td:eq(6)', nRow).html(selectUrl);
 
-    
-    document.addEventListener('DOMContentLoaded', function () {
-        const postingPeriodDescription = document.getElementById("PostingPeriodDescription");
-        const remarks = document.getElementById("Remarks");
-        const message = document.getElementById("postingPeriodMessage");
-
-        function toggleRemarks() {
-            if (!postingPeriodDescription.value) {
-                remarks.disabled = true;
-                message.style.display = "inline";
-            } else {
-                remarks.disabled = false;
-                message.style.display = "none";
-            }
-        }
-
-        toggleRemarks();
-
-        postingPeriodDescription.addEventListener('input', toggleRemarks);
-
-        remarks.addEventListener('focus', function () {
-            if (remarks.disabled) {
-                message.style.display = "inline";
-            }
-        });
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "DurationStartDate", "sTitle": "Start Date", "sWidth": "5%" },
+            { "mDataProp": "DurationEndDate", "sTitle": "End Date", "sWidth": "5%" },
+            { "mDataProp": "IsActive", "sTitle": "Is Active?", "sWidth": "5%" },
+            { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
     });
-</script>
+
+      
+        function selectPostingPeriods(id) {
+    $.ajax({
+        url: '/loaning/datacapture/PostingPeriodLookup',
+        type: 'POST',
+        data: { Id: id },
+        success: function (response) {
+            if (response.success) {
+                $('#PostingPeriodDescription').val(response.data.PostingPeriodDescription);
+                $('#PostingPeriodId').val(response.data.PostingPeriodId);
+
+
+                $('#postingPeriodLookupModal').modal('hide');
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function () {
+            alert('An error occurred while processing your request.');
+        }
+    });
+}
+
+    </script>
 }

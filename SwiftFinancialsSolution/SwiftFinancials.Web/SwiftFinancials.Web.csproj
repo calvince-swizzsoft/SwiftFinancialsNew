@@ -549,6 +549,7 @@
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureViewModel.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\ApplicationsController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\MessagingGroupsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AutomatedClearingController.cs" />
@@ -1430,6 +1431,8 @@
     <Content Include="bin.rar" />
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Print.cshtml" />
     <Content Include="Areas\Loaning\Views\DataProcessing\_DocumentUploadPartial.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataCapture\Edit.cshtml" />
+    <Content Include="Areas\Dashboard\Views\Applications\Index.cshtml" />
     <Content Include="Areas\MicroCredit\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Index.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Create.cshtml" />

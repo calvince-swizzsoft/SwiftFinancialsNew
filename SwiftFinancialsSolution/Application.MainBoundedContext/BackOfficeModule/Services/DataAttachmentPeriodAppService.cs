@@ -101,9 +101,15 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                     //Query this criteria
                     var dataAttachmentPeriods = _dataAttachmentPeriodRepository.AllMatching(spec, serviceHeader);
 
+                    bool isSuccessful = (bool)default;
+
                     if (dataAttachmentPeriods != null && dataAttachmentPeriods.Any(x => x.Id != persisted.Id && x.Status == (int)DataAttachmentPeriodStatus.Closed || x.Status == (int)DataAttachmentPeriodStatus.Suspended))
                     {
-                        throw new InvalidOperationException("Sorry, but there is already a closed/suspended data period for the selected month!");
+                        dataAttachmentPeriodDTO.ErrorMessageResult = string.Format("Sorry, but there is already a closed/suspended data period for the selected month!");
+
+                        isSuccessful = false;
+
+                        return isSuccessful;
                     }
                     else
                     {

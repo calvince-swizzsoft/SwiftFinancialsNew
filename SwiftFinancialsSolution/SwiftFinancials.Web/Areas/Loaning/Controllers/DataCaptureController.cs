@@ -89,6 +89,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
 
+            return View();
+        }
+
+
+
+
+        public async Task<ActionResult> PostingPeriodLookup(Guid? id, DataAttachmentPeriodDTO dataPeriodDTO)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
+
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -106,12 +118,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 if (!isValidPostingPeriod)
                 {
                     MessageBox.Show(Form.ActiveForm, "The selected Posting Period is Inactive. Kindly choose a valid Posting Period.", "Data Periods", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View();
+                    return View("Create");
                 }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        PostingPeriodId = dataPeriodDTO.PostingPeriodId,
+                        PostingPeriodDescription = dataPeriodDTO.PostingPeriodDescription,
+                    }
+                });
             }
 
-            return View(dataPeriodDTO);
+            return Json(new { success = false, message = "Posting Period not found" });
         }
+
+
+
+
 
 
         [HttpPost]
@@ -121,6 +147,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             dataPeriodDTO.ValidateAll();
+
+            if (dataPeriodDTO.PostingPeriodId == null || dataPeriodDTO.Remarks == null)
+            {
+                ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
+
+                MessageBox.Show(Form.ActiveForm, "Attempt Failed. Cannot create Data Attachment Period with empty values.", "Data Period", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                return Json(new { success = false });
+            }
 
             if (!dataPeriodDTO.HasErrors)
             {
@@ -149,10 +183,169 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
 
                         MessageBox.Show(Form.ActiveForm, $"Operation failed: \"{cut.ErrorMessageResult.ToUpper()}\"", "Data Period Failed Message", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                        return View(dataPeriodDTO);
+                        return Json(new { success = false });
                     }
 
                     MessageBox.Show(Form.ActiveForm, $"Successfully Created Data Period for month \"{dataPeriodDTO.MonthDescription.ToUpper()}\".", "Data Period Success Message", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    await ServeNavigationMenus();
+
+                    ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
+
+                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Data period Cancellation", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    return Json(new { success = false });
+                }
+            }
+            else
+            {
+                await ServeNavigationMenus();
+                var errorMessages = dataPeriodDTO.ErrorMessages.ToString();
+
+                TempData["BugdetBalance"] = errorMessages;
+
+                MessageBox.Show(Form.ActiveForm, "Operation failed.", "Data Periods", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                ViewBag.MonthSelectList = GetMonthsAsync(dataPeriodDTO.MonthDescription);
+
+                await ServeNavigationMenus();
+
+                return Json(new { success = false });
+            }
+        }
+
+
+
+
+        public async Task<ActionResult> Edit(Guid id)
+        {
+            var findPeriod = await _channelService.FindDataAttachmentPeriodAsync(id, GetServiceHeader());
+            var isOpen = findPeriod.Status == (int)DataAttachmentPeriodStatus.Open;
+
+            if (!isOpen)
+            {
+                await ServeNavigationMenus();
+
+                MessageBox.Show(Form.ActiveForm, "The selected Data Period is already closed and therefore cannot be ammended or reopened", "Data Periods", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                return View("Index");
+            }
+
+
+            Session["getId"] = id;
+            await ServeNavigationMenus();
+            ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
+
+            var DataAttachmentPeriod = new DataAttachmentPeriodDTO();
+
+            var dPeriod = await _channelService.FindDataAttachmentPeriodAsync(id, GetServiceHeader());
+            if (dPeriod != null)
+            {
+                DataAttachmentPeriod.PostingPeriodId = dPeriod.PostingPeriodId;
+                DataAttachmentPeriod.PostingPeriodDescription = dPeriod.PostingPeriodDescription;
+                DataAttachmentPeriod.Month = dPeriod.Month;
+                DataAttachmentPeriod.Remarks = dPeriod.Remarks;
+
+                Session["values"] = DataAttachmentPeriod;
+            }
+
+            return View(DataAttachmentPeriod);
+        }
+
+
+
+        public async Task<ActionResult> EditLookup(Guid? id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
+
+            var dataPeriodDTO = new DataAttachmentPeriodDTO();
+
+            if (Session["values"] != null)
+            {
+                dataPeriodDTO = Session["values"] as DataAttachmentPeriodDTO;
+            }
+
+            Guid parseId;
+
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var postingPeriod = await _channelService.FindPostingPeriodAsync(parseId, GetServiceHeader());
+            if (postingPeriod != null)
+            {
+                dataPeriodDTO.PostingPeriodId = postingPeriod.Id;
+                dataPeriodDTO.PostingPeriodDescription = postingPeriod.Description;
+
+                var isValidPostingPeriod = postingPeriod.IsActive;
+                if (!isValidPostingPeriod)
+                {
+                    MessageBox.Show(Form.ActiveForm, "The selected Posting Period is Inactive. Kindly choose a valid Posting Period.", "Data Periods", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    return Json(new { success = false });
+                }
+
+                Session["newPostingPeriodId"] = dataPeriodDTO.PostingPeriodId;
+            }
+
+            return View("Edit", dataPeriodDTO);
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Edit(DataAttachmentPeriodDTO dataPeriodDTO)
+        {
+            await ServeNavigationMenus();
+
+            if (Session["getId"] != null)
+                dataPeriodDTO.Id = (Guid)Session["getId"];
+
+            if (Session["newPostingPeriodId"] != null)
+                dataPeriodDTO.PostingPeriodId = (Guid)Session["newPostingPeriodId"];
+
+            dataPeriodDTO.ValidateAll();
+
+            if (!dataPeriodDTO.HasErrors)
+            {
+                string message = string.Format(
+                                   "Confirm edit Data Period. Proceed?"
+                               );
+
+                // Show the message box with Yes/No options
+                DialogResult result = MessageBox.Show(
+                    message,
+                    "Data Period",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                if (result == DialogResult.Yes)
+                {
+                    var cut = await _channelService.UpdateDataAttachmentPeriodAsync(dataPeriodDTO, GetServiceHeader());
+
+                    if (cut == false)
+                    {
+                        await ServeNavigationMenus();
+                        ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
+
+                        MessageBox.Show(Form.ActiveForm, "Sorry, but there is already a closed/suspended data period for the selected month!", "Data Period Failed Message", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                        return View(dataPeriodDTO);
+                    }
+
+                    MessageBox.Show(Form.ActiveForm, $"Successfully Edited Data Period.", "Data Period Success Message", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                    Session["getId"] = null;
+                    Session["values"] = null;
+                    Session["newPostingPeriodId"] = null;
 
                     return RedirectToAction("Index");
                 }

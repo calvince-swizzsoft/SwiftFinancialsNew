@@ -158,14 +158,13 @@ namespace Application.MainBoundedContext.RegistryModule.Services
             var customerBindingModel = customerDTO.ProjectedAs<CustomerBindingModel>();
 
             if (customerDTO.StationId == null || customerDTO.StationId == Guid.Empty)
-                customerBindingModel.StationId = Guid.NewGuid();/*a hack to pass validation*/
+                customerBindingModel.StationId = Guid.NewGuid(); // a hack to pass validation
 
             customerBindingModel.ValidateAll();
+            if (customerBindingModel.HasErrors)
+                throw new InvalidOperationException(string.Join(Environment.NewLine, customerBindingModel.ErrorMessages));
 
-            if (customerBindingModel.HasErrors) throw new InvalidOperationException(string.Join(Environment.NewLine, customerBindingModel.ErrorMessages));
-
-            var proceed = true;
-
+            var proceed = true; // Initial state, proceed with the operation
             var branchId = customerDTO.BranchId;
 
             using (var dbContextScope = _dbContextScopeFactory.Create())
@@ -190,166 +189,133 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                 customer.BiometricFingerVeinTemplateFormat = (byte)customerDTO.BiometricFingerVeinTemplateFormat;
                 customer.CreatedBy = serviceHeader.ApplicationUserName;
 
-                if (customerDTO.IsLocked)
-                    customer.Lock();
+                if (customerDTO.IsLocked) customer.Lock();
                 else customer.UnLock();
 
-                if (customerDTO.InhibitGuaranteeing)
-                    customer.LockGuaranteeing();
+                if (customerDTO.InhibitGuaranteeing) customer.LockGuaranteeing();
                 else customer.UnlockGuaranteeing();
 
                 switch ((CustomerType)customerDTO.Type)
                 {
                     case CustomerType.Individual:
-
                         if (!string.IsNullOrWhiteSpace(customer.Individual.IdentityCardNumber))
                         {
                             var filter1 = CustomerSpecifications.CustomerIndividualIdentityCardNumber(customer.Individual.IdentityCardNumber, true);
-
-                            ISpecification<Customer> spec = filter1;
-
-                            var matchedCustomers = await _customerRepository.AllMatchingAsync(spec, serviceHeader);
-
+                            var matchedCustomers = await _customerRepository.AllMatchingAsync(filter1, serviceHeader);
                             if (matchedCustomers != null && matchedCustomers.Any())
+                            {
                                 proceed = false;
+                                customerDTO.ErrorMessageResult = "A customer with a similar identity card number already exists.";
+                                return customerDTO; // Exit early if validation fails
+                            }
                         }
-
                         break;
+
                     case CustomerType.Partnership:
                     case CustomerType.Corporation:
-
                         if (!string.IsNullOrWhiteSpace(customer.NonIndividual.RegistrationNumber))
                         {
                             var filter2 = CustomerSpecifications.CustomerNonIndividualRegistrationNumber(customer.NonIndividual.RegistrationNumber);
-
-                            ISpecification<Customer> spec1 = filter2;
-
-                            var matchedCustomers1 = await _customerRepository.AllMatchingAsync(spec1, serviceHeader);
-
+                            var matchedCustomers1 = await _customerRepository.AllMatchingAsync(filter2, serviceHeader);
                             if (matchedCustomers1 != null && matchedCustomers1.Any())
+                            {
                                 proceed = false;
+                                customerDTO.ErrorMessageResult = "A customer with a similar registration number already exists.";
+                                return customerDTO; // Exit early if validation fails
+                            }
                         }
-
-                        break;
-                    default:
                         break;
                 }
 
                 if (proceed && !string.IsNullOrWhiteSpace(customer.Individual.PayrollNumbers))
                 {
                     var matchedCustomers = _sqlCommandAppService.FindCustomersByPayrollNumber(customer.Individual.PayrollNumbers, serviceHeader);
-
                     if (matchedCustomers != null && matchedCustomers.Any())
+                    {
                         proceed = false;
+                        customerDTO.ErrorMessageResult = "A customer with a similar payroll number already exists.";
+                        return customerDTO; // Exit early if validation fails
+                    }
                 }
+
+                _customerRepository.Add(customer, serviceHeader);
+                proceed = await dbContextScope.SaveChangesAsync(serviceHeader) > 0;
 
                 if (!proceed)
                 {
-                    customerDTO.ErrorMessageResult = ("Sorry, but a customer with a similar identity and/or payroll numbers already exists!");
-                    return customerDTO;
+                    customerDTO.ErrorMessageResult = "Error saving customer to the database.";
+                    return customerDTO; // Exit early if save failed
                 }
-                else
-                {
-                    _customerRepository.Add(customer, serviceHeader);
 
-                    proceed = await dbContextScope.SaveChangesAsync(serviceHeader) > 0;
-
-                    if (proceed) customerDTO = customer.ProjectedAs<CustomerDTO>();
-                }
+                customerDTO = customer.ProjectedAs<CustomerDTO>();
             }
 
             if (proceed && customerDTO != null)
             {
                 var currrentBranch = _branchAppService.FindBranch(branchId, serviceHeader);
-
                 if (currrentBranch != null)
                 {
-                    #region send text notification?
-
+                    #region Send Text Notification
                     if (currrentBranch.CompanyApplicationMembershipTextAlertsEnabled && !string.IsNullOrWhiteSpace(customerDTO.AddressMobileLine) && Regex.IsMatch(customerDTO.AddressMobileLine, @"^\+(?:[0-9]??){6,14}[0-9]$") && customerDTO.AddressMobileLine.Length >= 13)
                     {
                         var smsBody = new StringBuilder();
-
-                        smsBody.Append(string.Format("Dear {0},", customerDTO.FullName));
-                        smsBody.Append(Environment.NewLine);
-                        smsBody.Append(string.Format("Welcome to {0}.", currrentBranch.CompanyDescription));
-                        smsBody.Append(Environment.NewLine);
-                        smsBody.Append(!string.IsNullOrWhiteSpace(customerDTO.Reference2) ? string.Format("Your membership number is {0}.", customerDTO.Reference2) : string.Format("Your serial number is {0}.", customerDTO.PaddedSerialNumber));
-
+                        smsBody.AppendFormat("Dear {0},\nWelcome to {1}.", customerDTO.FullName, currrentBranch.CompanyDescription);
+                        smsBody.Append(!string.IsNullOrWhiteSpace(customerDTO.Reference2) ? $"\nYour membership number is {customerDTO.Reference2}." : $"\nYour serial number is {customerDTO.PaddedSerialNumber}.");
                         var textAlertDTO = new TextAlertDTO
                         {
                             BranchId = currrentBranch.Id,
                             TextMessageOrigin = (int)MessageOrigin.Within,
                             TextMessageRecipient = customerDTO.AddressMobileLine,
-                            TextMessageBody = string.Format("{0}", smsBody),
+                            TextMessageBody = smsBody.ToString(),
                             MessageCategory = (int)MessageCategory.SMSAlert,
                             AppendSignature = false,
                             TextMessagePriority = (int)QueuePriority.Highest,
                         };
-
                         _textAlertAppService.AddNewTextAlert(textAlertDTO, serviceHeader);
                     }
-
                     #endregion
 
-                    #region auto-create mandatory accounts
-
+                    #region Auto-Create Mandatory Accounts
                     if (mandatoryProducts != null)
                     {
                         customerDTO.BranchId = currrentBranch.Id;
                         customerDTO.BranchDescription = currrentBranch.Description;
-
                         _customerAccountAppService.AddNewCustomerAccounts(customerDTO, mandatoryProducts.SavingsProductCollection, mandatoryProducts.InvestmentProductCollection, mandatoryProducts.LoanProductCollection, serviceHeader);
                     }
-
                     #endregion
 
-                    #region effect mandatory debit types
-
+                    #region Effect Mandatory Debit Types
                     if (mandatoryDebitTypes != null && mandatoryDebitTypes.Any())
                     {
                         foreach (var item in mandatoryDebitTypes)
                         {
-                            CustomerAccountDTO customerAccountDTO = null;
-
                             var customerAccounts = _customerAccountAppService.FindCustomerAccountDTOsByCustomerIdAndCustomerAccountTypeTargetProductId(customerDTO.Id, item.CustomerAccountTypeTargetProductId, serviceHeader);
-
-                            if (customerAccounts != null && customerAccounts.Any())
-                                customerAccountDTO = customerAccounts.First();
-                            else
+                            var customerAccountDTO = customerAccounts?.FirstOrDefault() ?? new CustomerAccountDTO
                             {
-                                customerAccountDTO = new CustomerAccountDTO
-                                {
-                                    CustomerId = customerDTO.Id,
-                                    BranchId = currrentBranch.Id,
-                                    CustomerAccountTypeProductCode = item.CustomerAccountTypeProductCode,
-                                    CustomerAccountTypeTargetProductId = item.CustomerAccountTypeTargetProductId,
-                                    CustomerAccountTypeTargetProductCode = item.CustomerAccountTypeTargetProductCode,
-                                    Status = (int)CustomerAccountStatus.Normal,
-                                };
+                                CustomerId = customerDTO.Id,
+                                BranchId = currrentBranch.Id,
+                                CustomerAccountTypeProductCode = item.CustomerAccountTypeProductCode,
+                                CustomerAccountTypeTargetProductId = item.CustomerAccountTypeTargetProductId,
+                                CustomerAccountTypeTargetProductCode = item.CustomerAccountTypeTargetProductCode,
+                                Status = (int)CustomerAccountStatus.Normal,
+                            };
 
+                            if (customerAccounts == null || !customerAccounts.Any())
                                 customerAccountDTO = _customerAccountAppService.AddNewCustomerAccount(customerAccountDTO, serviceHeader);
-                            }
 
-                            if (customerAccountDTO != null)
+                            var debitTypeTariffs = _commissionAppService.ComputeTariffsByDebitType(item.Id, 0m, 1d, customerAccountDTO, serviceHeader);
+                            foreach (var tariff in debitTypeTariffs)
                             {
-                                var debitTypeTariffs = _commissionAppService.ComputeTariffsByDebitType(item.Id, 0m, 1d, customerAccountDTO, serviceHeader);
-
-                                debitTypeTariffs.ForEach(tariff =>
-                                {
-                                    _journalAppService.AddNewJournal(currrentBranch.Id, null, tariff.Amount, tariff.Description, item.Description, string.Format("{0}", customerDTO.SerialNumber).PadLeft(6, '0'), moduleNavigationItemCode, 0, null, tariff.CreditGLAccountId, tariff.DebitGLAccountId, customerAccountDTO, customerAccountDTO, serviceHeader);
-                                });
+                                _journalAppService.AddNewJournal(currrentBranch.Id, null, tariff.Amount, tariff.Description, item.Description, string.Format("{0}", customerDTO.SerialNumber).PadLeft(6, '0'), moduleNavigationItemCode, 0, null, tariff.CreditGLAccountId, tariff.DebitGLAccountId, customerAccountDTO, customerAccountDTO, serviceHeader);
                             }
                         }
                     }
-
                     #endregion
                 }
             }
 
             return customerDTO;
         }
-
         public async Task<bool> UpdateCustomerAsync(CustomerDTO customerDTO, ServiceHeader serviceHeader)
         {
             var customerBindingModel = customerDTO.ProjectedAs<CustomerBindingModel>();

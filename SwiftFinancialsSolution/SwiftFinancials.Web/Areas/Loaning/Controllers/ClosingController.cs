@@ -105,7 +105,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 {
                     await ServeNavigationMenus();
 
-                    MessageBox.Show(Form.ActiveForm, "The selected Data Period is already closed and therefore cannot be ammended or reopened", "Data Period Closing", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    MessageBox.Show(Form.ActiveForm, "The selected Data Period is already closed and therefore cannot be ammended or reopened", "Data Period Closing", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                     return View("Index");
                 }
 
@@ -129,6 +129,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var findFullDetails = await _channelService.FindDataAttachmentPeriodAsync(dataAttachmentPeriodDTO.Id, GetServiceHeader());
 
             dataAttachmentPeriodDTO.PostingPeriodId = findFullDetails.PostingPeriodId;
+            dataAttachmentPeriodDTO.AuthorizationRemarks = dataAttachmentPeriodDTO.Remarks;
 
             dataAttachmentPeriodDTO.ValidateAll();
 
