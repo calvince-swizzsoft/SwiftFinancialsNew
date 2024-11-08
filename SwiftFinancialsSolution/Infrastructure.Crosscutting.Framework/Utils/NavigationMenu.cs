@@ -294,7 +294,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
             // Operations Sub-Menus
             new NavigationMenu { AreaCode = 0x000124F8 + 2, IsArea = false, Description = "Loaning", Icon = "fa fa-money", ControllerName = "Applications", ActionName = "Index", AreaName = "Dashboard", Code = 0x000124F8 + 4 }, 
             new NavigationMenu { AreaCode = 0x000124F8 + 2, IsArea = false, Description = "Messaging", Icon = "fa fa-comments-o", ControllerName = "TextAlerts", ActionName = "Index", AreaName = "Dashboard", Code = 0x000124F8 + 5 }, 
-            new NavigationMenu { AreaCode = 0x000124F8 + 2, IsArea = false, Description = "Utilities", Icon = "fa fa-bars", ControllerName = "FinancialPosition", ActionName = "Create", AreaName = "Dashboard", Code = 0x000124F8 + 6 }
+            new NavigationMenu { AreaCode = 0x000124F8 + 2, IsArea = false, Description = "Utilities", Icon = "fa fa-bars", ControllerName = "FinancialPosition", ActionName = "Create", AreaName = "Dashboard", Code = 0x000124F8 + 6 },
 
 
 

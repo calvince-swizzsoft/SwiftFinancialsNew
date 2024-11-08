@@ -35,6 +35,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(director => director.CreatedDate).ToList();
+
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;

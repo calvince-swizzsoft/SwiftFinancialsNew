@@ -643,11 +643,9 @@
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
-    <Compile Include="Areas\Registry\Controllers\DelegateController.cs" />
     <Compile Include="Areas\Registry\Controllers\DeviceViewModel.cs" />
     <Compile Include="Areas\Registry\Controllers\DirectorController.cs" />
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
-    <Compile Include="Areas\Registry\Controllers\DocumentController.cs" />
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Registry\Controllers\FindEducationRegisterAsync.cs" />
@@ -1971,7 +1969,6 @@
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\MicroCredit\Models\" />
     <Folder Include="Areas\Registry\Models\" />
-    <Folder Include="Areas\Registry\Views\Document\" />
     <Folder Include="File\" />
     <Folder Include="Views\Control\" />
     <Folder Include="Views\Lookup\" />
