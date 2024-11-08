@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using System.Collections.ObjectModel;
 
 namespace Application.MainBoundedContext.DTO.BackOfficeModule
 {
@@ -300,5 +301,114 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Remarks")]
         public string DataPeriodRemarks { get; set; }
+
+
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public int CustomerAccountTypeProductCode { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public string CustomerAccountTypeProductCodeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(ProductCode), CustomerAccountTypeProductCode) ? EnumHelper.GetDescription((ProductCode)CustomerAccountTypeProductCode) : string.Empty;
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public int RecordStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public string RecordStatusDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(RecordStatus), RecordStatus) ? EnumHelper.GetDescription((RecordStatus)RecordStatus) : string.Empty;
+            }
+        }
+
+
+        // Additional Document DTO
+        public Guid DocumentID { get; set; }  // Unique identifier for the document
+        public Guid CustomerId { get; set; }  // Reference to the associated customer
+        public byte[] PassportPhoto { get; set; }
+        public byte[] SignaturePhoto { get; set; }
+        public byte[] IDCardFrontPhoto { get; set; }
+        public byte[] IDCardBackPhoto { get; set; }
+
+        public DateTime DocumentCreatedDate { get; set; } = DateTime.Now;
+        public string Type { get; internal set; }
+        public object DataUrl { get; internal set; }
+
+
+        // Customer Details
+        [Display(Name = "Address Line 1")]
+        public string AddressAddressLine1 { get; set; }
+
+        [Display(Name = "Address Line 2")]
+        public string AddressAddressLine2 { get; set; }
+
+        [Display(Name = "Street")]
+        public string AddressStreet { get; set; }
+
+        [Display(Name = "Postal Code")]
+        public string AddressPostalCode { get; set; }
+
+        [Display(Name = "City")]
+        public string AddressCity { get; set; }
+
+        [Display(Name = "E-mail")]
+        public string AddressEmail { get; set; }
+
+        [Display(Name = "Land Line")]
+        public string AddressLandLine { get; set; }
+
+        [Display(Name = "Mobile Line")]
+        public string AddressMobileLine { get; set; }
+
+        [DataMember]
+        [Display(Name = "Membership Period (Months)")]
+        public int MembershipPeriod { get; set; }
+
+        // Selected Account Data Entry Details
+        [Display(Name = "Full Account Number")]
+        public string SelectCustomerAccountFullAccountNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Account")]
+        public Guid SelectCustomerAccountId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Status")]
+        public string SelectCustomerAccountStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Account Remarks")]
+        public string SelectCustomerAccountRemarks { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Name")]
+        public string SelectCustomerAccountTypeTargetProductDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product")]
+        public Guid SelectCustomerAccountTypeTargetProductId { get; set; }
+
+
+
+
+
+
+        [DataMember]
+        public ObservableCollection<DataAttachmentEntryDTO> DataAttachmentPerdiodEntryEntries { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer")]
+        public string SelectCustomerName { get; set; }
     }
 }

@@ -118,7 +118,7 @@
     }
 
     .form-control {
-        color: blue; /* Set the text color to blue */
+        color: black; /* Set the text color to blue */
     }
 
     .myfooter {
@@ -204,7 +204,6 @@
     #loanProductForm input[type="checkbox"] {
         margin-right: 10px;
         margin-top: 5px; /* Align with first line of text */
-        accent-color: blue;
     }
 
     .custom-checkbox-container label {
@@ -301,7 +300,7 @@
                     </div>
                 </div>
 
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     <div class="main">
 
                         @using (Html.BeginForm("Create", "LoanProduct", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
@@ -383,7 +382,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                               
+
                                                 <div class="col-lg-3">
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "control-label" })
@@ -592,6 +591,14 @@
                                                         @Html.HiddenFor(model => model.InterestReceivableChartOfAccountId, new { @id = "ChartofAccountTypehead33" })
                                                         @Html.ValidationMessageFor(model => model.ChartOfAccountName, "", new { @class = "text-danger" })
                                                         @Html.EditorFor(model => model.ChartOfAccountName, new { htmlAttributes = new { @class = "ChartofAccountTypehead3 form-control required entry-field", placeholder = "Enter space to autofill.." } })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.InterestChargedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.InterestChargedChartOfAccountId, new { @id = "ChartofAccountTypehead44" })
+                                                        @Html.ValidationMessageFor(model => model.InterestChargedChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                                        @Html.EditorFor(model => model.InterestChargedChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartofAccountTypehead3 form-control required entry-field", placeholder = "Enter space to autofill.." } })
                                                     </div>
                                                 </div>
 
@@ -1407,9 +1414,9 @@
         function updateSelectedChargesOnServer() {
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("StoreSelectedCharges", "LoanProduct")', 
+                url: '@Url.Action("StoreSelectedCharges", "LoanProduct")',
                 contentType: 'application/json',
-                data: JSON.stringify(selectedCharges), 
+                data: JSON.stringify(selectedCharges),
                 success: function (response) {
                     if (response.success) {
                         console.log("Charges updated successfully in session.");
@@ -1444,7 +1451,7 @@
             ],
             "aaSorting": [[1, "asc"]],
             "initComplete": function () {
-                loadCheckboxState();  
+                loadCheckboxState();
             }
         });
 
@@ -1496,87 +1503,93 @@
 
 
     <script>
-    $(document).ready(function () {
-        var selectedProducts = [];
+       $(document).ready(function () {
+    var selectedProducts = [];
 
-        function updateSelectedProducts() {
-            selectedProducts = [];
+    function updateSelectedProducts() {
+        selectedProducts = [];
 
-            $('.srowCheckbox:checked').each(function () {
-                var productId = $(this).data('id');
-                selectedProducts.push(productId);
-            });
+        // Collect both ID and Description
+        $('.srowCheckbox:checked').each(function () {
+            var productId = $(this).data('id');
+            var productDescription = $(this).closest('tr').find('td:eq(1)').text(); // Assuming the second column contains the description
+            selectedProducts.push({ Id: productId, Description: productDescription });
+        });
 
-            console.log('Selected products: ', selectedProducts); 
+        console.log('Selected products: ', selectedProducts);
 
-            if (selectedProducts.length > 0) {
-                $.ajax({
-                    url: '@Url.Action("ProcessSelectedProducts", "LoanProduct", new { Area = "Accounts" })',
-                    type: 'POST',
-                    data: { selectedSavingProductIds: selectedProducts },
-                    success: function (response) {
-                        if (response.success) {
-                            console.log('Products successfully updated.');
-                        } else {
-                            console.log('Failed to update products: ' + response.message);
-                        }
-                    },
-                    error: function (error) {
-                        console.log('AJAX error: ' + error.statusText);
+        if (selectedProducts.length > 0) {
+            $.ajax({
+                url: '@Url.Action("ProcessSelectedSavingProducts", "LoanProduct", new { Area = "Accounts" })',
+                type: 'POST',
+                data: JSON.stringify({
+                    EligibileIncomeDeductionSavingsProductCollection: selectedProducts
+                }), // Match the structure
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.success) {
+                        console.log('Products successfully updated.');
+                    } else {
+                        console.log('Failed to update products: ' + response.message);
                     }
-                });
-            } else {
-                console.log('No products selected. Skipping server update.');
-            }
-        }
-
-        function updateSelectAllCheckbox() {
-            var allChecked = $('.srowCheckbox:checked').length === $('.srowCheckbox').length && $('.srowCheckbox').length > 0;
-            $('#sheaderCheckbox').prop('checked', allChecked);
-        }
-
-        $('#sheaderCheckbox').on('change', function () {
-            var isChecked = $(this).prop('checked');
-            $('.srowCheckbox').prop('checked', isChecked);
-
-            updateSelectedProducts();
-        });
-
-        $('#SavingsProductGrid').on('change', '.srowCheckbox', function () {
-            updateSelectedProducts(); 
-            updateSelectAllCheckbox(); 
-        });
-
-        var table = $('#SavingsProductGrid').DataTable({
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": '@Url.Action("Index", "SavingsProduct", new { Area = "Accounts" })',
-            "sServerMethod": "POST",
-
-            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                var checkboxHTML = '<input type="checkbox" class="srowCheckbox" data-id="' + aData.Id + '"';
-
-                if (selectedProducts.includes(aData.Id)) {
-                    checkboxHTML += ' checked';
+                },
+                error: function (error) {
+                    console.log('AJAX error: ' + error.statusText);
                 }
+            });
+        } else {
+            console.log('No products selected. Skipping server update.');
+        }
+    }
 
-                checkboxHTML += '>';
-                $('td:eq(0)', nRow).html(checkboxHTML);
-                return nRow;
-            },
+    function updateSelectAllCheckbox() {
+        var allChecked = $('.srowCheckbox:checked').length === $('.srowCheckbox').length && $('.srowCheckbox').length > 0;
+        $('#sheaderCheckbox').prop('checked', allChecked);
+    }
 
-            "aoColumns": [
-                { "mDataProp": "Id", "sTitle": "Select", "sWidth": "5%" },
-                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "95%", "bSortable": false }
-            ],
-            "aaSorting": [[1, "asc"]], 
+    $('#sheaderCheckbox').on('change', function () {
+        var isChecked = $(this).prop('checked');
+        $('.srowCheckbox').prop('checked', isChecked);
 
-            "fnDrawCallback": function () {
-                updateSelectAllCheckbox();
-            }
-        });
+        updateSelectedProducts();
     });
+
+    $('#SavingsProductGrid').on('change', '.srowCheckbox', function () {
+        updateSelectedProducts();
+        updateSelectAllCheckbox();
+    });
+
+    var table = $('#SavingsProductGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": '@Url.Action("Index", "SavingsProduct", new { Area = "Accounts" })',
+        "sServerMethod": "POST",
+
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var checkboxHTML = '<input type="checkbox" class="srowCheckbox" data-id="' + aData.Id + '"';
+
+            if (selectedProducts.some(product => product.Id === aData.Id)) {
+                checkboxHTML += ' checked';
+            }
+
+            checkboxHTML += '>';
+            $('td:eq(0)', nRow).html(checkboxHTML);
+            return nRow;
+        },
+
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "5%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "95%", "bSortable": false }
+        ],
+        "aaSorting": [[1, "asc"]],
+
+        "fnDrawCallback": function () {
+            updateSelectAllCheckbox();
+        }
+    });
+});
+
     </script>
 
 
@@ -1584,7 +1597,7 @@
 
 
     <script>
-        $(document).ready(function () {
+       $(document).ready(function () {
     function saveCheckboxState(key, state) {
         localStorage.setItem(key, state);
     }
@@ -1630,21 +1643,22 @@
     $('#aiheaderCheckbox').on('change', function () {
         // Get all checkboxes in the table
         $('.airowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
-            var checkboxKey = $(this).attr('data-id'); 
+            var checkboxKey = $(this).attr('data-id');
             saveCheckboxState(checkboxKey, $(this).prop('checked'));
         });
 
-        var selectedIds = getSelectedIds();
-        updateSelectionOnServer(selectedIds, $(this).prop('checked'));
+        var selectedProducts = getSelectedProducts();
+        updateSelectionOnServer(selectedProducts, $(this).prop('checked'));
 
         saveCheckboxState('aiheaderCheckbox', $(this).prop('checked'));
     });
 
     $('#InvestmentProductGrid1').on('change', '.airowCheckbox', function () {
-        var checkboxKey = $(this).attr('data-id'); 
+        var checkboxKey = $(this).attr('data-id');
         saveCheckboxState(checkboxKey, $(this).prop('checked'));
 
-        updateSelectionOnServer([checkboxKey], $(this).prop('checked')); 
+        var selectedProduct = getSelectedProduct($(this).data('id'));
+        updateSelectionOnServer([selectedProduct], $(this).prop('checked'));
 
         if (!$(this).prop('checked')) {
             $('#aiheaderCheckbox').prop('checked', false);
@@ -1656,19 +1670,31 @@
         }
     });
 
-    function getSelectedIds() {
-        var selectedIds = [];
+    function getSelectedProducts() {
+        var selectedProducts = [];
         $('.airowCheckbox:checked').each(function () {
-            selectedIds.push($(this).data('id'));
+            var id = $(this).data('id');
+            var description = $(this).closest('tr').find('td:eq(1)').text(); // Assuming the second column has the description
+            selectedProducts.push({ Id: id, Description: description });
         });
-        return selectedIds;
+        return selectedProducts;
     }
 
-    function updateSelectionOnServer(selectedIds, isChecked) {
+    function getSelectedProduct(id) {
+        var row = $('.airowCheckbox[data-id="' + id + '"]').closest('tr');
+        var description = row.find('td:eq(1)').text(); // Assuming the second column has the description
+        return { Id: id, Description: description };
+    }
+
+    function updateSelectionOnServer(selectedProducts, isChecked) {
         $.ajax({
             type: "POST",
-            url: '@Url.Action("SaveSelection", "LoanProduct")', 
-            data: { selectedIds: selectedIds, isChecked: isChecked },
+            url: '@Url.Action("SaveSelection", "LoanProduct")',
+            data: JSON.stringify({
+                selectedInvestments: { InvestmentProductCollection: selectedProducts },
+                isChecked: isChecked
+            }),
+            contentType: 'application/json',
             success: function (response) {
                 if (!response.success) {
                     console.error("Failed to save selection on the server.");
@@ -1688,20 +1714,28 @@
 
 
     <script>
-$(document).ready(function () {
+       $(document).ready(function () {
     var selectedInvestmentProducts = [];
 
     function updateSelectedInvestmentProducts() {
-        selectedInvestmentProducts = []; 
+        selectedInvestmentProducts = [];
         $('.irowCheckbox:checked').each(function () {
             var productId = $(this).data('id');
-            selectedInvestmentProducts.push(productId);
+            var productDescription = $(this).closest('tr').find('td:eq(1)').text(); // Get the description from the second column
+            selectedInvestmentProducts.push({
+                Id: productId,
+                Description: productDescription
+            });
         });
 
         $.ajax({
             url: '@Url.Action("ProcessSelectedInvestmentProducts", "LoanProduct", new { Area = "Accounts" })',
             type: 'POST',
-            data: { selectedInvestmentProductIds: selectedInvestmentProducts },
+            contentType: "application/json; charset=utf-8",  // Ensure data is sent as JSON
+            dataType: "json",
+            data: JSON.stringify({
+                EligibileIncomeDeductionInvestmentProductCollection: selectedInvestmentProducts
+            }),  // Send as JSON object with both Id and Description
             success: function (response) {
                 if (response.success) {
                     console.log('Investment products updated successfully in session.');
@@ -1723,7 +1757,7 @@ $(document).ready(function () {
     });
 
     $('#InvestmentProductGrid').on('change', '.irowCheckbox', function () {
-        updateSelectedInvestmentProducts(); 
+        updateSelectedInvestmentProducts();
 
         var allChecked = $('.irowCheckbox:checked').length === $('.irowCheckbox').length && $('.irowCheckbox').length > 0;
         $('#iheaderCheckbox').prop('checked', allChecked);
@@ -1758,74 +1792,87 @@ $(document).ready(function () {
         }
     });
 });
+
     </script>
 
 
 
     <script>
-    $(document).ready(function () {
-        function sendSelectedProductsToController(selectedProducts) {
-            console.log("Selected Products: ", selectedProducts); 
+       $(document).ready(function () {
+    function sendSelectedProductsToController(selectedProducts) {
+        console.log("Selected Products: ", selectedProducts);
 
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("StoreSelectedProducts", "LoanProduct", new { Area = "Accounts" })", 
-                data: { selectedProductIds: selectedProducts }, 
-                traditional: true, 
-                success: function (response) {
-                    console.log("Selected products successfully sent to the controller.");
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error sending data: " + error);
-                }
-            });
-        }
-
-        $('#1lheaderCheckbox').on('change', function () {
-            var isChecked = $(this).prop('checked');
-            $('.1lrowCheckbox').prop('checked', isChecked);
-
-            var selectedProducts = [];
-            $('.1lrowCheckbox:checked').each(function () {
-                selectedProducts.push($(this).data('id'));
-            });
-
-            sendSelectedProductsToController(selectedProducts);
-        });
-
-        $('#LoanProductsGrid1').on('change', '.1lrowCheckbox', function () {
-            var selectedProducts = [];
-            $('.1lrowCheckbox:checked').each(function () {
-                selectedProducts.push($(this).data('id'));
-            });
-
-            sendSelectedProductsToController(selectedProducts);
-        });
-
-        var table = $('#LoanProductsGrid1').DataTable({
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "" }))",
-            "sServerMethod": "POST",
-
-            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                var checkboxHTML = '<input type="checkbox" class="1lrowCheckbox" data-id="' + aData.Id + '"';
-                checkboxHTML += '>';
-                $('td:eq(0)', nRow).html(checkboxHTML); 
-                return nRow;
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("StoreSelectedProducts", "LoanProduct", new { Area = "Accounts" })",
+            data: JSON.stringify({ LoanProductCollection: selectedProducts }), // Ensure key matches server-side model property
+            contentType: "application/json", // Set content type to JSON
+            success: function (response) {
+                console.log("Selected products successfully sent to the controller.");
             },
-
-            "aoColumns": [
-                { "mDataProp": "Id", "sTitle": "Select", "sWidth": "10%" },
-                { "mDataProp": "Description", "sTitle": "Product Name", "sWidth": "80%" }
-            ],
-            "aaSorting": [[1, "asc"]],
-
-            "initComplete": function (settings, json) {
+            error: function (xhr, status, error) {
+                console.error("Error sending data: " + error);
             }
         });
+    }
+
+    // Handle header checkbox change (select all/deselect all)
+    $('#1lheaderCheckbox').on('change', function () {
+        var isChecked = $(this).prop('checked');
+        $('.1lrowCheckbox').prop('checked', isChecked);
+
+        var selectedProducts = [];
+        $('.1lrowCheckbox:checked').each(function () {
+            var product = {
+                id: $(this).data('id'),
+                description: $(this).data('description') // Collecting the description as well
+            };
+            selectedProducts.push(product);
+        });
+
+        sendSelectedProductsToController(selectedProducts);
     });
+
+    // Handle individual checkbox changes
+    $('#LoanProductsGrid1').on('change', '.1lrowCheckbox', function () {
+        var selectedProducts = [];
+        $('.1lrowCheckbox:checked').each(function () {
+            var product = {
+                id: $(this).data('id'),
+                description: $(this).data('description') // Collecting the description as well
+            };
+            selectedProducts.push(product);
+        });
+
+        sendSelectedProductsToController(selectedProducts);
+    });
+
+    // Initialize DataTable
+    var table = $('#LoanProductsGrid1').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "" }))",
+        "sServerMethod": "POST",
+
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var checkboxHTML = '<input type="checkbox" class="1lrowCheckbox" data-id="' + aData.Id + '" data-description="' + aData.Description + '"';
+            checkboxHTML += '>';
+            $('td:eq(0)', nRow).html(checkboxHTML);
+            return nRow;
+        },
+
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "10%" },
+            { "mDataProp": "Description", "sTitle": "Product Name", "sWidth": "80%" }
+        ],
+        "aaSorting": [[1, "asc"]],
+
+        "initComplete": function (settings, json) {
+        }
+    });
+});
+
     </script>
 
 
@@ -1837,33 +1884,49 @@ $(document).ready(function () {
 $(document).ready(function () {
     var selectedLoans = [];
 
+    // Save the state of a checkbox (for Select All)
     function saveCheckboxState(key, state) {
         localStorage.setItem(key, JSON.stringify(state));
     }
 
+    // Load the state of a checkbox from localStorage
     function loadCheckboxState(key) {
         return JSON.parse(localStorage.getItem(key)) || false;
     }
 
+    // Update the selected loans array and send data to the server
     function updateSelectedLoans() {
         selectedLoans = [];
         $('.lrowCheckbox:checked').each(function () {
-            selectedLoans.push($(this).data('id'));
+            var loanId = $(this).data('id');
+            var loanDescription = $(this).closest('tr').find('td:eq(1)').text(); // Get description from the second column
+            selectedLoans.push({
+                Id: loanId,
+                Description: loanDescription
+            });
         });
 
-        $.ajax({
-            url: '@Url.Action("ProcessSelectedLoans", "LoanProduct", new { Area = "Accounts" })',
-            type: 'POST',
-            data: { selectedLoanIds: selectedLoans },
-            success: function (response) {
-                console.log('Selected loans updated successfully.');
-            },
-            error: function (error) {
-                console.error('An error occurred while updating selected loans.');
-            }
-        });
+       $.ajax({
+    url: '@Url.Action("ProcessSelectedLoans", "LoanProduct", new { Area = "Accounts" })',
+    type: 'POST',
+    data: JSON.stringify({
+        EligibileIncomeDeductionLoanProductCollection: selectedLoans
+    }),  // Send as JSON object with the correct structure
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (response) {
+        console.log('Selected loans updated successfully.');
+        // Optionally, display a success message to the user
+    },
+    error: function (error) {
+        console.error('An error occurred while updating selected loans.');
+        // Optionally, display an error message to the user
+    }
+});
+
     }
 
+    // Initialize the DataTable
     var table = $('#LoanProductsGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
@@ -1872,9 +1935,10 @@ $(document).ready(function () {
         "sServerMethod": "POST",
 
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            // Add checkbox for each row
             var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '"';
 
-            if (selectedLoans.includes(aData.Id)) {
+            if (selectedLoans.some(item => item.Id === aData.Id)) {
                 checkboxHTML += ' checked';
             }
 
@@ -1894,6 +1958,7 @@ $(document).ready(function () {
         }
     });
 
+    // Handle the "Select All" checkbox
     $('#lheaderCheckbox').on('change', function () {
         var isChecked = $(this).prop('checked');
         $('.lrowCheckbox').prop('checked', isChecked);
@@ -1901,14 +1966,18 @@ $(document).ready(function () {
         if (isChecked) {
             table.rows({ page: 'current' }).every(function () {
                 var loanId = this.data().Id;
-                if (!selectedLoans.includes(loanId)) {
-                    selectedLoans.push(loanId);
+                var loanDescription = this.data().Description;
+                if (!selectedLoans.some(item => item.Id === loanId)) {
+                    selectedLoans.push({
+                        Id: loanId,
+                        Description: loanDescription
+                    });
                 }
             });
         } else {
             table.rows({ page: 'current' }).every(function () {
                 var loanId = this.data().Id;
-                selectedLoans = selectedLoans.filter(id => id !== loanId);
+                selectedLoans = selectedLoans.filter(item => item.Id !== loanId);
             });
         }
 
@@ -1916,18 +1985,21 @@ $(document).ready(function () {
         saveCheckboxState('lheaderCheckbox', isChecked);
     });
 
+    // Handle individual checkbox changes
     $('#LoanProductsGrid').on('change', '.lrowCheckbox', function () {
         updateSelectedLoans();
         updateSelectAllCheckbox();
     });
 
+    // Restore the state of the "Select All" checkbox
     $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
 
 });
     </script>
 
 
-    @*<script>
+
+    <script>
 
 
         $('#chartOfAccountsGrid').DataTable({
@@ -1986,7 +2058,7 @@ $(document).ready(function () {
 
 
         </script>
-    *@
+    
     <script>
         //Typehead 1
 
@@ -2067,6 +2139,42 @@ $(document).ready(function () {
         //Typehead 3
 
         $('.ChartofAccountTypehead3').typeahead({
+            source: function (query, process) {
+                return $.getJSON(
+                    '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                    { query: query },
+                    function (ChartOfAccounts) {
+                        var newChartOfAccountsData = [];
+                        ChartOfAccountsMap = {};
+                        $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                            newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                            ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                        });
+                        process(newChartOfAccountsData); return;
+                    });
+            },
+            matcher: function (item) {
+                if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                    return true;
+                }
+            },
+            sorter: function (items) {
+                return items.sort();
+            },
+            highlighter: function (item) {
+                var regex = new RegExp('(' + this.query + ')', 'gi');
+                return item.replace(regex, "<strong>$1</strong>");
+            },
+            updater: function (item) {
+                var chartOfAccountId = "";
+                ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                $('#ChartofAccountTypehead33').val(ChartOfAccountId);
+                //console.log(ChartOfAccountId)
+                return item;
+            }
+        });
+
+         $('.ChartofAccountTypehead4').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
                         '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
@@ -2096,11 +2204,11 @@ $(document).ready(function () {
                 updater: function (item) {
                     var chartOfAccountId = "";
                     ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#ChartofAccountTypehead33').val(ChartOfAccountId);
+                    $('#ChartofAccountTypehead44').val(ChartOfAccountId);
                     //console.log(ChartOfAccountId)
                     return item;
                 }
-    });
+        });
     </script>
 
 
@@ -2318,16 +2426,16 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                           <td>${entry.Description}</td>
-                                                                                                            <td>${entry.CustomerAccountTypeTargetProductDescription}</td>
-                                                                                                           <td>${entry.CustomerAccountTypeProductCodeDescription}</td>
-                                                                                                           <td>${entry.ChargePercentage}</td>
-                                                                                                           <td>${entry.ChargeTypeDescription}</td>
+                                                                                                                   <td>${entry.Description}</td>
+                                                                                                                    <td>${entry.CustomerAccountTypeTargetProductDescription}</td>
+                                                                                                                   <td>${entry.CustomerAccountTypeProductCodeDescription}</td>
+                                                                                                                   <td>${entry.ChargePercentage}</td>
+                                                                                                                   <td>${entry.ChargeTypeDescription}</td>
 
-                                                                                                           <td>${entry.ComputeChargeOnTopUp}</td>
-                                                                                                           <td>${entry.NetOffInvestmentBalance}</td>
-                                                                                                           <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
-                                                                                                       </tr>`;
+                                                                                                                   <td>${entry.ComputeChargeOnTopUp}</td>
+                                                                                                                   <td>${entry.NetOffInvestmentBalance}</td>
+                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+                                                                                                               </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2362,111 +2470,119 @@ $(document).ready(function () {
 
     </script>
 
-    <script>
+   <script>
+       $(document).ready(function () {
+           $("#addEntryBtn23").click(function (e) {
+               e.preventDefault();
+               submitCyclesForm();
+           });
 
-        //Adding the LoanCycles Entries
+           function submitCyclesForm() {
+               const minAmount = parseFloat(document.querySelector('[name="LoanRegistrationMinimumAmount"]').value);
+               const maxAmount = parseFloat(document.querySelector('[name="LoanRegistrationMaximumAmount"]').value);
+               const rangeLowerLimit = parseFloat(document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value);
+               const numCycles = 4; // Define the number of cycles
 
-        $(document).ready(function () {
-            // Handle button click to submit the form with AJAX
-            $("#addEntryBtn23").click(function (e) {
-                e.preventDefault(); // Prevent default button behavior
-                submitCyclesForm(); // Call the form submission function
-            });
+               // Calculate range per cycle
+               const rangePerCycle = (maxAmount - minAmount) / numCycles;
 
-            // Function to handle form submission with AJAX
-            function submitCyclesForm() {
-                // Get form data
-                const rangeLowerLimit = document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value;
+               // Determine the upper limit for the current cycle based on the lower limit
+               const rangeUpperLimit = rangeLowerLimit + rangePerCycle;
 
+               // Check if the upper limit exceeds the max amount
+               if (rangeUpperLimit > maxAmount) {
+                   Swal.fire({
+                       icon: 'error',
+                       title: 'Error!',
+                       text: 'Upper limit exceeds maximum allowed amount.',
+                       timer: 5000,
+                       showConfirmButton: true
+                   });
+                   return;
+               }
 
-                // Create an object with the form data
-                const formData = {
-                    RangeLowerLimit: rangeLowerLimit,
+               // Prepare data for AJAX
+               const formData = {
+                   RangeLowerLimit: rangeLowerLimit,
+                   RangeUpperLimit: rangeUpperLimit
+               };
 
-                };
+               $.ajax({
+                   url: '/LoanProduct/AddCycles',
+                   type: 'POST',
+                   contentType: 'application/json',
+                   data: JSON.stringify(formData),
+                   success: function (response) {
+                       if (response.success) {
+                           updateEntriesTable(response.data1);
+                           Swal.fire({
+                               icon: 'success',
+                               title: 'Success!',
+                               text: 'Loan cycle added successfully.',
+                               timer: 1000,
+                               showConfirmButton: false
+                           });
+                           clearFormFields();
+                       } else {
+                           Swal.fire({
+                               icon: 'error',
+                               title: 'Error!',
+                               text: response.message,
+                               timer: 8000,
+                               showConfirmButton: true
+                           });
+                       }
+                   },
+                   error: function (xhr, status, error) {
+                       console.error("An error occurred:", error);
+                   }
+               });
+           }
 
-                // Send the AJAX request
-                $.ajax({
-                    url: '/LoanProduct/AddCycles', // Replace with your actual action URL
-                    type: 'POST',
-                    contentType: 'application/json', // Set content type to JSON
-                    data: JSON.stringify(formData), // Convert the form data object to JSON
-                    success: function (response) {
-                        if (response.success) {
-                            updateEntriesTable(response.data1); // Update the table with new data
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: 'Deductible added successfully.',
-                                timer: 1000,
-                                showConfirmButton: false
-                            });
-                            clearFormFields(); // Clear form fields using custom logic
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error!',
-                                text: response.message,
-                                timer: 8000,
-                                showConfirmButton: true
-                            });
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("An error occurred:", error);
-                    }
-                });
-            }
+           function clearFormFields() {
+               document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value = '';
+           }
 
-            // Function to clear form fields after submission
-            function clearFormFields() {
-                document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value = '';
+           function updateEntriesTable(entries) {
+               var tableBody = $("#loancyclesTable tbody");
+               tableBody.empty();
 
-            }
+               $.each(entries, function (index, entry) {
+                   var row = `<tr data-id="${entry.Id}">
+                            <td>${entry.RangeLowerLimit}</td>
+                            <td>${entry.RangeUpperLimit}</td>
+                            <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
+                        </tr>`;
+                   tableBody.append(row);
+               });
+           }
 
-            // Function to update the entries table with the response data
-            function updateEntriesTable(entries) {
-                var tableBody = $("#loancyclesTable tbody");
-                tableBody.empty(); // Clear existing entries
+           // Attach click event to remove buttons (if needed)
+           $(document).on("click", ".remove-entry1", function (event) {
+               event.preventDefault(); // Prevent default behavior
+               var entryId = $(this).data("id"); // Get the ID from the button's data-id
+               removeEntry(entryId);
+           });
 
-                $.each(entries, function (index, entry) {
-                    var row = `<tr data-id="${entry.Id}">
-                                                                                                           <td>${entry.RangeLowerLimit}</td>
-                                                                                                            <td>${entry.RangeUpperLimit}</td>
-
-                                                                                                           <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
-                                                                                                       </tr>`;
-                    tableBody.append(row);
-                });
-            }
-
-            // Attach click event to remove buttons (if needed)
-            $(document).on("click", ".remove-entry1", function (event) {
-                event.preventDefault(); // Prevent default behavior
-                var entryId = $(this).data("id"); // Get the ID from the button's data-id
-                removeEntry(entryId);
-            });
-
-            // Function to remove an entry from the table
-            function removeEntry(id) {
-                $.ajax({
-                    url: '/LoanProduct/RemoveCycle', // Replace with your actual action URL
-                    type: 'POST',
-                    data: { id: id }, // Data to be sent for removal
-                    success: function (response) {
-                        if (response.success) {
-                            updateEntriesTable(response.data1); // Update the table with remaining entries
-                        } else {
-                            alert("An error occurred while removing the entry.");
-                        }
-                    },
-                    error: function () {
-                        alert("An error occurred while processing the request.");
-                    }
-                });
-            }
-        });
-
+           // Function to remove an entry from the table
+           function removeEntry(id) {
+               $.ajax({
+                   url: '/LoanProduct/RemoveCycle', // Replace with your actual action URL
+                   type: 'POST',
+                   data: { id: id }, // Data to be sent for removal
+                   success: function (response) {
+                       if (response.success) {
+                           updateEntriesTable(response.data1); // Update the table with remaining entries
+                       } else {
+                           alert("An error occurred while removing the entry.");
+                       }
+                   },
+                   error: function () {
+                       alert("An error occurred while processing the request.");
+                   }
+               });
+           }
+       });
 
     </script>
 
@@ -2546,13 +2662,13 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                               <td>${entry.RangeLowerLimit}</td>
-                                                                                                                <td>${entry.RangeUpperLimit}</td>
-                                                                                                                <td>${entry.GuarantorMultiplier}</td>
-                                                                                                                <td>${entry.LoaneeMultiplier}</td>
+                                                                                                                       <td>${entry.RangeLowerLimit}</td>
+                                                                                                                        <td>${entry.RangeUpperLimit}</td>
+                                                                                                                        <td>${entry.GuarantorMultiplier}</td>
+                                                                                                                        <td>${entry.LoaneeMultiplier}</td>
 
-                                                                                                               <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
-                                                                                                           </tr>`;
+                                                                                                                       <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                   </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2664,13 +2780,13 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                               <td>${entry.TargetLoanProductDescription}</td>
-                                                                                                                <td>${entry.ConditionDescription}</td>
-                                                                                                                <td>${entry.MaximumEligiblePercentage}</td>
+                                                                                                                       <td>${entry.TargetLoanProductDescription}</td>
+                                                                                                                        <td>${entry.ConditionDescription}</td>
+                                                                                                                        <td>${entry.MaximumEligiblePercentage}</td>
 
 
-                                                                                                               <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
-                                                                                                           </tr>`;
+                                                                                                                       <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                   </tr>`;
                     tableBody.append(row);
                 });
             }

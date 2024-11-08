@@ -46,7 +46,14 @@ namespace Application.MainBoundedContext.MicroCreditModule.Services
                     var microCreditOfficers = _microCreditOfficerRepository.AllMatching(spec, serviceHeader);
 
                     if (microCreditOfficers != null && microCreditOfficers.Any())
-                        throw new InvalidOperationException("Sorry, but the selected employee already exists as a microcredit officer!");
+                    {
+                        microCreditOfficerDTO.errormassage = string.Format(("Sorry, but the selected employee already exists as a microcredit officer!"));
+                        return microCreditOfficerDTO;
+
+                    }
+                       
+
+
                     else
                     {
                         var microCreditOfficer = MicroCreditOfficerFactory.CreateMicroCreditOfficer(microCreditOfficerDTO.EmployeeId, microCreditOfficerDTO.Remarks);

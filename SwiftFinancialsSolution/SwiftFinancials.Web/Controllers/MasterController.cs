@@ -77,6 +77,7 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<IncomeAdjustmentDTO> IncomeAdjustmentsDTOs;
 
        public ObservableCollection<PartnershipMemberDTO> partnershipMemberCollection;
+       public ObservableCollection<CustomerDTO> CustomerDTOs;
         public ObservableCollection<Guid> customerAccountsIds;
 
         private IChannelService channelService;
@@ -1997,6 +1998,30 @@ namespace SwiftFinancials.Web.Controllers
             messageGroupTarget.AddRange(items);
 
             return messageGroupTarget;
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetCreditBatchEntryFilterSelectList(string selectedValue)
+        {
+
+            List<SelectListItem> creditBatchEntryFilterSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CreditBatchEntryFilter)).Cast<CreditBatchEntryFilter>().Select(v => new SelectListItem
+            {
+
+
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+
+            creditBatchEntryFilterSelectList.AddRange(items);
+
+            return creditBatchEntryFilterSelectList;
+
+
         }
     }
 }

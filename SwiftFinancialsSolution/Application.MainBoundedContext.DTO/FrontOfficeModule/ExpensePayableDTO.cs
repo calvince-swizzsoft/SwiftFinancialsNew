@@ -218,7 +218,17 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         public AccountClosureRequestDTO AccountClosureRequest { get; set; }
 
+        public CreditBatchEntryDTO CreditBatchEntry { get; set; }
 
+        [DataMember]
+        [Display (Name = "Reference")]
+        public string CashReceiptReference { get; set; }
+
+        [DataMember]
+        [Display(Name = "Amount")]
+        public decimal CashReceiptAmount { get; set; }
+
+        public ExternalChequeDTO ExternalChequeDTO { get; set; }
 
     }
 

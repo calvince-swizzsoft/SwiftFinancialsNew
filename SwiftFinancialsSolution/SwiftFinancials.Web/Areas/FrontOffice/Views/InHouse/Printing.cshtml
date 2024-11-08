@@ -145,7 +145,7 @@
             <div class="col-md-3">
                 @Html.LabelFor(model => model.Payee, "Payee", new { @class = "control-label" })
                 <div class="input-group" data-autoclose="true">
-                    @Html.EditorFor(model => model.Payee, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                    @Html.EditorFor(model => model.Payee, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @readonly = "" } })
                     <span class="input-group-addon">
                         <a data-toggle="modal" data-target="#PayeeLookupModal" onclick="captureDetails();">
                             <span class="fa fa-search"></span>
@@ -157,23 +157,23 @@
             <!-- Step 3: Enter Amount -->
             <div class="col-md-3">
                 @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @readonly = "" } })
                 @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
             </div>
             <div class="col-md-3">
                 @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @readonly = "" } })
                 @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
             </div>
 
             <div class="col-md-3">
                 @Html.LabelFor(model => model.WordifiedAmount, htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.WordifiedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.EditorFor(model => model.WordifiedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @readonly = "" } })
                 @Html.ValidationMessageFor(model => model.WordifiedAmount, "", new { @class = "text-danger" })
             </div>
             <div class="col-md-3">
                 @Html.LabelFor(model => model.PaddedAmount, htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.PaddedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.EditorFor(model => model.PaddedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @readonly = "" } })
                 @Html.ValidationMessageFor(model => model.PaddedAmount, "", new { @class = "text-danger" })
             </div>
             <div class="col-md-3">
@@ -184,7 +184,7 @@
             <div class="col-md-3">
                 @Html.LabelFor(model => model.BankName, new { @class = "control-label" })
                 <div class="input-group" data-autoclose="true">
-                    @Html.TextBoxFor(model => model.BankName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Bank..." })
+                    @Html.TextBoxFor(model => model.BankName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @required = "Link Bank..." })
                     <span class="input-group-addon">
                         <a data-toggle="modal" data-target="#bankLinkageLookupModal"><span class="fa fa-search"></span></a>
                     </span>
@@ -192,17 +192,17 @@
             </div>
             <div class="col-md-3">
                 @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @readonly = "" } })
                 @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
             </div>
             <div class="col-md-3">
                 @Html.LabelFor(model => model.BankAccount, htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.BankAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.EditorFor(model => model.BankAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @readonly = "" } })
                 @Html.ValidationMessageFor(model => model.BankAccount, "", new { @class = "text-danger" })
             </div>
             <div class="col-md-3">
                 @Html.LabelFor(model => model.DebitChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.DebitChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.EditorFor(model => model.DebitChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @readonly = "" } })
                 @Html.ValidationMessageFor(model => model.DebitChartOfAccountAccountName, "", new { @class = "text-danger" })
             </div>
 

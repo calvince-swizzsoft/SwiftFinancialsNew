@@ -73,5 +73,9 @@ namespace Application.MainBoundedContext.DTO.MessagingModule
         [DataMember]
         [Display(Name ="E-mail Address")]
         public string CustomerEmailAddress { get; set; }
+
+        public ObservableCollection<MessageGroupDTO> messageGroupCustomerDTO { get; set; }
+
+
     }
 }

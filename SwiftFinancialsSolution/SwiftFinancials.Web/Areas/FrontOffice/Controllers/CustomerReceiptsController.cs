@@ -234,9 +234,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 else
                 {
+                    string message = string.Join(Environment.NewLine, model.ErrorMessages);
 
                     MessageBox.Show(
-                                                       "Operation Failed",
+                                                       message,
                                                        "Custmer Receipts",
                                                        MessageBoxButtons.OK,
                                                        MessageBoxIcon.Information,

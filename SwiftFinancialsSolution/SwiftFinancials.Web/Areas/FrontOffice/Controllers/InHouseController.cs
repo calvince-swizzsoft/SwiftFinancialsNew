@@ -10,6 +10,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using System.Collections.ObjectModel;
 using SwiftFinancials.Web.Helpers;
+using Microsoft.AspNet.Identity;  // Add this to access GetUserId()
 
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
@@ -105,48 +106,43 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
-
-
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
 
             var inHouseChequeDTO = new InHouseChequeDTO();
 
-            if (id.HasValue && id != Guid.Empty)
-            {
-                var parseId = id.Value;
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-                var branchDTO = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+            if (userDTO.BranchId != null)
+            {
+                inHouseChequeDTO.BranchId = (Guid)userDTO.BranchId;
+
+                var branchDTO = await _channelService.FindBranchAsync(inHouseChequeDTO.BranchId, GetServiceHeader());
 
                 if (branchDTO != null)
                 {
-                    inHouseChequeDTO.BranchId = branchDTO.Id;
                     inHouseChequeDTO.BranchDescription = branchDTO.Description;
+                    TempData["BranchId"] = inHouseChequeDTO.BranchId;
+                    TempData["BranchDescription"] = inHouseChequeDTO.BranchDescription;
                 }
                 else
                 {
                     TempData["ErrorMessage"] = "Branch details could not be found.";
-                    return RedirectToAction("Index");  
+                    return RedirectToAction("Index"); 
                 }
             }
             else
             {
-                inHouseChequeDTO.BranchId = Guid.Parse("143570C6-48BB-E811-A814-000C29142092");
-                inHouseChequeDTO.BranchDescription = "HEAD OFFICE";
-            }
-
-            TempData["BranchId"] = inHouseChequeDTO.BranchId;
-            TempData["BranchDescription"] = inHouseChequeDTO.BranchDescription;
-
-            if (TempData["SuccessMessage"] != null)
-            {
-                ViewBag.SuccessMessage = TempData["SuccessMessage"];
-                ViewBag.ChequePrintData = TempData["ChequePrintData"] as InHouseChequeDTO;
+                TempData["ErrorMessage"] = "User branch information is missing.";
+                return RedirectToAction("Index"); 
             }
 
             return View(inHouseChequeDTO);
         }
+
+
+
 
 
 
@@ -274,14 +270,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 var chequeEntries = TempData["ChequeEntries"] as List<InHouseChequeDTO>;
 
-                if (chequeEntry.BranchId == Guid.Empty)
+                var tempBranchId = TempData["BranchId"] as Guid?;
+                var tempBranchDescription = TempData["BranchDescription"] as string;
+
+                if (chequeEntry.BranchId == Guid.Empty && tempBranchId.HasValue)
                 {
-                    chequeEntry.BranchId = Guid.Parse("143570C6-48BB-E811-A814-000C29142092");  
+                    chequeEntry.BranchId = tempBranchId.Value;
                 }
 
-                if (string.IsNullOrEmpty(chequeEntry.BranchDescription))
+                if (string.IsNullOrEmpty(chequeEntry.BranchDescription) && !string.IsNullOrEmpty(tempBranchDescription))
                 {
-                    chequeEntry.BranchDescription = "HEAD OFFICE";  
+                    chequeEntry.BranchDescription = tempBranchDescription;
                 }
 
                 chequeEntries.Add(chequeEntry);
@@ -296,8 +295,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
+
         [HttpPost]
-        public JsonResult RemoveEntries(List<Guid> entryIds) 
+        public JsonResult RemoveEntries(List<Guid> entryIds)
         {
             try
             {
@@ -307,18 +307,19 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 }
 
                 var chequeEntries = TempData["ChequeEntries"] as List<InHouseChequeDTO>;
-
-                chequeEntries.RemoveAll(entry => entryIds.Contains(entry.Id)); 
-
+                chequeEntries.RemoveAll(entry => entryIds.Contains(entry.Id));
                 TempData["ChequeEntries"] = chequeEntries;
 
-                return Json(new { success = true });
+                // Return the updated list of entries
+                return Json(new { success = true, updatedEntries = chequeEntries });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, errorMessage = ex.Message });
             }
         }
+
+
 
 
         [HttpPost]
@@ -345,7 +346,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     TempData.Remove("ChequeEntries");
 
-                    TempData["SuccessMessage"] = "Cheque entries submitted successfully.";
+                    TempData["SuccessMessage"] = "Cheque submitted successfully.";
                     return RedirectToAction("Index");
                 }
                 else
@@ -416,7 +417,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     c.WordifiedAmount,
                     c.PaddedAmount,
                     c.ChequeNumber,
-                    CreatedDate = c.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss tt"),
+                    CreatedDate = c.CreatedDate.ToString("dd/mm/yyyy hh:mm:ss tt"),
                     c.Id
                 });
 

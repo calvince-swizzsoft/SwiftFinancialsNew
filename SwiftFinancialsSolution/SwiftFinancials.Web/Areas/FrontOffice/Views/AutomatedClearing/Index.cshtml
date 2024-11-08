@@ -78,7 +78,6 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Automated-Clearing</h2>
-                    <!-- Link to the processing page -->
                     <a href="@Url.Action("Processing", "AutomatedClearing", new { Area = "FrontOffice" })" class="btn-link">Go to Processing Page</a>
                 </div>
                 <div class="ibox-content">
@@ -97,7 +96,7 @@
                                     <th>Created Date</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="chequesTableBody">
                                 <tr>
                                     <td colspan="9">Loading data from server</td>
                                 </tr>
@@ -154,7 +153,7 @@
 
             // Perform an AJAX request to upload the file
             $.ajax({
-                url: '@Url.Action("UploadCheques", "AutomatedClearing", new { Area = "FrontOffice" })',
+                url: '@Url.Action("UploadElectronicJournal", "AutomatedClearing", new { Area = "FrontOffice" })',
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -164,7 +163,7 @@
                     console.log(response); // Check the structure of the response
 
                     if (response.success) {
-                        if (response.chequeData && response.chequeData.length > 0) {
+                        if (response.chequeData) {
                             updateTable(response.chequeData);
                         } else {
                             alert('No data returned to display.');
@@ -173,35 +172,33 @@
                         alert('Failed to upload cheque image: ' + response.message);
                     }
                 },
-
                 error: function () {
                     alert('Error uploading the cheque image.');
                 }
             });
         });
 
-        // Function to update table with new data
-        function updateTable(chequeData) {
-            var tableBody = $('#ChequesGrid tbody');
-            tableBody.empty();  // Clear existing rows
+        // Function to update the table with the returned data
+        function updateTable(data) {
+            var tableBody = $('#chequesTableBody');
+            tableBody.empty(); // Clear existing data
 
-            // Loop through each cheque entry and create a new row
-            $.each(chequeData, function (index, entry) {
-                var row = '<tr>' +
-                    '<td>' + entry.Status + '</td>' +
-                    '<td>' + entry.ProcessedEntries + '</td>' +
-                    '<td>' + entry.FileName + '</td>' +
-                    '<td>' + entry.FileSerialNumber + '</td>' +
-                    '<td>' + entry.DateOfFileExchange + '</td>' +
-                    '<td>' + entry.ClosedBy + '</td>' +
-                    '<td>' + entry.ClosedDate + '</td>' +
-                    '<td>' + entry.CreatedBy + '</td>' +
-                    '<td>' + entry.CreatedDate + '</td>' +
-                    '</tr>';
+            // Iterate through the data and append rows
+            $.each(data, function (index, item) {
+                var row = `<tr>
+                    <td>${item.StatusDescription}</td>
+                    <td>${item.ProcessedEntries}</td>
+                    <td>${item.FileName}</td>
+                    <td>${item.HeaderRecordFileSerialNumber}</td>
+                    <td>${item.HeaderRecordDateOfFileExchange}</td>
+                    <td>${item.ClosedBy}</td>
+                    <td>${item.ClosedDate ? item.ClosedDate : ''}</td>
+                    <td>${item.CreatedBy}</td>
+                    <td>${item.CreatedDate}</td>
+                </tr>`;
                 tableBody.append(row);
             });
         }
-
     });
     </script>
 }

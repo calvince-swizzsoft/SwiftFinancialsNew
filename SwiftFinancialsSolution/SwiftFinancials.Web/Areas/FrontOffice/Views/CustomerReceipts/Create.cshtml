@@ -71,10 +71,10 @@
         }
 
         /* Primary Tabs */
-        .nav-tabs .nav-link {
+        /*.nav-tabs .nav-link {
             background-color: transparent;
-            color: #8a949e; /* Slightly lighter grey */
-            border: 1px solid transparent;
+            color: #8a949e;*/ /* Slightly lighter grey */
+            /*border: 1px solid transparent;
         }
 
             .nav-tabs .nav-link:hover {
@@ -82,42 +82,57 @@
             }
 
             .nav-tabs .nav-link.active {
-                background-color: #8a949e; /* Lighter grey for active tab */
-                color: white;
+                background-color: #8a949e;*/ /* Lighter grey for active tab */
+                /*color: white;
                 border-color: #8a949e;
-            }
+            }*/
 
-        /* Secondary Tabs */
         .inner-nav-tabs .inner-nav-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #007bff;
             background-color: transparent;
-            color: #8a949e; /* Slightly lighter grey */
-            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+            text-decoration: none;
         }
 
             .inner-nav-tabs .inner-nav-link:hover {
-                border-color: #e9ecef #e9ecef #dee2e6;
+                color: #0056b3;
+                background-color: #e9ecef;
             }
 
             .inner-nav-tabs .inner-nav-link.active {
-                background-color: #8a949e; /* Lighter grey for active secondary tab */
-                color: white;
-                border-color: #8a949e;
+                color: #495057;
+                background-color: #fff;
+                border: 1px solid #dee2e6;
+                border-bottom-color: transparent; /* To match the Bootstrap look */
             }
 
+
         .apportionment-nav-tabs .apportionment-nav-link {
+            /*background-color: transparent;
+            color: #8a949e;*/ /* Slightly lighter grey */
+            /*border: 1px solid transparent;*/
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #007bff;
             background-color: transparent;
-            color: #8a949e; /* Slightly lighter grey */
-            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+            text-decoration: none;
         }
 
             .apportionment-nav-tabs .apportionment-nav-link:hover {
-                border-color: #e9ecef #e9ecef #dee2e6;
+                color: #0056b3;
+                background-color: #e9ecef;
             }
 
             .apportionment-nav-tabs .apportionment-nav-link.active {
-                background-color: #8a949e; /* Lighter grey for active secondary tab */
-                color: white;
-                border-color: #8a949e;
+                color: #495057;
+                background-color: #fff;
+                border: 1px solid #dee2e6;
+                border-bottom-color: transparent; /* To match the Bootstrap look */
             }
 
         /* Tab Content */

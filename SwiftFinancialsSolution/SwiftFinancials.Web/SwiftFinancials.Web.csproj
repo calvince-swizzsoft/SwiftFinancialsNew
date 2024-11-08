@@ -549,6 +549,7 @@
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureViewModel.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\ApplicationsController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\MessagingGroupsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AutomatedClearingController.cs" />
@@ -638,6 +639,8 @@
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
+    <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
+    <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\DelegateController.cs" />
@@ -1429,6 +1432,15 @@
     <Content Include="ElectronicJournalDTO\bank_9bd09654-0371-4920-89a8-f93f19e7d69b.pdf" />
     <Content Include="ElectronicJournalDTO\bank_ff172d8c-d502-43d2-9af0-5056a7a13be2.pdf" />
     <Content Include="bin.rar" />
+    <Content Include="Areas\Loaning\Views\AppraiseLoan\Print.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataProcessing\_DocumentUploadPartial.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataCapture\Edit.cshtml" />
+    <Content Include="Areas\Dashboard\Views\Applications\Index.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Index.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Create.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Edit.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Director\Index.cshtml" />
     <Content Include="Areas\Registry\Views\Director\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Director\Edit.cshtml" />
@@ -1442,6 +1454,8 @@
     <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\MainTabs.css" />
     <Content Include="Scripts\css\Marquee.css" />
+    <Content Include="Scripts\css\NavigationLink.css" />
+    <Content Include="Scripts\css\printAppraisalForm.css" />
     <Content Include="Scripts\css\SSRSGenerateReportIndex.css" />
     <Content Include="Scripts\css\SSRSModal.css" />
     <Content Include="Scripts\css\tabbing.css" />
@@ -1955,6 +1969,7 @@
     <Folder Include="Areas\Loaning\Views\AddCollateral\" />
     <Folder Include="Areas\Loaning\Views\RepaymentSchedule\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
+    <Folder Include="Areas\MicroCredit\Models\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="Areas\Registry\Views\Document\" />
     <Folder Include="File\" />
