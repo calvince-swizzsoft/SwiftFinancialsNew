@@ -77,6 +77,7 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<IncomeAdjustmentDTO> IncomeAdjustmentsDTOs;
 
        public ObservableCollection<PartnershipMemberDTO> partnershipMemberCollection;
+       public ObservableCollection<CustomerDTO> CustomerDTOs;
         public ObservableCollection<Guid> customerAccountsIds;
 
         private IChannelService channelService;
