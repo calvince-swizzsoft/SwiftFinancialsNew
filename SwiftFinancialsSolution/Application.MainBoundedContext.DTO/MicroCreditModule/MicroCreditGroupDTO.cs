@@ -9,6 +9,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Application.MainBoundedContext.DTO.RegistryModule;
+
 
 namespace Application.MainBoundedContext.DTO.MicroCreditModule
 {
@@ -173,5 +175,28 @@ namespace Application.MainBoundedContext.DTO.MicroCreditModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+        //Added Properties
+        [Display(Name = "Designation")]
+        public string Designation { get; set; }
+
+        [Display (Name = "Employer")]
+        public string Employer { get; set; }
+
+        [Display(Name ="Account Number")]
+        public string CustomerAccountCustomerReference1 { get; set; }
+
+        [Display(Name ="MemberShip Number")]
+        public string CustomerAccountCustomerReference2 { get; set; }
+
+        [Display(Name ="Personal File Number")]
+        public string CustomerAccountCustomerReference3 { get; set; }
+
+        [Display(Name ="Loan Cycle")]
+        public int LoanCycle { get; set; }
+       
+        [Display(Name = "Customer FullName")]
+        public string CustomerFullName { get; set; }
+
+        public CustomerDTO customer { get; set; }
     }
 }

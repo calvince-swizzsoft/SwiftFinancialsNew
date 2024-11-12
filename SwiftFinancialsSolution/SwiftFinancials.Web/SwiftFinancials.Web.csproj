@@ -639,6 +639,7 @@
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
+    <Compile Include="Areas\MicroCredit\Controllers\MicroCreditGroupsController.cs" />
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
@@ -1438,6 +1439,8 @@
     <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Create.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Edit.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Details.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Index.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

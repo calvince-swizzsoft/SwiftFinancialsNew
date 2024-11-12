@@ -294,7 +294,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
             // Operations Sub-Menus
             new NavigationMenu { AreaCode = 0x000124F8 + 2, IsArea = false, Description = "Loaning", Icon = "fa fa-money", ControllerName = "Applications", ActionName = "Index", AreaName = "Dashboard", Code = 0x000124F8 + 4 }, 
             new NavigationMenu { AreaCode = 0x000124F8 + 2, IsArea = false, Description = "Messaging", Icon = "fa fa-comments-o", ControllerName = "TextAlerts", ActionName = "Index", AreaName = "Dashboard", Code = 0x000124F8 + 5 }, 
-            new NavigationMenu { AreaCode = 0x000124F8 + 2, IsArea = false, Description = "Utilities", Icon = "fa fa-bars", ControllerName = "FinancialPosition", ActionName = "Create", AreaName = "Dashboard", Code = 0x000124F8 + 6 }
+            new NavigationMenu { AreaCode = 0x000124F8 + 2, IsArea = false, Description = "Utilities", Icon = "fa fa-bars", ControllerName = "FinancialPosition", ActionName = "Create", AreaName = "Dashboard", Code = 0x000124F8 + 6 },
 
 
 
@@ -319,7 +319,11 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{Description = "MicroCredit", IsArea = true, Code = 0x00007918},
                 new NavigationMenu{AreaCode = 0x00007918, IsArea = false, Description = "SetUp", Icon="fa fa-bars", ControllerName="MicroCreditOfficers", ActionName="Index", AreaName = "MicroCredit", Code = 0x00007918 + 1},
                 new NavigationMenu{AreaCode = 0x00007918, IsArea = false, Description = "Operations", Icon="fa fa-bars", ControllerName="MicroCreditOfficers", ActionName="Index", AreaName = "MicroCredit", Code = 0x00007918 + 2},
-                new NavigationMenu { AreaCode = 0x00007918 + 1, IsArea = false, Description = "Officers", Icon = "fa fa-bars", ControllerName = "MicroCreditOfficers", ActionName = "Index", AreaName = "MicroCredit", Code = 0x00007918 + 2},
+                new NavigationMenu { AreaCode = 0x00007918 + 1, IsArea = false, Description = "Officers", Icon = "fa fa-bars", ControllerName = "MicroCreditOfficers", ActionName = "Index", AreaName = "MicroCredit", Code = 0x00007918 + 3},
+                new NavigationMenu { AreaCode = 0x00007918 + 2, IsArea = false, Description = "Groups", Icon = "fa fa-bars", ControllerName = "MicroCreditGroups", ActionName = "Index", AreaName = "MicroCredit", Code = 0x00007918 + 4},
+                new NavigationMenu { AreaCode = 0x00007918 + 2, IsArea = false, Description = "Apportionment", Icon = "fa fa-bars", ControllerName = "MicroCreditApportionment", ActionName = "Index", AreaName = "MicroCredit", Code = 0x00007918 + 5},
+
+
 
             /*
                 //test - area 62,000
