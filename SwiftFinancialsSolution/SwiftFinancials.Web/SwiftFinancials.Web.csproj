@@ -645,6 +645,7 @@
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\DeviceViewModel.cs" />
+    <Compile Include="Areas\Registry\Controllers\DirectorController.cs" />
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
@@ -1439,6 +1440,10 @@
     <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Create.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Edit.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditOfficers\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Director\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Director\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Director\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Director\Details.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Index.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
@@ -1957,6 +1962,7 @@
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
     <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\Delegate\" />
     <Folder Include="Areas\HumanResource\Views\Document\" />
     <Folder Include="Areas\HumanResource\Views\Leave\" />
     <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
