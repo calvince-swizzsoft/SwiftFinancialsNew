@@ -60,40 +60,48 @@
                     @using (Html.BeginForm("Edit", "Company", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-                        <div class="row">
-                            <div class="col-md-8">
+                        @*<div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="font-bold">Logo</label>
+                                        <div class="image-box" style="border: 1px solid #ddd; border-radius: 5px; padding: 5px; text-align: center; width: 150px; height: 150px; overflow: hidden;">
+                                            <img id="logoPreview" src="https://via.placeholder.com/150" alt="Logo Preview" style="width: 100%; height: 100%; object-fit: cover;" />
+                                        </div>
+                                        <input type="file" class="form-control-file mt-2" name="Logo" id="logoInput" style="border-radius: 5px;" accept="image/*" />
+                                    </div>
+                                </div>
+                            </div>*@
+                        <div class="row mb-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="font-bold">Logo</label>
-                                    <div class="image-box" style="border: 1px solid #ddd; border-radius: 5px; padding: 5px; text-align: center; width: 150px; height: 150px; overflow: hidden;">
-                                        <img id="logoPreview" src="https://via.placeholder.com/150" alt="Logo Preview" style="width: 100%; height: 100%; object-fit: cover;" />
-                                    </div>
-                                    <input type="file" class="form-control-file mt-2" name="Logo" id="logoInput" style="border-radius: 5px;" accept="image/*" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="col-md-4">
+
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "", @style = "border-radius: 5px;" } })
@@ -392,11 +400,11 @@
                         </div>
                     }
                 </div>
+
             </div>
         </div>
     </div>
 </div>
-
 
 @*<script src="~/Scripts/js/navlink.js"></script>*@
 

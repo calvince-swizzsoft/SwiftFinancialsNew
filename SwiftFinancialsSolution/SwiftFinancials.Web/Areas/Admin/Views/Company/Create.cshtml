@@ -33,13 +33,13 @@
         }
 
             /* Hover effect for the tabs */
-            .animated-tabs .nav-link:hover {
-                color: #ffffff; /* Text color on hover */
-                background-color: #007bff; /* Background color change */
-                transform: scale(1.1); /* Slightly scale up */
-                border-radius: 5px; /* Rounded corners for a smooth look */
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-            }
+            /*.animated-tabs .nav-link:hover {
+                color: #ffffff;*/ /* Text color on hover */
+                /*background-color: #007bff;*/ /* Background color change */
+                /*transform: scale(1.1);*/ /* Slightly scale up */
+                /*border-radius: 5px;*/ /* Rounded corners for a smooth look */
+                /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/ /* Subtle shadow for depth */
+            /*}*/
 </style>
 <div class="wrapper wrapper-content" style="padding: 20px;">
     <div class="row">
@@ -62,15 +62,15 @@
                         @Html.AntiForgeryToken()
                         <div class="container">
                             <!-- Company Information Section -->
-                            <div class="row mb-4">
+                            <!--<div class="row mb-4">
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
-                                </div>
-                                <div class="col-md-4">
+                                </div>-->
+                            @*<div class="col-md-4">
                                     <div class="form-group">
                                         <label class="font-bold">Logo</label>
                                         <div class="image-box" style="border: 1px solid #ddd; border-radius: 5px; padding: 5px; text-align: center; width: 150px; height: 150px; overflow: hidden;">
@@ -78,43 +78,33 @@
                                         </div>
                                         <input type="file" class="form-control-file mt-2" name="Logo" id="logoInput" style="border-radius: 5px;" accept="image/*" />
                                     </div>
-                                </div>
-                            </div>
-
-                            <!-- Additional Fields (Optional) -->
-                            <div class="row mb-4">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="font-bold">Additional Field 1</label>
-                                        <input type="text" class="form-control" placeholder="Enter additional info 1" style="border-radius: 5px;" />
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="font-bold">Additional Field 2</label>
-                                        <input type="text" class="form-control" placeholder="Enter additional info 2" style="border-radius: 5px;" />
-                                    </div>
-                                </div>
-                            </div>
-
+                                </div>*@
+                            <!--</div>-->
                             <!-- Registration Details Section -->
                             <h3>Registration Details</h3>
                             <div class="row mb-4">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "font-bold" })
                                         @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "", @style = "border-radius: 5px;" } })
                                         @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "font-bold" })
                                         @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "", @style = "border-radius: 5px;" } })
                                         @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "font-bold" })
                                         @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "", @style = "border-radius: 5px;" } })

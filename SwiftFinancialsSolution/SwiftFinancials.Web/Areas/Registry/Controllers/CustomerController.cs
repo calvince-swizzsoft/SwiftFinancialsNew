@@ -94,19 +94,40 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
+            ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
+            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
 
+            ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
+            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+            var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
+            var investmentProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var savingsProducts = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+            ViewBag.investment = investment;
+            ViewBag.savings = savingsProductDTOs;
+            ViewBag.debit = debitypes;
+            ViewBag.creditTypes = creditTypes;
             var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
 
-            return View(customerDTO.ProjectedAs<CustomerDTO>());
+            return View(customerDTO.MapTo<CustomerBindingModel>());
 
-            var documents = await GetDocumentsAsync(id);
+            //var documents = await GetDocumentsAsync(id);
 
-            if (documents == null || documents.Count == 0)
-            {
-                return View();
-            }
+            //if (documents == null || documents.Count == 0)
+            //{
+            //    return View();
+            //}
 
-            return View(documents);
+            //return View(documents);
         }
 
 
@@ -181,6 +202,23 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.creditTypes = creditTypes;
 
 
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                // Query to get the next reference by incrementing the current max
+                var getNextReferenceQuery = string.Format("SELECT ISNULL(MAX(Reference1), 0) + 1 AS NextReference FROM {0}Customers", DefaultSettings.Instance.TablePrefix);
+
+                int newReference;
+
+                using (var getCommand = new SqlCommand(getNextReferenceQuery, connection))
+                {
+                    var result = await getCommand.ExecuteScalarAsync();
+                    newReference = (result != DBNull.Value) ? Convert.ToInt32(result) : 1; // Start at 1 if there are no rows
+                }
+
+            }
             return View();
         }
 
@@ -319,6 +357,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                         1,
                         GetServiceHeader()
                     );
+                   // await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
+                    
                     TempData["SuccessMessage"] = "customer created successfully";
 
                     if (result == null || !string.IsNullOrEmpty(result.ErrorMessageResult))
@@ -355,8 +395,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     //        TempData["DefaultError"] = "Unknown customer type.";
                     //        return RedirectToAction("index", customerBindingModel);
                     //}
-                    // Handle Document Upload to DB
-                    //await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
+                    //Handle Document Upload to DB
 
                     //// Refresh ViewBag Select Lists
                     //InitializeViewBagSelectLists(customerBindingModel);
@@ -505,7 +544,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 {
                     command.Parameters.AddWithValue("@Id", document.Id);
                     command.Parameters.AddWithValue("@CustomerId", document.CustomerId);
-
                     command.Parameters.AddWithValue("@PassportPhoto", document.PassportPhoto ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@SignaturePhoto", document.SignaturePhoto ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@IDCardFrontPhoto", document.IDCardFrontPhoto ?? (object)DBNull.Value);
