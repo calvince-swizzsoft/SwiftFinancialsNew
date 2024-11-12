@@ -30,26 +30,88 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
+
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
-
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindMessageGroupsByFilterInPageAsync(jQueryDataTablesModel.sSearch, (jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength), jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindMessageGroupsByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? pageCollectionInfo.PageCollection.Count
+                    : totalRecordCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var orderedPageCollection = pageCollectionInfo.PageCollection
+                    .OrderByDescending(item => item.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                return this.DataTablesJson(
+                    items: orderedPageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<MessageGroupDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<MessageGroupDTO> { },
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+        }   
+        
+        
+        
+        [HttpPost]
+        public async Task<JsonResult> CustomerIndex(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.IdentityCardNumber, pageIndex,
+                jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? pageCollectionInfo.PageCollection.Count
+                    : totalRecordCount;
+
+                var orderedPageCollection = pageCollectionInfo.PageCollection
+                    .OrderByDescending(item => item.CreatedDate)
+                    .ToList();
+
+                return this.DataTablesJson(
+                    items: orderedPageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<CustomerDTO> { },
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+        } 
+        
 
         public async Task<ActionResult> Create()
         {
@@ -62,26 +124,30 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
 
 
-        public async Task<ActionResult> CustomerLookUp(Guid? id, MessageGroupDTO model)
+        public async Task<ActionResult> CustomerLookUp(Guid? id, MessageGroupDTO messageGroupDTO)
         {
-            await ServeNavigationMenus();
+            if (id == Guid.Empty)
+            {
+                return Json(new { success = false, message = "Invalid ID" });
+            }
 
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-                return View("create");
+                return View();
             }
+
+            ViewBag.target = GetMessagingGroupTargetSelectList(string.Empty);
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
             if (customer != null)
             {
-
-                model.customer[0].Id = customer.Id;
-                model.customer[0].IndividualFirstName = customer.FullName;
-                model.customer[0].AddressMobileLine = customer.AddressMobileLine;
-                model.customer[0].AddressEmail = customer.AddressEmail;
+                messageGroupDTO.CustomerID = customer.Id;
+                messageGroupDTO.Customer = customer.FullName;
+                messageGroupDTO.CustomerEmailAddress = customer.AddressEmail;
+                messageGroupDTO.CustomerMobileNumber = customer.AddressMobileLine;
 
 
                 var customerType = customer.TypeDescription; var serialNumber = customer.PaddedSerialNumber; var accountNumber = customer.Reference1; var membershipNumber = customer.Reference2;
@@ -93,24 +159,26 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                     success = true,
                     data = new
                     {
-                        CustomerID = model.customer[0].Id,
-                        Customer = model.customer[0].IndividualFirstName,
-                        Mobile = model.customer[0].AddressMobileLine,
-                        Email = model.customer[0].AddressEmail,
-                        CustomerType = customerType,
-                        SerialNumber = serialNumber,
-                        AccountNumber = accountNumber,
-                        MembershipNumber = membershipNumber,
-                        PayrollNumber = payrollNumber,
-                        Gender = gender,
-                        MaritalStatus = maritalStatus,
-                        IdentityCardNumber = identityCardNumber
+                        ID = messageGroupDTO.CustomerID,
+                        Name = messageGroupDTO.Customer,
+                        Email = messageGroupDTO.CustomerEmailAddress,
+                        Phone = messageGroupDTO.CustomerMobileNumber
+
+                        //CustomerType = customerType,
+                        //SerialNumber = serialNumber,
+                        //AccountNumber = accountNumber,
+                        //MembershipNumber = membershipNumber,
+                        //PayrollNumber = payrollNumber,
+                        //Gender = gender,
+                        //MaritalStatus = maritalStatus,
+                        //IdentityCardNumber = identityCardNumber
                     }
                 });
             }
 
             return Json(new { success = false, message = "Customer not found" });
         }
+
 
 
 

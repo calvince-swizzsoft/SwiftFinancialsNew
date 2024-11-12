@@ -117,8 +117,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
-            //pageIndex++;
-
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
@@ -161,16 +159,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-
-                //var observableCollection1 = await _channelService.FindCashDepositRequestsAsync(GetServiceHeader());
-
-                //cashWithdrawalRequestDTO.CashDepositRequests = observableCollection.ToList();
-
-                //var model = new CashWithdrawalRequestDTO
-                //{
-                // Initialize with empty list if no data is available
-                // CashDepositRequests = observableCollection1.ToList()
-                //};
 
                 ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
@@ -232,6 +220,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CashWithdrawalRequestDTO cashWithdrawalRequestDTO)
         {
+
             cashWithdrawalRequestDTO.ValidateAll();
 
             if (!cashWithdrawalRequestDTO.HasErrors)
@@ -250,28 +239,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
-
-        //public async Task<ActionResult> Approval()
-        //{
-        //    await ServeNavigationMenus();
-        //    Guid id = new Guid();
-
-        //    ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-
-        //    var CashWithdrawal = await _channelService.FindCashWithdrawalRequestAsync(id, GetServiceHeader());
-
-        //    ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-        //    return View(CashWithdrawal);
-        //}
-
-        //public async Task<ActionResult> AuthorizationView (Guid id)
-        //{
-
-        //    return View
-
-        //}
-
         [HttpPost]
         public async Task<ActionResult> HandleRequest(Guid id, int requestType, bool isApproval, String remarks)
         {
@@ -283,7 +250,32 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             switch (cashRequestType)
             {
                 case FrontOfficeCashRequestType.CashWithdrawal:
+                    
                     var cashWithdrawalRequest = await _channelService.FindCashWithdrawalRequestAsync(id, GetServiceHeader());
+
+
+                    if ((CashWithdrawalRequestType)cashWithdrawalRequest.Type == CashWithdrawalRequestType.ImmediateNotice)
+                    {
+
+                        if (cashWithdrawalRequest.MaturityDate != DateTime.Today)
+                        {
+
+                  MessageBox.Show(
+                  "The Maturity Date must be today's date for Immediate Notice withdrawals.",
+                  "Error",
+                  MessageBoxButtons.OK,
+                  MessageBoxIcon.Error,
+                  MessageBoxDefaultButton.Button1,
+                  MessageBoxOptions.ServiceNotification
+                 
+                  
+                  );
+
+                            return RedirectToAction("Create");
+                        }
+
+                    }
+                    
                     var withdrawalAuthorization = await _channelService.AuthorizeCashWithdrawalRequestAsync(cashWithdrawalRequest, customerTransactionAuthOption, GetServiceHeader());
 
                     cashWithdrawalRequest.Remarks = remarks;
@@ -337,53 +329,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 case FrontOfficeCashRequestType.CashDeposit:
                     var cashDepositRequest = await _channelService.FindCashDepositRequestAsync(id, GetServiceHeader());
                     var depositAuthorization = await _channelService.AuthorizeCashDepositRequestAsync(cashDepositRequest, customerTransactionAuthOption, GetServiceHeader());
-                    //var depositingAccount = await _channelService.FindCustomerAccountAsync(cashDepositRequest.CustomerAccountId, true, true, true, true, GetServiceHeader());
-
-                    //cashDepositRequest.Remarks = remarks;
-
-                    //int txnType = (int)FrontOfficeTransactionType.CashDeposit;
-
-                    //CustomerTransactionModel transactionModel = new CustomerTransactionModel
-                    //{
-                    //    CustomerAccount = depositingAccount,
-
-                    //    BranchId = depositingAccount.BranchId,
-
-                    //    TotalValue = cashDepositRequest.Amount
-                    //};
-
-                    //var depositBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
-
-
-                    //var tellerToDebit = await FindTellerWithRequestDTO(cashDepositRequest);
-
-                    //transactionModel.PrimaryDescription = "Customer Deposit To Teller";
-                    //transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", depositBranch.Code, tellerToDebit.Code, tellerToDebit.ItemsCount);
-
-                    //transactionModel.Reference = string.Format("{0}", transactionModel.Reference ?? depositingAccount.CustomerReference1);
-
-                    //var depositRandom = new Random();
-                    //var depositCodeString = DateTime.UtcNow.ToString("yyMMddHHmmss") + depositRandom.Next(1000, 9999);
-                    //transactionModel.TransactionCode = int.Parse(depositCodeString);
-
-                    //transactionModel.DebitChartOfAccountId = (Guid)tellerToDebit.ChartOfAccountId;
-
-                    //transactionModel.DebitCustomerAccountId = depositingAccount.Id;
-                    //transactionModel.DebitCustomerAccount = depositingAccount;
-                    //transactionModel.CreditCustomerAccountId = depositingAccount.Id;
-                    //transactionModel.CreditCustomerAccount = depositingAccount;
-                    //transactionModel.CreditChartOfAccountId = depositingAccount.CustomerAccountTypeTargetProductChartOfAccountId;
-
-                    //if (depositAuthorization && await _channelService.PostCashDepositRequestAsync(cashDepositRequest, GetServiceHeader())) {
-
-                       
-
-                    //    var depositTariffs = await _channelService.ComputeTellerCashTariffsAsync(transactionModel.CustomerAccount, transactionModel.TotalValue, txnType, GetServiceHeader());
-                    //    await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, depositTariffs, GetServiceHeader());
-                    //    transactionModel.CustomerAccount.NewAvailableBalance = transactionModel.CustomerAccount.AvailableBalance + transactionModel.TotalValue;
-                    //    var result = await _channelService.UpdateCustomerAccountAsync(transactionModel.CustomerAccount, GetServiceHeader());
-                    //}
-
+              
                     return HandleAuthorizationResult(depositAuthorization, isApproval);
 
                 case FrontOfficeCashRequestType.CashTransfer:
