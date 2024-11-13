@@ -1446,6 +1446,7 @@
     <Content Include="Areas\Registry\Views\Director\Details.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Index.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Create.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
