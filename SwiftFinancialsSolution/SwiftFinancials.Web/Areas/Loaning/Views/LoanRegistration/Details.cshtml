@@ -477,7 +477,7 @@
                                                     foreach (var guarantors in ViewBag.LoanGuarantors)
                                                     {
                                                         <tr>
-                                                            <td>@guarantors.Customer.FullName</td>
+                                                            <td>@guarantors.Customer.CustomerIndividualFirstName &nbsp; @guarantors.Customer.CustomerIndividualLastName</td>
                                                             <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
                                                             <td>@guarantors.Customer.Reference1</td>
                                                             <td>@guarantors.AppraisalFactor</td>

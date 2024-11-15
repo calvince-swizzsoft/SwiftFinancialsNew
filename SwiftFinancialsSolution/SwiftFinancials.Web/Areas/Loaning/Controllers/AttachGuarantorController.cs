@@ -16,6 +16,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Configuration;
 using System.Windows.Forms;
+using Infrastructure.Crosscutting.Framework.Utils;
 
 namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
@@ -32,17 +33,20 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, string text, int pageIndex, int pageSize, LoanCaseDTO loancaseDTO)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, string text, int pageIndex, int pageSize)
         {
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
 
+            pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByCustomerAccountTypeTargetProductIdInPageAsync(loancaseDTO.Id, pageIndex, pageSize, true, true, true, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength,
+                GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -52,7 +56,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<CustomerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
@@ -112,95 +116,204 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             Session["loanCaseId"] = myloanCases.Id;
 
+            Session["LoaneeId"] = myloanCases.CustomerId;
+
             return View(loanGuarantorDTO);
         }
 
-        public async Task<ActionResult> Search(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> LoanGuarantorLookUp(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return Json(new { success = false, message = "Invalid ID" });
+            }
+
+            var guarantorLookUp = new LoanGuarantorDTO();
+
+            var loanGuarantor = await _channelService.FindCustomerAsync(id, GetServiceHeader());
+            if (loanGuarantor != null)
+            {
+                Guid LoanProductId = Guid.Empty;
+
+                if (Session["LoanProductIdID"] != null)
+                    LoanProductId = (Guid)Session["LoanProductIdID"];
+
+                //var Balances = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(id, LoanProductId, true, true, true, true,
+                //    GetServiceHeader());
+
+                //var sumCarryforwards
+                //var bookBal
+
+                // Calculate Committed Shares
+
+                guarantorLookUp.TotalShares = 300000;
+
+
+                guarantorLookUp.GuarantorFullName = loanGuarantor.FullName;
+                guarantorLookUp.GuarantorId = loanGuarantor.Id;
+                guarantorLookUp.GuarantorEmployerDescription = loanGuarantor.StationZoneDivisionEmployerDescription;
+                guarantorLookUp.GuarantorStationDescription = loanGuarantor.StationDescription;
+                guarantorLookUp.GuarantorSerialNumber = loanGuarantor.SerialNumber;
+                guarantorLookUp.GuarantorIdentificationNumber = loanGuarantor.IdentificationNumber;
+                guarantorLookUp.GuarantorPayrollNumber = loanGuarantor.IndividualPayrollNumbers;
+
+                guarantorLookUp.AppraisalFactor = await _channelService.GetGuarantorAppraisalFactorAsync(LoanProductId, guarantorLookUp.TotalShares, GetServiceHeader());
+
+                var findAnotherGuarantee = await _channelService.FindLoanGuarantorsByCustomerIdAsync(guarantorLookUp.GuarantorId, GetServiceHeader());
+
+                var totalAmountsGuaranteed = new ObservableCollection<decimal>();
+
+                foreach (var sum in findAnotherGuarantee)
+                {
+                    totalAmountsGuaranteed.Add(sum.AmountGuaranteed);
+                }
+                decimal totalSum = totalAmountsGuaranteed.Sum();
+
+                guarantorLookUp.CommittedShares = totalSum;
+
+                Session["GuarantorDetailsAfterLookUp"] = guarantorLookUp;
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        GuarantorFullName = guarantorLookUp.GuarantorFullName,
+                        GuarantorId = guarantorLookUp.GuarantorId,
+                        GuarantorEmployerDescription = guarantorLookUp.GuarantorEmployerDescription,
+                        GuarantorStationDescription = guarantorLookUp.GuarantorStationDescription,
+                        GuarantorSerialNumber = guarantorLookUp.GuarantorSerialNumber,
+                        GuarantorIdentificationNumber = guarantorLookUp.GuarantorIdentificationNumber,
+                        GuarantorPayrollNumber = guarantorLookUp.GuarantorPayrollNumber,
+                        AppraisalFactor = guarantorLookUp.AppraisalFactor,
+                        CommittedShares = guarantorLookUp.CommittedShares,
+
+                        // Return Committed Shares after successful calculation...
+
+                        TotalShares = guarantorLookUp.TotalShares
+                    }
+                });
+            }
+
+            return Json(new { success = false, message = "Customer not found" });
+        }
+
+
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(LoanGuarantorDTO loanGuarantorDTO)
         {
             await ServeNavigationMenus();
 
-            Guid parseId;
+            var loanguarantorsDTOs = Session["loanguarantorsDTOs"] as ObservableCollection<LoanGuarantorDTO>;
 
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            if (loanguarantorsDTOs == null)
             {
-                return View();
+                loanguarantorsDTOs = new ObservableCollection<LoanGuarantorDTO>();
             }
 
-
-            if (Session["loanCaseId"] != null)
+            foreach (var guarantorDTO in loanGuarantorDTO.Customer)
             {
-                Guid loanCaseId = (Guid)Session["loanCaseId"];
+                var existingEntry = loanguarantorsDTOs.FirstOrDefault(e => e.GuarantorId == guarantorDTO.GuarantorId);
 
-                var findLoanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loanCaseId, GetServiceHeader());
-                ViewBag.LoanGuarantors = findLoanGuarantors;
+                if (existingEntry != null)
+                {
+                    MessageBox.Show(Form.ActiveForm, "The selected Customer has already been added to the guarantors list.", "Loan Guarantor Attachment",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"The selected Customer has already been added to the guarantors list."
+                    });
+                }
+
+                Guid loaneeId = (Guid)Session["LoaneeId"];
+                Guid loanProductId = (Guid)Session["LoanProductIdID"];
+
+                loanGuarantorDTO = Session["GuarantorDetailsAfterLookUp"] as LoanGuarantorDTO;
+                guarantorDTO.CustomerId = loanGuarantorDTO.GuarantorId;
+                guarantorDTO.LoaneeCustomerId = loaneeId;
+                guarantorDTO.LoanProductId = loanProductId;
+
+                if (loanGuarantorDTO.TotalShares <= loanGuarantorDTO.AmountGuaranteed)
+                {
+                    MessageBox.Show(Form.ActiveForm, "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares.", "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                    return Json(new { success = false, message = "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares." });
+                }
+
+                loanguarantorsDTOs.Add(guarantorDTO);
             }
 
-            if (Session["loanCases"] != null)
-            {
-                loanGuarantorDTO.LoanCase = Session["loanCases"] as LoanCaseDTO;
-            }
+            Session["loanguarantorsDTOs"] = loanguarantorsDTOs;
+            Session["guarantorDTO"] = loanGuarantorDTO;
 
-
-            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-
-            if (customer != null)
-            {
-                loanGuarantorDTO.Customer = customer;
-
-                Session["Customer"] = loanGuarantorDTO.Customer;
-            }
-
-            return View("Create", loanGuarantorDTO);
+            return Json(new { success = true, entries = loanguarantorsDTOs });
         }
+
+
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanguarantorsDTOs = Session["loanguarantorsDTOs"] as ObservableCollection<LoanGuarantorDTO>;
+
+            if (loanguarantorsDTOs != null)
+            {
+                var entryToRemove = loanguarantorsDTOs.FirstOrDefault(e => e.GuarantorId == id);
+                if (entryToRemove != null)
+                {
+                    loanguarantorsDTOs.Remove(entryToRemove);
+
+                    Session["loanguarantorsDTOs"] = loanguarantorsDTOs;
+                }
+            }
+
+            return Json(new { success = true, data = loanguarantorsDTOs });
+        }
+
+
+
 
 
         [HttpPost]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
         {
-            var customerDTO = await _channelService.FindCustomerAsync(loanGuarantorDTO.Customer.Id, GetServiceHeader());
+            Guid loancaseId = (Guid)Session["loanCaseId"];
 
-            var loanCaseDTO = await _channelService.FindLoanCaseAsync(loanGuarantorDTO.LoanCase.Id, GetServiceHeader());
-
-            loanGuarantorDTO.LoanCase = Session["loanCases"] as LoanCaseDTO;
-
-            var guarantor = loanGuarantorDTO.CustomerIndividualSalutationDescription + " " + loanGuarantorDTO.CustomerIndividualFirstName + " " + loanGuarantorDTO.CustomerIndividualLastName;
-
-            // cheat
-            loanGuarantorDTO.CustomerId = customerDTO.Id;
-            loanGuarantorDTO.LoaneeCustomerId = loanCaseDTO.CustomerId;
-            loanGuarantorDTO.LoanProductId = loanCaseDTO.LoanProductId;
-            loanGuarantorDTO.TotalShares = 10000;
-            loanGuarantorDTO.CommittedShares = 10000;
-            loanGuarantorDTO.AmountPledged = 10000;
-            loanGuarantorDTO.AppraisalFactor = 1;
-            loanGuarantorDTO.LoanCaseId = loanCaseDTO.Id;
-            loanGuarantorDTO.LoanCaseBranchId = loanCaseDTO.BranchId;
-
+            loanGuarantorDTO = Session["guarantorDTO"] as LoanGuarantorDTO;
 
             loanGuarantorDTO.ValidateAll();
 
-            await ServeNavigationMenus();
+            ObservableCollection<LoanGuarantorDTO> loanguarantors = new ObservableCollection<LoanGuarantorDTO>();
+
+            var loanGuarantorsSubmit = new ObservableCollection<LoanGuarantorDTO>();
+
+            if (Session["loanguarantorsDTOs"] != null)
+            {
+                loanguarantors = Session["loanguarantorsDTOs"] as ObservableCollection<LoanGuarantorDTO>;
+            }
 
             if (!loanGuarantorDTO.HasErrors)
             {
-                var status = Convert.ToInt32(Session["status"].ToString());
-                if (status != 48826)
-                {
-                    //TempData["status"] = "You can only attach guarantor for loans that are registered !";
-
-                    MessageBox.Show(Form.ActiveForm, "You can only attach guarantor for loans that are registered !", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View();
-                }
 
                 string message = string.Format(
-                                       "{0}.\nDo you want to proceed and add the selected customer as guarantor?",
-                                       guarantor
-                                   );
+                                  "Do you want to proceed?"
+                              );
 
                 // Show the message box with Yes/No options
                 DialogResult result = MessageBox.Show(
                     message,
-                    "Add Loan Guarantor",
+                    "Loan Guarantor Attachment",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question,
                     MessageBoxDefaultButton.Button1,
@@ -210,177 +323,41 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 if (result == DialogResult.Yes)
                 {
-                    var AddLoanGuarantor = await _channelService.AddLoanGuarantorAsync(loanGuarantorDTO, GetServiceHeader());
+                    await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loancaseId, loanguarantors, GetServiceHeader());
 
-                    loanGuarantorDTO.Customer = null;
+                    MessageBox.Show(Form.ActiveForm, "Operation Completed Succeffully", "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Warning,
+                        MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-                    if (AddLoanGuarantor.ErrorMsgResult != null)
-                    {
-                        await ServeNavigationMenus();
+                    Session["loanguarantorsDTOs"] = null;
+                    Session["loanCaseId"] = null;
+                    Session["guarantorDTO"] = null;
+                    Session["LoanProductIdID"] = null;
+                    Session["GuarantorDetailsAfterLookUp"] = null;
+                    Session["LoaneeId"] = null;
+                    Session["LoanProductIdID"] = null;
 
-                        MessageBox.Show(Form.ActiveForm, AddLoanGuarantor.ErrorMsgResult, "Failed", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                        //TempData["failedErrorMsg"] = AddLoanGuarantor.ErrorMsgResult;
-                        Guid loanCaseId = (Guid)Session["loanCaseId"];
-
-                        var findLoanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loanCaseId, GetServiceHeader());
-                        ViewBag.LoanGuarantors = findLoanGuarantors;
-
-                        Session.Remove("loanCaseId");
-                        Session.Remove("loanCases");
-                        Session.Remove("Customer");
-                        Session.Remove("status");
-
-                        return View();
-                    }
-
-                    if (Session["loanCaseId"] != null)
-                    {
-                        Guid loanCaseId = (Guid)Session["loanCaseId"];
-
-                        var findLoanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loanCaseId, GetServiceHeader());
-                        ViewBag.LoanGuarantors = findLoanGuarantors;
-                    }
-
-                    loanGuarantorDTO.Customer = null;
-
-                    MessageBox.Show(Form.ActiveForm, "Operation completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                    Session.Clear();
-                    return View();
+                    return RedirectToAction("Index", "LoanRegistration");
                 }
                 else
                 {
-                    IsBusy = false;
+                    MessageBox.Show(Form.ActiveForm, "Operation Completed Succeffully", "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Warning,
+                       MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-                    Session.Clear();
                     return View(loanGuarantorDTO);
                 }
             }
+
             else
             {
-                MessageBox.Show($"An error occurred: {loanGuarantorDTO.ErrorMessages}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                await ServeNavigationMenus();
 
-
-                IsBusy = false;
                 var errorMessages = loanGuarantorDTO.ErrorMessages;
 
-                TempData["ErrorMsg"] = "Failed to attach Loan Guarantor.";
+                MessageBox.Show(Form.ActiveForm, "Operation failed.", "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification);
 
-                Session.Clear();
                 return View(loanGuarantorDTO);
             }
-        }
-
-
-        [HttpPost]
-        public async Task<ActionResult> Finish()
-        {
-            await ServeNavigationMenus();
-            //if (Session["loanCaseId"] != null || Session["LoanProductIdID"] != null || Session["sourceCustomerAccountId"] != null)
-            //{
-            //    Guid loanCaseID = (Guid)Session["loanCaseId"];
-            //    Guid loanProductId = (Guid)Session["LoanProductIdID"];
-            //    Guid sourceCustomerAccountId = (Guid)Session["sourceCustomerAccountId"];
-
-
-            //    var LoanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loanCaseID, GetServiceHeader());
-
-            //    ObservableCollection<LoanGuarantorDTO> loanGuarantors = new ObservableCollection<LoanGuarantorDTO>();
-
-            //    foreach (var guarantors in LoanGuarantors)
-            //    {
-            //        loanGuarantors.Add(guarantors);
-            //    }
-
-            //    await _channelService.AttachLoanGuarantorsAsync(sourceCustomerAccountId, loanProductId, loanGuarantors, 1234, GetServiceHeader());
-
-            //    MessageBox.Show(Form.ActiveForm, "Operation completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-            //    return RedirectToAction("Index", "LoanRegistration");
-            //}
-
-            //TempData["emptyIDs"] = "Sorry, something went wrong !";
-            //return View("Create");
-
-            MessageBox.Show(Form.ActiveForm, "Operation completed successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-            return RedirectToAction("Index", "LoanRegistration");
-        }
-
-
-        [HttpPost]
-        public async Task<ActionResult> CallDeleteGuarantor(Guid GuarantorId, Guid LoanCaseId)
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    await conn.OpenAsync();
-                    var query = "DELETE  FROM swiftFin_LoanGuarantors WHERE LoanCaseId = @LoanCaseId AND CustomerId = @CustomerId";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@LoanCaseId", LoanCaseId);
-                        cmd.Parameters.AddWithValue("@CustomerId", GuarantorId);
-                        int rowsAffected = await cmd.ExecuteNonQueryAsync();
-
-                        if (rowsAffected > 0)
-                        {
-                            return new HttpStatusCodeResult(200);
-                        }
-                        else
-                        {
-                            return new HttpStatusCodeResult(404, "Guarantor and Loancase not found");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return new HttpStatusCodeResult(500, "Internal server error: " + ex.Message);
-            }
-        }
-
-
-        [HttpPost]
-        public async Task<ActionResult> removeGuarantors(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
-        {
-            await ServeNavigationMenus();
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-
-            Guid loanCaseId = (Guid)Session["loanCaseId"];
-
-
-            string message = string.Format(
-                                      "{0}.\nAre you sure you want to remove the selected guarantor?", customer.FullName);
-
-            // Show the message box with Yes/No options
-            DialogResult result = MessageBox.Show(
-                message,
-                "Remove Loan Guarantor",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question,
-                MessageBoxDefaultButton.Button1,
-                MessageBoxOptions.ServiceNotification
-            );
-
-            if (result == DialogResult.Yes)
-            {
-                await CallDeleteGuarantor(parseId, loanCaseId);
-
-                var findLoanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loanCaseId, GetServiceHeader());
-                ViewBag.LoanGuarantors = findLoanGuarantors;
-            }
-
-            MessageBox.Show(Form.ActiveForm, "Operation completed successfully", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-            return View("create");
         }
     }
 }

@@ -212,7 +212,7 @@
 
 
                             <div class="section-title">LOAN ACCOUNTS</div>
-                            <table>
+                            <table id="loanAccounts">
                                 <tr>
                                     <th>Account Status</th>
                                     <th>Full Account Number</th>
@@ -419,7 +419,7 @@
         }
 
         .container {
-            width: 100%;
+            width: 80%;
             margin: 0 auto;
             padding: 20px;
             background-color: white;
@@ -469,6 +469,10 @@
                 width: 25%;
                 border-bottom: 1px solid black;
             }
+
+        #loanAccounts{
+            width: 80%;
+        }
 
     `);
         printWindow.document.write('</style>');

@@ -550,7 +550,10 @@
     <Compile Include="Areas\Admin\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureViewModel.cs" />
     <Compile Include="Areas\Dashboard\Controllers\ApplicationsController.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\MessagingController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\MessagingGroupsController.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\Pre_QualificationController.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\TextAlertsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AutomatedClearingController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
@@ -1431,6 +1434,10 @@
     <Content Include="Areas\Loaning\Views\DataProcessing\_DocumentUploadPartial.cshtml" />
     <Content Include="Areas\Loaning\Views\DataCapture\Edit.cshtml" />
     <Content Include="Areas\Dashboard\Views\Applications\Index.cshtml" />
+    <Content Include="Areas\Dashboard\Views\Applications\ViewDetails.cshtml" />
+    <Content Include="Areas\Dashboard\Views\Pre_Qualification\Appraise.cshtml" />
+    <Content Include="Areas\Dashboard\Views\Messaging\Index.cshtml" />
+    <Content Include="Areas\Dashboard\Views\TextAlerts\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

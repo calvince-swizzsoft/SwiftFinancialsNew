@@ -23,21 +23,19 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 {
     public class ApplicationsController : MasterController
     {
-
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
 
             ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
             ViewBag.LoanCaseStatusSelectList = GetLoanCaseStatusSelectList(string.Empty);
-            ViewBag.LoanProductSectionSelectList = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
 
             return View();
         }
 
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int loanProductSection,DateTime startDate, DateTime endDate, string filterValue, int filterType)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int loanCaseStatus, string filterValue, int filterType)
         {
             int totalRecordCount = 0;
 
@@ -49,8 +47,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByLoanProductSectionAndFilterInPageAsync(loanProductSection, startDate, endDate, filterValue, filterType,
-                pageIndex, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(loanCaseStatus, filterValue, filterType, pageIndex, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
 
             var page = pageCollectionInfo.PageCollection;
 
@@ -69,5 +66,57 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
 
 
+        public async Task<ActionResult> ViewDetails(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var LoanCase = new LoanCaseDTO();
+
+            var loancaseDetails = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
+            if (loancaseDetails != null)
+            {
+                LoanCase = loancaseDetails as LoanCaseDTO;
+                LoanCase.AccountStatus = loancaseDetails.CustomerTypeDescription;
+
+
+                var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
+                if (loanGuarantors != null)
+                    ViewBag.LoanGuarantors = loanGuarantors;
+                else
+                    TempData["emptyLoanGuarantors"] = "No data available to be displayed in table";
+
+
+                var collaterals = await _channelService.FindLoanCollateralsByLoanCaseIdAsync(id, GetServiceHeader());
+                if (collaterals != null)
+                    ViewBag.Collaterals = collaterals;
+                else
+                    TempData["emptyCollaterals"] = "No data available to be displayed in table";
+
+
+                //// Standing Orders
+                ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
+                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loancaseDetails.CustomerId, true, true, true, true, GetServiceHeader());
+
+                foreach (var accounts in customerAccounts)
+                {
+                    customerAccountId.Add(accounts.Id);
+                }
+
+                List<StandingOrderDTO> allStandingOrders = new List<StandingOrderDTO>();
+
+                foreach (var Ids in customerAccountId)
+                {
+                    var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
+                    if (standingOrders != null && standingOrders.Any())
+                    {
+                        allStandingOrders.AddRange(standingOrders);
+                    }
+                }
+
+            }
+
+            return View(LoanCase);
+        }
     }
 }
