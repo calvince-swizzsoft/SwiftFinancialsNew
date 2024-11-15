@@ -1285,6 +1285,16 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public double LoanQualificationLoanAmount { get; set; }
 
 
+
+        [DataMember]
+        [Display(Name = "Standing Order Principal")]
+        public double StandingOrderPrincipal { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Standing Order Interest")]
+        public double StandingOrderInterest { get; set; }
+
+
         [DataMember]
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorDTO { get; set; }
     }
