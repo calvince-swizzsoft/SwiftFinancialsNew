@@ -596,9 +596,9 @@
                                                 <div class="col-lg-3">
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.InterestChargedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.HiddenFor(model => model.InterestChargedChartOfAccountId, new { @id = "ChartofAccountTypehead33" })
-                                                        @Html.ValidationMessageFor(model => model.InterestChargedChartOfAccountAccountType, "", new { @class = "text-danger" })
-                                                        @Html.EditorFor(model => model.InterestChargedChartOfAccountAccountType, new { htmlAttributes = new { @class = "ChartofAccountTypehead3 form-control required entry-field", placeholder = "Enter space to autofill.." } })
+                                                        @Html.HiddenFor(model => model.InterestChargedChartOfAccountId, new { @id = "ChartofAccountTypehead44" })
+                                                        @Html.ValidationMessageFor(model => model.InterestChargedChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                                        @Html.EditorFor(model => model.InterestChargedChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartofAccountTypehead3 form-control required entry-field", placeholder = "Enter space to autofill.." } })
                                                     </div>
                                                 </div>
 
@@ -1218,7 +1218,6 @@
                                         @Html.HiddenFor(model => model.productCollection.EligibileIncomeDeductionInvestmentProductCollection, new { @id = "EligibileIncomeDeductionInvestmentProductCollection" })
                                         @Html.HiddenFor(model => model.productCollection.EligibileIncomeDeductionSavingsProductCollection, new { @id = "EligibileIncomeDeductionSavingsProductCollection" })
                                         @Html.HiddenFor(model => model.charges, new { @id = "charges" })
-                                        @Html.HiddenFor(model => model.InterestChargedChartOfAccountId, new { @id = "InterestChargedChartOfAccountId" })
                                     </div>
                                     <div class="myfooter">
                                         <div class="form-group col-md-12 d-flex justify-content-end">
@@ -2140,6 +2139,42 @@ $(document).ready(function () {
         //Typehead 3
 
         $('.ChartofAccountTypehead3').typeahead({
+            source: function (query, process) {
+                return $.getJSON(
+                    '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                    { query: query },
+                    function (ChartOfAccounts) {
+                        var newChartOfAccountsData = [];
+                        ChartOfAccountsMap = {};
+                        $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                            newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                            ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                        });
+                        process(newChartOfAccountsData); return;
+                    });
+            },
+            matcher: function (item) {
+                if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                    return true;
+                }
+            },
+            sorter: function (items) {
+                return items.sort();
+            },
+            highlighter: function (item) {
+                var regex = new RegExp('(' + this.query + ')', 'gi');
+                return item.replace(regex, "<strong>$1</strong>");
+            },
+            updater: function (item) {
+                var chartOfAccountId = "";
+                ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                $('#ChartofAccountTypehead33').val(ChartOfAccountId);
+                //console.log(ChartOfAccountId)
+                return item;
+            }
+        });
+
+         $('.ChartofAccountTypehead4').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
                         '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
@@ -2169,11 +2204,11 @@ $(document).ready(function () {
                 updater: function (item) {
                     var chartOfAccountId = "";
                     ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#ChartofAccountTypehead33').val(ChartOfAccountId);
+                    $('#ChartofAccountTypehead44').val(ChartOfAccountId);
                     //console.log(ChartOfAccountId)
                     return item;
                 }
-    });
+        });
     </script>
 
 
