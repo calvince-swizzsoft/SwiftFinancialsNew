@@ -530,6 +530,19 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("addLoanGuarantorsForm");
+            const addEntryBtn = document.getElementById("addEntryBtn");
+
+            addEntryBtn.addEventListener("click", function () {
+                form.submit();
+            });
+        });
+    </script>
+
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const amountGuaranteedInput = document.getElementById("AmountGuaranteed");
