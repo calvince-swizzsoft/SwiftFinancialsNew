@@ -9,8 +9,6 @@
 
 
 <style>
-
-
     #dataTableEntries {
         width: 100%;
         border-collapse: collapse;
@@ -52,6 +50,51 @@
         }
 
         #dataTableEntries tr:last-child td {
+            border-bottom: none;
+        }
+
+
+    #guarantorEntries {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #guarantorEntries th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #guarantorEntries th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        #guarantorEntries tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #guarantorEntries td {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        #guarantorEntries tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
+
+        #guarantorEntries tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        #guarantorEntries tr:last-child td {
             border-bottom: none;
         }
 </style>
@@ -310,6 +353,7 @@
                         @*<section id="section2" class="section">*@
                         <fieldset>
                             <h2>Link Guarantor</h2>
+
                             <br />
                             <div class="row">
                                 <div class="col-md-4 form-group">
@@ -411,33 +455,75 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-4 form-group">
                                     <input type="submit" id="addEntryBtn" style="width:150px;" class="btn btn-primary" value="Add" />
                                 </div>
                             </div>
 
                             <br />
 
-                            <div class="table-container">
-                                <h3 style="font-size: 1.9rem; text-align: center;">Loan Guarantors</h3>
-                                <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Guarantor Name</th>
-                                            <th>Identity Card Number</th>
-                                            <th>Appraisal Factor</th>
-                                            <th>Total shares</th>
-                                            <th>Committed shares</th>
-                                            <th>Amount Guaranteed</th>
-                                            <th>Amount Pledged</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="table-container">
+                                        <h3 style="font-size: 1.9rem; text-align: center;">New Loan Guarantors</h3>
+                                        <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Customer</th>
+                                                    <th>Identity Card Number</th>
+                                                    <th>Appraisal Factor</th>
+                                                    <th>Total shares</th>
+                                                    <th>Committed shares</th>
+                                                    <th>Amount Guaranteed</th>
+                                                    <th>Amount Pledged</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
+
+                                <div class="col-lg-6">
+                                    <div class="table-container">
+                                        <h3 style="font-size: 1.9rem; text-align: center;">Existing Loan Guarantors</h3>
+                                        <table id="guarantorEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                <tr>
+                                                    <th>Customer</th>
+                                                    <th>Identity Card Number</th>
+                                                    <th>Appraisal Factor</th>
+                                                    <th>Total shares</th>
+                                                    <th>Committed shares</th>
+                                                    <th>Amount Guaranteed</th>
+                                                    <th>Amount Pledged</th>
+                                                    <th>Date Guaranteed</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.LoanGuarantors != null)
+                                                {
+                                                    foreach (var guarantors in ViewBag.LoanGuarantors)
+                                                    {
+                                                        <tr>
+                                                            <td>@guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
+                                                            <td>@guarantors.CustomerIndividualIdentityCardNumber</td>
+                                                            <td>@guarantors.AppraisalFactor</td>
+                                                            <td style="text-align: right;">@guarantors.TotalShares</td>
+                                                            <td style="text-align: right;">@guarantors.CommittedShares</td>
+                                                            <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
+                                                            <td style="text-align: right;">@guarantors.AmountPledged</td>
+                                                            <td>@guarantors.CreatedDate</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </fieldset>
                     }
 
@@ -480,9 +566,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
@@ -529,6 +612,24 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        document.getElementById('openModalBtn').addEventListener('click', function (event) {
+            event.preventDefault();
+
+            document.getElementById('stunningModal').style.display = 'block';
+        });
+
+        document.getElementById('closeModalBtn').addEventListener('click', function () {
+            document.getElementById('stunningModal').style.display = 'none';
+        });
+
+        window.addEventListener('click', function (e) {
+            if (e.target === document.getElementById('stunningModal')) {
+                document.getElementById('stunningModal').style.display = 'none';
+            }
+        });
+    </script>
 
 
     <script>
