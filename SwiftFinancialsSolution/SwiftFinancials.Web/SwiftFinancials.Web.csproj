@@ -565,7 +565,6 @@
     <Compile Include="Areas\FrontOffice\Controllers\InHouseController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\SundryPaymentsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
-    <Compile Include="Areas\HumanResource\Controllers\DocumentController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeDocumentsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PaySlipsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PeriodClosingController.cs" />
@@ -639,6 +638,7 @@
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
+    <Compile Include="Areas\MicroCredit\Controllers\ApportionmentController.cs" />
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditGroupsController.cs" />
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
@@ -1106,7 +1106,6 @@
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
-    <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Index.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Create.cshtml" />
@@ -1190,8 +1189,6 @@
     <Content Include="Areas\Accounts\Views\Management\CustomerManagement.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryProcessing\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\Salary\Create.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveApplication\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveApplication\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApproval\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApproval\Approve.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveRecall\Index.cshtml" />
@@ -1308,8 +1305,6 @@
     <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Edit.cshtml" />
-    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Register\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Edit.cshtml" />
@@ -1447,6 +1442,17 @@
     <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Index.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Create.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Edit.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Details.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\Apportionment\Create.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\Apportionment\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1964,8 +1970,6 @@
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
     <Folder Include="Areas\HumanResource\Data\" />
     <Folder Include="Areas\HumanResource\Views\Delegate\" />
-    <Folder Include="Areas\HumanResource\Views\Document\" />
-    <Folder Include="Areas\HumanResource\Views\Leave\" />
     <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Loaning\Views\AddCollateral\" />
