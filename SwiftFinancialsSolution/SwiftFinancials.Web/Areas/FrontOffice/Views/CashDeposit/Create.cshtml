@@ -17,6 +17,8 @@
 }
 
 <head>
+
+
     <style>
         .custom-modal-styles {
             max-width: 850px; /* Fixed width for modal */
@@ -218,7 +220,7 @@
 <div id="savingsReceiptsPayments" class="wrapper wrapper-content">
 
     <div class="ibox">
-        <div  class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
+        <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
             @using (Html.BeginForm("Create", "CashDeposit", new { Area = "FrontOffice" }, FormMethod.Post, new { @id = "savingsReceiptsPaymentsForm" }))
             {
                 @Html.AntiForgeryToken()
@@ -352,10 +354,10 @@
                             <a class="nav-link" data-toggle="tab" href="#tellerGlAccountStatement">Teller G/L Account Statement</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#customerAccountPreview">Customer Account Preview</a>
+                            <a class="nav-link" data-toggle="tab" href="#customerAccountPreview">Customer Account</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#customerPreview">Customer Preview</a>
+                            <a class="nav-link" data-toggle="tab" href="#customerPreview">Customer</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="requestsTab" data-toggle="tab" href="#requests">Requests</a>
@@ -373,16 +375,16 @@
                             <!-- inner Tabs (indented) -->
                             <div style="margin-left: 20px;">
                                 <ul class="nav inner-nav-tabs" style="margin-bottom: 20px;">
-                                    <li class="inner-nav-item">
+                                    <li class="nav-item">
                                         <a class="inner-nav-link active" data-toggle="tab" href="#cashDeposit" data-transaction-type="2">Cash Deposit</a>
                                     </li>
-                                    <li class="inner-nav-item">
+                                    <li class="nav-item">
                                         <a class="inner-nav-link" data-toggle="tab" href="#cashWithdrawal" data-transaction-type="1">Cash Withdrawal</a>
                                     </li>
-                                    <li class="inner-nav-item">
+                                    <li class="nav-item">
                                         <a class="inner-nav-link" data-toggle="tab" href="#chequeDeposit" data-transaction-type="3">Cheque Deposit</a>
                                     </li>
-                                    <li class="inner-nav-item">
+                                    <li class="nav-item">
                                         <a class="inner-nav-link" data-toggle="tab" href="#paymentVoucher" data-transaction-type="4">Payment Voucher</a>
                                     </li>
                                     <li class="nav-item">
@@ -390,7 +392,7 @@
                                     </li>
                                 </ul>
 
-                                <div class="inner-tab-content">
+                                <div class="inner-tab-content" style="border: 1px solid #ddd; padding: 20px; border-radius: 4px;">
                                     <!-- Cash Deposit Tab -->
                                     <div id="cashDeposit" class="inner-tab-pane active">
                                         <div class="row">
@@ -418,7 +420,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductMaximumAllowedWithdrawal, new { @id = "CustomerAccountTypeTargetProductMaximumAllowedWithdrawal" })
                                             @Html.LabelFor(model => model.CashWithdrawal.Amount, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CashWithdrawal.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount" } })
+                                            @Html.EditorFor(model => model.CashWithdrawal.Amount, new { htmlAttributes = new { @id = "CashWithdrawalAmount", @class = "form-control", @placeholder = "Amount" } })
                                             @Html.ValidationMessageFor(model => model.CashWithdrawal.Amount, "", new { @class = "text-danger" })
                                         </div>
 
@@ -1492,7 +1494,49 @@
     @Scripts.Render("~/plugins/duallist")
 
 
+
+    @*<script>
+
+            $(document).ready(function () {
+
+                let customerAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0;
+                let totalValue = parseFloat($('#TotalValue').val()) || 0;
+
+
+                console.log(customerAvailableBalance);
+                console.log(totalValue);
+
+                $('#CustomerAccountNewAvailableBalance').val(customerAvailableBalance + totalValue);
+
+            });
+
+        </script>*@
+
     <script>
+        $(document).ready(function () {
+            function updateNewAvailableBalance() {
+                // Parse values as floats and default to 0 if invalid
+                let customerAccountAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0;
+                let totalValue = parseFloat($('#TotalValue').val()) || 0;
+
+                // Update the new available balance
+                $('#CustomerAccountNewAvailableBalance').val(customerAccountAvailableBalance + totalValue);
+            }
+
+            // Initial calculation on page load
+            updateNewAvailableBalance();
+
+            // Recalculate when the TotalValue input changes
+            $('#TotalValue').on('input', function () {
+                updateNewAvailableBalance();
+            });
+        });
+    </script>
+
+
+    <script>
+
+
         // $(document).ready(function () {
         $('#data_3 .input-group.date').datepicker({
             startView: 2,
@@ -1505,7 +1549,7 @@
         //});
     </script>
 
-    
+
     <script>
         $(document).ready(function () {
             $('.inner-nav-tabs a').on('click', function (e) {
@@ -1518,7 +1562,7 @@
     <script>
 
         function resetAllFields() {
-            $('#CustomerAccountNewAvailableBalance').val('');
+            /*            $('#CustomerAccountNewAvailableBalance').val('');*/
             $('#CustomerAccountAvailableBalance').val('');
             $('#CustomerAccountBookBalance').val('');
             $('#CustomerAccountCustomerFullName').val('');
@@ -1692,7 +1736,7 @@
                         console.log(data);
                         console.log(JSON.stringify(data));
 
-                        $('#CustomerAccountNewAvailableBalance').val(data.NewAvailableBalance);
+
                         $('#CustomerAccountAvailableBalance').val(data.AvailableBalance);
                         $('#CustomerAccountBookBalance').val(data.BookBalance);
                         $('#CustomerAccountCustomerFullName').val(data.CustomerFullName);
@@ -1723,6 +1767,13 @@
                         $('#CustomerAccountTypeTargetProductMaximumAllowedDeposit').val(data.CustomerAccountTypeTargetProductMaximumAllowedDeposit);
                         $('#CustomerAccountTypeTargetProductMaximumAllowedWithdrawal').val(data.CustomerAccountTypeTargetProductMaximumAllowedWithdrawal);
 
+
+                        let totalValue = parseFloat($('#TotalValue').val()) || 0;
+
+
+                        let customerAccountAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0
+
+                        $('#CustomerAccountNewAvailableBalance').val(customerAccountAvailableBalance + totalValue);
 
                         // Hide the lookup modal after successful data retrieval
                         $('#customerLookupModal').modal('hide');
@@ -2062,7 +2113,7 @@
 
     <script>
 
-                           $('#banksGrid').DataTable({
+             $('#banksGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
