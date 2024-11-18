@@ -66,22 +66,23 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-        }   
-        
-        
-        
+        }
+
+
+
         [HttpPost]
-        public async Task<JsonResult> CustomerIndex(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> CustomerIndex(JQueryDataTablesModel jQueryDataTablesModel, int recordStatus, string text, int customerFilter)
         {
 
             int totalRecordCount = 0;
             int searchRecordCount = 0;
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.IdentityCardNumber, pageIndex,
-                jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync(recordStatus, text, customerFilter, pageIndex, pageSize, GetServiceHeader());
+
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -110,21 +111,23 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-        } 
-        
+        }
+
 
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
 
             ViewBag.target = GetMessagingGroupTargetSelectList(string.Empty);
+            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
 
             return View();
         }
 
 
 
-        public async Task<ActionResult> CustomerLookUp(Guid? id, MessageGroupDTO messageGroupDTO)
+        public async Task<ActionResult> CustomerLookUp(Guid? id)
         {
             if (id == Guid.Empty)
             {
@@ -138,7 +141,12 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                 return View();
             }
 
+            MessageGroupDTO messageGroupDTO = new MessageGroupDTO();
+
             ViewBag.target = GetMessagingGroupTargetSelectList(string.Empty);
+            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
@@ -149,29 +157,15 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                 messageGroupDTO.CustomerEmailAddress = customer.AddressEmail;
                 messageGroupDTO.CustomerMobileNumber = customer.AddressMobileLine;
 
-
-                var customerType = customer.TypeDescription; var serialNumber = customer.PaddedSerialNumber; var accountNumber = customer.Reference1; var membershipNumber = customer.Reference2;
-                var payrollNumber = customer.IndividualPayrollNumbers; var gender = customer.IndividualGenderDescription; var maritalStatus = customer.IndividualMaritalStatusDescription;
-                var identityCardNumber = customer.IndividualIdentityCardNumber;
-
                 return Json(new
                 {
                     success = true,
                     data = new
                     {
-                        ID = messageGroupDTO.CustomerID,
-                        Name = messageGroupDTO.Customer,
-                        Email = messageGroupDTO.CustomerEmailAddress,
-                        Phone = messageGroupDTO.CustomerMobileNumber
-
-                        //CustomerType = customerType,
-                        //SerialNumber = serialNumber,
-                        //AccountNumber = accountNumber,
-                        //MembershipNumber = membershipNumber,
-                        //PayrollNumber = payrollNumber,
-                        //Gender = gender,
-                        //MaritalStatus = maritalStatus,
-                        //IdentityCardNumber = identityCardNumber
+                        CustomerID = messageGroupDTO.CustomerID,
+                        Customer = messageGroupDTO.Customer,
+                        CustomerEmailAddress = messageGroupDTO.CustomerEmailAddress,
+                        CustomerMobileNumber = messageGroupDTO.CustomerMobileNumber
                     }
                 });
             }

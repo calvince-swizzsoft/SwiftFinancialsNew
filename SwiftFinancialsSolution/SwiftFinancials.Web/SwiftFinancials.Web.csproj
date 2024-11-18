@@ -1463,6 +1463,7 @@
     <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\MainTabs.css" />
     <Content Include="Scripts\css\Marquee.css" />
+    <Content Include="Scripts\css\modal.css" />
     <Content Include="Scripts\css\NavigationLink.css" />
     <Content Include="Scripts\css\printAppraisalForm.css" />
     <Content Include="Scripts\css\SSRSGenerateReportIndex.css" />

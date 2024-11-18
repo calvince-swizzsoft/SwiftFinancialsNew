@@ -4,9 +4,22 @@
     ViewBag.Title = "Create Charges";
 
     var target = ViewBag.target as List<SelectListItem>;
+    var recordStatus = ViewBag.recordStatus as List<SelectListItem>;
+    var customerFilter = ViewBag.customerFilter as List<SelectListItem>;
+
 
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
+<style>
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+</style>
 
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -181,21 +194,13 @@
                                     <input type="hidden" id="customersData" name="CustomersJson" />
 
                                     <div class="table-container mt-5">
-                                        <h3 style="font-size: 1.9rem; text-align: center;">Customers</h3>
-
-                                        <div class="no-data-message mt-2">No data available to be displayed in table</div>
+                                        <h3 style="font-size: 1.9rem; text-align: center;">Messaging Group Members</h3>
                                         <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
                                             <thead>
                                                 <tr>
-                                                    <th>Type</th>
-                                                    <th>Serial Number</th>
-                                                    <th>Account Number</th>
-                                                    <th>Membership Number</th>
                                                     <th>Name</th>
-                                                    <th>Payroll Numbers</th>
-                                                    <th>Gender</th>
-                                                    <th>Marital Status</th>
-                                                    <th>Identity Card Number</th>
+                                                    <th>Mobile Number</th>
+                                                    <th>Email Address</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -216,7 +221,7 @@
                     @using (Html.BeginForm("Create", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post))
                     {
                         <div class="col-lg-3">
-                            <input type="submit" style="width: 150px;" value="Create" @*onclick="sendFormData()"*@ class="btn btn-primary" />
+                            <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
                         </div>
                     }
                 </div>
@@ -232,6 +237,50 @@
         <div class="modal-content">
             <div class="modal-header bg-primary">
                 <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+
+            <div class="blue-section">
+                <form id="filterForm">
+                    <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                        <div class="col-lg-3">
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Record Status</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.RecordStatus, recordStatus,
+                                    new { @class = "form-control input-md", @id = "recordStatus" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Loan Filter</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.CustomerFilter, customerFilter,
+                                    new { @class = "form-control input-md", @id = "customerFilter" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3" style="margin-top: 27px;">
+                            <div class="form-group spacing-form-group">
+                                <div class="input-group text-box">
+                                    @Html.TextBox("text", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "text" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1" style="margin-top:20px;">
+                            <div class="form-group form-group-sm">
+                                <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
 
             <br />
@@ -302,67 +351,77 @@
     <script src="~/Scripts/js/navlink.js"></script>
 
 
+
     <script>
+         //Customers Accounts Lookup - Customer Details Tab
+        var defaultCustomerFilter = $('#customerFilter').val();
+        var defaultRecordStatus = $('#recordStatus').val();
+        var defaulText = $('#text').val();
+
+
         $('#customersGrid').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("CustomerIndex", "MessagingGroups", new { Area = "Dashboard"}))",
-        "sServerMethod": "POST",
-       
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-            var h = ("0" + createdDate.getHours()).slice(-2);
-            var m = ("0" + createdDate.getMinutes()).slice(-2);
-            var s = ("0" + createdDate.getSeconds()).slice(-2);
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("CustomerIndex", "MessagingGroups", new { Area = "Dashboard"}))",
+                "sServerMethod": "POST",
+                //Ensure to include the filters in the Ajax request
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter },
+                        { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus },
+                        { "name": "text", "value": $('#text').val() || defaulText }
 
-            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-            aData.CreatedDate = dt_Created;
+                    );
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomer(\'' + aData.Id + '\')">Select</button>';
-            console.log(aData.Id);
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
 
-            $('td:eq(5)', nRow).html(dt_Created);
-            $('td:eq(6)', nRow).html(selectUrl);
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomer(\'' + aData.Id + '\')">Select</button>';
 
-            return nRow;
-        },
-        "aoColumns": [
-            { "mDataProp": "TypeDescription", "sTitle": "Customer Type", "sWidth": "6%" },
-            { "mDataProp": "FullName", "sTitle": "Customer", "sWidth": "15%" },
-            { "mDataProp": "IndividualIdentityCardNumber", "sTitle": "Identity Card Number", "sWidth": "15%" },
-            { "mDataProp": "IndividualGenderDescription", "sTitle": "Gender", "sWidth": "4%" },
-            { "mDataProp": "IndividualMaritalStatusDescription", "sTitle": "Marital Status", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
 
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "5%" },
+                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "5%" },
+                    { "mDataProp": "Reference2", "sTitle": "Membership Number", "sWidth": "5%" },
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "IndividualIdentityCardNumber", "sTitle": "Identity Card Number", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                //Refresh button for reloading the Datable after Applying the filters
+        $('#filterForm').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#customersGrid').DataTable().ajax.reload();
+                });
 
 
 
         function selectCustomer(id) {
-            console.log("Customer ID passed to selectCustomer:", id);
-            alert("ID Passed:", id);
-            if (!id) {
-                console.error("Invalid or missing ID");
-                return;
-            }
-
+            console.log("Customer selected with ID: " + id); 
             $.ajax({
                 url: '/Dashboard/MessagingGroups/CustomerLookUp',
                 type: 'POST',
                 data: { Id: id },
                 success: function (response) {
+                    console.log(response); 
                     if (response.success) {
-                        // Populate fields with the returned data
-                        $('#CustomerEmailAddress').val(response.data.Email);
-                        $('#CustomerMobileNumber').val(response.data.Phone);
-                        $('#Customer').val(response.data.Name);
-                        $('#CustomerID').val(response.data.ID);
-
-
-                        // Close the modal
+                        $('#CustomerID').val(response.data.CustomerID);
+                        $('#Customer').val(response.data.Customer);
+                        $('#CustomerEmailAddress').val(response.data.CustomerEmailAddress);
+                        $('#CustomerMobileNumber').val(response.data.CustomerMobileNumber);
                         $('#customerLookupModal').modal('hide');
                     } else {
                         alert(response.message);
