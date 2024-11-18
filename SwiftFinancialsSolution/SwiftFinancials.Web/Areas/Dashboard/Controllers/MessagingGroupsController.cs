@@ -127,7 +127,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
 
 
-        public async Task<ActionResult> CustomerLookUp(Guid? id, MessageGroupDTO messageGroupDTO)
+        public async Task<ActionResult> CustomerLookUp(Guid? id)
         {
             if (id == Guid.Empty)
             {
@@ -140,6 +140,8 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
             {
                 return View();
             }
+
+            MessageGroupDTO messageGroupDTO = new MessageGroupDTO();
 
             ViewBag.target = GetMessagingGroupTargetSelectList(string.Empty);
             ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
@@ -161,9 +163,9 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                     data = new
                     {
                         CustomerID = messageGroupDTO.CustomerID,
-                        Customer = messageGroupDTO.customer,
-                        Email = messageGroupDTO.CustomerEmailAddress,
-                        MobileNumber = messageGroupDTO.CustomerMobileNumber
+                        Customer = messageGroupDTO.Customer,
+                        CustomerEmailAddress = messageGroupDTO.CustomerEmailAddress,
+                        CustomerMobileNumber = messageGroupDTO.CustomerMobileNumber
                     }
                 });
             }
