@@ -47,7 +47,7 @@ namespace Application.MainBoundedContext.Services
                                             UserPassword = item.Password,
                                             CallbackUrl = item.CallbackUrl,
                                             AppDomainName = serviceHeader.ApplicationDomainName,
-                                            AccountAlertTrigger = (int)AccountAlertTrigger.MembershipAccountRegistration,
+                                            //AccountAlertTrigger = (int)AccountAlertTrigger.MembershipAccountRegistration,
                                         };
 
                         _messageQueueService.Send(_serviceBrokerConfigSection.ServiceBrokerSettingsItems.AccountAlertDispatcherQueuePath, queueDTOs.ToList(), MessageCategory.AccountAlert, MessagePriority.High, _serviceBrokerConfigSection.ServiceBrokerSettingsItems.TimeToBeReceived);

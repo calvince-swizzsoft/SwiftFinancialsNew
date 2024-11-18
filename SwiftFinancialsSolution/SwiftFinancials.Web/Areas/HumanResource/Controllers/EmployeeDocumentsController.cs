@@ -7,6 +7,9 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.IO; 
+using System.Web; 
+
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -20,40 +23,117 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View();
         }
 
+
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindEmployeeDocumentsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindEmployeeDocumentsByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                pageIndex,
+                pageSize,
+                GetServiceHeader()
+            );
 
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            if (pageCollectionInfo != null)
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = sortAscending
+                    ? pageCollectionInfo.PageCollection
+                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                        .ToList()
+                    : pageCollectionInfo.PageCollection
+                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                        .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: sortedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<EmployeeDocumentDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<EmployeeDocumentDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
         }
-
+        
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var departmentDTO = await _channelService.FindDepartmentAsync(id, GetServiceHeader());
+            var employeeDocumentDTO = await _channelService.FindEmployeeDocumentAsync(id, GetServiceHeader());
 
-            return View(departmentDTO);
+            return View(employeeDocumentDTO);
         }
 
 
+        [HttpGet]
+        public async Task<ActionResult> GetCustomerDetails(Guid employeeId)
+        {
+            try
+            {
+                var customer = await _channelService.FindEmployeeAsync(employeeId, GetServiceHeader());
+
+                if (customer == null)
+                {
+                    return Json(new { success = false, message = "Customer not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        EmployeeCustomerFullName = customer.Customer.FullName,
+                        EmployeeCustomerId = customer.CustomerId,
+                        EmployeeId = customer.Id,
+                        EmployeeBloodGroupDescription = customer. BloodGroupDescription,
+                        EmployeeNationalHospitalInsuranceFundNumber = customer.NationalHospitalInsuranceFundNumber,
+                        EmployeeNationalSocialSecurityFundNumber = customer.NationalSocialSecurityFundNumber,
+                        EmployeeCustomerPersonalIdentificationNumber = customer.CustomerPersonalIdentificationNumber,
+                        EmployeeEmployeeTypeCategoryDescription = customer.EmployeeTypeCategoryDescription,
+                        EmployeeEmployeeTypeDescription = customer. EmployeeTypeDescription,
+                        EmployeeDepartmentDescription = customer. DepartmentDescription,
+                        EmployeeDepartmentId = customer.DepartmentId,
+                        EmployeeDesignationDescription = customer. DesignationDescription,
+                        EmployeeDesignationId = customer.DesignationId,
+                        EmployeeBranchDescription = customer.BranchDescription,
+                        EmployeeBranchId = customer. BranchId,
+                        EmployeeCustomerIndividualGenderDescription = customer.CustomerIndividualGenderDescription,
+                        EmployeeCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers,
+                        EmployeeEmployeeTypeId = customer. EmployeeTypeId,
+                        EmployeeEmployeeTypeChartOfAccountId = customer.EmployeeTypeChartOfAccountId,
+
+
+
+
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the customer details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -62,55 +142,96 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(DepartmentDTO departmentDTO)
+        public async Task<ActionResult> Create(EmployeeDocumentDTO employeeDocumentDTO, HttpPostedFileBase uploadedFile)
         {
-            departmentDTO.ValidateAll();
-
-            if (!departmentDTO.HasErrors)
+            if (uploadedFile != null && uploadedFile.ContentLength > 0)
             {
-                await _channelService.AddDepartmentAsync(departmentDTO, GetServiceHeader());
+                employeeDocumentDTO.FileMIMEType = uploadedFile.ContentType;
 
-                return RedirectToAction("Index");
+                using (var memoryStream = new MemoryStream())
+                {
+                    uploadedFile.InputStream.CopyTo(memoryStream);
+                    employeeDocumentDTO.FileBuffer = memoryStream.ToArray();
+                }
+
+                employeeDocumentDTO.FileName = Path.GetFileName(uploadedFile.FileName);
             }
             else
             {
-                var errorMessages = departmentDTO.ErrorMessages;
-
-                return View(departmentDTO);
+                ModelState.AddModelError("FileName", "Please upload a valid file.");
             }
+
+            employeeDocumentDTO.ValidateAll();
+
+            if (!employeeDocumentDTO.HasErrors)
+            {
+                await _channelService.AddEmployeeDocumentAsync(employeeDocumentDTO, GetServiceHeader());
+
+                TempData["SuccessMessage"] = "Employee Document created successfully!";
+                return RedirectToAction("Index");
+            }
+
+            foreach (var error in employeeDocumentDTO.ErrorMessages)
+            {
+                ModelState.AddModelError("", error);
+            }
+
+            return View(employeeDocumentDTO);
         }
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
-            var departmentDTO = await _channelService.FindDepartmentAsync(id, GetServiceHeader());
+            var employeeDocumentDTO = await _channelService.FindEmployeeDocumentAsync(id, GetServiceHeader());
 
-            return View(departmentDTO);
+            return View(employeeDocumentDTO);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, DepartmentDTO departmentBindingModel)
+        public async Task<ActionResult> Edit(EmployeeDocumentDTO employeeDocumentDTO, HttpPostedFileBase uploadedFile)
         {
-            if (ModelState.IsValid)
+            if (uploadedFile != null && uploadedFile.ContentLength > 0)
             {
-                await _channelService.UpdateDepartmentAsync(departmentBindingModel, GetServiceHeader());
+                employeeDocumentDTO.FileMIMEType = uploadedFile.ContentType;
 
-                return RedirectToAction("Index");
+                using (var memoryStream = new MemoryStream())
+                {
+                    uploadedFile.InputStream.CopyTo(memoryStream);
+                    employeeDocumentDTO.FileBuffer = memoryStream.ToArray();
+                }
+
+                employeeDocumentDTO.FileName = Path.GetFileName(uploadedFile.FileName);
             }
-            else
+
+            employeeDocumentDTO.ValidateAll();
+
+            if (!employeeDocumentDTO.HasErrors)
             {
-                return View(departmentBindingModel);
+                bool success = await _channelService.UpdateEmployeeDocumentAsync(employeeDocumentDTO, GetServiceHeader());
+
+                if (success)
+                {
+                    TempData["SuccessMessage"] = "Employee document updated successfully!";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "An error occurred while updating the document.");
+                }
             }
+
+            foreach (var error in employeeDocumentDTO.ErrorMessages)
+            {
+                ModelState.AddModelError("", error);
+            }
+
+            return View(employeeDocumentDTO);
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetDepartmentsAsync()
-        {
-            var departmentsDTOs = await _channelService.FindDepartmentsAsync(GetServiceHeader());
 
-            return Json(departmentsDTOs, JsonRequestBehavior.AllowGet);
-        }
+
     }
 }

@@ -17,7 +17,7 @@ using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
 {
-    public class MicroCreditGroupsController : MasterController
+    public class ApportionmentController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -69,7 +69,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             else
             {
                 return this.DataTablesJson(
-                    items: new List<MicroCreditGroupDTO>(),
+                    items: new List<MicroCreditGroupMemberDTO>(),
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
@@ -114,7 +114,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             ViewBag.MeetingFrequencyDescriptionSelectList = GetMicroCreditGroupMeetingFrequencySelectList(string.Empty);
             ViewBag.MeetingDayOfWeekDescriptionSelectList = GetMicroCreditGroupMeetingDayOfWeekSelectList(string.Empty);
             ViewBag.DesignationSelectList = GetMicroCreditGroupMemberDesignationSelectList(string.Empty);
-                
+
 
             return View();
         }
@@ -144,7 +144,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                         CustomerNonIndividualRegistrationNumber = customer.NonIndividualRegistrationNumber,
                         CustomerRegistrationDate = customer.RegistrationDate,
                         CustomerNonIndividualDateEstablished = customer.NonIndividualDateEstablished,
-                        
+
 
 
 
@@ -183,7 +183,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                         CustomerFullName = customer.FullName,
                         CustomerId = customer.Id,
                         Employer = customer.StationZoneDivisionEmployerDescription,
-                        
+
 
 
 
@@ -247,7 +247,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                     {
                         ParentId = parentGroup.Id,
                         ParentMicroCreditDescription = parentGroup.CustomerNonIndividualDescription,
-                        
+
 
 
 
@@ -268,7 +268,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             if (microCreditGroupDTO == null)
             {
                 TempData["ErrorMessage"] = "An unexpected error occurred. Please try again.";
-                return View("Error"); 
+                return View("Error");
             }
 
             microCreditGroupDTO.ValidateAll();
@@ -412,7 +412,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                 if (updateSuccess)
                 {
                     TempData["SuccessMessage"] = "MicroCredit Group updated successfully.";
-                    return RedirectToAction("Index"); 
+                    return RedirectToAction("Index");
                 }
                 else
                 {

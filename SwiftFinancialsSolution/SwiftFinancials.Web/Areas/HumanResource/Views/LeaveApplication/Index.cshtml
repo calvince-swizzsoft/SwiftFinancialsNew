@@ -1,11 +1,28 @@
-﻿
+﻿﻿
 @{
-    ViewBag.Title = "Leave Appplication";
+    ViewBag.Title = "Leave Application";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Leave Application</h2>
+        <h2>LeaveApplication</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -22,7 +39,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create Leave Application", "Create", "LeaveApplication", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create ", "Create", "LeaveApplication", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -47,7 +64,6 @@
                                 </tr>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
@@ -83,40 +99,67 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var DurationStartDate = new Date(parseInt(aData.DurationStartDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + DurationStartDate.getHours()).slice(-2);
-                    var m = ("0" + DurationStartDate.getMinutes()).slice(-2);
-                    var s = ("0" + DurationStartDate.getSeconds()).slice(-2);
 
-                    var dt_DurationStartDate = $.datepicker.formatDate('dd/mm/yy', DurationStartDate) + " " + h + ":" + m + ":" + s;
-                    aData.DurationStartDate = dt_DurationStartDate;
+                    var startDate = new Date(parseInt(aData.DurationStartDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var hStart = ("0" + startDate.getHours()).slice(-2);
+                    var mStart = ("0" + startDate.getMinutes()).slice(-2);
+                    var sStart = ("0" + startDate.getSeconds()).slice(-2);
 
-                    var DurationEndDate = new Date(parseInt(aData.DurationEndDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + DurationEndDate.getHours()).slice(-2);
-                    var m = ("0" + DurationEndDate.getMinutes()).slice(-2);
-                    var s = ("0" + DurationEndDate.getSeconds()).slice(-2);
+                    var dt_DurationStart = $.datepicker.formatDate('dd/mm/yy', startDate) + " " + hStart + ":" + mStart + ":" + sStart;
+                    aData.DurationStartDate = dt_DurationStart;
 
-                    var dt_DurationEndDate = $.datepicker.formatDate('dd/mm/yy', DurationEndDate) + " " + h + ":" + m + ":" + s;
-                    aData.DurationEndDate = dt_DurationEndDate;
 
-                    /*var editUrl = '<a  href="/humanResource/LeaveRecall/Recall/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Recall</a>';*/
-                    /*var viewUrl = '<a  href="/humanResource/Employee/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';*/
 
-                    $('td:eq(2)', nRow).html(dt_Created);
-                    $('td:eq(3)', nRow).html(dt_DurationStartDate);
-                    $('td:eq(4)', nRow).html(dt_DurationEndDate);
-                    //$('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    var endDate = new Date(parseInt(aData.DurationEndDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var hEnd = ("0" + endDate.getHours()).slice(-2);
+                    var mEnd = ("0" + endDate.getMinutes()).slice(-2);
+                    var sEnd = ("0" + endDate.getSeconds()).slice(-2);
+
+                    var dt_DurationEnd = $.datepicker.formatDate('dd/mm/yy', endDate) + " " + hEnd + ":" + mEnd + ":" + sEnd;
+                    aData.DurationEndDate = dt_DurationEnd;
+
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+
+                    var viewButton = `<a class="dropdown-item" href="/HumanResource/Holiday/details/${aData.Id}">View</a>`;
+                    var editButton = `<a class="dropdown-item" href="/HumanResource/Holiday/edit/${aData.Id}">Edit</a>`;
+
+                    switch (aData.Status) {
+                        case 1: // Pending
+                            dropdownHtml += viewButton + editButton;
+                            break;
+                        default:
+                            dropdownHtml += viewButton + editButton;
+                            break;
+                    }
+                    dropdownHtml += `</div></div>`;
+
+
+                    $('td:eq(9)', nRow).html(dt_Created);
+                    $('td:eq(#)', nRow).html(dt_DurationEnd);
+                    $('td:eq(#)', nRow).html(dt_DurationStart);
+                    $('td:eq(10)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "EmployeeCustomerFullName", "sTitle": "Customer Name", "sWidth": "15%" },
-                    { "mDataProp": "LeaveTypeDescription", "sTitle": "Leave Type", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
-                    { "mDataProp": "DurationStartDate", "sTitle": "Leave Start Date", "sWidth": "15%" },
-                    { "mDataProp": "DurationEndDate", "sTitle": "Leave End Date", "sWidth": "15%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "LeaveType", "sTitle": "Type", "sWidth": "15%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
+                    { "mDataProp": "EmployeeCustomerFullName", "sTitle": "Employee Name", "sWidth": "10%" },
+                    { "mDataProp": "EmployeeCustomerIndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },
+                    { "mDataProp": "EmployeeCustomerIndividualIdentityCardTypeDescription", "sTitle": "Identity Card Type", "sWidth": "15%" },
+                    { "mDataProp": "EmployeeCustomerIndividualIdentityCardNumber", "sTitle": "Identity Card Number", "sWidth": "15%" },
+                    { "mDataProp": "EmployeeCustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "15%" },
+                    { "mDataProp": "EmployeeCustomerIndividualMaritalStatusDescription", "sTitle": "Marital Status", "sWidth": "15%" },
+                    { "mDataProp": "EmployeeCustomerSerialNumber", "sTitle": "Serial Number", "sWidth": "15%" },
+
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });
@@ -130,4 +173,3 @@
     </script>
 
 }
-

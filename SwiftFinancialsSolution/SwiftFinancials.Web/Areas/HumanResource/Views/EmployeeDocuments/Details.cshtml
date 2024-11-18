@@ -1,6 +1,6 @@
 ﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDocumentDTO
 
-@{ ViewBag.Title = "Create Employee Documents"; }
+@{ ViewBag.Title = "Employee Document Deatils"; }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h2>Create Employee Documents</h2>
@@ -71,10 +71,7 @@
 
                 <div class="card">
                     <div class="card-body">
-
-
-
-                        @using (Html.BeginForm("Create", "EmployeeDocuments", new { Area = "HumanResource" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        @using (Html.BeginForm("Details", "EmployeeDocuments", new { Area = "HumanResource" }, FormMethod.Post))
                         {
                             @Html.AntiForgeryToken()
                             @Html.HiddenFor(model => model.EmployeeBloodGroupDescription, new { id = "EmployeeBloodGroupDescription" })
@@ -92,66 +89,69 @@
                             @Html.HiddenFor(model => model.EmployeeBranchId, new { id = "EmployeeBranchId" })
                             @Html.HiddenFor(model => model.EmployeeCustomerIndividualGenderDescription, new { id = "EmployeeCustomerIndividualGenderDescription" })
                             @Html.HiddenFor(model => model.EmployeeCustomerIndividualPayrollNumbers, new { id = "EmployeeCustomerIndividualPayrollNumbers" })
-                            
-                            @Html.HiddenFor(model => model.EmployeeEmployeeTypeId, new { id = "EmployeeEmployeeTypeId" })
-                            @Html.HiddenFor(model => model.EmployeeEmployeeTypeChartOfAccountId, new { id = "EmployeeEmployeeTypeChartOfAccountId" })
 
 
-                        <fieldset>
-                            <div class="card mb-4">
-                                <div class="card-body text-dark">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            @Html.LabelFor(model => model.FileName, new { @class = "control-label" })
-                                            <div class="input-group">
-                                                <input type="file"
-                                                       id="documentUpload"
-                                                       name="uploadedFile"
-                                                       class="form-control required"
-                                                       accept=".pdf"
-                                                       required />
+
+
+
+                            <!-- Expense Payables -->
+                            <fieldset>
+                                <div class="card mb-4">
+                                    <div class="card-body text-dark">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.FileName, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.EmployeeCustomerId, new { id = "EmployeeCustomerId" })
+                                                @Html.EditorFor(model => model.FileName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.FileName, "", new { @class = "text-danger" })
                                             </div>
+
+
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.EmployeeCustomerFullName, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.EmployeeCustomerId, new { id = "EmployeeCustomerId" })
+                                                @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
+                                            </div>
+
+
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-lg-6">
+                                                    @Html.LabelFor(model => model.FileTitle, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.FileTitle, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.FileTitle, "", new { @class = "text-danger" })
+                                               
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                    @Html.LabelFor(model => model.FileDescription, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.TextAreaFor(model => model.FileDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text.....", @required = "" })
+                                                    @Html.ValidationMessageFor(model => model.FileDescription, "", new { @class = "text-danger" })
+
+                                                
+                                            </div>
+
+
+
                                         </div>
 
-                                        <div class="col-lg-6">
-                                            @Html.LabelFor(model => model.EmployeeCustomerFullName, new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.EmployeeCustomerId, new { id = "EmployeeCustomerId" })
-                                            <div class="input-group">
-                                                @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "EmployeeCustomerFullName", @readonly = "" } })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookup">
-                                                        <span class="fa fa-search"></span>
-                                                    </a>
-                                                </span>
-                                            </div>
-                                            @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            @Html.LabelFor(model => model.FileTitle, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.FileTitle, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.FileTitle, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.FileDescription, htmlAttributes: new { @class = "control-label" })
-                                                @Html.TextAreaFor(model => model.FileDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text.....", @required = "" })
-                                                @Html.ValidationMessageFor(model => model.FileDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
+                            </fieldset>
+
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+
+                                <p>
+                                    @Html.ActionLink("Edit", "Edit", "EmployeeDocuments", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                    @Html.ActionLink("Back to List", "Index", "EmployeeDocuments", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                </p>
                             </div>
-                        </fieldset>
-                        <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
 
 
-                            <input type="submit" value="Create" class="btn btn-primary btn-update" />
-                        </div>
+
                         }
-
-
                     </div>
                 </div>
 
@@ -409,8 +409,6 @@
                             $('#EmployeeBranchId').val(response.data.EmployeeBranchId);
                             $('#EmployeeCustomerIndividualGenderDescription').val(response.data.EmployeeCustomerIndividualGenderDescription);
                             $('#EmployeeCustomerIndividualPayrollNumbers').val(response.data.EmployeeCustomerIndividualPayrollNumbers);
-                            $('#EmployeeEmployeeTypeId').val(response.data.EmployeeEmployeeTypeId);
-                            $('#EmployeeEmployeeTypeChartOfAccountId').val(response.data.EmployeeEmployeeTypeChartOfAccountId);
 
 
 

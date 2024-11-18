@@ -49,29 +49,34 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     @using (Html.BeginForm("Edit", "Designation", new { Area = "HumanResource" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.Id)
 
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <!-- Name field -->
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">Name:</label>
-                                            <div class="col-sm-10">
-                                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                                            </div>
-                                        </div>
+                                        <div class="row">
 
-                                        <!-- Remarks field -->
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">Remarks:</label>
-                                            <div class="col-sm-10">
-                                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-sm">
+                                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                                </div>
                                             </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+
                                         </div>
 
                                         <!-- Transaction Threshold Details -->
@@ -104,10 +109,10 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row mt-2">
-                                                    <div class="col-md-12 text-right">
-                                                        <button type="button" id="addThreshold" class="btn btn-success">Add</button>
-                                                    </div>
+                                                
+                                                <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                                    <button type="button" id="addThreshold" class="btn btn-success">Add</button>
+
                                                 </div>
 
                                                 <!-- Transaction Threshold Preferences Table -->
@@ -156,17 +161,18 @@
                                             </div>
                                         </div>
 
-                                        <!-- Designation is locked checkbox -->
-                                        <div class="form-group mt-3 d-flex justify-content-end">
+                                        
+
+                                        <!-- Update button -->
+                                        
+                                        <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
                                             <div class="custom-control custom-checkbox">
                                                 @Html.CheckBoxFor(model => model.IsLocked, new { @class = "custom-control-input", id = "IsLocked" })
                                                 <label class="custom-control-label" for="IsLocked">Designation is locked?</label>
                                             </div>
-                                        </div>
 
-                                        <!-- Update button -->
-                                        <div class="form-group mt-3 d-flex justify-content-end">
                                             <button type="submit" class="btn btn-primary">Update</button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -413,5 +419,81 @@ $(document).ready(function() {
     });
 });
     </script>
+    <style>
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .form-group-lg {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border-radius: .25rem;
+        }
+
+        /* The .nav class is incorrectly nested, so I'll fix that */
+        .nav {
+            display: flex;
+            flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+            padding: 0;
+            margin: 5px;
+            margin-bottom: 0;
+            border: 2px solid black;
+            border-radius: 8px;
+            margin-top: 20px;
+            gap: 10px; /* Space between links */
+            text-align: center; /* Centers the text inside links */
+            padding: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            text-decoration: none;
+            color: #007bff; /* Default text color */
+            transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+            border-radius: 4px; /* Rounded corners */
+            font-size: 14px; /* Adjust font size for better fit */
+            white-space: nowrap; /* Prevents text from wrapping inside the link */
+        }
+
+            .nav-link:hover {
+                color: #fff; /* Text color on hover */
+                background-color: #0056b3; /* Background color on hover */
+            }
+
+            .nav-link i {
+                margin-right: 8px; /* Space between icon and text */
+                font-size: 16px; /* Adjust icon size */
+            }
+
+            .nav-link.disabled {
+                pointer-events: none;
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+        .col-lg-2 {
+            display: flex;
+            align-items: center; /* Center the title vertically */
+            justify-content: center; /* Center the title horizontally if needed */
+            padding: 0; /* Remove default padding if necessary */
+            border-radius: 4px; /* Rounded corners */
+        }
+
+        .bottom-button {
+            border: 2px solid gray; /* Border color set to gray */
+            padding: 10px; /* Padding inside the border */
+            border-radius: 5px; /* Rounded corners (optional) */
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #00e0ff;
+        }
+    </style>
 
 }

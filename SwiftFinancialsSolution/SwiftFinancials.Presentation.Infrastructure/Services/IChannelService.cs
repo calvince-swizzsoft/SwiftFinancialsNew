@@ -1014,6 +1014,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<bool> RemoveHolidayAsync(Guid holidayId, ServiceHeader serviceHeader = null);
 
+        Task<HolidayDTO> FindHolidayAsync(Guid holidayId, ServiceHeader serviceHeader = null);
+
+
         Task<DateTime?> FindBusinessDayAsync(int addValue, bool nextDay = true, ServiceHeader serviceHeader = null);
 
         #endregion

@@ -25,27 +25,54 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindEmployeesByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindEmployeesByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                pageIndex,
+                pageSize,
+                GetServiceHeader()
+            );
 
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            if (pageCollectionInfo != null)
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = sortAscending
+                    ? pageCollectionInfo.PageCollection
+                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                        .ToList()
+                    : pageCollectionInfo.PageCollection
+                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                        .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: sortedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<EmployeeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<EmployeeDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
         }
+
+        
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -90,6 +117,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!employeeBindingModel.HasErrors)
             {
                 await _channelService.AddEmployeeAsync(employeeBindingModel, GetServiceHeader());
+                TempData["SuccessMessage"] = "Employee Created Succeessfully";
 
                 return RedirectToAction("Index");
             }
@@ -104,6 +132,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
+            ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
+
 
             var employeeDTO = await _channelService.FindEmployeeAsync(id, GetServiceHeader());
 
@@ -117,12 +147,46 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateEmployeeAsync(employeeBindingModel, GetServiceHeader());
+                TempData["SuccessMessage"] = "Employee Updated Successfully";
 
                 return RedirectToAction("Index");
             }
             else
             {
                 return View(employeeBindingModel);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetCustomerDetails(Guid customerId)
+        {
+            try
+            {
+                var customer = await _channelService.FindCustomerAsync(customerId, GetServiceHeader());
+
+                if (customer == null)
+                {
+                    return Json(new { success = false, message = "Customer not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        CustomerFullName = customer.FullName,
+                        CustomerId = customer.Id,
+                        
+
+
+
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the customer details." }, JsonRequestBehavior.AllowGet);
             }
         }
 
