@@ -14026,6 +14026,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<HolidayDTO> FindHolidayAsync(Guid holidayId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<HolidayDTO>();
+
+            IHolidayService service = GetService<IHolidayService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    HolidayDTO response = ((IHolidayService)result.AsyncState).EndFindHoliday(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindHoliday(holidayId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         #endregion
 
         #region SalaryHeadDTO

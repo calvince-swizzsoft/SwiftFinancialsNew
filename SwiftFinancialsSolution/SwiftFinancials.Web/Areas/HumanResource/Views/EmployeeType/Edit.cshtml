@@ -20,6 +20,13 @@
         </ol>
     </div>
 </div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger fade in">
@@ -44,7 +51,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     @using (Html.BeginForm("Edit", "EmployeeType", new { Area = "HumanResource" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -65,11 +72,7 @@
                                             @Html.ValidationMessageFor(model => model.Category)
                                         </div>
                                     </div>
-                                    <div class="form-group form-group-sm">
-                                        <div class="col-md-offset-2">
-                                            <input type="submit" value="Create" class="btn btn-primary" />
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
@@ -78,19 +81,25 @@
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsLocked)
-                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </fieldset>
+                        <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+
+                            <div class="form-group form-group-lg">
+                                @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                            </div>
+
+
+                            <input type="submit" value="Update" class="btn btn-primary btn-update" />
+                            
+                        </div>
                     }
 
-                    <div>
-                        @Html.ActionLink("Back to List", "Index", "EmployeeType", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -106,8 +115,8 @@
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
-   
-        <script>
+
+    <script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -212,6 +221,80 @@
                     return item;
                 }
             });
-        </script>
-    }
+    </script>
+
+    <style>
+        .card {
+            margin-bottom: 20px;
+        }
+
+
+
+        .form-group-lg {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border-radius: .25rem;
+        }
+
+        /* The .nav class is incorrectly nested, so I'll fix that */
+        .nav {
+            display: flex;
+            flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+            padding: 0;
+            margin: 5px;
+            margin-bottom: 0;
+            border: 2px solid black;
+            border-radius: 8px;
+            margin-top: 20px;
+            gap: 10px; /* Space between links */
+            text-align: center; /* Centers the text inside links */
+            padding: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            text-decoration: none;
+            color: #007bff; /* Default text color */
+            transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+            border-radius: 4px; /* Rounded corners */
+            font-size: 14px; /* Adjust font size for better fit */
+            white-space: nowrap; /* Prevents text from wrapping inside the link */
+        }
+
+            .nav-link:hover {
+                color: #fff; /* Text color on hover */
+                background-color: #0056b3; /* Background color on hover */
+            }
+
+            .nav-link i {
+                margin-right: 8px; /* Space between icon and text */
+                font-size: 16px; /* Adjust icon size */
+            }
+
+            .nav-link.disabled {
+                pointer-events: none;
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+        .col-lg-2 {
+            display: flex;
+            align-items: center; /* Center the title vertically */
+            justify-content: center; /* Center the title horizontally if needed */
+            padding: 0; /* Remove default padding if necessary */
+            border-radius: 4px; /* Rounded corners */
+        }
+
+        .bottom-button {
+            border: 2px solid gray; /* Border color set to gray */
+            padding: 10px; /* Padding inside the border */
+            border-radius: 5px; /* Rounded corners (optional) */
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #00e0ff;
+        }
+    </style>
+}
 

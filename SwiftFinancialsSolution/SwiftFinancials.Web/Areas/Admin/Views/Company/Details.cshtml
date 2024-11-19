@@ -39,36 +39,55 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
-                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                        </div>
-
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                </div>
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
                                     @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
                                 </div>
-                            </div>
-                            <div class="col-md-4">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
                                     @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
                                 </div>
-                            </div>
-                            <div class="col-md-4">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
                                     @Html.ValidationMessageFor(model => model.MembershipTerminationNoticePeriod, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="font-bold">Logo</label>
+                                    <div class="image-box" style="border: 1px solid #ddd; border-radius: 8px; padding: 5px; text-align: center; width: 200px; height: 200px; overflow: hidden;">
+                                        <img id="logoPreview" src="https://via.placeholder.com/150" alt="Logo Preview" style="width: 100%; height: 100%; object-fit: cover;" />
+                                    </div>
+                                    <input type="file" class="form-control-file mt-2" name="Logo" id="logoInput" style="border-radius: 5px;" accept="image/*" />
+                                </div>
+                            </div>
                         </div>
+                      
+
+                        <script>
+                            document.getElementById('logoInput').addEventListener('change', function (event) {
+                                const file = event.target.files[0];
+                                const reader = new FileReader();
+
+                                reader.onload = function (e) {
+                                    document.getElementById('logoPreview').src = e.target.result;
+                                };
+
+                                if (file) {
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                        </script>
 
 
                         <div class="form-group">

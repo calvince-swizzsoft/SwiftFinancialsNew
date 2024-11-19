@@ -1,12 +1,70 @@
 ﻿@model  Application.MainBoundedContext.DTO.MessagingModule.MessageGroupDTO
 
 @{
-    ViewBag.Title = "Create Charges";
+    ViewBag.Title = "Messaging Groups";
 
     var target = ViewBag.target as List<SelectListItem>;
+    var recordStatus = ViewBag.recordStatus as List<SelectListItem>;
+    var customerFilter = ViewBag.customerFilter as List<SelectListItem>;
+
 
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
+<style>
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+
+    #dataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #dataTable th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #dataTable th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        #dataTable tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #dataTable td {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        #dataTable tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
+
+        #dataTable tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        #dataTable tr:last-child td {
+            border-bottom: none;
+        }
+</style>
 
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -31,64 +89,6 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Create Message Group</h2>
-
-                    @if (TempData["CreateError"] != null)
-                    {
-                        <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["CreateError"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
-                    }
-
-
-                    @if (TempData["ErrorMsg"] != null)
-                    {
-                        <div class="alert alert-warning">
-                            <strong>Warning !</strong> @TempData["ErrorMsg"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
-                    }
-
-
-                    @if (TempData["chargeSplit"] != null)
-                    {
-                        <div class="alert alert-info">
-                            <strong>Attempt failed !</strong> @TempData["chargeSplit"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
-                    }
-
-
-
-                    @if (TempData["splitPercentage"] != null)
-                    {
-                        <div class="alert alert-warning">
-                            <strong>Attempt failed !</strong> @TempData["splitPercentage"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
-                    }
-
-
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -99,126 +99,119 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Add", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post, new { id = "messageGroupForm" }))
-                    {
-                        @Html.AntiForgeryToken()
+                    <div class="main">
+                        @using (Html.BeginForm("Add", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post, new { id = "messageGroupForm" }))
+                        {
+                            @Html.AntiForgeryToken()
 
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter message group name..." } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter message group name..." } })
+                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        </div>
                                     </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Target, htmlAttributes: new { @class = "" })
+                                            @Html.DropDownListFor(model => model.Target, target, "-- Select group target --", new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.Target)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br />
+                                <br />
+                                <br />
+
+                                <ul class="nav nav-tabs" style="margin-bottom: 20px;">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#custom"><i class="fa fa-table" aria-hidden="true"></i> Custom</a>
+                                    </li>
+
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#tips"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Tips</a>
+                                    </li>
+                                </ul>
+
+
+                                <div class="tab-content">
+                                    <div id="custom" class="tab-pane active">
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label>Customer</label>
+                                                <div class="input-group" data-autoclose="true">
+                                                    @Html.HiddenFor(model => model.messageGroupCustomerDTO[0].CustomerID, new { @Id = "CustomerID" })
+                                                    @Html.TextBoxFor(model => model.messageGroupCustomerDTO[0].Customer, new { @Id = "Customer", @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @placeholder = "Link Customer..." })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.messageGroupCustomerDTO[0].CustomerMobileNumber, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.messageGroupCustomerDTO[0].CustomerMobileNumber, new { htmlAttributes = new { @Id = "CustomerMobileNumber", @class = "form-control entry-field", @disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.messageGroupCustomerDTO[0].CustomerMobileNumber, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.messageGroupCustomerDTO[0].CustomerEmailAddress, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.messageGroupCustomerDTO[0].CustomerEmailAddress, new { htmlAttributes = new { @Id = "CustomerEmailAddress", @class = "form-control entry-field", @disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.messageGroupCustomerDTO[0].CustomerEmailAddress, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-1" style="margin-top: 25px;">
+                                                <div class="form-group form-group-sm">
+                                                    <button type="submit" id="addEntryBtn" style="width: 150px;" class="btn btn-primary">Add</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-container mt-5">
+                                            <h3 style="font-size: 1.9rem; text-align: center;">Messaging Group Members</h3>
+                                            <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Mobile Number</th>
+                                                        <th>Email Address</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div id="tips" class="tab-pane" style="margin-left: 20px;">
+                                    </div>
+                                </div>
+                            </fieldset>
+                        }
+                    </div>
+
+                    <br />
+
+                    <div class="ibox-content bg-white text-info">
+                        @using (Html.BeginForm("Create", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post))
+                        {
+                            <div class="col-lg-3">
+                                <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
                             </div>
-
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Target, htmlAttributes: new { @class = "" })
-                                        @Html.DropDownListFor(model => model.Target, target, "-- Select group target --", new { @class = "form-control" })
-                                        @Html.ValidationMessageFor(model => model.Target)
-                                    </div>
-                                </div>
-                            </div>
-
-                            <br />
-                            <br />
-                            <br />
-
-                            <ul class="nav nav-tabs" style="margin-bottom: 20px;">
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="#custom"><i class="fa fa-table" aria-hidden="true"></i> Custom</a>
-                                </li>
-
-
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#tips"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Tips</a>
-                                </li>
-                            </ul>
-
-
-                            <div class="tab-content">
-                                @*applicationDetails*@
-                                <div id="custom" class="tab-pane active">
-                                    <div class="row">
-                                        <div class="col-md-4 form-group">
-                                            <label>Customer</label>
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.messageGroupCustomerDTO[0].CustomerID, new { @Id = "CustomerID" })
-                                                @Html.TextBoxFor(model => model.messageGroupCustomerDTO[0].Customer, new { @Id = "Customer", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer..." })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-3">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.messageGroupCustomerDTO[0].CustomerMobileNumber, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.messageGroupCustomerDTO[0].CustomerMobileNumber, new { htmlAttributes = new { @Id = "CustomerMobileNumber", @class = "form-control", @disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.messageGroupCustomerDTO[0].CustomerMobileNumber, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-3">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.messageGroupCustomerDTO[0].CustomerEmailAddress, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.messageGroupCustomerDTO[0].CustomerEmailAddress, new { htmlAttributes = new { @Id = "CustomerEmailAddress", @class = "form-control", @disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.messageGroupCustomerDTO[0].CustomerEmailAddress, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-1" style="margin-top: 25px;">
-                                            <div class="form-group form-group-sm">
-                                                <input type="submit" value="Add" style="width: 150px;" class="btn btn-primary" />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <input type="hidden" id="customersData" name="CustomersJson" />
-
-                                    <div class="table-container mt-5">
-                                        <h3 style="font-size: 1.9rem; text-align: center;">Customers</h3>
-
-                                        <div class="no-data-message mt-2">No data available to be displayed in table</div>
-                                        <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Type</th>
-                                                    <th>Serial Number</th>
-                                                    <th>Account Number</th>
-                                                    <th>Membership Number</th>
-                                                    <th>Name</th>
-                                                    <th>Payroll Numbers</th>
-                                                    <th>Gender</th>
-                                                    <th>Marital Status</th>
-                                                    <th>Identity Card Number</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <!-- Dynamic data will be inserted here -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div id="tips" class="tab-pane" style="margin-left: 20px;">
-                                </div>
-                            </div>
-                        </fieldset>
-                    }
-                </div>
-
-                <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post))
-                    {
-                        <div class="col-lg-3">
-                            <input type="submit" style="width: 150px;" value="Create" @*onclick="sendFormData()"*@ class="btn btn-primary" />
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
         </div>
@@ -232,6 +225,50 @@
         <div class="modal-content">
             <div class="modal-header bg-primary">
                 <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+
+            <div class="blue-section">
+                <form id="filterForm">
+                    <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                        <div class="col-lg-3">
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Record Status</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.RecordStatus, recordStatus,
+                                    new { @class = "form-control input-md", @id = "recordStatus" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Loan Filter</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.CustomerFilter, customerFilter,
+                                    new { @class = "form-control input-md", @id = "customerFilter" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3" style="margin-top: 27px;">
+                            <div class="form-group spacing-form-group">
+                                <div class="input-group text-box">
+                                    @Html.TextBox("text", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "text" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1" style="margin-top:20px;">
+                            <div class="form-group form-group-sm">
+                                <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
 
             <br />
@@ -297,72 +334,176 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-
-    <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
     <script src="~/Scripts/js/navlink.js"></script>
 
 
-    <script>
-        $('#customersGrid').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("CustomerIndex", "MessagingGroups", new { Area = "Dashboard"}))",
-        "sServerMethod": "POST",
-       
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-            var h = ("0" + createdDate.getHours()).slice(-2);
-            var m = ("0" + createdDate.getMinutes()).slice(-2);
-            var s = ("0" + createdDate.getSeconds()).slice(-2);
+    <script type="text/javascript">
+   $(document).ready(function () {
+    $('#addEntryBtn').click(function (event) {
+        event.preventDefault();
 
-            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-            aData.CreatedDate = dt_Created;
+        var description = $('#Description').val();
+        var target = $('#Target').val();
+        var customerId = $('#CustomerID').val();
+        var emailAddress = $('#CustomerEmailAddress').val();
+        var customer = $('#Customer').val();
+        var mobileNumber = $('#CustomerMobileNumber').val();
 
-            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomer(\'' + aData.Id + '\')">Select</button>';
-            console.log(aData.Id);
+        var formData = $('#messageGroupForm').serialize();
 
-            $('td:eq(5)', nRow).html(dt_Created);
-            $('td:eq(6)', nRow).html(selectUrl);
+        formData += '&Description=' + encodeURIComponent(description) + '&Target=' + encodeURIComponent(target) + '&CustomerID=' + encodeURIComponent(customerId)
+            + '&EmailAddress=' + encodeURIComponent(emailAddress) + '&Customer=' + encodeURIComponent(customer) + '&MobileNumber=' + encodeURIComponent(mobileNumber);
 
-            return nRow;
-        },
-        "aoColumns": [
-            { "mDataProp": "TypeDescription", "sTitle": "Customer Type", "sWidth": "6%" },
-            { "mDataProp": "FullName", "sTitle": "Customer", "sWidth": "15%" },
-            { "mDataProp": "IndividualIdentityCardNumber", "sTitle": "Identity Card Number", "sWidth": "15%" },
-            { "mDataProp": "IndividualGenderDescription", "sTitle": "Gender", "sWidth": "4%" },
-            { "mDataProp": "IndividualMaritalStatusDescription", "sTitle": "Marital Status", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
+        $.ajax({
+            url: '@Url.Action("Add", "MessagingGroups", new { Area = "Dashboard" })',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    updateEntriesTable(response.entries);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Entry added successfully.',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+
+                    $('.entry-field').val('');
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.message,
+                        timer: 8000,
+                        showConfirmButton: true
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log('AJAX Error: ' + status + ' - ' + error);
+                alert('An error occurred while processing your request.');
+            }
+        });
     });
+});
 
+
+
+        function updateEntriesTable(entries) {
+            var tableBody = $("#dataTable tbody");
+            tableBody.empty();
+
+            $.each(entries, function (index, entry) {
+                var row = `<tr data-id="${entry.CustomerID}">
+                               <td>${entry.Customer}</td>
+                               <td>${entry.CustomerMobileNumber}</td>
+                               <td>${entry.CustomerEmailAddress}</td>
+                               <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.CustomerID}" style="background-color: red; color: white;">Remove</button></td>
+                           </tr>`;
+                tableBody.append(row);
+            });
+        }
+
+
+        $(document).on("click", ".remove-entry", function (event) {
+            event.preventDefault();
+            var entryId = $(this).data("id");
+            removeEntry(entryId);
+        });
+
+
+
+        function removeEntry(id) {
+            $.ajax({
+                url: '@Url.Action("Remove", "MessagingGroups")',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
+                    } else {
+                        alert("An error occurred while removing the entry.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the request.");
+                }
+            });
+        }
+    </script>
+
+
+
+
+    <script>
+        var defaultCustomerFilter = $('#customerFilter').val();
+        var defaultRecordStatus = $('#recordStatus').val();
+        var defaulText = $('#text').val();
+
+
+        $('#customersGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("CustomerIndex", "MessagingGroups", new { Area = "Dashboard"}))",
+                "sServerMethod": "POST",
+                
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter },
+                        { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus },
+                        { "name": "text", "value": $('#text').val() || defaulText }
+                    );
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomer(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "5%" },
+                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "5%" },
+                    { "mDataProp": "Reference2", "sTitle": "Membership Number", "sWidth": "5%" },
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "IndividualIdentityCardNumber", "sTitle": "Identity Card Number", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+        $('#filterForm').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#customersGrid').DataTable().ajax.reload();
+                });
 
 
 
         function selectCustomer(id) {
-            console.log("Customer ID passed to selectCustomer:", id);
-            alert("ID Passed:", id);
-            if (!id) {
-                console.error("Invalid or missing ID");
-                return;
-            }
-
+            console.log("Customer selected with ID: " + id);
             $.ajax({
                 url: '/Dashboard/MessagingGroups/CustomerLookUp',
                 type: 'POST',
                 data: { Id: id },
                 success: function (response) {
+                    console.log(response);
                     if (response.success) {
-                        // Populate fields with the returned data
-                        $('#CustomerEmailAddress').val(response.data.Email);
-                        $('#CustomerMobileNumber').val(response.data.Phone);
-                        $('#Customer').val(response.data.Name);
-                        $('#CustomerID').val(response.data.ID);
-
-
-                        // Close the modal
+                        $('#CustomerID').val(response.data.CustomerID);
+                        $('#Customer').val(response.data.Customer);
+                        $('#CustomerEmailAddress').val(response.data.CustomerEmailAddress);
+                        $('#CustomerMobileNumber').val(response.data.CustomerMobileNumber);
                         $('#customerLookupModal').modal('hide');
                     } else {
                         alert(response.message);
@@ -374,6 +515,7 @@
             });
         }
     </script>
+
 }
 
 

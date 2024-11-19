@@ -38,75 +38,128 @@
                     </div>
                 </div>
                 <div class="ibox-content text-info">
-                    <div class="row">
-                        <div class="col-lg-4">
-                            @Html.DisplayNameFor(model => model.Description)
-                            @Html.DisplayFor(model => model.Description)
-                        </div>
-
-                        <div class="col-lg-4">
-                            @Html.DisplayNameFor(model => model.MinimumBalance)
-                            @Html.DisplayFor(model => model.MinimumBalance)
-                        </div>
-
-                        <div class="col-lg-4">
-                            @Html.DisplayNameFor(model => model.MaximumBalance)
-                            @Html.DisplayFor(model => model.MaximumBalance)
-                        </div>
-                    </div>
 
                     <div class="row">
-                        <div class="col-lg-4">
-                            @Html.DisplayNameFor(model => model.Priority)
-                            @Html.DisplayFor(model => model.Priority)
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @disabled = "disabled" } })
+                            </div>
                         </div>
 
-                        <div class="col-lg-4">
-                            @Html.DisplayNameFor(model => model.IsLocked)
-                            @Html.DisplayFor(model => model.IsLocked)
-                        </div>
-
-                        <div class="col-lg-4">
-                            @Html.DisplayNameFor(model => model.IsPooled)
-                            @Html.DisplayFor(model => model.IsPooled)
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
+                                @Html.HiddenFor(model => model.ChartOfAccountId)
+                                @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", @placeholder = "Enter space to autofill G/L Account..", @disabled = "Disabled" } })
+                            </div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-lg-6">
-                            @Html.DisplayNameFor(model => model.MaturityPeriod)
-                            @Html.DisplayFor(model => model.MaturityPeriod)
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.ParentChartOfAccountNameDescription, htmlAttributes: new { @class = "control-label" })
+                                @Html.HiddenFor(model => model.ParentId)
+                                @Html.ValidationMessageFor(model => model.ParentChartOfAccountNameDescription, "", new { @class = "text-danger" })
+                                @Html.EditorFor(model => model.ParentChartOfAccountNameDescription, new { htmlAttributes = new { @class = "InvestmentProductsLookup form-control required", @placeholder = "Enter space to autofill Parent G/L Account..", @disabled = "Disabled" } })
+                            </div>
                         </div>
 
                         <div class="col-lg-6">
-                            @Html.DisplayNameFor(model => model.ChartOfAccountAccountName)
-                            @Html.DisplayFor(model => model.ChartOfAccountAccountName)
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                @Html.EditorFor(model => model.Priority, new { htmlAttributes = new { @class = "form-control", @placeholder = "Modify Recovery Priority", @disabled = "Disabled" } })
+                                @Html.ValidationMessageFor(model => model.Priority)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.MaturityPeriod, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.MaturityPeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maturity Period (Days)", @disabled = "Disabled" } })
+                                @Html.ValidationMessageFor(model => model.MaturityPeriod, "", new { @class = "text-danger" })
+                            </div>
                         </div>
 
                         <div class="col-lg-6">
-                            @Html.DisplayNameFor(model => model.AnnualPercentageYield)
-                            @Html.DisplayFor(model => model.AnnualPercentageYield)
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.MaximumBalance, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.MaximumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "MaximumBalance", @disabled = "Disabled" } })
+                                @Html.ValidationMessageFor(model => model.MaximumBalance, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.MinimumBalance, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.MinimumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Minimum Balance", @disabled = "Disabled" } })
+                                @Html.ValidationMessageFor(model => model.MinimumBalance, "", new { @class = "text-danger" })
+                            </div>
                         </div>
 
                         <div class="col-lg-6">
-                            @Html.DisplayNameFor(model => model.IsRefundable)
-                            @Html.DisplayFor(model => model.IsRefundable)
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.AnnualPercentageYield, htmlAttributes: new { @class = "" });
+                                @Html.EditorFor(model => model.AnnualPercentageYield, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Yield", @disabled = "Disabled" } })
+                                @Html.ValidationMessageFor(model => model.AnnualPercentageYield, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <div class="form-group form-group-lg">
+                                @Html.CheckBoxFor(model => model.IsRefundable, htmlAttributes: new { @class = "", @disabled = "disabled" })
+                                @Html.LabelFor(model => model.IsRefundable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Refundable?", @disabled = "Disabled" } })
+                                @Html.ValidationMessageFor(model => model.IsRefundable, "", new { @class = "text-danger" })
+                            </div>
                         </div>
 
-                        <div class="col-lg-6">
-                            @Html.DisplayNameFor(model => model.TrackArrears)
-                            @Html.DisplayFor(model => model.TrackArrears)
+                        <div class="col-lg-2">
+                            <div class="form-group form-group-lg">
+                                @Html.CheckBoxFor(model => model.TrackArrears, htmlAttributes: new { @class = "", @disabled = "disabled" })
+                                @Html.LabelFor(model => model.TrackArrears, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?",@disabled="disabled" } })
+                                @Html.ValidationMessageFor(model => model.TrackArrears, "", new { @class = "text-danger" })
+                            </div>
                         </div>
 
-                        <div class="col-lg-6">
-                            @Html.DisplayNameFor(model => model.IsMandatory)
-                            @Html.DisplayFor(model => model.IsMandatory)
+                        <div class="col-lg-2">
+                            <div class="form-group form-group-lg">
+                                @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "", @disabled = "disabled" })
+                                @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                            </div>
                         </div>
 
-                        <div class="col-lg-6">
-                            @Html.DisplayNameFor(model => model.CreatedDate)
-                            @Html.DisplayFor(model => model.CreatedDate)
+                        <div class="col-lg-2">
+                            <div class="form-group form-group-lg">
+                                @Html.CheckBoxFor(model => model.IsPooled, htmlAttributes: new { @class = "", @disabled = "disabled" })
+                                @Html.LabelFor(model => model.IsPooled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.IsPooled, "", new { @class = "text-danger" })
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-lg">
+                                @Html.CheckBoxFor(model => model.TransferBalanceToParentOnMembershipTermination, htmlAttributes: new { @class = "", @disabled = "disabled" })
+                                @Html.LabelFor(model => model.TransferBalanceToParentOnMembershipTermination, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.TransferBalanceToParentOnMembershipTermination, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3"></div>
+
+
                     </div>
                 </div>
 
@@ -121,5 +174,4 @@
             </div>
         </div>
     </div>
-</div>
 </div>

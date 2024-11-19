@@ -17,7 +17,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             await ServeNavigationMenus();
 
-            return View();
+            return View(); 
         }
 
         [HttpPost]

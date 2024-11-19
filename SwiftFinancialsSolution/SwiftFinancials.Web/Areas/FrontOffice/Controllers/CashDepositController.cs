@@ -439,9 +439,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             try
             {
 
-
                 int frontOfficeTransactionType = transactionModel.CustomerAccount.Type;
-
                 var tariffs = await _channelService.ComputeTellerCashTariffsAsync(transactionModel.CustomerAccount, transactionModel.TotalValue, frontOfficeTransactionType, GetServiceHeader());
 
                 switch ((FrontOfficeTransactionType)frontOfficeTransactionType)

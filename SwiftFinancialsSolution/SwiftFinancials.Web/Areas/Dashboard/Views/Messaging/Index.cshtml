@@ -1,0 +1,298 @@
+﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
+
+@{
+    ViewBag.Title = "Text Alerts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+    var LoanCaseFilter = ViewBag.LoanCaseFilterSelectList as List<SelectListItem>;
+    var LoanCaseStatus = ViewBag.LoanCaseStatusSelectList as List<SelectListItem>;
+}
+
+
+
+
+<style>
+    #tabs-container {
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        overflow-x: auto;
+    }
+
+    .nav-tabs {
+        padding: 10px 0;
+        list-style: none;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+        .nav-tabs li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .nav-tabs a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+        }
+
+            .nav-tabs a:hover {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .form-group {
+        border-radius: 10px;
+    }
+
+
+
+
+
+    .navbar {
+        background-color: rgba(255, 255, 255, 0.9); /* White with transparency */
+        padding: 15px 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+        .nav-menu li {
+            position: relative;
+            margin: 0 15px;
+        }
+
+    .nav-link {
+        text-decoration: none;
+        color: #333; /* Dark gray for text */
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        background-color: transparent; /* Clear background for default state */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        .nav-link:hover {
+            color: #007bff; /* Blue for active link */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+</style>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1>Dashboard Module</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+
+<br />
+<nav class="navbar">
+    <ul class="nav-menu">
+        <li>@Html.ActionLink("Text Alerts", "Index", "TextAlerts", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("E-Mail Alert", "Index", "EmailAlerts", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Instant Messaging", "Index", "InstantMessaging", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+    </ul>
+</nav>
+
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Text Alerts and Email Alerts</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="sk-spinner sk-spinner-double-bounce">
+                        <div class="sk-double-bounce1"></div>
+                        <div class="sk-double-bounce2"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="LoanRegistrationsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td colspan="7" class="dataTables_empty">
+                                        Loading data from server
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+
+@section scripts {
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#LoanRegistrationsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "LoanRegistration", new { Area = "Loaning"}))",
+                "sServerMethod": "POST",
+
+                "fnServerParams": function (aoData) {
+                    // Add filter type and value to server params
+                    aoData.push({ "name": "loanCaseStatus", "value": $('#loanCaseStatus').val() });
+                    aoData.push({ "name": "filterType", "value": $('#filterType').val() });
+                    aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
+                },
+
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var receivedDate = new Date(parseInt(aData.ReceivedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + receivedDate.getHours()).slice(-2);
+                    var m = ("0" + receivedDate.getMinutes()).slice(-2);
+                    var s = ("0" + receivedDate.getSeconds()).slice(-2);
+
+                    var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
+                    aData.ReceivedDate = dt_ReceivedDate;
+
+                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var appraiseUrl = '<a  href="/loaning/LoanRegistration/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
+                    var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
+                    var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
+                    var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
+
+                    // Generate dropdown HTML with conditional logic based on status
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+
+                    // Buttons to be included
+                    var viewButton = `<a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
+                    var AttachGuarantor = `<a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>`;
+
+                    // Conditional logic for button enabling/disabling based on status
+                    switch (aData.Status) {
+                        case 48826: // Registered
+                            dropdownHtml += viewButton + AttachGuarantor;
+                            break;
+                        // If the status is 48828 (Approved) or any other status, only "View" button will be enabled
+                        default:
+                            dropdownHtml += viewButton;
+                            break;
+                    }
+
+                    dropdownHtml += `</div></div>`;
+
+                    $('td:eq(8)', nRow).html(dt_Created);
+                    $('td:eq(9)', nRow).html(dropdownHtml);
+
+                    // Prevent default action for disabled links
+                    $('.dropdown-item.disabled').on('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+
+                    return nRow;
+                },
+
+                // Display settings
+                "aoColumns": [
+                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "2%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "20%" },
+                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "10%"},
+                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "10%"},
+                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
+                    { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "15%"},
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]],
+            }
+            );
+
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#LoanRegistrationsGrid').DataTable().ajax.reload();
+            });
+        });
+
+        $(document).ajaxStart(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+        $(document).ajaxStop(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+    </script>
+}
+

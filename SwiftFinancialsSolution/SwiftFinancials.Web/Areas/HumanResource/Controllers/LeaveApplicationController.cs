@@ -26,24 +26,51 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindLeaveApplicationsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLeaveApplicationsByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                pageIndex,
+                pageSize,
+                GetServiceHeader()
+            );
 
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            if (pageCollectionInfo != null)
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = sortAscending
+                    ? pageCollectionInfo.PageCollection
+                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                        .ToList()
+                    : pageCollectionInfo.PageCollection
+                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                        .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: sortedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<EmployeeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<LeaveApplicationDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -55,31 +82,60 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(employeeDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id)
+        [HttpGet]
+        public async Task<ActionResult> GetEmployeeDetails(Guid employeeId)
+        {
+            try
+            {
+                var employee = await _channelService.FindEmployeeAsync(employeeId, GetServiceHeader());
+
+                if (employee == null)
+                {
+                    return Json(new { success = false, message = "Employee not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        EmployeeCustomerFullName = employee.Customer.FullName,
+                        EmployeeCustomerId = employee.CustomerId,
+                        EmployeeId = employee.Id,
+                        EmployeeBloodGroupDescription = employee.BloodGroupDescription,
+                        EmployeeNationalHospitalInsuranceFundNumber = employee.NationalHospitalInsuranceFundNumber,
+                        EmployeeNationalSocialSecurityFundNumber = employee.NationalSocialSecurityFundNumber,
+                        EmployeeCustomerPersonalIdentificationNumber = employee.CustomerPersonalIdentificationNumber,
+                        EmployeeEmployeeTypeCategoryDescription = employee.EmployeeTypeCategoryDescription,
+                        EmployeeEmployeeTypeDescription = employee.EmployeeTypeDescription,
+                        EmployeeDepartmentDescription = employee.DepartmentDescription,
+                        EmployeeDepartmentId = employee.DepartmentId,
+                        EmployeeDesignationDescription = employee.DesignationDescription,
+                        EmployeeDesignationId = employee.DesignationId,
+                        EmployeeBranchDescription = employee.BranchDescription,
+                        EmployeeBranchId = employee.BranchId,
+                        EmployeeCustomerIndividualGenderDescription = employee.CustomerIndividualGenderDescription,
+                        EmployeeCustomerIndividualPayrollNumbers = employee.CustomerIndividualPayrollNumbers,
+                        EmployeeEmployeeTypeId = employee.EmployeeTypeId,
+                        EmployeeEmployeeTypeChartOfAccountId = employee.EmployeeTypeChartOfAccountId,
+
+
+
+
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the Employee details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
 
-            //ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            var employee = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
-
-            LeaveApplicationBindingModel leaveApplicationBindingModel = new LeaveApplicationBindingModel();
-
-            if (employee != null)
-            {
-                leaveApplicationBindingModel.EmployeeId = employee.Id;
-                leaveApplicationBindingModel.EmployeeCustomerFullName = employee.CustomerIndividualFirstName;
-            }
-
-            return View(leaveApplicationBindingModel);
-            
+            return View();
         }
 
         [HttpPost]

@@ -2040,6 +2040,103 @@ namespace SwiftFinancials.Web.Controllers
             return creditBatchEntryFilterSelectList;
 
 
+        } 
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetTextAlertStatusFilterSelectList(string selectedValue)
+        {
+
+            List<SelectListItem> textalertStatusFilterSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(DLRStatus)).Cast<DLRStatus>().Select(v => new SelectListItem
+            {
+
+
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+
+            textalertStatusFilterSelectList.AddRange(items);
+
+            return textalertStatusFilterSelectList;
+
+
         }
+
+        [NonAction]
+        protected List<SelectListItem> GetMicroCreditGroupTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> microCreditGroupCategories = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(MicroCreditGroupType)).Cast<MicroCreditGroupType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            microCreditGroupCategories.AddRange(items);
+
+            return microCreditGroupCategories;
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetMicroCreditGroupMeetingFrequencySelectList(string selectedValue)
+        {
+            List<SelectListItem> microCreditGroupMeetingFrequencyCategories = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(MicroCreditGroupMeetingFrequency)).Cast<MicroCreditGroupMeetingFrequency>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            microCreditGroupMeetingFrequencyCategories.AddRange(items);
+
+            return microCreditGroupMeetingFrequencyCategories;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetMicroCreditGroupMeetingDayOfWeekSelectList(string selectedValue)
+        {
+            List<SelectListItem> microCreditGroupMeetingDayOfWeekCategories = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(MicroCreditGroupMeetingDayOfWeek)).Cast<MicroCreditGroupMeetingDayOfWeek>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            microCreditGroupMeetingDayOfWeekCategories.AddRange(items);
+
+            return microCreditGroupMeetingDayOfWeekCategories;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetMicroCreditGroupMemberDesignationSelectList(string selectedValue)
+        {
+            List<SelectListItem> microCreditGroupMemberDesignationCategories = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(MicroCreditGroupMemberDesignation)).Cast<MicroCreditGroupMemberDesignation>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            microCreditGroupMemberDesignationCategories.AddRange(items);
+
+            return microCreditGroupMemberDesignationCategories;
+        }
+
+
+
+
     }
 }

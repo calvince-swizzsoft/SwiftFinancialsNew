@@ -475,7 +475,7 @@
     "sServerMethod": "POST",
     "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
         var dropDownHtml = `
-            <button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;">
+            <button type="button" id="cashDepositRequestBtn" class="btn btn-outline-info select-action-button" style="width: 150px;">
                 Select
             </button>
         `;
@@ -497,7 +497,7 @@
 });
 
 // Use event delegation to handle clicks on dynamically generated buttons
-$(document).on('click', '.select-action-button', function (e) {
+$(document).on('click', '#cashDepositRequestBtn', function (e) {
     e.preventDefault();
 
     const rowData = $('#cashDepositRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
@@ -526,10 +526,8 @@ $(document).on('click', '.select-action-button', function (e) {
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
 
-            var requestType = 1;
-
             var dropDownHtml = `
-            <button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;">
+            <button type="button" id="cashWithdrawalRequestBtn", class="btn btn-outline-info select-action-button" style="width: 150px;">
                 Select
             </button>
         `;
@@ -551,7 +549,7 @@ $(document).on('click', '.select-action-button', function (e) {
 
 
 
-    $(document).on('click', '.select-action-button', function (e) {
+        $(document).on('click', '#cashWithdrawalRequestBtn', function (e) {
         e.preventDefault();
 
         const rowData = $('#cashWithdrawalRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
@@ -615,7 +613,7 @@ $(document).ready(function () {
         },
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             var dropDownHtml = `
-                <button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;">
+                <button type="button" id="cashTransferRequestBtn" class="btn btn-outline-info select-action-button" style="width: 150px;">
                     Select
                 </button>
             `;
@@ -652,7 +650,7 @@ $(document).ready(function () {
 
 
 
-        $(document).on('click', '.select-action-button', function (e) {
+        $(document).on('click', '#cashTransferRequestBtn', function (e) {
             e.preventDefault();
 
             const rowData = $('#cashTransferRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row

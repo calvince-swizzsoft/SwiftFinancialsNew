@@ -25,12 +25,19 @@
     <div class="ibox">
         <div class="ibox-title">
             <h5>Create Bank</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
         </div>
         <div class="ibox-content">
             @using (Html.BeginForm("Create", "Bank", new { Area = "Admin" }, FormMethod.Post, new { @class = "form-horizontal", @id = "form" }))
             {
                 @Html.AntiForgeryToken()
-
                 <div class="form-group row">
                     <div class="col-md-6">
                         @Html.LabelFor(model => model.Description, "Description:", new { @class = "control-label" })
@@ -45,82 +52,155 @@
                     </div>
                 </div>
 
-                <h4>@Html.DisplayNameFor(model => model.BankBranches)</h4>
+                <h4>Branch Details</h4>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.Label("Bank Code", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BankBranches.Code, new { htmlAttributes = new { @class = "form-control", @id = "BankBranches_0__BankCode", @placeholder = "Enter bank code..." } })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Label("Address Line 1", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BankBranches.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @id = "BankBranches_0__AddressAddressLine1", @placeholder = "Enter address line 1..." } })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.Label("Address Line 2", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BankBranches.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @id = "BankBranches_0__AddressAddressLine2", @placeholder = "Enter address line 2..." } })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Label("Street", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BankBranches.AddressStreet, new { htmlAttributes = new { @class = "form-control", @id = "BankBranches_0__AddressStreet", @placeholder = "Enter street..." } })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.Label("Postal Code", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BankBranches.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @id = "BankBranches_0__AddressPostalCode", @placeholder = "Enter postal code..." } })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Label("City", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BankBranches.AddressCity, new { htmlAttributes = new { @class = "form-control", @id = "BankBranches_0__AddressCity", @placeholder = "Enter city..." } })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.Label("Email", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BankBranches.AddressEmail, new { htmlAttributes = new { @class = "form-control", @id = "BankBranches_0__AddressEmail", @placeholder = "Enter email..." } })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Label("Land Line", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BankBranches.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @id = "BankBranches_0__AddressLandLine", @placeholder = "Enter landline..." } })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.Label("Mobile Line", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BankBranches.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @id = "BankBranches_0__AddressMobileLine", @placeholder = "Enter mobile line..." } })
+                    </div>
+                </div>
 
-                <!-- Branch Table -->
-                <table class="table table-bordered" id="branchTable">
-                    <thead>
-                        <tr>
-                            <th>@Html.DisplayNameFor(model => model.BankBranches[0].BankCode)</th>
-                            <th>@Html.DisplayNameFor(model => model.BankBranches[0].AddressAddressLine1)</th>
-                            <th>@Html.DisplayNameFor(model => model.BankBranches[0].AddressAddressLine2)</th>
-                            <th>@Html.DisplayNameFor(model => model.BankBranches[0].AddressCity)</th>
-                            <th>@Html.DisplayNameFor(model => model.BankBranches[0].AddressEmail)</th>
-                            <th>@Html.DisplayNameFor(model => model.BankBranches[0].PhoneNumber)</th>
-                            <th>@Html.DisplayNameFor(model => model.BankBranches[0].ContactPerson)</th>
-                            <th>@Html.DisplayNameFor(model => model.BankBranches[0].BankDescription)</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="branchTableBody">
-                        <!-- Dynamic Branch Rows will be added here -->
-                    </tbody>
-                </table>
+                <div class="form-group">
+                    <button type="button" id="addBranchBtn" class="btn btn-primary">Add Branch</button>
+                </div>
 
-                <button type="button" id="addBranchBtn" class="btn btn-primary">Add Branch</button>
-
-                <div class="form-group mt-3">
-                    <input type="submit" value="Create" class="btn btn-primary" />
+                <div class="form-group">
+                    <table id="branchTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Address Line 1</th>
+                                <th>Address Line 2</th>
+                                <th>Street</th>
+                                <th>Postal Code</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Land Line</th>
+                                <th>Mobile Line</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group form-group-sm">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
                 </div>
             }
+
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+                $(function () {
+                    const branches = [];
+
+                    $('#addBranchBtn').click(function () {
+                        const branchData = {
+                            Code: $('#BankBranches_0__BankCode').val().trim(),
+                            AddressLine1: $('#BankBranches_0__AddressAddressLine1').val().trim(),
+                            AddressLine2: $('#BankBranches_0__AddressAddressLine2').val().trim(),
+                            Street: $('#BankBranches_0__AddressStreet').val().trim(),
+                            PostalCode: $('#BankBranches_0__AddressPostalCode').val().trim(),
+                            City: $('#BankBranches_0__AddressCity').val().trim(),
+                            Email: $('#BankBranches_0__AddressEmail').val().trim(),
+                            LandLine: $('#BankBranches_0__AddressLandLine').val().trim(),
+                            MobileLine: $('#BankBranches_0__AddressMobileLine').val().trim()
+                        };
+
+                        if (branchData.Code) {
+                            branches.push(branchData);
+                            addBranchToTable(branchData);
+                            clearBranchInputs();
+                        } else {
+                            alert("Please enter the branch code.");
+                        }
+                    });
+
+                    function addBranchToTable(branch) {
+                        $('#branchTable tbody').append(`
+                                        <tr data-code="${branch.Code}">
+                                            <td>${branch.Code}</td>
+                                            <td>${branch.AddressLine1}</td>
+                                            <td>${branch.AddressLine2}</td>
+                                            <td>${branch.Street}</td>
+                                            <td>${branch.PostalCode}</td>
+                                            <td>${branch.City}</td>
+                                            <td>${branch.Email}</td>
+                                            <td>${branch.LandLine}</td>
+                                            <td>${branch.MobileLine}</td>
+                                            <td><button type="button" class="btn btn-danger remove-branch">Remove</button></td>
+                                        </tr>
+                                    `);
+                    }
+
+                    function clearBranchInputs() {
+                        $('#BankBranches_0__BankCode').val('');
+                        $('#BankBranches_0__AddressAddressLine1').val('');
+                        $('#BankBranches_0__AddressAddressLine2').val('');
+                        $('#BankBranches_0__AddressStreet').val('');
+                        $('#BankBranches_0__AddressPostalCode').val('');
+                        $('#BankBranches_0__AddressCity').val('');
+                        $('#BankBranches_0__AddressEmail').val('');
+                        $('#BankBranches_0__AddressLandLine').val('');
+                        $('#BankBranches_0__AddressMobileLine').val('');
+                    }
+
+                    $('#branchTable').on('click', '.remove-branch', function () {
+                        const row = $(this).closest('tr');
+                        const branchCode = row.data('code');
+
+                        // Find index of the branch by Code
+                        const branchIndex = branches.findIndex(b => b.Code === branchCode);
+                        if (branchIndex !== -1) {
+                            branches.splice(branchIndex, 1); // Remove from array
+                            row.remove(); // Remove row from table
+                        }
+                    });
+                });
+            </script>
         </div>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(function () {
-        let branchCount = 0;
-
-        $('#addBranchBtn').click(function () {
-            const branchRow = `
-                <tr data-branch-index="${branchCount}">
-                    <td>
-                        <input type="text" name="BankBranches[${branchCount}].BankCode" class="form-control" placeholder="Enter bank code..." />
-                    </td>
-                    <td>
-                        <input type="text" name="BankBranches[${branchCount}].AddressLine1" class="form-control" placeholder="Enter address line 1..." />
-                    </td>
-                    <td>
-                        <input type="text" name="BankBranches[${branchCount}].AddressLine2" class="form-control" placeholder="Enter address line 2..." />
-                    </td>
-                    <td>
-                        <input type="text" name="BankBranches[${branchCount}].City" class="form-control" placeholder="Enter city..." />
-                    </td>
-                    <td>
-                        <input type="email" name="BankBranches[${branchCount}].Email" class="form-control" placeholder="Enter email..." />
-                    </td>
-                    <td>
-                        <input type="text" name="BankBranches[${branchCount}].PhoneNumber" class="form-control" placeholder="Enter phone number..." />
-                    </td>
-                    <td>
-                        <input type="text" name="BankBranches[${branchCount}].ContactPerson" class="form-control" placeholder="Enter contact person..." />
-                    </td>
-                    <td>
-                        <input type="text" name="BankBranches[${branchCount}].BranchName" class="form-control" placeholder="Enter branch name..." />
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger removeBranchBtn">Remove</button>
-                    </td>
-                </tr>
-            `;
-            $('#branchTableBody').append(branchRow);
-            branchCount++;
-        });
-
-        $(document).on('click', '.removeBranchBtn', function () {
-            $(this).closest('tr').remove();
-        });
-    });
-</script>
