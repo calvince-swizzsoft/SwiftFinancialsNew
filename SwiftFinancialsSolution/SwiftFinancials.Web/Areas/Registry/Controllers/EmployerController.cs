@@ -77,19 +77,18 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                 if (employer != null)
                 {
-                    // Update divisions
+                    //// Update divisions
                     var Division = new ObservableCollection<DivisionDTO>();
-                    DivisionDTO n = new DivisionDTO();
-                    foreach (var p in divisions)
-                    {
-                        n.Description = p.ToString();
-                    }
-                    foreach (var divisionDTO in employerBindingModel.Divisions)
-                    {
+                    DivisionDTO divisionDTO = new DivisionDTO();
+                    //foreach (var p in divisions)
+                    //{
+                    //    n.Description = p.ToString();
+                    //}
+                   
                         divisionDTO.EmployerId = employer.Id;
-
-                        Division.Add(n);
-                    }
+                        divisionDTO.Description = employer.Description;
+                        Division.Add(divisionDTO);
+                    
 
                     await _channelService.UpdateDivisionsByEmployerIdAsync(employer.Id, Division, GetServiceHeader());
                 }

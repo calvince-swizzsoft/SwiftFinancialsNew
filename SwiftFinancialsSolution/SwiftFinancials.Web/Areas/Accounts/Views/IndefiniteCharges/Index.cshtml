@@ -97,8 +97,21 @@
                     var editUrl = '<a  href="/accounts/IndefiniteCharges/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/IndefiniteCharges/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/IndefiniteCharges/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/accounts/IndefiniteCharges/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
+
+                    $('td:eq(6)', nRow).html(dropdownHtml);
+
                     $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                   // $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },

@@ -12,12 +12,25 @@ using SwiftFinancials.Presentation.Infrastructure.Util;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using System.Collections.ObjectModel;
 using System.Web;
+using System.Configuration;
+using SwiftFinancials.Web.Areas.Admin.DocumentsModel;
+using System.Data.SqlClient;
+using System.IO;
 
 namespace SwiftFinancials.Web.Areas.Admin.Controllers
 {
     [RoleBasedAccessControl]
     public class CompanyController : MasterController
     {
+
+        private readonly string _connectionString;
+        private HttpPostedFileBase uploadedPassportPhoto;
+
+        public CompanyController()
+        {
+            // Get connection string from Web.config
+            _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+        }
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -58,7 +71,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             var CompanyDTO = await _channelService.FindCompanyAsync(id, GetServiceHeader());
 
             // Retrieve all available debit, investment, and savings products
-            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
+            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
             var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
             var allInvestmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
             var allSavingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
@@ -79,6 +92,110 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             ViewBag.allSavings = allSavingsProducts;
             ViewBag.debit = debitTypes;
             return View(CompanyDTO.MapTo<CompanyBindingModel>());
+        }
+
+
+        private ActionResult NotFound()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        // Get Documents ...........................
+        private async Task<List<Document>> GetDocumentsAsync(Guid id)
+        {
+            var documents = new List<Document>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto FROM swiftFin_SpecimenCapture WHERE CompanyId = @CompanyId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CompanyId", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            documents.Add(new Document
+                            {
+                                PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
+                                SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
+                                IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
+                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
+                            });
+                        }
+                    }
+                }
+            }
+
+            return documents;
+        }
+
+        private Document ProcessDocumentUpload(Guid CompanyId, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl)
+        {
+            var document = new Document
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = CompanyId
+            };
+
+            // Process the passport photo from the data URL
+            if (!string.IsNullOrEmpty(passportPhotoDataUrl))
+            {
+                var base64Data = passportPhotoDataUrl.Split(',')[1];
+                document.PassportPhoto = Convert.FromBase64String(base64Data);
+            }
+
+            // Process other uploaded files
+            document.SignaturePhoto = ConvertFileToByteArray(signaturePhoto);
+            document.IDCardFrontPhoto = ConvertFileToByteArray(idCardFrontPhoto);
+            document.IDCardBackPhoto = ConvertFileToByteArray(idCardBackPhoto);
+
+            return document;
+        }
+
+        private byte[] ConvertFileToByteArray(HttpPostedFileBase file)
+        {
+            if (file != null && file.ContentLength > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    file.InputStream.CopyTo(memoryStream);
+                    return memoryStream.ToArray();
+                }
+            }
+            return null;
+        }
+
+
+
+        // Save Documents ......................
+        private async Task SaveDocumentAsync(Document document)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "INSERT INTO swiftFin_SpecimenCapture (Id, CompanyId, CreatedDate) " +
+                            "VALUES (@Id, @CompanyId, @CreatedDate)";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", document.Id);
+                    command.Parameters.AddWithValue("@CompanyId", document.CompanyId);
+                    command.Parameters.AddWithValue("@PassportPhoto", document.PassportPhoto ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@SignaturePhoto", document.SignaturePhoto ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@IDCardFrontPhoto", document.IDCardFrontPhoto ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@IDCardBackPhoto", document.IDCardBackPhoto ?? (object)DBNull.Value);
+
+                    command.Parameters.AddWithValue("@CreatedDate", document.CreatedDate);
+
+                    // Execute the query
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
         }
 
         public async Task<ActionResult> Create()
@@ -146,7 +263,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
 
                 TempData["Success"] = "Company Registered Successfully";
-                await ServeNavigationMenus();
 
                 return View("Index");
 
@@ -164,7 +280,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             await ServeNavigationMenus();
 
             // Retrieve all available debit, investment, and savings products
-            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
+            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
             var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
             var allInvestmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
             var allSavingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());

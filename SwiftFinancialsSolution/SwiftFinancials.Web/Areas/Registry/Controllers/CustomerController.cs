@@ -214,8 +214,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                 using (var getCommand = new SqlCommand(getNextReferenceQuery, connection))
                 {
-                    var result = await getCommand.ExecuteScalarAsync();
-                    newReference = (result != DBNull.Value) ? Convert.ToInt32(result) : 1; // Start at 1 if there are no rows
+                    //var result = await getCommand.ExecuteScalarAsync();
+                   // newReference = (result != DBNull.Value) ? Convert.ToInt32(result) : 1; // Start at 1 if there are no rows
                 }
 
             }

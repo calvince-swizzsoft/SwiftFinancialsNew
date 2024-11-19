@@ -546,6 +546,7 @@
     <Compile Include="Areas\Admin\Controllers\SSRSReportSettingLoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemTransactiontypesController.cs" />
     <Compile Include="Areas\Admin\Data\ReportRepository.cs" />
+    <Compile Include="Areas\Admin\DocumentsModel\Document.cs" />
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureViewModel.cs" />
