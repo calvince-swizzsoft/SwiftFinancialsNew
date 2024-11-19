@@ -87,7 +87,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountDTO.AccountType.ToString());
                 ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(chartOfAccountDTO.AccountCategory.ToString());
-
+                
                 TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }

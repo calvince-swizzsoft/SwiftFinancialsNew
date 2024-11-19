@@ -152,7 +152,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             if (userDTO != null)
             {
-                TempData["Success"] = "User Registered Successfully";
+                TempData["SuccessMessage"] = "User Registered Successfully";
 
                 return RedirectToAction("Index", "Membership", new { Area = "Admin" });
             }

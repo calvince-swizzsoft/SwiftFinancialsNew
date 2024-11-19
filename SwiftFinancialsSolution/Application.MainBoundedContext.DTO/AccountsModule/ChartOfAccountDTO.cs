@@ -22,7 +22,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Parent G/L Acccount")]
-        [ValidGuid]
         public Guid? ParentId { get; set; }
 
         [DataMember]

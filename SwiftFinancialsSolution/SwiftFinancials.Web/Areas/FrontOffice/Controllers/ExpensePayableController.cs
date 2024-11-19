@@ -104,36 +104,47 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return RedirectToAction("Create");
             }
 
+            // Validate the main ExpensePayableDTO
             expensePayableDTO.ValidateAll();
-
             if (expensePayableDTO.HasErrors)
             {
                 ModelState.AddModelError(string.Empty, "Validation errors occurred.");
-
                 TempData["ExpensePayableDTO"] = expensePayableDTO;
-
                 return RedirectToAction("Create");
             }
 
+            // Add the main Expense Payable
             var resultDTO = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
 
             if (!string.IsNullOrEmpty(resultDTO.ErrorMessageResult))
             {
                 ModelState.AddModelError(string.Empty, resultDTO.ErrorMessageResult);
-
                 TempData["ErrorMessage"] = resultDTO.ErrorMessageResult;
-
                 return View(expensePayableDTO);
             }
 
-            await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(resultDTO.Id, expensePayableEntries, GetServiceHeader());
+            // Add each entry individually
+            foreach (var entry in expensePayableEntries)
+            {
+                entry.ExpensePayableId = resultDTO.Id;
 
-            // Success message and retain TempData
-            TempData["SuccessMessage"] = "Expense payable created successfully";
-            // Removed TempData clearing lines
+                var entryResult = await _channelService.AddExpensePayableEntryAsync(entry, GetServiceHeader());
 
+                // Check if any error messages are returned
+                if (entryResult.ErrorMessages != null && entryResult.ErrorMessages.Any())
+                {
+                    string errorMessage = string.Join("; ", entryResult.ErrorMessages);
+                    ModelState.AddModelError(string.Empty, $"Error adding entry: {errorMessage}");
+                    TempData["ErrorMessage"] = errorMessage;
+                    return View(expensePayableDTO);
+                }
+            }
+
+            // Success message and redirect to Index
+            TempData["SuccessMessage"] = "Expense payable and its entries created successfully.";
             return RedirectToAction("Index");
         }
+
 
 
 

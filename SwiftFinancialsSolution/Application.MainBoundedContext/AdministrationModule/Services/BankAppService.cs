@@ -288,7 +288,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
                 {
                     var branch = new BankBranchDTO { Code = int.Parse(branchCodeSets[bankCounter][branchCounter]), Description = branchName };
 
-                    bank.BankBranches.Add(branch);
+                    bank.BankBranche.Add(branch);
 
                     branchCounter += 1;
                 }
@@ -321,7 +321,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
 
                 newBanks.Add(bank);
 
-                foreach (var bankBranchDTO in bankDTO.BankBranches)
+                foreach (var bankBranchDTO in bankDTO.BankBranche)
                 {
                     var address = new Address(bankBranchDTO.AddressAddressLine1, bankBranchDTO.AddressAddressLine2, bankBranchDTO.AddressStreet, bankBranchDTO.AddressPostalCode, bankBranchDTO.AddressCity, bankBranchDTO.AddressEmail, bankBranchDTO.AddressLandLine, bankBranchDTO.AddressMobileLine);
 

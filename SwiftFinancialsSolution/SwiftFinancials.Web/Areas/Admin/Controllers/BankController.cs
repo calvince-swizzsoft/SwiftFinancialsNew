@@ -68,13 +68,16 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public JsonResult Add(BankDTO bank, string branchdetails)
         {
+            // Add bank branch to the bankBranches list (assuming bank.BankBranches is the correct object to add)
+            bankBranches.Add(bank.BankBranches);
 
-            foreach (var branch in bank.BankBranches)
+            // Return JSON response with success flag and a redirect URL
+            return Json(new
             {
-                bankBranches.Add(branch);
-            }
-            return Json(new { success = true, data = bankBranches });
-
+                success = true,
+                data = bankBranches,
+                redirectUrl = Url.Action("Create", "Bank") // Generate URL to redirect
+            });
         }
 
         public async Task<ActionResult> Create()
@@ -82,7 +85,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             await ServeNavigationMenus();
             var bankDto = new BankDTO
             {
-                BankBranches = new ObservableCollection<BankBranchDTO>()
+                BankBranche = new ObservableCollection<BankBranchDTO>()
             };
             return View(bankDto);
         }
@@ -97,7 +100,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (!bank.HasErrors)
             {
                 var bankDTO = await _channelService.AddBankAsync(bank, GetServiceHeader());
-                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, bank.BankBranches, GetServiceHeader());
+                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, bank.BankBranche, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
@@ -107,7 +110,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public JsonResult Remove(Guid id, BankDTO bank)
         {
-            foreach (var branch in bank.BankBranches)
+            foreach (var branch in bank.BankBranche)
             {
                 bank.Description = branch.Description;
 
