@@ -10,6 +10,7 @@ using Domain.MainBoundedContext.RegistryModule.Aggregates.CustomerAgg;
 using Domain.MainBoundedContext.RegistryModule.Aggregates.CustomerCreditTypeAgg;
 using Domain.MainBoundedContext.RegistryModule.Aggregates.CustomerDocumentAgg;
 using Domain.MainBoundedContext.RegistryModule.Aggregates.DirectorAgg;
+using Domain.MainBoundedContext.RegistryModule.Aggregates.DelegateAgg;
 using Domain.MainBoundedContext.RegistryModule.Aggregates.DivisionAgg;
 using Domain.MainBoundedContext.RegistryModule.Aggregates.EducationAttendeeAgg;
 using Domain.MainBoundedContext.RegistryModule.Aggregates.EducationRegisterAgg;
@@ -91,7 +92,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
                 .ForMember(dest => dest.FileRegisterCustomerFullName, opt => opt.Ignore());
 
             //Delegate => DelegateDTO
-            CreateMap<Delegate, DelegateDTO>()
+            CreateMap<Domain.MainBoundedContext.RegistryModule.Aggregates.DelegateAgg.Delegate, DelegateDTO>()
                 .ForMember(dest => dest.PaddedCustomerSerialNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.CustomerIndividualGenderDescription, opt => opt.Ignore())
                 .ForMember(dest => dest.CustomerIndividualMaritalStatusDescription, opt => opt.Ignore())

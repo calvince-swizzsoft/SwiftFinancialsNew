@@ -1,10 +1,18 @@
-﻿using System;
+﻿using Application.Seedwork;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.MainBoundedContext.DTO.RegistryModule
 {
-    public class StationDTO
-    { 
+    public class StationDTO : BindingModelBase<StationDTO>
+    {
+
+        public StationDTO()
+        {
+            AddAllAttributeValidators();
+        }
+
+
         [Display(Name = "Id")]
         public Guid Id { get; set; }
         
