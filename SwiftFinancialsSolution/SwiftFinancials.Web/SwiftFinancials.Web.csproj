@@ -1462,6 +1462,7 @@
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Create.cshtml" />
     <Content Include="Areas\Dashboard\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Dashboard\Views\MessagingGroups\Details.cshtml" />
+    <Content Include="Areas\Dashboard\Views\MessagingGroups\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
