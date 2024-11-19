@@ -116,6 +116,19 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
         }
 
 
+
+        public async Task<ActionResult>Details(Guid id)
+        {
+            await ServeNavigationMenus();
+            var messagingGroups = await _channelService.FindMessageGroupAsync(id, GetServiceHeader());
+
+            ViewBag.TargetValues = JsonConvert.DeserializeObject<ObservableCollection<MessageGroupDTO>>(messagingGroups.TargetValues);
+
+            return View(messagingGroups);
+        }
+
+
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
