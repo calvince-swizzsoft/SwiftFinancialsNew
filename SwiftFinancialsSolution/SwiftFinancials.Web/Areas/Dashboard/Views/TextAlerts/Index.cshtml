@@ -2,8 +2,6 @@
 
 @{
     ViewBag.Title = "Text Alerts";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-
 
     var status = ViewBag.TextAlertStatusFilterSelectList as List<SelectListItem>;
 }
@@ -167,7 +165,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.TextMessageDLRStatus, status,
+                                            @Html.DropDownListFor(model => model.TextMessageDLRStatus, status,"-- Select Delivery Status --",
                                             new { @class = "form-control input-md", @id = "status" })
                                         </div>
                                     </div>
@@ -209,7 +207,7 @@
 
                                 <div class="col-lg-1" style="margin-top:20px;">
                                     <div class="form-group form-group-sm">
-                                        @Html.ActionLink("Create", "Create", "LoanRegistration", new { Area = "Dashboard" }, new { @class = "btn btn-primary" })
+                                        @Html.ActionLink("Create", "Create", "TextAlerts", new { Area = "Dashboard" }, new { @class = "btn btn-primary" })
                                     </div>
                                 </div>
 
@@ -296,108 +294,72 @@
             forceParse: false,
             autoclose: true,
             format: 'dd/mm/yyyy',
-            language: 'en-GB'  // Use British English locale to ensure dd/mm/yyyy format
+            language: 'en-GB'  
         });
     </script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#TextAlertsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "TextAlerts", new { Area = "Dashboard"}))",
-                "sServerMethod": "POST",
-
-                "fnServerParams": function (aoData) {
-                    // Add filter type and value to server params
-                    aoData.push({ "name": "status", "value": $('#status').val() });
-                    aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
-                    aoData.push({ "name": "startDate", "value": $('#startDate').val() });
-                    aoData.push({ "name": "endDate", "value": $('#endDate').val() });
-                },
-
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var receivedDate = new Date(parseInt(aData.ReceivedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + receivedDate.getHours()).slice(-2);
-                    var m = ("0" + receivedDate.getMinutes()).slice(-2);
-                    var s = ("0" + receivedDate.getSeconds()).slice(-2);
-
-                    var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
-                    aData.ReceivedDate = dt_ReceivedDate;
-
-                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var appraiseUrl = '<a  href="/loaning/LoanRegistration/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
-                    var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
-                    var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
-
-                    // Generate dropdown HTML with conditional logic based on status
-                    var dropdownHtml = `
-                        <div class="dropdown">
-                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
-
-                    // Buttons to be included
-                    var viewButton = `<a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
-                    var AttachGuarantor = `<a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>`;
-
-
-                    $('td:eq(8)', nRow).html(dt_Created);
-                    $('td:eq(9)', nRow).html(dropdownHtml);
-
-                    // Prevent default action for disabled links
-                    $('.dropdown-item.disabled').on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    });
-
-                    return nRow;
-                },
-
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "TextMessageOriginDescription", "sTitle": "Origin", "sWidth": "2%" },
-                    { "mDataProp": "TextMessageRecipient", "sTitle": "Recipient","sWidth": "20%" },
-                    { "mDataProp": "TextMessageBody", "sTitle": "Message", "sWidth": "10%"},
-                    { "mDataProp": "TextMessagePriorityDescription", "sTitle": "Priority", "sWidth": "10%"},
-                    { "mDataProp": "TextMessageSendRetry", "sTitle": "Send Retry", "sWidth": "10%"},
-                    { "mDataProp": "TextMessageDLRStatusDescription", "sTitle": "Delivery Status", "sWidth": "10%"},
-                    { "mDataProp": "TextMessageReference", "sTitle": "Reference", "sWidth": "10%"},
-                    { "mDataProp": "CreatedBy", "sTitle": "Created By", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]],
-            }
+      $(document).ready(function () {
+    const table = $('#TextAlertsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@Url.Action("Index", "TextAlerts", new { Area = "Dashboard" })",
+        "sServerMethod": "POST",
+        "language": {
+            "emptyTable": "No data available in table"
+        },
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "status", "value": $('#status').val() },
+                { "name": "filterValue", "value": $('#filterValue').val() },
+                { "name": "startDate", "value": $('#startDate').val() },
+                { "name": "endDate", "value": $('#endDate').val() }
             );
+        },
+        "aoColumns": [
+            { "mDataProp": "TextMessageOriginDescription", "sTitle": "Origin", "sWidth": "10%" },
+            { "mDataProp": "TextMessageRecipient", "sTitle": "Recipient", "sWidth": "15%" },
+            { "mDataProp": "TextMessageBody", "sTitle": "Message", "sWidth": "20%" },
+            { "mDataProp": "TextMessagePriorityDescription", "sTitle": "Priority", "sWidth": "10%" },
+            { "mDataProp": "TextMessageSendRetry", "sTitle": "Send Retry", "sWidth": "5%" },
+            { "mDataProp": "TextMessageDLRStatusDescription", "sTitle": "Delivery Status", "sWidth": "10%" },
+            { "mDataProp": "TextMessageReference", "sTitle": "Reference", "sWidth": "10%" },
+            { "mDataProp": "CreatedBy", "sTitle": "Created By", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" }
+            //,
+            //{
+            //    "mDataProp": "Actions",
+            //    "sTitle": "Action",
+            //    "sWidth": "10%",
+            //    "bSortable": false,
+            //    "mRender": function (data, type, row) {
+            //        return '<button class="btn btn-primary">Details</button>';
+            //    }
+            //}
+        ],
+        "aaSorting": [[8, "desc"]],
+        "fnRowCallback": function (nRow, aData) {
+            const createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            const formattedDate = $.datepicker.formatDate('dd/mm/yy', createdDate);
+            $('td:eq(8)', nRow).html(formattedDate);
+            return nRow;
+        },
 
-            $('#filterForm').on('submit', function (e) {
-                e.preventDefault();
-                $('#TextAlertsGrid').DataTable().ajax.reload();
-            });
-        });
+        "fnPreDrawCallback": function () {
+            $('.ibox-content').addClass('sk-loading');
+        },
+        "fnDrawCallback": function () {
+            $('.ibox-content').removeClass('sk-loading');
+        }
+    });
 
-        $(document).ajaxStart(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
-        $(document).ajaxStop(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
+    $('#filterForm').on('submit', function (e) {
+        e.preventDefault();
+        table.ajax.reload();
+    });
+});
+
     </script>
 }
 

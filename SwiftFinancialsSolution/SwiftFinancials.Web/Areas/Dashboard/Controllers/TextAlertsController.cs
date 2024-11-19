@@ -36,26 +36,55 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int status, DateTime? startDate, DateTime? endDate, string filterValue)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int? status, DateTime? startDate, DateTime? endDate, string filterValue)
         {
             int totalRecordCount = 0;
             int searchRecordCount = 0;
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.FirstOrDefault() == "asc";
 
-            var pageCollectionInfo = startDate.HasValue && endDate.HasValue
-                ? await _channelService.FindTextAlertsByDateRangeAndFilterInPageAsync(status, startDate.Value, endDate.Value, filterValue, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader())
-                : await _channelService.FindTextAlertsInPageAsync(pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = new PageCollectionInfo<TextAlertDTO>();
+
+            if (startDate == null && endDate == null && string.IsNullOrWhiteSpace(filterValue) && !status.HasValue)
+            {
+                pageCollectionInfo = await _channelService.FindTextAlertsInPageAsync(
+                    pageIndex,
+                    jQueryDataTablesModel.iDisplayLength,
+                    GetServiceHeader()
+                );
+            }
+            else
+            {
+                pageCollectionInfo = await _channelService.FindTextAlertsByDateRangeAndFilterInPageAsync(
+                    status ?? 0,
+                    startDate ?? DateTime.MinValue,
+                    endDate ?? DateTime.MaxValue,
+                    filterValue,
+                    pageIndex,
+                    jQueryDataTablesModel.iDisplayLength,
+                    GetServiceHeader()
+                );
+            }
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(alert => alert.CreatedDate).ToList();
-                searchRecordCount = string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? totalRecordCount : pageCollectionInfo.PageCollection.Count;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection
+                    .OrderBy(alert => sortAscending ? alert.CreatedDate : alert.CreatedDate)
+                    .ToList();
+                searchRecordCount = string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? totalRecordCount
+                    : pageCollectionInfo.PageCollection.Count;
             }
-            return this.DataTablesJson(items: new List<TextAlertDTO>(), totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return Json(new
+            {
+                sEcho = jQueryDataTablesModel.sEcho,
+                iTotalRecords = totalRecordCount,
+                iTotalDisplayRecords = searchRecordCount,
+                aaData = pageCollectionInfo.PageCollection
+            });
         }
+
     }
 }

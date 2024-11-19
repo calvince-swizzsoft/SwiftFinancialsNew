@@ -146,7 +146,7 @@
                 </div>
                 <div class="ibox-content bg-white">
                     <div class="main">
-                        @using (Html.BeginForm("AddEdit", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post, new { id = "messageGroupForm" }))
+                        @using (Html.BeginForm("Edit", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post, new { id = "messageGroupForm" }))
                         {
                             @Html.AntiForgeryToken()
 
@@ -189,7 +189,7 @@
 
                                 <div class="tab-content">
                                     <div id="custom" class="tab-pane active">
-                                        <div class="row">
+                                        @*<div class="row">
                                             <div class="col-md-4 form-group">
                                                 <label>Customer</label>
                                                 <div class="input-group" data-autoclose="true">
@@ -204,6 +204,7 @@
                                             <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.messageGroupCustomerDTO[0].CustomerMobileNumber, htmlAttributes: new { @class = "" })
+                                                    @Html.HiddenFor(model => model.Id, new { @Id = "Id" })
                                                     @Html.EditorFor(model => model.messageGroupCustomerDTO[0].CustomerMobileNumber, new { htmlAttributes = new { @Id = "CustomerMobileNumber", @class = "form-control entry-field", @disabled = "disabled" } })
                                                     @Html.ValidationMessageFor(model => model.messageGroupCustomerDTO[0].CustomerMobileNumber, "", new { @class = "text-danger" })
                                                 </div>
@@ -222,55 +223,35 @@
                                                     <button type="submit" id="addEntryBtn" style="width: 150px;" class="btn btn-primary">Add</button>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>*@
 
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="table-container mt-5">
-                                                    <h3 style="font-size: 1.9rem; text-align: center;">Messaging Group Members</h3>
-                                                    <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Name</th>
-                                                                <th>Mobile Number</th>
-                                                                <th>Email Address</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-6">
-                                                <div class="table-container mt-5">
-                                                    <h3 style="font-size: 1.9rem; text-align: center;">Existing Messaging Group Members</h3>
-                                                    <table id="dataTable2" class="footable table table-striped toggle-arrow-tiny grey-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Name</th>
-                                                                <th>Mobile Number</th>
-                                                                <th>Email Address</th>
-                                                                <th>Ceated Date</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @if (ViewBag.TargetValues2 != null)
+                                        <div class="col-lg-12">
+                                            <div class="table-container mt-5">
+                                                <h3 style="font-size: 1.9rem; text-align: center;">Messaging Group Members</h3>
+                                                <table id="dataTable2" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Mobile Number</th>
+                                                            <th>Email Address</th>
+                                                            <th>Ceated Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (ViewBag.TargetValues2 != null)
+                                                        {
+                                                            foreach (var targetValues in ViewBag.TargetValues2)
                                                             {
-                                                                foreach (var targetValues in ViewBag.TargetValues2)
-                                                                {
-                                                                    <tr>
-                                                                        <td>@targetValues.Customer</td>
-                                                                        <td>@targetValues.CustomerMobileNumber</td>
-                                                                        <td>@targetValues.CustomerEmailAddress</td>
-                                                                        <td>@targetValues.CreatedDate</td>
-                                                                    </tr>
-                                                                }
+                                                                <tr>
+                                                                    <td>@targetValues.Customer</td>
+                                                                    <td>@targetValues.CustomerMobileNumber</td>
+                                                                    <td>@targetValues.CustomerEmailAddress</td>
+                                                                    <td>@targetValues.CreatedDate</td>
+                                                                </tr>
                                                             }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                        }
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -278,20 +259,29 @@
                                     <div id="tips" class="tab-pane" style="margin-left: 20px;">
                                     </div>
                                 </div>
+
+                                <br />
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <input type="submit"  style="width: 150px;" value="Update" class="btn btn-primary" />
+                                    </div>
+                                </div>
                             </fieldset>
                         }
                     </div>
 
-                    <br />
+                    @*<br />
 
                     <div class="ibox-content bg-white text-info">
-                        @using (Html.BeginForm("Create", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post))
+                        @using (Html.BeginForm("Edit", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post))
                         {
                             <div class="col-lg-3">
-                                <input type="submit" style="width: 150px;" value="Update" class="btn btn-primary" />
+                                <input type="submit" onclick="sendFormData()" style="width: 150px;" value="Update" class="btn btn-primary" />
                             </div>
                         }
-                    </div>
+                    </div>*@
                 </div>
             </div>
         </div>
@@ -428,11 +418,13 @@
         var emailAddress = $('#CustomerEmailAddress').val();
         var customer = $('#Customer').val();
         var mobileNumber = $('#CustomerMobileNumber').val();
+        var id = $('#Id').val();
 
         var formData = $('#messageGroupForm').serialize();
 
         formData += '&Description=' + encodeURIComponent(description) + '&Target=' + encodeURIComponent(target) + '&CustomerID=' + encodeURIComponent(customerId)
-            + '&EmailAddress=' + encodeURIComponent(emailAddress) + '&Customer=' + encodeURIComponent(customer) + '&MobileNumber=' + encodeURIComponent(mobileNumber);
+            + '&EmailAddress=' + encodeURIComponent(emailAddress) + '&Customer=' + encodeURIComponent(customer) + '&MobileNumber=' + encodeURIComponent(mobileNumber)
+            + '&Id=' + encodeURIComponent(id);
 
         $.ajax({
             url: '@Url.Action("AddEdit", "MessagingGroups", new { Area = "Dashboard" })',
