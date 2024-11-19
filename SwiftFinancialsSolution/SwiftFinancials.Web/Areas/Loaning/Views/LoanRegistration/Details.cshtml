@@ -53,36 +53,50 @@
     }
 
 
-
-    #ChargeSplits {
+   
+    #dataTableEntries {
         width: 100%;
         border-collapse: collapse;
-        font-family: Arial, sans-serif;
     }
 
-        #ChargeSplits thead {
-            background-color: white;
-            color: #333;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+    #dataTableEntries th, td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+        transition: background 0.3s, transform 0.3s;
+    }
 
-        #ChargeSplits th, #ChargeSplits td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
+    #dataTableEntries th {
+        background: linear-gradient(to bottom, #4a90e2, #003366);
+        color: white;
+        text-transform: uppercase;
+        font-size: 1.1em;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
 
-        #ChargeSplits th {
-            font-weight: bold;
-        }
+    #dataTableEntries tr:hover td {
+        background: rgba(74, 144, 226, 0.2);
+        transform: translateY(-2px);
+    }
 
-        #ChargeSplits tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+    #dataTableEntries td {
+        background: #f9f9f9;
+        color: #333;
+    }
 
-        #ChargeSplits tbody tr:hover {
-            background-color: #f1f1f1;
-        }
+    #dataTableEntries tr:nth-child(even) td {
+        background: #f2f2f2;
+    }
+
+    #dataTableEntries tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    #dataTableEntries tr:last-child td {
+        border-bottom: none;
+    }
 </style>
 
 
@@ -458,38 +472,36 @@
                             <div class="tab-content">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
-                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                <tr>
-                                                    <th>Guarantor Name</th>
-                                                    <th>Employer</th>
-                                                    <th>Account Number</th>
-                                                    <th>Appraisal Factor</th>
-                                                    <th>Total Shares</th>
-                                                    <th>Committed Shares</th>
-                                                    <th>Amount Guaranteed</th>
-                                                    <th>Date Guaranteed</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (ViewBag.LoanGuarantors != null)
-                                                {
-                                                    foreach (var guarantors in ViewBag.LoanGuarantors)
+                                        <div class="table-container">
+                                            <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                    <tr>
+                                                        <th>Customer</th>
+                                                        <th>Appraisal Factor</th>
+                                                        <th>Total Shares</th>
+                                                        <th>Committed Shares</th>
+                                                        <th>Amount Guaranteed</th>
+                                                        <th>Date Guaranteed</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.LoanGuarantors != null)
                                                     {
-                                                        <tr>
-                                                            <td>@guarantors.Customer.FullName</td>
-                                                            <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
-                                                            <td>@guarantors.Customer.Reference1</td>
-                                                            <td>@guarantors.AppraisalFactor</td>
-                                                            <td style="text-align: right;">@guarantors.TotalShares</td>
-                                                            <td style="text-align: right;">@guarantors.CommittedShares</td>
-                                                            <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
-                                                            <td>@guarantors.CreatedDate</td>
-                                                        </tr>
+                                                        foreach (var guarantors in ViewBag.LoanGuarantors)
+                                                        {
+                                                            <tr>
+                                                                <td>@guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
+                                                                <td>@guarantors.AppraisalFactor</td>
+                                                                <td style="text-align: right;">@guarantors.TotalShares</td>
+                                                                <td style="text-align: right;">@guarantors.CommittedShares</td>
+                                                                <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
+                                                                <td>@guarantors.CreatedDate</td>
+                                                            </tr>
+                                                        }
                                                     }
-                                                }
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

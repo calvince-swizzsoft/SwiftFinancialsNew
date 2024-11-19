@@ -1,8 +1,9 @@
-﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDTO
+﻿
+@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDTO
 
 @{
     ViewBag.Title = "Employees";
-    var bloodGroups = ViewBag.BloodGroupSelectList as List<SelectListItem>;
+    var bloodGroupDescription = ViewBag.BloodGroupSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -12,7 +13,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Employees", new { Area = "HumanResource" }, null)
+                @Html.ActionLink("Home", "Index", "Employee", new { Area = "HumanResource" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -21,11 +22,47 @@
     </div>
 </div>
 
-<div class="wrapper wrapper-content white-bg">
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#ValueDate').datepicker({
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
+
+
+<div class="wrapper wrapper-content">
     <div class="row">
-        <div class="col-md-12">
-            <div class="ibox ">
+        <div class="col-lg-12">
+            <div class="ibox">
                 <div class="ibox-title">
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -35,101 +72,193 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "Employee", new { Area = "HumanResource" }, FormMethod.Post))
-                    {
-                        @Html.AntiForgeryToken()
 
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.CustomerId)
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.DesignationId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.DesignationId)
-                                        @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "DesignationsLookup form-control required", placeholder = "Designation description" } })
-                                        @Html.ValidationMessageFor(model => model.DesignationId, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    </div>
+                <div class="card">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Create", "Employee", new { Area = "HumanResource" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
 
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.DepartmentId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.DepartmentId)
-                                        @Html.EditorFor(model => model.DepartmentDescription, new { htmlAttributes = new { @class = "DepartmentsLookup form-control required", placeholder = "Department description" } })
-                                        @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.EmployeeTypeId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.EmployeeTypeId)
-                                        @Html.ValidationMessageFor(model => model.EmployeeTypeId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.EmployeeTypeCategoryDescription, new { htmlAttributes = new { @class = "EmployeeTypesLookup form-control required", placeholder = "EmployeeType Description" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-sm">
-                                        <div class="col-md-offset-2">
-                                            <input type="submit" value="Create" class="btn btn-primary" />
+
+
+                            <!-- Expense Payables -->
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.CustomerId)
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
                                         </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DesignationId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.DesignationId)
+                                            @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "DesignationsLookup form-control required", placeholder = "Designation description" } })
+                                            @Html.ValidationMessageFor(model => model.DesignationId, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DepartmentId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.DepartmentId)
+                                            @Html.EditorFor(model => model.DepartmentDescription, new { htmlAttributes = new { @class = "DepartmentsLookup form-control required", placeholder = "Department description" } })
+                                            @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.EmployeeTypeId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.EmployeeTypeId)
+                                            @Html.ValidationMessageFor(model => model.EmployeeTypeId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.EmployeeTypeCategoryDescription, new { htmlAttributes = new { @class = "EmployeeTypesLookup form-control required", placeholder = "EmployeeType Description" } })
+                                        </div>
+                                        
+                                       
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BloodGroup, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.BloodGroup, bloodGroupDescription, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.BloodGroup)
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerPersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.NationalSocialSecurityFundNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.NationalSocialSecurityFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.NationalSocialSecurityFundNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.NationalHospitalInsuranceFundNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.NationalHospitalInsuranceFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NHIF Number", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.NationalHospitalInsuranceFundNumber, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        </div>
+
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BloodGroup, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.BloodGroup, bloodGroups, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.BloodGroup)
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerPersonalIdentificationNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.NationalSocialSecurityFundNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.NationalSocialSecurityFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.NationalSocialSecurityFundNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.NationalHospitalInsuranceFundNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.NationalHospitalInsuranceFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NHIF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.NationalHospitalInsuranceFundNumber, "", new { @class = "text-danger" })
-                                    </div>
+                            </fieldset>
 
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.OnlineNotificationsEnabled, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.OnlineNotificationsEnabled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Online Notifications Enabled?", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.OnlineNotificationsEnabled, "", new { @class = "text-danger" })
-                                    </div>
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.OnlineNotificationsEnabled, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.OnlineNotificationsEnabled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Online Notifications Enabled?", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.OnlineNotificationsEnabled, "", new { @class = "text-danger" })
                                 </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
+
+
+                                <input type="submit" value="Create" class="btn btn-primary btn-update" />
                             </div>
-                        </fieldset>
+
+
+
+                        }
+                    </div>
+                </div>
+
+                <style>
+                    .card {
+                        margin-bottom: 20px;
                     }
 
-                </div>
+                    .nav-tabs .nav-link.active {
+                        background-color: #007bff;
+                        color: white;
+                    }
+
+                    .form-group-lg {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-control {
+                        border-radius: .25rem;
+                    }
+
+                    /* The .nav class is incorrectly nested, so I'll fix that */
+                    .nav {
+                        display: flex;
+                        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+                        padding: 0;
+                        margin: 5px;
+                        margin-bottom: 0;
+                        border: 2px solid black;
+                        border-radius: 8px;
+                        margin-top: 20px;
+                        gap: 10px; /* Space between links */
+                        text-align: center; /* Centers the text inside links */
+                        padding: 10px;
+                    }
+
+                    .nav-link {
+                        display: flex;
+                        text-decoration: none;
+                        color: #007bff; /* Default text color */
+                        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+                        border-radius: 4px; /* Rounded corners */
+                        font-size: 14px; /* Adjust font size for better fit */
+                        white-space: nowrap; /* Prevents text from wrapping inside the link */
+                    }
+
+                        .nav-link:hover {
+                            color: #fff; /* Text color on hover */
+                            background-color: #0056b3; /* Background color on hover */
+                        }
+
+                        .nav-link i {
+                            margin-right: 8px; /* Space between icon and text */
+                            font-size: 16px; /* Adjust icon size */
+                        }
+
+                        .nav-link.disabled {
+                            pointer-events: none;
+                            opacity: 0.6;
+                            cursor: not-allowed;
+                        }
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #00e0ff;
+                    }
+                </style>
+
+
+
             </div>
         </div>
     </div>
@@ -158,8 +287,17 @@
     </div>
 </div>
 
+
+
+
+
+
+
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
     @Styles.Render("~/plugins/awesomeCheckboxStyles")
     @Styles.Render("~/plugins/clockpickerStyles")
@@ -179,6 +317,7 @@
 }
 
 @section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
     @Scripts.Render("~/plugins/dataTables")
@@ -198,6 +337,13 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+
+
+    <style>
+        .highlight {
+            background-color: #f0c14b; /* Light yellow color for highlighting */
+        }
+    </style>
 
     <script>
             //Branch typehead starts here
@@ -395,4 +541,168 @@
                 }
             });
     </script>
+
+
+    <script>
+        $.ajax({
+            url: '/HumanResource/Create',
+            type: 'POST',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response.message
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An unexpected error occurred.'
+                });
+            }
+        });
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+        .container1 {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .summary-table label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .summary-table input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #f9f9f9;
+            }
+
+        .tab-content {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .tab-pane {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 50px;
+        }
+
+        thead {
+            background-color: #f5f5f5;
+        }
+
+            thead th {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                font-style: italic;
+                color: cadetblue;
+            }
+
+        tbody td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+        /* Ensure no border between tabs and tab content */
+        .nav-tabs {
+            border-bottom: none; /* Remove bottom border from tab navigation */
+        }
+
+            .nav-tabs .nav-link {
+                border: none; /* Remove borders from tab links */
+                border-radius: 0; /* Remove border radius for a cleaner look */
+            }
+
+        .tab-content {
+            border-top: 1px solid #ddd; /* Add a subtle border if needed */
+            padding: 15px; /* Optional: Add padding for spacing */
+        }
+
+        /* Optional: Add spacing between tab navigation and content */
+        .container {
+            margin-top: 20px; /* Adjust top margin as needed */
+        }
+    </style>
+
+
+
+
+
+
+
+
+
 }

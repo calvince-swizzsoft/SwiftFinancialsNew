@@ -28,7 +28,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
 
         [DataMember]
-        public CustomerDTO Customer { get; set; }
+        public ObservableCollection<LoanGuarantorDTO> Customer { get; set; }
 
       
 
@@ -236,7 +236,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Guarantor")]
-        [ValidGuid]
         public Guid CustomerId { get; set; }
 
         [DataMember]
@@ -569,10 +568,18 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Station")]
         public string GuarantorStationDescription { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Serial Number")]
+        public int GuarantorSerialNumber { get; set; }
 
         [DataMember]
         [Display(Name = "Identification Number")]
-        public string GuarantorIdentificationNumber { get; set; }
+        public string GuarantorIdentificationNumber { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Payroll Number")]
+        public string GuarantorPayrollNumber { get; set; }
 
         [DataMember]
         [Display(Name = "Account Number")]
@@ -591,10 +598,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Remarks")]
         public string GuarantorRemarks { get; set; }
-
-
-        [DataMember]
-        public List<LoanGuarantorDTO> Guarantors { get; set; }
 
         [DataMember]
         [Display(Name ="Start Date")]

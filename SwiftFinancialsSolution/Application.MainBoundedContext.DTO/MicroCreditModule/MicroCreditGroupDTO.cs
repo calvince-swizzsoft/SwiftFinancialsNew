@@ -29,6 +29,9 @@ namespace Application.MainBoundedContext.DTO.MicroCreditModule
         [Display(Name = "Parent")]
         public Guid? ParentId { get; set; }
 
+        [Display(Name = "Parent Group")]
+        public string ParentMicroCreditDescription { get; set; }
+
         [DataMember]
         [Display(Name = "Customer")]
         [ValidGuid]
@@ -176,8 +179,19 @@ namespace Application.MainBoundedContext.DTO.MicroCreditModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
         //Added Properties
+
+        [DataMember]
         [Display(Name = "Designation")]
-        public string Designation { get; set; }
+        public int Designation { get; set; }
+
+        [Display(Name = "Designation")]
+        public string DesignationDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(MicroCreditGroupMemberDesignation), Designation) ? EnumHelper.GetDescription((MicroCreditGroupMemberDesignation)Designation) : string.Empty;
+            }
+        }
 
         [Display (Name = "Employer")]
         public string Employer { get; set; }
