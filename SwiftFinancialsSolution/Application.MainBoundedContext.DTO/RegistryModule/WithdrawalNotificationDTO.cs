@@ -309,7 +309,8 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
-
+       
+        public WithdrawalSettlementDTO withdrawalSettlementDTO { get; set; }
         [DataMember]
         [Display(Name = "Net Refundable")]
         public decimal NetRefundable { get; set; }

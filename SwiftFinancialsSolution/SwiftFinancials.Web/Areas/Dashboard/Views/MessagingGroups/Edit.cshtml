@@ -3,9 +3,9 @@
 @{
     ViewBag.Title = "Messaging Groups";
 
-    var target = ViewBag.target as List<SelectListItem>;
-    var recordStatus = ViewBag.recordStatus as List<SelectListItem>;
-    var customerFilter = ViewBag.customerFilter as List<SelectListItem>;
+    var target = ViewBag.target2 as List<SelectListItem>;
+    var recordStatus = ViewBag.recordStatus2 as List<SelectListItem>;
+    var customerFilter = ViewBag.customerFilter2 as List<SelectListItem>;
 
 
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -64,6 +64,52 @@
         #dataTable tr:last-child td {
             border-bottom: none;
         }
+
+
+
+    #dataTable2 {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #dataTable2 th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #dataTable2 th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        #dataTable2 tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #dataTable2 td {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        #dataTable2 tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
+
+        #dataTable2 tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        #dataTable2 tr:last-child td {
+            border-bottom: none;
+        }
 </style>
 
 
@@ -88,7 +134,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Create Message Group</h2>
+                    <h2>Edit Message Group</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -100,7 +146,7 @@
                 </div>
                 <div class="ibox-content bg-white">
                     <div class="main">
-                        @using (Html.BeginForm("Add", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post, new { id = "messageGroupForm" }))
+                        @using (Html.BeginForm("AddEdit", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post, new { id = "messageGroupForm" }))
                         {
                             @Html.AntiForgeryToken()
 
@@ -178,20 +224,54 @@
                                             </div>
                                         </div>
 
-                                        <div class="table-container mt-5">
-                                            <h3 style="font-size: 1.9rem; text-align: center;">Messaging Group Members</h3>
-                                            <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Mobile Number</th>
-                                                        <th>Email Address</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="table-container mt-5">
+                                                    <h3 style="font-size: 1.9rem; text-align: center;">Messaging Group Members</h3>
+                                                    <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Mobile Number</th>
+                                                                <th>Email Address</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="table-container mt-5">
+                                                    <h3 style="font-size: 1.9rem; text-align: center;">Existing Messaging Group Members</h3>
+                                                    <table id="dataTable2" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Mobile Number</th>
+                                                                <th>Email Address</th>
+                                                                <th>Ceated Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (ViewBag.TargetValues2 != null)
+                                                            {
+                                                                foreach (var targetValues in ViewBag.TargetValues2)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@targetValues.Customer</td>
+                                                                        <td>@targetValues.CustomerMobileNumber</td>
+                                                                        <td>@targetValues.CustomerEmailAddress</td>
+                                                                        <td>@targetValues.CreatedDate</td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -208,7 +288,7 @@
                         @using (Html.BeginForm("Create", "MessagingGroups", new { Area = "Dashboard" }, FormMethod.Post))
                         {
                             <div class="col-lg-3">
-                                <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
+                                <input type="submit" style="width: 150px;" value="Update" class="btn btn-primary" />
                             </div>
                         }
                     </div>
@@ -355,7 +435,7 @@
             + '&EmailAddress=' + encodeURIComponent(emailAddress) + '&Customer=' + encodeURIComponent(customer) + '&MobileNumber=' + encodeURIComponent(mobileNumber);
 
         $.ajax({
-            url: '@Url.Action("Add", "MessagingGroups", new { Area = "Dashboard" })',
+            url: '@Url.Action("AddEdit", "MessagingGroups", new { Area = "Dashboard" })',
             type: 'POST',
             data: formData,
             success: function (response) {
@@ -417,7 +497,7 @@
 
         function removeEntry(id) {
             $.ajax({
-                url: '@Url.Action("Remove", "MessagingGroups")',
+                url: '@Url.Action("RemoveEdit", "MessagingGroups")',
                 type: 'POST',
                 data: { id: id },
                 success: function (response) {
@@ -449,7 +529,7 @@
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("CustomerIndex", "MessagingGroups", new { Area = "Dashboard"}))",
                 "sServerMethod": "POST",
-                
+
                 "fnServerParams": function (aoData) {
                     aoData.push(
                         { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter },
@@ -494,7 +574,7 @@
         function selectCustomer(id) {
             console.log("Customer selected with ID: " + id);
             $.ajax({
-                url: '/Dashboard/MessagingGroups/CustomerLookUp',
+                url: '/Dashboard/MessagingGroups/CustomerLookUpEdit',
                 type: 'POST',
                 data: { Id: id },
                 success: function (response) {

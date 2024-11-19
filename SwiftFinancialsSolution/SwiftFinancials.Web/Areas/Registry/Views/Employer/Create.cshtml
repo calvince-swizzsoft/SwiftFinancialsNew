@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Employer";
 }
-    <div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h2>Employers</h2>
         <ol class="breadcrumb">
@@ -41,79 +41,99 @@
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                         <h1>Employer Details</h1>
-                        <fieldset>
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Employer name.", @required = "" } })
-                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
-                                        @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street" } })
-                                        @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city" } })
-                                        @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line" } })
-                                        @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.RetirementAge, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.RetirementAge, new { htmlAttributes = new { @class = "form-control", @placeholder = "Retirement Age" } })
-                                        @Html.ValidationMessageFor(model => model.RetirementAge, "", new { @class = "text-danger" })
-                                    </div>
+
+                        <div class="form-group form-group-lg">
+                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Employer name.", @required = "" } })
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
+                                    @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
                                 </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
-                                        @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
-                                        @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
-                                        @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.EnforceRetirementAge)
-                                        @Html.LabelFor(model => model.EnforceRetirementAge, htmlAttributes: new { @class = "" })
-                                        @Html.ValidationMessageFor(model => model.EnforceRetirementAge, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsLocked)
-                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                    </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street" } })
+                                    @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city" } })
+                                    @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line" } })
+                                    @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.RetirementAge, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.RetirementAge, new { htmlAttributes = new { @class = "form-control", @placeholder = "Retirement Age" } })
+                                    @Html.ValidationMessageFor(model => model.RetirementAge, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Divisions[0].Description, htmlAttributes: new { @class = "control-label" })
-                                @Html.EditorFor(model => model.Divisions[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Division Name", @required = "" } })
-                                @Html.ValidationMessageFor(model => model.Divisions[0].Description, "", new { @class = "text-danger" })
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
+                                    @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
+                                    @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
+                                    @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.EnforceRetirementAge)
+                                    @Html.LabelFor(model => model.EnforceRetirementAge, htmlAttributes: new { @class = "" })
+                                    @Html.ValidationMessageFor(model => model.EnforceRetirementAge, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsLocked)
+                                    @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-                        </fieldset>
+                        </div>
+                        <h1>Division Details</h1>
+                        <!-- Division Input -->
+                        <div class="form-group form-group-lg">
+                            <label for="newDivision">Division Name</label>
+                            <input type="text" id="newDivision" class="form-control" placeholder="Enter division name" />
+                            <button type="button" class="btn btn-primary mt-2" id="addDivision">Add Division</button>
+                        </div>
+
+                        <!-- Divisions Table -->
+                        <table class="table table-bordered" id="divisionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Division Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Division rows will be added here -->
+                            </tbody>
+                        </table>
+
+                        <!-- Hidden input fields for divisions -->
+                        <div id="divisionFields"></div>
+
+                        <button type="submit" class="btn btn-success mt-4">Submit</button>
+
 
                     }
                 </div>
@@ -131,7 +151,57 @@
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
+ 
 
+    <script>
+        $(document).ready(function () {
+            let divisionCount = 0;
+
+            // Add Division Button Click
+            $('#addDivision').click(function () {
+                const divisionName = $('#newDivision').val();
+                if (divisionName) {
+                    // Add a new row to the table
+                    const rowHtml = `
+                            <tr>
+                                <td>${divisionName}</td>
+                                <td><button type="button" class="btn btn-danger btn-sm removeDivision">Remove</button></td>
+                            </tr>`;
+                    $('#divisionsTable tbody').append(rowHtml);
+
+                    // Add a hidden input to the form for submitting divisions
+                    $('#divisionFields').append(`
+                            <input type="hidden" name="Divisions[${divisionCount}].Description" value="${divisionName}" />`);
+
+                    // Clear input and increment count
+                    $('#newDivision').val('');
+                    divisionCount++;
+                } else {
+                    alert('Please enter a division name.');
+                }
+            });
+
+            // Remove Division Button Click
+            $(document).on('click', '.removeDivision', function () {
+                const row = $(this).closest('tr');
+                const index = row.index();
+
+                // Remove the row from the table
+                row.remove();
+
+                // Remove corresponding hidden input
+                $('#divisionFields input').eq(index).remove();
+
+                // Adjust division indexes in hidden inputs
+                $('#divisionFields input').each(function (i, element) {
+                    $(element).attr('name', `Divisions[${i}].Description`);
+                });
+
+                // Decrement division count
+                divisionCount--;
+            });
+        });
+    </script>
     <script>
         $(document).ready(function () {
             $("#wizard").steps();

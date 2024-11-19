@@ -1,7 +1,5 @@
-﻿@model Application.MainBoundedContext.DTO.RegistryModule.CustomerDTO
-
-
-@{ ViewBag.Title = "Customer Details";
+﻿@model Application.MainBoundedContext.DTO.RegistryModule.CustomerBindingModel
+@{ ViewBag.Title = "Customer";
     var customerTypes = ViewBag.CustomerTypeSelectList as List<SelectListItem>;
     var individualTypes = ViewBag.IndividualTypeSelectList as List<SelectListItem>;
     var identityCardTypes = ViewBag.IdentityCardSelectList as List<SelectListItem>;
@@ -10,68 +8,12 @@
     var maritalStatuses = ViewBag.MaritalStatusSelectList as List<SelectListItem>;
     var nationalities = ViewBag.IndividualNationalitySelectList as List<SelectListItem>;
     var termsOfServices = ViewBag.IndividualEmploymentTermsOfServiceSelectList as List<SelectListItem>;
-    var individualClassifications = ViewBag.IndividualClassificationSelectList as List<SelectListItem>;
+    var individualClassifications = ViewBag.IndividualClassificationSelectList as List<SelectListItem>; }
 
 
-    var documents = ViewBag.Documents as List<SwiftFinancials.Web.Areas.Registry.DocumentsModel.Document>; }
-
-
-<style>
-    .document-gallery {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        margin-top: 20px;
-    }
-
-    .document-card {
-        position: relative;
-        width: 250px;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        background: #f9f9f9;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-        transform-style: preserve-3d;
-        perspective: 1000px;
-    }
-
-        .document-card:hover {
-            transform: scale(1.05) rotateY(5deg);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-        }
-
-    .document-image {
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-        .document-image img {
-            width: 100%; /* Adjust as needed */
-            height: auto;
-            border-radius: 8px;
-            transition: transform 0.3s ease;
-            display: block; /* Ensures the image is displayed */
-            opacity: 1; /* Ensures full visibility */
-        }
-
-        .document-image p {
-            margin-top: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-    .document-card:hover .document-image img {
-        transform: scale(1.05);
-    }
-</style>
-
-
-
-<div class="row wrapper border-bottom bg-white page-heading">
-    <div class="col-lg-10">
-        <h2>Customer Details</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Customer</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -85,12 +27,61 @@
         </ol>
     </div>
 </div>
+<style>
+    .animated-tabs {
+        font-size: 0.75rem; /* Smaller font size */
+    }
 
-<div class="wrapper wrapper-content white-bg">
+        .animated-tabs .nav-link {
+            transition: all 0.3s ease-in-out; /* Smooth transition for hover effect */
+            padding: 8px 12px; /* Adjust padding for a compact look */
+        }
+
+            /* Hover effect for the tabs */
+            .animated-tabs .nav-link:hover {
+                color: #ffffff; /* Text color on hover */
+                background-color: #007bff; /* Background color change */
+                transform: scale(1.1); /* Slightly scale up */
+                border-radius: 5px; /* Rounded corners for a smooth look */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            }
+
+    #myTab .nav-link {
+        font-size: 0.85rem !important; /* Reduce font size */
+        padding: 5px 10px !important; /* Reduce padding */
+    }
+</style>
+@if (TempData["Error"] != null)
+{
+<div class="alert alert-danger fade in">
+    <button class="close" data-dismiss="alert">
+    </button>
+    <i class="fa-fw fa fa-times"></i>
+    <strong>Error!</strong> @TempData["Error"]
+</div>}
+
+
+@if (TempData["SuccessMessage"] != null)
+{
+<script type="text/javascript">
+        alert('@TempData["SuccessMessage"]');
+</script>}
+
+
+<div class="wrapper wrapper-content">
     <div class="row">
-        <div class="col-md-12">
-            <div class="ibox ">
+        <div class="col-lg-12">
+            <div class="ibox">
                 <div class="ibox-title">
+
+                    <h2>Customers</h2>
+
+                    @if (TempData["DefaultError"] != null)
+                    {
+        <div class="alert alert-danger">
+            <strong>Attempt Failed !</strong> @TempData["DefaultError"]
+        </div>}
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -100,519 +91,1283 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("Details", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
-                        @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken()
 
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.IndividualTypeDescription, new { htmlAttributes = new { @class = "form-control col-md-12", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.TypeDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.StationId)
-                                        @Html.ValidationMessageFor(model => model.StationId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Description..", disabled = "disabled" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name", disabled = "disabled" } })
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.TypeDescription,
+                                                                                                                  new SelectList(new List<SelectListItem>
+                                                                                                                  {
+                new SelectListItem { Text = "Select Type", Value = "" },
+                new SelectListItem { Text = "Individual-Particulars", Value = "IndividualParticulars" },
+                new SelectListItem { Text = "Partnership-Particulars", Value = "Partnership" },
+                new SelectListItem { Text = "Corporation-Particulars", Value = "Corporation" },
+                new SelectListItem { Text = "Micro-credit-Particulars", Value = "MicroCredit" }
+}, "Value", "Text"),
+                                                                                                                  new { @class = "form-control input-md", @id = "customerTypeDropdown" })
+                                        @Html.ValidationMessageFor(model => model.TypeDescription)
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group" id="data_3">
-                                        @Html.LabelFor(model => model.RegistrationDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="registrationdate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.StationZoneDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.StationZoneDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Zone", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.StationZoneDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.RecordStatus, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.RecordStatusDescription, new { htmlAttributes = new { @class = "form-control col-md-12", @placeholder = "Individual Payroll Numbers", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.RecordStatusDescription, "", new { @class = "text-danger" })
-                                    </div>
+
+                                <!-- Hidden input to store the selected value -->
+                                <input type="hidden" id="selectedCustomerType" name="typedescription" />
+
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.StationId)
+                                    @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Description..",@Disabled="Disabled" } })
                                 </div>
-                                <div class="col-lg">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.IndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control col-md-12", @placeholder = "Individual Payroll Numbers", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.IndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.StationZoneDivisionDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.StationZoneDivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Division", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.StationZoneDivisionDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.StationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.StationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Employer", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.StationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
 
-                        <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap;" id="myTab">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#IndividualParticulars" data-toggle="tab">Individual Particulars</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#address" data-toggle="tab">Address</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#Specimen" data-toggle="tab">Specimen</a>
-                            </li>
-                        </ul>
-
-
-                        <div class="tab-content">
-                            <div id="address" class="tab-pane " role="tabpanel">
-                                <fieldset>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Addres line", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </div>
-
-                            <div id="IndividualParticulars" class="tab-pane" role="tabpanel">
-                                <fieldset>
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualSalutationDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualSalutationDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualSalutationDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualNationalityDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualNationalityDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualNationalityDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualIdentityCardTypeDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualIdentityCardTypeDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualIdentityCardTypeDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualEmploymentDesignation, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualEmploymentDesignation, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualEmploymentDesignation, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualTypeDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualTypeDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualTypeDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualGenderDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualGenderDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualGenderDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualFirstName, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "First Name", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualFirstName, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Identity Card Number", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualIdentityCardNumber, "", new { @class = "text-danger" })
-                                            </div>
-
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualEmploymentDate, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualEmploymentDate, new { htmlAttributes = new { @class = "form-control col-md-12", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualEmploymentDate, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualIdentityCardSerialNumber, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualIdentityCardSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Individual Identity Card Serial Number", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualIdentityCardSerialNumber, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualMaritalStatusDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualMaritalStatusDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualMaritalStatusDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualLastName, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualLastName, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualLastName, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualBirthDate, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualBirthDate, new { htmlAttributes = new { @class = "form-control col-md-12", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualBirthDate, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualEmploymentTermsOfServiceDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualEmploymentTermsOfServiceDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Last Name", @required = "", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualEmploymentTermsOfServiceDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </fieldset>
-                            </div>
-
-                            <div id="Referees" class="tab-pane fade" role="tabpanel">
-
-                                <h2>Referees</h2>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.FullName, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.Id)
-                                                @Html.TextBoxFor(model => model.IndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Reference1, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Reference1, new { htmlAttributes = new { @class = "form-control", @Disabled = "Disabled" } })
+                                    @Html.ValidationMessageFor(model => model.Reference1, "", new { @class = "text-danger" })
                                 </div>
 
                             </div>
 
-                            <div id="Specimen" class="tab-pane fade" role="tabpanel">
+                            <div class="col-4">
 
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.RegistrationDate, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.RegistrationDate, new { htmlAttributes = new { @class = "form-control", @Disabled = "Disabled" } })
+                                    @Html.ValidationMessageFor(model => model.RegistrationDate, "", new { @class = "text-danger" })
+                                </div>
 
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.StationZoneDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.StationZoneDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Zone", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.StationZoneDescription, "", new { @class = "text-danger" })
+                                </div>
 
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Reference3, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Reference3, new { htmlAttributes = new { @class = "form-control", @Disabled = "Disabled" } })
+                                    @Html.ValidationMessageFor(model => model.Reference3, "", new { @class = "text-danger" })
+                                </div>
 
 
                             </div>
-                        </div>}
+
+                            <div class="col-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.IndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control col-md-12", @placeholder = "Individual Payroll Numbers", @Disabled = "Disabled" } })
+                                    @Html.ValidationMessageFor(model => model.IndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group form-group-lg">
+
+                                    @Html.LabelFor(model => model.StationZoneDivisionDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.StationZoneDivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Division", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.StationZoneDivisionDescription, "", new { @class = "text-danger" })
+                                </div>
+
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Reference2, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Reference2, new { htmlAttributes = new { @class = "form-control", @Disabled = "Disabled" } })
+                                    @Html.ValidationMessageFor(model => model.Reference2, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                                        <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap; font-size: 0.85rem;" id="myTab">
+                                            <!-- Dynamic Navigation Links -->
+                                            <li class="nav-item dynamic-tab" id="link-IndividualParticulars" style="display: none;">
+                                                <a class="nav-link tab-pane" href="#IndividualParticulars" data-toggle="tab" style="padding: 5px 10px;">Individual-Particulars</a>
+                                            </li>
+                                            <li class="nav-item dynamic-tab" id="link-Partnership" style="display: none;">
+                                                <a class="nav-link tab-pane" href="#Partnership" data-toggle="tab" style="padding: 5px 10px;">Partnership-Particulars</a>
+                                            </li>
+                                            <li class="nav-item dynamic-tab" id="link-Corporation" style="display: none;">
+                                                <a class="nav-link tab-pane" href="#Corporation" data-toggle="tab" style="padding: 5px 10px;">Corporation-Particulars</a>
+                                            </li>
+                                            <li class="nav-item dynamic-tab" id="link-MicroCredit" style="display: none;">
+                                                <a class="nav-link tab-pane" href="#MicroCredit" data-toggle="tab" style="padding: 5px 10px;">Micro-credit-Particulars</a>
+                                            </li>
+
+                                            <!-- Always Visible Navigation Links -->
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#mandatoryDebitTypes" data-toggle="tab" style="padding: 5px 10px;">Debit Types</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#mandatoryCreditTypes" data-toggle="tab" style="padding: 5px 10px;">Credit Types</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#mandatoryInvestmentProducts" data-toggle="tab" style="padding: 5px 10px;">Investment Products</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#mandatorySavingsProducts" data-toggle="tab" style="padding: 5px 10px;">Savings Products</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link tab-pane" href="#address" data-toggle="tab" style="padding: 5px 10px;">Address</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link tab-pane" href="#SpecimenCapture" data-toggle="tab" style="padding: 5px 10px;">Specimen Capture</a>
+                                            </li>
+                                        </ul> <!-- Tab Content -->
+                                                        <div class="tab-content">
+
+                                                            <div id="mandatorySavingsProducts" class="tab-pane">
+                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                            <tr>
+                                                                                <th data-toggle="true">Description</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (ViewBag.savings != null)
+                                                                            {
+                                                                                foreach (var save in ViewBag.savings)
+                                                                                {
+                                                            <tr style="background-color: #f5f5f5;">
+                                                                <td>
+                                                                    <input type="checkbox" class="savings-checkbox" name="savingsproducts" value="@save.Id" />
+                                                                    @save.Description
+                                                                </td>
+                                                            </tr>
+}
+                                                    }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+
+                                                            <div id="mandatoryDebitTypes" class="tab-pane">
+                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                            <tr>
+                                                                                <th data-toggle="true">Description</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (ViewBag.debit != null)
+                                                                            {
+                                                                                foreach (var debitType in ViewBag.debit)
+                                                                                {
+                                                            <tr style="background-color: #f5f5f5;">
+                                                                <td>
+                                                                    <input type="checkbox" class="savings-checkbox" name="DebitTypes" value="@debitType.Id" />
+                                                                    @debitType.Description
+                                                                </td>
+                                                            </tr>}
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="mandatoryCreditTypes" class="tab-pane">
+                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                            <tr>
+                                                                                <th data-toggle="true">Description</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (ViewBag.creditTypes != null)
+                                                                            {
+                                                                                foreach (var creditType in ViewBag.creditTypes)
+                                                                                {
+                                                            <tr style="background-color: #f5f5f5;">
+                                                                <td>
+                                                                    <input type="checkbox" class="savings-checkbox" name="CreditTypes" value="@creditType.Id" />
+                                                                    @creditType.Description
+                                                                </td>
+                                                            </tr>}
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div id="mandatoryInvestmentProducts" class="tab-pane">
+                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                            <tr>
+                                                                                <th data-toggle="true">Description</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (ViewBag.investment != null)
+                                                                            {
+                                                                                foreach (var invest in ViewBag.investment)
+                                                                                {
+                                                            <tr style="background-color: #f5f5f5;">
+                                                                <td>
+                                                                    <input type="checkbox" class="investment-checkbox" name="investmentproducts" value="@invest.Id" />
+                                                                    @invest.Description
+                                                                </td>
+                                                            </tr>
+}
+                                                    }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div id="address" class="tab-pane" role="tabpanel">
+                                                                <fieldset>
+                                                                    <div class="row">
+                                                                        <div class="col-lg-6">
+                                                                            <div class="form-group form-group-lg">
+                                                                                @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                                                                @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" ,disabled="disabled"} })
+                                                                                @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
+                                                                            </div>
+                                                                            <div class="form-group form-group-lg">
+                                                                                @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                                                                @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2", disabled = "disabled" } })
+                                                                                @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
+                                                                            </div>
+                                                                            <div class="form-group form-group-lg">
+                                                                                @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
+                                                                                @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city", disabled = "disabled" } })
+                                                                                @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-lg-6">
+                                                                            <div class="form-group form-group-lg">
+                                                                                @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
+                                                                                @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "", disabled = "disabled" } })
+                                                                                @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
+                                                                            </div>
+                                                                            <div class="form-group form-group-lg">
+                                                                                @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
+                                                                                @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line", disabled = "disabled" } })
+                                                                                @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                                                                            </div>
+                                                                            <div class="form-group form-group-lg">
+                                                                                @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
+                                                                                @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Land line", disabled = "disabled" } })
+                                                                                @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-lg-6">
+                                                                            <div class="form-group form-group-lg">
+                                                                                @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
+                                                                                @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street", disabled = "disabled" } })
+                                                                                @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-lg-6">
+                                                                            <div class="form-group form-group-lg">
+                                                                                @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
+                                                                                @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code", disabled = "disabled" } })
+                                                                                @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </fieldset>
+                                                            </div>
+                                                            <div id="Partnership" class="tab-pane">
+                                                                <div class="row">
+                                                                    <div class="col-lg-6">
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Purtnership Name", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                                        </div>
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Registration date", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.RegistrationDate, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Registration date...", disabled = "disabled" } })
+                                                                        </div>
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Date Established", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Establishment date...", disabled = "disabled" } })
+                                                                        </div>
+
+
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Personal Identification Number", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter personal ID number...", disabled = "disabled" } })
+                                                                        </div>
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Remarks", new { @class = "control-label" })
+                                                                            @Html.TextAreaFor(model => model.NonIndividualRegistrationSerialNumber, new { @class = "form-control", @rows = 3, @placeholder = "Enter any remarks...", disabled = "disabled" })
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                </div>
+
+                                                            </div>
+
+                                                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                                            <script>
+                                                                $(function () { // Use an IIFE to avoid polluting global scope
+                                                                    console.log("Document is ready");  // Debugging message to confirm page load
+
+                                                                    // Function to handle the addition of a new partnership
+                                                                    function addPartnership() {
+                                                                        console.log("Add Partnership button clicked");  // Debugging message to confirm button click
+
+                                                                        // Collecting values from the input fields
+                                                                        var partnershipName = $('#partnershipName').val().trim();
+                                                                        var registrationNumber = $('#registrationNumber').val().trim();
+                                                                        var dateEstablished = $('#dateEstablished').val().trim();
+                                                                        var personalId = $('#personalId').val().trim();
+                                                                        var addressLine1 = $('#addressLine1').val().trim();
+                                                                        var addressLine2 = $('#addressLine2').val().trim();
+                                                                        var street = $('#street').val().trim();
+                                                                        var postalCode = $('#postalCode').val().trim();
+                                                                        var city = $('#city').val().trim();
+                                                                        var email = $('#email').val().trim();
+                                                                        var landLine = $('#landLine').val().trim();
+                                                                        var mobileLine = $('#mobileLine').val().trim();
+
+                                                                        // Simple validation
+                                                                        if (partnershipName === "" || registrationNumber === "" || dateEstablished === "" || personalId === "") {
+                                                                            alert("Please fill all required fields.");
+                                                                            return;
+                                                                        }
+
+                                                                        // Creating a new row for the table
+                                                                        var row = '<tr>' +
+                                                                            '<td>' + partnershipName + '</td>' +
+                                                                            '<td>' + registrationNumber + '</td>' +
+                                                                            '<td>' + dateEstablished + '</td>' +
+                                                                            '<td>' + personalId + '</td>' +
+                                                                            '<td>' + addressLine1 + '</td>' +
+                                                                            '<td>' + addressLine2 + '</td>' +
+                                                                            '<td>' + street + '</td>' +
+                                                                            '<td>' + postalCode + '</td>' +
+                                                                            '<td>' + city + '</td>' +
+                                                                            '<td>' + email + '</td>' +
+                                                                            '<td>' + landLine + '</td>' +
+                                                                            '<td>' + mobileLine + '</td>' +
+                                                                            '<td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>' +
+                                                                            '</tr>';
+
+                                                                        // Appending the new row to the table
+                                                                        $('#partnershipTable tbody').append(row);
+                                                                        // Removed the line that clears the form inputs
+                                                                    }
+
+                                                                    // Attach event handler to the button
+                                                                    $('#addPartnershipBtn').on('click', addPartnership);
+
+                                                                    // Event delegation to handle dynamically added remove buttons
+                                                                    $('#partnershipTable').on('click', '.remove-btn', function () {
+                                                                        $(this).closest('tr').remove();
+                                                                    });
+                                                                });
+                                                            </script>
+
+
+                                                            <div id="Corporation" class="tab-pane">
+                                                                <div class="row">
+                                                                    <div class="col-lg-6">
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Corporation Name", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter corporation name...", disabled = "disabled" } })
+                                                                        </div>
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Registration Number", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualRegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter registration number...", disabled = "disabled" } })
+                                                                        </div>
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Date Established", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Enter establishment date...", disabled = "disabled" } })
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="col-lg-6">
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Personal Identification Number", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.corporationMemberDTO[0].CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter personal identification number...", disabled = "disabled" } })
+                                                                        </div>
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Remarks", new { @class = "control-label" })
+                                                                            @Html.TextAreaFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @rows = 3, @placeholder = "Enter any remarks...", disabled = "disabled" } })
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Section for Adding Members -->
+                                                                <!--<div class="member-section">
+                                                                    <h4>Add Member</h4>
+                                                                    <div class="row">
+                                                                        <div class="col-lg-6">
+                                                                            <div class="form-group">
+                                                                                <label for="memberName">Name</label>
+                                                                                <input type="text" id="memberName" class="form-control" placeholder="Enter member name..." />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="memberGender">Gender</label>
+                                                                                <select id="memberGender" class="form-control">
+                                                                                    <option value="">Select Gender</option>
+                                                                                    <option value="Male">Male</option>
+                                                                                    <option value="Female">Female</option>
+                                                                                    <option value="Other">Other</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="identityCardType">Identity Card Type</label>
+                                                                                <input type="text" id="identityCardType" class="form-control" placeholder="Enter identity card type..." />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="identityCardNumber">Identity Card Number</label>
+                                                                                <input type="text" id="identityCardNumber" class="form-control" placeholder="Enter identity card number..." />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-lg-6">
+                                                                            <div class="form-group">
+                                                                                <label for="addressLine1">Address Line 1</label>
+                                                                                <input type="text" id="addressLine1" class="form-control" placeholder="Enter address line 1..." />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="addressLine2">Address Line 2</label>
+                                                                                <input type="text" id="addressLine2" class="form-control" placeholder="Enter address line 2..." />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="street">Street</label>
+                                                                                <input type="text" id="street" class="form-control" placeholder="Enter street..." />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="postalCode">Postal Code</label>
+                                                                                <input type="text" id="postalCode" class="form-control" placeholder="Enter postal code..." />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="city">City</label>
+                                                                                <input type="text" id="city" class="form-control" placeholder="Enter city..." />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="email">Email</label>
+                                                                                <input type="email" id="email" class="form-control" placeholder="Enter email..." />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="landLine">Land Line</label>
+                                                                                <input type="text" id="landLine" class="form-control" placeholder="Enter land line..." />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="mobileLine">Mobile Line</label>
+                                                                                <input type="text" id="mobileLine" class="form-control" placeholder="Enter mobile line..." />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="signatory">Signatory?</label>
+                                                                                <input type="checkbox" id="signatory" />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="remarks">Remarks</label>
+                                                                                <textarea id="remarks" class="form-control" rows="3" placeholder="Enter remarks..."></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="form-group row">
+                                                                        <div class="col-md-12">
+                                                                            <button type="button" id="addMemberBtn" class="btn btn-primary">Add Member</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>-->
+                                                                <!-- Member Collection Section -->
+                                                                <!--<div class="form-group row">
+                                                                    <div class="col-md-12">
+                                                                        <label>Member Collection</label>
+                                                                        <table id="memberCollectionTable" class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Name</th>
+                                                                                    <th>Gender</th>
+                                                                                    <th>Identity Card Type</th>
+                                                                                    <th>Identity Card Number</th>
+                                                                                    <th>Address Line 1</th>
+                                                                                    <th>Address Line 2</th>
+                                                                                    <th>Street</th>
+                                                                                    <th>Postal Code</th>
+                                                                                    <th>City</th>
+                                                                                    <th>Email</th>
+                                                                                    <th>Land Line</th>
+                                                                                    <th>Mobile Line</th>
+                                                                                    <th>Signatory?</th>
+                                                                                    <th>Remarks</th>
+                                                                                    <th>Action</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>-->
+                                                                <!-- Dynamic Member Rows -->
+                                                                <!--</tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group row">
+                                                                    <div class="col-md-12">
+                                                                        <button type="submit" class="btn btn-success">Create Corporation</button>
+                                                                    </div>
+                                                                </div>-->
+
+                                                            </div>
+
+                                                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                                            <script>
+                                                                $(function () {
+                                                                    // Function to handle the addition of a new member
+                                                                    function addMember() {
+                                                                        // Collecting values from the input fields
+                                                                        var memberName = $('#memberName').val().trim();
+                                                                        var memberGender = $('#memberGender').val().trim();
+                                                                        var identityCardType = $('#identityCardType').val().trim();
+                                                                        var identityCardNumber = $('#identityCardNumber').val().trim();
+                                                                        var addressLine1 = $('#addressLine1').val().trim();
+                                                                        var addressLine2 = $('#addressLine2').val().trim();
+                                                                        var street = $('#street').val().trim();
+                                                                        var postalCode = $('#postalCode').val().trim();
+                                                                        var city = $('#city').val().trim();
+                                                                        var email = $('#email').val().trim();
+                                                                        var landLine = $('#landLine').val().trim();
+                                                                        var mobileLine = $('#mobileLine').val().trim();
+                                                                        var signatory = $('#signatory').is(':checked') ? 'Yes' : 'No';  // Assuming a checkbox for signatory
+                                                                        var remarks = $('#remarks').val().trim();
+
+                                                                        // Simple validation
+                                                                        if (memberName === "" || identityCardNumber === "") {
+                                                                            alert("Please fill all required fields.");
+                                                                            return;
+                                                                        }
+
+                                                                        // Creating a new row for the table
+                                                                        var row = '<tr>' +
+                                                                            '<td>' + memberName + '</td>' +
+                                                                            '<td>' + memberGender + '</td>' +
+                                                                            '<td>' + identityCardType + '</td>' +
+                                                                            '<td>' + identityCardNumber + '</td>' +
+                                                                            '<td>' + addressLine1 + '</td>' +
+                                                                            '<td>' + addressLine2 + '</td>' +
+                                                                            '<td>' + street + '</td>' +
+                                                                            '<td>' + postalCode + '</td>' +
+                                                                            '<td>' + city + '</td>' +
+                                                                            '<td>' + email + '</td>' +
+                                                                            '<td>' + landLine + '</td>' +
+                                                                            '<td>' + mobileLine + '</td>' +
+                                                                            '<td>' + signatory + '</td>' +
+                                                                            '<td>' + remarks + '</td>' +
+                                                                            '<td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>' +
+                                                                            '</tr>';
+
+                                                                        // Appending the new row to the table
+                                                                        $('#memberCollectionTable tbody').append(row);
+                                                                        // Clear the input fields after adding the member
+                                                                        clearMemberFields();
+                                                                    }
+
+                                                                    // Function to clear member input fields
+                                                                    function clearMemberFields() {
+                                                                        $('#memberName').val('');
+                                                                        $('#memberGender').val('');
+                                                                        $('#identityCardType').val('');
+                                                                        $('#identityCardNumber').val('');
+                                                                        $('#addressLine1').val('');
+                                                                        $('#addressLine2').val('');
+                                                                        $('#street').val('');
+                                                                        $('#postalCode').val('');
+                                                                        $('#city').val('');
+                                                                        $('#email').val('');
+                                                                        $('#landLine').val('');
+                                                                        $('#mobileLine').val('');
+                                                                        $('#signatory').prop('checked', false); // Assuming a checkbox for signatory
+                                                                        $('#remarks').val('');
+                                                                    }
+
+                                                                    // Attach event handler to the button
+                                                                    $('#addMemberBtn').on('click', addMember);
+
+                                                                    // Event delegation to handle dynamically added remove buttons
+                                                                    $('#memberCollectionTable').on('click', '.remove-btn', function () {
+                                                                        $(this).closest('tr').remove();
+                                                                    });
+                                                                });
+                                                            </script>
+
+                                                            <div id="MicroCredit" class="tab-pane">
+                                                                <div class="row">
+                                                                    <div class="col-lg-6">
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Non Individual Description", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                                        </div>
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Registration Number", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualRegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter registration number...", disabled = "disabled" } })
+                                                                        </div>
+
+
+
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Date Established", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Enter establishment date...", disabled = "disabled" } })
+                                                                        </div>
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Remarks", new { @class = "control-label" })
+                                                                            @Html.TextAreaFor(model => model.NonIndividualRegistrationSerialNumber, new { @class = "form-control", @rows = 3, @placeholder = "Enter any remarks...", disabled = "disabled" })
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                            <div id="IndividualParticulars" class="tab-pane">
+                                                                <div class="row">
+                                                                    <div class="col-4">
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualSalutationDescription, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualSalutationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Identity Card Number", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualSalutationDescription, "", new { @class = "text-danger" })
+                                                                        </div>
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Identity Card Number", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                                                        </div>
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualNationalityDescription, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualNationalityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualNationalityDescription, "", new { @class = "text-danger" })
+                                                                        </div>
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualTypeDescription, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Individual Type", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualTypeDescription, "", new { @class = "text-danger" })
+                                                                        </div>
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualEmploymentDesignation, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualEmploymentDesignation, new { htmlAttributes = new { @class = "form-control", @placeholder = "Individual Employment Designation", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualEmploymentDesignation, "", new { @class = "text-danger" })
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-4">
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualGenderDescription, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualGenderDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Individual Gender", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualGenderDescription, "", new { @class = "text-danger" })
+                                                                        </div>
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualFirstName, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "First Name", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualFirstName, "", new { @class = "text-danger" })
+                                                                        </div>
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                                                        </div>
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualMaritalStatusDescription, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualMaritalStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualMaritalStatusDescription, "", new { @class = "text-danger" })
+                                                                        </div>
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualEmploymentDate, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualEmploymentDate, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualEmploymentDate, "", new { @class = "text-danger" })
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-4">
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualIdentityCardTypeDescription, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualIdentityCardTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Card type", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualIdentityCardTypeDescription, "", new { @class = "text-danger" })
+                                                                        </div>
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualLastName, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Last Name", @required = "" ,disabled="disabled"} })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualLastName, "", new { @class = "text-danger" })
+                                                                        </div>
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualBirthDate, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualBirthDate, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualBirthDate, "", new { @class = "text-danger" })
+                                                                        </div>
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.IndividualEmploymentTermsOfServiceDescription, htmlAttributes: new { @class = "" })
+                                                                            @Html.EditorFor(model => model.IndividualEmploymentTermsOfServiceDescription, new { htmlAttributes = new { @class = "form-control",disabled = "disabled" } })
+                                                                            @Html.ValidationMessageFor(model => model.IndividualEmploymentTermsOfServiceDescription, "", new { @class = "text-danger" })
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div id="SpecimenCapture" class="tab-pane" role="tabpanel">
+                                                                <link href="~/Scripts/css/WebCam.css" rel="stylesheet" />
+
+                                                                <!-- Passport Photo Section -->
+                                                                <div class="form-group row mb-5">
+                                                                    <div class="col-md-6">
+                                                                        <div class="passport-photo-container p-3 text-center">
+                                                                            <label for="passportPhoto" class="mb-2">Passport Photo (via Webcam or Upload)</label>
+                                                                            <video id="webcam" autoplay style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);"></video>
+                                                                            <button type="button" class="btn btn-primary mt-3" onclick="captureImage()">Capture Passport Photo</button>
+                                                                            <input type="file" class="form-control mt-3" id="passportPhotoUpload" accept="image/*" onchange="previewImage(event, 'capturedImage')" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <label for="capturedImage" class="mb-2">Captured or Uploaded Passport Photo</label>
+                                                                        <div class="passport-photo-preview">
+                                                                            <img id="capturedImage" src="" alt="Captured Image" style="width: 80%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="hidden" name="passportPhotoDataUrl" id="passportPhotoDataUrl" />
+                                                                </div>
+
+                                                                <!-- Signature and ID Photos Section -->
+                                                                <div class="form-group row" style="margin-top: 100px;">
+                                                                    <!-- Signature Photo -->
+                                                                    <div class="col-md-3" style="margin-right: 100px;">
+                                                                        <div class="image-placeholder">
+                                                                            <img id="signaturePhotoPreview" src="" alt="Signature Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                                                        </div>
+                                                                        <label for="signaturePhoto" class="mt-3 mb-2">Signature Photo</label>
+                                                                        <input type="file" name="signaturePhoto" class="form-control" id="signaturePhotoInput" accept="image/*" onchange="previewImage(event, 'signaturePhotoPreview')" />
+                                                                    </div>
+
+                                                                    <!-- ID Card Front Photo -->
+                                                                    <div class="col-md-3" style="margin-right: 100px;">
+                                                                        <div class="image-placeholder">
+                                                                            <img id="idCardFrontPreview" src="" alt="ID Card Front Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                                                        </div>
+                                                                        <label for="idCardFrontPhoto" class="mt-3 mb-2">Identity Card Front Photo (via Upload)</label>
+                                                                        <input type="file" name="idCardFrontPhoto" class="form-control" id="idCardFrontPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardFrontPreview')" />
+                                                                    </div>
+
+                                                                    <!-- ID Card Back Photo -->
+                                                                    <div class="col-md-3">
+                                                                        <div class="image-placeholder">
+                                                                            <img id="idCardBackPreview" src="" alt="ID Card Back Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                                                        </div>
+                                                                        <label for="idCardBackPhoto" class="mt-3 mb-2">Identity Card Back Photo (via Upload)</label>
+                                                                        <input type="file" name="idCardBackPhoto" class="form-control" id="idCardBackPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardBackPreview')" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <script>
+                                                                function captureImage() {
+                                                                    // Webcam image capture logic
+                                                                    const video = document.getElementById('webcam');
+                                                                    const canvas = document.createElement('canvas');
+                                                                    canvas.width = video.videoWidth;
+                                                                    canvas.height = video.videoHeight;
+                                                                    const context = canvas.getContext('2d');
+                                                                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                                                                    document.getElementById('capturedImage').src = canvas.toDataURL('image/png');
+                                                                    document.getElementById('passportPhotoDataUrl').value = canvas.toDataURL('image/png');
+                                                                }
+
+                                                                function previewImage(event, previewElementId) {
+                                                                    const reader = new FileReader();
+                                                                    reader.onload = function () {
+                                                                        document.getElementById(previewElementId).src = reader.result;
+                                                                    };
+                                                                    reader.readAsDataURL(event.target.files[0]);
+                                                                }
+                                                            </script>
+
+
+                                                            <input type="button" value="Create" class="btn btn-primary" style="width: 150px;" onclick="submitForm()" />
+                                                        </div>}
+
+
+
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
 
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="~/Scripts/js/navlink.js"></script>
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
-    @section Styles{
-        @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-        @Styles.Render("~/plugins/wizardStepsStyles")
-        @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-        @Styles.Render("~/plugins/awesomeCheckboxStyles")
-        @Styles.Render("~/plugins/clockpickerStyles")
-        @Styles.Render("~/plugins/dateRangeStyles")
-        @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-        @Styles.Render("~/plugins/switcheryStyles")
-        @Styles.Render("~/plugins/jasnyBootstrapStyles")
-        @Styles.Render("~/plugins/nouiSliderStyles")
-        @Styles.Render("~/plugins/dataPickerStyles")
-        @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-        @Styles.Render("~/plugins/imagecropperStyles")
-        @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-        @Styles.Render("~/plugins/select2Styles")
-        @Styles.Render("~/plugins/touchSpinStyles")
-        @Styles.Render("~/plugins/tagInputsStyles")
-        @Styles.Render("~/plugins/duallistStyles")
+
+    <script>
+        function submitForm() {
+            document.getElementById("form").submit();
+            // Retrieve the dropdown's selected value
+            const typeValue = document.getElementById("customerTypeDropdown").value;
+
+            // Set the hidden 'type' field's value to the selected dropdown value
+            document.getElementById("typeField").value = typeValue;
+
+            // Submit the form by its ID
+
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            let memberIndex = 0; // To track the index of the dynamic rows
+
+            // Function to add new member row
+            $("#addMemberBtn").on("click", function () {
+                // Capture form field values
+                const name = $('#corporationMemberName').val();
+                const gender = $('#corporationMemberGender').val();
+                const idCardType = $('#corporationMemberIdCardType').val();
+                const idCardNumber = $('#corporationMemberIdCardNumber').val();
+                const addressLine1 = $('#corporationMemberAddressLine1').val();
+                const addressLine2 = $('#corporationMemberAddressLine2').val();
+                const street = $('#corporationMemberStreet').val();
+                const postalCode = $('#corporationMemberPostalCode').val();
+                const city = $('#corporationMemberCity').val();
+                const email = $('#corporationMemberEmail').val();
+                const landLine = $('#corporationMemberLandLine').val();
+                const mobileLine = $('#corporationMemberMobileLine').val();
+                const signatory = $('#corporationMemberSignatory').is(':checked') ? 'Yes' : 'No';
+                const remarks = $('#corporationMemberRemarks').val();
+
+                // Append a new row to the table
+                $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `);
+
+                // Clear the form fields after adding
+                clearMemberForm();
+
+                // Increment the member index for the next row
+                memberIndex++;
+            });
+
+            // Function to remove member row
+            $(document).on('click', '.removeMemberBtn', function () {
+                const rowId = $(this).data('row-id');
+                $('#' + rowId).remove(); // Remove the row
+            });
+
+            // Function to clear form fields after adding a member
+            function clearMemberForm() {
+                $('#corporationMemberName').val('');
+                $('#corporationMemberGender').val('');
+                $('#corporationMemberIdCardType').val('');
+                $('#corporationMemberIdCardNumber').val('');
+                $('#corporationMemberAddressLine1').val('');
+                $('#corporationMemberAddressLine2').val('');
+                $('#corporationMemberStreet').val('');
+                $('#corporationMemberPostalCode').val('');
+                $('#corporationMemberCity').val('');
+                $('#corporationMemberEmail').val('');
+                $('#corporationMemberLandLine').val('');
+                $('#corporationMemberMobileLine').val('');
+                $('#corporationMemberSignatory').prop('checked', false);
+                $('#corporationMemberRemarks').val('');
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#customerTypeDropdown').change(function () {
+                // Store the selected value in the hidden input
+                $('#selectedCustomerType').val($(this).val());
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Registry/WithdrawalNotification/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
+            { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+            { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
+            { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        $('#CustomerId').val(data.Id);
+        $('input[name=CustomerId]').val(data.Id);
+        $('input[name=CustomerFullName]').val(data.FullName);
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
+        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#customerLookupModal').modal('hide');
+    });
+
+
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: "dd/mm/yyyy"  // Set the date format
+            });
+
+            //roles typehead starts here
+            $('.rolesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetRoles", "Role", new { Area = "Admin" })',
+                        { query: query },
+                        function (roles) {
+                            var newRolesData = [];
+                            rolesMap = {};
+                            $.each(roles, function (i,role) {
+                                newRolesData.push(role.Name);
+                                rolesMap[role.Name] = role;
+                            });
+                            process(newRolesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var roleId = "";
+                    roleId = rolesMap[item].Id;
+                    $('#RoleId').val(roleId);
+                    //console.log(roleId)
+                    return item;
+                }
+            });
+
+            //Station typehead starts here
+            $('.StationsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                        { query: query },
+                        function (Stations) {
+                            var newStationsData = [];
+                            StationsMap = {};
+                            $.each(Stations, function (i, Station) {
+                                newStationsData.push(Station.Description);
+                                StationsMap[Station.Description] = Station;
+                            });
+                            process(newStationsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var stationId = "";
+                    StationId = StationsMap[item].Id;
+                    $('#StationId').val(StationId);
+                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
+                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
+                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
+                    //console.log(StationId)
+                    return item;
+                }
+            });
+
+            //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var branchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+        });
+    </script>
+}
+
+
+<script>
+    // JavaScript code to handle webcam capture for passport photo
+    function captureImage() {
+        const canvas = document.createElement('canvas');
+        const video = document.getElementById('webcam');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+        document.getElementById('passportPhotoDataUrl').value = dataUrl;
+        document.getElementById('capturedImage').src = dataUrl;
     }
 
-    @section Scripts{
-        @Scripts.Render("~/plugins/wizardSteps")
-        @Scripts.Render("~/plugins/validate")
-        @Scripts.Render("~/plugins/typehead")
-        @Scripts.Render("~/plugins/dataTables")
-        @Scripts.Render("~/plugins/iCheck")
-        @Scripts.Render("~/plugins/dataPicker")
-        @Scripts.Render("~/plugins/ionRange")
-        @Scripts.Render("~/plugins/nouiSlider")
-        @Scripts.Render("~/plugins/jasnyBootstrap")
-        @Scripts.Render("~/plugins/switchery")
-        @Scripts.Render("~/plugins/chosen")
-        @Scripts.Render("~/plugins/knob")
-        @Scripts.Render("~/plugins/imagecropper")
-        @Scripts.Render("~/plugins/colorpicker")
-        @Scripts.Render("~/plugins/clockpicker")
-        @Scripts.Render("~/plugins/dateRange")
-        @Scripts.Render("~/plugins/select2")
-        @Scripts.Render("~/plugins/touchSpin")
-        @Scripts.Render("~/plugins/tagInputs")
-        @Scripts.Render("~/plugins/duallist")
+    // Start webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            document.getElementById('webcam').srcObject = stream;
+        })
+        .catch(error => {
+            console.error('Error accessing webcam: ', error);
+        });
+</script>
 
-
-        <script>
-                $(document).ready(function () {
-
-                    $("#wizard").steps();
-                    $("#form").steps({
-                        bodyTag: "fieldset",
-                        onStepChanging: function (event, currentIndex, newIndex) {
-                            // Always allow going backward even if the current step contains invalid fields!
-                            if (currentIndex > newIndex) {
-                                return true;
-                            }
-
-                            // Forbid suppressing "Warning" step if the user is to young
-                            if (newIndex === 3 && Number($("#age").val()) < 18) {
-                                return false;
-                            }
-
-                            var form = $(this);
-
-                            // Clean up if user went backward before
-                            if (currentIndex < newIndex) {
-                                // To remove error styles
-                                $(".body:eq(" + newIndex + ") label.error", form).remove();
-                                $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                            }
-
-                            // Disable validation on fields that are disabled or hidden.
-                            form.validate().settings.ignore = ":disabled,:hidden";
-
-                            // Start validation; Prevent going forward if false
-                            return form.valid();
-                        },
-                        onStepChanged: function (event, currentIndex, priorIndex) {
-                            // Suppress (skip) "Warning" step if the user is old enough.
-                            if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                                $(this).steps("next");
-                            }
-
-                            // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                            if (currentIndex === 2 && priorIndex === 3) {
-                                $(this).steps("previous");
-                            }
-                        },
-                        onFinishing: function (event, currentIndex) {
-                            var form = $(this);
-
-                            // Disable validation on fields that are disabled.
-                            // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                            form.validate().settings.ignore = ":disabled";
-
-                            // Start validation; Prevent form submission if false
-                            return form.valid();
-                        },
-                        onFinished: function (event, currentIndex) {
-                            var form = $(this);
-
-                            // Submit form input
-                            form.submit();
-                        }
-                    }).validate({
-                        errorPlacement: function (error, element) {
-                            element.before(error);
-                        },
-                        rules: {
-                            confirm: {
-                                equalTo: "#password"
-                            }
-                        }
-                    });
-
-                    $('#data_3 .input-group.date').datepicker({
-                        startView: 2,
-                        todayBtn: "linked",
-                        keyboardNavigation: false,
-                        forceParse: false,
-                        autoclose: true,
-                    });
-                    //roles typehead starts here
-                    $('.rolesLookup').typeahead({
-                        source: function (query, process) {
-                            return $.getJSON(
-                                '@Url.Action("GetRoles", "Role", new { Area = "Admin" })',
-                                { query: query },
-                                function (roles) {
-                                    var newRolesData = [];
-                                    rolesMap = {};
-                                    $.each(roles, function (i,role) {
-                                        newRolesData.push(role.Name);
-                                        rolesMap[role.Name] = role;
-                                    });
-                                    process(newRolesData); return;
-                                });
-                        },
-                        matcher: function (item) {
-                            if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                                return true;
-                            }
-                        },
-                        sorter: function (items) {
-                            return items.sort();
-                        },
-                        highlighter: function (item) {
-                            var regex = new RegExp('(' + this.query + ')', 'gi');
-                            return item.replace(regex, "<strong>$1</strong>");
-                        },
-                        updater: function (item) {
-                            var roleId = "";
-                            roleId = rolesMap[item].Id;
-                            $('#RoleId').val(roleId);
-                            //console.log(roleId)
-                            return item;
-                        }
-                    });
-
-                    //Station typehead starts here
-                    $('.StationsLookup').typeahead({
-                        source: function (query, process) {
-                            return $.getJSON(
-                                '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
-                                { query: query },
-                                function (Stations) {
-                                    var newStationsData = [];
-                                    StationsMap = {};
-                                    $.each(Stations, function (i, Station) {
-                                        newStationsData.push(Station.Description);
-                                        StationsMap[Station.Description] = Station;
-                                    });
-                                    process(newStationsData); return;
-                                });
-                        },
-                        matcher: function (item) {
-                            if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                                return true;
-                            }
-                        },
-                        sorter: function (items) {
-                            return items.sort();
-                        },
-                        highlighter: function (item) {
-                            var regex = new RegExp('(' + this.query + ')', 'gi');
-                            return item.replace(regex, "<strong>$1</strong>");
-                        },
-                        updater: function (item) {
-                            var stationId = "";
-                            StationId = StationsMap[item].Id;
-                            $('#StationId').val(StationId);
-                            $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
-                            $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
-                            $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
-                            //console.log(StationId)
-                            return item;
-                        }
-                    });
-
-                    //Branch typehead starts here
-                    $('.BranchesLookup').typeahead({
-                        source: function (query, process) {
-                            return $.getJSON(
-                                '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                                { query: query },
-                                function (Branches) {
-                                    var newBranchesData = [];
-                                    BranchesMap = {};
-                                    $.each(Branches, function (i, Branch) {
-                                        newBranchesData.push(Branch.Description);
-                                        BranchesMap[Branch.Description] = Branch;
-                                    });
-                                    process(newBranchesData); return;
-                                });
-                        },
-                        matcher: function (item) {
-                            if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                                return true;
-                            }
-                        },
-                        sorter: function (items) {
-                            return items.sort();
-                        },
-                        highlighter: function (item) {
-                            var regex = new RegExp('(' + this.query + ')', 'gi');
-                            return item.replace(regex, "<strong>$1</strong>");
-                        },
-                        updater: function (item) {
-                            var branchId = "";
-                            BranchId = BranchesMap[item].Id;
-                            $('#BranchId').val(BranchId);
-                            //console.log(BranchId)
-                            return item;
-                        }
-                    });
-                });
-
-        </script>
+<script>
+    function previewImage(event, previewElementId) {
+        const input = event.target;
+        const reader = new FileReader();
+        reader.onload = function () {
+            const previewImage = document.getElementById(previewElementId);
+            previewImage.src = reader.result;
+        };
+        reader.readAsDataURL(input.files[0]);
     }
+
+    function captureImage() {
+        const video = document.getElementById('webcam');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL();
+        document.getElementById('capturedImage').src = dataUrl;
+        document.getElementById('passportPhotoDataUrl').value = dataUrl;
+    }
+</script>
+<!-- jQuery Script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var activeTabId = ''; // Variable to store the ID of the active tab
+
+        // Handle dropdown change
+        $('#customerTypeDropdown').change(function () {
+            var selectedValue = $(this).val(); // Get selected value
+
+            if (selectedValue) {
+                // Hide the currently active tab link
+                if (activeTabId) {
+                    $('#' + activeTabId).hide();
+                }
+
+                // Show the new selected tab link
+                activeTabId = 'link-' + selectedValue; // Update the active tab ID
+                $('#' + activeTabId).show();
+                // Activate the selected tab
+                $('#' + activeTabId + ' a').tab('show');
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#submitButton').on('click', function () {
+            var debitTypes = [];
+            var investmentProducts = [];
+            var savingsProducts = [];
+
+            // Gather selected debit types
+            $('.debit-checkbox:checked').each(function () {
+                debitTypes.push($(this).val());
+            });
+
+            // Gather selected investment products
+            $('.investment-checkbox:checked').each(function () {
+                investmentProducts.push($(this).val());
+            });
+
+            // Gather selected savings products
+            $('.savings-checkbox:checked').each(function () {
+                savingsProducts.push($(this).val());
+            });
+
+            $.ajax({
+                url: '@Url.Action("Create", "Customer")', // Update with your controller name
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    debittypes: debitTypes,
+                    investmentproducts: investmentProducts,
+                    savingsproducts: savingsProducts
+                }),
+                success: function (response) {
+                    // Handle success
+                    alert("Data submitted successfully!");
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    alert("An error occurred: " + error);
+                }
+            });
+        });
+    });
+</script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        // Initialize date picker on the input field
+        $("#dateEstablished").datepicker({
+            dateFormat: "dd/mm/yy", // Set desired format
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "1900:2024" // Adjust year range as needed
+        });
+    });
+</script>

@@ -175,9 +175,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 TempData["AlertMessage"] = "Treasury created successfully";
 
-                TempData["RefreshPage"] = true;
-
-                return RedirectToAction("Index");
+                return View("Index");
             }
             else
             {
