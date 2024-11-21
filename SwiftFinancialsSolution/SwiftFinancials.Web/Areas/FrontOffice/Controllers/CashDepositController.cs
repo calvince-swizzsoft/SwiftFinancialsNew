@@ -1125,6 +1125,25 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             SelectedBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
 
+            if (_selectedTeller == null)
+            {
+
+             MessageBox.Show("Teller is Missing",
+             "Cash Transaction",
+             MessageBoxButtons.OK,
+             MessageBoxIcon.Exclamation,
+             MessageBoxDefaultButton.Button1,
+             MessageBoxOptions.ServiceNotification
+
+             );
+
+                //return View(SelectedCustomerAccount);
+
+             return Json(new { success = false, message = "Operation Failed" });
+
+
+            }
+
             var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
             transactionModel.PostingPeriodId = postingPeriod.Id;
             //transactionModel.DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
@@ -1804,6 +1823,27 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             _selectedTeller = await GetCurrentTeller();
+
+            if (_selectedTeller == null)
+            {
+
+                MessageBox.Show("Teller is Missing",
+                "Cash Transaction",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation,
+                MessageBoxDefaultButton.Button1,
+                MessageBoxOptions.ServiceNotification
+
+                );
+
+                //return View(SelectedCustomerAccount);
+
+                return Json(new { success = false, message = "Operation Failed" });
+
+
+            }
+
+
 
             var pageCollectionInfo = await _channelService.FindCashTransferRequestsByFilterInPageAsync((Guid)SelectedTeller.EmployeeId, startDate, endDate, status, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
