@@ -550,6 +550,7 @@
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureViewModel.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\AccountStatusesController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\ApplicationsController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\EmailAlertsController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\FinancialPositionController.cs" />
@@ -1480,6 +1481,7 @@
     <Content Include="Areas\Dashboard\Views\TextAlerts\Index.cshtml" />
     <Content Include="Areas\Dashboard\Views\TextAlerts\Create.cshtml" />
     <Content Include="Areas\Dashboard\Views\FinancialPosition\Index.cshtml" />
+    <Content Include="Areas\Dashboard\Views\AccountStatuses\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
