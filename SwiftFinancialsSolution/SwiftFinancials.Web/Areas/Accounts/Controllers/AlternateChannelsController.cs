@@ -64,6 +64,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             Session["AlternateChannelType"] = systemTransactionTypeInCommissionDTO.AlternateChannelType;
             Session["KnownChargeType"] = systemTransactionTypeInCommissionDTO.KnownChargeType;
             Session["ChargeBenefactor"] = systemTransactionTypeInCommissionDTO.ChargeBenefactor;
+            TempData["Successfully"] = "Successfully Alternate Channels Charges";
 
             return View("Create", systemTransactionTypeInCommissionDTO);
         }

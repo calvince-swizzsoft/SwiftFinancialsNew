@@ -68,14 +68,33 @@
             font-weight: bold;
         }
 
-        .grey-table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+    .myfooter .btn {
+        margin-left: 10px; /* Adds space between buttons */
+        margin-right: 10px; /* Optional for equal padding on both sides */
+        min-width: 120px; /* Ensures consistent button width */
+    }
 
-        .grey-table tbody tr:hover {
-            background-color: #f1f1f1;
-        }
+    .myfooter .form-group {
+        display: flex; /* Align items horizontally */
+        justify-content: flex-end; /* Align buttons to the right */
+        gap: 10px; /* Adds consistent spacing between buttons */
+    }
 
+    .myfooter a.btn {
+        text-align: center; /* Ensures the button content is centered */
+    }
+
+    .grey-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .grey-table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+    input[type="checkbox"]:disabled {
+        cursor: not-allowed;
+        color:blue;
+    }
     #ChargeSplits {
         width: 100%;
         border-collapse: collapse;
@@ -285,6 +304,8 @@
     .table-responsive table td {
         border: 1px solid gray !important;
     }
+
+    
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -1010,12 +1031,13 @@
                                             <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">
                                                 <i class="fa fa-edit"></i> Edit
                                             </a>
-                                            
+
                                             <a href="@Url.Action("Index")" class="btn btn-primary">
                                                 <i class="fa fa-arrow-left"></i> Back to List
                                             </a>
                                         </div>
                                     </div>
+
 
 
 
@@ -1154,6 +1176,27 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="text"]').forEach(textbox => {
+                textbox.disabled = true;
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="number"]').forEach(textbox => {
+                textbox.disabled = true;
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.disabled = true;
+            });
+        });
+    </script>
 
     <script>
         $(document).ready(function () {
@@ -2117,16 +2160,16 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                   <td>${entry.Description}</td>
-                                                                                                                    <td>${entry.CustomerAccountTypeTargetProductDescription}</td>
-                                                                                                                   <td>${entry.CustomerAccountTypeProductCodeDescription}</td>
-                                                                                                                   <td>${entry.ChargePercentage}</td>
-                                                                                                                   <td>${entry.ChargeTypeDescription}</td>
+                                                                                                                                               <td>${entry.Description}</td>
+                                                                                                                                                <td>${entry.CustomerAccountTypeTargetProductDescription}</td>
+                                                                                                                                               <td>${entry.CustomerAccountTypeProductCodeDescription}</td>
+                                                                                                                                               <td>${entry.ChargePercentage}</td>
+                                                                                                                                               <td>${entry.ChargeTypeDescription}</td>
 
-                                                                                                                   <td>${entry.ComputeChargeOnTopUp}</td>
-                                                                                                                   <td>${entry.NetOffInvestmentBalance}</td>
-                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
-                                                                                                               </tr>`;
+                                                                                                                                               <td>${entry.ComputeChargeOnTopUp}</td>
+                                                                                                                                               <td>${entry.NetOffInvestmentBalance}</td>
+                                                                                                                                               <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                                           </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2230,11 +2273,11 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                   <td>${entry.RangeLowerLimit}</td>
-                                                                                                                    <td>${entry.RangeUpperLimit}</td>
+                                                                                                                                               <td>${entry.RangeLowerLimit}</td>
+                                                                                                                                                <td>${entry.RangeUpperLimit}</td>
 
-                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
-                                                                                                               </tr>`;
+                                                                                                                                               <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                                           </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2345,13 +2388,13 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                       <td>${entry.RangeLowerLimit}</td>
-                                                                                                                        <td>${entry.RangeUpperLimit}</td>
-                                                                                                                        <td>${entry.GuarantorMultiplier}</td>
-                                                                                                                        <td>${entry.LoaneeMultiplier}</td>
+                                                                                                                                                   <td>${entry.RangeLowerLimit}</td>
+                                                                                                                                                    <td>${entry.RangeUpperLimit}</td>
+                                                                                                                                                    <td>${entry.GuarantorMultiplier}</td>
+                                                                                                                                                    <td>${entry.LoaneeMultiplier}</td>
 
-                                                                                                                       <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
-                                                                                                                   </tr>`;
+                                                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                                               </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2463,13 +2506,13 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                       <td>${entry.TargetLoanProductDescription}</td>
-                                                                                                                        <td>${entry.ConditionDescription}</td>
-                                                                                                                        <td>${entry.MaximumEligiblePercentage}</td>
+                                                                                                                                                   <td>${entry.TargetLoanProductDescription}</td>
+                                                                                                                                                    <td>${entry.ConditionDescription}</td>
+                                                                                                                                                    <td>${entry.MaximumEligiblePercentage}</td>
 
 
-                                                                                                                       <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
-                                                                                                                   </tr>`;
+                                                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                                               </tr>`;
                     tableBody.append(row);
                 });
             }
