@@ -704,7 +704,6 @@
     <Compile Include="Identity\SmsService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="PDF\CreatePdf.cs" />
     <Compile Include="PDF\PdfHeaderFooter.cs" />
     <Compile Include="PDF\RegisteredLoans.cs" />
@@ -737,8 +736,6 @@
     <Content Include="Areas\Reports\Views\Report\Edit.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Index.cshtml" />
     <Content Include="Areas\Reports\Views\Report\_Reports.cshtml" />
-    <Content Include="bin\SwiftFinancials.Web.dll" />
-    <Content Include="bin\SwiftFinancials.Web.pdb" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
