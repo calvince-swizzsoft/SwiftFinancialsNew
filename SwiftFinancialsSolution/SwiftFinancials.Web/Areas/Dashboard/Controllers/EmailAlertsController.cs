@@ -22,7 +22,7 @@ using SwiftFinancials.Web.PDF;
 
 namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 {
-    public class TextAlertsController : MasterController
+    public class EmailAlertsController : MasterController
     {
 
         public async Task<ActionResult> Index()

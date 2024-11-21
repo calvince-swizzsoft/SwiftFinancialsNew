@@ -410,5 +410,34 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Customer")]
         public string SelectCustomerName { get; set; }
+
+
+
+        [DataMember]
+        [Display(Name = "Statement Type")]
+        public int StatementType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Statement Type")]
+        public string StatementTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(DataAttachmentTransactionType), TransactionType) ? string.Format("{0}", EnumHelper.GetDescription((DataAttachmentTransactionType)TransactionType)) : string.Empty;
+            }
+        }
+
+
+        [Display(Name = "Customer Filter")]
+        public int CustomerFilter { get; set; }
+
+        [Display(Name = "Record Status")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return EnumHelper.GetDescription((CustomerFilter)CustomerFilter);
+            }
+        }
     }
 }
