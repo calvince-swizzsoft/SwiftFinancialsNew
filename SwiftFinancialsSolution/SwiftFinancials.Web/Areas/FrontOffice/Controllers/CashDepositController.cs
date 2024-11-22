@@ -1254,9 +1254,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                   );
 
                 //return View();
-
                 return Json(new { success = false, message = "Operation Failed" });
-
             }
         }
 
@@ -1850,8 +1848,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             //var pageCollectionInfo = await _channelService.FindCashWithdrawalRequestsByFilterInPageAsync(startDate, endDate, 2, "", 2, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
-
-
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
@@ -1865,31 +1861,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else return this.DataTablesJson(items: new List<CashWithdrawalRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
-
-
-        //public async Task<JsonResult> GetCustomerAccountDetailsJson(Guid? id)
-        //{
-        //    Guid parseId;
-
-        //    if (!Guid.TryParse(id.ToString(), out parseId))
-        //    {
-        //        return Json(null, JsonRequestBehavior.AllowGet);
-        //    }
-
-        //    bool includeBalances = true;
-        //    bool includeProductDescription = true;
-        //    bool includeInterestBalanceForLoanAccounts = true;
-        //    bool considerMaturityPeriodForInvestmentAccounts = true;
-
-        //    var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-        //    if (customerAccount == null)
-        //    {
-        //        return Json(null, JsonRequestBehavior.AllowGet);
-        //    }
-
-        //    return Json(customerAccount, JsonRequestBehavior.AllowGet);
-        //}
     }
 }
 

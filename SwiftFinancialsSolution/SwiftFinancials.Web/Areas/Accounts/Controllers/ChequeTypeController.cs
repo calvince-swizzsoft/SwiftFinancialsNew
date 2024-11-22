@@ -103,6 +103,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                      
                 }
 
+                ObservableCollection<CommissionDTO> commissionDTOs = new ObservableCollection<CommissionDTO>();
+               await _channelService.UpdateCommissionsByChequeTypeIdAsync(chequeTypeDTO.Id, commissionDTOs, GetServiceHeader());
+
+                
 
                 await _channelService.UpdateAttachedProductsByChequeTypeIdAsync(chequeTypeDTO.Id, productCollectionInfo,GetServiceHeader());
               

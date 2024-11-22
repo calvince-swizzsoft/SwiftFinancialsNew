@@ -19,6 +19,22 @@
         </ol>
     </div>
 </div>
+<style>
+    .equal-btn {
+        min-width: 150px; /* Ensures consistent width */
+        padding: 10px 20px; /* Adjust padding for desired size */
+        font-size: 16px; /* Adjust font size */
+        text-align: center;
+    }
+</style>
+<style>
+    .equal-btn {
+        min-width: 150px; /* Ensures consistent width */
+        text-align: center;
+        padding: 10px 20px; /* Adjust padding for desired size */
+        font-size: 16px; /* Adjust font size */
+    }
+</style>
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -37,69 +53,69 @@
                 <div class="ibox-content text-info">
                     <div class="row">
                         <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)<br></strong>
+                           <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "",@disabled="disabled" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
 
-                                @Html.DisplayFor(model => model.Description)<br>
-                            </p>
-
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.DivisionDescription)<br></strong>
-
-                                @Html.DisplayFor(model => model.DivisionDescription)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.DivisionEmployerDescription)<br></strong>
-
-                                @Html.DisplayFor(model => model.DivisionEmployerDescription)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Stations[0].Description)<br></strong>
-
-                                @Html.DisplayFor(model => model.Stations[0].Description)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Stations[0].AddressEmail)<br></strong>
-
-                                @Html.DisplayFor(model => model.Stations[0].AddressEmail)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Stations[0].ZoneDescription)<br></strong>
-
-                                @Html.DisplayFor(model => model.Stations[0].ZoneDescription)<br>
-                            </p>
+                           <div class="form-group form-group-lg">
+                               @Html.LabelFor(model => model.DivisionDescription, htmlAttributes: new { @class = "" })
+                               @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                               @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                           </div>
+                           <div class="form-group form-group-lg">
+                               @Html.LabelFor(model => model.DivisionEmployerDescription, htmlAttributes: new { @class = "" })
+                               @Html.EditorFor(model => model.DivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                               @Html.ValidationMessageFor(model => model.DivisionEmployerDescription, "", new { @class = "text-danger" })
+                           </div>
+                           <div class="form-group form-group-lg">
+                               @Html.LabelFor(model => model.Stations[0].Description, htmlAttributes: new { @class = "" })
+                               @Html.EditorFor(model => model.Stations[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                               @Html.ValidationMessageFor(model => model.Stations[0].Description, "", new { @class = "text-danger" })
+                           </div>
+                           <div class="form-group form-group-lg">
+                               @Html.LabelFor(model => model.Stations[0].AddressEmail, htmlAttributes: new { @class = "" })
+                               @Html.EditorFor(model => model.Stations[0].AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                               @Html.ValidationMessageFor(model => model.Stations[0].AddressEmail, "", new { @class = "text-danger" })
+                           </div>
+                           <div class="form-group form-group-lg">
+                               @Html.LabelFor(model => model.Stations[0].ZoneDescription, htmlAttributes: new { @class = "" })
+                               @Html.EditorFor(model => model.Stations[0].ZoneDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                               @Html.ValidationMessageFor(model => model.Stations[0].ZoneDescription, "", new { @class = "text-danger" })
+                           </div>
                         </div>
                         <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Stations[0].AddressAddressLine1)<br></strong>
-
-                                @Html.DisplayFor(model => model.Stations[0].AddressAddressLine1)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Stations[0].AddressAddressLine2)<br></strong>
-
-                                @Html.DisplayFor(model => model.Stations[0].AddressAddressLine2)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Stations[0].AddressMobileLine)<br></strong>
-
-                                @Html.DisplayFor(model => model.Stations[0].AddressMobileLine)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Stations[0].AddressStreet)<br></strong>
-
-                                @Html.DisplayFor(model => model.Stations[0].AddressStreet)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Stations[0].AddressPostalCode)<br></strong>
-
-                                @Html.DisplayFor(model => model.Stations[0].AddressPostalCode)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
-
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Stations[0].AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Stations[0].AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.Stations[0].AddressAddressLine1, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Stations[0].AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Stations[0].AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.Stations[0].AddressAddressLine2, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Stations[0].AddressMobileLine, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Stations[0].AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.Stations[0].Description, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Stations[0].AddressStreet, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Stations[0].AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.Stations[0].AddressStreet, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Stations[0].AddressPostalCode, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Stations[0].AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.Stations[0].AddressPostalCode, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Stations[0].CreatedDate, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Stations[0].CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.Stations[0].CreatedDate, "", new { @class = "text-danger" })
+                            </div>
 
 
                         </div>
@@ -107,10 +123,11 @@
 
                     <div class="row">
                         <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "Zone", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "Zone", new { Area = "Registry" }, new { @class = "btn btn-success" })
-                            </p>
+                            <div class="btn-group" role="group">
+                                @Html.ActionLink("Edit", "Edit", "Zone", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success btn-lg" })
+                                @Html.ActionLink("Back to List", "Index", "Zone", new { Area = "Registry" }, new { @class = "btn btn-success btn-lg" })
+                            </div>
+
                         </div>
                     </div>
                 </div>

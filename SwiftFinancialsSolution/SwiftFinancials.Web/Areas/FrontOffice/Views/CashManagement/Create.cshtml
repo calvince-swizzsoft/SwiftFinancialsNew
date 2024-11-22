@@ -20,23 +20,37 @@
 <head>
     <style>
 
-        /* Primary Tabs */
-        .nav-tabs .nav-link {
-            background-color: transparent;
-        }
+        /* Inner Tabs */
 
-            .nav-tabs .nav-link.active {
-                background-color: #f8f9fa; /* light grey */
-            }
-
-        /* inner Tabs */
+        /* General styling for all .inner-nav-tabs */
         .inner-nav-tabs .inner-nav-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #007bff;
             background-color: transparent;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+            text-decoration: none;
         }
+
+            .inner-nav-tabs .inner-nav-link:hover {
+                color: #0056b3;
+                background-color: #e9ecef;
+            }
 
             .inner-nav-tabs .inner-nav-link.active {
-                background-color: #f8f9fa; /* light grey */
+                color: #495057;
+                background-color: #fff;
+                border: 1px solid #dee2e6;
+                border-bottom-color: transparent; /* To match the Bootstrap look */
             }
+
+
+        /*.inner-nav-pills .inner-nav-link.active {
+            color: #fff;*/ /* White text for active pill */
+        /*background-color: #007bff;*/ /* Primary color background for active pill */
+        /*}*/
+
 
 
         /* Tab Content */
@@ -49,7 +63,6 @@
             .inner-tab-content > .inner-tab-pane.active {
                 display: block;
             }
-
     </style>
 </head>
 
@@ -88,7 +101,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
-                    @using (Html.BeginForm("Create", "CashManagement", new { Area = "FrontOffice" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "CashManagement", new { Area = "FrontOffice" }, FormMethod.Post, new { @id = "cashManagementForm" }))
                     {
                         @Html.AntiForgeryToken()
                         <div class="form-horizontal">
@@ -100,11 +113,11 @@
                                     <a class="nav-link active" data-toggle="tab" href="#cashManagement">Cash Management</a>
                                 </li>
                                 @*<li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#cashWithdrawalRequest">Cash Withdrawal Request</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#fiscalCatalog">Fiscal Catalog</a>
-                                </li>*@
+                                        <a class="nav-link" data-toggle="tab" href="#cashWithdrawalRequest">Cash Withdrawal Request</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#fiscalCatalog">Fiscal Catalog</a>
+                                    </li>*@
                             </ul>
 
                             <div class="tab-content">
@@ -141,7 +154,7 @@
                                                     @Html.HiddenFor(model => model.DestinationBranchId, new { @id = "DestinationBranchId" })
 
                                                     <div class="input-group" data-autoclose="true">
-                                                        @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @readonly = "readonly" })
+                                                        @Html.TextBoxFor(model => model.Description, new { @id = "DestinationDescription", @class = "form-control", @readonly = "readonly" })
                                                         <span class="input-group-addon">
                                                             <a id="searchButton" data-toggle="modal" data-target="#">
                                                                 <span class="fa fa-search"></span>
@@ -155,12 +168,12 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Total Value:</label>
                                                 <div class="col-sm-4">
-                                                    @Html.TextBoxFor(model => model.TotalValue, new { @class = "form-control" })
+                                                    @Html.TextBoxFor(model => model.TotalValue, new { @id = "TotalValue", @class = "form-control" })
                                                 </div>
 
                                                 <label class="col-sm-2 col-form-label">Reference:</label>
                                                 <div class="col-sm-4">
-                                                    @Html.TextBoxFor(model => model.Reference, new { @class = "form-control" })
+                                                    @Html.TextBoxFor(model => model.Reference, new { @id = "Reference", @class = "form-control" })
                                                 </div>
 
                                             </div>
@@ -181,7 +194,7 @@
                                                 </table>
                                             </div>
 
-                                       
+
                                             <div class="row mt-3">
                                                 <div class="col-md-3">
                                                     <label for="AvailableBalanceBroughtForward">Balance B/F:</label>
@@ -262,16 +275,15 @@
                                         </div>
                                     </div>
                                 </div>-->
-
                                 <!-- Fiscal Catalog Tab -->
                                 <!--<div id="fiscalCatalog" class="tab-pane">-->
-                                    <!-- Content for Fiscal Catalog tab -->
+                                <!-- Content for Fiscal Catalog tab -->
                                 <!--</div> -->
                             </div>
 
                             <div class="form-group row" style="margin-top: 20px;">
                                 <div class="col-sm-12 text-right">
-                                    <button type="submit" class="btn btn-primary">Create</button>
+                                    <button id ="submitButton" type="submit" class="btn btn-primary">Create</button>
                                 </div>
                             </div>
                         </div>
@@ -281,44 +293,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-            </div>
-            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
 
 
 
@@ -349,8 +323,6 @@
 
 
 
-
-
 <div class="modal  fade" id="TresuriesLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -373,8 +345,6 @@
         </div>
     </div>
 </div>
-
-
 
 
 
@@ -402,11 +372,6 @@
 </div>
 
 
-
-
-
-
-<input type='hidden' id='h' name='h' />
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -451,7 +416,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<script>
+    <script>
     $(document).ready(function () {
         var searchButton = $('#searchButton');
         var selectedValue = $('#TransactionType').val(); // Get the initial value of the dropdown
@@ -478,16 +443,14 @@
             }
         }
 
-        // Call the function to set the correct target on page load
+      
         updateSearchButtonTarget();
 
-        // Handle dropdown change event
         $('#TransactionType').change(function () {
-            selectedValue = $(this).val(); // Get the new selected value
-            updateSearchButtonTarget(); // Update the search button data-target
+            selectedValue = $(this).val();
+            updateSearchButtonTarget();
         });
 
-        // If you need to persist the value across reloads, ensure it's set here
         if (selectedValue) {
             $('#TransactionType').val(selectedValue).change();
         }
@@ -517,7 +480,7 @@
     "aoColumns": [
         { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
         { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
-        { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "25%" },
+        { "mDataProp": "JournalPrimaryDescription", "sTitle": "Primary Description", "sWidth": "25%" },
         { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
         { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
         { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
@@ -537,127 +500,6 @@
 });
 
 
-
-
-
-
-
-    //ChartOfAccount typehead starts here
-        $('.EntriesChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var chartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-
-                    $('#ChartOfAccountId').val(ChartOfAccountId);
-
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-            });
-
-         //Branch typehead starts here
-         $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId  = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    $('#BranchDescription').val(Description);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-
-
-          //PostingPeriod typehead starts here
-            $('.PostingPeriodsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
-                        { query: query },
-                        function (PostingPeriods) {
-                            var newPostingPeriodsData = [];
-                            PostingPeriodsMap = {};
-                            $.each(PostingPeriods, function (i, PostingPeriod) {
-                                newPostingPeriodsData.push(PostingPeriod.Description);
-                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
-                            });
-                            process(newPostingPeriodsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var postingPeriodId = "";
-                    PostingPeriodId = PostingPeriodsMap[item].Id;
-                    $('#PostingPeriodId').val(PostingPeriodId);
-                    //console.log(PostingPeriodId)
-                    return item;
-                }
-            });
-
-
         $(document).ready(function () {
             $('#data_3 .input-group.date').datepicker({
                 startView: 2,
@@ -669,44 +511,7 @@
         });
              //Station typehead starts here
 
-            $('.LeaveTypeLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetLeaveTypesAsync", "LeaveType", new { Area = "HumanResource" })',
-                        { query: query },
-                        function (LeaveTypes) {
-                            var newLeaveTypesData = [];
-                            LeaveTypesMap = {};
-                            $.each(LeaveTypes, function (i, LeaveType) {
-                                newLeaveTypesData.push(LeaveType.Description);
-                                LeaveTypesMap[LeaveType.Description] = LeaveType;
-                            });
-                            process(newLeaveTypesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var LeaveTypeId = "";
-                    LeaveTypeId = LeaveTypesMap[item].Id;
-                    $('#LeaveTypeId').val(LeaveTypeId);
-                    $('#LeaveTypeZoneDivisionEmployerDescription').val(LeaveTypesMap[item].ZoneDivisionEmployerDescription);
-                    $('#LeaveTypeZoneDescription').val(LeaveTypesMap[item].ZoneDescription);
-                    $('#LeaveTypeZoneDivisionDescription').val(LeaveTypesMap[item].ZoneDivisionDescription);
-                    //console.log(LeaveTypeId)
-                    return item;
-                }
-            });
+     
 $('#EmployeesGrid').DataTable({
     // Ajax settings
     "sPaginationType": "full_numbers",
@@ -749,31 +554,17 @@ $("#EmployeesGrid tbody").on("click", ".select-btn", function() {
     var destinationBranchId = $(this).data('destination-branch-id');
     var tellerChartOfAccountId = $(this).data('teller-chart-of-account-id');
 
-    console.log($(this).data());  // Logs all data attributes of the current element
+    console.log($(this).data());
 
 
-    // Set values based on selected data
+    
     $('#Id').val(id);
     $('input[name=Id]').val(id);
-    //$('input[name=EmployeeCustomerId]').val(id);
-    $('#Description').val(fullName); // Set the selected full name to the Description textbox
-    $('#DestinationBranchId').val(destinationBranchId); // Set the BranchId in the hidden field
-    //$('#TellerChartOfAccountId').val(tellerChartOfAccountId);
+    $('#DestinationBranchId').val(destinationBranchId);
 
     // Close the modal
     $('#EmployeeLookupModal').modal('hide');
 });
-
-
-
-
-
-
-
-
-
-
-
 
 
     $(document).ready(function () {
@@ -785,47 +576,6 @@ $("#EmployeesGrid tbody").on("click", ".select-btn", function() {
             autoclose: true,
         });
     });
-         //Branch typehead starts here
-    $('.LeaveTypeLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetLeaveTypesAsync", "LeaveType", new { Area = "HumanResource" })',
-                        { query: query },
-                        function (Leavetypes) {
-                            var newLeavetypesData = [];
-                            LeavetypesMap = {};
-                            $.each(Leavetypes, function (i, Leavetype) {
-                                newLeavetypesData.push(Leavetype.Description);
-                                LeavetypesMap[Leavetype.Description] = Leavetype;
-                            });
-                            process(newLeavetypesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var LeaveTypeId = "";
-                    LeaveTypeId = LeaveTypeMap[item].Id;
-                    $('#LeaveTypeId').val(LeaveTypeId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-
-
-
-
-
 
 
 
@@ -845,7 +595,9 @@ $('#TresuriessGrid').DataTable({
         var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
         aData.CreatedDate = dt_Created;
 
-        var selectUrl = '<button data-id="' + aData.Id + '" data-description="' + aData.Description + '" class="btn btn-outline-info select-btn">Select</button>';
+        console.log(aData);
+
+        var selectUrl = '<button data-branchid="' + aData.BranchId + '" data-id="' + aData.Id + '" data-description="' + aData.Description + '" class="btn btn-outline-info select-btn">Select</button>';
 
         $('td:eq(3)', nRow).html(dt_Created);
         $('td:eq(4)', nRow).html(selectUrl);
@@ -866,31 +618,35 @@ $('#TresuriessGrid').DataTable({
 $("#TresuriessGrid tbody").on("click", ".select-btn", function() {
     var id = $(this).data('id');
     var description = $(this).data('description');
+    var branchId = $(this).data('branchid');
 
     console.log(id);
 
+    console.log("branchid is " + branchId);
+
     // Set values based on selected data
-    $('input[name=Id]').val(id);
-    $('input[name=TreasuryId]').val(id);
-    $('input[name=Description]').val(description);
+    $('#Id').val(id);
+    $('#DestinationBranchId').val(branchId);
+    $('#DestinationDescription').val(description);
 
     // Close the modal permanently
     $('#TresuriesLookupModal').modal('hide');
 });
 
 // Add click event for lookup buttons to mimic the behavior of select button
-$("#TresuriessGrid tbody").on("click", ".lookup-btn", function() {
-    var id = $(this).data('id');
-    var description = $(this).data('description');
+//$("#TresuriessGrid tbody").on("click", ".lookup-btn", function() {
+//    var id = $(this).data('id');
+//    var description = $(this).data('description');
+//    var branchId = $(this).data('branchId');
 
-    // Set values based on selected data
-    $('#Id').val(id);
-    $('input[name=TreasuryId]').val(id);
-    $('input[name=Description]').val(description);
+//    // Set values based on selected data
+//    $('#Id').val(id);
+//    $('#DestinationBranchId').val(branchId);
+//    $('#DestinationDescription').val(description);
 
-    // Close the modal permanently
-    $('#TresuriesLookupModal').modal('hide');
-});
+//    // Close the modal permanently
+//    $('#TresuriesLookupModal').modal('hide');
+//});
 
 
 
@@ -912,6 +668,8 @@ $('#BankssGrid').DataTable({
         aData.CreatedDate = dt_Created;
 
         var selectUrl = '<button data-id="' + aData.Id + '" data-description="' + aData.Description + '" class="btn btn-outline-info select-btn">Select</button>';
+
+
 
         $('td:eq(2)', nRow).html(dt_Created);
         $('td:eq(3)', nRow).html(selectUrl);
@@ -935,33 +693,81 @@ $("#BankssGrid tbody").on("click", ".select-btn", function() {
     // Set values based on selected data
     $('#Id').val(id);
     $('input[name=BranchId]').val(id);
-    $('#Description').val(description);
+    $('#DestinationDescription').val(description);
 
     // Close the modal
     $('#BankssLookupModal').modal('hide');
 });
 
 // Behavior for lookup buttons
-$(".lookup-btn").click(function() {
-    var id = $(this).data('id');
-    var description = $(this).data('description');
+//$(".lookup-btn").click(function() {
+//    var id = $(this).data('id');
+//    var description = $(this).data('description');
 
-    // Set values based on selected data
-    $('#Id').val(id);
-    $('input[name=BranchId]').val(id);
-    $('#Description').val(description);
+//    // Set values based on selected data
+//    $('#Id').val(id);
+//    $('input[name=BranchId]').val(id);
+//    $('#DestinationDescription').val(description);
 
-    // Close the modal
-    $('#BankssLookupModal').modal('hide');
-});
-
-
+//    // Close the modal
+//    $('#BankssLookupModal').modal('hide');
+//});
 
 
 
 
 
-</script>
+
+
+    </script>
+
+    <script>
+
+        function resetAllFields() {
+            /*            $('#CustomerAccountNewAvailableBalance').val('');*/
+            $('#TotalValue').val('');
+            $('#Reference').val('');
+            $('#TransactionType').val('');
+            $('#DestinationBranchId').val('');
+            $('#DestinationDescription').val('');
+
+       
+        }
+
+        $(document).ready(function () {
+            $('#submitButton').click(function (e) {
+
+                e.preventDefault();
+                $.ajax({
+                    url: $('#cashManagementForm').attr('action'),
+                    type: 'POST',
+                    data: $('#cashManagementForm').serialize(),
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.redirect) {
+
+                            resetAllFields();
+                        } else if (response.success) {
+
+                            //alert('Customer Receipts: Operation Success');
+                            resetAllFields();
+                        } else {
+
+                            //alert('Customer Receipts: Operation Failed\n\n' + (response.errorMessages ? response.errorMessages.join('\n') : 'Unknown error'));
+                            //resetAllFields();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+
+                        //alert('An error occurred while submitting the form. Please try again.');
+                        //resetAllFields();
+                        console.error(error);
+                    }
+                });
+            });
+        });
+
+    </script>
 }
 
 
