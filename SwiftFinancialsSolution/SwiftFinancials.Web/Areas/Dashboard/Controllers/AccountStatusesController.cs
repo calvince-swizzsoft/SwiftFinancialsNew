@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Areas.Registry.DocumentsModel;
@@ -60,6 +61,124 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
             return documents;
         }
+
+
+
+        // Get LoanGuarantors ...........................
+        private async Task<List<LoanCaseDTO>> GetLoanCasesAsync(Guid customerId)
+        {
+            var loanCases = new List<LoanCaseDTO>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = @"
+        SELECT 
+            Id
+        FROM swiftFin_LoanCases
+        WHERE CustomerId = @CustomerId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", customerId);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            loanCases.Add(new LoanCaseDTO
+                            {
+                                Id = reader.GetGuid(reader.GetOrdinal("Id"))
+                            });
+                        }
+                    }
+                }
+            }
+
+            return loanCases;
+        }
+
+
+
+        private async Task<List<LoanGuarantorDTO>> GetLoanGuarantorsAsync(Guid loaneeCustomerId)
+        {
+            var loanguarantors = new List<LoanGuarantorDTO>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = @"
+        SELECT 
+            *
+        FROM swiftFin_LoanGuarantors
+        WHERE LoaneeCustomerId = @LoaneeCustomerId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@LoaneeCustomerId", loaneeCustomerId);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var customerNames = await GetCustomerNamesAsync(loaneeCustomerId);
+
+                            loanguarantors.Add(new LoanGuarantorDTO
+                            {
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                CustomerId = reader.GetGuid(reader.GetOrdinal("CustomerId")),
+                                AppraisalFactor = reader.GetDouble(reader.GetOrdinal("AppraisalFactor")),
+                                TotalShares = reader.GetDecimal(reader.GetOrdinal("TotalShares")),
+                                CommittedShares = reader.GetDecimal(reader.GetOrdinal("CommittedShares")),
+                                AmountGuaranteed = reader.GetDecimal(reader.GetOrdinal("AmountGuaranteed")),
+                                CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate")),
+                            });
+                        }
+                    }
+                }
+            }
+
+            return loanguarantors;
+        }
+
+
+
+
+        private async Task<CustomerDTO> GetCustomerNamesAsync(Guid customerId)
+        {
+            CustomerDTO customerNames = null;
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = @"
+            SELECT 
+                Individual_FirstName,
+                Individual_LastName
+            FROM swiftFin_Customers
+            WHERE Id = @CustomerId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", customerId);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            customerNames = new CustomerDTO
+                            {
+                                IndividualFirstName = reader.GetString(reader.GetOrdinal("Individual_FirstName")),
+                                IndividualLastName = reader.GetString(reader.GetOrdinal("Individual_LastName"))
+                            };
+                        }
+                    }
+                }
+            }
+
+            return customerNames;
+        }
+
 
 
 
@@ -130,23 +249,115 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                 dataAttachmentEntryDTO.CustomerAccountCustomerIndividualLastName = customer.IndividualLastName;
                 dataAttachmentEntryDTO.IdentityCardTypeDescription = customer.IndividualIdentityCardTypeDescription;
                 dataAttachmentEntryDTO.IdentityCardNumberDescription = customer.IndividualIdentityCardNumber;
+
                 dataAttachmentEntryDTO.BirthDate = (DateTime)customer.IndividualBirthDate;
                 dataAttachmentEntryDTO.DesignationDescription = customer.IndividualEmploymentDesignation;
                 dataAttachmentEntryDTO.EmploymentDate = (DateTime)customer.IndividualEmploymentDate;
+
+
                 dataAttachmentEntryDTO.IndividualTypeDescription = customer.IndividualTypeDescription;
                 dataAttachmentEntryDTO.PersonalIdentificationNumberDescription = customer.PersonalIdentificationNumber;
                 dataAttachmentEntryDTO.Remarks = customer.Remarks;
 
                 var employmentDate = Convert.ToDateTime(dataAttachmentEntryDTO.EmploymentDate).ToString("yyyy/MM/dd");
-                var birthDate = Convert.ToDateTime(dataAttachmentEntryDTO.BirthDate).ToString("dd/MM/yyyy");
+                var birthDate = Convert.ToDateTime(dataAttachmentEntryDTO.BirthDate).ToString("yyyy/MM/dd");
 
                 var CustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(customer.Id, true, true, true, true, GetServiceHeader());
 
                 var referees = await _channelService.FindRefereeCollectionByCustomerIdAsync(parseId, GetServiceHeader());
+                //var managementHistory=await _channelService.
+
+                ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
+                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true, true, GetServiceHeader());
+                foreach (var accounts in customerAccounts)
+                {
+                    customerAccountId.Add(accounts.Id);
+                }
+
+                // Standing Orders
+                List<StandingOrderDTO> allStandingOrders = new List<StandingOrderDTO>();
+                foreach (var Ids in customerAccountId)
+                {
+                    var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
+                    if (standingOrders != null && standingOrders.Any())
+                    {
+                        allStandingOrders.AddRange(standingOrders);
+                    }
+                }
+
+                // Signatories
+                List<CustomerAccountSignatoryDTO> allSignatories = new List<CustomerAccountSignatoryDTO>();
+                foreach (var s in customerAccountId)
+                {
+                    var signatories = await _channelService.FindCustomerAccountSignatoriesByCustomerAccountIdAsync(s, GetServiceHeader());
+                    if (signatories != null && signatories.Any())
+                    {
+                        allSignatories.AddRange(signatories);
+                    }
+                }
+
+                // Alternate Channels
+                List<AlternateChannelDTO> allAlternateChannels = new List<AlternateChannelDTO>();
+                foreach (var a in customerAccountId)
+                {
+                    var alternateChannels = await _channelService.FindAlternateChannelsByCustomerAccountIdAsync(a, true, GetServiceHeader());
+                    if (alternateChannels != null
+                        && alternateChannels.Any())
+                    {
+                        allAlternateChannels.AddRange(alternateChannels);
+                    }
+                }
+
+
+                // Uncleared Cheques
+                List<ExternalChequeDTO> allExternalCheques = new List<ExternalChequeDTO>();
+                foreach (var u in customerAccountId)
+                {
+                    var unclearedCheques = await _channelService.FindUnClearedExternalChequesByCustomerAccountIdAsync(u, GetServiceHeader());
+                    if (unclearedCheques != null && unclearedCheques.Any())
+                    {
+                        allExternalCheques.AddRange(unclearedCheques);
+                    }
+                }
+
+
+                // Fixed Deposits
+                List<FixedDepositDTO> allfixedDeposits = new List<FixedDepositDTO>();
+                foreach (var f in customerAccountId)
+                {
+                    var fixedDeposits = await _channelService.FindFixedDepositsByCustomerAccountIdAsync(f, true, GetServiceHeader());
+                    if (fixedDeposits != null && fixedDeposits.Any())
+                    {
+                        allfixedDeposits.AddRange(fixedDeposits);
+                    }
+                }
+
+                // Loans Guaranteed
+                var loansGuaranteed = await _channelService.FindLoanGuarantorsByCustomerIdAsync(parseId, GetServiceHeader());
+
+                // Loan Guarantors
+                List<LoanGuarantorDTO> loaneeLoanGuarantors = await GetLoanGuarantorsAsync(parseId);
+                for (int i = 0; i < loaneeLoanGuarantors.Count; i++)
+                {
+                    var customerDetails = loaneeLoanGuarantors[i];
+                    var customername = await _channelService.FindCustomerAsync(customerDetails.CustomerId, GetServiceHeader());
+
+                    loaneeLoanGuarantors[i].CustomerIndividualFirstName = customername.IndividualFirstName;
+                    loaneeLoanGuarantors[i].CustomerIndividualLastName = customername.IndividualLastName;
+                }
+
+
+
 
                 var savingsBookBalance = CustomerAccounts.Where(w => w.CustomerAccountTypeProductCode == (int)ProductCode.Savings).Sum(e => e.BookBalance);
                 var savingsCarryForward = CustomerAccounts.Where(w => w.CustomerAccountTypeProductCode == (int)ProductCode.Savings).Sum(e => e.AvailableBalance);
                 var savingsBalance = (savingsBookBalance + savingsCarryForward);
+
+
+                // Electronic Funds Transfer
+                // Method to find electronic funds transfer???
+
+
 
                 List<Tuple<decimal, int>> investmentsBalance = new List<Tuple<decimal, int>>();
 
@@ -204,9 +415,16 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                         IndividualTypeDescription = dataAttachmentEntryDTO.IndividualTypeDescription,
                         PersonalIdentificationNumberDescription = dataAttachmentEntryDTO.PersonalIdentificationNumberDescription,
 
-
+                        // Tables Data
                         CustomerAccounts = CustomerAccounts,
                         Referees = referees,
+                        StandingOrders = allStandingOrders,
+                        Signatories = allSignatories,
+                        AlternateChannels = allAlternateChannels,
+                        UnclearedCheques = allExternalCheques,
+                        FixedDeposits = allfixedDeposits,
+                        LoanGuarantors = loaneeLoanGuarantors,
+                        LoansGuaranteed = loansGuaranteed,
 
                         PassportPhoto = dataAttachmentEntryDTO.PassportPhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.PassportPhoto) : null,
                         SignaturePhoto = dataAttachmentEntryDTO.SignaturePhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.SignaturePhoto) : null,
