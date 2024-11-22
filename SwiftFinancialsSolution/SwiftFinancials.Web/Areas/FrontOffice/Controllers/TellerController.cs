@@ -25,7 +25,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, TellerDTO tellerDTO)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, TellerDTO tellerDTO, int tellerType)
         {
 
             int totalRecordCount = 0;
@@ -41,7 +41,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
 
-            int teller = tellerDTO.Type;
+            int teller = tellerType;
 
             var pageCollectionInfo = await _channelService.FindTellersByFilterInPageAsync(teller, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
 

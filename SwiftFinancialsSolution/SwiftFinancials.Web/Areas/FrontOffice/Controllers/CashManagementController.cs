@@ -180,7 +180,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     MessageBoxOptions.ServiceNotification
                 );
 
-                return Json(new { success = false, message = "Operation Failed: " + missingMessage });
+                return Json(new { success = false, message = "Operation error: " + missingMessage });
             }
 
 
