@@ -1092,14 +1092,10 @@
                                         <table id="referees" class="footable table table-striped toggle-arrow-tiny grey-table">
                                             <thead>
                                                 <tr>
-                                                    <th>Record Status</th>
-                                                    <th>Branch</th>
-                                                    <th>Branch E-Mail</th>
-                                                    <th>Customer Type</th>
-                                                    <th>Name</th>                                                  
-                                                    <th>Account Number</th>                                                  
-                                                    <th>Membership Number</th>                                                  
-                                                    <th>Personal File Number</th>                                                  
+                                                    <th>Name</th>
+                                                    <th>Identity Card Type</th>
+                                                    <th>Identity Card Number</th>
+                                                    <th>Payroll Number</th>                                                
                                                     <th>Email</th>                                                  
                                                     <th>Mobile Number</th>                                                  
                                                 </tr>
@@ -1333,7 +1329,7 @@
                                                     <th>Committed Shares</th>
                                                     <th>Amount Guaranteed</th>
                                                     <th>Amount Pledged</th>
-                                                    <th>Customer Name</th>
+                                                    <th>Loanee Name</th>
                                                     <th>Identity Card Number</th>
                                                 </tr>
                                             </thead>
@@ -1818,11 +1814,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             document.getElementById('idbackmsg').textContent = 'Identity Card (Back) not available';
                         }
 
-
+                        // Customer Accounts
                         var customerAccounts = response.data.CustomerAccounts;
                         const noDataMessage = document.querySelector('.no-data-message');
-
-
                         if (!customerAccounts || customerAccounts.length === 0) {
                             noDataMessage.style.display = 'block';
                             $('#dataTable tbody').empty();
@@ -1852,6 +1846,144 @@ document.addEventListener("DOMContentLoaded", function () {
 
                             $('#customerLookupModal').modal('hide');
                         }
+
+
+                        //// Referees
+                        //var referees = response.data.Referees;
+                        //const noDataMessage = document.querySelector('.no-data-message');
+                        //if (!referees || referees.length === 0) {
+                        //    $('#dataTable tbody').empty();
+                        //} else {
+                        //    noDataMessage.style.display = 'none';
+                        //    var tbody = $('#dataTable tbody');
+                        //    tbody.empty();
+
+                        //    referees.forEach(function (referees) {
+                        //        var row = '<tr>' +
+                        //            '<td>' + referees.WitnessFullName + '</td>' +
+                        //            '<td>' + referees.WitnessIndividualIdentityCardType + '</td>' +
+                        //            '<td>' + referees.WitnessIndividualIdentityCardNumber + '</td>' +
+                        //            '<td>' + referees.WitnessIndividualPayrollNumbers + '</td>' +
+                        //            '<td>' + referees.WitnessAddressEmail + '</td>' +
+                        //            '<td>' + referees.WitnessAddressMobileLine + '</td>' +
+                        //            '</tr>';
+                        //        tbody.append(row);
+                        //    });
+
+                        //    $('#customerLookupModal').modal('hide');
+                        //}
+
+
+                        // Management History
+                        //var managementHistory = response.data.Referees;
+                        //const noDataMessage = document.querySelector('.no-data-message');
+                        //if (!referees || referees.length === 0) {
+                        //    $('#dataTable tbody').empty();
+                        //} else {
+                        //    noDataMessage.style.display = 'none';
+                        //    var tbody = $('#dataTable tbody');
+                        //    tbody.empty();
+
+                        //    referees.forEach(function (referees) {
+                        //        var row = '<tr>' +
+                        //            '<td>' + referees.WitnessFullName + '</td>' +
+                        //            '<td>' + referees.WitnessIndividualIdentityCardType + '</td>' +
+                        //            '<td>' + referees.WitnessIndividualIdentityCardNumber + '</td>' +
+                        //            '<td>' + referees.WitnessIndividualPayrollNumbers + '</td>' +
+                        //            '<td>' + referees.WitnessAddressEmail + '</td>' +
+                        //            '<td>' + referees.WitnessAddressMobileLine + '</td>' +
+                        //            '</tr>';
+                        //        tbody.append(row);
+                        //    });
+
+                        //    $('#customerLookupModal').modal('hide');
+                        //}
+
+
+
+                         //Standing Order
+                        var standingOrders = response.data.StandingOrders;
+                        if (!standingOrders || standingOrders.length === 0) {
+                            $('#standingOrders tbody').empty();
+                        } else {
+                            var tbody = $('#standingOrders tbody');
+                            tbody.empty();
+
+                            standingOrders.forEach(function (standingOrders) {
+                                var row = '<tr>' +
+                                    '<td>' + standingOrders.TriggerDescription + '</td>' +
+                                    '<td>' + standingOrders.BeneficiaryProductDescription + '</td>' +
+                                    '<td style="text-align: right;">' + standingOrders.LoanAmount + '</td>' +
+                                    '<td style="text-align: right;">' + standingOrders.PaymentPerPeriod + '</td>' +
+                                    '<td style="text-align: right;">' + standingOrders.Principal + '</td>' +
+                                    '<td style="text-align: right;">' + standingOrders.Interest + '</td>' +
+                                    '<td>' + standingOrders.ChargeTypeDescription + '</td>' +
+                                    '<td>' + standingOrders.ChargeFixedAmount + '</td>' +
+                                    '<td>' + standingOrders.ChargePercentage + '</td>' +
+                                    '</tr>';
+                                tbody.append(row);
+                            });
+
+                            $('#customerLookupModal').modal('hide');
+                        }
+
+
+
+
+                        //Loans Guaranteed
+                        var loansGuaranteed = response.data.LoansGuaranteed;
+                        if (!loansGuaranteed || loansGuaranteed.length === 0) {
+                            $('#loansGuaranteed tbody').empty();
+                        } else {
+                            var tbody = $('#loansGuaranteed tbody');
+                            tbody.empty();
+
+                            loansGuaranteed.forEach(function (loansGuaranteed) {
+                                var row = '<tr>' +
+                                    '<td>' + loansGuaranteed.StatusDescription + '</td>' +
+                                    '<td>' + loansGuaranteed.LoanProductDescription + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuaranteed.TotalShares + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuaranteed.CommittedShares + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuaranteed.AmountGuaranteed + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuaranteed.AmountPledged + '</td>' +
+                                    '<td>' + loansGuaranteed.LoaneeCustomerFullName + '</td>' +
+                                    '<td>' + loansGuaranteed.LoaneeCustomerIndividualIdentityCardNumber + '</td>' +
+                                    '</tr>';
+                                tbody.append(row);
+                            });
+
+                            $('#customerLookupModal').modal('hide');
+                        }
+
+
+
+
+                        //Loans Guarantors
+                        var loansGuarantors = response.data.LoanGuarantors;
+                        if (!loansGuarantors || loansGuarantors.length === 0) {
+                            $('#loansGuarantors tbody').empty();
+                        } else {
+                            var tbody = $('#loansGuarantors tbody');
+                            tbody.empty();
+
+                            loansGuarantors.forEach(function (loansGuarantors) {
+                                var row = '<tr>' +
+                                    '<td>' + loansGuarantors.CustomerIndividualFirstName + " " + loansGuarantors.CustomerIndividualLastName + '</td>' +
+                                    '<td>' + loansGuarantors.AppraisalFactor + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuarantors.TotalShares + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuarantors.CommittedShares + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuarantors.AmountGuaranteed + '</td>' +
+                                    '<td>' + loansGuarantors.CreatedDate + '</td>' +
+                                    '</tr>';
+                                tbody.append(row);
+                            });
+
+                            $('#customerLookupModal').modal('hide');
+                        }
+
+
+
+
                         $('#customerLookupModal').modal('hide');
                     } else {
                         alert(response.message);
