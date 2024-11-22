@@ -119,24 +119,59 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (createdTeller != null)
                 {
-                    TempData["SuccessMessage"] = "Teller created successfully.";
-                    return RedirectToAction("Index");
+                    //TempData["SuccessMessage"] = "Teller created successfully.";
+
+                    System.Windows.Forms.MessageBox.Show(
+                             "Teller created successfully.",
+                             "Success",
+                             System.Windows.Forms.MessageBoxButtons.OK,
+                             System.Windows.Forms.MessageBoxIcon.Information,
+                             System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                             System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                             );
+
+                    return Json(new { success = true, message = "Operation Success"});
+                    //return RedirectToAction("Index");
                 }
                 else
                 {
-                    TempData["Error"] = "Sorry, teller creation failed.";
+                    //TempData["Error"] = "Sorry, teller creation failed.";
+
+                    System.Windows.Forms.MessageBox.Show(
+                                 "Sorry, Teller creation failed.",
+                                 "Error",
+                                 System.Windows.Forms.MessageBoxButtons.OK,
+                                 System.Windows.Forms.MessageBoxIcon.Error,
+                                 System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                 System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                                 );
+
+
+                    return Json(new { success = false, message = "Operation Failed" });
+
                 }
             }
             else
             {
-                TempData["Error"] = string.Join("<br/>", tellerDTO.ErrorMessages);
+                var validationErrors = string.Join("<br/>", tellerDTO.ErrorMessages);
+
+                System.Windows.Forms.MessageBox.Show(
+                                validationErrors,
+                                "Error",
+                                System.Windows.Forms.MessageBoxButtons.OK,
+                                System.Windows.Forms.MessageBoxIcon.Error,
+                                System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                                );
             }
 
             // If we reach here, there were errors.
             ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
             ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
-            return View("Create");
+            
+            return Json(new { success = false, message = "Operation Errors" });
+            //return View("Create");
         }
 
         private void UpdateTellerAccounts(TellerDTO tellerDTO)
