@@ -136,6 +136,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return RedirectToAction("Create");
             }
 
+            // Validate the main ExpensePayableDTO
             expensePayableDTO.ValidateAll();
             if (expensePayableDTO.HasErrors)
             {
@@ -144,6 +145,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return RedirectToAction("Create");
             }
 
+            // Add the main Expense Payable
             var resultDTO = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
             MessageBox.Show(
                                                               "Operation Success",
@@ -158,6 +160,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 ModelState.AddModelError(string.Empty, resultDTO.ErrorMessageResult);
                 TempData["ErrorMessage"] = resultDTO.ErrorMessageResult;
+                return View(expensePayableDTO);
+            }
                 return View("Index");
             }
 
@@ -165,6 +169,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 entry.ExpensePayableId = resultDTO.Id;
 
+            // Add each entry individually
+            foreach (var entry in expensePayableEntries)
+            {
+                entry.ExpensePayableId = resultDTO.Id;
                 var entryResult = await _channelService.AddExpensePayableEntryAsync(entry, GetServiceHeader());
                 MessageBox.Show(
                                                               "Operation Success",
@@ -175,6 +183,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                               MessageBoxOptions.ServiceNotification
                                                           );
 
+                var entryResult = await _channelService.AddExpensePayableEntryAsync(entry, GetServiceHeader());
+
+                // Check if any error messages are returned
+                if (entryResult.ErrorMessages != null && entryResult.ErrorMessages.Any())
+                {
+                    string errorMessage = string.Join("; ", entryResult.ErrorMessages);
+                    ModelState.AddModelError(string.Empty, $"Error adding entry: {errorMessage}");
+                    TempData["ErrorMessage"] = errorMessage;
+                    return View(expensePayableDTO);
+                }
+            }
                 if (entryResult.ErrorMessages != null && entryResult.ErrorMessages.Any())
                 {
                     string errorMessage = string.Join("; ", entryResult.ErrorMessages);
@@ -184,9 +203,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 }
             }
 
+            // Success message and redirect to Index
+            TempData["SuccessMessage"] = "Expense payable and its entries created successfully.";
             TempData["SuccessMessage"] = "Expense payable and its entries created successfully.";
             return RedirectToAction("Index");
         }
+
 
 
 

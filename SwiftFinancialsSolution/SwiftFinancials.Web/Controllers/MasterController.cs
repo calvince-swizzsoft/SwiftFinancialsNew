@@ -441,6 +441,24 @@ namespace SwiftFinancials.Web.Controllers
             return customerFilters;
         }
 
+
+        [NonAction]
+        protected List<SelectListItem> GetCustomerDocumentTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> customerFilters = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CustomerDocumentType)).Cast<CustomerDocumentType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            customerFilters.AddRange(items);
+
+            return customerFilters;
+        }
+
         [NonAction]
         protected List<SelectListItem> GetCCustomerAccountManagementActionSelectList(string selectedValue)
         {
@@ -2115,6 +2133,24 @@ namespace SwiftFinancials.Web.Controllers
             microCreditGroupMemberDesignationCategories.AddRange(items);
 
             return microCreditGroupMemberDesignationCategories;
+        }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetCustomerAccountStatementTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> statementType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CustomerAccountStatementType)).Cast<CustomerAccountStatementType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            statementType.AddRange(items);
+
+            return statementType;
         }
 
         [NonAction]

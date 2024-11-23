@@ -94,19 +94,40 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
+            ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
+            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
 
+            ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
+            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+            var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
+            var investmentProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var savingsProducts = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+            ViewBag.investment = investment;
+            ViewBag.savings = savingsProductDTOs;
+            ViewBag.debit = debitypes;
+            ViewBag.creditTypes = creditTypes;
             var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
 
-            return View(customerDTO.ProjectedAs<CustomerDTO>());
+            return View(customerDTO.MapTo<CustomerBindingModel>());
 
-            var documents = await GetDocumentsAsync(id);
+            //var documents = await GetDocumentsAsync(id);
 
-            if (documents == null || documents.Count == 0)
-            {
-                return View();
-            }
+            //if (documents == null || documents.Count == 0)
+            //{
+            //    return View();
+            //}
 
-            return View(documents);
+            //return View(documents);
         }
 
 
@@ -181,6 +202,23 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.creditTypes = creditTypes;
 
 
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                // Query to get the next reference by incrementing the current max
+                var getNextReferenceQuery = string.Format("SELECT ISNULL(MAX(Reference1), 0) + 1 AS NextReference FROM {0}Customers", DefaultSettings.Instance.TablePrefix);
+
+                int newReference;
+
+                using (var getCommand = new SqlCommand(getNextReferenceQuery, connection))
+                {
+                    //var result = await getCommand.ExecuteScalarAsync();
+                    // newReference = (result != DBNull.Value) ? Convert.ToInt32(result) : 1; // Start at 1 if there are no rows
+                }
+
+            }
             return View();
         }
 
@@ -216,12 +254,66 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             // Return the updated list as JSON
             return Json(new { partnerships = partnerships });
         }
+        public async Task<ActionResult> Search(Guid? id)
+        {
+            //string Remarks = "";
+            await ServeNavigationMenus();
 
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+
+            RefereeDTO withdrawalNotificationDTO = new RefereeDTO();
+
+
+            if (customer != null)
+            {
+
+                withdrawalNotificationDTO.CustomerId = customer.Id;
+                withdrawalNotificationDTO.WitnessIndividualFirstName = customer.FullName;
+                withdrawalNotificationDTO.WitnessIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                withdrawalNotificationDTO.WitnessIndividualIdentityCardSerialNumber = customer.IndividualIdentityCardSerialNumber;
+                withdrawalNotificationDTO.WitnessIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                withdrawalNotificationDTO.WitnessAddressMobileLine = customer.AddressMobileLine;
+                //Session["Test"] =Request.Form["h"] + "";
+                //string mimi = Session["Test"].ToString();
+            }
+            //
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
+            ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
+            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
+
+            ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
+
+            //TempData["WithdrawalNotificationDTOs"] = withdrawalNotificationDTO;
+
+            return View("Create",customer.MapTo<CustomerBindingModel>());
+        }
 
         [HttpPost]
         public async Task<ActionResult> Create(CustomerBindingModel customerBindingModel, string[] debittypes, string[] savingsproducts, string[] investmentproducts, string typedescription, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl, string type)
         {
+            var startDate = Request["registrationdate"];
 
+            var endDate = Request["birthdate"];
+
+            customerBindingModel.IndividualBirthDate = DateTime.Parse(startDate).Date;
+
+            customerBindingModel.RegistrationDate = DateTime.Parse(endDate).Date;
             if (typedescription == "Individual")
             {
                 customerBindingModel.Type = 0;
@@ -237,7 +329,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
             if (typedescription == "MicroCredit")
             {
-                customerBindingModel.Type =3 ;
+                customerBindingModel.Type = 3;
             }
 
             //cheat
@@ -245,38 +337,39 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var mandatorySavingsProducts = new List<SavingsProductDTO>();
             var mandatoryDebitTypes = new ObservableCollection<DebitTypeDTO>();
             var mandatoryProducts = new ProductCollectionInfo();
-
-            SavingsProductDTO j = new SavingsProductDTO();
-            foreach (var k in savingsproducts)
+            if (savingsproducts != null && investmentproducts != null && debittypes != null)
             {
-                j.Id = Guid.Parse(k);
-                mandatorySavingsProducts.Add(j);
+                SavingsProductDTO j = new SavingsProductDTO();
+                foreach (var k in savingsproducts)
+                {
+                    j.Id = Guid.Parse(k);
+                    mandatorySavingsProducts.Add(j);
+                }
+                mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
+
+
+
+                InvestmentProductDTO investmentProductDTO = new InvestmentProductDTO();
+                foreach (var invest in investmentproducts)
+                {
+                    investmentProductDTO.Id = Guid.Parse(invest);
+                    mandatoryInvestmentProducts.Add(investmentProductDTO);
+                }
+                mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
+
+
+                DebitTypeDTO debitTypeDTO = new DebitTypeDTO();
+                foreach (var debit in debittypes)
+                {
+                    debitTypeDTO.Id = Guid.Parse(debit);
+                    mandatoryDebitTypes.Add(debitTypeDTO);
+                }
             }
-            mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
-
-
-
-            InvestmentProductDTO investmentProductDTO = new InvestmentProductDTO();
-            foreach (var invest in investmentproducts)
-            {
-                investmentProductDTO.Id = Guid.Parse(invest);
-                mandatoryInvestmentProducts.Add(investmentProductDTO);
-            }
-            mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
-
-
-            DebitTypeDTO debitTypeDTO = new DebitTypeDTO();
-            foreach (var debit in debittypes)
-            {
-                debitTypeDTO.Id = Guid.Parse(debit);
-                mandatoryDebitTypes.Add(debitTypeDTO);
-            }
-
             // Initialize ViewBag Select Lists based on Customer Type
             InitializeViewBagSelectLists(customerBindingModel);
 
-            // Retrieve and parse dates from the request
-            ParseCustomerSpecificDates(customerBindingModel);
+            //// Retrieve and parse dates from the request
+            //ParseCustomerSpecificDates(customerBindingModel);
 
             // Retrieve user information
             var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -297,10 +390,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
 
-            customerBindingModel.ValidateAll();
+            //customerBindingModel.ValidateAll();
 
             // Prepare mandatory products and services
-            var mandatoryProduct = await PrepareMandatoryProductCollection();
 
             // Add customer and process errors
             if (!customerBindingModel.HasErrors)
@@ -319,6 +411,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                         1,
                         GetServiceHeader()
                     );
+                    // await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
+
                     TempData["SuccessMessage"] = "customer created successfully";
 
                     if (result == null || !string.IsNullOrEmpty(result.ErrorMessageResult))
@@ -355,8 +449,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     //        TempData["DefaultError"] = "Unknown customer type.";
                     //        return RedirectToAction("index", customerBindingModel);
                     //}
-                    // Handle Document Upload to DB
-                    //await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
+                    //Handle Document Upload to DB
 
                     //// Refresh ViewBag Select Lists
                     //InitializeViewBagSelectLists(customerBindingModel);
@@ -367,6 +460,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 {
                     // Log the exception and return an error view
                     TempData["DefaultError"] = $"An unexpected error occurred: {ex.Message}";
+
                     await ServeNavigationMenus();
                     return View("Create", customerBindingModel);
                 }
@@ -505,7 +599,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 {
                     command.Parameters.AddWithValue("@Id", document.Id);
                     command.Parameters.AddWithValue("@CustomerId", document.CustomerId);
-
                     command.Parameters.AddWithValue("@PassportPhoto", document.PassportPhoto ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@SignaturePhoto", document.SignaturePhoto ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@IDCardFrontPhoto", document.IDCardFrontPhoto ?? (object)DBNull.Value);
@@ -536,11 +629,35 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
             ViewBag.recordstatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.type = customerDTO.Type;
+
+            // Define a mapping dictionary
+            var typeMapping = new Dictionary<string, string>
+{
+    { "0", "Individual" },
+    { "1", "Partnership" },
+    { "2", "Corporation" },
+    { "3", "MicroCredit" }
+};
+
+            // Map ViewBag.type if it exists in the dictionary
+            if (typeMapping.ContainsKey(ViewBag.type?.ToString()))
+            {
+                ViewBag.type = typeMapping[ViewBag.type.ToString()];
+            }
+            else
+            {
+                ViewBag.type = "Individual"; // Default to Individual if no match
+            }
+
             return View(customerDTO.MapTo<CustomerBindingModel>());
+
+
+
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(CustomerBindingModel customerBindingModel, string[] debittypes, string[] savingsproducts, string[] investmentproducts, string typedescription, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl, string type)
+        public async Task<ActionResult> Edit(CustomerBindingModel customerBindingModel, string typedescription, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl, string type)
         {
 
             if (typedescription == "Individual")
@@ -621,7 +738,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             customerBindingModel.ValidateAll();
 
             // Prepare mandatory products and services
-            var mandatoryProduct = await PrepareMandatoryProductCollection();
+            //  var mandatoryProduct = await PrepareMandatoryProductCollection();
 
             // Add customer and process errors
             if (!customerBindingModel.HasErrors)
@@ -636,7 +753,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     );
                     TempData["SuccessMessage"] = "customer created successfully";
 
-                  
+
                     // customerBindingModel.Type = 3;
                     //// Process based on customer type
                     //switch ((CustomerType)customerBindingModel.Type)

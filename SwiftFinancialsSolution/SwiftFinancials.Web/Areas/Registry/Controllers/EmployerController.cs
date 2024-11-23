@@ -67,7 +67,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(EmployerBindingModel employerBindingModel)
+        public async Task<ActionResult> Create(EmployerBindingModel employerBindingModel, string[] divisions)
         {
             employerBindingModel.ValidateAll();
 
@@ -77,18 +77,20 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                 if (employer != null)
                 {
-                    //Update divisions
-
-                    var divisions = new ObservableCollection<DivisionDTO>();
-
-                    foreach (var divisionDTO in employerBindingModel.Divisions)
-                    {
+                    //// Update divisions
+                    var Division = new ObservableCollection<DivisionDTO>();
+                    DivisionDTO divisionDTO = new DivisionDTO();
+                    //foreach (var p in divisions)
+                    //{
+                    //    n.Description = p.ToString();
+                    //}
+                   
                         divisionDTO.EmployerId = employer.Id;
+                        divisionDTO.Description = employer.Description;
+                        Division.Add(divisionDTO);
+                    
 
-                        divisions.Add(divisionDTO);
-                    }
-
-                    await _channelService.UpdateDivisionsByEmployerIdAsync(employer.Id, divisions, GetServiceHeader());
+                    await _channelService.UpdateDivisionsByEmployerIdAsync(employer.Id, Division, GetServiceHeader());
                 }
 
                 return RedirectToAction("Index");
@@ -96,13 +98,11 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             else
             {
                 IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
-
                 TempData["Error"] = string.Join(",", allErrors);
 
                 return View(employerBindingModel);
             }
         }
-
 
         public async Task<ActionResult> Edit(Guid id)
         {

@@ -149,6 +149,42 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var activeUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             ActiveTreasury = await _channelService.FindTreasuryByBranchIdAsync((Guid)activeUser.BranchId, true, GetServiceHeader());
 
+            // Collect missing parameters
+            var missingParameters = new List<string>();
+
+            if (currentPostingPeriod == null)
+            {
+                missingParameters.Add("Posting Period");
+            }
+
+            if (activeUser == null)
+            {
+                missingParameters.Add("Active User");
+            }
+
+            if (ActiveTreasury == null)
+            {
+                missingParameters.Add("Treasury");
+            }
+
+            // Check if any parameter is missing
+            if (missingParameters.Any())
+            {
+                var missingMessage = $"Some features are missing due to lack of: {string.Join(", ", missingParameters)}";
+
+                MessageBox.Show(missingMessage,
+                    "Cash Transaction",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                return Json(new { success = false, message = "Operation error: " + missingMessage });
+            }
+
+
+
             var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
                   pageIndex,
                   jQueryDataTablesModel.iDisplayLength,
@@ -216,14 +252,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Create(Guid? id, FiscalCountDTO fiscalCountDTO)
         {
             await ServeNavigationMenus();
-            // Retrieve the SelectList from ViewBag
+           
             var selectList = ViewBag.TreasuryTransactionTypeSelectList as SelectList;
 
-            // Check if selectList is not null and has a selected value
+          
             if (selectList != null)
             {
                 var selectedValue = selectList.SelectedValue;
-                // Now you have the selected value
+              
             }
 
 
@@ -318,7 +354,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             if (sendingBank == null)
                             {
                                 MessageBox.Show("Sending bank not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                                return View(fiscalCountDTO);
+               
+                                return Json(new { success = false, message = "Operation Failed: Sending bank not found" });
                             }
 
                             var bankLinkages = await _channelService.FindBankLinkagesAsync(GetServiceHeader());
@@ -326,7 +363,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             if (matchingBankLinkage == null)
                             {
                                 MessageBox.Show("No matching bank linkage found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                                return View(fiscalCountDTO);
+                                
+                                return Json(new { success = false, message = "Operation Failed: No matching bank linkage found" });
                             }
 
                             transactionModel.DebitChartOfAccountId = matchingBankLinkage.ChartOfAccountId;
@@ -340,7 +378,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             if (teller == null)
                             {
                                 MessageBox.Show("Teller not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                                return View(fiscalCountDTO);
+                         
+                                return Json(new { success = false, message = "Operation Failed: Teller Not Found" });
                             }
                             transactionModel.CreditChartOfAccountId = (Guid)teller.ChartOfAccountId;
                             transactionModel.TransactionCode = (int)SystemTransactionCode.TreasuryToTeller;
@@ -352,14 +391,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             if (receivingBank == null)
                             {
                                 MessageBox.Show("Receiving bank not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                                return View(fiscalCountDTO);
+                          
+                                return Json(new { success = false, message = "Operation Failed: Receiving bank not found"});
                             }
                             var linkages = await _channelService.FindBankLinkagesAsync(GetServiceHeader());
-                            var linkage = linkages.FirstOrDefault(l => l.Id == receivingBank.Id);
+                            var linkage = linkages.FirstOrDefault(l => l.BankName == receivingBank.Description);
                             if (linkage == null)
                             {
                                 MessageBox.Show("No matching bank linkage found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                                return View(fiscalCountDTO);
+    
+                                return Json(new { success = false, message = "Operation Failed: No matching bank linkage found." });
+
                             }
                             transactionModel.CreditChartOfAccountId = linkage.ChartOfAccountId;
                             transactionModel.TransactionCode = (int)SystemTransactionCode.TreasuryToBank;
@@ -371,8 +413,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             var treasury = await _channelService.FindTreasuryAsync(fiscalCountDTO.Id, true, GetServiceHeader());
                             if (treasury == null)
                             {
-                                MessageBox.Show("Receiving treasury not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                                return View(fiscalCountDTO);
+                                MessageBox.Show("Receiving treasury not found. Receiving treasury not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                           
+                                return Json(new { success = false, message = "Operation Failed: " });
                             }
                             transactionModel.CreditChartOfAccountId = treasury.ChartOfAccountId;
                             transactionModel.TransactionCode = (int)SystemTransactionCode.TreasuryToTreasury;
@@ -380,175 +423,198 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     }
 
                     transactionModel.fiscalCountDTO = fiscalCountDTO;
-                    await ProcessTreasuryTransactionAsync(transactionModel);
+                    //await ProcessTreasuryTransactionAsync(transactionModel);
 
-                    MessageBox.Show("Transaction processed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return RedirectToAction("SuccessPage");
+                    switch ((TreasuryTransactionType)treasuryTransactionType)
+                    {
+
+
+                        case TreasuryTransactionType.BankToTreasury:
+
+
+                            var bankToTreasuryJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
+
+                            var treasuryAccount = await _channelService.FindChartOfAccountAsync(transactionModel.CreditChartOfAccountId, GetServiceHeader());
+
+                            var updateTreasuryAccount = await _channelService.UpdateChartOfAccountAsync(treasuryAccount, GetServiceHeader());
+
+                            if (updateTreasuryAccount)
+                            {
+
+                                string message = $"Operation success";
+
+                                MessageBox.Show(
+                                                  message,
+                                                  "Bank To Treasury",
+                                                  MessageBoxButtons.OK,
+                                                  MessageBoxIcon.Information,
+                                                  MessageBoxDefaultButton.Button1,
+                                                  MessageBoxOptions.ServiceNotification
+                                              );
+                            
+                            }
+
+                            break;
+
+                        case TreasuryTransactionType.TreasuryToTeller:
+
+                            if (ActiveTreasury.BookBalance < transactionModel.fiscalCountDTO.TotalValue)
+                            {
+                          
+                                System.Windows.Forms.MessageBox.Show(
+                                    "Insufficient balance. The transaction cannot proceed.",
+                                    "Error",
+                                    System.Windows.Forms.MessageBoxButtons.OK,
+                                    System.Windows.Forms.MessageBoxIcon.Error,
+                                    System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                    System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                                    );
+
+                                return Json(new { success = false, message = "Operation Failed: Insufficient Balance" });
+                            }
+
+                            var bankToTellerJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
+                            var chartOfAccount = await _channelService.FindChartOfAccountAsync(transactionModel.CreditChartOfAccountId, GetServiceHeader());
+                            var updateChartOfAccount = await _channelService.UpdateChartOfAccountAsync(chartOfAccount, GetServiceHeader());
+
+                            if (updateChartOfAccount)
+                            {
+
+
+                                string message = $"Operation success";
+
+                                MessageBox.Show(
+                                                  message,
+                                                  "Treasury to Teller",
+                                                  MessageBoxButtons.OK,
+                                                  MessageBoxIcon.Information,
+                                                  MessageBoxDefaultButton.Button1,
+                                                  MessageBoxOptions.ServiceNotification
+                                              );
+
+
+
+                                return Json(new { success = false, message = "Operation Failed: There are errors in the form" });
+
+                            }
+
+
+                            break;
+
+
+                        case TreasuryTransactionType.TreasuryToBank:
+
+                            if (ActiveTreasury.BookBalance < transactionModel.fiscalCountDTO.TotalValue)
+                            {
+                       
+                                System.Windows.Forms.MessageBox.Show(
+                                    "Insufficient balance. The transaction cannot proceed.",
+                                    "Error",
+                                    System.Windows.Forms.MessageBoxButtons.OK,
+                                    System.Windows.Forms.MessageBoxIcon.Error,
+                                    System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                    System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                                    );
+
+                                return Json(new { success = false, message = "Operation Failed: Insufficient Balance" });
+                            }
+
+
+                            var treasuryToBankJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
+
+                            var treasuryAcc = await _channelService.FindChartOfAccountAsync(transactionModel.CreditChartOfAccountId, GetServiceHeader());
+
+                            var updateTreasuryAcc = await _channelService.UpdateChartOfAccountAsync(treasuryAcc, GetServiceHeader());
+
+                            if (updateTreasuryAcc)
+                            {
+
+                                string message = $"Operation success";
+
+                                MessageBox.Show(
+                                                  message,
+                                                  "Treasury to Bank",
+                                                  MessageBoxButtons.OK,
+                                                  MessageBoxIcon.Information,
+                                                  MessageBoxDefaultButton.Button1,
+                                                  MessageBoxOptions.ServiceNotification
+                                              );
+
+                             
+                             return Json(new { success = true, message = message });
+
+
+                            }
+
+
+                            break;
+
+
+                        case TreasuryTransactionType.TreasuryToTreasury:
+
+                            if (ActiveTreasury.BookBalance < transactionModel.fiscalCountDTO.TotalValue)
+                            {
+                          
+                                System.Windows.Forms.MessageBox.Show(
+                                    "Insufficient balance. The transaction cannot proceed.",
+                                    "Error",
+                                    System.Windows.Forms.MessageBoxButtons.OK,
+                                    System.Windows.Forms.MessageBoxIcon.Error,
+                                    System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                    System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                                    );
+
+                                return Json(new { success = false, message = "Operation Failed: Insufficient Balance" });
+                            }
+
+
+                            var treasuryToTreasuryJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
+
+                            var treasuryAc = await _channelService.FindChartOfAccountAsync(transactionModel.CreditChartOfAccountId, GetServiceHeader());
+
+                            var updateTreasuryAc = await _channelService.UpdateChartOfAccountAsync(treasuryAc, GetServiceHeader());
+
+                            if (updateTreasuryAc)
+                            {
+
+                                string message = $"Operation success";
+
+                                MessageBox.Show(
+                                                  message,
+                                                  "Treasury to Treasury",
+                                                  MessageBoxButtons.OK,
+                                                  MessageBoxIcon.Information,
+                                                  MessageBoxDefaultButton.Button1,
+                                                  MessageBoxOptions.ServiceNotification
+                                              );
+
+
+                                return Json(new { success = true, message = message });
+                            }
+
+
+
+                            break;
+                    }
+
+                    return Json(new { success = true, message = "Operation Success: Transaction processed successfully!" });
+                      
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Application Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View(fiscalCountDTO);
+                 
+                    return Json(new { success = false, message = "Operation Failed: " + ex.Message });
                 }
             }
             else
             {
                 MessageBox.Show("There are errors in the form. Please correct them.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                return View(fiscalCountDTO);
+             
+                return Json(new { success = false, message = "Operation Failed: There are errors in the form" });
             }
         }
 
-
-
-
-
-        private async Task ProcessTreasuryTransactionAsync(TransactionModel transactionModel)
-        {
-
-
-            int treasuryTransactionType = transactionModel.fiscalCountDTO.TransactionType;
-
-            var activeUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            ActiveTreasury = await _channelService.FindTreasuryByBranchIdAsync((Guid)activeUser.BranchId, true, GetServiceHeader());
-
-            switch ((TreasuryTransactionType)treasuryTransactionType)
-            {
-
-
-                case TreasuryTransactionType.BankToTreasury:
-
-
-                   var bankToTreasuryJournal =  await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
-
-                    var treasuryAccount = await _channelService.FindChartOfAccountAsync(transactionModel.CreditChartOfAccountId, GetServiceHeader());
-
-                    var updateTreasuryAccount = await _channelService.UpdateChartOfAccountAsync(treasuryAccount, GetServiceHeader());
-
-                    if (updateTreasuryAccount)
-                    {
-
-                        string message = $"Operation success";
-
-                        MessageBox.Show(
-                                          message,
-                                          "Bank To Treasury",
-                                          MessageBoxButtons.OK,
-                                          MessageBoxIcon.Information,
-                                          MessageBoxDefaultButton.Button1,
-                                          MessageBoxOptions.ServiceNotification
-                                      );
-                    }
-
-                    break;
-
-
-
-                case TreasuryTransactionType.TreasuryToTeller:
-
-                   
-
-                    if (ActiveTreasury.BookBalance < transactionModel.fiscalCountDTO.TotalValue)
-                    {
-                        // Show a Windows Forms message box to the user
-                        System.Windows.Forms.MessageBox.Show(
-                            "Insufficient balance. The transaction cannot proceed.",
-                            "Error",
-                            System.Windows.Forms.MessageBoxButtons.OK,
-                            System.Windows.Forms.MessageBoxIcon.Error,
-                            System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                            System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                            );
-
-                        break;
-                    }
-
-                    var bankToTellerJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
-
-
-                    var chartOfAccount = await _channelService.FindChartOfAccountAsync(transactionModel.CreditChartOfAccountId, GetServiceHeader());
-
-                    var updateChartOfAccount = await _channelService.UpdateChartOfAccountAsync(chartOfAccount, GetServiceHeader());
-
-                    if (updateChartOfAccount)
-                    {
-
-
-                        string message = $"Operation success";
-
-                        MessageBox.Show(
-                                          message,
-                                          "Treasury to Teller",
-                                          MessageBoxButtons.OK,
-                                          MessageBoxIcon.Information,
-                                          MessageBoxDefaultButton.Button1,
-                                          MessageBoxOptions.ServiceNotification
-                                      );
-                    }
-
-
-                    break;
-
-
-                case TreasuryTransactionType.TreasuryToBank:
-
-
-                    var treasuryToBankJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
-
-                    var treasuryAcc = await _channelService.FindChartOfAccountAsync(transactionModel.CreditChartOfAccountId, GetServiceHeader());
-
-                    var updateTreasuryAcc = await _channelService.UpdateChartOfAccountAsync(treasuryAcc, GetServiceHeader());
-
-                    if (updateTreasuryAcc)
-                    {
-
-                        string message = $"Operation success";
-
-                        MessageBox.Show(
-                                          message,
-                                          "Treasury to Bank",
-                                          MessageBoxButtons.OK,
-                                          MessageBoxIcon.Information,
-                                          MessageBoxDefaultButton.Button1,
-                                          MessageBoxOptions.ServiceNotification
-                                      );
-                    }
-
-
-                    break;
-
-
-                case TreasuryTransactionType.TreasuryToTreasury:
-
-
-                    var treasuryToTreasuryJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());
-
-                    var treasuryAc = await _channelService.FindChartOfAccountAsync(transactionModel.CreditChartOfAccountId, GetServiceHeader());
-
-                    var updateTreasuryAc = await _channelService.UpdateChartOfAccountAsync(treasuryAc, GetServiceHeader());
-
-                    if (updateTreasuryAc)
-                    {
-
-                        string message = $"Operation success";
-
-                        MessageBox.Show(
-                                          message,
-                                          "Treasury to Treasury",
-                                          MessageBoxButtons.OK,
-                                          MessageBoxIcon.Information,
-                                          MessageBoxDefaultButton.Button1,
-                                          MessageBoxOptions.ServiceNotification
-                                      );
-                    }
-
-
-
-                    break;
-
-
-
-            }
-        }
 
 
   

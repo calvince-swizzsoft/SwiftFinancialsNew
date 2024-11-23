@@ -1,6 +1,7 @@
 ﻿@model Application.MainBoundedContext.DTO.RegistryModule.CustomerBindingModel
 @{ ViewBag.Title = "Customer";
     var customerTypes = ViewBag.CustomerTypeSelectList as List<SelectListItem>;
+    var Recordstatus = ViewBag.recordstatus as List<SelectListItem>;
     var individualTypes = ViewBag.IndividualTypeSelectList as List<SelectListItem>;
     var identityCardTypes = ViewBag.IdentityCardSelectList as List<SelectListItem>;
     var salutations = ViewBag.SalutationSelectList as List<SelectListItem>;
@@ -13,7 +14,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Customer</h2>
+        <h2>Edit</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -22,7 +23,7 @@
                 @Html.ActionLink("Home", "Index", "Customer", new { Area = "Registry" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Edit</strong>
+                <strong>Create</strong>
             </li>
         </ol>
     </div>
@@ -103,15 +104,15 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                         @Html.DropDownListFor(model => model.TypeDescription,
-                                                                new SelectList(new List<SelectListItem>
-                                                                {
+                                                                                                                                                new SelectList(new List<SelectListItem>
+                                                                                                                                                {
                 new SelectListItem { Text = "Select Type", Value = "" },
                 new SelectListItem { Text = "Individual-Particulars", Value = "IndividualParticulars" },
                 new SelectListItem { Text = "Partnership-Particulars", Value = "Partnership" },
                 new SelectListItem { Text = "Corporation-Particulars", Value = "Corporation" },
                 new SelectListItem { Text = "Micro-credit-Particulars", Value = "MicroCredit" }
 }, "Value", "Text"),
-                                                                new { @class = "form-control input-md", @id = "customerTypeDropdown" })
+                                                                                                                                                new { @class = "form-control input-md", @id = "customerTypeDropdown" })
                                         @Html.ValidationMessageFor(model => model.TypeDescription)
                                     </div>
                                 </div>
@@ -132,6 +133,14 @@
                                     @Html.ValidationMessageFor(model => model.Reference1, "", new { @class = "text-danger" })
                                 </div>
 
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.RecordStatus, htmlAttributes: new { @class = "" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.RecordStatus, Recordstatus, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.RecordStatus)
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-4">
@@ -184,6 +193,7 @@
 
 
                         </div>
+
                                         <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap; font-size: 0.85rem;" id="myTab">
                                             <!-- Dynamic Navigation Links -->
                                             <li class="nav-item dynamic-tab" id="link-IndividualParticulars" style="display: none;">
@@ -200,18 +210,18 @@
                                             </li>
 
                                             <!-- Always Visible Navigation Links -->
-                                            @*<li class="nav-item">
-                                                    <a class="nav-link" href="#mandatoryDebitTypes" data-toggle="tab" style="padding: 5px 10px;">Debit Types</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#mandatoryCreditTypes" data-toggle="tab" style="padding: 5px 10px;">Credit Types</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#mandatoryInvestmentProducts" data-toggle="tab" style="padding: 5px 10px;">Investment Products</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#mandatorySavingsProducts" data-toggle="tab" style="padding: 5px 10px;">Savings Products</a>
-                                                </li>*@
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#mandatoryDebitTypes" data-toggle="tab" style="padding: 5px 10px;">Debit Types</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#mandatoryCreditTypes" data-toggle="tab" style="padding: 5px 10px;">Credit Types</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#mandatoryInvestmentProducts" data-toggle="tab" style="padding: 5px 10px;">Investment Products</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#mandatorySavingsProducts" data-toggle="tab" style="padding: 5px 10px;">Savings Products</a>
+                                            </li>
                                             <li class="nav-item">
                                                 <a class="nav-link tab-pane" href="#address" data-toggle="tab" style="padding: 5px 10px;">Address</a>
                                             </li>
@@ -221,107 +231,107 @@
                                         </ul> <!-- Tab Content -->
                                                         <div class="tab-content">
 
-                                                            @*<div id="mandatorySavingsProducts" class="tab-pane">
-                                                                                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                                                                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                                                                                                                        <thead style="background-color: #4682b4; color: #fff;">
-                                                                                                                                            <tr>
-                                                                                                                                                <th data-toggle="true">Description</th>
-                                                                                                                                            </tr>
-                                                                                                                                        </thead>
-                                                                                                                                        <tbody>
-                                                                                                                                            @if (ViewBag.savings != null)
-                                                                                                                                            {
-                                                                                                                                                foreach (var save in ViewBag.savings)
-                                                                                                                                                {
-                                                                                                                            <tr style="background-color: #f5f5f5;">
-                                                                                                                                <td>
-                                                                                                                                    <input type="checkbox" class="savings-checkbox" name="savingsproducts" value="@save.Id" />
-                                                                                                                                    @save.Description
-                                                                                                                                </td>
-                                                                                                                            </tr>}
-                                                                                                                                            }
-                                                                                                                                        </tbody>
-                                                                                                                                    </table>
-                                                                                                                                </div>
-                                                                                                                            </div>
+                                                            <div id="mandatorySavingsProducts" class="tab-pane">
+                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                            <tr>
+                                                                                <th data-toggle="true">Description</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (ViewBag.savings != null)
+                                                                            {
+                                                                                foreach (var save in ViewBag.savings)
+                                                                                {
+                                                            <tr style="background-color: #f5f5f5;">
+                                                                <td>
+                                                                    <input type="checkbox" class="savings-checkbox" name="savingsproducts" value="@save.Id" />
+                                                                    @save.Description
+                                                                </td>
+                                                            </tr>}
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
 
-                                                                                                                            <div id="mandatoryDebitTypes" class="tab-pane">
-                                                                                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                                                                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                                                                                                                        <thead style="background-color: #4682b4; color: #fff;">
-                                                                                                                                            <tr>
-                                                                                                                                                <th data-toggle="true">Description</th>
-                                                                                                                                            </tr>
-                                                                                                                                        </thead>
-                                                                                                                                        <tbody>
-                                                                                                                                            @if (ViewBag.debit != null)
-                                                                                                                                            {
-                                                                                                                                                foreach (var debitType in ViewBag.debit)
-                                                                                                                                                {
-                                                                                                                            <tr style="background-color: #f5f5f5;">
-                                                                                                                                <td>
-                                                                                                                                    <input type="checkbox" class="savings-checkbox" name="DebitTypes" value="@debitType.Id" />
-                                                                                                                                    @debitType.Description
-                                                                                                                                </td>
-                                                                                                                            </tr>
-                                                                }
-                                                                                                                    }
-                                                                                                                                        </tbody>
-                                                                                                                                    </table>
-                                                                                                                                </div>
-                                                                                                                            </div>
-                                                                                                                            <div id="mandatoryCreditTypes" class="tab-pane">
-                                                                                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                                                                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                                                                                                                        <thead style="background-color: #4682b4; color: #fff;">
-                                                                                                                                            <tr>
-                                                                                                                                                <th data-toggle="true">Description</th>
-                                                                                                                                            </tr>
-                                                                                                                                        </thead>
-                                                                                                                                        <tbody>
-                                                                                                                                            @if (ViewBag.creditTypes != null)
-                                                                                                                                            {
-                                                                                                                                                foreach (var creditType in ViewBag.creditTypes)
-                                                                                                                                                {
-                                                                                                                            <tr style="background-color: #f5f5f5;">
-                                                                                                                                <td>
-                                                                                                                                    <input type="checkbox" class="savings-checkbox" name="CreditTypes" value="@creditType.Id" />
-                                                                                                                                    @creditType.Description
-                                                                                                                                </td>
-                                                                                                                            </tr>
-                                                                }
-                                                                                                                    }
-                                                                                                                                        </tbody>
-                                                                                                                                    </table>
-                                                                                                                                </div>
-                                                                                                                            </div>
+                                                            <div id="mandatoryDebitTypes" class="tab-pane">
+                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                            <tr>
+                                                                                <th data-toggle="true">Description</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (ViewBag.debit != null)
+                                                                            {
+                                                                                foreach (var debitType in ViewBag.debit)
+                                                                                {
+                                                            <tr style="background-color: #f5f5f5;">
+                                                                <td>
+                                                                    <input type="checkbox" class="savings-checkbox" name="DebitTypes" value="@debitType.Id" />
+                                                                    @debitType.Description
+                                                                </td>
+                                                            </tr>
+}
+                                                    }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="mandatoryCreditTypes" class="tab-pane">
+                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                            <tr>
+                                                                                <th data-toggle="true">Description</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (ViewBag.creditTypes != null)
+                                                                            {
+                                                                                foreach (var creditType in ViewBag.creditTypes)
+                                                                                {
+                                                            <tr style="background-color: #f5f5f5;">
+                                                                <td>
+                                                                    <input type="checkbox" class="savings-checkbox" name="CreditTypes" value="@creditType.Id" />
+                                                                    @creditType.Description
+                                                                </td>
+                                                            </tr>
+}
+                                                    }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
 
 
-                                                                                                                            <div id="mandatoryInvestmentProducts" class="tab-pane">
-                                                                                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                                                                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                                                                                                                        <thead style="background-color: #4682b4; color: #fff;">
-                                                                                                                                            <tr>
-                                                                                                                                                <th data-toggle="true">Description</th>
-                                                                                                                                            </tr>
-                                                                                                                                        </thead>
-                                                                                                                                        <tbody>
-                                                                                                                                            @if (ViewBag.investment != null)
-                                                                                                                                            {
-                                                                                                                                                foreach (var invest in ViewBag.investment)
-                                                                                                                                                {
-                                                                                                                            <tr style="background-color: #f5f5f5;">
-                                                                                                                                <td>
-                                                                                                                                    <input type="checkbox" class="investment-checkbox" name="investmentproducts" value="@invest.Id" />
-                                                                                                                                    @invest.Description
-                                                                                                                                </td>
-                                                                                                                            </tr>}
-                                                                                                                                            }
-                                                                                                                                        </tbody>
-                                                                                                                                    </table>
-                                                                                                                                </div>
-                                                                                                                            </div>*@
+                                                            <div id="mandatoryInvestmentProducts" class="tab-pane">
+                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                            <tr>
+                                                                                <th data-toggle="true">Description</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (ViewBag.investment != null)
+                                                                            {
+                                                                                foreach (var invest in ViewBag.investment)
+                                                                                {
+                                                            <tr style="background-color: #f5f5f5;">
+                                                                <td>
+                                                                    <input type="checkbox" class="investment-checkbox" name="investmentproducts" value="@invest.Id" />
+                                                                    @invest.Description
+                                                                </td>
+                                                            </tr>}
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
 
 
                                                             <div id="address" class="tab-pane" role="tabpanel">
@@ -384,90 +394,34 @@
                                                                 <div class="row">
                                                                     <div class="col-lg-6">
                                                                         <div class="form-group form-group-lg">
-                                                                            @Html.Label("Partnership Name", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter partnership name...", @id = "partnershipName" } })
+                                                                            @Html.Label("Purtnership Name", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control" } })
                                                                         </div>
                                                                         <div class="form-group form-group-lg">
-                                                                            @Html.Label("Registration Number", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.NonIndividualRegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Id number...", @id = "registrationNumber" } })
+                                                                            @Html.Label("Registration date", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.RegistrationDate, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Registration date..." } })
                                                                         </div>
                                                                         <div class="form-group form-group-lg">
                                                                             @Html.Label("Date Established", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter establishment date...", @id = "dateEstablished" } })
+                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Establishment date..." } })
                                                                         </div>
+
+
+                                                                    </div>
+                                                                    <div class="col-md-6">
                                                                         <div class="form-group form-group-lg">
                                                                             @Html.Label("Personal Identification Number", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.partnershipMemberCollection[0].IdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter personal identification number...", @id = "personalId" } })
+                                                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter personal ID number..." } })
                                                                         </div>
                                                                         <div class="form-group form-group-lg">
-                                                                            @Html.Label("Gender", new { @class = "control-label" })
-                                                                            @Html.DropDownListFor(model => model.partnershipMemberCollection[0].Gender, genders, new { @class = "form-control", @id = "gender" })
-                                                                        </div>
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("Mobile Line", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.partnershipMemberCollection[0].AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter mobile line...", @id = "mobileLine" } })
-                                                                        </div>
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("Land Line", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.partnershipMemberCollection[0].AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter landline...", @id = "landLine" } })
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-lg-6">
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("Address Line 1", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.partnershipMemberCollection[0].AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter address line 1...", @id = "addressLine1" } })
-                                                                        </div>
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("Address Line 2", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.partnershipMemberCollection[0].AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter address line 2...", @id = "addressLine2" } })
-                                                                        </div>
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("Street", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.partnershipMemberCollection[0].AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter street...", @id = "street" } })
-                                                                        </div>
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("Postal Code", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.partnershipMemberCollection[0].AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter postal code...", @id = "postalCode" } })
-                                                                        </div>
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("City", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.partnershipMemberCollection[0].AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter city...", @id = "city" } })
-                                                                        </div>
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("Email", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.partnershipMemberCollection[0].AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter email...", @id = "email" } })
+                                                                            @Html.Label("Remarks", new { @class = "control-label" })
+                                                                            @Html.TextAreaFor(model => model.NonIndividualRegistrationSerialNumber, new { @class = "form-control", @rows = 3, @placeholder = "Enter any remarks..." })
                                                                         </div>
                                                                     </div>
 
-                                                                    <div class="form-group">
-                                                                        <button type="button" id="addPartnershipBtn" class="btn btn-outline-primary">Add Partnership</button>
-                                                                    </div>
 
-                                                                    <div class="form-group">
-                                                                        <table id="partnershipTable" class="table table-bordered">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th>Name</th>
-                                                                                    <th>Registration Number</th>
-                                                                                    <th>Date Established</th>
-                                                                                    <th>Personal Identification #</th>
-                                                                                    <th>Address Line 1</th>
-                                                                                    <th>Address Line 2</th>
-                                                                                    <th>Street</th>
-                                                                                    <th>Postal Code</th>
-                                                                                    <th>City</th>
-                                                                                    <th>Email</th>
-                                                                                    <th>Land Line</th>
-                                                                                    <th>Mobile Line</th>
-                                                                                    <th>Action</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <!-- Dynamic rows will be inserted here -->
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
                                                                 </div>
+
                                                             </div>
 
                                                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -545,8 +499,9 @@
                                                                         </div>
                                                                         <div class="form-group form-group-lg">
                                                                             @Html.Label("Date Established", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter establishment date..." } })
+                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Enter establishment date..." } })
                                                                         </div>
+
                                                                     </div>
                                                                     <div class="col-lg-6">
                                                                         <div class="form-group form-group-lg">
@@ -561,7 +516,7 @@
                                                                 </div>
 
                                                                 <!-- Section for Adding Members -->
-                                                                <div class="member-section">
+                                                                <!--<div class="member-section">
                                                                     <h4>Add Member</h4>
                                                                     <div class="row">
                                                                         <div class="col-lg-6">
@@ -636,44 +591,43 @@
                                                                             <button type="button" id="addMemberBtn" class="btn btn-primary">Add Member</button>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-
+                                                                </div>-->
                                                                 <!-- Member Collection Section -->
-                                                                <div class="form-group row">
-                                                                    <div class="col-md-12">
-                                                                        <label>Member Collection</label>
-                                                                        <table id="memberCollectionTable" class="table table-bordered">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th>Name</th>
-                                                                                    <th>Gender</th>
-                                                                                    <th>Identity Card Type</th>
-                                                                                    <th>Identity Card Number</th>
-                                                                                    <th>Address Line 1</th>
-                                                                                    <th>Address Line 2</th>
-                                                                                    <th>Street</th>
-                                                                                    <th>Postal Code</th>
-                                                                                    <th>City</th>
-                                                                                    <th>Email</th>
-                                                                                    <th>Land Line</th>
-                                                                                    <th>Mobile Line</th>
-                                                                                    <th>Signatory?</th>
-                                                                                    <th>Remarks</th>
-                                                                                    <th>Action</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <!-- Dynamic Member Rows -->
-                                                                            </tbody>
+                                                                <!--<div class="form-group row">
+                                                                <div class="col-md-12">
+                                                                    <label>Member Collection</label>
+                                                                    <table id="memberCollectionTable" class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Name</th>
+                                                                                <th>Gender</th>
+                                                                                <th>Identity Card Type</th>
+                                                                                <th>Identity Card Number</th>
+                                                                                <th>Address Line 1</th>
+                                                                                <th>Address Line 2</th>
+                                                                                <th>Street</th>
+                                                                                <th>Postal Code</th>
+                                                                                <th>City</th>
+                                                                                <th>Email</th>
+                                                                                <th>Land Line</th>
+                                                                                <th>Mobile Line</th>
+                                                                                <th>Signatory?</th>
+                                                                                <th>Remarks</th>
+                                                                                <th>Action</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>-->
+                                                                <!-- Dynamic Member Rows -->
+                                                                <!--</tbody>
                                                                         </table>
                                                                     </div>
                                                                 </div>
 
                                                                 <div class="form-group row">
                                                                     <div class="col-md-12">
-                                                                        <button type="submit" class="btn btn-success">Edit Corporation</button>
+                                                                        <button type="submit" class="btn btn-success">Create Corporation</button>
                                                                     </div>
-                                                                </div>
+                                                                </div>-->
 
                                                             </div>
 
@@ -760,36 +714,33 @@
                                                             <div id="MicroCredit" class="tab-pane">
                                                                 <div class="row">
                                                                     <div class="col-lg-6">
+
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.Label("Non Individual Description", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control" } })
+                                                                        </div>
                                                                         <div class="form-group form-group-lg">
                                                                             @Html.Label("Registration Number", new { @class = "control-label" })
                                                                             @Html.EditorFor(model => model.NonIndividualRegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter registration number..." } })
                                                                         </div>
 
 
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("Date Established", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter establishment date..." } })
-                                                                        </div>
+
                                                                     </div>
                                                                     <div class="col-md-6">
                                                                         <div class="form-group form-group-lg">
-                                                                            @Html.Label("Personal Identification Number", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter personal ID number..." } })
+                                                                            @Html.Label("Date Established", new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Enter establishment date..." } })
                                                                         </div>
                                                                         <div class="form-group form-group-lg">
                                                                             @Html.Label("Remarks", new { @class = "control-label" })
                                                                             @Html.TextAreaFor(model => model.NonIndividualRegistrationSerialNumber, new { @class = "form-control", @rows = 3, @placeholder = "Enter any remarks..." })
                                                                         </div>
                                                                     </div>
-                                                                    <div class="form-group row">
-                                                                        <div class="col-md-12">
-                                                                            <button type="submit" class="btn btn-success">Register Microcredit</button>
-                                                                        </div>
-                                                                    </div>
 
                                                                 </div>
                                                             </div>
-                                                            <div id="IndividualParticulars" class="tab-pane" role="tabpanel">
+                                                            <div id="IndividualParticulars" class="tab-pane">
                                                                 <div class="row">
                                                                     <div class="col-4">
                                                                         <div class="form-group form-group-lg">
@@ -985,7 +936,7 @@
                                                             </script>
 
 
-                                                            <input type="button" value="Edit" class="btn btn-primary" style="width: 150px;" onclick="submitForm()" />
+                                                            <input type="button" value="Update" class="btn btn-primary" style="width: 150px;" onclick="submitForm()" />
                                                         </div>}
 
 
@@ -1063,6 +1014,66 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+    <script>
+  $(document).ready(function () {
+    // Get the value of ViewBag.type (e.g., "Individual", "Partnership", etc.)
+    var type = '@ViewBag.type';
+
+    // Map the ViewBag.type to the corresponding tab link ID
+    var tabMap = {
+        'Individual': 'link-IndividualParticulars',
+        'Partnership': 'link-Partnership',
+        'Corporation': 'link-Corporation',
+        'MicroCredit': 'link-MicroCredit'
+    };
+
+    // Default to Individual if the type is not recognized
+    var tabId = tabMap[type] || 'link-IndividualParticulars';
+
+    // Show the corresponding tab and mark it as active
+    $('#' + tabId).show(); // Make the tab visible
+    $('#' + tabId + ' a').tab('show'); // Activate the tab
+
+    // Optional: Ensure all other tabs remain hidden if they are dynamic
+    $('.dynamic-tab').each(function () {
+        if ($(this).attr('id') !== tabId) {
+            $(this).hide(); // Hide tabs that are not the active one
+        }
+    });
+});
+
+    </script>
+    @*<script>
+        $(document).ready(function () {
+            var activeTabId = ''; // Variable to store the ID of the active tab
+
+            // Check if the ViewBag.type value exists and initialize the active tab
+            var initialTabType = '@ViewBag.type'; // Server-side variable passed to JavaScript
+            if (initialTabType) {
+                activeTabId = 'link-' + initialTabType; // Construct the ID for the initial tab
+                $('#' + activeTabId).show(); // Show the tab
+                $('#' + activeTabId + ' a').tab('show'); // Activate the tab
+            }
+
+            // Handle dropdown change
+            $('#customerTypeDropdown').change(function () {
+                var selectedValue = $(this).val(); // Get selected value
+
+                if (selectedValue) {
+                    // Hide the currently active tab link
+                    if (activeTabId) {
+                        $('#' + activeTabId).hide();
+                    }
+
+                    // Show the new selected tab link
+                    activeTabId = 'link-' + selectedValue; // Update the active tab ID
+                    $('#' + activeTabId).show();
+                    // Activate the selected tab
+                    $('#' + activeTabId + ' a').tab('show');
+                }
+            });
+        });
+        </script>*@
 
     <script>
         function submitForm() {
@@ -1102,7 +1113,7 @@
 
                 // Append a new row to the table
                 $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `);
 
                 // Clear the form fields after adding
                 clearMemberForm();
@@ -1167,7 +1178,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Registry/WithdrawalNotification/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/Registry/Customer/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(4)', nRow).html(dt_Created);
                     $('td:eq(5)', nRow).html(selectUrl);
@@ -1441,6 +1452,21 @@
                     alert("An error occurred: " + error);
                 }
             });
+        });
+    });
+</script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        // Initialize date picker on the input field
+        $("#dateEstablished").datepicker({
+            dateFormat: "dd/mm/yy", // Set desired format
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "1900:2024" // Adjust year range as needed
         });
     });
 </script>

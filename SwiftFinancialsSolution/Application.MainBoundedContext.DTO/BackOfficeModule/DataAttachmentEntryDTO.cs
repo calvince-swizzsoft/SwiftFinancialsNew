@@ -410,5 +410,85 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Customer")]
         public string SelectCustomerName { get; set; }
+
+
+
+        [DataMember]
+        [Display(Name = "Statement Type")]
+        public int StatementType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Statement Type")]
+        public string StatementTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(DataAttachmentTransactionType), TransactionType) ? string.Format("{0}", EnumHelper.GetDescription((DataAttachmentTransactionType)TransactionType)) : string.Empty;
+            }
+        }
+
+
+        [Display(Name = "Customer Filter")]
+        public int CustomerFilter { get; set; }
+
+        [Display(Name = "Record Status")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return EnumHelper.GetDescription((CustomerFilter)CustomerFilter);
+            }
+        }
+
+
+
+
+        [DataMember]
+        [Display(Name = "Gender")]
+        public string CustomerAccountCustomerIndividualGender { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Salutation")]
+        public string SalutationDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Marital Status")]
+        public string MaritalStatusDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Nationality")]
+        public string NationalityDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Identity Card Type")]
+        public string IdentityCardTypeDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Identity Card Number")]
+        public string IdentityCardNumberDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Birth Date")]
+        public DateTime BirthDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "Designation")]
+        public string DesignationDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Employment Date")]
+        public DateTime EmploymentDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "Individual Type")]
+        public string IndividualTypeDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Personal Identification Number")]
+        public string PersonalIdentificationNumberDescription { get; set; }
+        
+        [DataMember]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
     }
 }

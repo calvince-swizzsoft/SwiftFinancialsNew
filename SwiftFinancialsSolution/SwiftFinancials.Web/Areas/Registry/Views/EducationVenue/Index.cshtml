@@ -83,9 +83,19 @@
 
                     var editUrl = '<a  href="/Registry/EducationVenue/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/Registry/EducationVenue/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/registry/EducationVenue/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/registry/EducationVenue/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
+                    $('td:eq(4)', nRow).html(dropdownHtml);
                     $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                   // $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },

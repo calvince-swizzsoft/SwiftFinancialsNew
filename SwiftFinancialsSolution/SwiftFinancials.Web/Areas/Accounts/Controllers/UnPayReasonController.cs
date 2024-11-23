@@ -1,5 +1,4 @@
-﻿
-
+﻿using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using SwiftFinancials.Web.Controllers;
@@ -10,6 +9,24 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using SwiftFinancials.Web.Controllers;
+using SwiftFinancials.Web.Helpers;
+using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.FrontOfficeModule;
+using System.Threading.Tasks;
+using Application.MainBoundedContext.DTO.AdministrationModule;
+using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
+using Infrastructure.Crosscutting.Framework.Utils;
+using SwiftFinancials.Presentation.Infrastructure.Models;
+using System.Windows.Forms;
+using Microsoft.AspNet.Identity;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
@@ -94,7 +111,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             
             if (!unPayReasonDTO.HasErrors)
             {
-                var result = await _channelService.AddUnPayReasonAsync(unPayReasonDTO, GetServiceHeader());
+
+                MessageBox.Show("Unpay Reason","Do you wish to create UnPay reason",MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information,
+                                                               MessageBoxDefaultButton.Button1,
+                                                               MessageBoxOptions.ServiceNotification
+
+                                                               
+                                                           ); 
+    var result = await _channelService.AddUnPayReasonAsync(unPayReasonDTO, GetServiceHeader());
 
                 await _channelService.UpdateCommissionsByUnPayReasonIdAsync(result.Id, selectedRows, GetServiceHeader());
 

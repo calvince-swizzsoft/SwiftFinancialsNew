@@ -19,6 +19,29 @@
         </ol>
     </div>
 </div>
+<style>
+    /* Style for readonly textboxes */
+    .readonly-textbox {
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+        color: #333;
+        padding: 5px 10px;
+        border-radius: 4px;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 14px;
+        cursor: not-allowed; /* Indicates that editing is disabled */
+    }
+</style>
+<style>
+    .equal-btn {
+        min-width: 150px; /* Ensures consistent width */
+        text-align: center;
+        padding: 10px 20px; /* Adjust padding for desired size */
+        font-size: 16px; /* Adjust font size */
+    }
+</style>
+
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -37,83 +60,95 @@
                 <div class="ibox-content text-info">
                     <div class="row">
                         <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)<br></strong>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
 
-                                @Html.DisplayFor(model => model.Description)<br>
-                            </p>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.AddressAddressLine1)<br></strong>
-
-                                @Html.DisplayFor(model => model.AddressAddressLine1)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.AddressAddressLine2)<br></strong>
-
-                                @Html.DisplayFor(model => model.AddressAddressLine2)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.AddressStreet)<br></strong>
-
-                                @Html.DisplayFor(model => model.AddressStreet)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.AddressPostalCode)<br></strong>
-
-                                @Html.DisplayFor(model => model.AddressPostalCode)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.AddressCity)<br></strong>
-
-                                @Html.DisplayFor(model => model.AddressCity)<br>
-                            </p>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
+                            </div>
                         </div>
                         <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.AddressEmail)<br></strong>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.RetirementAge, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.RetirementAge, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.RetirementAge, "", new { @class = "text-danger" })
+                            </div>
 
-                                @Html.DisplayFor(model => model.AddressEmail)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.AddressLandLine)<br></strong>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "", Disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
+                            </div>
 
-                                @Html.DisplayFor(model => model.AddressLandLine)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.AddressMobileLine)<br></strong>
+                            <div style="display: flex; gap: 20px; align-items: center;">
+                                <div style="flex: 1;">
+                                    <p>
+                                        <strong>@Html.DisplayNameFor(model => model.EnforceRetirementAge)<br></strong>
+                                        @Html.DisplayFor(model => model.EnforceRetirementAge)<br>
+                                    </p>
+                                </div>
+                                <div style="flex: 1;">
+                                    <p>
+                                        <strong>@Html.DisplayNameFor(model => model.IsLocked)<br></strong>
+                                        @Html.DisplayFor(model => model.IsLocked)<br>
+                                    </p>
+                                </div>
+                            </div>
 
-                                @Html.DisplayFor(model => model.AddressMobileLine)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.RetirementAge)<br></strong>
 
-                                @Html.DisplayFor(model => model.RetirementAge)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.EnforceRetirementAge)<br></strong>
-
-                                @Html.DisplayFor(model => model.EnforceRetirementAge)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.IsLocked)<br></strong>
-
-                                @Html.DisplayFor(model => model.IsLocked)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
-
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
                         </div>
+
                     </div>
+
 
                     <div class="row">
                         <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "Employer", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "Employer", new { Area = "Registry" }, new { @class = "btn btn-success" })
-                            </p>
+                            <div>
+                                @Html.ActionLink("Edit", "Edit", "Employer", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success equal-btn" })
+                                @Html.ActionLink("Back to List", "Index", "Employer", new { Area = "Registry" }, new { @class = "btn btn-success equal-btn" })
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -121,3 +156,82 @@
         </div>
     </div>
 </div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Select all readonly textboxes
+            const readonlyTextboxes = document.querySelectorAll(".readonly-textbox");
+
+            readonlyTextboxes.forEach(function (textbox) {
+                // Apply additional behaviors if needed, e.g., change cursor
+                textbox.style.cursor = "not-allowed";
+            });
+        });
+    </script>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Select all elements with the 'display-date' class
+            const displayElements = document.querySelectorAll(".display-date");
+
+            displayElements.forEach(function (element) {
+                // Get the value inside the element
+                const value = element.textContent.trim();
+
+                // Create a new readonly textbox
+                const textbox = document.createElement("input");
+                textbox.type = "text";
+                textbox.value = value;
+                textbox.readOnly = true;
+                textbox.className = "readonly-textbox";
+
+                // Replace the original element with the textbox
+                element.replaceWith(textbox);
+            });
+        });
+
+    </script>
+}

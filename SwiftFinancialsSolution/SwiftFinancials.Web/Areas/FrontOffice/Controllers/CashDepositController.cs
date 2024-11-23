@@ -1125,6 +1125,25 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             SelectedBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
 
+            if (_selectedTeller == null)
+            {
+
+             MessageBox.Show("Teller is Missing",
+             "Cash Transaction",
+             MessageBoxButtons.OK,
+             MessageBoxIcon.Exclamation,
+             MessageBoxDefaultButton.Button1,
+             MessageBoxOptions.ServiceNotification
+
+             );
+
+                //return View(SelectedCustomerAccount);
+
+             return Json(new { success = false, message = "Operation Failed" });
+
+
+            }
+
             var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
             transactionModel.PostingPeriodId = postingPeriod.Id;
             //transactionModel.DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
@@ -1235,9 +1254,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                   );
 
                 //return View();
-
                 return Json(new { success = false, message = "Operation Failed" });
-
             }
         }
 
@@ -1805,12 +1822,31 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             _selectedTeller = await GetCurrentTeller();
 
+            if (_selectedTeller == null)
+            {
+
+                MessageBox.Show("Teller is Missing",
+                "Cash Transaction",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation,
+                MessageBoxDefaultButton.Button1,
+                MessageBoxOptions.ServiceNotification
+
+                );
+
+                //return View(SelectedCustomerAccount);
+
+                return Json(new { success = false, message = "Operation Failed" });
+
+
+            }
+
+
+
             var pageCollectionInfo = await _channelService.FindCashTransferRequestsByFilterInPageAsync((Guid)SelectedTeller.EmployeeId, startDate, endDate, status, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
 
             //var pageCollectionInfo = await _channelService.FindCashWithdrawalRequestsByFilterInPageAsync(startDate, endDate, 2, "", 2, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-
-
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -1825,31 +1861,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else return this.DataTablesJson(items: new List<CashWithdrawalRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
-
-
-        //public async Task<JsonResult> GetCustomerAccountDetailsJson(Guid? id)
-        //{
-        //    Guid parseId;
-
-        //    if (!Guid.TryParse(id.ToString(), out parseId))
-        //    {
-        //        return Json(null, JsonRequestBehavior.AllowGet);
-        //    }
-
-        //    bool includeBalances = true;
-        //    bool includeProductDescription = true;
-        //    bool includeInterestBalanceForLoanAccounts = true;
-        //    bool considerMaturityPeriodForInvestmentAccounts = true;
-
-        //    var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-        //    if (customerAccount == null)
-        //    {
-        //        return Json(null, JsonRequestBehavior.AllowGet);
-        //    }
-
-        //    return Json(customerAccount, JsonRequestBehavior.AllowGet);
-        //}
     }
 }
 

@@ -169,6 +169,54 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             return View("Create", withdrawalNotificationDTO);
         }
 
+
+
+        public async Task<ActionResult> Search2(Guid? id)
+        {
+            //string Remarks = "";
+            await ServeNavigationMenus();
+
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindInsuranceCompanyAsync(parseId, GetServiceHeader());
+
+
+            WithdrawalNotificationDTO withdrawalNotificationDTO = new WithdrawalNotificationDTO();
+
+            //WithdrawalNotificationDTOs = TempData["WithdrawalNotificationDTOs"] as ObservableCollection<WithdrawalNotificationDTO>;
+
+            if (customer != null)
+            {
+
+                withdrawalNotificationDTO.CustomerId = customer.Id;
+                withdrawalNotificationDTO.CustomerFullName = customer.Description;               
+                //Session["Test"] =Request.Form["h"] + "";
+                //string mimi = Session["Test"].ToString();
+                Session["withdrawalNotificationDTO"] = withdrawalNotificationDTO;
+                if (Session["Remarks"] != null)
+                {
+                    withdrawalNotificationDTO.Remarks = Session["Remarks"].ToString();
+                }
+                if (Session["BranchDescription"] != null)
+                {
+                    withdrawalNotificationDTO.BranchDescription = Session["BranchDescription"].ToString();
+                }
+                //
+            }
+
+            //TempData["WithdrawalNotificationDTOs"] = withdrawalNotificationDTO;
+            return View("Create", withdrawalNotificationDTO);
+        }
+
+
+
         [HttpPost]
         public ActionResult AssignText(string Remarks, string BranchDescription)
         {

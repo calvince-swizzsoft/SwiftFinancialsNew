@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.34407.143
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layers", "Layers", "{C8EFD42D-84F2-43EA-BC4F-511927DFCBFA}"
 EndProject
@@ -142,6 +142,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.TextAlertDispatcher.Celcom", "SwiftFinancials.TextAlertDispatcher\SwiftFinancials.TextAlertDispatcher.Celcom.csproj", "{660BAE5C-4432-4B7C-8CB0-E860B8B3465D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.WindowsService", "SwiftFinancials.WindowsService\SwiftFinancials.WindowsService.csproj", "{2FB8EA4C-6D83-44FB-B1D7-39086AD3071B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.SalaryPeriodPosting", "SwiftFinancials.SalaryPeriodPosting\SwiftFinancials.SalaryPeriodPosting.csproj", "{07C5919F-FA4B-49AD-933F-7A47F8C9BA11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -307,6 +309,10 @@ Global
 		{2FB8EA4C-6D83-44FB-B1D7-39086AD3071B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FB8EA4C-6D83-44FB-B1D7-39086AD3071B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FB8EA4C-6D83-44FB-B1D7-39086AD3071B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07C5919F-FA4B-49AD-933F-7A47F8C9BA11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07C5919F-FA4B-49AD-933F-7A47F8C9BA11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07C5919F-FA4B-49AD-933F-7A47F8C9BA11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07C5919F-FA4B-49AD-933F-7A47F8C9BA11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -376,6 +382,7 @@ Global
 		{5C97F213-E630-4919-B164-0BAD8C284E9D} = {90CA39EC-0735-4732-94FE-EE02F1CD59BF}
 		{660BAE5C-4432-4B7C-8CB0-E860B8B3465D} = {90CA39EC-0735-4732-94FE-EE02F1CD59BF}
 		{2FB8EA4C-6D83-44FB-B1D7-39086AD3071B} = {83140B1B-214C-463A-8713-0456717DAD85}
+		{07C5919F-FA4B-49AD-933F-7A47F8C9BA11} = {AD41104C-9202-4E7E-90C5-E980B69A670B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24D31609-C5B7-4C31-9618-B4E7669C4305}

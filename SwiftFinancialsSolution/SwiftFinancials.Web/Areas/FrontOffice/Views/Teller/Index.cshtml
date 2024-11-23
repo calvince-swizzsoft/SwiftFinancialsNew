@@ -72,27 +72,95 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
 
-
-                        @*@using (Html.BeginForm("Index", "Teller", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                        {
-                            <div class="col-sm-6">
-                                @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "" })
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                    @Html.DropDownListFor(model => model.Type, tellerTypes, new { @class = "form-control input-md" })
-                                    @Html.ValidationMessageFor(model => model.Type)
+                    <!-- Filter Form -->
+                    <div class="blue-section mt-1">
+                        <form id="TellerFilterForm">
+                            <div class="row align-items-end mb-3">
+                                <div class="col-md-3">
+                                    <div id="items-dropdown"></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div id="page-control"></div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <input type="submit" style="width:270px; background-color:darkgreen; border-color:darkgreen" value="Filter" class="btn btn-success" />
+
+                            @*<div class="row align-items-end mb-3">
+
+                </div>*@
+
+                            <div class="row align-items-end">
+
+                                <div class="col-md-2">
+                                    <div class="form-group mb-0">
+
+                                        <div class="input-group">
+
+                                            @Html.DropDownListFor(m => m.Type, tellerTypes, new { @class = "form-control", @id = "tellerType" })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-8">
+                                    <div id="searchField" class="form-group mb-0"></div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group mb-0">
+                                        <button type="submit" id="refreshButton" class="btn btn-success form-control">Refresh</button>
                                     </div>
                                 </div>
                             </div>
-                        }*@
+                        </form>
                     </div>
+
+                    <style>
+                        .blue-section {
+                            background-color: #e6f3ff;
+                            padding: 15px;
+                            border-radius: 5px;
+                        }
+
+                        .row.align-items-end {
+                            display: flex;
+                            align-items: flex-end;
+                        }
+
+                            .row.align-items-end > div {
+                                display: flex;
+                                flex-direction: column;
+                            }
+
+                        #searchField {
+                            width: 100%;
+                        }
+
+                            #searchField .dataTables_filter {
+                                margin-bottom: 0;
+                                width: 100%;
+                            }
+
+                                #searchField .dataTables_filter label {
+                                    width: 100%;
+                                    margin-bottom: 0;
+                                    display: flex;
+                                }
+
+                                #searchField .dataTables_filter input {
+                                    width: 100% !important;
+                                    margin-left: 0 !important;
+                                    height: calc(1.5em + .75rem + 2px); /* Match Bootstrap's form-control height */
+                                }
+
+                        #items-dropdown .dataTables_length {
+                            margin-bottom: 0;
+                        }
+
+                        #page-control .dataTables_paginate {
+                            float: right;
+                        }
+                    </style>
 
 
 
@@ -147,6 +215,13 @@
 
     <script type="text/javascript">
 
+        var defaultTellerType = $('#tellerType').val();
+
+        $('#TellerFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#TellersGrid').DataTable().ajax.reload();
+        });
+
         $(document).ready(function () {
             $('#TellersGrid').DataTable({
                 // Ajax settings
@@ -155,6 +230,11 @@
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "FrontOffice"}))",
                 "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "tellerType", "value": $('#tellerType').val() || defaultTellerType }             
+                    );
+                },
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
@@ -166,11 +246,21 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/frontOffice/Teller/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/frontOffice/Teller/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+
+                    var editUrl = `<a class="dropdown-item" href="/frontOffice/Teller/edit/${aData.Id}">Edit</a>`;
+                    //var viewUrl = '<a class="dropdown-item" href="/frontOffice/Teller/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+ 
+                    dropdownHtml += editUrl;
 
                     $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(5)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
@@ -182,9 +272,21 @@
                     { "mDataProp": "ChartOfAccountAccountName", "sTitle": "ChartOfAccountAccountName", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
+                "aaSorting": [[0, "desc"]],
+                "dom": 'lftip',
+                "responsive": true,
+                "initComplete": function (settings, json) {
+                    $('#TellersGrid_length').appendTo('.blue-section .row:first-child #items-dropdown');
+                    $('#TellersGrid_filter').appendTo('.blue-section #searchField').find('input').attr('placeholder', 'Search...');
+                    $('#TellersGrid_filter label').contents().filter(function () {
+                        return this.nodeType === 3;
+                    }).remove();
+                    $('#TellersGrid_paginate').appendTo('.blue-section .row:first-child #page-control');
+                },
         });
         });
+
+
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');

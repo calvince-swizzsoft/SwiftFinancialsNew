@@ -23,6 +23,12 @@
     </div>
 </div>
 <style>
+    h {
+        text-decoration: underline;
+        text-underline-offset: 4px; /* Adjust the offset value as desired */
+        font-size: large;
+    }
+
     .animated-tabs {
         font-size: 0.75rem; /* Smaller font size */
     }
@@ -32,14 +38,14 @@
             padding: 8px 12px; /* Adjust padding for a compact look */
         }
 
-            /* Hover effect for the tabs */
-            .animated-tabs .nav-link:hover {
-                color: #ffffff; /* Text color on hover */
-                background-color: #007bff; /* Background color change */
-                transform: scale(1.1); /* Slightly scale up */
-                border-radius: 5px; /* Rounded corners for a smooth look */
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-            }
+    /* Hover effect for the tabs */
+    /*.animated-tabs .nav-link:hover {
+                color: #ffffff;*/ /* Text color on hover */
+    /*background-color: #007bff;*/ /* Background color change */
+    /*transform: scale(1.1);*/ /* Slightly scale up */
+    /*border-radius: 5px;*/ /* Rounded corners for a smooth look */
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/ /* Subtle shadow for depth */
+    /*}*/
 </style>
 <div class="wrapper wrapper-content" style="padding: 20px;">
     <div class="row">
@@ -56,90 +62,94 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info" style="padding: 20px;">
-                    @using (Html.BeginForm("Create", "Company", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                <div class="ibox-content bg-white text-info" style="padding: 20px;"> 
+                    @using (Html.BeginForm("Create", "Company", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" ,enctype = "multipart/form-data" ,method = "post" }))
                     {
                         @Html.AntiForgeryToken()
-                        <div class="container">
-                            <!-- Company Information Section -->
-                            <div class="row mb-4">
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;" } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="font-bold">Logo</label>
-                                        <div class="image-box" style="border: 1px solid #ddd; border-radius: 5px; padding: 5px; text-align: center; width: 150px; height: 150px; overflow: hidden;">
-                                            <img id="logoPreview" src="https://via.placeholder.com/150" alt="Logo Preview" style="width: 100%; height: 100%; object-fit: cover;" />
-                                        </div>
-                                        <input type="file" class="form-control-file mt-2" name="Logo" id="logoInput" style="border-radius: 5px;" accept="image/*" />
-                                    </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.MembershipTerminationNoticePeriod, "", new { @class = "text-danger" })
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="font-bold">Logo</label>
+                                <div class="image-box" style="border: 1px solid #ddd; border-radius: 8px; padding: 5px; text-align: center; width: 200px; height: 200px; overflow: hidden;">
+                                    <img id="logoPreview" src="https://via.placeholder.com/150" alt="Logo Preview" style="width: 100%; height: 100%; object-fit: cover;" />
+                                </div>
+                                <input type="file" class="form-control-file mt-2" name="Companylogo" id="logoInput" style="border-radius: 5px;" accept="image/*" />
+                            </div>
+                        </div>
+                        <script>
+                            document.getElementById('logoInput').addEventListener('change', function (event) {
+                                const file = event.target.files[0];
+                                const reader = new FileReader();
 
-                            <!-- Additional Fields (Optional) -->
-                            <div class="row mb-4">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="font-bold">Additional Field 1</label>
-                                        <input type="text" class="form-control" placeholder="Enter additional info 1" style="border-radius: 5px;" />
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="font-bold">Additional Field 2</label>
-                                        <input type="text" class="form-control" placeholder="Enter additional info 2" style="border-radius: 5px;" />
-                                    </div>
-                                </div>
-                            </div>
+                                reader.onload = function (e) {
+                                    document.getElementById('logoPreview').src = e.target.result;
+                                };
 
-                            <!-- Registration Details Section -->
-                            <h3>Registration Details</h3>
-                            <div class="row mb-4">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "font-bold" })
-                                        @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "", @style = "border-radius: 5px;" } })
-                                        @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "font-bold" })
-                                        @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "", @style = "border-radius: 5px;" } })
-                                        @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "font-bold" })
-                                        @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "", @style = "border-radius: 5px;" } })
-                                        @Html.ValidationMessageFor(model => model.MembershipTerminationNoticePeriod, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
+                                if (file) {
+                                    reader.readAsDataURL(file);
+                                }
+                            });
 
-                            <!-- Vision, Mission, and Motto Section -->
-                            <h3>Vision, Mission, and Motto</h3>
-                            <div class="form-group mb-4">
-                                @Html.LabelFor(model => model.Vision, htmlAttributes: new { @class = "font-bold" })
-                                @Html.EditorFor(model => model.Vision, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Vision.", @required = "", @style = "border-radius: 5px;" } })
-                                @Html.ValidationMessageFor(model => model.Vision, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="form-group mb-4">
-                                @Html.LabelFor(model => model.Mission, htmlAttributes: new { @class = "font-bold" })
-                                @Html.EditorFor(model => model.Mission, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Mission.", @required = "", @style = "border-radius: 5px;" } })
-                                @Html.ValidationMessageFor(model => model.Mission, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="form-group mb-4">
-                                @Html.LabelFor(model => model.Motto, htmlAttributes: new { @class = "font-bold" })
-                                @Html.EditorFor(model => model.Motto, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Motto.", @required = "", @style = "border-radius: 5px;" } })
-                                @Html.ValidationMessageFor(model => model.Motto, "", new { @class = "text-danger" })
-                            </div>
+                            document.getElementById('form').addEventListener('submit', function (e) {
+                                e.preventDefault();
+
+                                const formData = new FormData(this);
+
+                                fetch('/Company/Create', {
+                                    method: 'POST',
+                                    body: formData,
+                                })
+                                    .then(async (response) => {
+                                        if (response.ok) {
+                                             window.location.href = '@Url.Action("Index", "Company")';
+                                        } else {
+                                            const error = await response.json();
+                                            alert('Error: ' + (error.message || 'Submission failed.'));
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Submission error:', error);
+                                        alert('An error occurred.');
+                                    });
+                            });
+                        </script>
+                        <!-- Vision, Mission, and Motto Section -->
+                        <h>Vision, Mission, and Motto</h>
+                        <div class="form-group mb-4">
+                            @Html.LabelFor(model => model.Vision, htmlAttributes: new { @class = "font-bold" })
+                            @Html.EditorFor(model => model.Vision, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Vision.", @required = "", @style = "border-radius: 5px;" } })
+                            @Html.ValidationMessageFor(model => model.Vision, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group mb-4">
+                            @Html.LabelFor(model => model.Mission, htmlAttributes: new { @class = "font-bold" })
+                            @Html.EditorFor(model => model.Mission, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Mission.", @required = "", @style = "border-radius: 5px;" } })
+                            @Html.ValidationMessageFor(model => model.Mission, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group mb-4">
+                            @Html.LabelFor(model => model.Motto, htmlAttributes: new { @class = "font-bold" })
+                            @Html.EditorFor(model => model.Motto, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Motto.", @required = "", @style = "border-radius: 5px;" } })
+                            @Html.ValidationMessageFor(model => model.Motto, "", new { @class = "text-danger" })
                         </div>
 
                         <script>
@@ -447,7 +457,7 @@
 
                         <!-- Button -->
                         <div style="text-align: right; margin-top: 20px;">
-                            <button type="button" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="openModal()">Create</button>
+                            <button type="submit" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="openModal()">Create</button>
                         </div>
 
                         <!-- Modal Structure -->
@@ -460,7 +470,7 @@
                             </div>
                         </div>
 
-                        <script>
+                        @*<script>
                             function openModal() {
                                 document.getElementById('confirmationModal').style.display = 'flex';
                             }
@@ -475,7 +485,7 @@
                                 // Submit the form
                                 document.querySelector('form').submit();
                             }
-                        </script>
+                        </script>*@
 
 
                     }
@@ -590,7 +600,7 @@
                 }),
                 success: function (response) {
                     // Handle success
-                    alert("Data submitted successfully!");
+                     window.location.href = '@Url.Action("Index", "Company")';
                 },
                 error: function (xhr, status, error) {
                     // Handle error

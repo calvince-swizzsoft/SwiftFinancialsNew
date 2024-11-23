@@ -1,11 +1,19 @@
 ﻿using Infrastructure.Crosscutting.Framework.Utils;
+using Application.Seedwork;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.MainBoundedContext.DTO.RegistryModule
 {
-    public class AccountAlertDTO
-    { 
+    public class AccountAlertDTO : BindingModelBase<AccountAlertDTO>
+    {
+
+        public AccountAlertDTO()
+        {
+            AddAllAttributeValidators();
+        }
+
+
         [Display(Name = "Id")]
         public Guid Id { get; set; }
         

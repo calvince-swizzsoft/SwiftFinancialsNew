@@ -362,11 +362,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Edit(DebitTypeDTO debitTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
-            Guid findDebitId = (Guid)Session["DebitTypeId"];
 
-            debitTypeDTO.Description = Session["Description2"].ToString();
-            debitTypeDTO.CustomerAccountTypeProductCode = Convert.ToInt32(Session["CustomerAccountTypeProductCode2"].ToString());
-            debitTypeDTO.IsLocked = (bool)Session["isLocked2"];
+            //debitTypeDTO.Description = Session["Description2"].ToString();
+            //debitTypeDTO.CustomerAccountTypeProductCode = Convert.ToInt32(Session["CustomerAccountTypeProductCode2"].ToString());
+            //debitTypeDTO.IsLocked = (bool)Session["isLocked2"];
 
             if (Session["savingsProductId2"] != null)
             {
@@ -392,7 +391,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var result = await _channelService.UpdateDebitTypeAsync(debitTypeDTO, GetServiceHeader());
 
-                await _channelService.UpdateCommissionsByDebitTypeIdAsync(findDebitId, selectedRows, GetServiceHeader());
+                await _channelService.UpdateCommissionsByDebitTypeIdAsync(debitTypeDTO.Id, selectedRows, GetServiceHeader());
 
                 TempData["Edit"] = "Successfully Edited Debit Type";
                 Session["Description2"] = null;

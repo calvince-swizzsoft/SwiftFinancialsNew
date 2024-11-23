@@ -109,7 +109,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!postingPeriodDTO.HasErrors)
             {
-              await _channelService.ClosePostingPeriodAsync(postingPeriodDTO, moduleNavigationItemCode, GetServiceHeader());
+              var k=await _channelService.ClosePostingPeriodAsync(postingPeriodDTO, moduleNavigationItemCode, GetServiceHeader());
               //  var f =await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO, GetServiceHeader());
                 // ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(postingPeriodDTO.ToString());
                 TempData["SuccessMessage"] = "posting period closed successful.";
