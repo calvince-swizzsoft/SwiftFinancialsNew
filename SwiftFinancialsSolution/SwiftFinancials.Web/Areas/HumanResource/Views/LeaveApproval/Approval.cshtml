@@ -1,15 +1,15 @@
-﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDocumentDTO
+﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.LeaveApplicationDTO
 
-@{ ViewBag.Title = "View Document Deatils"; }
+@{ ViewBag.Title = "Leave Approval"; }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Employee Documents</h2>
+        <h2>Leave Application</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "EmployeeDocuments", new { Area = "HumanResource" }, null)
+                @Html.ActionLink("Home", "Index", "LeaveApproval", new { Area = "HumanResource" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -71,7 +71,10 @@
 
                 <div class="card">
                     <div class="card-body">
-                        @using (Html.BeginForm("Details", "EmployeeDocuments", new { Area = "HumanResource" }, FormMethod.Post))
+
+
+
+                        @using (Html.BeginForm("Approval", "LeaveApproval", new { Area = "HumanResource" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
                             @Html.AntiForgeryToken()
                             @Html.HiddenFor(model => model.EmployeeBloodGroupDescription, new { id = "EmployeeBloodGroupDescription" })
@@ -90,28 +93,27 @@
                             @Html.HiddenFor(model => model.EmployeeCustomerIndividualGenderDescription, new { id = "EmployeeCustomerIndividualGenderDescription" })
                             @Html.HiddenFor(model => model.EmployeeCustomerIndividualPayrollNumbers, new { id = "EmployeeCustomerIndividualPayrollNumbers" })
 
+                            @Html.HiddenFor(model => model.EmployeeEmployeeTypeId, new { id = "EmployeeEmployeeTypeId" })
+                            @Html.HiddenFor(model => model.EmployeeEmployeeTypeChartOfAccountId, new { id = "EmployeeEmployeeTypeChartOfAccountId" })
 
 
-
-
-                            <!-- Expense Payables -->
                             <fieldset>
                                 <div class="card mb-4">
                                     <div class="card-body text-dark">
                                         <div class="row">
+
                                             <div class="col-lg-6">
-                                                @Html.LabelFor(model => model.FileName, new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.EmployeeCustomerId, new { id = "EmployeeCustomerId" })
-                                                @Html.EditorFor(model => model.FileName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @readonly="" } })
-                                                @Html.ValidationMessageFor(model => model.FileName, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(model => model.EmployeeCustomerFullName, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.EmployeeCustomerId)
+                                                @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Enter Space to autofill....", @readonly="" } })
                                             </div>
 
-
                                             <div class="col-lg-6">
-                                                @Html.LabelFor(model => model.EmployeeCustomerFullName, new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.EmployeeCustomerId, new { id = "EmployeeCustomerId" })
-                                                @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @readonly = "" } })
-                                                @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(model => model.LeaveTypeDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.LeaveTypeId)
+                                                @Html.ValidationMessageFor(model => model.LeaveTypeId, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.LeaveTypeDescription, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Enter Space to autofill....", @readonly = "" } })
                                             </div>
 
 
@@ -119,39 +121,52 @@
                                         <div class="row">
 
                                             <div class="col-lg-6">
-                                                    @Html.LabelFor(model => model.FileTitle, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.FileTitle, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @readonly = "" } })
-                                                    @Html.ValidationMessageFor(model => model.FileTitle, "", new { @class = "text-danger" })
-                                               
+                                                @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label" })
+                                                @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Enter Space to autofill....", @readonly = "" } })
                                             </div>
 
                                             <div class="col-lg-6">
-                                                    @Html.LabelFor(model => model.FileDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.TextAreaFor(model => model.FileDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text.....", @readonly = "" })
-                                                    @Html.ValidationMessageFor(model => model.FileDescription, "", new { @class = "text-danger" })
-
-                                                
+                                                @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label" })
+                                                @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Enter Space to autofill....", @readonly = "" } })
                                             </div>
 
 
 
                                         </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
+                                                @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", @placeholder = "Enter Text.....", @readonly = "required", @rows = "4", @cols = "50" })
+                                                @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
 
                                     </div>
                                 </div>
                             </fieldset>
-
                             <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
-
-                                <p>
-                                    @Html.ActionLink("Edit", "Edit", "EmployeeDocuments", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                    @Html.ActionLink("Back to List", "Index", "EmployeeDocuments", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                </p>
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                    @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control", @placeholder = "Enter Text.....", @required = "required", @rows = "4", @cols = "50" })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    <label for="authorizationRemarks">Remarks</label>
+                                    <select class="form-control" id="authorizationRemarks" name="authorizationRemarks">
+                                        <option value="Approve">Approve</option>
+                                        <option value="Reject">Reject</option>
+                                    </select>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    <input type="submit" value="Update" class="btn btn-primary" />
+                                </div>
                             </div>
-
-
-
                         }
+
+
                     </div>
                 </div>
 
@@ -160,7 +175,7 @@
                         margin-bottom: 20px;
                     }
 
-                    
+
 
                     .form-group-lg {
                         margin-bottom: 1.5rem;
@@ -170,7 +185,7 @@
                         border-radius: .25rem;
                     }
 
-                    
+
 
                     .col-lg-2 {
                         display: flex;
@@ -343,7 +358,7 @@
                        var employeeId = $(this).data('id');
 
                 $.ajax({
-                    url: '@Url.Action("GetCustomerDetails", "EmployeeDocuments", new { Area = "HumanResource" })',
+                    url: '@Url.Action("GetEmployeeDetails", "LeaveApplication", new { Area = "HumanResource" })',
                     type: 'GET',
                     data: { employeeId: employeeId },
                     success: function (response) {
@@ -367,6 +382,8 @@
                             $('#EmployeeBranchId').val(response.data.EmployeeBranchId);
                             $('#EmployeeCustomerIndividualGenderDescription').val(response.data.EmployeeCustomerIndividualGenderDescription);
                             $('#EmployeeCustomerIndividualPayrollNumbers').val(response.data.EmployeeCustomerIndividualPayrollNumbers);
+                            $('#EmployeeEmployeeTypeId').val(response.data.EmployeeEmployeeTypeId);
+                            $('#EmployeeEmployeeTypeChartOfAccountId').val(response.data.EmployeeEmployeeTypeChartOfAccountId);
 
 
 
@@ -389,7 +406,7 @@
 
     <script>
         $.ajax({
-            url: '/HumanResource/Create',
+            url: '/HumanResource/Approval',
             type: 'POST',
             success: function (response) {
                 if (response.success) {
@@ -520,15 +537,8 @@
                 border-color: #bd2130;
             }
 
-        /* Ensure no border between tabs and tab content */
-        .nav-tabs {
-            border-bottom: none; /* Remove bottom border from tab navigation */
-        }
+        
 
-            .nav-tabs .nav-link {
-                border: none; /* Remove borders from tab links */
-                border-radius: 0; /* Remove border radius for a cleaner look */
-            }
 
         .tab-content {
             border-top: 1px solid #ddd; /* Add a subtle border if needed */
@@ -540,7 +550,153 @@
             margin-top: 20px; /* Adjust top margin as needed */
         }
     </style>
+    <script>
 
+             //Station typehead starts here
+
+            $('.LeaveTypeLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLeaveTypesAsync", "LeaveType", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (LeaveTypes) {
+                            var newLeaveTypesData = [];
+                            LeaveTypesMap = {};
+                            $.each(LeaveTypes, function (i, LeaveType) {
+                                newLeaveTypesData.push(LeaveType.Description);
+                                LeaveTypesMap[LeaveType.Description] = LeaveType;
+                            });
+                            process(newLeaveTypesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var LeaveTypeId = "";
+                    LeaveTypeId = LeaveTypesMap[item].Id;
+                    $('#LeaveTypeId').val(LeaveTypeId);
+                    $('#LeaveTypeZoneDivisionEmployerDescription').val(LeaveTypesMap[item].ZoneDivisionEmployerDescription);
+                    $('#LeaveTypeZoneDescription').val(LeaveTypesMap[item].ZoneDescription);
+                    $('#LeaveTypeZoneDivisionDescription').val(LeaveTypesMap[item].ZoneDivisionDescription);
+                    //console.log(LeaveTypeId)
+                    return item;
+                }
+            });
+
+
+        $('#EmployeesGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Employee", new { Area = "HumanResource" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/HumanResource/LeaveApplication/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+            "aoColumns": [
+                { "mDataProp": "Customer.FullName", "sTitle": "Name", "sWidth": "15%" },
+                { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
+                { "mDataProp": "DepartmentDescription", "sTitle": "DepartmentDescription", "sWidth": "15%" },
+                { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+            "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = EmployeesGrid.row(this).data();
+
+        $('#EmployeeId').val(data.i);
+        $('input[name=EmployeeId]').val(data.Id);
+        $('input[name=EmployeeCustomerFullName]').val(data.FullName);
+
+        //var CustomerId = "";
+        //CustomerId = CustomersMap[item].Id;
+        //$('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
+        //$('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+        //$('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        //$('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        //$('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#EmployeeLookupModal').modal('hide');
+    });
+
+    $(document).ready(function () {
+        $('#data_3 .input-group.date').datepicker({
+            format: 'dd-mm-yyyy',
+            startView: 2,
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+        });
+    });
+         //Branch typehead starts here
+    $('.LeaveTypeLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLeaveTypesAsync", "LeaveType", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Leavetypes) {
+                            var newLeavetypesData = [];
+                            LeavetypesMap = {};
+                            $.each(Leavetypes, function (i, Leavetype) {
+                                newLeavetypesData.push(Leavetype.Description);
+                                LeavetypesMap[Leavetype.Description] = Leavetype;
+                            });
+                            process(newLeavetypesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var LeaveTypeId = "";
+                    LeaveTypeId = LeaveTypeMap[item].Id;
+                    $('#LeaveTypeId').val(LeaveTypeId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+
+
+
+    </script>
 
 
 
@@ -550,4 +706,10 @@
 
 
 }
+
+
+
+
+
+
 

@@ -82,7 +82,12 @@ namespace Application.MainBoundedContext.MicroCreditModule.Services
                     var microCreditGroups = _microCreditGroupRepository.AllMatching(spec, serviceHeader);
 
                     if (microCreditGroups != null && microCreditGroups.Any())
-                        throw new InvalidOperationException("Sorry, but the selected customer already exists as a microcredit group!");
+                    {
+                        microCreditGroupDTO.errorMessages = string.Format(("Sorry, but the selected customer already exists as a microcredit group!"));
+                        return microCreditGroupDTO;
+
+                    }
+
                     else
                     {
                         var microCreditGroup = MicroCreditGroupFactory.CreateMicroCreditGroup(microCreditGroupDTO.ParentId, microCreditGroupDTO.CustomerId, microCreditGroupDTO.MicroCreditOfficerId, microCreditGroupDTO.Type, microCreditGroupDTO.Purpose, microCreditGroupDTO.Activities, microCreditGroupDTO.MeetingFrequency, microCreditGroupDTO.MeetingDayOfWeek, microCreditGroupDTO.MeetingPlace, microCreditGroupDTO.MinimumMembers, microCreditGroupDTO.MaximumMembers, microCreditGroupDTO.Remarks);

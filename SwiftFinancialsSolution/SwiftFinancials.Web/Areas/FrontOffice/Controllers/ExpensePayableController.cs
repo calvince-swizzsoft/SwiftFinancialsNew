@@ -12,6 +12,7 @@ using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.Windows.Forms;
 
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
@@ -26,32 +27,66 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View();
         }
 
+
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindExpensePayablesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            try
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+                var pageCollectionInfo = await _channelService.FindExpensePayablesByFilterInPageAsync(
+                    jQueryDataTablesModel.sSearch,
+                    pageIndex,
+                    pageSize,
+                    GetServiceHeader()
+                );
 
+                if (pageCollectionInfo != null)
+                {
+                    totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(expensePayable => expensePayable.CreatedDate).ToList();
+                    var sortedData = sortAscending
+                        ? pageCollectionInfo.PageCollection.OrderBy(item => item.CreatedDate).ToList()
+                        : pageCollectionInfo.PageCollection.OrderByDescending(item => item.CreatedDate).ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                        ? sortedData.Count
+                        : totalRecordCount;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                    return this.DataTablesJson(
+                        items: sortedData,
+                        totalRecords: totalRecordCount,
+                        totalDisplayRecords: searchRecordCount,
+                        sEcho: jQueryDataTablesModel.sEcho
+                    );
+                }
+                else
+                {
+                    return this.DataTablesJson(
+                        items: new List<ExpensePayableDTO>(),
+                        totalRecords: totalRecordCount,
+                        totalDisplayRecords: searchRecordCount,
+                        sEcho: jQueryDataTablesModel.sEcho
+                    );
+                }
             }
-            else return this.DataTablesJson(items: new List<ExpensePayableDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            catch (Exception)
+            {
+                return this.DataTablesJson(
+                    items: new List<ExpensePayableDTO>(),
+                    totalRecords: 0,
+                    totalDisplayRecords: 0,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
         }
+
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -91,13 +126,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO)
         {
-            // Retrieve the entries from TempData
             var expensePayableEntries = TempData["ExpensePayableEntryDTOs"] as ObservableCollection<ExpensePayableEntryDTO>;
 
-            // Ensure TempData is retained for subsequent calls
             TempData.Keep("ExpensePayableEntryDTOs");
 
-            // Ensure expensePayableDTO and expensePayableEntries are not null
             if (expensePayableDTO == null || expensePayableEntries == null)
             {
                 TempData["ErrorMessage"] = "Required data is missing.";
@@ -115,6 +147,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             // Add the main Expense Payable
             var resultDTO = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+            MessageBox.Show(
+                                                              "Operation Success",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
 
             if (!string.IsNullOrEmpty(resultDTO.ErrorMessageResult))
             {
@@ -122,11 +162,26 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 TempData["ErrorMessage"] = resultDTO.ErrorMessageResult;
                 return View(expensePayableDTO);
             }
+                return View("Index");
+            }
+
+            foreach (var entry in expensePayableEntries)
+            {
+                entry.ExpensePayableId = resultDTO.Id;
 
             // Add each entry individually
             foreach (var entry in expensePayableEntries)
             {
                 entry.ExpensePayableId = resultDTO.Id;
+                var entryResult = await _channelService.AddExpensePayableEntryAsync(entry, GetServiceHeader());
+                MessageBox.Show(
+                                                              "Operation Success",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
 
                 var entryResult = await _channelService.AddExpensePayableEntryAsync(entry, GetServiceHeader());
 
@@ -139,8 +194,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     return View(expensePayableDTO);
                 }
             }
+                if (entryResult.ErrorMessages != null && entryResult.ErrorMessages.Any())
+                {
+                    string errorMessage = string.Join("; ", entryResult.ErrorMessages);
+                    ModelState.AddModelError(string.Empty, $"Error adding entry: {errorMessage}");
+                    TempData["ErrorMessage"] = errorMessage;
+                    return View("Index");
+                }
+            }
 
             // Success message and redirect to Index
+            TempData["SuccessMessage"] = "Expense payable and its entries created successfully.";
             TempData["SuccessMessage"] = "Expense payable and its entries created successfully.";
             return RedirectToAction("Index");
         }
@@ -284,7 +348,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
                     ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
 
-                    return View(expensePayableDTO);
+                    return View("Index");
                 }
             }
             else
@@ -300,7 +364,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
 
-                return View(expensePayableDTO);
+                return View("Index");
             }
         }
 
@@ -371,7 +435,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
 
                 // Return the view with the DTO containing the errors
-                return View(expensePayableDTO);
+                return View("Index");
             }
         }
 

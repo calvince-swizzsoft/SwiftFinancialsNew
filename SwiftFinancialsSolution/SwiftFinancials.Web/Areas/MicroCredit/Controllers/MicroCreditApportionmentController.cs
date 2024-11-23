@@ -17,7 +17,7 @@ using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
 {
-    public class ApportionmentController : MasterController
+    public class MicroCreditApportionmentController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -27,7 +27,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, Guid microCreditGroupId)
         {
             int totalRecordCount = 0;
             int searchRecordCount = 0;
@@ -38,7 +38,9 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
             int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindMicroCreditGroupsByFilterInPageAsync(
+            // Fetch paginated data using microCreditGroupId
+            var pageCollectionInfo = await _channelService.FindMicroCreditGroupMembersByMicroCreditGroupIdInPageAsync(
+                microCreditGroupId,  // Ensure the group ID is passed
                 jQueryDataTablesModel.sSearch,
                 pageIndex,
                 pageSize,
@@ -49,6 +51,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                // Sort data based on columns
                 var sortedData = sortAscending
                     ? pageCollectionInfo.PageCollection
                         .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
@@ -57,8 +60,10 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                         .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
                         .ToList();
 
+                // Adjust record count for search
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
 
+                // Return DataTables-compatible JSON
                 return this.DataTablesJson(
                     items: sortedData,
                     totalRecords: totalRecordCount,
@@ -76,6 +81,75 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                 );
             }
         }
+
+
+        [HttpPost]
+        public async Task<JsonResult> GetGroupDetailsAndMembers(JQueryDataTablesModel jQueryDataTablesModel, Guid? microCreditGroupId)
+        {
+            if (!microCreditGroupId.HasValue)
+            {
+                return Json(new
+                {
+                    draw = jQueryDataTablesModel.sEcho,
+                    recordsTotal = 0,
+                    recordsFiltered = 0,
+                    data = new List<MicroCreditGroupMemberDTO>()
+                });
+            }
+
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+
+            try
+            {
+                var sortAscending = jQueryDataTablesModel.sSortDir_.FirstOrDefault() == "asc";
+                var sortColumn = jQueryDataTablesModel.GetSortedColumns().FirstOrDefault()?.PropertyName ?? "CustomerFullName";
+                var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+                var pageSize = jQueryDataTablesModel.iDisplayLength;
+
+                var serviceHeader = GetServiceHeader();
+                var groupMembersPage = await _channelService.FindMicroCreditGroupMembersByMicroCreditGroupIdInPageAsync(
+                    microCreditGroupId.Value,
+                    jQueryDataTablesModel.sSearch,
+                    pageIndex,
+                    pageSize,
+                    serviceHeader
+                );
+
+                if (groupMembersPage != null)
+                {
+                    totalRecordCount = groupMembersPage.ItemsCount;
+                    searchRecordCount = groupMembersPage.PageCollection.Count;
+
+                    var sortedData = sortAscending
+                        ? groupMembersPage.PageCollection.OrderBy(item => item.GetType().GetProperty(sortColumn)?.GetValue(item, null)).ToList()
+                        : groupMembersPage.PageCollection.OrderByDescending(item => item.GetType().GetProperty(sortColumn)?.GetValue(item, null)).ToList();
+
+                    return Json(new
+                    {
+                        draw = jQueryDataTablesModel.sEcho,
+                        recordsTotal = totalRecordCount,
+                        recordsFiltered = totalRecordCount, // Corrected to reflect the actual total
+                        data = sortedData
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log exception here
+            }
+
+            return Json(new
+            {
+                draw = jQueryDataTablesModel.sEcho,
+                recordsTotal = totalRecordCount,
+                recordsFiltered = searchRecordCount,
+                data = new List<MicroCreditGroupMemberDTO>()
+            });
+        }
+
+
+
 
 
         public async Task<ActionResult> Details(Guid id)
@@ -144,8 +218,11 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                         CustomerNonIndividualRegistrationNumber = customer.NonIndividualRegistrationNumber,
                         CustomerRegistrationDate = customer.RegistrationDate,
                         CustomerNonIndividualDateEstablished = customer.NonIndividualDateEstablished,
-
-
+                        MicroCreditOfficerEmployeeCustomerSalutationDescription = customer.IndividualSalutationDescription,
+                        CustomerAccountCustomerReference1 = customer.Reference1,
+                        CustomerAccountCustomerReference2 = customer.Reference2,
+                        CustomerAccountCustomerReference3 = customer.Reference3,
+                        AccountStatus = customer.StationDescription,
 
 
                     }
@@ -246,9 +323,79 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                     data = new
                     {
                         ParentId = parentGroup.Id,
-                        ParentMicroCreditDescription = parentGroup.CustomerNonIndividualDescription,
+                        ParentMicroCreditDescription = parentGroup.MicroCreditOfficerEmployeeCustomerIndividualFirstName,
+                        MicroCreditGroupCustomerId = parentGroup.CustomerId,
+                        MinimumMembers = parentGroup.MinimumMembers,
+                        MaximumMembers = parentGroup.MaximumMembers,
+                        MicroCreditOfficerEmployeeCustomerSalutationDescription = parentGroup.MicroCreditOfficerEmployeeCustomerSalutationDescription,
+                        CustomerStationDescription = parentGroup.CustomerStationDescription,
+                        CustomerNonIndividualRegistrationNumber = parentGroup.CustomerNonIndividualRegistrationNumber,
+                        CustomerNonIndividualDescription = parentGroup.CustomerNonIndividualDescription,
+                        CustomerAccountFullAccountNumber = parentGroup.CustomerAccountFullAccountNumber,
+                        CustomerId = parentGroup.CustomerId,
+                        CustomerStationId = parentGroup.CustomerStationId,
+                        CustomerRegistrationDate = parentGroup.CustomerRegistrationDate,
+                        CustomerNonIndividualDateEstablished = parentGroup.CustomerNonIndividualDateEstablished,
+                        CustomerAccountCustomerReference1 = parentGroup.CustomerAccountCustomerReference1,
+                        CustomerAccountCustomerReference2 = parentGroup.CustomerAccountCustomerReference2,
+                        CustomerAccountCustomerReference3 = parentGroup.CustomerAccountCustomerReference3,
+                        AccountStatus = parentGroup.AccountStatus,
+                        MicroCreditOfficerEmployeeCustomerFullName = parentGroup.MicroCreditOfficerEmployeeCustomerFullName,
+                        Activities = parentGroup.Activities,
+                        Purpose = parentGroup.Purpose,
+                        TypeDescription = parentGroup.TypeDescription,
 
 
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the micro-Credit Group details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetParentGroupmemberDetails(Guid customerId)
+        {
+            try
+            {
+                var parentGroup = await _channelService.FindMicroCreditGroupMemberByCustomerIdAsync(customerId, GetServiceHeader());
+
+                if (parentGroup == null)
+                {
+                    return Json(new { success = false, message = "Micro-Credit-Group not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        CustomerAccountFullAccountNumber = parentGroup.CustomerAccountFullAccountNumber,
+                        ParentId = parentGroup.Id,
+                        MicroCreditGroupId = parentGroup.MicroCreditGroupId,
+                        MicroCreditGroupCustomerId = parentGroup.MicroCreditGroupCustomerId,
+                        CustomerId = parentGroup.CustomerId,
+                        CustomerTypeDescription = parentGroup.CustomerTypeDescription,
+                        CustomerIndividualSalutationDescription = parentGroup.CustomerIndividualSalutationDescription,
+                        CustomerIndividualIdentityCardTypeDescription = parentGroup.CustomerIndividualIdentityCardTypeDescription,
+                        CustomerIndividualIdentityCardNumber = parentGroup.CustomerIndividualIdentityCardNumber,
+                        CustomerIndividualIdentityCardSerialNumber = parentGroup.CustomerIndividualIdentityCardSerialNumber,
+                        CustomerIndividualNationalityDescription = parentGroup.CustomerIndividualNationalityDescription,
+                        CustomerSerialNumber = parentGroup.CustomerSerialNumber,
+                        CustomerIndividualPayrollNumbers = parentGroup.CustomerIndividualPayrollNumbers,
+                        CustomerFullName = parentGroup.CustomerFullName,
+                        CustomerIndividualGenderDescription = parentGroup.CustomerIndividualGenderDescription,
+                        CustomerStationDescription = parentGroup.CustomerStationDescription,
+                        CustomerReference1 = parentGroup.CustomerReference1,
+                        CustomerReference2 = parentGroup.CustomerReference2,
+                        CustomerReference3 = parentGroup.CustomerReference3,
 
 
                     }
@@ -268,7 +415,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             if (microCreditGroupDTO == null)
             {
                 TempData["ErrorMessage"] = "An unexpected error occurred. Please try again.";
-                return View("Error");
+                return View("Index");
             }
 
             microCreditGroupDTO.ValidateAll();
@@ -278,14 +425,22 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                 try
                 {
                     var createdOfficer = await _channelService.AddMicroCreditGroupAsync(microCreditGroupDTO, GetServiceHeader());
-                    TempData["Message"] = "Micro Credit Group created successfully!";
+                    MessageBox.Show(
+                                                              "Operation Success",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
+                    TempData["SuccessMessage"] = "Micro Credit Group created successfully!";
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Error creating Micro Credit Group: {ex.Message}");
                     TempData["ErrorMessage"] = "An error occurred while creating the Micro Credit Group. Please try again.";
-                    return View(microCreditGroupDTO);
+                    return View("Index");
                 }
             }
             else
@@ -296,7 +451,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                 }
 
                 TempData["ErrorMessage"] = "There were errors in your submission. Please review the form and try again.";
-                return View(microCreditGroupDTO);
+                return View("Index");
             }
         }
 
@@ -340,6 +495,14 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                 member.MicroCreditGroupId = microCreditGroupId.Value;
 
                 var addedMember = await _channelService.AddMicroCreditGroupMemberAsync(member, serviceHeader);
+                MessageBox.Show(
+                                                              "Operation Success",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
 
                 if (addedMember != null)
                 {
@@ -373,6 +536,14 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             var membersToRemove = new ObservableCollection<MicroCreditGroupMemberDTO> { memberToRemove };
 
             bool removeSuccess = await _channelService.RemoveMicroCreditGroupMembersAsync(membersToRemove, serviceHeader);
+            MessageBox.Show(
+                                                              "Operation Success",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
 
             if (removeSuccess)
             {
@@ -408,6 +579,14 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                 var serviceHeader = GetServiceHeader();
 
                 bool updateSuccess = await _channelService.UpdateMicroCreditGroupAsync(microCreditGroupDTO, serviceHeader);
+                MessageBox.Show(
+                                                              "Operation Success",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
 
                 if (updateSuccess)
                 {
@@ -427,7 +606,27 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             return View("Edit", microCreditGroupDTO);
         }
 
+        public async Task<ActionResult> Apportionment(Guid id)
+        {
+            await ServeNavigationMenus();
+            ViewBag.TypeDescriptionSelectList = GetMicroCreditGroupTypeSelectList(string.Empty);
+            ViewBag.MeetingFrequencyDescriptionSelectList = GetMicroCreditGroupMeetingFrequencySelectList(string.Empty);
+            ViewBag.MeetingDayOfWeekDescriptionSelectList = GetMicroCreditGroupMeetingDayOfWeekSelectList(string.Empty);
+            ViewBag.DesignationSelectList = GetMicroCreditGroupMemberDesignationSelectList(string.Empty);
 
+            var microCreditGroupDTO = await _channelService.FindMicroCreditGroupAsync(id, GetServiceHeader());
+            if (microCreditGroupDTO == null)
+            {
+                TempData["ErrorMessage"] = "MicroCredit Group not found.";
+                return RedirectToAction("Index");
+            }
+
+            TempData["MicroCreditGroupId"] = microCreditGroupDTO.Id;
+
+
+
+            return View(microCreditGroupDTO);
+        }
 
 
 

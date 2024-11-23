@@ -646,7 +646,7 @@
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
-    <Compile Include="Areas\MicroCredit\Controllers\ApportionmentController.cs" />
+    <Compile Include="Areas\MicroCredit\Controllers\MicroCreditApportionmentController.cs" />
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditGroupsController.cs" />
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
@@ -1198,7 +1198,7 @@
     <Content Include="Areas\HumanResource\Views\SalaryProcessing\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\Salary\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApproval\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveApproval\Approve.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApproval\Approval.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveRecall\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveRecall\Recall.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveType\Index.cshtml" />
@@ -1454,8 +1454,6 @@
     <Content Include="Areas\Dashboard\Views\Pre_Qualification\Appraise.cshtml" />
     <Content Include="Areas\Dashboard\Views\Messaging\Index.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Details.cshtml" />
-    <Content Include="Areas\MicroCredit\Views\Apportionment\Create.cshtml" />
-    <Content Include="Areas\MicroCredit\Views\Apportionment\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Details.cshtml" />
@@ -1479,6 +1477,12 @@
     <Content Include="Areas\Dashboard\Views\TextAlerts\Create.cshtml" />
     <Content Include="Areas\Dashboard\Views\FinancialPosition\Index.cshtml" />
     <Content Include="Areas\Dashboard\Views\AccountStatuses\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AuthorizeLoanBatch\Authorize.cshtml" />
+    <Content Include="Areas\Loaning\Views\AuthorizeLoanBatch\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Edit.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Apportionment.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditApportionment\Index.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditApportionment\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

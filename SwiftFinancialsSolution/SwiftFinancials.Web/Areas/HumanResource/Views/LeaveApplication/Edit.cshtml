@@ -1,18 +1,18 @@
-﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDocumentDTO
+﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.LeaveApplicationDTO
 
-@{ ViewBag.Title = "View Document Deatils"; }
+@{ ViewBag.Title = "Edit Leave Application"; }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Employee Documents</h2>
+        <h2>Leave Application</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "EmployeeDocuments", new { Area = "HumanResource" }, null)
+                @Html.ActionLink("Home", "Index", "LeaveApplication", new { Area = "HumanResource" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Create</strong>
+                <strong>Edit</strong>
             </li>
         </ol>
     </div>
@@ -71,7 +71,10 @@
 
                 <div class="card">
                     <div class="card-body">
-                        @using (Html.BeginForm("Details", "EmployeeDocuments", new { Area = "HumanResource" }, FormMethod.Post))
+
+
+
+                        @using (Html.BeginForm("Edit", "LeaveApplication", new { Area = "HumanResource" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
                             @Html.AntiForgeryToken()
                             @Html.HiddenFor(model => model.EmployeeBloodGroupDescription, new { id = "EmployeeBloodGroupDescription" })
@@ -90,28 +93,34 @@
                             @Html.HiddenFor(model => model.EmployeeCustomerIndividualGenderDescription, new { id = "EmployeeCustomerIndividualGenderDescription" })
                             @Html.HiddenFor(model => model.EmployeeCustomerIndividualPayrollNumbers, new { id = "EmployeeCustomerIndividualPayrollNumbers" })
 
+                            @Html.HiddenFor(model => model.EmployeeEmployeeTypeId, new { id = "EmployeeEmployeeTypeId" })
+                            @Html.HiddenFor(model => model.EmployeeEmployeeTypeChartOfAccountId, new { id = "EmployeeEmployeeTypeChartOfAccountId" })
 
 
-
-
-                            <!-- Expense Payables -->
                             <fieldset>
                                 <div class="card mb-4">
                                     <div class="card-body text-dark">
                                         <div class="row">
-                                            <div class="col-lg-6">
-                                                @Html.LabelFor(model => model.FileName, new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.EmployeeCustomerId, new { id = "EmployeeCustomerId" })
-                                                @Html.EditorFor(model => model.FileName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @readonly="" } })
-                                                @Html.ValidationMessageFor(model => model.FileName, "", new { @class = "text-danger" })
-                                            </div>
-
 
                                             <div class="col-lg-6">
                                                 @Html.LabelFor(model => model.EmployeeCustomerFullName, new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.EmployeeCustomerId, new { id = "EmployeeCustomerId" })
-                                                @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @readonly = "" } })
+                                                <div class="input-group">
+                                                    @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "EmployeeCustomerFullName", @readonly = "" } })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#customerLookup">
+                                                            <span class="fa fa-search"></span>
+                                                        </a>
+                                                    </span>
+                                                </div>
                                                 @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.LeaveTypeDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.LeaveTypeId)
+                                                @Html.ValidationMessageFor(model => model.LeaveTypeId, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.LeaveTypeDescription, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Enter Space to autofill...." } })
                                             </div>
 
 
@@ -119,39 +128,44 @@
                                         <div class="row">
 
                                             <div class="col-lg-6">
-                                                    @Html.LabelFor(model => model.FileTitle, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.FileTitle, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @readonly = "" } })
-                                                    @Html.ValidationMessageFor(model => model.FileTitle, "", new { @class = "text-danger" })
-                                               
+                                                @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
+                                                <div class="input-group date">
+                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    <input type="text" name="DurationStartDate" class="form-control" value="@DateTime.Today.ToString("dd-mm-yyy")">
+                                                </div>
                                             </div>
 
                                             <div class="col-lg-6">
-                                                    @Html.LabelFor(model => model.FileDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.TextAreaFor(model => model.FileDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text.....", @readonly = "" })
-                                                    @Html.ValidationMessageFor(model => model.FileDescription, "", new { @class = "text-danger" })
-
-                                                
+                                                @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
+                                                <div class="input-group date">
+                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    <input type="text" name="DurationEndDate" class="form-control" value="@DateTime.Today.ToString("dd-mm-yyy")">
+                                                </div>
                                             </div>
 
 
 
                                         </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
+                                                @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", @placeholder = "Enter Text.....", @required = "required", @rows = "4", @cols = "50" })
+                                                @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
 
                                     </div>
                                 </div>
                             </fieldset>
-
                             <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
 
-                                <p>
-                                    @Html.ActionLink("Edit", "Edit", "EmployeeDocuments", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                    @Html.ActionLink("Back to List", "Index", "EmployeeDocuments", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                </p>
+
+                                <input type="submit" value="Update" class="btn btn-primary btn-update" />
                             </div>
-
-
-
                         }
+
+
                     </div>
                 </div>
 
@@ -160,7 +174,10 @@
                         margin-bottom: 20px;
                     }
 
-                    
+                    .nav-tabs .nav-link.active {
+                        background-color: #007bff;
+                        color: white;
+                    }
 
                     .form-group-lg {
                         margin-bottom: 1.5rem;
@@ -170,7 +187,46 @@
                         border-radius: .25rem;
                     }
 
-                    
+                    /* The .nav class is incorrectly nested, so I'll fix that */
+                    .nav {
+                        display: flex;
+                        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+                        padding: 0;
+                        margin: 5px;
+                        margin-bottom: 0;
+                        border: 2px solid black;
+                        border-radius: 8px;
+                        margin-top: 20px;
+                        gap: 10px; /* Space between links */
+                        text-align: center; /* Centers the text inside links */
+                        padding: 10px;
+                    }
+
+                    .nav-link {
+                        display: flex;
+                        text-decoration: none;
+                        color: #007bff; /* Default text color */
+                        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+                        border-radius: 4px; /* Rounded corners */
+                        font-size: 14px; /* Adjust font size for better fit */
+                        white-space: nowrap; /* Prevents text from wrapping inside the link */
+                    }
+
+                        .nav-link:hover {
+                            color: #fff; /* Text color on hover */
+                            background-color: #0056b3; /* Background color on hover */
+                        }
+
+                        .nav-link i {
+                            margin-right: 8px; /* Space between icon and text */
+                            font-size: 16px; /* Adjust icon size */
+                        }
+
+                        .nav-link.disabled {
+                            pointer-events: none;
+                            opacity: 0.6;
+                            cursor: not-allowed;
+                        }
 
                     .col-lg-2 {
                         display: flex;
@@ -343,7 +399,7 @@
                        var employeeId = $(this).data('id');
 
                 $.ajax({
-                    url: '@Url.Action("GetCustomerDetails", "EmployeeDocuments", new { Area = "HumanResource" })',
+                    url: '@Url.Action("GetEmployeeDetails", "LeaveApplication", new { Area = "HumanResource" })',
                     type: 'GET',
                     data: { employeeId: employeeId },
                     success: function (response) {
@@ -367,6 +423,8 @@
                             $('#EmployeeBranchId').val(response.data.EmployeeBranchId);
                             $('#EmployeeCustomerIndividualGenderDescription').val(response.data.EmployeeCustomerIndividualGenderDescription);
                             $('#EmployeeCustomerIndividualPayrollNumbers').val(response.data.EmployeeCustomerIndividualPayrollNumbers);
+                            $('#EmployeeEmployeeTypeId').val(response.data.EmployeeEmployeeTypeId);
+                            $('#EmployeeEmployeeTypeChartOfAccountId').val(response.data.EmployeeEmployeeTypeChartOfAccountId);
 
 
 
@@ -540,7 +598,153 @@
             margin-top: 20px; /* Adjust top margin as needed */
         }
     </style>
+    <script>
 
+             //Station typehead starts here
+
+            $('.LeaveTypeLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLeaveTypesAsync", "LeaveType", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (LeaveTypes) {
+                            var newLeaveTypesData = [];
+                            LeaveTypesMap = {};
+                            $.each(LeaveTypes, function (i, LeaveType) {
+                                newLeaveTypesData.push(LeaveType.Description);
+                                LeaveTypesMap[LeaveType.Description] = LeaveType;
+                            });
+                            process(newLeaveTypesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var LeaveTypeId = "";
+                    LeaveTypeId = LeaveTypesMap[item].Id;
+                    $('#LeaveTypeId').val(LeaveTypeId);
+                    $('#LeaveTypeZoneDivisionEmployerDescription').val(LeaveTypesMap[item].ZoneDivisionEmployerDescription);
+                    $('#LeaveTypeZoneDescription').val(LeaveTypesMap[item].ZoneDescription);
+                    $('#LeaveTypeZoneDivisionDescription').val(LeaveTypesMap[item].ZoneDivisionDescription);
+                    //console.log(LeaveTypeId)
+                    return item;
+                }
+            });
+
+
+        $('#EmployeesGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Employee", new { Area = "HumanResource" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/HumanResource/LeaveApplication/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+            "aoColumns": [
+                { "mDataProp": "Customer.FullName", "sTitle": "Name", "sWidth": "15%" },
+                { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
+                { "mDataProp": "DepartmentDescription", "sTitle": "DepartmentDescription", "sWidth": "15%" },
+                { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+            "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = EmployeesGrid.row(this).data();
+
+        $('#EmployeeId').val(data.i);
+        $('input[name=EmployeeId]').val(data.Id);
+        $('input[name=EmployeeCustomerFullName]').val(data.FullName);
+
+        //var CustomerId = "";
+        //CustomerId = CustomersMap[item].Id;
+        //$('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
+        //$('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+        //$('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        //$('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        //$('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#EmployeeLookupModal').modal('hide');
+    });
+
+    $(document).ready(function () {
+        $('#data_3 .input-group.date').datepicker({
+            format: 'dd-mm-yyyy',
+            startView: 2,
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+        });
+    });
+         //Branch typehead starts here
+    $('.LeaveTypeLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLeaveTypesAsync", "LeaveType", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Leavetypes) {
+                            var newLeavetypesData = [];
+                            LeavetypesMap = {};
+                            $.each(Leavetypes, function (i, Leavetype) {
+                                newLeavetypesData.push(Leavetype.Description);
+                                LeavetypesMap[Leavetype.Description] = Leavetype;
+                            });
+                            process(newLeavetypesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var LeaveTypeId = "";
+                    LeaveTypeId = LeaveTypeMap[item].Id;
+                    $('#LeaveTypeId').val(LeaveTypeId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+
+
+
+    </script>
 
 
 
@@ -550,4 +754,6 @@
 
 
 }
+
+
 

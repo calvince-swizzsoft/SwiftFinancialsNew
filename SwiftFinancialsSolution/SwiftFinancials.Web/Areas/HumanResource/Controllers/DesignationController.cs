@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -101,6 +102,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!designationDTO.HasErrors)
             {
                 await _channelService.AddDesignationAsync(designationDTO, GetServiceHeader());
+                MessageBox.Show(
+                                                             "Operation Success",
+                                                             "Customer Receipts",
+                                                             MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Information,
+                                                             MessageBoxDefaultButton.Button1,
+                                                             MessageBoxOptions.ServiceNotification
+                                                         );
                 TempData["SuccessMessage"] = "Designation Created Succeesfully";
 
                 return RedirectToAction("Index");

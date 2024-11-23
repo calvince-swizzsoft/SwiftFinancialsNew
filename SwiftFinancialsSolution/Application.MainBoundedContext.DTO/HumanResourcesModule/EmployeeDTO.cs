@@ -463,5 +463,12 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         [DataMember]
         [Display(Name = "Env. IP Address")]
         public string EnvironmentIPAddress { get; set; }
+
+        // Additional Document DTO
+        public Guid DocumentID { get; set; }  // Unique identifier for the document
+        public byte[] PassportPhoto { get; set; }
+        public byte[] SignaturePhoto { get; set; }
+        public byte[] IDCardFrontPhoto { get; set; }
+        public byte[] IDCardBackPhoto { get; set; }
     }
 }
