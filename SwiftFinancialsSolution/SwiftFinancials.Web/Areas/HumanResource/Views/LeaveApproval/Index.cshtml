@@ -99,7 +99,7 @@
                     var dt_DurationEndDate = $.datepicker.formatDate('dd/mm/yy', DurationEndDate) + " " + h + ":" + m + ":" + s;
                     aData.DurationEndDate = dt_DurationEndDate;
 
-                    var editUrl = '<a  href="/humanResource/LeaveApproval/Approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
+                    var editUrl = '<a  href="/humanResource/LeaveApproval/Approval/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approval</a>';
                    // var viewUrl = '<a  href="/humanResource/Employee/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(2)', nRow).html(dt_Created);

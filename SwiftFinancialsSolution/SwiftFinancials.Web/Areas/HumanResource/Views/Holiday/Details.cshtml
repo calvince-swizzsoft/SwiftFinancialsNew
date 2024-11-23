@@ -108,12 +108,12 @@
                                             <div class="col-lg-6">
                                                 @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label" })
                                                 @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "datepicker form-control", placeholder = "Select Start Date..." } })
+                                                @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Enter Space to autofill....", @readonly = "" } })
                                             </div>
                                             <div class="col-lg-6">
                                                 @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label" })
                                                 @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "datepicker form-control", placeholder = "Select End Date..." } })
+                                                @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Enter Space to autofill....", @readonly = "" } })
                                             </div>
                                         </div>
                                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })

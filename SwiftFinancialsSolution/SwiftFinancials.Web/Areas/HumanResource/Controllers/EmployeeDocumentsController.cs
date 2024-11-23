@@ -8,7 +8,8 @@ using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System.IO; 
-using System.Web; 
+using System.Web;
+using System.Windows.Forms;
 
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
@@ -166,6 +167,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!employeeDocumentDTO.HasErrors)
             {
                 await _channelService.AddEmployeeDocumentAsync(employeeDocumentDTO, GetServiceHeader());
+                MessageBox.Show(
+                                                             "Operation Success",
+                                                             "Customer Receipts",
+                                                             MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Information,
+                                                             MessageBoxDefaultButton.Button1,
+                                                             MessageBoxOptions.ServiceNotification
+                                                         );
 
                 TempData["SuccessMessage"] = "Employee Document created successfully!";
                 return RedirectToAction("Index");
@@ -211,6 +220,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!employeeDocumentDTO.HasErrors)
             {
                 bool success = await _channelService.UpdateEmployeeDocumentAsync(employeeDocumentDTO, GetServiceHeader());
+                MessageBox.Show(
+                                                             "Operation Success",
+                                                             "Customer Receipts",
+                                                             MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Information,
+                                                             MessageBoxDefaultButton.Button1,
+                                                             MessageBoxOptions.ServiceNotification
+                                                         );
 
                 if (success)
                 {

@@ -178,22 +178,20 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
 
                 if (createdOfficer != null)
                 {
-                    ViewBag.Message = "Micro Credit Officer created successfully!";
-                    ViewBag.IsSuccess = true;
-                    return View("Create");
+                    TempData["SuccessMessage"] = "Micro Credit Officer created successfully!";
+                    return View("Index");
                 }
                 else
                 {
-                    ViewBag.Message = "Failed to create the Micro Credit Officer. Please try again.";
-                    ViewBag.IsSuccess = false;
-                    return View(microCreditOfficerDTO);
+                    TempData["ErrorMessage"] = "Failed to create the Micro Credit Officer. Please try again.";
+                    return View("Index");
                 }
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "An error occurred: " + ex.Message;
                 ViewBag.IsSuccess = false;
-                return View(microCreditOfficerDTO);
+                return View("Index");
             }
         }
 
@@ -216,22 +214,20 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
 
                 if (updateSuccess)
                 {
-                    ViewBag.Message = "Micro-credit Officer updated successfully.";
-                    ViewBag.IsSuccess = true;
+                    TempData["SuccessMessage"] = "Micro-credit Officer updated successfully.";
                     return View("Index"); 
                 }
                 else
                 {
-                    ViewBag.Message = "Failed to update the Micro-credit Officer.";
-                    ViewBag.IsSuccess = false;
-                    return View(microCreditOfficerDTO);
+                    TempData["ErrorMessage"] = "Failed to update the Micro-credit Officer.";
+                    return View("Index");
                 }
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "An error occurred: " + ex.Message;
                 ViewBag.IsSuccess = false;
-                return View(microCreditOfficerDTO);
+                return View("Index");
             }
 
             

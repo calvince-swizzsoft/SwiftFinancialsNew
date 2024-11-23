@@ -42,70 +42,89 @@
                     @using (Html.BeginForm("Verify", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.PostingPeriodId)
+
 
 
                         <h1>Verify</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Type, new { htmlAttributes = new { @class = "form-control", placeholder = "......", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                                    </div>
 
 
+                                </div>
+                                <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value", disabled = "disabled" } })
+                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", placeholder = "......", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                    </div>
+
+
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.ValueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = ".....", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.ValueDate, "", new { @class = "text-danger" })
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "....", disabled = "" } })
+                                        @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
                                     </div>
 
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
-                                        @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description", disabled = "" } })
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
 
-                                    <div class="form-group" id="data_3">
-                                        @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="AuditedDate" class="form-control" readonly="readonly" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                        </div>
-
-                                    </div>
+                                </div>
+                                <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Remarks", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                     </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.StatusDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.StatusDescription, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks", disabled = "" } })
+                                        @Html.ValidationMessageFor(model => model.StatusDescription, "", new { @class = "text-danger" })
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks" } })
                                         @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
                                     </div>
 
-
                                 </div>
                                 <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name", disabled = "disabled" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Remarks", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
+
+
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "" })
                                         <div class="input-group">
@@ -119,7 +138,12 @@
 
                                 </div>
 
+
                             </div>
+
+
+
+
 
 
 

@@ -293,7 +293,7 @@
 
                             <div class="row">
 
-                                
+
                                 <div class="col-md-4">
                                     <label for="fixingAction">Verify Action</label>
                                     <select class="form-control" id="fixingAction" name="fixedDepositAuth">
@@ -342,44 +342,23 @@
 
                             </ul>
                             <div class="tab-content">
-                                Loan Accounts Tab Content
                                 <div id="fixedDepositPayable" class="tab-pane fade show active">
                                     <div id="fixedDepositEntries">
-                                        <div id="noEntriesMessage">
-
-
-
-                                            @if (ViewBag.LoanAccounts != null && ViewBag.LoanAccounts.Count > 0)
-                                            {
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Full Account Number</th>
-                                                            <th>Product Name</th>
-                                                            <th>Book Balance</th>
-                                                            <th>Principal Balance</th>
-                                                            <th>Interest Balance</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach (var levySplit in ViewBag.LoanAccounts)
-                                                        {
-                                                            <tr>
-                                                                <td>@levySplit.FullAccountNumber</td>
-                                                                <td>@levySplit.CustomerAccountTypeTargetProductDescription</td>
-                                                                <td>@levySplit.BookBalance</td>
-                                                                <td>@levySplit.PrincipalBalance</td>
-                                                                <td>@levySplit.InterestBalance</td>
-                                                            </tr>
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            }
-                                            else
-                                            {
-                                                <p>No Fixed Deposit Payable.</p>
-                                            }
-                                        </div>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Full Account Number</th>
+                                                    <th>Product Name</th>
+                                                    <th>Book Balance</th>
+                                                    <th>Principal Balance</th>
+                                                    <th>Interest Balance</th>
+                                                    <th>Select</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="loanAccountsTableBody">
+                                                <!-- Dynamic rows will be added here -->
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -524,69 +503,140 @@
 
 
     <script>
-
-        $('#CustomerAccountsGrid').DataTable({
-                // Ajax settings
+               $(document).ready(function () {
+                   $('#CustomerAccountsGrid').DataTable({
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+                "sAjaxSource": "@Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" })",
                 "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/FrontOffice/FixedDeposit/Search/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(5)', nRow).html(dt_Created);
-
-                    $('td:eq(6)', nRow).html(selectUrl);
-
-                    return nRow;
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
                 },
-            // Display settings
-            // lookup Display settings
-            "aoColumns": [
-                { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "15%" },
-                { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
-                { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15" },
-                { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "15%" },
-                { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "15%" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
-                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }],
+                "aoColumns": [
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer FullName", "sWidth": "15%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
+                    { "mDataProp": "FullAccountNumber", "sTitle": "FullAccount Number", "sWidth": "15%" },
+                    { "mDataProp": "CustomerIndividualPayrollNumbers", "sTitle": "Payroll Number", "sWidth": "15%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Customer Status", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
 
-            "aaSorting": [[0, "desc"]]
+                   $('#CustomerAccountsGrid tbody').on('click', '.select-customer', function () {
+                       var customerAccountId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetCustomerAccountDetails", "FixedDeposit", new { Area = "FrontOffice" })',
+                    type: 'GET',
+                    data: { customerAccountId: customerAccountId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#CustomerAccountFullAccountNumber').val(response.data.CustomerAccountFullAccountNumber);
+                            $('#CustomerAccountId').val(response.data.CustomerAccountId);
+
+                            $('#CustomerAccountStatusDescription').val(response.data.CustomerAccountStatusDescription);
+                            $('#AvailableBalance').val(response.data.AvailableBalance);
+                            $('#CustomerAccountCustomerId').val(response.data.CustomerAccountCustomerId);
+                            $('#CustomerAccountCustomerFullName').val(response.data.CustomerAccountCustomerFullName);
+                            $('#CustomerAccountCustomerIndividualPayrollNumbers').val(response.data.CustomerAccountCustomerIndividualPayrollNumbers);
+                            $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(response.data.CustomerAccountCustomerIndividualIdentityCardNumber);
+                            $('#CustomerAccountCustomerReference1').val(response.data.CustomerAccountCustomerReference1);
+                            $('#CustomerAccountCustomerReference2').val(response.data.CustomerAccountCustomerReference2);
+                            $('#CustomerAccountCustomerReference3').val(response.data.CustomerAccountCustomerReference3);
+                            $('#CustomerAccountBranchId').val(response.data.CustomerAccountBranchId);
+                            $('#BranchDescription').val(response.data.BranchDescription);
+                            $('#BranchId').val(response.data.BranchId);
+                            $('#ProductChartOfAccountId').val(response.data.ProductChartOfAccountId);
+                            $('#CustomerAccountCustomerAccountTypeTargetProductId').val(response.data.CustomerAccountCustomerAccountTypeTargetProductId);
+                            $('#CustomerAccountBranchCode').val(response.data.CustomerAccountBranchCode);
+                            $('#CustomerAccountCustomerAccountTypeProductCode').val(response.data.CustomerAccountCustomerAccountTypeProductCode);
+                            $('#CustomerAccountCustomerAccountTypeTargetProductCode').val(response.data.CustomerAccountCustomerAccountTypeTargetProductCode);
+                            $('#CustomerAccountCustomerType').val(response.data.CustomerAccountCustomerType);
+                            $('#CustomerAccountCustomerTypeDescription').val(response.data.CustomerAccountCustomerTypeDescription);
+                            $('#CustomerAccountStatus').val(response.data.CustomerAccountStatus);
+                            $('#CustomerAccountCustomerIndividualSalutationDescription').val(response.data.CustomerAccountCustomerIndividualSalutationDescription);
+                            $('#CustomerAccountCustomerIndividualFirstName').val(response.data.CustomerAccountCustomerIndividualFirstName);
+                            $('#CustomerAccountCustomerIndividualLastName').val(response.data.CustomerAccountCustomerIndividualLastName);
+                            $('#CustomerAccountCustomerNonIndividualDescription').val(response.data.CustomerAccountCustomerNonIndividualDescription);
+                            $('#CustomerAccountCustomerNonIndividualRegistrationNumber').val(response.data.CustomerAccountCustomerNonIndividualRegistrationNumber);
+                            $('#CustomerAccountCustomerPersonalIdentificationNumber').val(response.data.CustomerAccountCustomerPersonalIdentificationNumber);
+                            $('#CustomerAccountCustomerNonIndividualDateEstablished').val(response.data.CustomerAccountCustomerNonIndividualDateEstablished);
+                            $('#CustomerAccountCustomerIdentificationNumber').val(response.data.CustomerAccountCustomerIdentificationNumber);
+                            $('#ProductDescription').val(response.data.ProductDescription);
+                            $('#ProductChartOfAccountCode').val(response.data.ProductChartOfAccountCode);
+                            $('#ProductChartOfAccountName').val(response.data.ProductChartOfAccountName);
+                            $('#account1').val(response.data.account1);
+                            $('#account2').val(response.data.account2);
+                            $('#account3').val(response.data.account3);
+
+
+
+                            // Populate the table dynamically
+                            var newRow = `
+                            <tr>
+                                <td>${response.data.CustomerAccountFullAccountNumber}</td>
+                                <td>${response.data.ProductDescription}</td>
+                                <td>${response.data.account1}</td>
+                                <td>${response.data.account2}</td>
+                                <td>${response.data.account3}</td>
+                                <td>
+                                    <input type="checkbox" name="selectedAccounts" value="${response.data.CustomerAccountFullAccountNumber}" />
+                                    <input type="hidden" name="accountDetails" data-account="${response.data.CustomerAccountFullAccountNumber}"
+                                           data-product="${response.data.ProductDescription}"
+                                           data-bookbalance="${response.data.account1}"
+                                           data-principalbalance="${response.data.account2}"
+                                           data-interestbalance="${response.data.account3}" />
+                                </td>
+                            </tr>
+                        `;
+
+                            $('#loanAccountsTableBody').append(newRow);
+
+
+
+
+                            $('#customerAccountLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Customer details.');
+                    }
+                });
+            });
         });
 
-    $("#s tbody").on("click", "tr", function () {
-        var data = CustomerAccountsGrid.row(this).data();
-        $('#Id').val(data.Id);
-        $('#Id').val(data.CustomerAccountCustomerId);
-        $('input[name=CustomerAccountCustomerId]').val(data.Id);
-        $('input[name=CustomerAccountFullAccountNumber]').val(data.CustomerAccountFullAccountNumber);
-
-        var CustomerAccountCustomerId = "";
-        CustomerAccountCustomerId = CustomersMap[item].Id;
-
-
-        $('#id').val(CustomersMap[item].CustomerAccountId);
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerAccountFullAccountNumber').val(CustomersMap[item].CustomerAccountFullAccountNumber);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
-        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
-        $('#CustomerAccountTypeProductCodeDescription').val(CustomersMap[item].CustomerAccountTypeProductCodeDescription);
-        $('#customerLookupModal').modal('hide');
-    });
     </script>
 
     //ajax form submisstion

@@ -289,5 +289,9 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        [Display(Name = "Remarks")]
+        public string Remarks { get; set; }
     }
 }

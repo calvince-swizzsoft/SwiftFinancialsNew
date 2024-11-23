@@ -9,16 +9,14 @@
         @TempData["SuccessMessage"]
     </div>
 }
-@if (TempData["Error"] != null)
+
+@if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
     </div>
 }
+
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -125,8 +123,8 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    var viewButton = `<a class="dropdown-item" href="/HumanResource/Holiday/details/${aData.Id}">View</a>`;
-                    var editButton = `<a class="dropdown-item" href="/HumanResource/Holiday/edit/${aData.Id}">Edit</a>`;
+                    var viewButton = `<a class="dropdown-item" href="/HumanResource/LeaveApplication/details/${aData.Id}">View</a>`;
+                    var editButton = `<a class="dropdown-item" href="/HumanResource/LeaveApplication/edit/${aData.Id}">Edit</a>`;
 
                     switch (aData.Status) {
                         case 1: // Pending
@@ -148,7 +146,7 @@
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "LeaveType", "sTitle": "Type", "sWidth": "15%" },
+                    { "mDataProp": "LeaveTypeDescription", "sTitle": "Type", "sWidth": "15%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
                     { "mDataProp": "EmployeeCustomerFullName", "sTitle": "Employee Name", "sWidth": "10%" },
                     { "mDataProp": "EmployeeCustomerIndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },

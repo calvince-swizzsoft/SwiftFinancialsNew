@@ -6,10 +6,11 @@ using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
-using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.Globalization;
+
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -27,160 +28,191 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindLeaveApplicationsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLeaveApplicationsByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                pageIndex,
+                pageSize,
+                GetServiceHeader()
+            );
 
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            if (pageCollectionInfo != null)
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = sortAscending
+                    ? pageCollectionInfo.PageCollection
+                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                        .ToList()
+                    : pageCollectionInfo.PageCollection
+                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                        .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: sortedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<EmployeeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<LeaveApplicationDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var employeeDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
+            var leaveApplicationDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
 
-            return View(employeeDTO);
+            return View(leaveApplicationDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id)
+        [HttpGet]
+        public async Task<ActionResult> GetEmployeeDetails(Guid employeeId)
+        {
+            try
+            {
+                var employee = await _channelService.FindEmployeeAsync(employeeId, GetServiceHeader());
+
+                if (employee == null)
+                {
+                    return Json(new { success = false, message = "Employee not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        EmployeeCustomerFullName = employee.Customer.FullName,
+                        EmployeeCustomerId = employee.CustomerId,
+                        EmployeeId = employee.Id,
+                        EmployeeBloodGroupDescription = employee.BloodGroupDescription,
+                        EmployeeNationalHospitalInsuranceFundNumber = employee.NationalHospitalInsuranceFundNumber,
+                        EmployeeNationalSocialSecurityFundNumber = employee.NationalSocialSecurityFundNumber,
+                        EmployeeCustomerPersonalIdentificationNumber = employee.CustomerPersonalIdentificationNumber,
+                        EmployeeEmployeeTypeCategoryDescription = employee.EmployeeTypeCategoryDescription,
+                        EmployeeEmployeeTypeDescription = employee.EmployeeTypeDescription,
+                        EmployeeDepartmentDescription = employee.DepartmentDescription,
+                        EmployeeDepartmentId = employee.DepartmentId,
+                        EmployeeDesignationDescription = employee.DesignationDescription,
+                        EmployeeDesignationId = employee.DesignationId,
+                        EmployeeBranchDescription = employee.BranchDescription,
+                        EmployeeBranchId = employee.BranchId,
+                        EmployeeCustomerIndividualGenderDescription = employee.CustomerIndividualGenderDescription,
+                        EmployeeCustomerIndividualPayrollNumbers = employee.CustomerIndividualPayrollNumbers,
+                        EmployeeEmployeeTypeId = employee.EmployeeTypeId,
+                        EmployeeEmployeeTypeChartOfAccountId = employee.EmployeeTypeChartOfAccountId,
+
+
+
+
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the Employee details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
 
-            //ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            var Employee = await _channelService.FindEmployersAsync(GetServiceHeader());
-
-            LeaveApplicationDTO LeaveApplicationBindingModel = new LeaveApplicationDTO();
-
-            if (Employee != null)
-            {
-                //LeaveApplicationBindingModel.EmployeeId = Employee;
-                //LeaveApplicationBindingModel.EmployeeCustomerFullName = customer.FullName;
-            }
-
-            return View(LeaveApplicationBindingModel);
+            return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(LeaveApplicationBindingModel LeaveApplicationBindingModel)
+        public async Task<ActionResult> Create(LeaveApplicationBindingModel leaveApplicationBindingModel)
         {
-            LeaveApplicationBindingModel.ValidateAll();
-            LeaveApplicationDTO leaveApplicationDTO = new LeaveApplicationDTO();
+            leaveApplicationBindingModel.ValidateAll();
 
-            if (!LeaveApplicationBindingModel.HasErrors)
+            if (!leaveApplicationBindingModel.HasErrors)
             {
+                try
+                {
+                    await _channelService.AddLeaveApplicationAsync(
+                        leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(),
+                        GetServiceHeader()
+                    );
 
-                await _channelService.AddLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
-
-                return RedirectToAction("Index");
+                    TempData["SuccessMessage"] = "Leave application submitted successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while submitting the leave application. Please try again.";
+                    Console.WriteLine(ex.Message);
+                }
             }
             else
             {
-                var errorMessages = LeaveApplicationBindingModel.ErrorMessages;
-                //ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(employeeBindingModel.BloodGroup.ToString());
-                return View(LeaveApplicationBindingModel);
-            }
-        }
-
-        public async Task<ActionResult> Approve(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            //var leaveApplicationBindingModel = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
-
-            //return View(leaveApplicationBindingModel);
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            //ViewBag.LeaveAuthOption = GetLeaveAuthOption(string.Empty);
-
-            var leaveApplication = await _channelService.FindLeaveApplicationAsync(parseId, GetServiceHeader());
-
-            LeaveApplicationBindingModel leaveApplicationBindingModel = new LeaveApplicationBindingModel();
-
-            if (leaveApplication != null)
-            {
-                leaveApplicationBindingModel.Id = leaveApplication.Id;
-                leaveApplicationBindingModel.EmployeeId = leaveApplication.EmployeeId;
-                leaveApplicationBindingModel.EmployeeCustomerFullName = leaveApplication.EmployeeCustomerFullName;
-                leaveApplicationBindingModel.DurationStartDate = leaveApplication.DurationStartDate;
-                leaveApplicationBindingModel.DurationEndDate = leaveApplication.DurationEndDate;
-                leaveApplicationBindingModel.AuthorizationRemarks = leaveApplication.AuthorizationRemarks;
-                leaveApplicationBindingModel.LeaveTypeId = leaveApplication.LeaveTypeId;
-                leaveApplicationBindingModel.LeaveTypeDescription = leaveApplication.LeaveTypeDescription;
-                leaveApplicationBindingModel.Status = leaveApplication.Status;
-                leaveApplicationBindingModel.Reason = leaveApplication.Reason;
+                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
             }
 
             return View(leaveApplicationBindingModel);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Approve(Guid id, LeaveApplicationBindingModel leaveApplicationBindingModel)
-        {
-            if (ModelState.IsValid)
-            {
-                
-                await _channelService.AuthorizeLeaveApplicationAsync(leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(), GetServiceHeader());
 
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(leaveApplicationBindingModel);
-            }
-        }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
-            var employeeDTO = await _channelService.FindEmployeeAsync(id, GetServiceHeader());
+            var leaveApplicationDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
 
-            return View(employeeDTO);
+            return View(leaveApplicationDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, EmployeeDTO employeeBindingModel)
+        public async Task<ActionResult> Edit(Guid id, LeaveApplicationBindingModel leaveApplicationBindingModel)
         {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateEmployeeAsync(employeeBindingModel, GetServiceHeader());
+            leaveApplicationBindingModel.ValidateAll();
 
-                return RedirectToAction("Index");
+            if (!leaveApplicationBindingModel.HasErrors)
+            {
+                try
+                {
+                    await _channelService.UpdateLeaveApplicationAsync(
+                        leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(),
+                        GetServiceHeader()
+                    );
+
+                    TempData["SuccessMessage"] = "Leave application updated successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while updating the leave application. Please try again.";
+                    Console.WriteLine(ex.Message);
+                }
             }
             else
             {
-                return View(employeeBindingModel);
+                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
             }
+
+            return View(leaveApplicationBindingModel);
         }
 
 
@@ -189,24 +221,24 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            var employeeDTO = await _channelService.FindEmployeeAsync(id, GetServiceHeader());
+            var leaveApplicationDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
 
-            return View(employeeDTO);
+            return View(leaveApplicationDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Approval(Guid id, EmployeeDTO employeeBindingModel)
+        public async Task<ActionResult> Approval(Guid id, LeaveApplicationDTO leaveApplicationDTO)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateEmployeeAsync(employeeBindingModel, GetServiceHeader());
+                await _channelService.AuthorizeLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(employeeBindingModel);
+                return View(leaveApplicationDTO);
             }
         }
 
