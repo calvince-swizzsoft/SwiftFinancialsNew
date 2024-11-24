@@ -170,7 +170,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             // Check if any parameter is missing
             if (missingParameters.Any())
             {
-                var missingMessage = $"Some features are missing due to lack of: {string.Join(", ", missingParameters)}";
+                var missingMessage = $"Some features may not work due to lack of: {string.Join(", ", missingParameters)}";
 
                 MessageBox.Show(missingMessage,
                     "Cash Transaction",

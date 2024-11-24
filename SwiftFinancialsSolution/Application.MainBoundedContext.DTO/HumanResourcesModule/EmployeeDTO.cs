@@ -470,5 +470,29 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         public byte[] SignaturePhoto { get; set; }
         public byte[] IDCardFrontPhoto { get; set; }
         public byte[] IDCardBackPhoto { get; set; }
+
+        public int EmployeeCustomerFilter { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Product Code")]
+        public string EmployeeCustomerFilterDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CustomerFilter), EmployeeCustomerFilter) ? EnumHelper.GetDescription((CustomerFilter)EmployeeCustomerFilter) : string.Empty;
+            }
+        }
+
+        public int EmployeeCustomerRecordStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Record Status")]
+        public string EmployeeCustomerRecordStatusDesccription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(RecordStatus), EmployeeCustomerRecordStatus) ? EnumHelper.GetDescription((RecordStatus)EmployeeCustomerRecordStatus) : string.Empty;
+            }
+        }
     }
 }

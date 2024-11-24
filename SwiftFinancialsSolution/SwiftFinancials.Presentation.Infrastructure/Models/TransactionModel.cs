@@ -4,6 +4,7 @@ using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
+using Infrastructure.Crosscutting.Framework.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -317,6 +318,30 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         [DataMember]
         [Display(Name = "Available Balance")]
         public decimal AvailableBalance { get; set; }
+
+        public int CustomerFilter { get; set; }
+
+        [DataMember]
+        [Display(Name = "CustomeR Product Code")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CustomerFilter), CustomerFilter) ? EnumHelper.GetDescription((CustomerFilter)CustomerFilter) : string.Empty;
+            }
+        }
+
+        public int CustomerRecordStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Record Status")]
+        public string CustomerRecordStatusDesccription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(RecordStatus), CustomerRecordStatus) ? EnumHelper.GetDescription((RecordStatus)CustomerRecordStatus) : string.Empty;
+            }
+        }
 
 
     }

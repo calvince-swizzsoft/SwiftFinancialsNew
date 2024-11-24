@@ -16,6 +16,9 @@ using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using Microsoft.AspNet.Identity;
+using SwiftFinancials.Web.Areas.Registry.DocumentsModel;
+using System.Data.SqlClient;
+using System.Configuration;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
@@ -23,6 +26,44 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
     public class CustomerReceiptsController : MasterController
     {
+        private readonly string _connectionString;
+
+        public CustomerReceiptsController()
+        {
+            // Get connection string from Web.config
+            _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+        }
+        private async Task<List<Document>> GetDocumentsAsync(Guid id)
+        {
+            var documents = new List<Document>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto FROM swiftFin_SpecimenCapture WHERE CustomerId = @CustomerId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            documents.Add(new Document
+                            {
+                                PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
+                                SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
+                                IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
+                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
+                            });
+                        }
+                    }
+                }
+            }
+
+            return documents;
+        }
 
 
         // GET: FrontOffice/CustomerReceipts
@@ -103,13 +144,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
             Guid parseId;
 
+            ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
+
             TransactionModel model = new TransactionModel();
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-                ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
-                ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
-                ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            
+
+                if (id != null)
+                {
+                    ViewBag.Documents = GetDocumentsAsync(id.Value);
+                
+                }
                 return View(model);
             }
 
@@ -129,7 +181,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var _miniStatement = miniStatementOrdersCollection.ToList();
             model.CustomerAccountMiniStatement = _miniStatement;
 
-            ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
+           
 
             return View(model);
         }
@@ -248,17 +300,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     return Json(new { success = false, message = "Operation Failed" });
                 }
 
-                //service.BeginAddJournalWithApportionments(transactionModel.BranchId, transactionModel.AlternateChannelLogId, transactionModel.TotalValue, transactionModel.PrimaryDescription, transactionModel.SecondaryDescription, transactionModel.Reference, transactionModel.ModuleNavigationItemCode, transactionModel.TransactionCode, transactionModel.ValueDate, transactionModel.DebitChartOfAccountId, transactionModel.CreditCustomerAccount, transactionModel.DebitCustomerAccount, apportionments.ExtendedToList(), tariffs.ExtendedToList(), dynamicCharges.ExtendedToList(), asyncCallback, service);
-                //journal.PostDoubleEntries(debitChartOfAccountId, creditChartOfAccountId, creditCustomerAccountDTO.Id, debitCustomerAccountDTO.Id, serviceHeader);
-                //ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
-
 
             }
             else
             {
                 var errorMessages = model.ErrorMessages;
     
-                ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
+           
 
                 return Json(new { success = false, errorMessages = errorMessages });
             }

@@ -512,15 +512,24 @@
              //Station typehead starts here
 
      
-$('#EmployeesGrid').DataTable({
-    // Ajax settings
-    "sPaginationType": "full_numbers",
-    "bProcessing": true,
-    "bServerSide": true,
-    "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "FrontOffice" }))",
-    "sServerMethod": "POST",
+        $('#EmployeesGrid').DataTable({
+            // Ajax settings
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "FrontOffice" }))",
+            "sServerMethod": "POST",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "tellerType", "value": 0 }
+
+                )
+            },
     // Callback settings
-    "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        //console.log("Row data:", aData);
+
         var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
         var h = ("0" + createdDate.getHours()).slice(-2);
         var m = ("0" + createdDate.getMinutes()).slice(-2);
@@ -553,6 +562,7 @@ $("#EmployeesGrid tbody").on("click", ".select-btn", function() {
     var fullName = $(this).data('full-name');
     var destinationBranchId = $(this).data('destination-branch-id');
     var tellerChartOfAccountId = $(this).data('teller-chart-of-account-id');
+    var description = $(this).data('description');
 
     console.log($(this).data());
 
@@ -561,6 +571,7 @@ $("#EmployeesGrid tbody").on("click", ".select-btn", function() {
     $('#Id').val(id);
     $('input[name=Id]').val(id);
     $('#DestinationBranchId').val(destinationBranchId);
+    $('#DestinationDescription').val(description);
 
     // Close the modal
     $('#EmployeeLookupModal').modal('hide');

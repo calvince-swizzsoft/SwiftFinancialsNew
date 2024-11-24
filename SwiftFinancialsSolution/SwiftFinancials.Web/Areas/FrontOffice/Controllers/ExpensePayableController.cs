@@ -112,7 +112,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
-            
+
 
             var model = new ExpensePayableDTO
             {
@@ -162,12 +162,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 TempData["ErrorMessage"] = resultDTO.ErrorMessageResult;
                 return View(expensePayableDTO);
             }
-                return View("Index");
-            }
 
-            foreach (var entry in expensePayableEntries)
-            {
-                entry.ExpensePayableId = resultDTO.Id;
+
+
 
             // Add each entry individually
             foreach (var entry in expensePayableEntries)
@@ -183,7 +180,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                               MessageBoxOptions.ServiceNotification
                                                           );
 
-                var entryResult = await _channelService.AddExpensePayableEntryAsync(entry, GetServiceHeader());
+
 
                 // Check if any error messages are returned
                 if (entryResult.ErrorMessages != null && entryResult.ErrorMessages.Any())
@@ -193,7 +190,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     TempData["ErrorMessage"] = errorMessage;
                     return View(expensePayableDTO);
                 }
-            }
+
                 if (entryResult.ErrorMessages != null && entryResult.ErrorMessages.Any())
                 {
                     string errorMessage = string.Join("; ", entryResult.ErrorMessages);
@@ -431,7 +428,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 // Set error message in TempData
                 TempData["ErrorMessage"] = "There were errors during approval: " + string.Join(", ", errorMessages);
 
-               
+
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
 
                 // Return the view with the DTO containing the errors

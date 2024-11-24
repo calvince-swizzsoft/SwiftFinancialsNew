@@ -130,11 +130,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             await ServeNavigationMenus();
 
             ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
+            ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
 
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
+            
                 return View();
             }
 
@@ -174,7 +177,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             else
             {
                 var errorMessages = employeeBindingModel.ErrorMessages;
-                ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(employeeBindingModel.BloodGroup.ToString());
+                ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
+                ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
+                ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
                 return View(employeeBindingModel);
             }
         }

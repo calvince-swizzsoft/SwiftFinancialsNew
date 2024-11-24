@@ -1569,26 +1569,33 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
 
-
             var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
-            var targetCustomer = customers.FirstOrDefault(c => c.AddressEmail == user.Email);
+            var targetCustomer = customers?.FirstOrDefault(c => c.AddressEmail == user.Email);
 
-            if (targetCustomer != null)
+            if (targetCustomer == null)
             {
-                var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
-                SelectedEmployee = employees.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
-
-                var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, false, GetServiceHeader());
-
-                return teller;
-            }
-            else
-            {
-                TempData["Missing Teller"] = "You are working without a Recognized Teller";
-                //transactionModel.Teller = new TellerDTO { BookBalance = 0 };
-
+                TempData["Error"] = "Customer not found.";
                 return null;
             }
+
+            var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
+            SelectedEmployee = employees?.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
+
+            if (SelectedEmployee == null)
+            {
+                TempData["Error"] = "Employee not found for the customer.";
+                return null;
+            }
+
+            var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, false, GetServiceHeader());
+
+            if (teller == null)
+            {
+                TempData["Missing Teller"] = "You are working without a Recognized Teller";
+            }
+
+            return teller;
+
         }
 
         public async Task<JsonResult> GetBankDetailsJson(Guid? id)
