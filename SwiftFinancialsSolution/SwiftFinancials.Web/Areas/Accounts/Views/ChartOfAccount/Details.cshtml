@@ -54,6 +54,14 @@
                                 @Html.TextBoxFor(model => model.AccountCode, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)</strong>
+
+                                @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @readonly = "readonly" })
+                            </p>
+
+                        </div>
+                        <div class="col-lg-6">
+                            <p>
                                 <strong>@Html.DisplayNameFor(model => model.AccountCategory)</strong>
 
                                 @Html.TextBoxFor(model => model.AccountCategory, new { @class = "form-control", @readonly = "readonly" })
@@ -68,43 +76,50 @@
 
                                 @Html.TextBoxFor(model => model.Depth, new { @class = "form-control", @readonly = "readonly" })
                             </p>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group form-group-lg">
-                                @Html.CheckBoxFor(model => model.IsControlAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Post Automatically Only?", @readonly = "readonly" } })
-                                @Html.LabelFor(model => model.IsControlAccount, htmlAttributes: new { @class = "" })
-                                @Html.ValidationMessageFor(model => model.IsControlAccount  , "", new { @class = "text-danger" })
-                            </div>
-                           <div class="form-group form-group-lg">
-                                @Html.CheckBoxFor(model => model.IsReconciliationAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Post Automatically Only?", @readonly = "readonly" } })
-                                @Html.LabelFor(model => model.IsReconciliationAccount, htmlAttributes: new { @class = "" })
-                                @Html.ValidationMessageFor(model => model.IsReconciliationAccount, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="form-group form-group-lg">
-                                @Html.CheckBoxFor(model => model.PostAutomaticallyOnly, new { htmlAttributes = new { @class = "form-control", @placeholder = "Post Automatically Only?", @readonly = "readonly" } })
-                                @Html.LabelFor(model => model.PostAutomaticallyOnly, htmlAttributes: new { @class = "" })
-                                @Html.ValidationMessageFor(model => model.PostAutomaticallyOnly, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="form-group form-group-lg">
-                                @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Post Automatically Only?", @readonly = "readonly" } })
-                                @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                            </div>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)</strong>
 
-                                @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @readonly = "readonly" })
-                            </p>
+                            <div class="row">
+                                <!-- Column 1 -->
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsControlAccount, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.LabelFor(model => model.IsControlAccount)
+                                        @Html.ValidationMessageFor(model => model.IsControlAccount, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsReconciliationAccount, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.LabelFor(model => model.IsReconciliationAccount)
+                                        @Html.ValidationMessageFor(model => model.IsReconciliationAccount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <!-- Column 2 -->
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.PostAutomaticallyOnly, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.LabelFor(model => model.PostAutomaticallyOnly)
+                                        @Html.ValidationMessageFor(model => model.PostAutomaticallyOnly, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.LabelFor(model => model.IsLocked)
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
 
                         </div>
+
                     </div>
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "ChartOfAccount", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "ChartOfAccount", new { Area = "Accounts" }, new { @class = "btn btn-success" })
-                            </p>
+                    <div class="button-group" style="display: flex; gap: 10px;">
+                        <div style="width: 100px; height: 40px;">
+                            @Html.ActionLink("Edit", "Edit", "ChartOfAccount", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success", style = "display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;" })
+                        </div>
+                        <div style="width: 100px; height: 40px;">
+                            @Html.ActionLink("Back to List", "Index", "ChartOfAccount", new { Area = "Accounts" }, new { @class = "btn btn-success", style = "display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;" })
                         </div>
                     </div>
                 </div>
@@ -112,3 +127,8 @@
         </div>
     </div>
 </div>
+<script>
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.disabled = true;
+    });
+</script>

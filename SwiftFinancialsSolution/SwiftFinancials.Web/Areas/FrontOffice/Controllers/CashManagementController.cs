@@ -84,12 +84,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 fiscalCountDTO.Id = customer.Id;
                 fiscalCountDTO.TellerDescription = customer.CustomerFullName;
                 fiscalCountDTO.BranchDescription = customer.BranchDescription;
-                // fiscalCountDTO.SecondaryDescription = customer.EmployeeTypeDescription;
-                //fiscalCountDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
-                //fiscalCountDTO.CustomerStationDescription = customer.StationDescription;
-                //fiscalCountDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
-                //Session["Test"] =Request.Form["h"] + "";
-                //string mimi = Session["Test"].ToString();
+          
                 if (Session["Reference"] != null)
                 {
                     fiscalCountDTO.Reference = Session["Reference"].ToString();
@@ -170,7 +165,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             // Check if any parameter is missing
             if (missingParameters.Any())
             {
-                var missingMessage = $"Some features are missing due to lack of: {string.Join(", ", missingParameters)}";
+                var missingMessage = $"Some features may not work due to lack of: {string.Join(", ", missingParameters)}";
 
                 MessageBox.Show(missingMessage,
                     "Cash Transaction",
@@ -330,13 +325,60 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 int treasuryTransactionType = fiscalCountDTO.TransactionType;
                 TransactionModel transactionModel = new TransactionModel();
 
+                // Fetch necessary data
                 CurrentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-                var activeUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-                ActiveTreasury = await _channelService.FindTreasuryByBranchIdAsync((Guid)activeUser.BranchId, true, GetServiceHeader());
+                var userId = User.Identity.GetUserId();
+                var activeUser = string.IsNullOrEmpty(userId) ? null : await _applicationUserManager.FindByIdAsync(userId);
+                ActiveTreasury = activeUser?.BranchId.HasValue == true
+                    ? await _channelService.FindTreasuryByBranchIdAsync(activeUser.BranchId.Value, true, GetServiceHeader())
+                    : null;
 
-                fiscalCountDTO.BranchId = ActiveTreasury.BranchId;
-                fiscalCountDTO.PostingPeriodId = CurrentPostingPeriod.Id;
-                fiscalCountDTO.ChartOfAccountId = ActiveTreasury.ChartOfAccountId;
+                // Collect missing parameters
+                var missingParameters = new List<string>();
+
+                if (CurrentPostingPeriod == null)
+                {
+                    missingParameters.Add("Posting Period");
+                }
+                else
+                {
+                    fiscalCountDTO.PostingPeriodId = CurrentPostingPeriod.Id;
+                }
+
+                if (activeUser == null)
+                {
+                    missingParameters.Add("Active User");
+                }
+
+                if (ActiveTreasury == null)
+                {
+                    missingParameters.Add("Treasury");
+                }
+                else
+                {
+                    fiscalCountDTO.ChartOfAccountId = ActiveTreasury.ChartOfAccountId;
+                    fiscalCountDTO.BranchId = ActiveTreasury.BranchId;
+                }
+
+                // Handle missing parameters
+                if (missingParameters.Any())
+                {
+                    var missingMessage = $"The transaction won't proceed. Unable to retrieve {string.Join(", ", missingParameters)}.";
+
+                    MessageBox.Show(
+                        missingMessage,
+                        "Cash Transaction",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+
+                    // Return failure response
+                    return Json(new { success = false, message = "Operation error: " + missingMessage });
+                }
+
+
                 transactionModel.TotalValue = fiscalCountDTO.TotalValue;
                 //transactionModel.TransactionCode = fiscalCountDTO.TransactionCode;
                 transactionModel.PostingPeriodId = CurrentPostingPeriod.Id;
@@ -350,6 +392,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     switch ((TreasuryTransactionType)treasuryTransactionType)
                     {
                         case TreasuryTransactionType.BankToTreasury:
+
+                            
+
                             var sendingBank = await _channelService.FindBankAsync(fiscalCountDTO.Id, GetServiceHeader());
                             if (sendingBank == null)
                             {
@@ -362,9 +407,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             var matchingBankLinkage = bankLinkages.FirstOrDefault(li => li.BankName == sendingBank.Description);
                             if (matchingBankLinkage == null)
                             {
-                                MessageBox.Show("No matching bank linkage found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                MessageBox.Show("No matching bank linkage found for selected bank account.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                                 
-                                return Json(new { success = false, message = "Operation Failed: No matching bank linkage found" });
+                                return Json(new { success = false, message = "Operation Failed: No matching bank linkage found for selected bank account" });
                             }
 
                             transactionModel.DebitChartOfAccountId = matchingBankLinkage.ChartOfAccountId;
@@ -398,9 +443,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             var linkage = linkages.FirstOrDefault(l => l.BankName == receivingBank.Description);
                             if (linkage == null)
                             {
-                                MessageBox.Show("No matching bank linkage found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                MessageBox.Show("No matching bank linkage found for selected bank account.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
     
-                                return Json(new { success = false, message = "Operation Failed: No matching bank linkage found." });
+                                return Json(new { success = false, message = "Operation Failed: No matching bank linkage found for selected bank account." });
 
                             }
                             transactionModel.CreditChartOfAccountId = linkage.ChartOfAccountId;
