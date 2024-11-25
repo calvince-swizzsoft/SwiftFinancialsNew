@@ -218,63 +218,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Cash Withdrawal Request Tab -->
-                                <!--<div id="cashWithdrawalRequest" class="tab-pane">
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Savings Account #:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.SavingsProduct.ChartOfAccountName, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                        <label class="col-sm-2 col-form-label">Customer:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Account Product:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.SavingsProduct.Description, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                        <label class="col-sm-2 col-form-label">Payroll Numbers:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.Teller.FloatCustomerAccountCustomerSerialNumber, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Account Remarks:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                        <label class="col-sm-2 col-form-label">Reference 1:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Amount:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.SavingsProduct.WithdrawalNoticeAmount, new { @class = "form-control", @Value = "$0.00" })
-                                        </div>
-                                        <label class="col-sm-2 col-form-label">Remarks:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Identity Card #:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.Teller.CommissionCustomerAccountCustomerReference1, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                        <label class="col-sm-2 col-form-label">Reference 2:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.Teller.CommissionCustomerAccountCustomerReference2, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                    </div>
-                                </div>-->
                                 <!-- Fiscal Catalog Tab -->
                                 <!--<div id="fiscalCatalog" class="tab-pane">-->
                                 <!-- Content for Fiscal Catalog tab -->
@@ -537,7 +480,7 @@
         var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
         aData.CreatedDate = dt_Created;
 
-        var selectUrl = '<button data-id="' + aData.Id + '" data-full-name="' + aData.Description + '" data-destination-branch-id="' + aData.EmployeeBranchId + '" data-teller-chart-of-account-id="' + aData.ChartOfAccountId + '" class="btn btn-outline-info select-btn">Select</button>';
+        var selectUrl = '<button data-id="' + aData.Id + '" data-description="' + aData.Description +'" data-full-name="' + aData.Description + '" data-destination-branch-id="' + aData.EmployeeBranchId + '" data-teller-chart-of-account-id="' + aData.ChartOfAccountId + '" class="btn btn-outline-info select-btn">Select</button>';
 
         $('td:eq(4)', nRow).html(dt_Created);
         $('td:eq(5)', nRow).html(selectUrl);
@@ -703,7 +646,8 @@ $("#BankssGrid tbody").on("click", ".select-btn", function() {
 
     // Set values based on selected data
     $('#Id').val(id);
-    $('input[name=BranchId]').val(id);
+  /*  $('input[name=BranchId]').val(id);*/
+ /*   $('#DestinationBranchId').val(branchId);*/
     $('#DestinationDescription').val(description);
 
     // Close the modal
