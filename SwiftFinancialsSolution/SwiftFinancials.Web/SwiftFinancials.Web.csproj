@@ -647,6 +647,8 @@
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\BranchLinkageController.cs" />
+    <Compile Include="Areas\Registry\Controllers\ConditionalLendingController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\DelegateController.cs" />
     <Compile Include="Areas\Registry\Controllers\DeviceViewModel.cs" />
@@ -1475,6 +1477,12 @@
     <Content Include="Areas\Registry\Views\Document\Index.cshtml" />
     <Content Include="Areas\Registry\Views\Document\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\Document\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditionalLending\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditionalLending\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditionalLending\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditionalLending\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\BranchLinkage\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\BranchLinkage\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
