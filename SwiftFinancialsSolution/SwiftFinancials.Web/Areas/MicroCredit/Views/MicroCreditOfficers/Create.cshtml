@@ -608,21 +608,7 @@
         }
     </style>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-    // Check for messages and show SweetAlert
-    @if (ViewBag.Message != null)
-    {
-        <text>
-            Swal.fire({
-                icon: '@(ViewBag.IsSuccess ? "success" : "error")',
-                title: '@(ViewBag.IsSuccess ? "Success!" : "Error")',
-                text: '@ViewBag.Message',
-                confirmButtonText: "OK"
-            });
-        </text>
-    }
-    </script>
+    
 
 
 

@@ -19,7 +19,30 @@
         </ol>
     </div>
 </div>
+<style>
 
+    .myfooter .btn {
+        margin-left: 10px; /* Adds space between buttons */
+        margin-right: 10px; /* Optional for equal padding on both sides */
+        min-width: 120px; /* Ensures consistent button width */
+    }
+
+    .myfooter .form-group {
+        display: flex; /* Align items horizontally */
+        justify-content: flex-end; /* Align buttons to the right */
+        gap: 10px; /* Adds consistent spacing between buttons */
+    }
+
+    .myfooter a.btn {
+        text-align: center; /* Ensures the button content is centered */
+    }
+
+
+    input[type="checkbox"]:disabled {
+        cursor: not-allowed;
+        opacity: 0.6; /* Makes it look greyed-out */
+    }
+</style>
 <div class="wrapper wrapper-content" style="padding: 20px;">
     <div class="row">
         <div class="col-md-12">
@@ -72,7 +95,7 @@
                                 </div>
                             </div>
                         </div>
-                      
+
 
                         <script>
                             document.getElementById('logoInput').addEventListener('change', function (event) {
@@ -359,12 +382,15 @@
                                 </fieldset>
                             </div>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                            <div>
-                                @Html.ActionLink("Back to List", "Index", "Company", new { Area = "Admin" }, new { @class = "btn btn-success" })
-                            </div>
-                            <div>
-                                <button type="submit" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer;">Finish</button>
+                        <div class="myfooter">
+                            <div class="form-group col-md-12 d-flex justify-content-end">
+                                <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">
+                                    <i class="fa fa-edit"></i> Edit
+                                </a>
+
+                                <a href="@Url.Action("Index")" class="btn btn-primary">
+                                    <i class="fa fa-arrow-left"></i> Back to List
+                                </a>
                             </div>
                         </div>
 
@@ -386,7 +412,34 @@
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
-
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.disabled = true;
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="text"]').forEach(textbox => {
+                textbox.disabled = true;
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="numbers"]').forEach(textbox => {
+                textbox.disabled = true;
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('select').forEach(dropdown => {
+                dropdown.disabled = true;
+            });
+        });
+    </script>
 
     <script>
         $(document).ready(function () {

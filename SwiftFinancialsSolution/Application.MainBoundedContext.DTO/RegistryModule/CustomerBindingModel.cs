@@ -650,7 +650,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         public ObservableCollection<PartnershipMemberDTO> partnershipMemberCollection { get; set; }
         public ObservableCollection<CorporationMemberDTO> corporationMemberDTO { get; set; }
         public ObservableCollection<MicroCreditGroupMemberDTO> microCreditGroupMemberDTOs { get; set; }
-      
+        public ObservableCollection<RefereeDTO> refereeDTOs { get; set; }
 
     }
 }

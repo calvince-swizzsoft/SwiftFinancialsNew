@@ -110,7 +110,7 @@
                                                 </div>
 
                                                 <div class="form-group mb-3">
-                                                    @Html.TextBoxFor(model => model.TellerCashBalanceStatusValue, new { @class = "form-control", @id = "cashBalanceStatusValue", @readonly = "readonly" })
+                                                    @*@Html.TextBoxFor(model => model.TellerCashBalanceStatusValue, new { @class = "form-control", @id = "cashBalanceStatusValue", @readonly = "readonly" })*@
                                                     @Html.LabelFor(model => model.TellerCashBalanceStatus, new { @class = "font-bold" })
                                                     @Html.TextBoxFor(model => model.TellerCashBalanceStatus, new { @class = "form-control", @id = "closingBalanceStatus", @readonly = "readonly" })
                                                     @Html.ValidationMessageFor(model => model.TellerCashBalanceStatus, "", new { @class = "text-danger" })

@@ -99,6 +99,72 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             });
         }
 
+        
+
+        [HttpGet]
+        public async Task<ActionResult> GetSavingDetails(Guid savingsProductId)
+        {
+            try
+            {
+                var savingProduct = await _channelService.FindSavingsProductAsync(savingsProductId, GetServiceHeader());
+
+                if (savingProduct == null)
+                {
+                    return Json(new { success = false, message = "saving product not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        CustomerAccountTypeTargetProductDescription = savingProduct.Description,
+                        CustomerAccountTypeTargetProductId = savingProduct.Id
+
+
+
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the customer details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetloanDetails(Guid loanProductId)
+        {
+            try
+            {
+                var loanProduct = await _channelService.FindLoanProductAsync(loanProductId, GetServiceHeader());
+
+                if (loanProduct == null)
+                {
+                    return Json(new { success = false, message = "loan product not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        CustomerAccountTypeTargetProductDescription = loanProduct.Description,
+                        CustomerAccountTypeTargetProductId = loanProduct.Id
+
+
+
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the customer details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpPost]
         public async Task<JsonResult> GetLoanProductDetails(Guid id)
         {

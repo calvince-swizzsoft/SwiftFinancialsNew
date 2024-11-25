@@ -8,7 +8,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
-
+using System.Windows.Forms;
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
     public class EmployeeTypeController : MasterController
@@ -97,6 +97,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!employeeTypeDTO.HasErrors)
             {
                 await _channelService.AddEmployeeTypeAsync(employeeTypeDTO, GetServiceHeader());
+                MessageBox.Show(
+                                                             "Operation Success",
+                                                             "Customer Receipts",
+                                                             MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Information,
+                                                             MessageBoxDefaultButton.Button1,
+                                                             MessageBoxOptions.ServiceNotification
+                                                         );
 
                 TempData["SuccessMessage"] = "EmployeeType Created Successfully!!";
                 
@@ -127,6 +135,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateEmployeeTypeAsync(employeeTypeBindingModel, GetServiceHeader());
+                MessageBox.Show(
+                                                             "Operation Success",
+                                                             "Customer Receipts",
+                                                             MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Information,
+                                                             MessageBoxDefaultButton.Button1,
+                                                             MessageBoxOptions.ServiceNotification
+                                                         );
                 ViewBag.EmployeeCategorySelectList = GetEmployeeCategorySelectList(employeeTypeBindingModel.Category.ToString());
                 TempData["SuccessMessage"] = "EmployeeType Updated Successfully!!";
 

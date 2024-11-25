@@ -78,19 +78,24 @@
                 <div class="card">
                     <div class="card-body">
                         @using (Html.BeginForm("Create", "MicroCreditGroups", new { Area = "MicroCredit" }, FormMethod.Post))
-                        {
+                         {
                             @Html.AntiForgeryToken()
 
                             @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerSalutationDescription, new { id = "MicroCreditOfficerEmployeeCustomerSalutationDescription" })
                             @Html.HiddenFor(model => model.MicroCreditOfficerId, new { id = "MicroCreditOfficerId" })
-                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerIndividualFirstName, new { id = "MicroCreditOfficerEmployeeCustomerIndividualFirstName" })
                             @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerIndividualLastName, new { id = "MicroCreditOfficerEmployeeCustomerIndividualLastName" })
                             @Html.HiddenFor(model => model.CustomerNonIndividualRegistrationNumber, new { id = "CustomerNonIndividualRegistrationNumber" })
                             @Html.HiddenFor(model => model.CustomerStationId, new { id = "CustomerStationId" })
                             @Html.HiddenFor(model => model.CustomerNonIndividualDateEstablished, new { id = "CustomerNonIndividualDateEstablished" })
                             @Html.HiddenFor(model => model.CustomerRegistrationDate, new { id = "CustomerRegistrationDate" })
+                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerSalutationDescription, new { id = "MicroCreditOfficerEmployeeCustomerSalutationDescription" })
+                            @Html.HiddenFor(model => model.CustomerAccountCustomerReference1, new { id = "CustomerAccountCustomerReference1" })
+                            @Html.HiddenFor(model => model.CustomerAccountCustomerReference2, new { id = "CustomerAccountCustomerReference2" })
+                            @Html.HiddenFor(model => model.CustomerAccountCustomerReference3, new { id = "CustomerAccountCustomerReference3" })
+                            @Html.HiddenFor(model => model.AccountStatus, new { id = "AccountStatus" })
+                            @Html.HiddenFor(model => model.CustomerAccountFullAccountNumber, new { id = "CustomerAccountFullAccountNumber" })
 
-
+                            
                             <!-- Expense Payables -->
                             <fieldset>
                                 <div class="card mb-4">
@@ -133,9 +138,10 @@
                                             <div class="col-lg-4 customer-fields">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.ParentMicroCreditDescription, new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.ParentId, new { id = "CustomerId" })
+                                                    @Html.HiddenFor(model => model.ParentId, new { id = "ParentId" })
+
                                                     <div class="input-group">
-                                                        @Html.EditorFor(model => model.ParentMicroCreditDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "MicroCreditOfficerEmployeeCustomerFullName", @readonly = "" } })
+                                                        @Html.EditorFor(model => model.ParentMicroCreditDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "MicroCreditOfficerEmployeeCustomerIndividualFirstName", @readonly = "" } })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#microCreditGroupLookup">
                                                                 <span class="fa fa-search"></span>
@@ -159,7 +165,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="col-lg-4">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.Purpose, new { @class = "control-label" })
@@ -234,7 +240,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
 
                                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -597,7 +603,14 @@
                             $('#CustomerRegistrationDate').val(response.data.CustomerRegistrationDate);
                             $('#CustomerStationDescription').val(response.data.CustomerStationDescription);
                             $('#CustomerNonIndividualDateEstablished').val(response.data.CustomerNonIndividualDateEstablished);
+                            $('#MicroCreditOfficerEmployeeCustomerSalutationDescription').val(response.data.MicroCreditOfficerEmployeeCustomerSalutationDescription);
+                            $('#CustomerAccountCustomerReference1').val(response.data.CustomerAccountCustomerReference1);
+                            $('#CustomerAccountCustomerReference2').val(response.data.CustomerAccountCustomerReference2);
+                            $('#CustomerAccountCustomerReference3').val(response.data.CustomerAccountCustomerReference3);
+                            $('#AccountStatus').val(response.data.AccountStatus);
+                            $('#CustomerAccountFullAccountNumber').val(response.data.CustomerAccountFullAccountNumber);
 
+                            
 
 
 
@@ -707,7 +720,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@Url.Action("Index", "Customer", new { Area = "Registry" })",
+                "sAjaxSource": "@Url.Action("Index", "MicroCreditGroups", new { Area = "MicroCredit" })",
                 "sServerMethod": "POST",
                 "fnServerData": function (sSource, aoData, fnCallback) {
                     $.ajax({
@@ -724,11 +737,11 @@
                     });
                 },
                 "aoColumns": [
-                    { "mDataProp": "FullName", "sTitle": "Customer FullName", "sWidth": "15%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
+                    { "mDataProp": "CustomerNonIndividualDescription", "sTitle": "Name", "sWidth": "10%" },
+                    { "mDataProp": "CustomerStationDescription", "sTitle": "Station", "sWidth": "15%" },
                     { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "15%" },
-                    { "mDataProp": "IndividualGenderDescription", "sTitle": "Gender", "sWidth": "15%" },
-                    { "mDataProp": "IndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },
+                    { "mDataProp": "Purpose", "sTitle": "Purpose", "sWidth": "10%" },
+                    { "mDataProp": "Activities", "sTitle": "Activities", "sWidth": "15%" },
                     {
                         "mDataProp": "CreatedDate",
                         "sTitle": "Created Date",
@@ -752,17 +765,21 @@
             });
 
                    $('#microCreditGroupGrid tbody').on('click', '.select-microCreditGroup', function () {
-                       var customerId = $(this).data('id');
+                       var microCreditGroupId = $(this).data('id');
 
                 $.ajax({
                     url: '@Url.Action("GetParentGroupDetails", "MicroCreditGroups", new { Area = "MicroCredit" })',
                     type: 'GET',
-                    data: { customerId: customerId },
+                    data: { microCreditGroupId: microCreditGroupId },
                     success: function (response) {
                         if (response.success) {
+                            $('#MicroCreditOfficerEmployeeCustomerIndividualFirstName').val(response.data.ParentMicroCreditDescription);
                             $('#ParentId').val(response.data.ParentId);
+                            $('#MicroCreditGroupCustomerId').val(response.data.MicroCreditGroupCustomerId);
 
-                            $('#ParentMicroCreditDescription').val(response.data.ParentMicroCreditDescription);
+
+
+
 
 
                             $('#microCreditGroupLookup').modal('hide');

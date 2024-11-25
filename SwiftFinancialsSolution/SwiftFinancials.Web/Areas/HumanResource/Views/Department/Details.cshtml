@@ -90,17 +90,20 @@
 
                                             <div class="col-lg-4">
                                                 @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @readonly = "" } })
                                                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                             </div>
                                             <div class="col-lg-4">
-                                                @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                                @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                                @Html.CheckBoxFor(model => model.IsLocked, new { @class = "", @disabled = "disabled" })
+                                                @Html.HiddenFor(model => model.IsLocked) <!-- Hidden input ensures the value is submitted -->
+                                                @Html.LabelFor(model => model.IsLocked, new { @class = "form-control", @placeholder = "Is Locked?" })
                                                 @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                             </div>
+
                                             <div class="col-lg-4">
-                                                @Html.CheckBoxFor(model => model.IsRegistry, htmlAttributes: new { @class = "" })
-                                                @Html.LabelFor(model => model.IsRegistry, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Registry?" } })
+                                                @Html.CheckBoxFor(model => model.IsRegistry, new { @class = "", @disabled = "disabled" })
+                                                @Html.HiddenFor(model => model.IsRegistry) <!-- Hidden input ensures the value is submitted -->
+                                                @Html.LabelFor(model => model.IsRegistry, new { @class = "form-control", @placeholder = "Is Locked?" })
                                                 @Html.ValidationMessageFor(model => model.IsRegistry, "", new { @class = "text-danger" })
                                             </div>
 

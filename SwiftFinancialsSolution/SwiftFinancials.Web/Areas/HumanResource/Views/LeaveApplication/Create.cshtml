@@ -3,7 +3,7 @@
 @{ ViewBag.Title = "Create Leave Application"; }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>LeaveApplication</h2>
+        <h2>Leave Application</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -117,29 +117,29 @@
                                             </div>
 
                                             <div class="col-lg-6">
-                                                @Html.LabelFor(model => model.LeaveTypeId, htmlAttributes: new { @class = "control-label" })
+                                                @Html.LabelFor(model => model.LeaveTypeDescription, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LeaveTypeId)
                                                 @Html.ValidationMessageFor(model => model.LeaveTypeId, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.LeaveTypeDescription, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Leave Type" } })
+                                                @Html.EditorFor(model => model.LeaveTypeDescription, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Enter Space to autofill...." } })
                                             </div>
 
 
                                         </div>
                                         <div class="row">
 
-                                            <div class="col-lg-6" id="data_3">
+                                            <div class="col-lg-6">
                                                 @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
                                                 <div class="input-group date">
                                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                    <input type="text" name="DurationStartDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                                    <input type="text" name="DurationStartDate" class="form-control" value="@DateTime.Today.ToString("dd-mm-yyy")">
                                                 </div>
                                             </div>
 
-                                            <div class="form-group" id="data_3">
+                                            <div class="col-lg-6">
                                                 @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
                                                 <div class="input-group date">
                                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                    <input type="text" name="DurationEndDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                                    <input type="text" name="DurationEndDate" class="form-control" value="@DateTime.Today.ToString("dd-mm-yyy")">
                                                 </div>
                                             </div>
 
@@ -149,11 +149,12 @@
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
-                                                @Html.TextAreaFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reason", @required = "" } })
+                                                @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", @placeholder = "Enter Text.....", @required = "required", @rows = "4", @cols = "50" })
                                                 @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
                                             </div>
-
                                         </div>
+
+
                                     </div>
                                 </div>
                             </fieldset>
@@ -173,10 +174,7 @@
                         margin-bottom: 20px;
                     }
 
-                    .nav-tabs .nav-link.active {
-                        background-color: #007bff;
-                        color: white;
-                    }
+                    
 
                     .form-group-lg {
                         margin-bottom: 1.5rem;
@@ -186,46 +184,7 @@
                         border-radius: .25rem;
                     }
 
-                    /* The .nav class is incorrectly nested, so I'll fix that */
-                    .nav {
-                        display: flex;
-                        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
-                        padding: 0;
-                        margin: 5px;
-                        margin-bottom: 0;
-                        border: 2px solid black;
-                        border-radius: 8px;
-                        margin-top: 20px;
-                        gap: 10px; /* Space between links */
-                        text-align: center; /* Centers the text inside links */
-                        padding: 10px;
-                    }
-
-                    .nav-link {
-                        display: flex;
-                        text-decoration: none;
-                        color: #007bff; /* Default text color */
-                        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
-                        border-radius: 4px; /* Rounded corners */
-                        font-size: 14px; /* Adjust font size for better fit */
-                        white-space: nowrap; /* Prevents text from wrapping inside the link */
-                    }
-
-                        .nav-link:hover {
-                            color: #fff; /* Text color on hover */
-                            background-color: #0056b3; /* Background color on hover */
-                        }
-
-                        .nav-link i {
-                            margin-right: 8px; /* Space between icon and text */
-                            font-size: 16px; /* Adjust icon size */
-                        }
-
-                        .nav-link.disabled {
-                            pointer-events: none;
-                            opacity: 0.6;
-                            cursor: not-allowed;
-                        }
+                   
 
                     .col-lg-2 {
                         display: flex;
@@ -696,6 +655,7 @@
 
     $(document).ready(function () {
         $('#data_3 .input-group.date').datepicker({
+            format: 'dd-mm-yyyy',  
             startView: 2,
             todayBtn: "linked",
             keyboardNavigation: false,

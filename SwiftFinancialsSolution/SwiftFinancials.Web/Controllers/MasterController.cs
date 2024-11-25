@@ -2134,9 +2134,58 @@ namespace SwiftFinancials.Web.Controllers
 
             return microCreditGroupMemberDesignationCategories;
         }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetCustomerAccountStatementTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> statementType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CustomerAccountStatementType)).Cast<CustomerAccountStatementType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            statementType.AddRange(items);
+
+            return statementType;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetFixedDepositCategorySelectList(string selectedValue)
+        {
+            List<SelectListItem> fixedDepositCategoryCategories = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(FixedDepositCategory)).Cast<FixedDepositCategory>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            fixedDepositCategoryCategories.AddRange(items);
+
+            return fixedDepositCategoryCategories;
+        }
 
 
+        [NonAction]
+        protected List<SelectListItem> GetFixedDepositMaturityActionSelectList(string selectedValue)
+        {
+            List<SelectListItem> fixedDepositMaturityActionCategories = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(FixedDepositMaturityAction)).Cast<FixedDepositMaturityAction>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
 
+            fixedDepositMaturityActionCategories.AddRange(items);
+
+            return fixedDepositMaturityActionCategories;
+        }
     }
 }

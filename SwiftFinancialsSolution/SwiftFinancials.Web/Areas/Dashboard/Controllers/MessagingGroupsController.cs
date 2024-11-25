@@ -118,7 +118,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
 
 
-        public async Task<ActionResult>Details(Guid id)
+        public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
             var messagingGroups = await _channelService.FindMessageGroupAsync(id, GetServiceHeader());
@@ -315,7 +315,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                 if (result == DialogResult.Yes)
                 {
                     await _channelService.AddNewMessageGroupAsync(model, GetServiceHeader());
-                    MessageBox.Show(Form.ActiveForm, "Operation completed successfully.", "Messaging Groups", MessageBoxButtons.OK, MessageBoxIcon.Information, 
+                    MessageBox.Show(Form.ActiveForm, "Operation completed successfully.", "Messaging Groups", MessageBoxButtons.OK, MessageBoxIcon.Information,
                         MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
                     Session["messageGroupDTO"] = null;
@@ -354,10 +354,8 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
         }
 
 
-        public async Task<ActionResult>Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
-            Session["id"] = id;
-
             await ServeNavigationMenus();
             var messagingGroups = await _channelService.FindMessageGroupAsync(id, GetServiceHeader());
 
@@ -373,7 +371,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> AddEdit(string description, int target, Guid customerId, string emailAddress, string customer, string mobileNumber)
+        public async Task<ActionResult> AddEdit(string description, int target, Guid customerId, string emailAddress, string customer, string mobileNumber, Guid id)
         {
             await ServeNavigationMenus();
 
@@ -396,13 +394,12 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                     CustomerMobileNumber = mobileNumber
                 });
 
-                
-                Guid id = (Guid)Session["id"];
+
                 var isMember = await _channelService.FindMessageGroupAsync(id, GetServiceHeader());
 
                 isMember.messageGroupCustomerDTO = JsonConvert.DeserializeObject<ObservableCollection<MessageGroupDTO>>(isMember.TargetValues);
 
-                foreach(var select in isMember.messageGroupCustomerDTO)
+                foreach (var select in isMember.messageGroupCustomerDTO)
                 {
                     if (select.CustomerID == customerId)
                     {
@@ -410,7 +407,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                                MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
                         Debug.WriteLine("Match found: " + select.CustomerID);
-                        Session["id"] = null;
+
                         return Json(new
                         {
                             success = false
@@ -528,21 +525,30 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
 
 
+        //public async Task<ActionResult>Data(MessageGroupDTO model)
+        //{
+        //    Session["savedData"] = model;
+
+        //    return null;
+        //}
+
 
         [HttpPost]
         public async Task<ActionResult> Edit(MessageGroupDTO model)
         {
-            if (Session["messageGroupDTOEdit"] != null)
-            {
-                model = Session["messageGroupDTOEdit"] as MessageGroupDTO;
-            }
+            //var model = new MessageGroupDTO();
 
-            if (Session["messageGroupDTOsEdit"] != null)
-            {
-                model.messageGroupCustomerDTO = Session["messageGroupDTOsEdit"] as ObservableCollection<MessageGroupDTO>;
+            //if (Session["savedData"] != null)
+            //{
+            //    model = Session["savedData"] as MessageGroupDTO;
+            //}
 
-                model.TargetValues = JsonConvert.SerializeObject(model.messageGroupCustomerDTO);
-            }
+            //if (Session["messageGroupDTOsEdit"] != null)
+            //{
+            //    model.messageGroupCustomerDTO = Session["messageGroupDTOsEdit"] as ObservableCollection<MessageGroupDTO>;
+
+            //    model.TargetValues = JsonConvert.SerializeObject(model.messageGroupCustomerDTO);
+            //}
 
             model.ValidateAll();
 
@@ -570,7 +576,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
                     Session["messageGroupDTOEdit"] = null;
                     Session["messageGroupDTOsEdit"] = null;
-                    Session["id"] = null;
+                    Session["savedData"] = null;
 
                     return RedirectToAction("Index");
                 }

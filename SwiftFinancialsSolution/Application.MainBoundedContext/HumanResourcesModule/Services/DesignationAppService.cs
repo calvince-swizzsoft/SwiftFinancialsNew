@@ -229,7 +229,8 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
                         ParentId = persisted.ParentId,
                         Description = persisted.Description,
                         IsLocked = persisted.IsLocked,
-                        CreatedDate = persisted.CreatedDate
+                        CreatedDate = persisted.CreatedDate,
+                        Remarks = persisted.Remarks
                     };
                 }
                 else return null;

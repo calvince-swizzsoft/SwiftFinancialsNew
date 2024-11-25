@@ -14,7 +14,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Customer</h2>
+        <h2>Edit</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -104,15 +104,15 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                         @Html.DropDownListFor(model => model.TypeDescription,
-                                                                                                                       new SelectList(new List<SelectListItem>
-                                                                                                                       {
+                                                                                                                                                new SelectList(new List<SelectListItem>
+                                                                                                                                                {
                 new SelectListItem { Text = "Select Type", Value = "" },
                 new SelectListItem { Text = "Individual-Particulars", Value = "IndividualParticulars" },
                 new SelectListItem { Text = "Partnership-Particulars", Value = "Partnership" },
                 new SelectListItem { Text = "Corporation-Particulars", Value = "Corporation" },
                 new SelectListItem { Text = "Micro-credit-Particulars", Value = "MicroCredit" }
 }, "Value", "Text"),
-                                                                                                                       new { @class = "form-control input-md", @id = "customerTypeDropdown" })
+                                                                                                                                                new { @class = "form-control input-md", @id = "customerTypeDropdown" })
                                         @Html.ValidationMessageFor(model => model.TypeDescription)
                                     </div>
                                 </div>
@@ -193,6 +193,7 @@
 
 
                         </div>
+
                                         <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap; font-size: 0.85rem;" id="myTab">
                                             <!-- Dynamic Navigation Links -->
                                             <li class="nav-item dynamic-tab" id="link-IndividualParticulars" style="display: none;">
@@ -209,7 +210,7 @@
                                             </li>
 
                                             <!-- Always Visible Navigation Links -->
-                                            <li class="nav-item">
+                                            @*<li class="nav-item">
                                                 <a class="nav-link" href="#mandatoryDebitTypes" data-toggle="tab" style="padding: 5px 10px;">Debit Types</a>
                                             </li>
                                             <li class="nav-item">
@@ -220,7 +221,7 @@
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" href="#mandatorySavingsProducts" data-toggle="tab" style="padding: 5px 10px;">Savings Products</a>
-                                            </li>
+                                            </li>*@
                                             <li class="nav-item">
                                                 <a class="nav-link tab-pane" href="#address" data-toggle="tab" style="padding: 5px 10px;">Address</a>
                                             </li>
@@ -230,7 +231,7 @@
                                         </ul> <!-- Tab Content -->
                                                         <div class="tab-content">
 
-                                                            <div id="mandatorySavingsProducts" class="tab-pane">
+                                                            @*<div id="mandatorySavingsProducts" class="tab-pane">
                                                                 <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
                                                                     <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
                                                                         <thead style="background-color: #4682b4; color: #fff;">
@@ -248,9 +249,8 @@
                                                                     <input type="checkbox" class="savings-checkbox" name="savingsproducts" value="@save.Id" />
                                                                     @save.Description
                                                                 </td>
-                                                            </tr>
-}
-                                                    }
+                                                            </tr>}
+                                                                            }
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -274,8 +274,9 @@
                                                                     <input type="checkbox" class="savings-checkbox" name="DebitTypes" value="@debitType.Id" />
                                                                     @debitType.Description
                                                                 </td>
-                                                            </tr>}
-                                                                            }
+                                                            </tr>
+}
+                                                    }
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -298,8 +299,9 @@
                                                                     <input type="checkbox" class="savings-checkbox" name="CreditTypes" value="@creditType.Id" />
                                                                     @creditType.Description
                                                                 </td>
-                                                            </tr>}
-                                                                            }
+                                                            </tr>
+}
+                                                    }
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -324,13 +326,12 @@
                                                                     <input type="checkbox" class="investment-checkbox" name="investmentproducts" value="@invest.Id" />
                                                                     @invest.Description
                                                                 </td>
-                                                            </tr>
-}
-                                                    }
+                                                            </tr>}
+                                                                            }
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
-                                                            </div>
+                                                            </div>*@
 
 
                                                             <div id="address" class="tab-pane" role="tabpanel">
@@ -593,29 +594,29 @@
                                                                 </div>-->
                                                                 <!-- Member Collection Section -->
                                                                 <!--<div class="form-group row">
-                                                                    <div class="col-md-12">
-                                                                        <label>Member Collection</label>
-                                                                        <table id="memberCollectionTable" class="table table-bordered">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th>Name</th>
-                                                                                    <th>Gender</th>
-                                                                                    <th>Identity Card Type</th>
-                                                                                    <th>Identity Card Number</th>
-                                                                                    <th>Address Line 1</th>
-                                                                                    <th>Address Line 2</th>
-                                                                                    <th>Street</th>
-                                                                                    <th>Postal Code</th>
-                                                                                    <th>City</th>
-                                                                                    <th>Email</th>
-                                                                                    <th>Land Line</th>
-                                                                                    <th>Mobile Line</th>
-                                                                                    <th>Signatory?</th>
-                                                                                    <th>Remarks</th>
-                                                                                    <th>Action</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>-->
+                                                                <div class="col-md-12">
+                                                                    <label>Member Collection</label>
+                                                                    <table id="memberCollectionTable" class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Name</th>
+                                                                                <th>Gender</th>
+                                                                                <th>Identity Card Type</th>
+                                                                                <th>Identity Card Number</th>
+                                                                                <th>Address Line 1</th>
+                                                                                <th>Address Line 2</th>
+                                                                                <th>Street</th>
+                                                                                <th>Postal Code</th>
+                                                                                <th>City</th>
+                                                                                <th>Email</th>
+                                                                                <th>Land Line</th>
+                                                                                <th>Mobile Line</th>
+                                                                                <th>Signatory?</th>
+                                                                                <th>Remarks</th>
+                                                                                <th>Action</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>-->
                                                                 <!-- Dynamic Member Rows -->
                                                                 <!--</tbody>
                                                                         </table>
@@ -935,7 +936,7 @@
                                                             </script>
 
 
-                                                            <input type="button" value="Create" class="btn btn-primary" style="width: 150px;" onclick="submitForm()" />
+                                                            <input type="button" value="Update" class="btn btn-primary" style="width: 150px;" onclick="submitForm()" />
                                                         </div>}
 
 
@@ -1013,7 +1014,66 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+    <script>
+  $(document).ready(function () {
+    // Get the value of ViewBag.type (e.g., "Individual", "Partnership", etc.)
+    var type = '@ViewBag.type';
 
+    // Map the ViewBag.type to the corresponding tab link ID
+    var tabMap = {
+        'Individual': 'link-IndividualParticulars',
+        'Partnership': 'link-Partnership',
+        'Corporation': 'link-Corporation',
+        'MicroCredit': 'link-MicroCredit'
+    };
+
+    // Default to Individual if the type is not recognized
+    var tabId = tabMap[type] || 'link-IndividualParticulars';
+
+    // Show the corresponding tab and mark it as active
+    $('#' + tabId).show(); // Make the tab visible
+    $('#' + tabId + ' a').tab('show'); // Activate the tab
+
+    // Optional: Ensure all other tabs remain hidden if they are dynamic
+    $('.dynamic-tab').each(function () {
+        if ($(this).attr('id') !== tabId) {
+            $(this).hide(); // Hide tabs that are not the active one
+        }
+    });
+});
+
+    </script>
+    @*<script>
+        $(document).ready(function () {
+            var activeTabId = ''; // Variable to store the ID of the active tab
+
+            // Check if the ViewBag.type value exists and initialize the active tab
+            var initialTabType = '@ViewBag.type'; // Server-side variable passed to JavaScript
+            if (initialTabType) {
+                activeTabId = 'link-' + initialTabType; // Construct the ID for the initial tab
+                $('#' + activeTabId).show(); // Show the tab
+                $('#' + activeTabId + ' a').tab('show'); // Activate the tab
+            }
+
+            // Handle dropdown change
+            $('#customerTypeDropdown').change(function () {
+                var selectedValue = $(this).val(); // Get selected value
+
+                if (selectedValue) {
+                    // Hide the currently active tab link
+                    if (activeTabId) {
+                        $('#' + activeTabId).hide();
+                    }
+
+                    // Show the new selected tab link
+                    activeTabId = 'link-' + selectedValue; // Update the active tab ID
+                    $('#' + activeTabId).show();
+                    // Activate the selected tab
+                    $('#' + activeTabId + ' a').tab('show');
+                }
+            });
+        });
+        </script>*@
 
     <script>
         function submitForm() {
@@ -1053,7 +1113,7 @@
 
                 // Append a new row to the table
                 $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `);
 
                 // Clear the form fields after adding
                 clearMemberForm();

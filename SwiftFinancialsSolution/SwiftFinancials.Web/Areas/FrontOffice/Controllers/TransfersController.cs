@@ -53,9 +53,37 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
 
+            var missingParameters = new List<string>();
+
+        
+
+            if (currentUser == null)
+            {
+                missingParameters.Add("Active User");
+            }
+
+            if (SelectedTeller == null)
+            {
+                missingParameters.Add("Treasury");
+            }
+
+            // Check if any parameter is missing
+            if (missingParameters.Any())
+            {
+                var missingMessage = $"Some features are missing due to lack of: {string.Join(", ", missingParameters)}";
+
+                MessageBox.Show(missingMessage,
+                    "Cash Transaction",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                //return Json(new { success = false, message = "Operation error: " + missingMessage });
+            }
 
             var untransferredCheques = await _channelService.FindUnTransferredExternalChequesByTellerId(SelectedTeller.Id, "", GetServiceHeader());
-
             var untransferredChequesValue = untransferredCheques.Sum(cheque => cheque.Amount);
 
             model.EmployeeId = SelectedTeller.EmployeeId;
