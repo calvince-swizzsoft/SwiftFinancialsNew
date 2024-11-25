@@ -7,7 +7,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 {
     public class LeaveApplicationDTO
     {
-
+        
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 
@@ -289,5 +289,26 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        [Display(Name = "Remarks")]
+        public string Remarks { get; set; }
+
+        // Additional DTOs
+        [Display(Name = "Leave Auth Option")]
+        public byte LeaveAutOption { get; set; }
+
+        [Display(Name = "Status")]
+        public string LeaveAutOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LeaveAuthOption), (int)LeaveAutOption) ? EnumHelper.GetDescription((LeaveAuthOption)LeaveAutOption) : string.Empty;
+            }
+        }
+
+        public LeaveAuthOption LeaveAuthOption { get; set; }
+
+
     }
 }

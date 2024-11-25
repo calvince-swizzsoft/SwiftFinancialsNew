@@ -208,9 +208,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#mandatoryDebitTypes" data-toggle="tab" style="padding: 5px 10px;">Debit Types</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link tab-pane" href="#Referees" data-toggle="tab" style="padding: 5px 10px;">Referees</a>
-                            </li>
+                            @*<li class="nav-item">
+                                    <a class="nav-link tab-pane" href="#Referees" data-toggle="tab" style="padding: 5px 10px;">Referees</a>
+                                </li>*@
                             <li class="nav-item">
                                 <a class="nav-link" href="#mandatoryCreditTypes" data-toggle="tab" style="padding: 5px 10px;">Credit Types</a>
                             </li>
@@ -357,14 +357,15 @@
                                         <div class="col-lg-6">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "", @oninput = "validateEmail(this)" } })
+                                                <span id="emailValidationMessage" class="text-danger"></span>
                                             </div>
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
-                                                @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line", @oninput = "validatePhoneNumber(this)" } })
+                                                <span id="phoneValidationMessage" class="text-danger"></span>
                                             </div>
+
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
                                                 @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Land line" } })
@@ -390,6 +391,7 @@
                                     </div>
                                 </fieldset>
                             </div>
+
                             <div id="Partnership" class="tab-pane">
                                 <div class="row">
                                     <div class="col-lg-6">
@@ -401,9 +403,12 @@
                                             @Html.Label("Registration date", new { @class = "control-label" })
                                             @Html.EditorFor(model => model.RegistrationDate, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Registration date..." } })
                                         </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.Label("Date Established", new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Establishment date..." } })
+                                        <div class="form-group" id="data_3">
+                                            @Html.LabelFor(model => model.NonIndividualDateEstablished, htmlAttributes: new { @class = "" })
+                                            <div class="input-group date">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                <input type="text" name="dateestablished" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                            </div>
                                         </div>
 
 
@@ -425,7 +430,9 @@
                             </div>
 
                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
                             <script>
+
                                 $(function () { // Use an IIFE to avoid polluting global scope
                                     console.log("Document is ready");  // Debugging message to confirm page load
 
@@ -497,9 +504,12 @@
                                             @Html.Label("Registration Number", new { @class = "control-label" })
                                             @Html.EditorFor(model => model.NonIndividualRegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter registration number..." } })
                                         </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.Label("Date Established", new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Enter establishment date..." } })
+                                        <div class="form-group" id="data_3">
+                                            @Html.LabelFor(model => model.NonIndividualDateEstablished, htmlAttributes: new { @class = "" })
+                                            <div class="input-group date">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                <input type="text" name="dateestablished" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                            </div>
                                         </div>
 
                                     </div>
@@ -740,42 +750,42 @@
 
                                 </div>
                             </div>
-                            <div id="Referees" class="tab-pane" role="tabpanel">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.refereeDTOs[0].WitnessFullName, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.refereeDTOs[0].CustomerId)
-                                                @Html.TextBoxFor(model => model.refereeDTOs[0].WitnessIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
+                            <!--<div id="Referees" class="tab-pane" role="tabpanel">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.refereeDTOs[0].WitnessFullName, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.refereeDTOs[0].CustomerId)
+                                            @Html.TextBoxFor(model => model.refereeDTOs[0].WitnessIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
 
-                                                </span>
-                                            </div>
+                                            </span>
                                         </div>
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.Label("Payroll Number", new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.refereeDTOs[0].WitnessIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter registration number..." } })
-                                        </div>
-
-
-
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.Label("Id number", new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.refereeDTOs[0].WitnessIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Enter establishment date..." } })
-                                        </div>
-                                        @*<div class="form-group form-group-lg">
-                                            @Html.Label("Remarks", new { @class = "control-label" })
-                                            @Html.TextAreaFor(model => model.NonIndividualRegistrationSerialNumber, new { @class = "form-control", @rows = 3, @placeholder = "Enter any remarks..." })
-                                        </div>*@
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.Label("Payroll Number", new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.refereeDTOs[0].WitnessIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter registration number..." } })
                                     </div>
+
+
 
                                 </div>
-                            </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.Label("Id number", new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.refereeDTOs[0].WitnessIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Enter establishment date..." } })
+                                    </div>-->
+                            @*<div class="form-group form-group-lg">
+                                    @Html.Label("Remarks", new { @class = "control-label" })
+                                    @Html.TextAreaFor(model => model.NonIndividualRegistrationSerialNumber, new { @class = "form-control", @rows = 3, @placeholder = "Enter any remarks..." })
+                                </div>*@
+                            <!--</div>
+
+                                </div>
+                            </div>-->
                             <div id="IndividualParticulars" class="tab-pane">
                                 <div class="row">
                                     <div class="col-4">
@@ -1090,7 +1100,7 @@
 
                 // Append a new row to the table
                 $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `);
 
                 // Clear the form fields after adding
                 clearMemberForm();

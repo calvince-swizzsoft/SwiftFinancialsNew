@@ -73,7 +73,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             // Retrieve all available debit, investment, and savings products
             var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
             var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
-            var allInvestmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
+            var allInvestmentProducts = await _channelService.FindInvestmentProductsAsync( GetServiceHeader());
             var allSavingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
 
             // Retrieve company and its linked products
@@ -282,8 +282,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             // Retrieve all available debit, investment, and savings products
             var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
             var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
-            var allInvestmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
-            var allSavingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
+            var allInvestmentProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var allSavingsProducts = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
 
             // Retrieve company and its linked products
             var CompanyDTO = await _channelService.FindCompanyAsync(id, GetServiceHeader());

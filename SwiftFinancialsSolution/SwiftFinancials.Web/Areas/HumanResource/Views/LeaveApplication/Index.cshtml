@@ -9,16 +9,14 @@
         @TempData["SuccessMessage"]
     </div>
 }
-@if (TempData["Error"] != null)
+
+@if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
     </div>
 }
+
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -119,24 +117,32 @@
                     aData.DurationEndDate = dt_DurationEnd;
 
                     var dropdownHtml = `
-                        <div class="dropdown">
-                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+    <div class="dropdown">
+        <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Action
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    var viewButton = `<a class="dropdown-item" href="/HumanResource/Holiday/details/${aData.Id}">View</a>`;
-                    var editButton = `<a class="dropdown-item" href="/HumanResource/Holiday/edit/${aData.Id}">Edit</a>`;
+                    var viewButton = `<a class="dropdown-item" href="/HumanResource/LeaveApplication/details/${aData.Id}">View</a>`;
+                    var editButton = `<a class="dropdown-item" href="/HumanResource/LeaveApplication/edit/${aData.Id}">Edit</a>`;
+                    var approveButton = `<a class="dropdown-item" href="/HumanResource/LeaveApplication/approval/${aData.Id}">Approval</a>`;
+                    var recallButton = `<a class="dropdown-item" href="/HumanResource/LeaveApplication/recall/${aData.Id}">Recall</a>`;
+
 
                     switch (aData.Status) {
                         case 1: // Pending
-                            dropdownHtml += viewButton + editButton;
+                            dropdownHtml += viewButton + editButton + approveButton;
                             break;
-                        default:
-                            dropdownHtml += viewButton + editButton;
+                        case 2: // Another specific status (e.g., Approved)
+                            dropdownHtml += viewButton + approveButton + recallButton;
+                            break;
+                        default: // Other cases
+                            dropdownHtml += viewButton + recallButton;
                             break;
                     }
+
                     dropdownHtml += `</div></div>`;
+
 
 
                     $('td:eq(9)', nRow).html(dt_Created);
@@ -148,7 +154,7 @@
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "LeaveType", "sTitle": "Type", "sWidth": "15%" },
+                    { "mDataProp": "LeaveTypeDescription", "sTitle": "Type", "sWidth": "15%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
                     { "mDataProp": "EmployeeCustomerFullName", "sTitle": "Employee Name", "sWidth": "10%" },
                     { "mDataProp": "EmployeeCustomerIndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },

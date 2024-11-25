@@ -59,14 +59,14 @@
                         <fieldset>
                             <div class="form-group form-group-lg">
                                 @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Employee Type name.", @required = "" } })
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Employee Type name.", @readonly="" } })
                                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                             </div>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CategoryDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Employee Type name.", @required = "" } })
+                                        @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Employee Type name.", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CategoryDescription, "", new { @class = "text-danger" })
                                     </div>
 
@@ -76,7 +76,7 @@
                                         @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId)
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description..", @readonly = "" } })
                                     </div>
 
                                 </div>
@@ -84,9 +84,10 @@
                         </fieldset>
 
                         <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
-                            <div class="form-group form-group-lg">
-                                @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                            <div  class="form-group form-group-lg">
+                                @Html.CheckBoxFor(model => model.IsLocked, new { @class = "", @disabled = "disabled" })
+                                @Html.HiddenFor(model => model.IsLocked) <!-- Hidden input ensures the value is submitted -->
+                                @Html.LabelFor(model => model.IsLocked, new { @class = "form-control", @placeholder = "Is Locked?" })
                                 @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                             </div>
 

@@ -9,6 +9,8 @@ using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.Globalization;
+
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -77,9 +79,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            var employeeDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
+            var leaveApplicationDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
 
-            return View(employeeDTO);
+            return View(leaveApplicationDTO);
         }
 
         [HttpGet]
@@ -145,42 +147,72 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             if (!leaveApplicationBindingModel.HasErrors)
             {
-                
-                await _channelService.AddLeaveApplicationAsync(leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(), GetServiceHeader());
+                try
+                {
+                    await _channelService.AddLeaveApplicationAsync(
+                        leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(),
+                        GetServiceHeader()
+                    );
 
-                return RedirectToAction("Index");
+                    TempData["SuccessMessage"] = "Leave application submitted successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while submitting the leave application. Please try again.";
+                    Console.WriteLine(ex.Message);
+                }
             }
             else
             {
-                var errorMessages = leaveApplicationBindingModel.ErrorMessages;
-                //ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(employeeBindingModel.BloodGroup.ToString());
-                return View(leaveApplicationBindingModel);
+                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
             }
+
+            return View(leaveApplicationBindingModel);
         }
+
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
-            var employeeDTO = await _channelService.FindEmployeeAsync(id, GetServiceHeader());
+            var leaveApplicationDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
 
-            return View(employeeDTO);
+            return View(leaveApplicationDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, EmployeeDTO employeeBindingModel)
+        public async Task<ActionResult> Edit(Guid id, LeaveApplicationBindingModel leaveApplicationBindingModel)
         {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateEmployeeAsync(employeeBindingModel, GetServiceHeader());
+            leaveApplicationBindingModel.ValidateAll();
 
-                return RedirectToAction("Index");
+            if (!leaveApplicationBindingModel.HasErrors)
+            {
+                try
+                {
+                    await _channelService.UpdateLeaveApplicationAsync(
+                        leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(),
+                        GetServiceHeader()
+                    );
+
+                    TempData["SuccessMessage"] = "Leave application updated successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while updating the leave application. Please try again.";
+                    Console.WriteLine(ex.Message);
+                }
             }
             else
             {
-                return View(employeeBindingModel);
+                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
             }
+
+            return View(leaveApplicationBindingModel);
         }
 
 
@@ -189,26 +221,100 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            var employeeDTO = await _channelService.FindEmployeeAsync(id, GetServiceHeader());
+            var leaveApplicationDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
 
-            return View(employeeDTO);
+            return View(leaveApplicationDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Approval(Guid id, EmployeeDTO employeeBindingModel)
+        public async Task<ActionResult> Approval(Guid id, LeaveApplicationDTO leaveApplicationDTO)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateEmployeeAsync(employeeBindingModel, GetServiceHeader());
+                try
+                {
+                    // Map the selected LeaveAuthOption to a status or pass it to the service as is.
+                    var authorizationStatus = leaveApplicationDTO.LeaveAuthOption;
 
-                return RedirectToAction("Index");
+                    // Assuming the service handles the enum directly.
+                    await _channelService.AuthorizeLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
+
+                    TempData["SuccessMessage"] = "Leave approval updated successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while updating the leave approval. Please try again.";
+                    Console.WriteLine(ex.Message);
+                }
             }
             else
             {
-                return View(employeeBindingModel);
+                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
             }
+
+            return View("Index");
         }
+
+
+        public async Task<ActionResult> Recall(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var leaveApplicationDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
+
+            return View(leaveApplicationDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Recall(Guid id, LeaveApplicationDTO leaveApplicationDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Ensure that the leave application is eligible for recall
+                    // Example: You can check if the status is 'Approved' or 'Pending' before recalling
+                    var leaveApplication = await _channelService.FindLeaveApplicationAsync(id);
+
+                    if (leaveApplication == null)
+                    {
+                        TempData["ErrorMessage"] = "Leave application not found.";
+                        return RedirectToAction("Index");
+                    }
+
+                    // Call the method to recall the leave application
+                    bool isRecallSuccessful = await _channelService.RecallLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
+
+                    if (isRecallSuccessful)
+                    {
+                        TempData["SuccessMessage"] = "Leave recall processed successfully!";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "Failed to process leave recall. Please try again.";
+                    }
+
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while recalling the leave application. Please try again.";
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
+            }
+
+            return View("Index");
+        }
+
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetEmployeesAsync()

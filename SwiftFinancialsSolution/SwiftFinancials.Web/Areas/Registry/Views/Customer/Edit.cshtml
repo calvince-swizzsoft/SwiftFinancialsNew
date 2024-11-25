@@ -104,15 +104,15 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                         @Html.DropDownListFor(model => model.TypeDescription,
-                                                                                                                                                new SelectList(new List<SelectListItem>
-                                                                                                                                                {
+                                                                                                                                                          new SelectList(new List<SelectListItem>
+                                                                                                                                                          {
                 new SelectListItem { Text = "Select Type", Value = "" },
                 new SelectListItem { Text = "Individual-Particulars", Value = "IndividualParticulars" },
                 new SelectListItem { Text = "Partnership-Particulars", Value = "Partnership" },
                 new SelectListItem { Text = "Corporation-Particulars", Value = "Corporation" },
                 new SelectListItem { Text = "Micro-credit-Particulars", Value = "MicroCredit" }
 }, "Value", "Text"),
-                                                                                                                                                new { @class = "form-control input-md", @id = "customerTypeDropdown" })
+                                                                                                                                                          new { @class = "form-control input-md", @id = "customerTypeDropdown" })
                                         @Html.ValidationMessageFor(model => model.TypeDescription)
                                     </div>
                                 </div>
@@ -210,18 +210,18 @@
                                             </li>
 
                                             <!-- Always Visible Navigation Links -->
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="#mandatoryDebitTypes" data-toggle="tab" style="padding: 5px 10px;">Debit Types</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="#mandatoryCreditTypes" data-toggle="tab" style="padding: 5px 10px;">Credit Types</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="#mandatoryInvestmentProducts" data-toggle="tab" style="padding: 5px 10px;">Investment Products</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="#mandatorySavingsProducts" data-toggle="tab" style="padding: 5px 10px;">Savings Products</a>
-                                            </li>
+                                            @*<li class="nav-item">
+                                                    <a class="nav-link" href="#mandatoryDebitTypes" data-toggle="tab" style="padding: 5px 10px;">Debit Types</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="#mandatoryCreditTypes" data-toggle="tab" style="padding: 5px 10px;">Credit Types</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="#mandatoryInvestmentProducts" data-toggle="tab" style="padding: 5px 10px;">Investment Products</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="#mandatorySavingsProducts" data-toggle="tab" style="padding: 5px 10px;">Savings Products</a>
+                                                </li>*@
                                             <li class="nav-item">
                                                 <a class="nav-link tab-pane" href="#address" data-toggle="tab" style="padding: 5px 10px;">Address</a>
                                             </li>
@@ -231,107 +231,107 @@
                                         </ul> <!-- Tab Content -->
                                                         <div class="tab-content">
 
-                                                            <div id="mandatorySavingsProducts" class="tab-pane">
-                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                                                        <thead style="background-color: #4682b4; color: #fff;">
-                                                                            <tr>
-                                                                                <th data-toggle="true">Description</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            @if (ViewBag.savings != null)
-                                                                            {
-                                                                                foreach (var save in ViewBag.savings)
-                                                                                {
-                                                            <tr style="background-color: #f5f5f5;">
-                                                                <td>
-                                                                    <input type="checkbox" class="savings-checkbox" name="savingsproducts" value="@save.Id" />
-                                                                    @save.Description
-                                                                </td>
-                                                            </tr>}
-                                                                            }
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
+                                                            @*<div id="mandatorySavingsProducts" class="tab-pane">
+                                                                                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                                                                                            <tr>
+                                                                                                                                                <th data-toggle="true">Description</th>
+                                                                                                                                            </tr>
+                                                                                                                                        </thead>
+                                                                                                                                        <tbody>
+                                                                                                                                            @if (ViewBag.savings != null)
+                                                                                                                                            {
+                                                                                                                                                foreach (var save in ViewBag.savings)
+                                                                                                                                                {
+                                                                                                                            <tr style="background-color: #f5f5f5;">
+                                                                                                                                <td>
+                                                                                                                                    <input type="checkbox" class="savings-checkbox" name="savingsproducts" value="@save.Id" />
+                                                                                                                                    @save.Description
+                                                                                                                                </td>
+                                                                                                                            </tr>}
+                                                                                                                                            }
+                                                                                                                                        </tbody>
+                                                                                                                                    </table>
+                                                                                                                                </div>
+                                                                                                                            </div>
 
-                                                            <div id="mandatoryDebitTypes" class="tab-pane">
-                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                                                        <thead style="background-color: #4682b4; color: #fff;">
-                                                                            <tr>
-                                                                                <th data-toggle="true">Description</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            @if (ViewBag.debit != null)
-                                                                            {
-                                                                                foreach (var debitType in ViewBag.debit)
-                                                                                {
-                                                            <tr style="background-color: #f5f5f5;">
-                                                                <td>
-                                                                    <input type="checkbox" class="savings-checkbox" name="DebitTypes" value="@debitType.Id" />
-                                                                    @debitType.Description
-                                                                </td>
-                                                            </tr>
-}
-                                                    }
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                            <div id="mandatoryCreditTypes" class="tab-pane">
-                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                                                        <thead style="background-color: #4682b4; color: #fff;">
-                                                                            <tr>
-                                                                                <th data-toggle="true">Description</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            @if (ViewBag.creditTypes != null)
-                                                                            {
-                                                                                foreach (var creditType in ViewBag.creditTypes)
-                                                                                {
-                                                            <tr style="background-color: #f5f5f5;">
-                                                                <td>
-                                                                    <input type="checkbox" class="savings-checkbox" name="CreditTypes" value="@creditType.Id" />
-                                                                    @creditType.Description
-                                                                </td>
-                                                            </tr>
-}
-                                                    }
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
+                                                                                                                            <div id="mandatoryDebitTypes" class="tab-pane">
+                                                                                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                                                                                            <tr>
+                                                                                                                                                <th data-toggle="true">Description</th>
+                                                                                                                                            </tr>
+                                                                                                                                        </thead>
+                                                                                                                                        <tbody>
+                                                                                                                                            @if (ViewBag.debit != null)
+                                                                                                                                            {
+                                                                                                                                                foreach (var debitType in ViewBag.debit)
+                                                                                                                                                {
+                                                                                                                            <tr style="background-color: #f5f5f5;">
+                                                                                                                                <td>
+                                                                                                                                    <input type="checkbox" class="savings-checkbox" name="DebitTypes" value="@debitType.Id" />
+                                                                                                                                    @debitType.Description
+                                                                                                                                </td>
+                                                                                                                            </tr>
+                                                                }
+                                                                                                                    }
+                                                                                                                                        </tbody>
+                                                                                                                                    </table>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div id="mandatoryCreditTypes" class="tab-pane">
+                                                                                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                                                                                            <tr>
+                                                                                                                                                <th data-toggle="true">Description</th>
+                                                                                                                                            </tr>
+                                                                                                                                        </thead>
+                                                                                                                                        <tbody>
+                                                                                                                                            @if (ViewBag.creditTypes != null)
+                                                                                                                                            {
+                                                                                                                                                foreach (var creditType in ViewBag.creditTypes)
+                                                                                                                                                {
+                                                                                                                            <tr style="background-color: #f5f5f5;">
+                                                                                                                                <td>
+                                                                                                                                    <input type="checkbox" class="savings-checkbox" name="CreditTypes" value="@creditType.Id" />
+                                                                                                                                    @creditType.Description
+                                                                                                                                </td>
+                                                                                                                            </tr>
+                                                                }
+                                                                                                                    }
+                                                                                                                                        </tbody>
+                                                                                                                                    </table>
+                                                                                                                                </div>
+                                                                                                                            </div>
 
 
-                                                            <div id="mandatoryInvestmentProducts" class="tab-pane">
-                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                                                        <thead style="background-color: #4682b4; color: #fff;">
-                                                                            <tr>
-                                                                                <th data-toggle="true">Description</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            @if (ViewBag.investment != null)
-                                                                            {
-                                                                                foreach (var invest in ViewBag.investment)
-                                                                                {
-                                                            <tr style="background-color: #f5f5f5;">
-                                                                <td>
-                                                                    <input type="checkbox" class="investment-checkbox" name="investmentproducts" value="@invest.Id" />
-                                                                    @invest.Description
-                                                                </td>
-                                                            </tr>}
-                                                                            }
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
+                                                                                                                            <div id="mandatoryInvestmentProducts" class="tab-pane">
+                                                                                                                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                                                                                                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                                                                                                        <thead style="background-color: #4682b4; color: #fff;">
+                                                                                                                                            <tr>
+                                                                                                                                                <th data-toggle="true">Description</th>
+                                                                                                                                            </tr>
+                                                                                                                                        </thead>
+                                                                                                                                        <tbody>
+                                                                                                                                            @if (ViewBag.investment != null)
+                                                                                                                                            {
+                                                                                                                                                foreach (var invest in ViewBag.investment)
+                                                                                                                                                {
+                                                                                                                            <tr style="background-color: #f5f5f5;">
+                                                                                                                                <td>
+                                                                                                                                    <input type="checkbox" class="investment-checkbox" name="investmentproducts" value="@invest.Id" />
+                                                                                                                                    @invest.Description
+                                                                                                                                </td>
+                                                                                                                            </tr>}
+                                                                                                                                            }
+                                                                                                                                        </tbody>
+                                                                                                                                    </table>
+                                                                                                                                </div>
+                                                                                                                            </div>*@
 
 
                                                             <div id="address" class="tab-pane" role="tabpanel">
@@ -401,11 +401,13 @@
                                                                             @Html.Label("Registration date", new { @class = "control-label" })
                                                                             @Html.EditorFor(model => model.RegistrationDate, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Registration date..." } })
                                                                         </div>
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("Date Established", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Establishment date..." } })
+                                                                        <div class="form-group" id="data_3">
+                                                                            @Html.LabelFor(model => model.NonIndividualDateEstablished, htmlAttributes: new { @class = "" })
+                                                                            <div class="input-group date">
+                                                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                                                <input type="text" name="dateestablished" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                                                            </div>
                                                                         </div>
-
 
                                                                     </div>
                                                                     <div class="col-md-6">
@@ -497,9 +499,12 @@
                                                                             @Html.Label("Registration Number", new { @class = "control-label" })
                                                                             @Html.EditorFor(model => model.NonIndividualRegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter registration number..." } })
                                                                         </div>
-                                                                        <div class="form-group form-group-lg">
-                                                                            @Html.Label("Date Established", new { @class = "control-label" })
-                                                                            @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Enter establishment date..." } })
+                                                                        <div class="form-group" id="data_3">
+                                                                            @Html.LabelFor(model => model.NonIndividualDateEstablished, htmlAttributes: new { @class = "" })
+                                                                            <div class="input-group date">
+                                                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                                                <input type="text" name="dateestablished" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                                                            </div>
                                                                         </div>
 
                                                                     </div>
@@ -1113,7 +1118,7 @@
 
                 // Append a new row to the table
                 $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `);
 
                 // Clear the form fields after adding
                 clearMemberForm();

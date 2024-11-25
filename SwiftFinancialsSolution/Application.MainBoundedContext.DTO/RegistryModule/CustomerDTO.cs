@@ -139,7 +139,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [Display(Name = "Birth Date")]
         public DateTime? IndividualBirthDate { get; set; }
-       
+
         [Display(Name = "Start Date")]
         public DateTime DurationStartDate { get; set; }
 
@@ -363,9 +363,13 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
                         result = string.Format("{0} {1} {2}", IndividualSalutationDescription, IndividualFirstName, IndividualLastName).Trim();
                         break;
                     case CustomerType.Partnership:
+                        result = string.Format("{0}", NonIndividualDescription).Trim();
+                        break;
                     case CustomerType.Corporation:
+                        result = string.Format("{0}", NonIndividualDescription).Trim();
+                        break;
                     case CustomerType.MicroCredit:
-                        result = NonIndividualDescription;
+                        result = string.Format("{0}", NonIndividualDescription).Trim();
                         break;
                     default:
                         break;
@@ -448,7 +452,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
             return string.Format("{0}", stringBuilder);
         }
-        
+
         public string ErrorMessageResult;
         public string ErrorMessages;
         public int CompareTo(CustomerDTO other)
@@ -464,5 +468,6 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         // Additional
     public MessageGroupDTO messageGroup { get; set; }
+        public object ZoneDivisionEmployerDescription { get; set; }
     }
 }

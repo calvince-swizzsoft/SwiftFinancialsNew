@@ -1,10 +1,13 @@
-﻿@model  Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryHeadDTO
+﻿
+@model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryHeadDTO
+
 @{
-    ViewBag.Title = "Salary Head Details";
+    ViewBag.Title = "View Salary Head";
+    var typeDescription = ViewBag.SalaryHeadTypeSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1><strong>Salary</strong></h1>
+        <h2>Salary Head</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -19,12 +22,47 @@
     </div>
 </div>
 
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#ValueDate').datepicker({
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Salary Head Details</h2>
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -34,47 +72,524 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.TypeDescription)</strong><br>
-                                @Html.TextBoxFor(model => model.TypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                <br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
 
-                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly"})<br>
-                            </p>
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.CustomerAccountTypeTargetProductId)</strong><br>
-                                @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })<br>
-                            </p>
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.ChartOfAccountId)</strong><br>
-                                @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                <br>
-                            </p>
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
-                                @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                <br>
-                            </p>
-                        </div>
-                    </div>
+                <div class="card">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Details", "Salary", new { Area = "HumanResource" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
 
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Back to List", "Index", "Salary", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                @Html.ActionLink("Edit", "Edit", "Salary", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
+
+
+                            <!-- Expense Payables -->
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.TypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = ".....", @readonly = "" } })
+                                            @Html.ValidationMessageFor(model => model.TypeDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ProductDescription, new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId, new { id = "CustomerAccountTypeTargetProductId" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.TextBoxFor(model => model.ProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", id = "ProductDescription" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#productLookup"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "....", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "....", @readonly = "" } })
+                                            @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+
+                                <p>
+                                    @Html.ActionLink("Back to List", "Index", "Salary", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    @Html.ActionLink("Edit", "Edit", "Salary", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                </p>
+                            </div>
+
+
+
+                        }
                     </div>
                 </div>
+
+                <style>
+                    .card {
+                        margin-bottom: 20px;
+                    }
+
+
+
+                    .form-group-lg {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-control {
+                        border-radius: .25rem;
+                    }
+
+
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #00e0ff;
+                    }
+                </style>
+
+
+
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="productLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Saving product Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="productsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Product G/L Code</th>
+                            <th>Priority</th>
+                            <th>Product G/L Nam</th>
+                            <th>Product Code</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ChartOfAccountLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Chart Of Account Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="chartofaccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Cost Center</th>
+                            <th>Account Code</th>
+                            <th>Account Type</th>
+                            <th>Account Category</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    <style>
+        .highlight {
+            background-color: #f0c14b; /* Light yellow color for highlighting */
+        }
+    </style>
+
+
+    <script>
+               $(document).ready(function () {
+                   $('#productsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "SavingsProduct", new { Area = "Accounts" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountAccountCode", "sTitle": "Product G/L Code", "sWidth": "10%" },
+                    { "mDataProp": "Priority", "sTitle": "Priority", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "Product G/L Name", "sWidth": "15%" },
+                    { "mDataProp": "Code", "sTitle": "Product Code", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#productsGrid tbody').on('click', '.select-customer', function () {
+                       var savingsProductId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetCSavingProductDetails", "Salary", new { Area = "HumanResource" })',
+                    type: 'GET',
+                    data: { savingsProductId: savingsProductId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#ProductDescription').val(response.data.ProductDescription);
+                            $('#CustomerAccountTypeTargetProductId').val(response.data.CustomerAccountTypeTargetProductId);
+                            $('#CustomerAccountTypeProductCodeDescription').val(response.data.CustomerAccountTypeProductCodeDescription);
+                            $('#ProductChartOfAccountId').val(response.data.ProductChartOfAccountId);
+                            $('#ProductChartOfAccountCode').val(response.data.ProductChartOfAccountCode);
+                            $('#ProductChartOfAccountName').val(response.data.ProductChartOfAccountName);
+
+
+
+
+
+
+                            $('#productLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Customer details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+    <script>
+               $(document).ready(function () {
+                   $('#chartofaccountsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "AccountName", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+                    { "mDataProp": "AccountTypeDescription", "sTitle": "Account Type", "sWidth": "15%" },
+                    { "mDataProp": "AccountCode", "sTitle": "Account code", "sWidth": "15%" },
+                    { "mDataProp": "AccountCategoryDescription", "sTitle": "Account Category", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#chartofaccountsGrid tbody').on('click', '.select-customer', function () {
+                       var chartOfAccountId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetChartOfAccountDetails", "Salary", new { Area = "HumanResource" })',
+                    type: 'GET',
+                    data: { chartOfAccountId: chartOfAccountId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#ChartOfAccountName').val(response.data.ChartOfAccountName);
+                            $('#ChartOfAccountId').val(response.data.ChartOfAccountId);
+
+
+
+
+                            $('#ChartOfAccountLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Chat Of Account details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+
+
+
+
+
+
+    <style>
+        .container1 {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .summary-table label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .summary-table input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #f9f9f9;
+            }
+
+        .tab-content {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .tab-pane {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 50px;
+        }
+
+        thead {
+            background-color: #f5f5f5;
+        }
+
+            thead th {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                font-style: italic;
+                color: cadetblue;
+            }
+
+        tbody td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+
+
+        .tab-content {
+            border-top: 1px solid #ddd; /* Add a subtle border if needed */
+            padding: 15px; /* Optional: Add padding for spacing */
+        }
+
+        /* Optional: Add spacing between tab navigation and content */
+        .container {
+            margin-top: 20px; /* Adjust top margin as needed */
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+}

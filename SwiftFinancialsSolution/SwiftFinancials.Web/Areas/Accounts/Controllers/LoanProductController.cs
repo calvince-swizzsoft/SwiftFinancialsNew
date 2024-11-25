@@ -99,6 +99,72 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             });
         }
 
+        
+
+        [HttpGet]
+        public async Task<ActionResult> GetSavingDetails(Guid savingsProductId)
+        {
+            try
+            {
+                var savingProduct = await _channelService.FindSavingsProductAsync(savingsProductId, GetServiceHeader());
+
+                if (savingProduct == null)
+                {
+                    return Json(new { success = false, message = "saving product not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        CustomerAccountTypeTargetProductDescription = savingProduct.Description,
+                        CustomerAccountTypeTargetProductId = savingProduct.Id
+
+
+
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the customer details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetloanDetails(Guid loanProductId)
+        {
+            try
+            {
+                var loanProduct = await _channelService.FindLoanProductAsync(loanProductId, GetServiceHeader());
+
+                if (loanProduct == null)
+                {
+                    return Json(new { success = false, message = "loan product not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        CustomerAccountTypeTargetProductDescription = loanProduct.Description,
+                        CustomerAccountTypeTargetProductId = loanProduct.Id
+
+
+
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the customer details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpPost]
         public async Task<JsonResult> GetLoanProductDetails(Guid id)
         {
@@ -187,10 +253,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public ActionResult StoreSelectedCharges(List<DynamicChargeDTO> selectedCharges)
         {
-            var observableCharges = new ObservableCollection<DynamicChargeDTO>(selectedCharges);
-            Session["selectedCharges"] = observableCharges; 
+            // If selectedCharges is null or empty, clear the session
+            if (selectedCharges != null && selectedCharges.Count > 0)
+            {
+                var observableCharges = new ObservableCollection<DynamicChargeDTO>(selectedCharges);
+                Session["selectedCharges"] = observableCharges;
+            }
+            else
+            {
+                // Optionally clear session if no charges are selected
+                Session.Remove("selectedCharges");
+            }
+
             return Json(new { success = true });
         }
+
 
         [HttpPost]
         public ActionResult StoreSelectedProducts(ProductCollectionInfo selectedProducts)
@@ -392,19 +469,54 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, LoanProductDTO loanProductBindingModel)
+        public async Task<ActionResult> Edit(Guid id, LoanProductDTO loanProductDTO)
         {
-            if (ModelState.IsValid)
+            if (loanProductDTO.HasErrors)
             {
-                await _channelService.UpdateLoanProductAsync(loanProductBindingModel, GetServiceHeader());
-
-                return RedirectToAction("Index");
+                return Json(new { success = false, message = "Validation failed.", errors = loanProductDTO.ErrorMessages });
             }
-            else
+
+            try
             {
-                return View(loanProductBindingModel);
+                // Reload dropdown lists for validation failure or re-rendering the view
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+                ViewBag.LoanInterestChargeModeSelectList = GetLoanInterestChargeModeSelectList(string.Empty);
+                ViewBag.LoanInterestRecoveryModeSelectList = GetLoanInterestRecoveryModeSelectList(string.Empty);
+                ViewBag.LoanRegistrationLoanProductCategorySelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+                ViewBag.LoanRegistrationRoundingTypeSelectList = GetLoanRegistrationRoundingTypeSelectList(string.Empty);
+                ViewBag.LoanRegistrationGuarantorSecurityModeSelectList = GetLoanRegistrationGuarantorSecurityModeSelectList(string.Empty);
+                ViewBag.LoanRegistrationAggregateCheckOffRecoveryModeSelectList = GetLoanRegistrationAggregateCheckOffRecoveryModeSelectList(string.Empty);
+                ViewBag.LoanRegistrationStandingOrderTriggerSelectList = GetLoanRegistrationStandingOrderTriggerSelectList(string.Empty);
+                ViewBag.PrioritySelectList = GetRecoveryPrioritySelectList(string.Empty);
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
+                ViewBag.LoanRegistrationPayoutRecoveryModeSelectList = GetLoanRegistrationPayoutRecoveryModeSelectList(string.Empty);
+                ViewBag.TakeHomeTypeSelectList = GetTakeHomeTypeSelectList(string.Empty);
+                ViewBag.LoanRegistrationPaymentDueDateSelectList = GetLoanRegistrationPaymentDueDateSelectList(string.Empty);
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+                ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
+                ViewBag.ChargeType = GetTakeHomeTypeSelectList(string.Empty);
+                ViewBag.AuxiliaryLoanConditions = GetAuxiliaryLoanConditionSelectList(string.Empty);
+
+                // Attempt to update the loan product
+                loanProductDTO.Id = id; // Ensure the DTO has the correct ID
+                var updateSuccess = await _channelService.UpdateLoanProductAsync(loanProductDTO, GetServiceHeader());
+
+                if (!updateSuccess)
+                {
+                    return Json(new { success = false, message = "Failed to update the loan product. Please try again." });
+                }
+
+
+                return Json(new { success = true, message = "Loan product updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while updating the loan product.", errors = new[] { ex.Message } });
             }
         }
+
+
+
 
 
 

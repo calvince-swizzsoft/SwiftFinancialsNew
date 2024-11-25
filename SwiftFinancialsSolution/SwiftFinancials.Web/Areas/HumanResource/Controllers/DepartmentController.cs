@@ -7,6 +7,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -95,6 +96,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!departmentDTO.HasErrors)
             {
                 await _channelService.AddDepartmentAsync(departmentDTO, GetServiceHeader());
+                MessageBox.Show(
+                                                             "Operation Success",
+                                                             "Customer Receipts",
+                                                             MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Information,
+                                                             MessageBoxDefaultButton.Button1,
+                                                             MessageBoxOptions.ServiceNotification
+                                                         );
 
                 TempData["SuccessMessage"] = "Department created successfully!";
 
@@ -124,7 +133,15 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateDepartmentAsync(departmentBindingModel, GetServiceHeader());
+                await _channelService.UpdateDepartmentAsync(departmentBindingModel, GetServiceHeader()); 
+                MessageBox.Show(
+                                                              "Operation Success",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
 
                 TempData["SuccessMessage"] = "Department updated successfully!"; 
 

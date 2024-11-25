@@ -50,6 +50,8 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 
         public List<SalaryGroupEntryDTO> SalaryGroupEntries { get; set; }
         public SalaryGroupEntryDTO SalaryGroupEntry { get; set; }
+        
+
 
 
         //public List<SalaryGroupEntryDTO> sGroupEntries

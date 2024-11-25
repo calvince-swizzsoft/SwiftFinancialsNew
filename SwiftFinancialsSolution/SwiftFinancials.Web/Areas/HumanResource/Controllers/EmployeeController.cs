@@ -8,11 +8,28 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
+using Infrastructure.Crosscutting.Framework.Utils;
+using SwiftFinancials.Web.Areas.Registry.DocumentsModel;
+
+
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
     public class EmployeeController : MasterController
     {
+        private readonly string _connectionString;
+        public EmployeeController()
+        {
+            // Get connection string from Web.config
+            _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+        }
 
         public async Task<ActionResult> Index()
         {
@@ -72,27 +89,96 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             }
         }
 
-        
+        // Get Documents ...........................
+        private async Task<List<Document>> GetDocumentsAsync(Guid id)
+        {
+            var documents = new List<Document>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto FROM swiftFin_SpecimenCapture WHERE CustomerId = @CustomerId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            documents.Add(new Document
+                            {
+                                PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
+                                SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
+                                IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
+                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
+                            });
+                        }
+                    }
+                }
+            }
+
+            return documents;
+        }
+
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
+            ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
 
+            // Find the employee using the provided ID
             var employeeDTO = await _channelService.FindEmployeeAsync(id, GetServiceHeader());
 
-            return View(employeeDTO);
+            if (employeeDTO != null)
+            {
+                var customerId = employeeDTO.CustomerId;
+
+                // Retrieve associated documents
+                var documents = await GetDocumentsAsync(customerId);
+
+                if (documents.Any())
+                {
+                    var document = documents.First();
+
+                    // Assign document data to TempData for use in the view
+                    TempData["PassportPhoto"] = document.PassportPhoto;
+                    TempData["SignaturePhoto"] = document.SignaturePhoto;
+                    TempData["IDCardFrontPhoto"] = document.IDCardFrontPhoto;
+                    TempData["IDCardBackPhoto"] = document.IDCardBackPhoto;
+
+                    // Assign document data to employeeDTO properties
+                    employeeDTO.PassportPhoto = document.PassportPhoto;
+                    employeeDTO.SignaturePhoto = document.SignaturePhoto;
+                    employeeDTO.IDCardFrontPhoto = document.IDCardFrontPhoto;
+                    employeeDTO.IDCardBackPhoto = document.IDCardBackPhoto;
+                }
+
+                // Return the view with the employee details
+                return View(employeeDTO);
+            }
+
+            // Handle the case where the employee is not found
+            TempData["ErrorMessage"] = "Employee not found.";
+            return RedirectToAction("ErrorPage"); // Replace with your error page action
         }
+
+
 
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
 
             ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
+            ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
 
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
+            
                 return View();
             }
 
@@ -117,6 +203,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!employeeBindingModel.HasErrors)
             {
                 await _channelService.AddEmployeeAsync(employeeBindingModel, GetServiceHeader());
+                MessageBox.Show(
+                                                             "Operation Success",
+                                                             "Customer Receipts",
+                                                             MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Information,
+                                                             MessageBoxDefaultButton.Button1,
+                                                             MessageBoxOptions.ServiceNotification
+                                                         );
                 TempData["SuccessMessage"] = "Employee Created Succeessfully";
 
                 return RedirectToAction("Index");
@@ -124,7 +218,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             else
             {
                 var errorMessages = employeeBindingModel.ErrorMessages;
-                ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(employeeBindingModel.BloodGroup.ToString());
+                ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
+                ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
+                ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
                 return View(employeeBindingModel);
             }
         }
@@ -132,13 +228,15 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-            ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
-
 
             var employeeDTO = await _channelService.FindEmployeeAsync(id, GetServiceHeader());
 
             return View(employeeDTO);
         }
+
+
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -147,6 +245,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateEmployeeAsync(employeeBindingModel, GetServiceHeader());
+                MessageBox.Show(
+                                                             "Operation Success",
+                                                             "Customer Receipts",
+                                                             MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Information,
+                                                             MessageBoxDefaultButton.Button1,
+                                                             MessageBoxOptions.ServiceNotification
+                                                         );
                 TempData["SuccessMessage"] = "Employee Updated Successfully";
 
                 return RedirectToAction("Index");
@@ -176,7 +282,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                     {
                         CustomerFullName = customer.FullName,
                         CustomerId = customer.Id,
-                        
+
 
 
 
@@ -189,6 +295,11 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 return Json(new { success = false, message = "An error occurred while fetching the customer details." }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetEmployeesAsync()

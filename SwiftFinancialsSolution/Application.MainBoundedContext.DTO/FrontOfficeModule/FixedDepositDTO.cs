@@ -397,6 +397,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
 
         public string errormassage;
+        public Guid PayableId { get; set; }
+
 
 
     }
