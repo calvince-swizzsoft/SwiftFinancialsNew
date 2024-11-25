@@ -1,10 +1,17 @@
-﻿using System;
+﻿using Application.Seedwork;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace Application.MainBoundedContext.DTO.RegistryModule
 {
-    public class ConditionalLendingDTO
+    public class ConditionalLendingDTO : BindingModelBase<ConditionalLendingDTO>
     {
+        public ConditionalLendingDTO()
+        {
+            AddAllAttributeValidators();
+        }
+
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 
@@ -25,5 +32,10 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        [DataMember]
+        public CustomerDTO CustomerDTO { get; set; }
+
     }
 }
