@@ -2799,6 +2799,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ConditionalLendingEntryDTO> AddConditionalLendingEntryAsync(ConditionalLendingEntryDTO conditionalLendingEntryDTO, ServiceHeader serviceHeader = null);
 
+        Task<ConditionalLendingDTO> FindConditionalLendingAsync(Guid conditionalLendingId, ServiceHeader serviceHeader = null);
+
         Task<bool> RemoveConditionalLendingEntriesAsync(ObservableCollection<ConditionalLendingEntryDTO> conditionalLendingEntryDTOs, ServiceHeader serviceHeader = null);
 
         Task<bool> UpdateConditionalLendingEntryCollectionByConditionalLendingIdAsync(Guid conditionalLendingId, ObservableCollection<ConditionalLendingEntryDTO> conditionalLendingEntryCollection, ServiceHeader serviceHeader = null);

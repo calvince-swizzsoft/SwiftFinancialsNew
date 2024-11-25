@@ -194,7 +194,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId, htmlAttributes: new { @id = "ChartOfAccountId", @class = "control-label" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @id = "ChartOfAccountAccountName", @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -212,7 +212,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId, htmlAttributes: new { @id = "ChartOfAccountId", @class = "control-label" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new {@id = "ChartOfAccountAccountName", @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -221,7 +221,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ShortageChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ShortageChartOfAccountId, new {@id = "ShortageChartOfAccountId" } )
-                                        @Html.EditorFor(model => model.ShortageChartOfAccountAccountName, new { @id = "ShortageChartOfAccountName", htmlAttributes = new { @class = "ShortageChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.EditorFor(model => model.ShortageChartOfAccountAccountName, new {htmlAttributes = new { @id = "ShortageChartOfAccountName", @class = "ShortageChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                         @Html.ValidationMessageFor(model => model.ShortageChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -229,8 +229,8 @@
                                 <div class="col-lg-6 employee-type-fields" style="display:none;">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ExcessChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ExcessChartOfAccountId, new { @id = "ExcessChartOfAccountId"})
-                                        @Html.EditorFor(model => model.ExcessChartOfAccountAccountName, new {@id = "ExcessChartOfAccountAccountName", htmlAttributes = new { @class = "ExcessChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                       
+                                        @Html.EditorFor(model => model.ExcessChartOfAccountAccountName, new {htmlAttributes = new { @id = "ExcessChartOfAccountAccountName", @class = "ExcessChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                         @Html.ValidationMessageFor(model => model.ExcessChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -253,7 +253,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId, htmlAttributes: new { @id = "ChartOfAccountId", @class = "control-label" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required" } })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new {@id = "ChartOfAccountAccountName", @class = "ChartOfAccountsLookup form-control required" } })
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -269,6 +269,7 @@
                                                      {
                                                          htmlAttributes = new
                                                          {
+                                                             @id = "MiniStatementItemsCap",
                                                     @class = "form-control form-control-sm",
                                                     @type = "number",
                                                     @min = "1",
@@ -281,12 +282,11 @@
 
                                         <!-- Teller Is Locked -->
                                         <div style="display: flex; align-items: center;">
-                                            @Html.CheckBoxFor(model => model.IsLocked,
-                                                new { style = "margin-right: 5px;" })
-                                            @Html.LabelFor(model => model.IsLocked,
-                                                new { @class = "control-label", style = "margin-bottom: 0; white-space: nowrap;" })
+                                            @Html.CheckBoxFor(model => model.IsLocked, new { id = "IsLocked", style = "margin-right: 5px;" })
+                                            @Html.LabelFor(model => model.IsLocked, new { @class = "control-label", style = "margin-bottom: 0; white-space: nowrap;" })
                                             @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                         </div>
+
 
                                         <!-- Create Button -->
                                         <button id="submitButton" type="submit"
@@ -443,121 +443,6 @@
 
     <script>
 
-
-
-  //  $("#s tbody").on("click", "tr", function () {
-  //      var data = EmployeeGrid.row(this).data();
-  //      $('#EmployeeId').val(data.Id);
-  ///*      $('input[name=CustomerAccountId]').val(data.Id);*/
-  //      $('input[name=EmployeeCustomerFullName]').val(data.EmployeeCustomerFullname);
-
-  //      var CustomerId = "";
-  //      CustomerId = CustomersMap[item].Id;
-
-  //      //tellerDTO.EmployeeCustomerId = employee.CustomerId;
-  //      //tellerDTO.EmployeeId = employee.Id;
-  //      //tellerDTO.EmployeeCustomerIndividualFirstName = employee.CustomerIndividualFirstName;
-  //      //tellerDTO.FloatCustomerAccountId = employee.CustomerId;
-
-  //      $('#EmployeeId').val(CustomersMap[item].Id);
-  //      $('#EmployeeCustomerId').val(CustomersMap[item].EmployeeCustomerId);
-  //      //$('#CustomerAccountTypeTargetProductId').val(CustomersMap[item].CustomerAccountTypeTargetProductId);
-  //      //$('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
-  //      //$('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-  //      //$('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
-  //      //$('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-  //      //$('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-  //      //$('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
-  //      //$('#EmployeeLookupModal').modal('hide');
-  //  });
-
-
-
-             @*$('#customersGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Employee", new { Area = "HumanResource"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/FrontOffice/Teller/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-                 // Display settings
-                 "aoColumns": [
-                     { "mDataProp": "Customer.FullName", "sTitle": "Name", "sWidth": "15%" },
-                     { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
-                     { "mDataProp": "DepartmentDescription", "sTitle": "DepartmentDescription", "sWidth": "15%" },
-                     { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
-                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-                 "aaSorting": [[0, "desc"]]
-        });
-
-        $("#s tbody").on("click", "tr", function () {
-            var data = customersGrid.row(this).data();
-
-            $('#CustomerId').val(data.Id);
-            $('input[name=CustomerId]').val(data.Id);
-            $('input[name=CustomerFullName]').val(data.FullName);
-            //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-
-            $('#customerLookupModal').modal('hide');
-        });
-
-
-             //Employee typehead starts here
-            $('.EmployeesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetEmployeesAsync", "Employee", new { Area = "HumanResource" })',
-                        { query: query },
-                        function (Employees) {
-                            var newEmployeesData = [];
-                            EmployeesMap = {};
-                            $.each(Employees, function (i, Employee) {
-                                newEmployeesData.push(Employee.CustomerFullName);
-                                EmployeesMap[Employee.CustomerFullName] = Employee;
-                            });
-                            process(newEmployeesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var employeeId = "";
-                    EmployeeId = EmployeesMap[item].Id;
-                    $('#EmployeeId').val(EmployeeId);
-                    $('#EmployeeCustomerFullName').val(EmployeesMap[item].EmployeeCustomerFullName);
-                    //console.log(EmployeeId)
-                    return item;
-                }
-            });*@
             //ChartOfAccount typehead starts here
             $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
@@ -980,12 +865,24 @@
             $('#ChartOfAccountId').val('');
             $('#ShortageChartOfAccountId').val('');
             $('#ShortageChartOfAccountName').val('');
+            $('#ExcessChartOfAccountAccountName').val('');
+            $('#ExcessChartOfAccountId').val('');
+            $('#MiniStatementItemsCap').val('');
+            $('#IsLocked').val('');
             $('#TellerTypeDropDown').val('');
             $('#newTellerDescription').val('');
             $('#FloatCustomerAccountTargetProductId').val('');
-            $('#CommissionCustomerAccountOfId').val('');
+            $('#CommissionCustomerAccountId').val('');
+            $('#CommissionCustomerFullName').val('');
             $('#posTerminalReference').val('');
             $('#EmployeeCustomerFullName').val('');
+            $('#ChartOfAccountAccountName').val('');
+            $('#inHouseReference').val('');
+            $('#FloatCustomerAccountTargetProductId').val('');
+            $('#FloatCustomerAccountId').val('');
+            $('#FloatCustomerFullName').val('');
+            
+            
     }
 
         $(document).ready(function () {

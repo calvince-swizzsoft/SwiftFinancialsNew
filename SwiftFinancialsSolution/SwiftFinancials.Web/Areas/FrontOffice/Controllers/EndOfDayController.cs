@@ -126,6 +126,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             _selectedPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
 
+            if (id == null)
+            {
+                TempData["NullTeller"] = "Message";
+                return View();
+            }
             var untransferredCheques = await _channelService.FindUnTransferredExternalChequesByTellerId(SelectedTeller.Id, "", GetServiceHeader());
 
             var untransferredChequesValue = untransferredCheques.Sum(cheque => cheque.Amount);

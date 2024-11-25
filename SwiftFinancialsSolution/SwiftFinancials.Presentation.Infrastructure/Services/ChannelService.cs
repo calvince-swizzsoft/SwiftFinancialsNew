@@ -37391,6 +37391,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
+        public Task<ConditionalLendingDTO> FindConditionalLendingAsync(Guid conditionalLendingId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ConditionalLendingDTO>();
+
+            IConditionalLendingService service = GetService<IConditionalLendingService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    ConditionalLendingDTO response = ((IConditionalLendingService)result.AsyncState).EndFindConditionalLending(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindConditionalLending(conditionalLendingId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<bool> RemoveConditionalLendingEntriesAsync(ObservableCollection<ConditionalLendingEntryDTO> conditionalLendingEntryDTOs, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();

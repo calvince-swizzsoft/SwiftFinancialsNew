@@ -1,4 +1,5 @@
-﻿using Application.Seedwork;
+﻿using Application.MainBoundedContext.DTO.RegistryModule;
+using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -238,5 +239,10 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         public DateTime CreatedDate { get; set; }
         public bool IsChecked { get; set; }
         public CompanyDTO companyDTO;
+
+
+        [DataMember]
+        public CustomerDTO CustomerDTO { get; set; }
+
     }
 }

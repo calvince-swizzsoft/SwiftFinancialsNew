@@ -467,6 +467,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
 
         // Additional
-        public MessageGroupDTO messageGroup { get; set; }
+    public MessageGroupDTO messageGroup { get; set; }
+        public object ZoneDivisionEmployerDescription { get; set; }
     }
 }

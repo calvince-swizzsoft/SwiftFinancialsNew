@@ -1054,7 +1054,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                
+
 
                                                                 <div id="percentageSection" class="col-lg-6" style="display:block; text-align: left;">
                                                                     <div class="form-group form-group-lg">
@@ -1072,7 +1072,7 @@
                                                                     </div>
                                                                 </div>
 
-                                                                
+
 
                                                             </div>
 
@@ -1739,6 +1739,10 @@
     $(document).ready(function () {
         var selectedCharges = [];
 
+        // Clear the stored checkbox state on page reload
+        localStorage.removeItem('selectedCharges');
+
+        // Function to load checkbox state (we don't need it now if we want to reset on reload)
         function loadCheckboxState() {
             var storedCharges = localStorage.getItem('selectedCharges');
             if (storedCharges) {
@@ -1753,10 +1757,12 @@
             }
         }
 
+        // Function to save checkbox state
         function saveCheckboxState() {
             localStorage.setItem('selectedCharges', JSON.stringify(selectedCharges));
         }
 
+        // Function to update selected charges on the server
         function updateSelectedChargesOnServer() {
             $.ajax({
                 type: 'POST',
@@ -1776,6 +1782,7 @@
             });
         }
 
+        // Initialize the DataTable
         var table = $('#IndefiniteChargesGrid').DataTable({
             "sPaginationType": "full_numbers",
             "bProcessing": true,
@@ -1784,10 +1791,7 @@
             "sServerMethod": "POST",
             "fnRowCallback": function (nRow, aData) {
                 var checkboxHTML = '<input type="checkbox" class="icrowCheckbox" id="ic_' + aData.Id + '"';
-                if (selectedCharges.some(charge => charge.Id === aData.Id.toString())) {
-                    checkboxHTML += ' checked';
-                }
-                checkboxHTML += '>';
+                checkboxHTML += '>';  // By default, the checkboxes will not be checked
                 $('td:eq(0)', nRow).html(checkboxHTML);
                 return nRow;
             },
@@ -1797,10 +1801,11 @@
             ],
             "aaSorting": [[1, "asc"]],
             "initComplete": function () {
-                loadCheckboxState();
+                // Do not call loadCheckboxState() if you want checkboxes to be unmarked on page load
             }
         });
 
+        // Event handler for individual checkbox change
         $('#IndefiniteChargesGrid').on('change', '.icrowCheckbox', function () {
             var chargeId = $(this).attr('id').replace('ic_', '');
             var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
@@ -1815,12 +1820,13 @@
             }
 
             saveCheckboxState();
-
             updateSelectedChargesOnServer();
         });
 
+        // Add a header checkbox to select/deselect all rows
         $('#IndefiniteChargesGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="icheaderCheckbox"> Select / Deselect All</div>');
 
+        // Event handler for the header checkbox change
         $('#icheaderCheckbox').on('change', function () {
             var isChecked = $(this).prop('checked');
             $('.icrowCheckbox').prop('checked', isChecked).each(function () {
@@ -1840,12 +1846,11 @@
             });
 
             saveCheckboxState();
-
             updateSelectedChargesOnServer();
         });
-
     });
     </script>
+
 
 
     <script>
@@ -2687,6 +2692,35 @@ $(document).ready(function () {
 
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('chargeDropdown');
+            var percentageSection = document.getElementById('percentageSection');
+            var fixedAmountSection = document.getElementById('fixedAmountSection');
+
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '1') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '2') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else if (dropdown.value === '3') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
+                }
+            });
+        });
+
         $(document).ready(function () {
             // Handle button click to submit the form with AJAX
             $("#addEntryBtn2").click(function (e) {
@@ -2710,20 +2744,20 @@ $(document).ready(function () {
                 }
 
                 const productId = $('#CustomerAccountTypeTargetProductId').val();
-                const chargeType = $('[name="Deductiles[0].ChargeTypeDescription"]').val();
+                const chargeType = $('[name="Deductiles[0].ChargeType"]').val();
                 const chargePercentage = $('[name="Deductiles[0].ChargePercentage"]').val();
+                const chargeFixedAmount = $('[name="Deductiles[0].ChargeFixedAmount"]').val();
                 const computeChargeOnTopUp = $('[name="Deductiles[0].ComputeChargeOnTopUp"]').prop('checked');
                 const netOffInvestmentBalance = $('[name="Deductiles[0].NetOffInvestmentBalance"]').prop('checked');
-
-                
 
                 const formData = {
                     Description: description,
                     CustomerAccountTypeProductCodeDescription: productCode,
                     CustomerAccountTypeTargetProductId: productId,
                     CustomerAccountTypeTargetProductDescription: productDescription,
-                    ChargeTypeDescription: chargeType,
+                    ChargeType: chargeType,
                     ChargePercentage: chargePercentage,
+                    ChargeFixedAmount: chargeFixedAmount,
                     ComputeChargeOnTopUp: computeChargeOnTopUp,
                     NetOffInvestmentBalance: netOffInvestmentBalance
                 };
@@ -2770,12 +2804,13 @@ $(document).ready(function () {
             function clearFormFields() {
                 $('[name="Deductiles[0].Description"]').val('');
                 $('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').val('');
-                $('[name="Deductiles[0].ChargeTypeDescription"]').val('');
+                $('[name="Deductiles[0].ChargeType"]').val('');
                 $('#CustomerAccountTypeTargetProductDescription').val('');
                 $('#CustomerAccountTypeTargetProductDescription1').val('');
                 $('#CustomerAccountTypeTargetProductDescription2').val('');
                 $('#CustomerAccountTypeTargetProductId').val('');
                 $('[name="Deductiles[0].ChargePercentage"]').val('');
+                $('[name="Deductiles[0].ChargeFixedAmount"]').val('');
                 $('[name="Deductiles[0].ComputeChargeOnTopUp"]').prop('checked', false);
                 $('[name="Deductiles[0].NetOffInvestmentBalance"]').prop('checked', false);
             }
@@ -2786,20 +2821,20 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `
-                <tr data-id="${entry.Id}">
-                    <td>${entry.Description || ''}</td>
-                    <td>${entry.CustomerAccountTypeTargetProductDescription || ''}</td>
-                    <td>${entry.ChargeTypeDescription || ''}</td>
-                    <td>${entry.CustomerAccountTypeProductCodeDescription || ''}</td>
-                    <td>${entry.ChargePercentage || ''}</td>
-                    <td>${entry.NetOffInvestmentBalance ? 'Yes' : 'No'}</td>
-                    <td>${entry.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
-                    <td>
-                        <button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">
-                            Remove
-                        </button>
-                    </td>
-                </tr>`;
+                                <tr data-id="${entry.Id}">
+                                    <td>${entry.Description || ''}</td>
+                                    <td>${entry.CustomerAccountTypeTargetProductDescription || ''}</td>
+                                    <td>${entry.ChargeType || ''}</td>
+                                    <td>${entry.ChargeFixedAmount || ''}</td>
+                                    <td>${entry.ChargePercentage || ''}</td>
+                                    <td>${entry.NetOffInvestmentBalance ? 'Yes' : 'No'}</td>
+                                    <td>${entry.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">
+                                            Remove
+                                        </button>
+                                    </td>
+                                </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2849,6 +2884,7 @@ $(document).ready(function () {
             }
         });
     </script>
+
 
     <script>
         $(document).ready(function () {
@@ -2929,10 +2965,10 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                        <td>${entry.RangeLowerLimit}</td>
-                                                        <td>${entry.RangeUpperLimit}</td>
-                                                        <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
-                                                    </tr>`;
+                                                                    <td>${entry.RangeLowerLimit}</td>
+                                                                    <td>${entry.RangeUpperLimit}</td>
+                                                                    <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
+                                                                </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2967,9 +3003,7 @@ $(document).ready(function () {
     </script>
 
     <script>
-
-        //Auxiliary Investment Appraisal Factor
-
+        // Auxiliary Investment Appraisal Factor
         $(document).ready(function () {
             // Handle button click to submit the form with AJAX
             $("#addEntryBtn").click(function (e) {
@@ -2980,18 +3014,31 @@ $(document).ready(function () {
             // Function to handle form submission with AJAX
             function submitInvestmentAppraisalFactorForm() {
                 // Get form data
-                const rangeLowerLimit = document.querySelector('[name="Tiers[0].RangeLowerLimit"]').value;
-                const loaneeMultiplier = document.querySelector('[name="Tiers[0].LoaneeMultiplier"]').value;
-                const guarantorMultiplier = document.querySelector('[name="Tiers[0].GuarantorMultiplier"]').value;
+                const rangeLowerLimit = parseFloat(document.querySelector('[name="Tiers[0].RangeLowerLimit"]').value);
+                const loaneeMultiplier = parseFloat(document.querySelector('[name="Tiers[0].LoaneeMultiplier"]').value);
+                const guarantorMultiplier = parseFloat(document.querySelector('[name="Tiers[0].GuarantorMultiplier"]').value);
 
+                // Validate if values are numeric and not empty
+                if (isNaN(rangeLowerLimit) || isNaN(loaneeMultiplier) || isNaN(guarantorMultiplier)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Input',
+                        text: 'Please ensure all fields are filled correctly.',
+                        timer: 2000,
+                        showConfirmButton: true
+                    });
+                    return;
+                }
 
+                // Calculate the Investment Range Upper Limit (you can adjust the calculation logic here)
+                const rangeUpperLimit = rangeLowerLimit * loaneeMultiplier; // You can adjust this based on your business rules
 
                 // Create an object with the form data
                 const formData = {
                     RangeLowerLimit: rangeLowerLimit,
+                    RangeUpperLimit: rangeUpperLimit, // Send the calculated upper limit
                     LoaneeMultiplier: loaneeMultiplier,
                     GuarantorMultiplier: guarantorMultiplier
-
                 };
 
                 // Send the AJAX request
@@ -3006,7 +3053,7 @@ $(document).ready(function () {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success!',
-                                text: 'Deductible added successfully.',
+                                text: 'Investment Appraisal Factor added successfully.',
                                 timer: 1000,
                                 showConfirmButton: false
                             });
@@ -3032,7 +3079,6 @@ $(document).ready(function () {
                 document.querySelector('[name="Tiers[0].RangeLowerLimit"]').value = '';
                 document.querySelector('[name="Tiers[0].GuarantorMultiplier"]').value = '';
                 document.querySelector('[name="Tiers[0].LoaneeMultiplier"]').value = '';
-
             }
 
             // Function to update the entries table with the response data
@@ -3042,13 +3088,12 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                                                   <td>${entry.RangeLowerLimit}</td>
-                                                                                                                                                    <td>${entry.RangeUpperLimit}</td>
-                                                                                                                                                    <td>${entry.GuarantorMultiplier}</td>
-                                                                                                                                                    <td>${entry.LoaneeMultiplier}</td>
-
-                                                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
-                                                                                                                                               </tr>`;
+                            <td>${entry.RangeLowerLimit}</td>
+                            <td>${entry.RangeUpperLimit}</td>
+                            <td>${entry.LoaneeMultiplier}</td>
+                            <td>${entry.GuarantorMultiplier}</td>
+                            <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
+                        </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -3079,9 +3124,8 @@ $(document).ready(function () {
                 });
             }
         });
-
-
     </script>
+
     <script>
 
         //Auxiliary Lending Condition
@@ -3160,13 +3204,13 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                                                   <td>${entry.TargetLoanProductDescription}</td>
-                                                                                                                                                    <td>${entry.ConditionDescription}</td>
-                                                                                                                                                    <td>${entry.MaximumEligiblePercentage}</td>
+                                                                                                                                                               <td>${entry.TargetLoanProductDescription}</td>
+                                                                                                                                                                <td>${entry.ConditionDescription}</td>
+                                                                                                                                                                <td>${entry.MaximumEligiblePercentage}</td>
 
 
-                                                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
-                                                                                                                                               </tr>`;
+                                                                                                                                                               <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                                                           </tr>`;
                     tableBody.append(row);
                 });
             }
