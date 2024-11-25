@@ -470,5 +470,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         public byte[] SignaturePhoto { get; set; }
         public byte[] IDCardFrontPhoto { get; set; }
         public byte[] IDCardBackPhoto { get; set; }
+        public string Referee { get; set; }
+
     }
 }

@@ -12,7 +12,8 @@ using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
-using System.Windows;
+using System.Windows.Forms;
+using Newtonsoft.Json;
 
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
@@ -60,6 +61,73 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             var salaryGroupDTO = await _channelService.FindSalaryGroupAsync(id, GetServiceHeader());
 
             return View(salaryGroupDTO);
+        }
+
+        
+        [HttpGet]
+        public async Task<ActionResult> GetCSalaryHeadDetails(Guid salaryHeadId)
+        {
+            try
+            {
+                var savingsProduct = await _channelService.FindSalaryHeadAsync(salaryHeadId, GetServiceHeader());
+                MessageBox.Show(
+                                                             "Operation Success",
+                                                             "Customer Receipts",
+                                                             MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Information,
+                                                             MessageBoxDefaultButton.Button1,
+                                                             MessageBoxOptions.ServiceNotification
+                                                         );
+
+
+                if (savingsProduct == null)
+                {
+                    return Json(new { success = false, message = "SavingsProduct not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        SalaryHeadDescription = savingsProduct.Description,
+                        SalaryHeadId = savingsProduct.Id,
+                        SalaryHeadIsOneOff = savingsProduct.IsOneOff,
+                        SalaryHeadCustomerAccountTypeTargetProductId = savingsProduct.CustomerAccountTypeTargetProductId,
+                        SalaryHeadCustomerAccountTypeTargetProductCode = savingsProduct.CustomerAccountTypeTargetProductCode,
+                        SalaryHeadCustomerAccountTypeProductCode = savingsProduct.CustomerAccountTypeProductCode,
+                        SalaryHeadCategoryDescription = savingsProduct.CategoryDescription,
+                        SalaryHeadChartOfAccountId = savingsProduct. ChartOfAccountId,
+                        SalaryHeadTypeDescription = savingsProduct.TypeDescription,
+
+
+
+
+
+
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the saving Product details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult SaveEntries(SalaryGroupDTO salaryGroupDTO)
+        {
+            if (salaryGroupDTO == null || salaryGroupDTO.SalaryGroupEntries == null || !salaryGroupDTO.SalaryGroupEntries.Any())
+            {
+                return new HttpStatusCodeResult(400, "No entries provided.");
+            }
+
+            // Store the serialized data in TempData
+            TempData["SalaryGroupEntries"] = JsonConvert.SerializeObject(salaryGroupDTO.SalaryGroupEntries);
+
+            return Json(new { Message = "Entries saved successfully!" });
         }
 
         public async Task<ActionResult> Create()

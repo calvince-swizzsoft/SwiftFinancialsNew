@@ -702,18 +702,35 @@ $(document).ready(function () {
 });
     </script>
 
-    <script>
-        $(document).on('click', '.remove-entry', function () {
-            if (confirm('Are you sure you want to remove this entry?')) {
-                $(this).closest('tr').remove();
+<script>
+    $(document).on('click', '.remove-entry', function () {
+        if (confirm('Are you sure you want to remove this entry?')) {
+            var $row = $(this).closest('tr');
+            var entryId = $row.data('entry-id'); 
+            $row.remove();
 
-                updateAmounts();
-            }
-        });
+            updateAmounts();
 
+            $.ajax({
+                url: '/ExpensePayable/RemoveEntry',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ entryId: entryId }),
+                success: function (response) {
+                    if (response.success) {
+                        showPopupMessage("Entry removed successfully.");
+                    } else {
+                        showPopupMessage("Error removing entry: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    showPopupMessage("An error occurred while removing the entry: " + error);
+                }
+            });
+        }
+    });
 
     </script>
-
 
 
     //ajax form submisstion

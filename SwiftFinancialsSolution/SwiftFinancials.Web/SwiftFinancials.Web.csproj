@@ -1483,6 +1483,8 @@
     <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Apportionment.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditApportionment\Index.cshtml" />
     <Content Include="Areas\MicroCredit\Views\MicroCreditApportionment\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Approval.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Recall.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

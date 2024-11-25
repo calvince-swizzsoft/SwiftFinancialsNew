@@ -77,8 +77,6 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Salary Periods", Icon="fa fa-usb", ControllerName="SalaryPeriods", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 13},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Pay Slips", Icon="fa fa-usb", ControllerName="PaySlips", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 14},
 
-                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Leave Approval", Icon="fa fa-bars", ControllerName="LeaveApproval", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 15},
-                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Leave Recall", Icon="fa fa-bars", ControllerName="LeaveRecall", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 16},
 
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Documents", Icon="fa fa-bars", ControllerName="EmployeeDocuments", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 17},
 

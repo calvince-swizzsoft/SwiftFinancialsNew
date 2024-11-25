@@ -1,11 +1,12 @@
-﻿
-@{
+﻿@{
+    /**/
+
     ViewBag.Title = "Salary Groups";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Salary</h1>
+        <h1>Salary Groups</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -16,7 +17,6 @@
         </ol>
     </div>
 </div>
-
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -24,7 +24,22 @@
                 <div class="ibox-title">
                     <h2>Salary Groups</h2>
                     <hr />
-                    @Html.ActionLink("Create Salary Group", "Create", "SalaryGroups", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create", "Create", "SalaryGroups", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
+                    <br />
+                    <br />
+                    @if (TempData["AlertMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["AlertMessage"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -63,58 +78,66 @@
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
 
-    <script type="text/javascript">
 
+
+    <script type="text/javascript">
         $(document).ready(function () {
             $('#salaryGroupsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "SalaryGroups", new { Area = "HumanResource"}))",
+                "sAjaxSource": "@(Url.Action("Index", "SalaryGroups", new { Area = "HumanResource" }))",
                 "sServerMethod": "POST",
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var create = '<a  href="/HumanResource/SalaryGroups/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Create</a>';
-                    var viewUrl = '<a  href="/HumanResource/SalaryGroups/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    $('td:eq(2)', nRow).html(dt_Created);
-                    $('td:eq(3)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    var viewButton = `<a class="dropdown-item" href="/HumanResource/SalaryGroups/details/${aData.Id}">View</a>`;
+                    var editButton = `<a class="dropdown-item" href="/HumanResource/SalaryGroups/edit/${aData.Id}">Edit</a>`;
+
+                    switch (aData.Status) {
+                        case 1: // Pending
+                            dropdownHtml += viewButton + editButton;
+                            break;
+                        default:
+                            dropdownHtml += viewButton + editButton;
+                            break;
+                    }
+
+                    dropdownHtml += `</div></div>`;
+
+                    $('td:eq(1)', nRow).html(dt_Created);
+                    $('td:eq(2)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    //{ "mDataProp": "Description", "sTitle": "Type", "sWidth": "15%" },
-                    { "mDataProp": "Description", "sTitle": "Salary Group Name", "sWidth": "15%" },
-                    { "mDataProp": "SalaryGroupEntries[0].SalaryHeadDescription", "sTitle": "Salary Head", "sWidth": "8%" },               
-                    
-                    
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    //{ "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%" },
-
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "13%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]],
+                "responsive": true,
             });
         });
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
 }
-
-

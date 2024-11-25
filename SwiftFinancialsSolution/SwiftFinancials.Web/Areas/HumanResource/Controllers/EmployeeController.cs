@@ -89,7 +89,39 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             }
         }
 
-        
+        // Get Documents ...........................
+        private async Task<List<Document>> GetDocumentsAsync(Guid id)
+        {
+            var documents = new List<Document>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto FROM swiftFin_SpecimenCapture WHERE CustomerId = @CustomerId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            documents.Add(new Document
+                            {
+                                PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
+                                SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
+                                IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
+                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
+                            });
+                        }
+                    }
+                }
+            }
+
+            return documents;
+        }
+
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -101,8 +133,10 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             if (employeeDTO != null)
             {
-                // Retrieve the documents related to the employee
-                var documents = await GetDocumentsAsync(employeeDTO.Id);
+                var customerId = employeeDTO.CustomerId;
+
+                // Retrieve associated documents
+                var documents = await GetDocumentsAsync(customerId);
 
                 if (documents.Any())
                 {
@@ -114,16 +148,23 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                     TempData["IDCardFrontPhoto"] = document.IDCardFrontPhoto;
                     TempData["IDCardBackPhoto"] = document.IDCardBackPhoto;
 
-                    // Assign document data to employeeDTO properties if needed
+                    // Assign document data to employeeDTO properties
                     employeeDTO.PassportPhoto = document.PassportPhoto;
                     employeeDTO.SignaturePhoto = document.SignaturePhoto;
                     employeeDTO.IDCardFrontPhoto = document.IDCardFrontPhoto;
                     employeeDTO.IDCardBackPhoto = document.IDCardBackPhoto;
                 }
+
+                // Return the view with the employee details
+                return View(employeeDTO);
             }
 
-            return View(employeeDTO);
+            // Handle the case where the employee is not found
+            TempData["ErrorMessage"] = "Employee not found.";
+            return RedirectToAction("ErrorPage"); // Replace with your error page action
         }
+
+
 
         public async Task<ActionResult> Create(Guid? id)
         {
@@ -236,7 +277,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                     {
                         CustomerFullName = customer.FullName,
                         CustomerId = customer.Id,
-                        
+
 
 
 
@@ -251,7 +292,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
 
-        
+
 
 
 
@@ -262,38 +303,5 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             return Json(employeesDTOs, JsonRequestBehavior.AllowGet);
         }
-
-        private async Task<List<Document>> GetDocumentsAsync(Guid id)
-        {
-            var documents = new List<Document>();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                var query = "SELECT PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto FROM swiftFin_SpecimenCapture WHERE CustomerId = @CustomerId";
-
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@CustomerId", id);
-
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            documents.Add(new Document
-                            {
-                                PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
-                                SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
-                                IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
-                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
-                            });
-                        }
-                    }
-                }
-            }
-
-            return documents;
-        }
-
     }
 }
