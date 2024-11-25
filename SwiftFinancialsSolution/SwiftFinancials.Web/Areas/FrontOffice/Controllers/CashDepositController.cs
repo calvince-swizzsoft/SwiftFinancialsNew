@@ -1063,21 +1063,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             transactionModel.PrimaryDescription = string.Format("{0} - {1}", transactionModel.PrimaryDescription, NewExternalCheque.Number);
 
                             var externalChequeResult = await _channelService.AddExternalChequeAsync(NewExternalCheque, GetServiceHeader());
+                            var chequeDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
 
-                            if (externalChequeResult != null)
+                            if (chequeDepositJournal != null && !chequeDepositJournal.HasErrors)
                             {
-
                                 MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                                
-
                             }
-
-                            //var chequeDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
-
-                            //if (chequeDepositJournal != null && !chequeDepositJournal.HasErrors)
-                            //{
-                                //MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                            //}
 
                             else
                             {

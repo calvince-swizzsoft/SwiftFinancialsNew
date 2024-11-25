@@ -291,8 +291,8 @@
 
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        @Html.LabelFor(model => model.CustomerAccount.CustomerTypeDescription, "Type:", new { @class = "control-label" })
-                                        @Html.TextBoxFor(model => model.CustomerAccount.CustomerTypeDescription, new { @id = "CustomerAccountCustomerTypeDescription", @class = "form-control", @readonly = "readonly" })
+                                        @Html.LabelFor(model => model.CustomerAccount.CustomerAccountTypeProductCode, "Type:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerAccount.CustomerAccountTypeProductCodeDescription, new { @id = "CustomerAccountTypeProductCodeDescription", @class = "form-control", @readonly = "readonly" })
                                     </div>
                                 </div>
 
@@ -1515,7 +1515,19 @@
 
             <script>
                 $(document).ready(function () {
-                    function updateNewAvailableBalance() {
+
+
+                    function updateNewAvailableBalanceChequeDeposit() {
+                        // Parse values as floats and default to 0 if invalid
+                        let customerAccountAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0;
+                        let totalValue = parseFloat($('#TotalValue').val()) || 0;
+
+                        // Update the new available balance
+                        $('#ChequeDepositAmount').val(customerAccountAvailableBalance + totalValue);
+                    }
+
+
+                    function updateNewAvailableBalanceUp() {
                         // Parse values as floats and default to 0 if invalid
                         let customerAccountAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0;
                         let totalValue = parseFloat($('#TotalValue').val()) || 0;
@@ -1524,12 +1536,29 @@
                         $('#CustomerAccountNewAvailableBalance').val(customerAccountAvailableBalance + totalValue);
                     }
 
-                    // Initial calculation on page load
-                    updateNewAvailableBalance();
+                    function updateNewAvailableBalanceDown() {
+                        // Parse values as floats and default to 0 if invalid
+                        let customerAccountAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0;
+                        let withdrawalAmount = parseFloat($('#CashWithdrawalAmount').val()) || 0;
 
+                        // Update the new available balance
+                        $('#CustomerAccountNewAvailableBalance').val(customerAccountAvailableBalance - withdrawalAmount);
+                    }
+
+                    // Initial calculation on page load
+                    updateNewAvailableBalanceUp();
+                   
                     // Recalculate when the TotalValue input changes
                     $('#TotalValue').on('input', function () {
-                        updateNewAvailableBalance();
+                        updateNewAvailableBalanceUp();
+                    });
+
+                    $('#CashWithdrawalAmount').on('input', function () {
+                        updateNewAvailableBalanceDown();
+                    });
+
+                    $('#ChequeDepositAmount').on('input', function () {
+                        updateNewAvailableBalanceChequeDeposit();
                     });
                 });
             </script>
@@ -1761,6 +1790,7 @@
                         $('#CustomerAccountCustomerReference2').val(data.CustomerReference2);
                         $('#CustomerAccountCustomerReference3').val(data.CustomerReference3);
                         $('#CustomerAccountTypeTargetProductCode').val(data.CustomerAccountTypeTargetProductCode);
+                        $('#CustomerAccountTypeTargetProductCodeDescription').val(data.CustomerAccountTypeTargetProductCodeDescription);
                         $('#CustomerAccountTypeTargetProductParentId').val(data.CustomerAccountTypeTargetProductParentId);
                         $('#CustomerAccountTypeProductCode').val(data.CustomerAccountTypeProductCode);
                         $('#CustomerAccountTypeTargetProductParentId').val(data.CustomerAccountTypeTargetProductParentId);
