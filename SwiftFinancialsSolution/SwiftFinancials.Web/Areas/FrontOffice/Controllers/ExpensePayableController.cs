@@ -240,16 +240,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
 
             var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
-            var expensePayableEntries = await _channelService.FindExpensePayableEntriesByExpensePayableIdAsync(id, GetServiceHeader());
 
             ViewBag.ExpensePaybleTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
 
 
 
-            ViewBag.ExpensePayableEntryDTOs = expensePayableEntries;
             return View(expensePayableDTO);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -260,6 +257,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (!expensePayableDTO.HasErrors)
             {
                 await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+                MessageBox.Show(
+                                                              "Operation Success",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());

@@ -13,40 +13,32 @@
 
 
 
-
-
-
-
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
 <script>
     $(document).ready(function () {
-        // Initially activate the first tab
         $('.nav-tabs li:first-child a').addClass('active');
         $('#tab1').addClass('active');
 
-        // Handle tab click event
         $('.tab-link').on('click', function (e) {
             e.preventDefault();
 
-            // Deactivate all tabs
             $('.tab-link').removeClass('active');
             $('.tab-content').removeClass('active');
 
-            // Activate the clicked tab
             $(this).addClass('active');
             $($(this).attr('href')).addClass('active');
         });
 
-        // Datepicker Initialization
         $('#ValueDate').datepicker({
-            format: 'mm/dd/yyyy',
+            format: 'dd-mm-yyyy',
             todayHighlight: true,
             autoclose: true
         });
     });
 </script>
-
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h1>Expense Payable</h1>
@@ -228,7 +220,7 @@
                                         </div>
                                         <br />
 
-                                       
+
                                         <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
 
 
