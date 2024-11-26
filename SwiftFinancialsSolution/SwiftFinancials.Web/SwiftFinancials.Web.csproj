@@ -580,12 +580,12 @@
     <Compile Include="Areas\HumanResource\Controllers\SalaryController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryGroupsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryPeriodsController.cs" />
-    <Compile Include="Areas\HumanResource\Controllers\SalaryProcessingController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\FixedDepositController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveApplicationController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveApprovalController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveRecallController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\SalaryProcessingController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AddCollateralController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AppraiseLoanController.cs" />
     <Compile Include="Areas\Loaning\Controllers\ApproveLoanController.cs" />
@@ -651,7 +651,9 @@
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\BindingModelBase.cs" />
     <Compile Include="Areas\Registry\Controllers\BranchLinkageController.cs" />
+    <Compile Include="Areas\Registry\Controllers\ChargeExemptionsController.cs" />
     <Compile Include="Areas\Registry\Controllers\ConditionalLendingController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\DelegateController.cs" />
@@ -665,7 +667,6 @@
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
-    <Compile Include="Areas\Registry\Controllers\StationLinkageController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\DocumentsModel\Document.cs" />
@@ -1181,7 +1182,6 @@
     <Content Include="Areas\HumanResource\Views\SalaryCards\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Create.cshtml" />
-    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\Create.cshtml" />
@@ -1197,7 +1197,6 @@
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\CustomerManagement.cshtml" />
     <Content Include="Areas\Accounts\Views\Management\CustomerManagement.cshtml" />
-    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\Salary\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApproval\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApproval\Approval.cshtml" />
@@ -1493,6 +1492,10 @@
     <Content Include="Areas\MicroCredit\Views\MicroCreditApportionment\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Approval.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Recall.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryPeriods\ProcessSalary.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2020,7 +2023,6 @@
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\MicroCredit\Models\" />
     <Folder Include="Areas\Registry\Models\" />
-    <Folder Include="Areas\Registry\Views\StationLinkage\" />
     <Folder Include="File\" />
     <Folder Include="Views\Control\" />
     <Folder Include="Views\Lookup\" />

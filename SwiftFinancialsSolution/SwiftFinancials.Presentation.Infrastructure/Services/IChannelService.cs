@@ -114,6 +114,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<PageCollectionInfo<AuditLogDTO>> FindAuditLogsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<AuditLogDTO>> FindAuditLogsByDateRangeAndFilterInPageAsync(int pageIndex, int pageSize, DateTime startDate, DateTime endDate, string filter, ServiceHeader serviceHeader = null);
+        Task AddCustomerAsync(CustomerDTO customerBindingModel, ServiceHeader serviceHeader);
 
         #endregion
 
