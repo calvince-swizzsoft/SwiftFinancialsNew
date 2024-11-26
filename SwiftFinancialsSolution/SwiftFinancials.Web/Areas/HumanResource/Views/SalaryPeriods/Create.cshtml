@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Salary Periods";
-    var month = ViewBag.MonthTypeSelectList as List<SelectListItem>;
+    var monthDescription = ViewBag.MonthTypeSelectList as List<SelectListItem>;
     var employeeType = ViewBag.EmployeeTypeSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -53,64 +53,72 @@
                         @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
                         <fieldset>
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="col-md-13 form-group">
-                                        @Html.LabelFor(model => model.PostingPeriodId, new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.PostingPeriodId)
-                                            @Html.TextBoxFor(model => model.PostingPeriodDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Employee..." })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#PostingPeriodsLookupModal"><span class="fa fa-search"></span></a>
-                                            </span>
+                                <div class="col-lg-4">
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PostingPeriodDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Enter space to autofill...", id = "PostingPeriodDescription" } })
+                                        @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Month, htmlAttributes: new { @class = "" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Month, monthDescription, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.Month)
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EmployeeCategory, htmlAttributes: new { @class = "" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.EmployeeCategory, employeeType, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.EmployeeCategory)
+                                        </div>
+                                    </div>
+                                </div>
 
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.TaxReliefAmount, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.TaxReliefAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
                                         @Html.ValidationMessageFor(model => model.TaxReliefAmount, "", new { @class = "text-danger" })
                                     </div>
-
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.MonthDescription, htmlAttributes: new { @class = "" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.MonthDescription, month, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.MonthDescription)
-                                        </div>
-                                    </div>
                                 </div>
-
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.EmployeeCategoryDescription, htmlAttributes: new { @class = "" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.EmployeeCategoryDescription, employeeType, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.EmployeeCategoryDescription)
-                                        </div>
-                                    </div>
-
+                                <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.MaximumProvidentFundReliefAmount, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.MaximumProvidentFundReliefAmount)
                                         @Html.ValidationMessageFor(model => model.MaximumProvidentFundReliefAmount, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.MaximumProvidentFundReliefAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs.0.00" } })
                                     </div>
-
+                                </div>
+                                <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.MaximumInsuranceReliefAmount, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.MaximumInsuranceReliefAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
                                         @Html.ValidationMessageFor(model => model.MaximumInsuranceReliefAmount, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.Remarks)
-                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter Remarks..." } })
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter Remarks..." } })
+                                    </div>
+                                </div>
+
                             </div>
                         </fieldset>
                         <div class="ibox-content m-b-sm border-bottom">
@@ -132,28 +140,8 @@
     </div>
 </div>
 
-<div class="modal  fade" id="PostingPeriodsLookupModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Posting Period LookUp<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-            </div>
-            <br />
-            <table id="postingPeriodsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" style="width:190px" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+
+
 
 
 @section Styles{
@@ -198,30 +186,31 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
-}
+
+
+
+
 
 <script>
+    $(document).ready(function () {
+        initTypeahead('.PostingPeriodsLookup', '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })', 'PostingPeriodId');
 
-    // Here //
-    $('.PostingPeriodsLookup').typeahead({
+        function initTypeahead(selector, url, hiddenFieldId) {
+            var dataMap = {};
+            $(selector).typeahead({
                 source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetPostingPeriodsAsync", "SalaryPeriods", new { Area = "HumanResource" })',
-                        { query: query },
-                        function (Stations) {
-                            var newPostingPeriodsData = [];
-                            PostingPeriodsMap = {};
-                            $.each(PostingPeriods, function (i, PostingPeriod) {
-                                newPostingPeriodsData.push(PostingPeriod.Description);
-                                PostingPeriodsMap[Product.Description] = PostingPeriod;
-                            });
-                            process(newPostingPeriodsData); return;
+                    return $.getJSON(url, { query: query }, function (data) {
+                        var newData = [];
+                        dataMap = {};
+                        $.each(data, function (i, item) {
+                            newData.push(item.Description);
+                            dataMap[item.Description] = item;
                         });
+                        process(newData);
+                    });
                 },
                 matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
+                    return item.toLowerCase().indexOf(this.query.trim().toLowerCase()) !== -1;
                 },
                 sorter: function (items) {
                     return items.sort();
@@ -231,68 +220,19 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var PostingPeriodId = "";
-                    PostingPeriodId = PostingPeriodsMap[item].Id;
-                    $('#PostingPeriodId').val(PostingPeriodId);
-                    $('#PostingPeriodId').val(PostingPeriodsMap[item].PostingPeriodId);
-                    $('#PostingPeriodDescription').val(PostingPeriodsMap[item].PostingPeriodDescription);
-                    //console.log(StationId)
-                    return item;
+                    var data = dataMap[item];
+                    if (data) {
+                        $('#' + hiddenFieldId).val(data.Id); 
+                    }
+                    return item; 
                 }
             });
-    // Here //
+        }
 
-    $('#postingPeriodsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "PostingPeriod", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                  var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/HumanResource/SalaryPeriods/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(2)', nRow).html(dt_Created);
-                    $('td:eq(3)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "Id", "sTitle": "Posting Period ID", "sWidth": "20%" },
-            { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period", "sWidth": "4%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-
-            { "mDataProp": "selectUrl", "sTitle": "", "sWidth": "10%" ,"bSortable": false}],
-        "aaSorting": [[0, "desc"]]
+        $('#lookupPostingPeriod').click(function () {
+        });
     });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = postingPeriodsGrid.row(this).data();
-
-      //  $('#CustomerAccountCustomerId').val(data.Id);
-        $('#Code').val(data.Id);
-     //   $('input[name=CustomerAccountCustomerId]').val(data.Id);
-        $('input[name=PostingPeriodId]').val(data.PostingPeriodId);
-        $('input[name=PostingPeriodDescription]').val(data.PostingPeriodDescription);
-
-
-        var Code = "";
-        Code = PostingPeriodsMap[item].Id;
-        $('#PostingPeriodId').val(PostingPeriodsMap[item].PostingPeriodId);
-        $('#PostingPeriodDescription').val(PostingPeriodsMap[item].PostingPeriodDescription);
-
-        $('#PostingPeriodsLookup').modal('hide');
-    });
-
 </script>
+
+    }
+

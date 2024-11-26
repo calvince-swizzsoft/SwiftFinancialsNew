@@ -43,12 +43,12 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
             ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
-
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int? recordStatus, int? customerFilter)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int? recordStatus, int? customerFilter,int? customerType)
         {
             int totalRecordCount = 0;
 
@@ -70,9 +70,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
             }
-            else if (recordStatus != null && customerFilter == null)
+            else if (customerType != null && customerFilter == null)
             {
                 pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            }
+            else if (recordStatus != null && customerFilter == null)
+            {
+                pageCollectionInfo = await _channelService.FindCustomersByTypeAndFilterInPageAsync((int)customerType, jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
             }
             else
             {

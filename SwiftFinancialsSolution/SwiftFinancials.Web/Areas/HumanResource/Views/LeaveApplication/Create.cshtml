@@ -25,8 +25,9 @@
 
 
 
-
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
 <script>
     $(document).ready(function () {
@@ -43,8 +44,30 @@
             $($(this).attr('href')).addClass('active');
         });
 
-        $('#ValueDate').datepicker({
-            format: 'dd/mm/yyyy',
+        $('#DurationStartDate').datepicker({
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#DurationDate').datepicker({
+            format: 'dd-mm-yyyy',
             todayHighlight: true,
             autoclose: true
         });
@@ -126,20 +149,22 @@
 
                                         </div>
                                         <div class="row">
-
                                             <div class="col-lg-6">
-                                                @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
-                                                <div class="input-group date">
-                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                    <input type="text" name="DurationStartDate" class="form-control" value="@DateTime.Today.ToString("dd-mm-yyy")">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Enter Date.....", id = "DurationStartDate", required = "required" } })
+                                                    <span id="DurationStartDateError" class="text-danger" style="display:none;"></span>
+                                                    @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
                                                 </div>
+
                                             </div>
 
                                             <div class="col-lg-6">
-                                                @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
-                                                <div class="input-group date">
-                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                    <input type="text" name="DurationEndDate" class="form-control" value="@DateTime.Today.ToString("dd-mm-yyy")">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Enter Date.....", id = "DurationDate", required = "required" } })
+                                                    <span id="DurationEndDateError" class="text-danger" style="display:none;"></span>
+                                                    @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
 
@@ -174,7 +199,7 @@
                         margin-bottom: 20px;
                     }
 
-                    
+
 
                     .form-group-lg {
                         margin-bottom: 1.5rem;
@@ -184,7 +209,7 @@
                         border-radius: .25rem;
                     }
 
-                   
+
 
                     .col-lg-2 {
                         display: flex;
@@ -655,7 +680,7 @@
 
     $(document).ready(function () {
         $('#data_3 .input-group.date').datepicker({
-            format: 'dd-mm-yyyy',  
+            format: 'dd-mm-yyyy',
             startView: 2,
             todayBtn: "linked",
             keyboardNavigation: false,

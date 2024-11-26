@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.UI;
 using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
@@ -344,6 +345,8 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
                     loaneeLoanGuarantors[i].CustomerIndividualFirstName = customername.IndividualFirstName;
                     loaneeLoanGuarantors[i].CustomerIndividualLastName = customername.IndividualLastName;
+
+                    loaneeLoanGuarantors[i].CreatedDate = Convert.ToDateTime(loaneeLoanGuarantors[i].CreatedDate);
                 }
 
 

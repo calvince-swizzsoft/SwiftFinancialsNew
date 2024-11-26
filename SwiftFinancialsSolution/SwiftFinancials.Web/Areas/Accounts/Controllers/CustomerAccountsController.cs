@@ -88,7 +88,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Add(Guid? id, CustomerAccountDTO customerAccountDTO)
         {
             await ServeNavigationMenus();
-
+            if (Session["BranchId"] != null)
+            {
+                customerAccountDTO.BranchId = (Guid)Session["BranchId"];
+            }
+            if (Session["BranchDescription"] != null)
+            {
+                customerAccountDTO.BranchDescription = Session["BranchDescription"].ToString();
+            }
             savingsProductDTOs = TempData["savingsProductDTOs"] as ObservableCollection<SavingsProductDTO>;
 
             if (savingsProductDTOs == null)
@@ -109,6 +116,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             };
 
             TempData["savingsProductDTOs"] = savingsProductDTOs;
+           
 
             TempData["customerAccountDTO"] = customerAccountDTO;
             Session["savingsProductDTOs"] = savingsProductDTOs;
@@ -154,6 +162,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 //expensePayableEntryDTO.Reference = expensePayableEntryDTO.Reference;
                 investmentProductDTOs.Add(expensePayableEntryDTO);
             };
+            Session["BranchId"] = customerAccountDTO.BranchId;
+            Session["BranchDescription"] = customerAccountDTO.BranchDescription;
 
             TempData["investmentProductDTOs"] = investmentProductDTOs;
 
@@ -235,7 +245,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             investmentProductDTOs = Session["investmentProductDTOs"] as ObservableCollection<InvestmentProductDTO>;
             var customerDTO = Session["customerDTO"] as CustomerDTO;
             //customerAccountDTO = Session["customerAccountDTO"] as CustomerAccountDTO;
-
+            if (Session["BranchId"] != null)
+            {
+                customerAccountDTO.BranchId = (Guid)Session["BranchId"];
+            }
+            if (Session["BranchDescription"] != null)
+            {
+                customerAccountDTO.BranchDescription = Session["BranchDescription"].ToString();
+            }
+            
 
             //customerAccountDTO.Investments = Session["benefactorAccounts"] as InvestmentProductDTO;
 
@@ -286,7 +304,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 customerAccountDTO = Session["customerAccountDTO"] as CustomerAccountDTO;
             }
-
+            if (Session["BranchId"] != null)
+            {
+                customerAccountDTO.BranchId = (Guid)Session["BranchId"];
+            }
+            if (Session["BranchDescription"] != null)
+            {
+                customerAccountDTO.BranchDescription = Session["BranchDescription"].ToString();
+            }
             if (Session["benefactorAccounts"] != null)
             {
                 customerAccountDTO.Investments = Session["benefactorAccounts"] as InvestmentProductDTO;
@@ -315,6 +340,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
 
 
+            Session["BranchId"] = customerAccountDTO.BranchId;
+            Session["BranchDescription"] = customerAccountDTO.BranchDescription;
 
 
             return View("Create", customerAccountDTO);
@@ -367,7 +394,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 return View("Create");
             }
-
+            if (Session["BranchId"] != null)
+            {
+                directDebitDTO.BranchId = (Guid)Session["BranchId"];
+            }
+            if (Session["BranchDescription"] != null)
+            {
+                directDebitDTO.BranchDescription = Session["BranchDescription"].ToString();
+            }
             if (Session["beneficiaryAccounts"] != null)
             {
                 directDebitDTO.Savings = Session["beneficiaryAccounts"] as SavingsProductDTO;
@@ -396,6 +430,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 Session["investmentProductId"] = directDebitDTO.CustomerAccountTypeTargetProductId;
                 Session["investmentProductDescription"] = directDebitDTO.CustomerAccountTypeTargetProductDescription;
             }
+            Session["BranchId"] = directDebitDTO.BranchId;
+            Session["BranchDescription"] = directDebitDTO.BranchDescription;
 
             ViewBag.k = directDebitDTO.Investments;
 
@@ -458,7 +494,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             bool includeProductDescription = false;
             bool considerMaturityPeriodForInvestmentAccounts = false;
             var CustomerAccount = await _channelService.FindCustomerAccountAsync(customerAccountId, includeInterestBalanceForLoanAccounts, includeBalances, includeProductDescription, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
             return Json(customerAccountDTO, JsonRequestBehavior.AllowGet);
         }
 

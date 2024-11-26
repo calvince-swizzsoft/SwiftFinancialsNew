@@ -1,7 +1,10 @@
-﻿using Application.MainBoundedContext.DTO.MessagingModule;
+﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.MessagingModule;
+using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Application.MainBoundedContext.DTO.RegistryModule
@@ -139,7 +142,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [Display(Name = "Birth Date")]
         public DateTime? IndividualBirthDate { get; set; }
-       
+
         [Display(Name = "Start Date")]
         public DateTime DurationStartDate { get; set; }
 
@@ -193,6 +196,11 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [Display(Name = "Address Line 2")]
         public string AddressAddressLine2 { get; set; }
+
+        public void ValidateAll()
+        {
+            throw new NotImplementedException();
+        }
 
         [Display(Name = "Street")]
         public string AddressStreet { get; set; }
@@ -363,9 +371,13 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
                         result = string.Format("{0} {1} {2}", IndividualSalutationDescription, IndividualFirstName, IndividualLastName).Trim();
                         break;
                     case CustomerType.Partnership:
+                        result = string.Format("{0}", NonIndividualDescription).Trim();
+                        break;
                     case CustomerType.Corporation:
+                        result = string.Format("{0}", NonIndividualDescription).Trim();
+                        break;
                     case CustomerType.MicroCredit:
-                        result = NonIndividualDescription;
+                        result = string.Format("{0}", NonIndividualDescription).Trim();
                         break;
                     default:
                         break;
@@ -448,7 +460,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
             return string.Format("{0}", stringBuilder);
         }
-        
+
         public string ErrorMessageResult;
         public string ErrorMessages;
         public int CompareTo(CustomerDTO other)
@@ -463,7 +475,14 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
 
         // Additional
-    public MessageGroupDTO messageGroup { get; set; }
+        public MessageGroupDTO messageGroup { get; set; }
         public object ZoneDivisionEmployerDescription { get; set; }
+        public bool HasErrors { get; set; }
+
+
+        [DataMember]
+        public CommissionDTO CommissionDTO { get; set; }
+
     }
+
 }
