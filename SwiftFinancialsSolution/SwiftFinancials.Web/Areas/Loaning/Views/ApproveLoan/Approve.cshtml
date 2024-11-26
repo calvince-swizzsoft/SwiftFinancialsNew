@@ -443,7 +443,6 @@
                                             <thead>
                                                 <tr>
                                                     <th>Guarantor Name</th>
-                                                    <th>Employer</th>
                                                     <th>Account Number</th>
                                                     <th>Appraisal Factor</th>
                                                     <th>Total Shares</th>
@@ -458,9 +457,8 @@
                                                     foreach (var guarantors in ViewBag.LoanGuarantors)
                                                     {
                                                         <tr>
-                                                            <td>@guarantors.Customer.FullName</td>
-                                                            <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
-                                                            <td>@guarantors.Customer.Reference1</td>
+                                                            <td>@guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
+                                                            <td>@guarantors.CustomerReference1</td>
                                                             <td>@guarantors.AppraisalFactor</td>
                                                             <td style="text-align: right;">@guarantors.TotalShares</td>
                                                             <td style="text-align: right;">@guarantors.CommittedShares</td>

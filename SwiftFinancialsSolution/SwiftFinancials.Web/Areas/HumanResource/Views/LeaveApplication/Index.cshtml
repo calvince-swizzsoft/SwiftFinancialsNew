@@ -32,6 +32,43 @@
     </div>
 </div>
 
+<div class="col-lg-12">
+    <div class="nav1">
+        <div class="col-lg-12">
+            <nav class="nav">
+                <a href="@Url.Action("Index", "SalaryProcessing", new { Area = "HumanResource" })" class="nav-link">
+
+                    <i class="fa fa-cog"></i> Salary Processing
+                </a>
+                <a href="@Url.Action("Index", "Salary", new { Area = "HumanResource" })" class="nav-link">
+                    <i class="fa fa-cog"></i> Salary LeaveApplication
+                </a>
+                <a href="@Url.Action("Index", "SalaryGroups", new { Area = "HumanResource" })" class="nav-link">
+                    <i class="fa fa-cog"></i> Salary Groups
+                </a>
+
+
+
+            </nav>
+
+        </div>
+
+    </div>
+</div>
+<style>
+
+
+
+    .col-lg-2 {
+        display: flex;
+        align-items: center; /* Center the title vertically */
+        justify-content: center; /* Center the title horizontally if needed */
+        padding: 0; /* Remove default padding if necessary */
+        border-radius: 4px; /* Rounded corners */
+        @*border: 1px solid black;*@ /* Border color and style */
+    }
+</style>
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">

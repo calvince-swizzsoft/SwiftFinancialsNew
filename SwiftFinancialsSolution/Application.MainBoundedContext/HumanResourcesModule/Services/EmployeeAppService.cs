@@ -54,7 +54,11 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
                     var employees = _employeeRepository.AllMatching(spec, serviceHeader);
 
                     if (employees != null && employees.Any())
-                        throw new InvalidOperationException("Sorry, but the selected customer already exists as an employee!");
+                    {
+                        employeeDTO.errormassage = string.Format(("Sorry, but the selected customer already exists as an employee!"));
+                        return employeeDTO;
+                    }
+                  
                     else
                     {
                         var employee = EmployeeFactory.CreateEmployee(employeeDTO.CustomerId, employeeDTO.BranchId, employeeDTO.DesignationId, employeeDTO.DepartmentId, employeeDTO.EmployeeTypeId, employeeDTO.NationalSocialSecurityFundNumber, employeeDTO.NationalHospitalInsuranceFundNumber, employeeDTO.BloodGroup, employeeDTO.Remarks, employeeDTO.OnlineNotificationsEnabled, employeeDTO.EnforceBiometricsForLogin);

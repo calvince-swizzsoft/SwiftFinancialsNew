@@ -36,7 +36,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
             int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            // Assuming you want to include product descriptions for now. Adjust as necessary.
             bool includeProductDescription = true;
 
             var pageCollectionInfo = await _channelService.FindSalaryHeadsByFilterInPageAsync(
@@ -85,7 +84,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             await ServeNavigationMenus();
 
             var salaryHeadDTO = await _channelService.FindSalaryHeadAsync(id, GetServiceHeader());
-            //var chartOfAccount = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
 
             return View(salaryHeadDTO);
         }
