@@ -651,7 +651,9 @@
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\BindingModelBase.cs" />
     <Compile Include="Areas\Registry\Controllers\BranchLinkageController.cs" />
+    <Compile Include="Areas\Registry\Controllers\ChargeExemptionsController.cs" />
     <Compile Include="Areas\Registry\Controllers\ConditionalLendingController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\DelegateController.cs" />
@@ -665,7 +667,6 @@
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
-    <Compile Include="Areas\Registry\Controllers\StationLinkageController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\DocumentsModel\Document.cs" />
@@ -1493,6 +1494,7 @@
     <Content Include="Areas\MicroCredit\Views\MicroCreditApportionment\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Approval.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Recall.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2020,7 +2022,6 @@
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\MicroCredit\Models\" />
     <Folder Include="Areas\Registry\Models\" />
-    <Folder Include="Areas\Registry\Views\StationLinkage\" />
     <Folder Include="File\" />
     <Folder Include="Views\Control\" />
     <Folder Include="Views\Lookup\" />

@@ -11,6 +11,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 {
     public class CommissionDTO : BindingModelBase<CommissionDTO>
     {
+        public CommissionDTO commissionDTO;
+
         public CommissionDTO()
         {
             AddAllAttributeValidators();
