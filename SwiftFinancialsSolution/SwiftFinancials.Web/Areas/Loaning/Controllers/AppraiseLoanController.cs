@@ -71,6 +71,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             Session["loanCaseId"] = parseId;
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+           
             var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
 
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
@@ -172,6 +173,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 if (LoanAccounts != null)
                 {
                     ViewBag.CustomerAccounts = LoanAccounts;
+                    Session["printCustomerId"] = loaneeCustomer.CustomerId;
                 }
 
 
@@ -299,6 +301,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             Guid id = (Guid)Session["loanCaseId"];
+            Guid customerId = (Guid)Session["printCustomerId"];
 
             var loanCase = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
 
@@ -349,6 +352,25 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var AmountApplied = loanCase.AmountApplied;
             var ICM = loanCase.LoanInterestCalculationModeDescription;
             var TIM = loanCase.LoanRegistrationTermInMonths;
+
+
+            // Guarantors
+            var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
+            if (loanGuarantors != null)
+            {
+                ViewBag.PrintLoanGuarantors = loanGuarantors;
+            }
+
+            // Loan Accounts
+            var findloanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(customerId, true, true, true, true, GetServiceHeader());
+            var LoanAccounts = findloanAccounts.Where(L => L.CustomerAccountTypeProductCode == (int)ProductCode.Loan);
+            if (LoanAccounts != null)
+            {
+                ViewBag.PrintCustomerAccounts = LoanAccounts;
+            }
+
+
+
 
 
             ViewBag.FormData = loanCaseDTO;

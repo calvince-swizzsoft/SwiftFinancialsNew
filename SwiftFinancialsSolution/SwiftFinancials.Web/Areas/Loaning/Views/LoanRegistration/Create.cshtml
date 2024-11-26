@@ -522,6 +522,7 @@
                                                 @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @id = "AmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00" } })
                                                 @Html.ValidationMessageFor(model => model.RangeValidation, "", new { @class = "text-danger" })
+                                                @Html.ValidationMessageFor(model => model.BranchBudgetBalance, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 

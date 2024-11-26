@@ -8,8 +8,8 @@
     var standingOrders = ViewBag.StandingOrders;
     var payouts = ViewBag.Payouts;
     var LoanApplications = ViewBag.LoanApplications;
-    var loanGuarantors = ViewBag.LoanGuarantors;
-    var loanAccounts = ViewBag.LoanAccounts;
+    var loanGuarantors = ViewBag.PrintLoanGuarantors;
+    var loanAccounts = ViewBag.PrintCustomerAccounts;
 
     // Repayment Schedule
 
@@ -20,6 +20,12 @@
 }
 
 <link href="~/Scripts/css/printAppraisalForm.css" rel="stylesheet" />
+
+<style>
+    button{
+        cursor: pointer;
+    }
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -160,7 +166,6 @@
                             <table>
                                 <tr>
                                     <th>Guarantor Name</th>
-                                    <th>Employer</th>
                                     <th>Account Number</th>
                                     <th>Appraisal Factor</th>
                                     <th>Total Shares</th>
@@ -174,9 +179,8 @@
                                         foreach (var guarantors in loanGuarantors)
                                         {
                                             <tr>
-                                                <td>@guarantors.Customer.FullName</td>
-                                                <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
-                                                <td>@guarantors.Customer.Reference1</td>
+                                                <td>@guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
+                                                <td>@guarantors.CustomerReference1</td>
                                                 <td>@guarantors.AppraisalFactor</td>
                                                 <td style="text-align: right;">@guarantors.TotalShares</td>
                                                 <td style="text-align: right;">@guarantors.CommittedShares</td>
@@ -403,7 +407,7 @@
         printWindow.document.write('<html><head><title>Print Appraisal Form</title>');
         printWindow.document.write('<style>');
         printWindow.document.write(`
-               #loanApplications {
+            #loanApplications {
             height: auto;
         }
 
@@ -418,18 +422,13 @@
             font-family: Arial, sans-serif;
         }
 
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #000;
-        }
+      }
+
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 100px;
         }
 
         th, td {
@@ -447,6 +446,7 @@
             font-weight: bold;
             padding: 5px;
             text-align: left;
+            mrgin-top: 200px;
         }
 
         .signature {
@@ -454,7 +454,7 @@
         }
 
         .signature-table {
-            width: 100%;
+            width: fit-content;
             border: none;
             text-align: left;
         }
