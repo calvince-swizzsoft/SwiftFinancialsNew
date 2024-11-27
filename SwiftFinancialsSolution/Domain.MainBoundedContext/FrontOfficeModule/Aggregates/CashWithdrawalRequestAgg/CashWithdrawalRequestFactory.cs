@@ -4,7 +4,7 @@ namespace Domain.MainBoundedContext.FrontOfficeModule.Aggregates.CashWithdrawalR
 {
     public static class CashWithdrawalRequestFactory
     {
-        public static CashWithdrawalRequest CreateCashWithdrawalRequest(Guid branchId, Guid? customerAccountId, Guid? chartOfAccountId, int type, int category, decimal amount, string remarks)
+        public static CashWithdrawalRequest CreateCashWithdrawalRequest(Guid branchId, Guid? customerAccountId, Guid? chartOfAccountId, int type, int category, decimal amount, string remarks, Guid? paymentVoucherId)
         {
             var cashWithdrawalRequest = new CashWithdrawalRequest();
 
@@ -25,6 +25,8 @@ namespace Domain.MainBoundedContext.FrontOfficeModule.Aggregates.CashWithdrawalR
             cashWithdrawalRequest.Remarks = remarks;
 
             cashWithdrawalRequest.CreatedDate = DateTime.Now;
+
+            cashWithdrawalRequest.PaymentVoucherId = paymentVoucherId;
 
             return cashWithdrawalRequest;
         }

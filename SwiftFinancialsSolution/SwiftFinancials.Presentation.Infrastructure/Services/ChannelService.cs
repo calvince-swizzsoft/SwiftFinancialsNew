@@ -40524,5 +40524,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task AddCustomerAsync(CustomerDTO customerBindingModel, ServiceHeader serviceHeader)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
