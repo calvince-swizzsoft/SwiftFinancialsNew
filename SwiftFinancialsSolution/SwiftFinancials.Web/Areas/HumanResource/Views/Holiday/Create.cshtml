@@ -15,6 +15,8 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
 <script>
     $(document).ready(function () {
@@ -31,13 +33,37 @@
             $($(this).attr('href')).addClass('active');
         });
 
-        $('#ValueDate').datepicker({
-            format: 'dd/mm/yyyy',
+        $('#DurationStartDate').datepicker({
+            format: 'dd-mm-yyyy',
             todayHighlight: true,
             autoclose: true
         });
     });
 </script>
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#DurationDate').datepicker({
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
+
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
@@ -78,6 +104,9 @@
                         @using (Html.BeginForm("Create", "Holiday", new { Area = "HumanResource" }, FormMethod.Post))
                         {
                             @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.PostingPeriodDurationStartDate, new { id = "PostingPeriodDurationStartDate" })
+                            @Html.HiddenFor(model => model.PostingPeriodDurationEndDate, new { id = "PostingPeriodDurationEndDate" })
+
 
 
 
@@ -106,14 +135,22 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-6">
-                                                @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label" })
-                                                @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "datepicker form-control", placeholder = "Select Start Date..." } })
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Enter Date.....", id = "DurationStartDate", required = "required" } })
+                                                    <span id="DurationStartDateError" class="text-danger" style="display:none;"></span>
+                                                    @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
+                                                </div>
+
                                             </div>
+
                                             <div class="col-lg-6">
-                                                @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label" })
-                                                @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "datepicker form-control", placeholder = "Select End Date..." } })
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Enter Date.....", id = "DurationDate", required = "required" } })
+                                                    <span id="DurationEndDateError" class="text-danger" style="display:none;"></span>
+                                                    @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
+                                                </div>
                                             </div>
                                         </div>
                                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -143,59 +180,7 @@
                         margin-bottom: 20px;
                     }
 
-                    .nav-tabs .nav-link.active {
-                        background-color: #007bff;
-                        color: white;
-                    }
-
-                    .form-group-lg {
-                        margin-bottom: 1.5rem;
-                    }
-
-                    .form-control {
-                        border-radius: .25rem;
-                    }
-
-                    /* The .nav class is incorrectly nested, so I'll fix that */
-                    .nav {
-                        display: flex;
-                        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
-                        padding: 0;
-                        margin: 5px;
-                        margin-bottom: 0;
-                        border: 2px solid black;
-                        border-radius: 8px;
-                        margin-top: 20px;
-                        gap: 10px; /* Space between links */
-                        text-align: center; /* Centers the text inside links */
-                        padding: 10px;
-                    }
-
-                    .nav-link {
-                        display: flex;
-                        text-decoration: none;
-                        color: #007bff; /* Default text color */
-                        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
-                        border-radius: 4px; /* Rounded corners */
-                        font-size: 14px; /* Adjust font size for better fit */
-                        white-space: nowrap; /* Prevents text from wrapping inside the link */
-                    }
-
-                        .nav-link:hover {
-                            color: #fff; /* Text color on hover */
-                            background-color: #0056b3; /* Background color on hover */
-                        }
-
-                        .nav-link i {
-                            margin-right: 8px; /* Space between icon and text */
-                            font-size: 16px; /* Adjust icon size */
-                        }
-
-                        .nav-link.disabled {
-                            pointer-events: none;
-                            opacity: 0.6;
-                            cursor: not-allowed;
-                        }
+                    
 
                     .col-lg-2 {
                         display: flex;
@@ -289,122 +274,77 @@
         });
     </script>
     <script>
-        $(document).ready(function () {
-            $('#data_3 .input-group.date').datepicker({
-                startView: 2,
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                autoclose: true,
-            });
-        });
+       $(document).ready(function () {
+    $('.nav-tabs li:first-child a').addClass('active');
+    $('#tab1').addClass('active');
 
+    $('.tab-link').on('click', function (e) {
+        e.preventDefault();
 
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
+        $('.tab-link').removeClass('active');
+        $('.tab-content').removeClass('active');
 
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
+        $(this).addClass('active');
+        $($(this).attr('href')).addClass('active');
+    });
 
-                    var form = $(this);
+    // Initialize the Datepicker with the desired format for displaying
+    $('#DurationDate').datepicker({
+        format: 'dd-mm-yyyy',
+        todayHighlight: true,
+        autoclose: true
+    });
 
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
+    // PostingPeriod typeahead starts here
+    $('.PostingPeriodsLookup').typeahead({
+        source: function (query, process) {
+            return $.getJSON(
+                '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
+                { query: query },
+                function (PostingPeriods) {
+                    var newPostingPeriodsData = [];
+                    PostingPeriodsMap = {};
+                    $.each(PostingPeriods, function (i, PostingPeriod) {
+                        newPostingPeriodsData.push(PostingPeriod.Description);
+                        PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
+                    });
+                    process(newPostingPeriodsData);
+                    return;
                 }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
+            );
+        },
+        matcher: function (item) {
+            if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                return true;
+            }
+        },
+        sorter: function (items) {
+            return items.sort();
+        },
+        highlighter: function (item) {
+            var regex = new RegExp('(' + this.query + ')', 'gi');
+            return item.replace(regex, "<strong>$1</strong>");
+        },
+        updater: function (item) {
+            var PostingPeriodId = PostingPeriodsMap[item].Id;
+            var PostingPeriodDurationStartDate = PostingPeriodsMap[item].DurationStartDate;
+            var PostingPeriodDurationEndDate = PostingPeriodsMap[item].DurationEndDate;
 
-             //PostingPeriod typehead starts here
-            $('.PostingPeriodsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
-                        { query: query },
-                        function (PostingPeriods) {
-                            var newPostingPeriodsData = [];
-                            PostingPeriodsMap = {};
-                            $.each(PostingPeriods, function (i, PostingPeriod) {
-                                newPostingPeriodsData.push(PostingPeriod.Description);
-                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
-                            });
-                            process(newPostingPeriodsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var postingPeriodId = "";
-                    PostingPeriodId = PostingPeriodsMap[item].Id;
-                    $('#PostingPeriodId').val(PostingPeriodId);
-                    //console.log(PostingPeriodId)
-                    return item;
-                }
-            });
-        });</script>
+            // Format the dates before setting them into hidden fields
+            var formattedStartDate = moment(PostingPeriodDurationStartDate).format('DD-MM-YYYY');
+            var formattedEndDate = moment(PostingPeriodDurationEndDate).format('DD-MM-YYYY');
+
+            // Populate the hidden fields with the formatted date values
+            $('#PostingPeriodId').val(PostingPeriodId);
+            $('#PostingPeriodDurationStartDate').val(formattedStartDate);
+            $('#PostingPeriodDurationEndDate').val(formattedEndDate);
+
+            return item;
+        }
+    });
+});
+
+    </script>
 
 
 
@@ -542,15 +482,7 @@
                 border-color: #bd2130;
             }
 
-        /* Ensure no border between tabs and tab content */
-        .nav-tabs {
-            border-bottom: none; /* Remove bottom border from tab navigation */
-        }
-
-            .nav-tabs .nav-link {
-                border: none; /* Remove borders from tab links */
-                border-radius: 0; /* Remove border radius for a cleaner look */
-            }
+        
 
         .tab-content {
             border-top: 1px solid #ddd; /* Add a subtle border if needed */

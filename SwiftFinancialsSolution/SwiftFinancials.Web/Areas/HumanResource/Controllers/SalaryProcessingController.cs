@@ -240,5 +240,83 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 return View(salaryPeriodDTO);
             }
         }
+
+        [HttpPost]
+        public async Task<JsonResult> GetSalaryPeriodsAsync()
+        {
+            try
+            {
+                var salaryPeriods = await _channelService.FindSalaryPeriodsAsync(GetServiceHeader());
+
+                return Json(new
+                {
+                    aaData = salaryPeriods.Select(sp => new
+                    {
+                        PostingPeriodId = sp.Id,
+                        PostingPeriodDescription = sp.PostingPeriodDescription,
+                        StatusDescription = sp.StatusDescription,
+                        EmployeeCategoryDescription = sp.EmployeeCategoryDescription,
+                        CreatedDate = sp.CreatedDate
+                    }).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error fetching salary periods: {ex.Message}");
+                return Json(new
+                {
+                    aaData = new List<object>(),
+                    error = "Failed to load salary periods."
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetSalaryPeriodDetails(Guid salaryPeriodId)
+        {
+            try
+            {
+                var salaryPeriod = await _channelService.FindSalaryPeriodAsync(salaryPeriodId, GetServiceHeader());
+
+                if (salaryPeriod == null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Salary Period not found."
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        PostingPeriodDescription = salaryPeriod.PostingPeriodDescription,
+                        PostingPeriodId = salaryPeriod.Id,
+                        TaxReliefAmount = salaryPeriod.TaxReliefAmount,
+                        MaximumProvidentFundReliefAmount = salaryPeriod.MaximumProvidentFundReliefAmount,
+                        MaximumInsuranceReliefAmount = salaryPeriod.MaximumInsuranceReliefAmount,
+                        Remarks = salaryPeriod.Remarks,
+                        EmployeeCategoryDescription = salaryPeriod.EmployeeCategoryDescription,
+                        MonthDescription = salaryPeriod.MonthDescription
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error in GetSalaryPeriodDetails: {ex}");
+                return Json(new
+                {
+                    success = false,
+                    message = "An error occurred while fetching the salary period details."
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+
+
+
     }
 }
