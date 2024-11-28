@@ -827,14 +827,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                             {
 
 
-                                                                bool paymentSuccess = await _channelService.PayCashWithdrawalRequestAsync(targetCashWithdrawalRequest, paymentVoucherDTO);
+                                                                bool paymentSuccess = await _channelService.PayCashWithdrawalRequestAsync(targetCashWithdrawalRequest, paymentVoucherDTO, GetServiceHeader());
 
                                                                 if (paymentSuccess)
                                                                 {
 
 
 
-                                                                    var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs);
+                                                                    var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
 
                                                                     MessageBox.Show(
                                                                       "The authorized cash withdrawal request succesfully be marked as paid!",
@@ -880,7 +880,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                             {
 
 
-                                                                var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs);
+                                                                var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
 
                                                                 //PrintReceipt(authorizedJournal);
                                                                 return true;
@@ -977,7 +977,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                     Category = (int)cashWithdrawalCategory,
                                                     Amount = transactionModel.TotalValue,
                                                     Remarks = transactionModel.Reference,
-                                                    PaymentVoucherId = transactionModel.PaymentVoucher.Id
+                                                    PaymentVoucherId = transactionModel.PaymentVoucher.Id,
+                                                    PaymentVoucherPayee = transactionModel.PaymentVoucher.Payee
                                                 };
 
                                                 // Placeholder for adding a cash withdrawal request
@@ -1008,6 +1009,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                         MessageBoxDefaultButton.Button1,
                                                         MessageBoxOptions.ServiceNotification
                                                     );
+
+                                                    //var updateTargetPaymentVoucherDetails?
 
                                                     return true;
                                                 }
@@ -1550,6 +1553,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 }
 
                 // Assign data to the transaction model
+                
+                targetPaymentVoucher.Payee = cashWithdrawalRequest.PaymentVoucherPayee;
                 transactionModel.PaymentVoucher = targetPaymentVoucher;
 
                 // Continue with additional logic...
