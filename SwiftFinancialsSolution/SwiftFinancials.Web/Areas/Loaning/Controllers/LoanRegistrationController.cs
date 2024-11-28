@@ -723,14 +723,54 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             if (string.IsNullOrEmpty(collateralIds))
             {
-                return Json(new { success = false, message = "No collaterals selected." });
+                string message = string.Format("You have not added any collaterals for this particular loanee. Do you want to proceed?");
+
+                DialogResult result = MessageBox.Show(
+                    message,
+                    "Loan Registration",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+
+                if (result == DialogResult.Yes)
+                {
+                    // Proceed
+                }
+                else
+                {
+                    MessageBox.Show(Form.ActiveForm, "Operation cancelled.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification);
+                    return View(loanCaseDTO);
+                }
             }
+
+
             var collateralIdList = collateralIds.Split(',').ToList();
-            ObservableCollection<CustomerDocumentDTO> collateralDocuments = new ObservableCollection<CustomerDocumentDTO>(
-                collateralIdList
-                    .Where(id => Guid.TryParse(id, out _))  
-                    .Select(id => new CustomerDocumentDTO { Id = Guid.Parse(id) })
-            );
+            List<Guid> collateralGuidList = new List<Guid>();
+
+            foreach (var collateralId in collateralIdList)
+            {
+                if (Guid.TryParse(collateralId, out Guid collateralGuid))
+                {
+                    collateralGuidList.Add(collateralGuid);
+                }
+            }
+
+            List<CustomerDocumentDTO> dc = new List<CustomerDocumentDTO>();
+
+            foreach (var collateral in collateralGuidList)
+            {
+                var document = await _channelService.FindCustomerDocumentAsync(collateral, GetServiceHeader());
+                if (document != null)
+                {
+                    dc.Add(document);
+                }
+            }
+            ObservableCollection<CustomerDocumentDTO> collateralDocuments = new ObservableCollection<CustomerDocumentDTO>(dc);
+
 
 
             var takeBranchId = Guid.Empty;
@@ -783,11 +823,16 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.TakeHomeType = loanProduct.TakeHomeType;
                 loanCaseDTO.TakeHomePercentage = loanProduct.TakeHomePercentage;
                 loanCaseDTO.TakeHomeFixedAmount = loanProduct.TakeHomeFixedAmount;
+                loanCaseDTO.LoanProductId = loanProduct.Id;
+                loanCaseDTO.LoanProductDescription = loanProduct.Description;
+                loanCaseDTO.InterestCalculationModeDescription = loanProduct.LoanInterestCalculationModeDescription;
+                loanCaseDTO.LoanInterestAnnualPercentageRate = loanProduct.LoanInterestAnnualPercentageRate;
+                loanCaseDTO.LoanProductSectionDescription = loanProduct.LoanRegistrationLoanProductSectionDescription;
+                loanCaseDTO.LoanRegistrationTermInMonths = loanProduct.LoanRegistrationTermInMonths;
+                loanCaseDTO.LoanRegistrationMaximumAmount = loanProduct.LoanRegistrationMaximumAmount;
                 loanCaseDTO.LoanInterestChargeMode = loanProduct.LoanInterestChargeMode;
                 loanCaseDTO.LoanInterestRecoveryMode = loanProduct.LoanInterestRecoveryMode;
                 loanCaseDTO.LoanInterestCalculationMode = loanProduct.LoanInterestCalculationMode;
-
-
             }
 
             loanCaseDTO.ValidateAll();
@@ -830,6 +875,16 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                             if (loanCase.ErrorMessageResult != null)
                             {
                                 await ServeNavigationMenus();
+
+                                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+
+
+                                ViewBag.recordStatus = GetRecordStatusSelectList(loanCaseDTO.RecordStatusDescription.ToString());
+                                ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+                                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
+
                                 MessageBox.Show(Form.ActiveForm, loanCase.ErrorMessageResult, "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                                 return View();
                             }
@@ -847,6 +902,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
                             ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                             ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+
+
+                            ViewBag.recordStatus = GetRecordStatusSelectList(loanCaseDTO.RecordStatusDescription.ToString());
+                            ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+                            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
                             MessageBox.Show(Form.ActiveForm, "Operation cancelled.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             return View(loanCaseDTO);
@@ -868,6 +928,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                     ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
 
+                    ViewBag.recordStatus = GetRecordStatusSelectList(loanCaseDTO.RecordStatusDescription.ToString());
+                    ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+                    ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
+
+
                     MessageBox.Show(Form.ActiveForm, "Operation failed.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                     return View(loanCaseDTO);
                 }
@@ -876,6 +941,16 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             catch (Exception ex)
             {
                 MessageBox.Show(Form.ActiveForm, ex.ToString(), "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+
+                ViewBag.recordStatus = GetRecordStatusSelectList(loanCaseDTO.RecordStatusDescription.ToString());
+                ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
+
+
                 return View(loanCaseDTO);
             }
         }

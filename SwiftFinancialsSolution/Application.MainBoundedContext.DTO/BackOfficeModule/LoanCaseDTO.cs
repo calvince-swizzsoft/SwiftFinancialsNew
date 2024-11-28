@@ -1319,7 +1319,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Customer Filter")]
         public int CustomerFilter { get; set; }
 
-        [Display(Name = "Record Status")]
+        [Display(Name = "Customer Filter")]
         public string CustomerFilterDescription
         {
             get

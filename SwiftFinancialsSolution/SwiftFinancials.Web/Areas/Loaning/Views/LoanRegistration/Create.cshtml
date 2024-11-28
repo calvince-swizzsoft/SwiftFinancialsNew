@@ -784,7 +784,7 @@
                                             @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "control-label" })
                                             <div class="input-group date">
                                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                <input type="text" name="valuedate" placeholder="dd/mm/yyyy" class="form-control date-input" id="ReceivedDate">
+                                                <input type="text" name="receivedDate" placeholder="dd-mm-yyyy" class="form-control date-input" id="ReceivedDate">
                                             </div>
                                         </div>
                                     </div>
@@ -1258,28 +1258,44 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.7-beta.31/inputmask.min.js"></script>
+
     <script src="~/Scripts/js/navlink.js"></script>
     <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
     <script>
+        $(document).ready(function () {
+            $('#ReceivedDate').inputmask('99-99-9999', {
+                'placeholder': 'dd-mm-yyyy',
+                'autoUnmask': true
+            });
+
+            $('#ReceivedDate').datepicker({
+                format: 'dd-mm-yyyy',  
+                autoclose: true,       
+                todayHighlight: true,  
+                language: navigator.language.split('-')[0], 
+                orientation: "bottom left"
+            });
+        });
+    </script>
+
+
+    <script>
         document.getElementById('createButton').addEventListener('click', function () {
-            // Collect selected IDs from checked checkboxes
             const selectedIds = Array.from(
                 document.querySelectorAll('.collateral-checkbox:checked')
             ).map(checkbox => checkbox.value);
 
-            // Validate selection
             if (selectedIds.length === 0) {
                 alert('Please select at least one collateral.');
                 return;
             }
 
-            // Set the hidden input value for collateralIds
             const collateralIdsInput = document.getElementById('collateralIdsInput');
             if (collateralIdsInput) {
                 collateralIdsInput.value = selectedIds.join(',');
             } else {
-                // Create the hidden input if not already present
                 const input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = 'collateralIds';
