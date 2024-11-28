@@ -1297,5 +1297,41 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorDTO { get; set; }
+
+
+
+
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public int RecordStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public string RecordStatusDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(RecordStatus), RecordStatus) ? EnumHelper.GetDescription((RecordStatus)RecordStatus) : string.Empty;
+            }
+        }
+
+        [Display(Name = "Customer Filter")]
+        public int CustomerFilter { get; set; }
+
+        [Display(Name = "Record Status")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return EnumHelper.GetDescription((CustomerFilter)CustomerFilter);
+            }
+        }
+        public Guid DocumentID { get; set; }  // Unique identifier for the document
+        
+        public byte[] PassportPhoto { get; set; }
+        public byte[] SignaturePhoto { get; set; }
+        public byte[] IDCardFrontPhoto { get; set; }
+        public byte[] IDCardBackPhoto { get; set; }
     }
 }
