@@ -499,7 +499,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post, new { id = "loanForm" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -962,7 +962,9 @@
                             <br />
                             <br />
 
-                            <input type="hidden" name="SelectedIds" id="selectedIds">
+                            <!-- Hidden input for collateralIds -->
+                            <input type="hidden" id="collateralIdsInput" name="collateralIds" value="" />
+
                             <div class="row">
                                 <div class="col-lg-4">
                                     <input type="submit" id="createButton" class="btn btn-primary" value="Create" style="width: 150px;" />
@@ -1261,33 +1263,37 @@
 
     <script>
         document.getElementById('createButton').addEventListener('click', function () {
+            // Collect selected IDs from checked checkboxes
             const selectedIds = Array.from(
                 document.querySelectorAll('.collateral-checkbox:checked')
             ).map(checkbox => checkbox.value);
 
+            // Validate selection
             if (selectedIds.length === 0) {
                 alert('Please select at least one collateral.');
                 return;
             }
 
-            const requestData = {
-                collateralIds: selectedIds.join(',')
-            };
+            // Set the hidden input value for collateralIds
+            const collateralIdsInput = document.getElementById('collateralIdsInput');
+            if (collateralIdsInput) {
+                collateralIdsInput.value = selectedIds.join(',');
+            } else {
+                // Create the hidden input if not already present
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'collateralIds';
+                input.id = 'collateralIdsInput';
+                input.value = selectedIds.join(',');
+                document.getElementById('loanForm').appendChild(input);
+            }
 
-
-            $.ajax({
-                url: '/LoanRegistration/Create',
-                type: 'POST',
-                data: requestData,
-                success: function (response) {
-                    alert('Collaterals created successfully.');
-                },
-                error: function (xhr, status, error) {
-                    alert('An error occurred while creating the collaterals.');
-                }
-            });
+            document.getElementById('loanForm').submit();
         });
     </script>
+
+
+
     <script>
         var defaultCustomerFilter = $('#customerFilter').val();
         var defaultRecordStatus = $('#recordStatus').val();
@@ -1510,19 +1516,29 @@
                             var tbody = $('#loanApplicationsdataTable tbody');
                             tbody.empty();
                             loanApplications.forEach(function (LoanApplications) {
+                                // Parse and format the ReceivedDate
+                                var receivedDate = formatDate(LoanApplications.ReceivedDate);
+
                                 var row = '<tr>' +
                                     '<td>' + LoanApplications.CaseNumber + '</td>' +
                                     '<td>' + LoanApplications.StatusDescription + '</td>' +
                                     '<td>' + LoanApplications.CustomerReference1 + '</td>' +
                                     '<td>' + LoanApplications.CustomerReference3 + '</td>' +
                                     '<td>' + LoanApplications.LoanProductDescription + '</td>' +
-                                    '<td>' + LoanApplications.ReceivedDate + '</td>' +
+                                    '<td>' + receivedDate + '</td>' +
                                     '<td style="text-align: right;">' + LoanApplications.AmountApplied + '</td>' +
                                     '<td style="text-align: right;">' + LoanApplications.AppraisedAmount + '</td>' +
                                     '<td>' + LoanApplications.SystemAppraisalRemarks + '</td>' +
                                     '</tr>';
                                 tbody.append(row);
                             });
+
+                            function formatDate(dotNetDate) {
+                                var timestamp = parseInt(dotNetDate.replace(/\/Date\((\d+)\)\//, '$1'));
+                                var date = new Date(timestamp);
+                                var formattedDate = date.toISOString().split('T')[0];
+                                return formattedDate;
+                            }
 
                             $('#customerLookupModal').modal('hide');
                         }

@@ -307,10 +307,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 //// Loan Applications
                 var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(parseId, GetServiceHeader());
-                if (loanApplications != null)
-                {
-                    ViewBag.LoanApplications = loanApplications;
-                }
 
 
                 //// Collaterals...
@@ -455,7 +451,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 Guid customerId = (Guid)Session["CustomerId"];
                 var investmentsBalance = await _channelService.ComputeEligibleLoanAppraisalInvestmentsBalanceAsync(customerId, parseId, GetServiceHeader());
 
-                var findloanBalanceCustomerAccount = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(customerId, parseId, true, true, true, true, 
+                var findloanBalanceCustomerAccount = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(customerId, parseId, true, true, true, true,
                     GetServiceHeader());
                 var bookBal = findloanBalanceCustomerAccount.Sum(x => x.BookBalance);
                 var carryForward = findloanBalanceCustomerAccount.Sum(u => u.CarryForwardsBalance);
@@ -478,7 +474,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         MaximumAmountPercentage = loanCaseDTO.MaximumAmountPercentage,
                         LatestIncome = latestIncome,
                         InvestmentsBalance = investmentsBalance,
-                        LoanBalance=loanBalance
+                        LoanBalance = loanBalance
                     }
                 });
             }
@@ -727,9 +723,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             if (string.IsNullOrEmpty(collateralIds))
             {
-                return View("Error", new { message = "No collaterals were selected." });
+                return Json(new { success = false, message = "No collaterals selected." });
             }
             var collateralIdList = collateralIds.Split(',').ToList();
+            ObservableCollection<CustomerDocumentDTO> collateralDocuments = new ObservableCollection<CustomerDocumentDTO>(
+                collateralIdList
+                    .Where(id => Guid.TryParse(id, out _))  
+                    .Select(id => new CustomerDocumentDTO { Id = Guid.Parse(id) })
+            );
+
 
             var takeBranchId = Guid.Empty;
 
@@ -781,8 +783,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.TakeHomeType = loanProduct.TakeHomeType;
                 loanCaseDTO.TakeHomePercentage = loanProduct.TakeHomePercentage;
                 loanCaseDTO.TakeHomeFixedAmount = loanProduct.TakeHomeFixedAmount;
-
-
                 loanCaseDTO.LoanInterestChargeMode = loanProduct.LoanInterestChargeMode;
                 loanCaseDTO.LoanInterestRecoveryMode = loanProduct.LoanInterestRecoveryMode;
                 loanCaseDTO.LoanInterestCalculationMode = loanProduct.LoanInterestCalculationMode;
@@ -800,7 +800,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     {
                         if (loanCaseDTO.AmountApplied <= 50)
                         {
-                            TempData["lessAmountApplied"] = "The amount you are applying for is too low. Enter amount greater than " + loanCaseDTO.AmountApplied;
+                            MessageBox.Show(Form.ActiveForm, "The amount you are applying for is too low. Enter amount greater than " + loanCaseDTO.AmountApplied, "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             return View("create", loanCaseDTO);
                         }
 
@@ -830,48 +830,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                             if (loanCase.ErrorMessageResult != null)
                             {
                                 await ServeNavigationMenus();
-
-                                //TempData["existngApplicationError"] = loanCase.ErrorMessageResult;
-
                                 MessageBox.Show(Form.ActiveForm, loanCase.ErrorMessageResult, "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
                                 return View();
                             }
 
-                            // Clear sessions
+                            await _channelService.UpdateLoanCollateralsByLoanCaseIdAsync(loanCase.Id, collateralDocuments, GetServiceHeader());
 
-                            // Loanee sessions
-                            Session.Remove("CustomerId");
-                            Session.Remove("CustomerIndividualFirstName");
-                            Session.Remove("CustomerStationZoneDivisionEmployerDescription");
-                            Session.Remove("CustomerStation");
-                            Session.Remove("CustomerReference1");
-                            Session.Remove("CustomerReference2");
-                            Session.Remove("CustomerReference3");
-
-                            // Loan Purpose sessions
-                            Session.Remove("LoanPurposeId");
-                            Session.Remove("LoanPurposeDescription");
-
-                            // Loan Product Sessions
-                            Session.Remove("LoanProductId");
-                            Session.Remove("LoanProductDescription");
-                            Session.Remove("InterestCalculationModeDescription");
-                            Session.Remove("LoanInterestAnnualPercentageRate");
-                            Session.Remove("LoanProductSectionDescription");
-                            Session.Remove("LoanRegistrationTermInMonths");
-                            Session.Remove("LoanRegistrationMaximumAmount");
-
-                            // Savings Products Sessions
-                            Session.Remove("SavingsProductId");
-                            Session.Remove("SavingsProductDescription");
-
-                            // Loan Registration Remarks Sessions
-                            Session.Remove("RegistrationRemarkId");
-                            Session.Remove("Remarks");
-
-
-                            //TempData["AlertMessage"] = "Loan registration successful.";
                             MessageBox.Show(Form.ActiveForm, "Operation completed successfully.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             return RedirectToAction("Index");
                         }
@@ -884,7 +848,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                             ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                             ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
 
-                            //TempData["ErrorMessage"] = "Loan registration failed ";
                             MessageBox.Show(Form.ActiveForm, "Operation cancelled.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             return View(loanCaseDTO);
                         }
@@ -905,7 +868,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                     ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
 
-                    //TempData["ErrorMessage"] = "Loan registration failed ";
                     MessageBox.Show(Form.ActiveForm, "Operation failed.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                     return View(loanCaseDTO);
                 }

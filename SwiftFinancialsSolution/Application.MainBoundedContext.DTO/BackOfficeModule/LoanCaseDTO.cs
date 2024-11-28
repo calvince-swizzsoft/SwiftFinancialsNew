@@ -1333,5 +1333,10 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public byte[] SignaturePhoto { get; set; }
         public byte[] IDCardFrontPhoto { get; set; }
         public byte[] IDCardBackPhoto { get; set; }
+
+        [DataMember]
+        [Display(Name = "Status")]
+        public string LoanStatus { get; set; }
+
     }
 }
