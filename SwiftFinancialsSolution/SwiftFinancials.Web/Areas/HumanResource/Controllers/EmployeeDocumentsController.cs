@@ -176,7 +176,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                                                              MessageBoxOptions.ServiceNotification
                                                          );
 
-                TempData["SuccessMessage"] = "Employee Document created successfully!";
                 return RedirectToAction("Index");
             }
 

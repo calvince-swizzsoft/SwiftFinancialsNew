@@ -347,5 +347,33 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             return View(salaryPeriodDTO);
         }
+
+        [HttpPost]
+        public async Task<JsonResult> GetSalaryPeriodsAsync()
+        {
+            try
+            {
+                var salaryPeriods = await _channelService.FindSalaryPeriodsAsync(GetServiceHeader());
+
+                // Transform data for DataTable
+                var result = salaryPeriods.Select(sp => new
+                {
+                    sp.PostingPeriodId,
+                    sp.PostingPeriodDescription,
+                    sp.StatusDescription,
+                    sp.EmployeeCategoryDescription,
+                    CreatedDate = sp.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
+                }).ToList();
+
+                return Json(new { aaData = result });
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error fetching salary periods: {ex.Message}");
+                return Json(new { error = "Failed to load salary periods." });
+            }
+        }
+
+
     }
 }

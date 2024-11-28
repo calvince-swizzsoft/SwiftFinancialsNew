@@ -577,7 +577,7 @@
 
                                                                 <div class="form-group">
                                                                     <input type="hidden" id="ChequeBookId" name="ChequeBookId" value="" />
-
+                                                                    @Html.HiddenFor(model => model.PaymentVoucher.Id, new {@id = "PaymentVoucherId"})
                                                                     @Html.LabelFor(model => model.PaymentVoucher.VoucherNumber, "Payment Voucher Number:", new { @class = "control-label", @readonly = "readonly" })
                                                                     <div class="input-group" data-autoclose="true">
                                                                         @Html.TextBoxFor(model => model.PaymentVoucher.VoucherNumber, new { @class = "form-control", @readonly = "readonly", @id = "PaymentVoucherNumber" })
@@ -1516,6 +1516,15 @@
             <script>
                 $(document).ready(function () {
 
+                    function updateNewAvailableBalancePaymentVoucher() {
+                        // Parse values as floats and default to 0 if invalid
+                        let customerAccountAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0;
+                        let paymentVoucherWithdrawalAmount = parseFloat($('#PaymentVoucherAmount').val()) || 0;
+
+                        // Update the new available balance
+                        $('#CustomerAccountNewAvailableBalance').val(customerAccountAvailableBalance - paymentVoucherWithdrawalAmount);
+                    }
+
 
                     function updateNewAvailableBalanceChequeDeposit() {
                         // Parse values as floats and default to 0 if invalid
@@ -1643,6 +1652,7 @@
                     $('#PaymentVoucherAmount').val('');
                     $('#PaymentVoucherPayee').val('');
                     $('#PaymentVoucherReference').val('');
+                    $('#PaymentVoucherId').val('');
 
                     // Disable submit button
                     $('#submitButton').prop('disabled', true);
@@ -1652,6 +1662,9 @@
                     $('#submitButton').click(function (e) {
 
                         e.preventDefault();
+
+                        var payeeValue = $('#PaymentVoucherPayee').val();
+
                         $.ajax({
                             url: $('#savingsReceiptsPaymentsForm').attr('action'),
                             type: 'POST',
@@ -1908,7 +1921,7 @@
         $('td:eq(5)', nRow).html(aData.PaidFlaggedDate);
         $('td:eq(6)', nRow).html(aData.CreatedDate);
 
-        var selectUrl = '<a onclick="setPaymentVoucherDetails(\'' + aData.VoucherNumber + '\', \'' + aData.ChequeBookId + '\')" class="btn btn-outline-info">Select</a>';
+        var selectUrl = '<a onclick="setPaymentVoucherDetails(\'' + aData.VoucherNumber + '\', \'' + aData.Id + '\')" class="btn btn-outline-info">Select</a>';
 
 
         $('td:eq(7)', nRow).html(selectUrl);
@@ -1931,12 +1944,13 @@
     "aaSorting": [[0, "desc"]]
          });
 
-        function setPaymentVoucherDetails(voucherNumber, voucherId) {
+        function setPaymentVoucherDetails(voucherNumber, id) {
 
             console.log("entered setPaymentVoucherDetails with vouchernumber:", voucherNumber);
-
+            console.log("entered setPaymentVoucherDetails with paymentvoucherid:", id);
             $('#PaymentVoucherNumber').val(voucherNumber);
             //$('#ChequeBookId').val(voucherId);
+             $('#PaymentVoucherId').val(id);
 
             $('#PaymentVouchersLookupModal').modal('hide');
         }

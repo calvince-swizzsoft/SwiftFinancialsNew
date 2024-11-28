@@ -326,5 +326,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
                 return Enum.IsDefined(typeof(CashTransferRequestStatus), CashTransferStatus) ? EnumHelper.GetDescription((CashTransferRequestStatus)CashTransferStatus) : string.Empty;
             }
         }
+
+        public Guid PaymentVoucherId { get; set; }
     }
 }

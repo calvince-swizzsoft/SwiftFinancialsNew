@@ -209,5 +209,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Customer Payroll Numbers")]
         public string CustomerIndividualPayrollNumbers { get; set; }
         public string ErrorMessageResult { get; set; }
+
+        public CustomerAccountDTO CustomerAccount { get; set; }
     }
 }
