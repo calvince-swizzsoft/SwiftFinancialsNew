@@ -43,5 +43,7 @@ namespace Domain.MainBoundedContext.FrontOfficeModule.Aggregates.CashWithdrawalR
         public DateTime? PaidDate { get; set; }
 
         public Guid? PaymentVoucherId { get; set; }
+
+        public string PaymentVoucherPayee { get; set; }
     }
 }
