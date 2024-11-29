@@ -577,7 +577,7 @@
 
                                                                 <div class="form-group">
                                                                     <input type="hidden" id="ChequeBookId" name="ChequeBookId" value="" />
-
+                                                                    @Html.HiddenFor(model => model.PaymentVoucher.Id, new {@id = "PaymentVoucherId"})
                                                                     @Html.LabelFor(model => model.PaymentVoucher.VoucherNumber, "Payment Voucher Number:", new { @class = "control-label", @readonly = "readonly" })
                                                                     <div class="input-group" data-autoclose="true">
                                                                         @Html.TextBoxFor(model => model.PaymentVoucher.VoucherNumber, new { @class = "form-control", @readonly = "readonly", @id = "PaymentVoucherNumber" })
@@ -1516,14 +1516,23 @@
             <script>
                 $(document).ready(function () {
 
+                    function updateNewAvailableBalancePaymentVoucher() {
+                        // Parse values as floats and default to 0 if invalid
+                        let customerAccountAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0;
+                        let paymentVoucherWithdrawalAmount = parseFloat($('#PaymentVoucherAmount').val()) || 0;
+
+                        // Update the new available balance
+                        $('#CustomerAccountNewAvailableBalance').val(customerAccountAvailableBalance - paymentVoucherWithdrawalAmount);
+                    }
+
 
                     function updateNewAvailableBalanceChequeDeposit() {
                         // Parse values as floats and default to 0 if invalid
                         let customerAccountAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0;
-                        let totalValue = parseFloat($('#TotalValue').val()) || 0;
+                        let totalValue = parseFloat($('#ChequeDepositAmount').val()) || 0;
 
                         // Update the new available balance
-                        $('#ChequeDepositAmount').val(customerAccountAvailableBalance + totalValue);
+                        $('#CustomerAccountNewAvailableBalance').val(customerAccountAvailableBalance + totalValue);
                     }
 
 
@@ -1643,6 +1652,7 @@
                     $('#PaymentVoucherAmount').val('');
                     $('#PaymentVoucherPayee').val('');
                     $('#PaymentVoucherReference').val('');
+                    $('#PaymentVoucherId').val('');
 
                     // Disable submit button
                     $('#submitButton').prop('disabled', true);
@@ -1652,6 +1662,9 @@
                     $('#submitButton').click(function (e) {
 
                         e.preventDefault();
+
+                        var payeeValue = $('#PaymentVoucherPayee').val();
+
                         $.ajax({
                             url: $('#savingsReceiptsPaymentsForm').attr('action'),
                             type: 'POST',
@@ -1908,7 +1921,7 @@
         $('td:eq(5)', nRow).html(aData.PaidFlaggedDate);
         $('td:eq(6)', nRow).html(aData.CreatedDate);
 
-        var selectUrl = '<a onclick="setPaymentVoucherDetails(\'' + aData.VoucherNumber + '\', \'' + aData.ChequeBookId + '\')" class="btn btn-outline-info">Select</a>';
+        var selectUrl = '<a onclick="setPaymentVoucherDetails(\'' + aData.VoucherNumber + '\', \'' + aData.Id + '\')" class="btn btn-outline-info">Select</a>';
 
 
         $('td:eq(7)', nRow).html(selectUrl);
@@ -1931,12 +1944,13 @@
     "aaSorting": [[0, "desc"]]
          });
 
-        function setPaymentVoucherDetails(voucherNumber, voucherId) {
+        function setPaymentVoucherDetails(voucherNumber, id) {
 
             console.log("entered setPaymentVoucherDetails with vouchernumber:", voucherNumber);
-
+            console.log("entered setPaymentVoucherDetails with paymentvoucherid:", id);
             $('#PaymentVoucherNumber').val(voucherNumber);
             //$('#ChequeBookId').val(voucherId);
+             $('#PaymentVoucherId').val(id);
 
             $('#PaymentVouchersLookupModal').modal('hide');
         }
@@ -2332,7 +2346,7 @@
 
             var requestType = 0;
             var dropDownHtml = `
-            <button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;">
+            <button type="button" id="cashDepositSelectButton" class="btn btn-outline-info select-action-button" style="width: 150px;">
                 Select
             </button>
         `;
@@ -2351,44 +2365,59 @@
         "aaSorting": [[1, "desc"]]
         });
 
+                $(document).on('click', '#cashDepositSelectButton', function (e) {
+                    e.preventDefault();
+
+                    const rowData = $('#cashDepositRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
+                    const requestId = rowData.Id; // Get the ID of the selected item
+
+                    // Show the modal
+                    $('#paymentModal').modal('show');
+
+                    // Set up the modal buttons for approval and rejection
+                    $('#paymentBtn').off('click').on('click', function () {
+                        handleCashDepositRequest(requestId); // Handle approve
+                    });
+                });
+
 
         // Use event delegation to handle clicks on dynamically generated buttons
-        $(document).on('click', '.select-action-button', function (e) {
-            e.preventDefault();
+        //$(document).on('click', '.select-action-button', function (e) {
+        //    e.preventDefault();
 
-            // Retrieve the row element closest to the button
-            const $row = $(this).closest('tr');
+        //    // Retrieve the row element closest to the button
+        //    const $row = $(this).closest('tr');
 
-            // Get the closest table and the DataTable API instance for the table
-            const $table = $row.closest('table');
-            const table = $table.DataTable();
+        //    // Get the closest table and the DataTable API instance for the table
+        //    const $table = $row.closest('table');
+        //    const table = $table.DataTable();
 
-            // Get the row data using DataTables API
-            const rowData = table.row($row).data();
-            const requestId = rowData.Id; // Get the ID of the selected item
+        //    // Get the row data using DataTables API
+        //    const rowData = table.row($row).data();
+        //    const requestId = rowData.Id; // Get the ID of the selected item
 
-            console.log("Selected Request ID:", requestId);
+        //    console.log("Selected Request ID:", requestId);
 
-            // Show the modal
-            $('#paymentModal').modal('show');
+        //    // Show the modal
+        //    $('#paymentModal').modal('show');
 
-            // Get the table ID
-            const tableId = $table.attr('id');
-            console.log("Table ID is:", tableId);
+        //    // Get the table ID
+        //    const tableId = $table.attr('id');
+        //    console.log("Table ID is:", tableId);
 
-            // Set up modal buttons for approval and rejection
-            $('#paymentBtn').off('click').on('click', function () {
-                if (tableId === 'cashDepositRequestsTable') {
-                    handleCashDepositRequest(requestId); // Handle cash deposit approval
-                } else if (tableId === 'cashWithdrawalRequestsTable') {
-                    handleCashWithdrawalRequest(requestId); // Handle cash withdrawal approval
-                } else if (tableId === 'cashTransferRequestsTable') {
-                    handleCashTransferRequest(requestId); // Handle cash transfer approval
-                } else {
-                    console.error('Unknown table ID:', tableId);
-                }
-            });
-        });
+        //    // Set up modal buttons for approval and rejection
+        //    $('#paymentBtn').off('click').on('click', function () {
+        //        if (tableId === 'cashDepositRequestsTable') {
+        //            handleCashDepositRequest(requestId); // Handle cash deposit approval
+        //        } else if (tableId === 'cashWithdrawalRequestsTable') {
+        //            handleCashWithdrawalRequest(requestId); // Handle cash withdrawal approval
+        //        } else if (tableId === 'cashTransferRequestsTable') {
+        //            handleCashTransferRequest(requestId); // Handle cash transfer approval
+        //        } else {
+        //            console.error('Unknown table ID:', tableId);
+        //        }
+        //    });
+        //});
 
 
         async function handleCashDepositRequest(cashDepositRequestId) {
@@ -2423,7 +2452,7 @@
 
             var requestType = 1;
             var dropDownHtml = `
-            <button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;">
+            <button type="button" id ="cashWithdrawalSelectButton" class="btn btn-outline-info select-action-button" style="width: 150px;">
                 Select
             </button>
         `;
@@ -2438,14 +2467,14 @@
             { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "Account Number", "sWidth": "15%" },
             { "mDataProp": "CustomerAccountCustomerReference1", "sTitle": "Customer Refernce 1", "sWidth": "10%" },
             { "mDataProp": "CustomerAccountCustomerReference2", "sTitle": "Customer Reference 2", "sWidth": "10%" },
-            { "mDataProp": "PostedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }
+            { "mDataProp": "PaidDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }
         ],
         "aaSorting": [[1, "desc"]]
            });
 
 
         // Use event delegation to handle clicks on dynamically generated buttons
-        $(document).on('click', '.select-action-button', function (e) {
+        $(document).on('click', '#cashWithdrawalSelectButton', function (e) {
             e.preventDefault();
 
             const rowData = $('#cashWithdrawalRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
@@ -2499,7 +2528,7 @@
 
             var requestType = 1;
             var dropDownHtml = `
-            <button type="button" class="btn btn-outline-info select-action-button" style="width: 150px;">
+            <button type="button" id ="cashTransferSelectButton" class="btn btn-outline-info select-action-button" style="width: 150px;">
                 Select
             </button>
         `;
@@ -2521,21 +2550,21 @@
               });
 
 
-        // Use event delegation to handle clicks on dynamically generated buttons
-        //$(document).on('click', '.select-action-button', function (e) {
-        //    e.preventDefault();
+         //Use event delegation to handle clicks on dynamically generated buttons
+                $(document).on('click', '#cashTransferSelectButton', function (e) {
+            e.preventDefault();
 
-        //    const rowData = $('#cashTransferRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
-        //    const requestId = rowData.Id; // Get the ID of the selected item
+            const rowData = $('#cashTransferRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
+            const requestId = rowData.Id; // Get the ID of the selected item
 
-        //    // Show the modal
-        //    $('#paymentModal').modal('show');
+            // Show the modal
+            $('#paymentModal').modal('show');
 
-        //    // Set up the modal buttons for approval and rejection
-        //    $('#paymentBtn').off('click').on('click', function () {
-        //        handleCashTransferRequest(requestId); // Handle approve
-        //    });
-        //});
+            // Set up the modal buttons for approval and rejection
+            $('#paymentBtn').off('click').on('click', function () {
+                handleCashTransferRequest(requestId); // Handle approve
+            });
+        });
 
 
 

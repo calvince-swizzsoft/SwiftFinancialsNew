@@ -57,6 +57,7 @@
                         @Html.HiddenFor(model => model.CustomerDTO.Id, new { id = "CustomerId" })
                         @Html.HiddenFor(model => model.CustomerDTO.StationZoneId, new { id = "StationZoneId" })
                         @Html.HiddenFor(model => model.LoanProductId, new { id = "LoanProductId" })
+                        @Html.HiddenFor(model => model.CustomerDTO.StationZoneDivisionEmployerId, new { id = "StationZoneDivisionEmployerId" })
 
 
 
@@ -421,13 +422,13 @@ $(document).ready(function () {
                     if (response.success) {
                         $('#CustomerDTO_Id').val(response.data.Id);
                         $('#CustomerDTO_FullName').val(response.data.FullName);
+                        $('#CustomerDTO_StationZoneDivisionEmployerId').val(response.data.StationZoneDivisionEmployerId);
                         $('#CustomerDTO_StationZoneDivisionEmployerDescription').val(response.data.StationZoneDivisionEmployerDescription);
                         $('#CustomerDTO_IndividualIdentityCardNumber').val(response.data.IndividualIdentityCardNumber);
                         $('#CustomerDTO_IndividualPayrollNumbers').val(response.data.IndividualPayrollNumbers);
                         $('#CustomerDTO_StationZoneDescription').val(response.data.StationZoneDescription);
                         $('#CustomerDTO_Reference1').val(response.data.Reference1);
                         $('#CustomerDTO_Reference2').val(response.data.Reference2);
-                        $('#CustomerDTO_StationZoneDivisionEmployerDescription').val(response.data.ZoneDivisionEmployerDescription);
                         $('#CustomerDTO_Remarks').val(response.data.Remarks);
 
                         $('#customerLookup').modal('hide');

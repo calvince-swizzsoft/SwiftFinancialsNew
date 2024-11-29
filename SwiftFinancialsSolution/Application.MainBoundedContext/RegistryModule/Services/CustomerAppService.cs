@@ -178,7 +178,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                 var customer = CustomerFactory.CreateCustomer(customerDTO.Type, customerDTO.PersonalIdentificationNumber, individual, nonIndividual, address, customerDTO.StationId, customerDTO.Reference1, customerDTO.Reference2, customerDTO.Reference3, customerDTO.Remarks, customerDTO.RegistrationDate, customerDTO.RecruitedBy, customerDTO.AdministrativeDivisionId);
 
                 customer.SerialNumber = _customerRepository.DatabaseSqlQuery<int>(string.Format("SELECT ISNULL(MAX(SerialNumber),0) + 1 AS Expr1 FROM {0}Customers", DefaultSettings.Instance.TablePrefix), serviceHeader).FirstOrDefault();
-                customer.PassportImageId = IdentityGenerator.NewSequentialGuid();
+                customer.Reference2 =( _customerRepository.DatabaseSqlQuery<int>(string.Format("SELECT ISNULL(MAX(Reference2),0) + 1 AS Expr1 FROM {0}Customers", DefaultSettings.Instance.TablePrefix), serviceHeader).FirstOrDefault()).ToString() ;
                 customer.SignatureImageId = IdentityGenerator.NewSequentialGuid();
                 customer.IdentityCardBackSideImageId = IdentityGenerator.NewSequentialGuid();
                 customer.IdentityCardFrontSideImageId = IdentityGenerator.NewSequentialGuid();
@@ -187,6 +187,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                 customer.BiometricFingerprintTemplateFormat = (byte)customerDTO.BiometricFingerprintTemplateFormat;
                 customer.BiometricFingerVeinTemplateId = IdentityGenerator.NewSequentialGuid();
                 customer.BiometricFingerVeinTemplateFormat = (byte)customerDTO.BiometricFingerVeinTemplateFormat;
+  
                 customer.CreatedBy = serviceHeader.ApplicationUserName;
 
                 if (customerDTO.IsLocked) customer.Lock();

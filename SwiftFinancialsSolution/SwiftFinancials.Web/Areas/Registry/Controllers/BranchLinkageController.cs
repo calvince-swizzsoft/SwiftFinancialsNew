@@ -46,11 +46,11 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetBranchDetails(Guid CompanyId)
+        public async Task<ActionResult> GetBranchDetails(Guid branchId)
         {
             try
             {
-                var branch = await _channelService.FindBranchAsync(CompanyId, GetServiceHeader());
+                var branch = await _channelService.FindBranchAsync(branchId, GetServiceHeader());
                 if (branch == null)
                 {
                     return Json(new { success = false, message = "Branch not found." }, JsonRequestBehavior.AllowGet);
@@ -58,6 +58,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                 var branchDTO = new BranchDTO
                 {
+                    Id = branch.Id,
                     Description = branch.Description,
                     CompanyId = branch.CompanyId,
                     CompanyDescription = branch.CompanyDescription,
@@ -90,12 +91,14 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                 c.IndividualFirstName = customer.IndividualFirstName;
                 c.IndividualLastName = customer.IndividualLastName;
+                c.StationZoneDivisionEmployerId = customer.StationZoneDivisionEmployerId;
                 c.StationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
                 c.IndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
                 c.IndividualPayrollNumbers = customer.IndividualPayrollNumbers;
                 c.Reference1 = customer.Reference1;
                 c.ZoneDivisionEmployerDescription = customer.ZoneDivisionEmployerDescription;
                 c.Reference2 = customer.Reference2;
+                c.Reference3 = customer.Reference3;
                 c.StationId = customer.StationId;
                 c.StationDescription = customer.StationDescription;
                 c.SerialNumber = customer.SerialNumber;
@@ -112,14 +115,15 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                         IndividualFirstName = customer.IndividualFirstName,
                         IndividualLastName = customer.IndividualLastName,
                         FullName = customer.FullName,
+                        StationZoneDivisionEmployerId = customer.StationZoneDivisionEmployerId,
                         StationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription,
                         IndividualIdentityCardNumber = customer.IndividualIdentityCardNumber,
                         IndividualPayrollNumbers = customer.IndividualPayrollNumbers,
                         Reference1 = customer.Reference1,
-                        ZoneDivisionEmployerDescription = customer.ZoneDivisionEmployerDescription,
                         Reference2 = customer.Reference2,
-                        StationZoneId = customer.StationZoneId,
-                        StationZoneDescription = customer.StationZoneDescription,
+                        Reference3 = customer.Reference3,
+                        StationId = customer.StationId,
+                        StationDescription = customer.StationDescription,
                         SerialNumber = customer.SerialNumber,
                         Remarks = customer.Remarks,
                         c,
@@ -133,15 +137,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult AssignText(string Remarks, string ZoneId)
-        {
-            Session["Remarks"] = Remarks;
-            Session["ZoneId"] = ZoneId;
-
-            return null;
-        }
-
+       
 
         public async Task<ActionResult> Details(Guid id)
         {

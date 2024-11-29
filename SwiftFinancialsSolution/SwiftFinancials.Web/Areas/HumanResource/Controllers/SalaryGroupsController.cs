@@ -145,32 +145,32 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            SalaryGroupEntryDTOs = TempData["SalaryGroupEntryDTO"] as ObservableCollection<SalaryGroupEntryDTO>;
-
+            // Retrieve existing SalaryGroupEntryDTOs from TempData or create a new collection if none exists
+            var SalaryGroupEntryDTOs = TempData["SalaryGroupEntryDTO"] as ObservableCollection<SalaryGroupEntryDTO>;
             if (SalaryGroupEntryDTOs == null)
                 SalaryGroupEntryDTOs = new ObservableCollection<SalaryGroupEntryDTO>();
 
+            // Process the submitted SalaryGroupEntries
             foreach (var salaryGroupEntryDTO in salaryGroupDTO.SalaryGroupEntries)
             {
-
                 salaryGroupEntryDTO.SalaryGroupId = salaryGroupDTO.Id;
                 salaryGroupEntryDTO.SalaryHeadDescription = salaryGroupEntryDTO.SalaryHeadDescription;
                 salaryGroupEntryDTO.ChargeType = salaryGroupEntryDTO.ChargeType;
                 salaryGroupEntryDTO.MinimumValue = salaryGroupEntryDTO.MinimumValue;
                 salaryGroupEntryDTO.RoundingType = salaryGroupEntryDTO.RoundingType;
-                
-               
-            };
 
+                // Add to the collection
+                SalaryGroupEntryDTOs.Add(salaryGroupEntryDTO);
+            }
+
+            // Save the updated collection to TempData
             TempData["SalaryGroupEntryDTO"] = SalaryGroupEntryDTOs;
             TempData["SalaryGroupDTO"] = salaryGroupDTO;
 
-            ViewBag.SalaryGroupEntryDTOs = SalaryGroupEntryDTOs;
-
-            ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(salaryGroupDTO.ToString());
-            ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(salaryGroupDTO.ToString());
-            return View("Create", salaryGroupDTO);
+            // Return the updated SalaryGroupEntryDTOs to the view via JSON (or use a PartialView)
+            return Json(new { success = true, data = SalaryGroupEntryDTOs });
         }
+
 
 
         [HttpPost]

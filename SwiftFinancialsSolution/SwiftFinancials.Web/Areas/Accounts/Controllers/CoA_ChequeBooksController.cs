@@ -145,6 +145,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
+
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
             ViewBag.GetChequeType = GetChequeType(string.Empty);
 

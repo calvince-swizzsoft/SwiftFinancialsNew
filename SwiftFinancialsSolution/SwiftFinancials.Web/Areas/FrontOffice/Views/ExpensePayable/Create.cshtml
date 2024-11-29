@@ -16,36 +16,36 @@
 
 
 
-
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
 <script>
     $(document).ready(function () {
-        // Initially activate the first tab
         $('.nav-tabs li:first-child a').addClass('active');
         $('#tab1').addClass('active');
 
-        // Handle tab click event
         $('.tab-link').on('click', function (e) {
             e.preventDefault();
 
-            // Deactivate all tabs
             $('.tab-link').removeClass('active');
             $('.tab-content').removeClass('active');
 
-            // Activate the clicked tab
             $(this).addClass('active');
             $($(this).attr('href')).addClass('active');
         });
 
-        // Datepicker Initialization
         $('#ValueDate').datepicker({
-            format: 'mm/dd/yyyy',
+            format: 'dd-mm-yyyy', 
             todayHighlight: true,
             autoclose: true
         });
     });
 </script>
+
+
+
+
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
@@ -159,6 +159,8 @@
                                                     <span id="ValueDateError" class="text-danger" style="display:none;"></span>
                                                     @Html.ValidationMessageFor(model => model.ValueDate, "", new { @class = "text-danger" })
                                                 </div>
+
+
 
                                             </div>
 
@@ -702,33 +704,33 @@ $(document).ready(function () {
 });
     </script>
 
-<script>
-    $(document).on('click', '.remove-entry', function () {
-        if (confirm('Are you sure you want to remove this entry?')) {
-            var $row = $(this).closest('tr');
-            var entryId = $row.data('entry-id'); 
-            $row.remove();
+    <script>
+        $(document).on('click', '.remove-entry', function () {
+            if (confirm('Are you sure you want to remove this entry?')) {
+                var $row = $(this).closest('tr');
+                var entryId = $row.data('entry-id');
+                $row.remove();
 
-            updateAmounts();
+                updateAmounts();
 
-            $.ajax({
-                url: '/ExpensePayable/RemoveEntry',
-                type: 'POST',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ entryId: entryId }),
-                success: function (response) {
-                    if (response.success) {
-                        showPopupMessage("Entry removed successfully.");
-                    } else {
-                        showPopupMessage("Error removing entry: " + response.message);
+                $.ajax({
+                    url: '/ExpensePayable/RemoveEntry',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({ entryId: entryId }),
+                    success: function (response) {
+                        if (response.success) {
+                            showPopupMessage("Entry removed successfully.");
+                        } else {
+                            showPopupMessage("Error removing entry: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        showPopupMessage("An error occurred while removing the entry: " + error);
                     }
-                },
-                error: function (xhr, status, error) {
-                    showPopupMessage("An error occurred while removing the entry: " + error);
-                }
-            });
-        }
-    });
+                });
+            }
+        });
 
     </script>
 
@@ -802,7 +804,7 @@ $(document).ready(function () {
 
             updateAmounts();
 
-            
+
         }
 
         $(document).ready(function () {
@@ -826,7 +828,7 @@ $(document).ready(function () {
 
             $('#ExpensePayableEntries').on('click', '.remove-entry', function () {
                 var id = $(this).data('id');
-                removeEntry(id); 
+                removeEntry(id);
             });
         });
     </script>

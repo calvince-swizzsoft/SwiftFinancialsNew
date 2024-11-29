@@ -14777,7 +14777,6 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #endregion
 
         #region SalaryPeriodDTO
-
         public Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsByFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<SalaryProcessingDTO>>();
@@ -14938,6 +14937,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
+
         public Task<bool> ProcessSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ObservableCollection<EmployeeDTO> employees, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();
@@ -15030,6 +15031,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginPostPaySlip(paySlipId, moduleNavigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<SalaryProcessingDTO>> FindSalaryPeriodsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<SalaryProcessingDTO>>();
+
+            ISalaryPeriodService service = GetService<ISalaryPeriodService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<SalaryProcessingDTO> response = ((ISalaryPeriodService)result.AsyncState).EndFindSalaryPeriods(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSalaryPeriods(asyncCallback, service);
 
             return tcs.Task;
         }
@@ -40488,6 +40521,11 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
         public Task FindCustomersByStationIdAndFilterInPageAsync(Func<StationDTO> mapTo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddCustomerAsync(CustomerDTO customerBindingModel, ServiceHeader serviceHeader)
         {
             throw new NotImplementedException();
         }
