@@ -66,6 +66,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                 c.IndividualFirstName = customer.IndividualFirstName;
                 c.IndividualLastName = customer.IndividualLastName;
+                c.StationZoneDivisionEmployerId = customer.StationZoneDivisionEmployerId;
                 c.StationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
                 c.IndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
                 c.IndividualPayrollNumbers = customer.IndividualPayrollNumbers;
@@ -87,11 +88,11 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                         IndividualFirstName = customer.IndividualFirstName,
                         IndividualLastName = customer.IndividualLastName,
                         FullName = customer.FullName,
+                        StationZoneDivisionEmployerId = customer.StationZoneDivisionEmployerId,
                         StationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription,
                         IndividualIdentityCardNumber = customer.IndividualIdentityCardNumber,
                         IndividualPayrollNumbers = customer.IndividualPayrollNumbers,
                         Reference1 = customer.Reference1,
-                        ZoneDivisionEmployerDescription = customer.ZoneDivisionEmployerDescription,
                         Reference2 = customer.Reference2,
                         StationZoneId = customer.StationZoneId,
                         StationZoneDescription = customer.StationZoneDescription,

@@ -10,6 +10,7 @@ using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System.Globalization;
+using System.Windows.Forms;
 
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
@@ -153,19 +154,33 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                         leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(),
                         GetServiceHeader()
                     );
+                    MessageBox.Show(
+                   "Operation Success: Leave application submitted successfully!",
+                   "Holiday Management",
+                   MessageBoxButtons.OK,
+                   MessageBoxIcon.Information,
+                   MessageBoxDefaultButton.Button1,
+                   MessageBoxOptions.ServiceNotification
+               );
 
-                    TempData["SuccessMessage"] = "Leave application submitted successfully!";
+
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    TempData["ErrorMessage"] = "An error occurred while submitting the leave application. Please try again.";
                     Console.WriteLine(ex.Message);
                 }
             }
             else
             {
-                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
+                MessageBox.Show(
+                        "There were validation errors. Please correct them and try again!",
+                        "Validation Errors",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
             }
 
             return View(leaveApplicationBindingModel);
@@ -197,8 +212,15 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                         leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(),
                         GetServiceHeader()
                     );
+                    MessageBox.Show(
+                   "Operation Success: Leave application updated successfully!",
+                   "Holiday Management",
+                   MessageBoxButtons.OK,
+                   MessageBoxIcon.Information,
+                   MessageBoxDefaultButton.Button1,
+                   MessageBoxOptions.ServiceNotification
+               );
 
-                    TempData["SuccessMessage"] = "Leave application updated successfully!";
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -209,7 +231,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
+                MessageBox.Show(
+                        "There were validation errors. Please correct them and try again!",
+                        "Validation Errors",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
             }
 
             return View(leaveApplicationBindingModel);

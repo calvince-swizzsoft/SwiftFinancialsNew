@@ -6,7 +6,11 @@
     var bloodGroups = ViewBag.BloodGroupSelectList as List<SelectListItem>;
 
     //var customerId = ViewBag.CustomerId as Guid?;
-    var customerId = "@Model.CustomerId"; // Ensure 'Model.CustomerId' is available in your view.
+    //var customerId = "@Model.CustomerId"; // Ensure 'Model.CustomerId' is available in your view.
+    var passportPhoto = TempData["PassportPhoto"] as byte[];
+    var signaturePhoto = TempData["SignaturePhoto"] as byte[];
+    var idCardFrontPhoto = TempData["IDCardFrontPhoto"] as byte[];
+    var idCardBackPhoto = TempData["IDCardBackPhoto"] as byte[];
 
 
 }
@@ -168,7 +172,7 @@
                                     <a class="nav-link" href="#referees" data-toggle="tab">Referees</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#MainTab5" data-toggle="tab">Specimen</a>
+                                    <a class="nav-link" href="#specimen" data-toggle="tab">Specimen</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#savingAccount" data-toggle="tab">Saving Accounts</a>
@@ -182,196 +186,196 @@
                             </ul>
 
                                 <!-- Tab Content -->
-                        <div class="tab-content">
-                            <!-- Individual Particular Section -->
-                            <div id="individualParticular" class="tab-pane fade show active">
-                                <div class="row">
+                    <div class="tab-content">
+                        <!-- Individual Particular Section -->
+                        <div id="individualParticular" class="tab-pane fade show active">
+                            <div class="row">
 
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerIndividualSalutationDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerIndividualSalutationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerIndividualSalutationDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerIndividualGenderDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerIndividualGenderDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerIndividualGenderDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerIndividualMaritalStatusDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerIndividualMaritalStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerIndividualMaritalStatusDescription, "", new { @class = "text-danger" })
-                                    </div>
-
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerIndividualSalutationDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerIndividualSalutationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualSalutationDescription, "", new { @class = "text-danger" })
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerIndividualNationalityDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerIndividualNationalityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerIndividualNationalityDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerIndividualFirstName, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerIndividualFirstName, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerIndividualLastName, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerIndividualLastName, "", new { @class = "text-danger" })
-                                    </div>
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerIndividualGenderDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerIndividualGenderDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualGenderDescription, "", new { @class = "text-danger" })
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerIndividualIdentityCardTypeDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerIndividualIdentityCardTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardTypeDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.DesignationDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.DesignationDescription, "", new { @class = "text-danger" })
-                                    </div>
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerIndividualMaritalStatusDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerIndividualMaritalStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualMaritalStatusDescription, "", new { @class = "text-danger" })
                                 </div>
 
                             </div>
-
-
-                            <!-- Address Section -->
-                            <div id="address" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerAddressLandLine, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerAddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerAddressLandLine, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerAddressPostalCode, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerAddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerAddressPostalCode, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerAddressStreet, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerAddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerAddressStreet, "", new { @class = "text-danger" })
-                                    </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerIndividualNationalityDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerIndividualNationalityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualNationalityDescription, "", new { @class = "text-danger" })
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerAddressAddressLine2, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerAddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine2, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.CustomerAddressAddressLine1, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerAddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine1, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.PaddedCustomerSerialNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.PaddedCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.PaddedCustomerSerialNumber, "", new { @class = "text-danger" })
-                                    </div>
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerIndividualFirstName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualFirstName, "", new { @class = "text-danger" })
                                 </div>
-
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerIndividualLastName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualLastName, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-
-                            <!-- Referees Section -->
-                            <div id="referees" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerIndividualIdentityCardTypeDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerIndividualIdentityCardTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardTypeDescription, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.DesignationDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.DesignationDescription, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
+                        </div>
 
-                            <!-- Specimen -->
-                            <div id="MainTab5" class="tab-pane fade">
-                                <div id="documentImages" title="Click on an image to view in full-screen">
-                                    <!-- Passport Photo -->
-                                    <div class="image-container" onclick="openFullscreen('passportPhoto')">
-                                        <h3>Passport Photo</h3>
-                                        <img id="passportPhoto" alt="Passport Photo" style="display: none;" />
-                                        <div id="ppmsg" style="color: red; text-align: center; vertical-align: central;"></div>
-                                    </div>
 
-                                    <!-- Signature Photo -->
-                                    <div class="image-container" onclick="openFullscreen('signaturePhoto')">
-                                        <h3>Signature Photo</h3>
-                                        <img id="signaturePhoto" alt="Signature Photo" style="display: none;" />
-                                        <div id="smsg" style="color: red; text-align: center; vertical-align: central;"></div>
-                                    </div>
-
-                                    <!-- ID Card Front -->
-                                    <div class="image-container" onclick="openFullscreen('idCardFront')">
-                                        <h3>ID Card Front</h3>
-                                        <img id="idCardFront" alt="ID Card Front" style="display: none;" />
-                                        <div id="idfrontmsg" style="color: red; text-align: center; vertical-align: central;"></div>
-                                    </div>
-
-                                    <!-- ID Card Back -->
-                                    <div class="image-container" onclick="openFullscreen('idCardBack')">
-                                        <h3>ID Card Back</h3>
-                                        <img id="idCardBack" alt="ID Card Back" style="display: none;" />
-                                        <div id="idbackmsg" style="color: red; text-align: center; vertical-align: central;"></div>
-                                    </div>
+                        <!-- Address Section -->
+                        <div id="address" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerAddressLandLine, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerAddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAddressLandLine, "", new { @class = "text-danger" })
                                 </div>
-
-                                <!-- Fullscreen Overlay -->
-                                <div id="fullscreenOverlay" class="fullscreen-overlay" onclick="closeFullscreen()">
-                                    <span class="close-button" onclick="closeFullscreen()" title="Close full-screen view">×</span>
-                                    <img id="fullscreenImage" alt="Full Screen Image" />
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerAddressPostalCode, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerAddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAddressPostalCode, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerAddressStreet, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerAddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAddressStreet, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerAddressAddressLine2, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerAddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine2, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.CustomerAddressAddressLine1, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerAddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine1, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.PaddedCustomerSerialNumber, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.PaddedCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.PaddedCustomerSerialNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
+                        </div>
 
-
-
-
-
-
-
-                            <!-- Saving Accounts Section -->
-                            <div id="savingAccount" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Loan Accounts Section -->
-                            <div id="loanAccount" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Investment Accounts Section -->
-                            <div id="investmentAccount" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
+                        <!-- Referees Section -->
+                        <div id="referees" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                         </div>
+
+
+                        <div>
+                            <strong>Passport Photo:</strong><br />
+                            @if (passportPhoto != null)
+                            {
+                    <img src="data:image/png;base64,@Convert.ToBase64String(passportPhoto)" alt="Passport Photo" /> }
+                                    else
+                                    {
+                    <p>No passport photo available.</p>}
+                        </div>
+
+                        <div>
+                            <strong>Signature Photo:</strong><br />
+                            @if (signaturePhoto != null)
+                            {
+                    <img src="data:image/png;base64,@Convert.ToBase64String(signaturePhoto)" alt="Signature Photo" /> }
+                                    else
+                                    {
+                    <p>No signature photo available.</p>}
+                        </div>
+
+                        <div>
+                            <strong>ID Card Front Photo:</strong><br />
+                            @if (idCardFrontPhoto != null)
+                            {
+                    <img src="data:image/png;base64,@Convert.ToBase64String(idCardFrontPhoto)" alt="ID Card Front" /> }
+                                    else
+                                    {
+                    <p>No ID Card Front photo available.</p>}
+                        </div>
+
+                        <div>
+                            <strong>ID Card Back Photo:</strong><br />
+                            @if (idCardBackPhoto != null)
+                            {
+                    <img src="data:image/png;base64,@Convert.ToBase64String(idCardBackPhoto)" alt="ID Card Back" /> }
+                                    else
+                                    {
+                    <p>No ID Card Back photo available.</p>}
+                        </div>
+
+
+
+
+
+
+
+                        <!-- Saving Accounts Section -->
+                        <div id="savingAccount" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loan Accounts Section -->
+                        <div id="loanAccount" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Investment Accounts Section -->
+                        <div id="investmentAccount" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
 
