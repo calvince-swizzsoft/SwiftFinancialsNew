@@ -55,6 +55,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             await ServeNavigationMenus();
 
             var BankDTO = await _channelService.FindBankAsync(id, GetServiceHeader());
+            await _channelService.FindBankBranchesByBankIdAsync(BankDTO.Id, GetServiceHeader());
 
             return View(BankDTO);
         }
@@ -100,7 +101,10 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (!bank.HasErrors)
             {
                 var bankDTO = await _channelService.AddBankAsync(bank, GetServiceHeader());
-                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, bank.BankBranche, GetServiceHeader());
+                BankBranchDTO j = new BankBranchDTO();
+                j.Description = bank.Description;
+                bankBranches.Add(j);
+                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, bankBranches, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

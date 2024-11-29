@@ -1355,7 +1355,22 @@ namespace SwiftFinancials.Web.Controllers
 
             return chequeTypeChargeRecoveryModes;
         }
+        [NonAction]
+        protected List<SelectListItem> GetChequeType(string selectedValue)
+        {
+            List<SelectListItem> chequeType = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(ChequeBookType)).Cast<ChequeBookType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            chequeType.AddRange(items);
+
+            return chequeType;
+        }
         [NonAction]
         protected List<SelectListItem> GetWithdrawalNotificationCategorySelectList(string selectedValue)
         {

@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form", enctype = "multipart/form-data", method = "Get" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -209,8 +209,8 @@
                                 <a class="nav-link" href="#mandatoryDebitTypes" data-toggle="tab" style="padding: 5px 10px;">Debit Types</a>
                             </li>
                             @*<li class="nav-item">
-                                    <a class="nav-link tab-pane" href="#Referees" data-toggle="tab" style="padding: 5px 10px;">Referees</a>
-                                </li>*@
+                    <a class="nav-link tab-pane" href="#Referees" data-toggle="tab" style="padding: 5px 10px;">Referees</a>
+                </li>*@
                             <li class="nav-item">
                                 <a class="nav-link" href="#mandatoryCreditTypes" data-toggle="tab" style="padding: 5px 10px;">Credit Types</a>
                             </li>
@@ -527,117 +527,117 @@
 
                                 <!-- Section for Adding Members -->
                                 <!--<div class="member-section">
-                                    <h4>Add Member</h4>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label for="memberName">Name</label>
-                                                <input type="text" id="memberName" class="form-control" placeholder="Enter member name..." />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="memberGender">Gender</label>
-                                                <select id="memberGender" class="form-control">
-                                                    <option value="">Select Gender</option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="identityCardType">Identity Card Type</label>
-                                                <input type="text" id="identityCardType" class="form-control" placeholder="Enter identity card type..." />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="identityCardNumber">Identity Card Number</label>
-                                                <input type="text" id="identityCardNumber" class="form-control" placeholder="Enter identity card number..." />
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label for="addressLine1">Address Line 1</label>
-                                                <input type="text" id="addressLine1" class="form-control" placeholder="Enter address line 1..." />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="addressLine2">Address Line 2</label>
-                                                <input type="text" id="addressLine2" class="form-control" placeholder="Enter address line 2..." />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="street">Street</label>
-                                                <input type="text" id="street" class="form-control" placeholder="Enter street..." />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="postalCode">Postal Code</label>
-                                                <input type="text" id="postalCode" class="form-control" placeholder="Enter postal code..." />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="city">City</label>
-                                                <input type="text" id="city" class="form-control" placeholder="Enter city..." />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="email">Email</label>
-                                                <input type="email" id="email" class="form-control" placeholder="Enter email..." />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="landLine">Land Line</label>
-                                                <input type="text" id="landLine" class="form-control" placeholder="Enter land line..." />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="mobileLine">Mobile Line</label>
-                                                <input type="text" id="mobileLine" class="form-control" placeholder="Enter mobile line..." />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="signatory">Signatory?</label>
-                                                <input type="checkbox" id="signatory" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="remarks">Remarks</label>
-                                                <textarea id="remarks" class="form-control" rows="3" placeholder="Enter remarks..."></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <h4>Add Member</h4>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="memberName">Name</label>
+                                <input type="text" id="memberName" class="form-control" placeholder="Enter member name..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="memberGender">Gender</label>
+                                <select id="memberGender" class="form-control">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="identityCardType">Identity Card Type</label>
+                                <input type="text" id="identityCardType" class="form-control" placeholder="Enter identity card type..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="identityCardNumber">Identity Card Number</label>
+                                <input type="text" id="identityCardNumber" class="form-control" placeholder="Enter identity card number..." />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="addressLine1">Address Line 1</label>
+                                <input type="text" id="addressLine1" class="form-control" placeholder="Enter address line 1..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="addressLine2">Address Line 2</label>
+                                <input type="text" id="addressLine2" class="form-control" placeholder="Enter address line 2..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="street">Street</label>
+                                <input type="text" id="street" class="form-control" placeholder="Enter street..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="postalCode">Postal Code</label>
+                                <input type="text" id="postalCode" class="form-control" placeholder="Enter postal code..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" class="form-control" placeholder="Enter city..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" class="form-control" placeholder="Enter email..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="landLine">Land Line</label>
+                                <input type="text" id="landLine" class="form-control" placeholder="Enter land line..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="mobileLine">Mobile Line</label>
+                                <input type="text" id="mobileLine" class="form-control" placeholder="Enter mobile line..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="signatory">Signatory?</label>
+                                <input type="checkbox" id="signatory" />
+                            </div>
+                            <div class="form-group">
+                                <label for="remarks">Remarks</label>
+                                <textarea id="remarks" class="form-control" rows="3" placeholder="Enter remarks..."></textarea>
+                            </div>
+                        </div>
+                    </div>
 
-                                    <div class="form-group row">
-                                        <div class="col-md-12">
-                                            <button type="button" id="addMemberBtn" class="btn btn-primary">Add Member</button>
-                                        </div>
-                                    </div>
-                                </div>-->
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <button type="button" id="addMemberBtn" class="btn btn-primary">Add Member</button>
+                        </div>
+                    </div>
+                </div>-->
                                 <!-- Member Collection Section -->
                                 <!--<div class="form-group row">
-                                <div class="col-md-12">
-                                    <label>Member Collection</label>
-                                    <table id="memberCollectionTable" class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Gender</th>
-                                                <th>Identity Card Type</th>
-                                                <th>Identity Card Number</th>
-                                                <th>Address Line 1</th>
-                                                <th>Address Line 2</th>
-                                                <th>Street</th>
-                                                <th>Postal Code</th>
-                                                <th>City</th>
-                                                <th>Email</th>
-                                                <th>Land Line</th>
-                                                <th>Mobile Line</th>
-                                                <th>Signatory?</th>
-                                                <th>Remarks</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>-->
+                <div class="col-md-12">
+                    <label>Member Collection</label>
+                    <table id="memberCollectionTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>Identity Card Type</th>
+                                <th>Identity Card Number</th>
+                                <th>Address Line 1</th>
+                                <th>Address Line 2</th>
+                                <th>Street</th>
+                                <th>Postal Code</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Land Line</th>
+                                <th>Mobile Line</th>
+                                <th>Signatory?</th>
+                                <th>Remarks</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>-->
                                 <!-- Dynamic Member Rows -->
                                 <!--</tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                        </table>
+                    </div>
+                </div>
 
-                                <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <button type="submit" class="btn btn-success">Create Corporation</button>
-                                    </div>
-                                </div>-->
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-success">Create Corporation</button>
+                    </div>
+                </div>-->
 
                             </div>
 
@@ -751,41 +751,41 @@
                                 </div>
                             </div>
                             <!--<div id="Referees" class="tab-pane" role="tabpanel">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="col-md-13 form-group">
-                                        @Html.LabelFor(model => model.refereeDTOs[0].WitnessFullName, new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.refereeDTOs[0].CustomerId)
-                                            @Html.TextBoxFor(model => model.refereeDTOs[0].WitnessIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="col-md-13 form-group">
+                        @Html.LabelFor(model => model.refereeDTOs[0].WitnessFullName, new { @class = "control-label" })
+                        <div class="input-group" data-autoclose="true">
+                            @Html.HiddenFor(model => model.refereeDTOs[0].CustomerId)
+                            @Html.TextBoxFor(model => model.refereeDTOs[0].WitnessIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                            <span class="input-group-addon">
+                                <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
 
-                                            </span>
-                                        </div>
-                                    </div>
+                            </span>
+                        </div>
+                    </div>
 
-                                    <div class="form-group form-group-lg">
-                                        @Html.Label("Payroll Number", new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.refereeDTOs[0].WitnessIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter registration number..." } })
-                                    </div>
+                    <div class="form-group form-group-lg">
+                        @Html.Label("Payroll Number", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.refereeDTOs[0].WitnessIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter registration number..." } })
+                    </div>
 
 
 
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.Label("Id number", new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.refereeDTOs[0].WitnessIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Enter establishment date..." } })
-                                    </div>-->
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-group-lg">
+                        @Html.Label("Id number", new { @class = "control-label" })
+                        @Html.EditorFor(model => model.refereeDTOs[0].WitnessIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @id = "dateEstablished", @placeholder = "Enter establishment date..." } })
+                    </div>-->
                             @*<div class="form-group form-group-lg">
-                                    @Html.Label("Remarks", new { @class = "control-label" })
-                                    @Html.TextAreaFor(model => model.NonIndividualRegistrationSerialNumber, new { @class = "form-control", @rows = 3, @placeholder = "Enter any remarks..." })
-                                </div>*@
+                    @Html.Label("Remarks", new { @class = "control-label" })
+                    @Html.TextAreaFor(model => model.NonIndividualRegistrationSerialNumber, new { @class = "form-control", @rows = 3, @placeholder = "Enter any remarks..." })
+                </div>*@
                             <!--</div>
 
-                                </div>
-                            </div>-->
+                </div>
+            </div>-->
                             <div id="IndividualParticulars" class="tab-pane">
                                 <div class="row">
                                     <div class="col-4">
