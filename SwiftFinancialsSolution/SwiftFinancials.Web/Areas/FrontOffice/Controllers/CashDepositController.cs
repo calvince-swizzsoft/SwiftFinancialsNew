@@ -1203,6 +1203,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             transactionModel.Reference = string.Format("{0}", SelectedCustomerAccount.CustomerReference1);
             transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
 
+
             transactionModel.Teller = SelectedTeller;
 
             if (transactionModel.CashWithdrawal.Amount > 0)
@@ -1217,11 +1218,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
             if (transactionModel.PaymentVoucher.Amount > 0)
-            {
+            {   
                 transactionModel.TotalValue = transactionModel.PaymentVoucher.Amount;
                 transactionModel.Reference = transactionModel.PaymentVoucher.Reference;
             }
-
 
 
             switch ((FrontOfficeTransactionType)transactionModel.CustomerAccount.Type)
