@@ -334,87 +334,81 @@
 
 
     <script>
-               $(document).ready(function () {
-                   $('#salaryPeriodsGrid').DataTable({
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@Url.Action("Index", "SalaryPeriods", new { Area = "HumanResource" })",
-                "sServerMethod": "POST",
-                "fnServerData": function (sSource, aoData, fnCallback) {
-                    $.ajax({
-                        dataType: 'json',
-                        type: 'POST',
-                        url: sSource,
-                        data: aoData,
-                        success: function (response) {
-                            fnCallback(response);
-                        },
-                        error: function () {
-                            alert('Error retrieving data from the server.');
-                        }
-                    });
+$(document).ready(function () {
+    $('#salaryPeriodsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@Url.Action("GetSalaryPeriodsAsync", "SalaryProcessing")",
+        "sServerMethod": "POST",
+        "fnServerData": function (sSource, aoData, fnCallback) {
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                url: sSource,
+                data: aoData,
+                success: function (response) {
+                    fnCallback(response);
                 },
-                "aoColumns": [
-                    { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period", "sWidth": "15%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
-                    { "mDataProp": "EmployeeCategoryDescription", "sTitle": "Employee Category", "sWidth": "15%" },
-                    { "mDataProp": "TaxReliefAmount", "sTitle": "Tax Relief", "sWidth": "15%" },
-                    { "mDataProp": "MaximumProvidentFundReliefAmount", "sTitle": "Maximum Relief Amount", "sWidth": "15%" },
-                    {
-                        "mDataProp": "CreatedDate",
-                        "sTitle": "Created Date",
-                        "sWidth": "15%",
-                        "mRender": function (data) {
-                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
-                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
-                        }
-                    },
-                    {
-                        "mDataProp": null,
-                        "sTitle": "Action",
-                        "sWidth": "15%",
-                        "bSortable": false,
-                        "mRender": function (data, type, row) {
-                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
-                        }
-                    }
-                ],
-                "aaSorting": [[0, "desc"]]
+                error: function () {
+                    alert('Error retrieving data from the server.');
+                }
             });
+        },
+        "aoColumns": [
+            { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period", "sWidth": "15%" },
+            { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
+            { "mDataProp": "EmployeeCategoryDescription", "sTitle": "Employee Category", "sWidth": "15%" },
+            {
+                "mDataProp": "CreatedDate",
+                "sTitle": "Created Date",
+                "sWidth": "15%",
+                "mRender": function (data) {
+                    var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                    return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                }
+            },
+            {
+                "mDataProp": null,
+                "sTitle": "Action",
+                "sWidth": "15%",
+                "bSortable": false,
+                "mRender": function (data, type, row) {
+                    return '<a href="#" class="btn btn-outline-info select-salary-period" data-id="' + row.PostingPeriodId + '">Select</a>';
+                }
+            }
+        ],
+        "aaSorting": [[0, "desc"]]
+    });
 
-                   $('#salaryPeriodsGrid tbody').on('click', '.select-customer', function () {
-                       var salaryPeriodId = $(this).data('id');
+    $('#salaryPeriodsGrid tbody').on('click', '.select-salary-period', function () {
+        var salaryPeriodId = $(this).data('id');
 
-                $.ajax({
-                    url: '@Url.Action("GetsalaryPeriodDetails", "SalaryProcessing", new { Area = "HumanResource" })',
-                    type: 'GET',
-                    data: { salaryPeriodId: salaryPeriodId },
-                    success: function (response) {
-                        if (response.success) {
-                            $('#PostingPeriodDescription').val(response.data.PostingPeriodDescription);
-                            $('#PostingPeriodId').val(response.data.PostingPeriodId);
-                            $('#TaxReliefAmount').val(response.data.TaxReliefAmount);
-                            $('#MaximumProvidentFundReliefAmount').val(response.data.MaximumProvidentFundReliefAmount);
-                            $('#MaximumInsuranceReliefAmount').val(response.data.MaximumInsuranceReliefAmount);
-                            $('#Remarks').val(response.data.Remarks);
-                            $('#EmployeeCategoryDescription').val(response.data.EmployeeCategoryDescription);
-
-
-                            $('#salaryPeriodsLookup').modal('hide');
-                        } else {
-                            alert(response.message);
-                        }
-                    },
-                    error: function () {
-                        alert('An error occurred while fetching the Customer details.');
-                    }
-                });
-            });
+        $.ajax({
+            url: '@Url.Action("GetSalaryPeriodDetails", "SalaryProcessing")',
+            type: 'GET',
+            data: { salaryPeriodId: salaryPeriodId },
+            success: function (response) {
+                if (response.success) {
+                    $('#PostingPeriodDescription').val(response.data.PostingPeriodDescription);
+                    $('#PostingPeriodId').val(response.data.PostingPeriodId);
+                    $('#TaxReliefAmount').val(response.data.TaxReliefAmount);
+                    $('#MaximumProvidentFundReliefAmount').val(response.data.MaximumProvidentFundReliefAmount);
+                    $('#MaximumInsuranceReliefAmount').val(response.data.MaximumInsuranceReliefAmount);
+                    $('#Remarks').val(response.data.Remarks);
+                    $('#EmployeeCategoryDescription').val(response.data.EmployeeCategoryDescription);
+                    $('#salaryPeriodsLookup').modal('hide');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('An error occurred while fetching the Salary Period details.');
+            }
         });
-
+    });
+});
     </script>
-
     <script>
                $(document).ready(function () {
                    $('#chartofaccountsGrid').DataTable({

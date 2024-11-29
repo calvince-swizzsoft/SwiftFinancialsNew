@@ -191,6 +191,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             loanCaseDTO.ValidateAll();
 
+
             if (!loanCaseDTO.HasErrors)
             {
                 string message = string.Format(
@@ -235,7 +236,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 var errorMessages = loanDTO.ErrorMessages;
                 ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
 
-                MessageBox.Show(Form.ActiveForm, "Operation Unsuccessful.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful. {errorMessages[0]}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
 
                 return View(loanCaseDTO);

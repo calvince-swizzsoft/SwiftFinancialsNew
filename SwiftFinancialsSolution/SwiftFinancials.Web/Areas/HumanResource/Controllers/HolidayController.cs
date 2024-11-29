@@ -8,6 +8,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -94,26 +95,63 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             return View();
         }
+
         [HttpPost]
         public async Task<ActionResult> Create(HolidayDTO holidayDTO)
         {
+            // Validate the DTO
             holidayDTO.ValidateAll();
 
             if (!holidayDTO.HasErrors)
             {
+                // Save the holiday if no errors are present
                 await _channelService.AddHolidayAsync(holidayDTO, GetServiceHeader());
 
-                TempData["SuccessMessage"] = "Holiday created successfully!";
+                MessageBox.Show(
+                    "Operation Success: Holiday has been created.",
+                    "Holiday Management",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = holidayDTO.ErrorMessages;
+                // Display specific validation errors
+                if (holidayDTO.ErrorMessages.Any())
+                {
+                    var errorMessages = string.Join("\n- ", holidayDTO.ErrorMessages);
+
+                    MessageBox.Show(
+                        $"The following errors occurred:\n- {errorMessages}",
+                        "Validation Errors",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                }
+                else
+                {
+                    // Fallback if no specific messages are present
+                    MessageBox.Show(
+                        "An unspecified error occurred during validation.",
+                        "Validation Errors",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                }
 
                 return View(holidayDTO);
             }
         }
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -131,15 +169,32 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateHolidayAsync(holidayDTO, GetServiceHeader());
+                MessageBox.Show(
+                   "Operation Success: Holiday has been updated.",
+                   "Holiday Management",
+                   MessageBoxButtons.OK,
+                   MessageBoxIcon.Information,
+                   MessageBoxDefaultButton.Button1,
+                   MessageBoxOptions.ServiceNotification
+               );
 
-                TempData["SuccessMessage"] = "Holiday updated successfully!";
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(holidayDTO);
+                // Fallback if no specific messages are present
+                MessageBox.Show(
+                    "An unspecified error occurred during validation.",
+                    "Validation Errors",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
             }
+            return View(holidayDTO);
+
         }
 
     }

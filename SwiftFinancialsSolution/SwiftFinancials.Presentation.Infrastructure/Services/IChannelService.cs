@@ -1081,7 +1081,6 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #region SalaryPeriodDTO
 
         Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsByFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
-
         Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<SalaryProcessingDTO> AddSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
@@ -1095,6 +1094,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> CloseSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
 
         Task<bool> PostPaySlipAsync(Guid paySlipId, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
+        Task<List<SalaryProcessingDTO>> FindSalaryPeriodsAsync(ServiceHeader serviceHeader = null);
+
 
         #endregion
 

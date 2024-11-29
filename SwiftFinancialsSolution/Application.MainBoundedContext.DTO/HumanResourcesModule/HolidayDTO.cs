@@ -79,5 +79,56 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 
             return ValidationResult.Success;
         }
+
+        // List to hold error messages
+        public List<string> ErrorMessages { get; private set; }
+
+        // Property to check if there are any errors
+        public bool HasErrors => ErrorMessages.Any();
+
+        // Method to trigger validation for the DTO
+        public void ValidateAll()
+        {
+            ErrorMessages.Clear(); // Clear previous errors
+            var validationContext = new ValidationContext(this, null, null);
+            var validationResults = new List<ValidationResult>();
+
+            // Validate the current instance
+            bool isValid = Validator.TryValidateObject(this, validationContext, validationResults, true);
+
+            // Collect error messages
+            if (!isValid)
+            {
+                foreach (var validationResult in validationResults)
+                {
+                    ErrorMessages.Add(validationResult.ErrorMessage);
+                }
+            }
+
+            // Call any custom validation methods, like CheckDates, if needed
+            var checkDatesValidationResult = PickDates(this.DurationStartDate, validationContext);
+            if (checkDatesValidationResult != ValidationResult.Success)
+            {
+                ErrorMessages.Add(checkDatesValidationResult.ErrorMessage);
+            }
+        }
+
+        // Custom validation for date duration (CheckDates)
+        public static ValidationResult PickDates(object value, ValidationContext context)
+        {
+            var bindingModel = context.ObjectInstance as HolidayDTO;
+            if (bindingModel == null)
+                throw new NotSupportedException("ObjectInstance must be HolidayDTO");
+
+            if (bindingModel.DurationStartDate < bindingModel.PostingPeriodDurationStartDate || bindingModel.DurationStartDate > bindingModel.PostingPeriodDurationEndDate)
+                return new ValidationResult("Start date is outside the valid range of the posting period.");
+            else if (bindingModel.DurationEndDate < bindingModel.PostingPeriodDurationStartDate || bindingModel.DurationEndDate > bindingModel.PostingPeriodDurationEndDate)
+                return new ValidationResult("End date is outside the valid range of the posting period.");
+            else if (bindingModel.DurationStartDate > bindingModel.DurationEndDate)
+                return new ValidationResult("Start date cannot be later than the end date.");
+
+            return ValidationResult.Success;
+        }
     }
 }
+
