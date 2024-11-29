@@ -1,22 +1,13 @@
-﻿using Application.MainBoundedContext.DTO;
-using Application.MainBoundedContext.DTO.AccountsModule;
-using Application.MainBoundedContext.DTO.RegistryModule;
-using Application.Seedwork;
-using Infrastructure.Crosscutting.Framework.Utils;
-using SwiftFinancials.Web.Controllers;
-using SwiftFinancials.Web.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Configuration;
 using System.Web.Mvc;
+using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
+using SwiftFinancials.Web.Controllers;
+using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Registry.Controllers
 {
@@ -31,7 +22,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int? recordStatus, int? customerFilter, int? customerType)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
 
@@ -41,41 +32,17 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var pageCollectionInfo = new PageCollectionInfo<CustomerDTO>();
-
-            if (recordStatus != null && customerFilter != null)
-            {
-                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, jQueryDataTablesModel.sSearch, (int)customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-            }
-            else if (recordStatus == null && customerFilter != null)
-            {
-                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-            }
-            else if (customerType != null && customerFilter == null)
-            {
-                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-            }
-            else if (recordStatus != null && customerFilter == null)
-            {
-                pageCollectionInfo = await _channelService.FindCustomersByTypeAndFilterInPageAsync((int)customerType, jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-            }
-            else
-            {
-                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-            }
+            var pageCollectionInfo = await _channelService.FindCommissionsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<CustomerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<CommissionDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
@@ -84,28 +51,50 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             try
             {
+                var c = new CustomerDTO();
+
                 var customer = await _channelService.FindCustomerAsync(customerId, GetServiceHeader());
                 if (customer == null)
                 {
                     return Json(new { success = false, message = "Customer not found." }, JsonRequestBehavior.AllowGet);
                 }
 
+
+                c.IndividualFirstName = customer.IndividualFirstName;
+                c.IndividualLastName = customer.IndividualLastName;
+                c.IndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                c.IndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                c.Reference1 = customer.Reference1;
+                c.StationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+                c.Reference2 = customer.Reference2;
+                c.Reference3 = customer.Reference3;
+                c.StationId = customer.StationId;
+                c.StationDescription = customer.StationDescription;
+                c.Remarks = customer.Remarks;
+                CommissionDTO commissionDTO = new CommissionDTO();
+                commissionDTO.CustomerDTO = customer;               
+
                 return Json(new
                 {
                     success = true,
                     data = new
                     {
-                        Id = customer.Id,
-                        IndividualFirstName = customer.FullName,
-                        Reference1 = customer.Reference1,
-                        StationZoneDivisionEmployerId = customer.StationZoneDivisionEmployerId,
+                        Id = c.Id,
+                        IndividualFirstName = customer.IndividualFirstName,
+                        IndividualLastName = customer.IndividualLastName,
+                        FullName = customer.FullName,
                         StationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription,
+                        IndividualIdentityCardNumber = customer.IndividualIdentityCardNumber,
+                        IndividualPayrollNumbers = customer.IndividualPayrollNumbers,
+                        Reference1 = customer.Reference1,
                         Reference2 = customer.Reference2,
                         Reference3 = customer.Reference3,
                         StationId = customer.StationId,
                         StationDescription = customer.StationDescription,
-
+                        Remarks = customer.Remarks,
+                        c,
                     }
+
                 }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
@@ -116,56 +105,46 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult> GetChargesDetails(Guid ChargeId)
+        public async Task<ActionResult> GetChargeDetails(Guid chargeId)
         {
             try
             {
-                // Fetch the Charge details using the service
-                var Charge = await _channelService.FindCommissionAsync(ChargeId, GetServiceHeader());
-                if (Charge == null)
+                var charge = await _channelService.FindCommissionAsync(chargeId, GetServiceHeader());
+                if (charge == null)
                 {
-                    return Json(new { success = false, message = "Charge not found." }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = "Commission not found." }, JsonRequestBehavior.AllowGet);
                 }
 
-                // Create a new CommissionDTO object and populate its properties
-                var commissionDTO = new CommissionDTO
+                var commissionDTOs = new CommissionDTO
                 {
-                    Id = Charge.Id,
-                    Description = Charge.Description
-                    // Add other properties as needed
+                    Id = charge.Id,
+                    Description = charge.Description,
                 };
 
-                // Return the JSON response with the populated data
-                return Json(new
-                {
-                    success = true,
-                    data = commissionDTO
-                }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, data = commissionDTOs }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                // Handle any errors that occur during the execution
-                return Json(new { success = false, message = "An error occurred while fetching the Charge details.", error = ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = "An error occurred: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
-
 
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            // Fetch the specific by ID using the service
-            var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
+            // Fetch by ID using the service
+            var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
 
             // Check if it  was found
-            if (customerDTO == null)
+            if (commissionDTO == null)
             {
                 return HttpNotFound();
             }
 
             // Pass the data to the Details view
-            return View(customerDTO);
+            return View(commissionDTO);
         }
 
         public async Task<ActionResult> Create()
@@ -176,13 +155,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerDTO customerDTO)
+        public async Task<ActionResult> Create(CommissionDTO commissionDTO)
         {
-            customerDTO.ValidateAll();
+            commissionDTO.ValidateAll();
 
-            if (!customerDTO.HasErrors)
+            if (!commissionDTO.HasErrors)
             {
-                await _channelService.AddCustomerAsync(customerDTO, GetServiceHeader());
+                await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
 
                 TempData["SuccessMessage"] = "ChargeExemption created successfully!";
 
@@ -190,9 +169,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
             else
             {
-                var errorMessages = customerDTO.ErrorMessages;
+                var errorMessages = commissionDTO.ErrorMessages;
 
-                return View(customerDTO);
+                return View(commissionDTO);
             }
         }
 
@@ -201,18 +180,18 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             await ServeNavigationMenus();
 
-            var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
+            var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
 
-            return View(customerDTO);
+            return View(commissionDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, CustomerDTO CustomerBindingModel)
+        public async Task<ActionResult> Edit(Guid id, CommissionDTO BindingModelBase)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateCustomerAsync(CustomerBindingModel, GetServiceHeader());
+                await _channelService.UpdateCommissionAsync(BindingModelBase, GetServiceHeader());
 
                 TempData["SuccessMessage"] = "ChargeExemption updated successfully!";
 
@@ -220,7 +199,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
             else
             {
-                return View(CustomerBindingModel);
+                return View(BindingModelBase);
             }
         }
 
@@ -229,9 +208,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpGet]
         public async Task<JsonResult> GetDepartmentsAsync(Guid id)
         {
-            var cutomerDTOs = await _channelService.FindCustomerAsync(id, GetServiceHeader());
+            var commissionDTOs = await _channelService.FindCommissionAsync(id, GetServiceHeader());
 
-            return Json(cutomerDTOs, JsonRequestBehavior.AllowGet);
+            return Json(commissionDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }

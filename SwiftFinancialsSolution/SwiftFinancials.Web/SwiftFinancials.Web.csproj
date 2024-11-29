@@ -1496,6 +1496,9 @@
     <Content Include="Areas\HumanResource\Views\SalaryProcessing\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\ProcessSalary.cshtml" />
     <Content Include="Areas\Registry\Views\ChargeExemptions\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

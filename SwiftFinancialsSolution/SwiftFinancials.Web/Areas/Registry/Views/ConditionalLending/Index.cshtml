@@ -70,13 +70,16 @@
 
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
-<script>
-    $(document).ready(function () {
+
+
+
+    <script>
+$(document).ready(function () {
     $('#conditionalLendingsGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "ConditionalLending", new { Area = "Registry" }))",
+        "sAjaxSource": "@Url.Action("Index", "ConditionalLending", new { Area = "Registry" })",
         "sServerMethod": "POST",
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             var createdDate = new Date(parseInt(aData.CreatedDate.replace('/Date(', '').replace(')/', ''), 10));
@@ -88,12 +91,10 @@
 
             var dropdownHtml = `
                 <div class="dropdown">
-                    <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+                    <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Action
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item disabled" href="#">View</a>
-                        <a class="dropdown-item disabled" href="#">Edit</a>
                     </div>
                 </div>`;
 
@@ -121,7 +122,9 @@ $(document).ajaxStart(function () {
 $(document).ajaxStop(function () {
     $('.ibox').children('.ibox-content').toggleClass('sk-loading');
 });
-</script>
+    </script>
+
+
 
 }
 
