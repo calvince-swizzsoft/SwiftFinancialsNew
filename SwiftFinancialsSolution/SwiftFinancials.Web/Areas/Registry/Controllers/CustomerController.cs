@@ -79,6 +79,24 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 pageCollectionInfo = await _channelService.FindCustomersByTypeAndFilterInPageAsync((int)customerType, jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
             }
+            else if (recordStatus == null && customerFilter == null)
+            {
+                int type = 0;
+                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)type, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+                    totalRecordCount = pageCollectionInfo.ItemsCount;
+                    // Order the PageCollection by SerialNumber in descending order (latest to oldest)
+                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection
+                        .OrderByDescending(postingPeriod => postingPeriod.Reference2)
+                        .ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                }
+            }
             else
             {
                 pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
@@ -87,7 +105,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
+                // Order the PageCollection by SerialNumber in descending order (latest to oldest)
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection
+                    .OrderByDescending(postingPeriod => postingPeriod.SerialNumber)
+                    .ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -258,13 +279,40 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
             var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
             var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+
+
+
+            var mandatorydebitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
+            var mandatorycreditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
+            var mandatoryinvestmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
+            var mandatorysavingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
+
             CustomerBindingModel customerBindingModel = new CustomerBindingModel();
 
 
-            ViewBag.investment = investment;
-            ViewBag.savings = savingsProductDTOs;
-            ViewBag.debit = debitypes;
-            ViewBag.creditTypes = creditTypes;
+            //ViewBag.investment = investment;
+            //ViewBag.savings = savingsProductDTOs;
+            //ViewBag.debit = debitypes;
+            //ViewBag.creditTypes = creditTypes;
+
+
+            //ViewBag.investment = mandatoryinvestmentProducts;
+            //ViewBag.savings = mandatorysavingsProducts;
+            //ViewBag.debit = mandatorydebitTypes;
+            //ViewBag.creditTypes = mandatorycreditTypes;
+
+
+
+            ViewBag.investment = investment; // Original investment products
+            ViewBag.savings = savingsProductDTOs; // Original savings products
+            ViewBag.debit = debitypes; // Original debit types
+            ViewBag.creditTypes = creditTypes; // Original credit types
+
+            // Separate ViewBag properties for mandatory items
+            ViewBag.mandatoryInvestment = mandatoryinvestmentProducts.Select(m => m.Id).ToList(); ;
+            ViewBag.mandatorySavings = mandatorysavingsProducts.Select(m => m.Id).ToList();
+            ViewBag.mandatoryDebit = mandatorydebitTypes.Select(m => m.Id).ToList();
+            ViewBag.mandatoryCreditTypes = mandatorycreditTypes.Select(m => m.Id).ToList();
 
 
 
@@ -401,12 +449,17 @@ HttpPostedFileBase passportPhoto)
                     customerBindingModel.Type = 0;
                     break;
                 case "Partnership":
+                    customerBindingModel.NonIndividualDescription = customerBindingModel.RefereeFirstName;
+
                     customerBindingModel.Type = 1;
                     break;
                 case "Corporation":
+                    customerBindingModel.NonIndividualDescription = customerBindingModel.RefereeFirstName;
                     customerBindingModel.Type = 2;
                     break;
                 case "MicroCredit":
+                    customerBindingModel.NonIndividualDescription = customerBindingModel.RefereeFirstName;
+
                     customerBindingModel.Type = 3;
                     break;
             }
@@ -474,7 +527,7 @@ HttpPostedFileBase passportPhoto)
      1,
      GetServiceHeader()
  );
-                     await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
+                    await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
 
                     if (result.ErrorMessages == null)
                     {
@@ -512,7 +565,7 @@ HttpPostedFileBase passportPhoto)
                         return Json(new { success = false, message = "Operation Failed" });
 
                     }
-                   // Document document = new Document();
+                    // Document document = new Document();
 
                     //// Convert Base64 strings to byte arrays with error handling
                     //document.SignaturePhoto = SafeConvertFromBase64String(signaturePhoto);
@@ -529,7 +582,7 @@ HttpPostedFileBase passportPhoto)
 
                     // Proceed with your document upload process
                     //string j= document.PassportPhoto != null ? Convert.ToString(document.PassportPhoto) : null;
-                   // await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, j));
+                    // await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, j));
 
 
 
@@ -791,6 +844,24 @@ HttpPostedFileBase passportPhoto)
                 ViewBag.type = "Individual"; // Default to Individual if no match
             }
 
+
+            var documents = await GetDocumentsAsync(customerDTO.Id);
+            if (documents.Any())
+            {
+                var document = documents.First();
+
+                TempData["PassportPhoto"] = document.PassportPhoto;
+                TempData["SignaturePhoto"] = document.SignaturePhoto;
+                TempData["idCardFront"] = document.IDCardFrontPhoto;
+                TempData["idCardBack"] = document.IDCardBackPhoto;
+
+                // Sending the images as Base64 encoded strings to be used in AJAX
+                ViewBag.PassportPhoto = document.PassportPhoto != null ? Convert.ToBase64String(document.PassportPhoto) : null;
+                ViewBag.SignaturePhoto = document.SignaturePhoto != null ? Convert.ToBase64String(document.SignaturePhoto) : null;
+                ViewBag.IDCardFrontPhoto = document.IDCardFrontPhoto != null ? Convert.ToBase64String(document.IDCardFrontPhoto) : null;
+                ViewBag.IDCardBackPhoto = document.IDCardBackPhoto != null ? Convert.ToBase64String(document.IDCardBackPhoto) : null;
+
+            }
             return View(customerDTO.MapTo<CustomerBindingModel>());
 
 
@@ -809,14 +880,19 @@ HttpPostedFileBase passportPhoto)
             if (typedescription == "Partnership")
             {
                 customerBindingModel.Type = 1;
+                customerBindingModel.NonIndividualDescription = customerBindingModel.RefereeFirstName;
+
             }
             if (typedescription == "Corporation")
             {
                 customerBindingModel.Type = 2;
+                customerBindingModel.NonIndividualDescription = customerBindingModel.RefereeFirstName;
+
             }
             if (typedescription == "MicroCredit")
             {
                 customerBindingModel.Type = 3;
+                customerBindingModel.NonIndividualDescription = customerBindingModel.RefereeFirstName;
             }
             customerBindingModel.IndividualBirthDate = new DateTime(1990, DateTime.Today.Month, DateTime.Today.Day);
 
@@ -896,6 +972,10 @@ HttpPostedFileBase passportPhoto)
                     );
                     TempData["SuccessMessage"] = "customer created successfully";
 
+                    if (signaturePhoto != null)
+                    {
+                        await SaveDocumentAsync(ProcessDocumentUpload(customerDTO.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
+                    }
 
                     // customerBindingModel.Type = 3;
                     //// Process based on customer type
