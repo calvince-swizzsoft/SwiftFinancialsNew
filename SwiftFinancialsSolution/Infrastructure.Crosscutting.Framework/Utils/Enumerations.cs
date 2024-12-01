@@ -783,6 +783,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         Acknowledged = 2,
         [Description("Rejected")]
         Rejected = 3,
+        [Description("Utilized")]
+        Utilized = 4
     }
 
     public enum CashTransferRequestAcknowledgeOption

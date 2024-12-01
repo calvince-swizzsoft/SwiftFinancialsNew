@@ -703,8 +703,8 @@ namespace Application.MainBoundedContext.Services
                 {
                     foreach (var item in query)
                     {
-                        totalCredits = item.TotalCredits;
-                        totalDebits = item.TotalDebits;
+                        totalCredits = item.Credit;
+                        totalDebits = item.Debit;
                         itemsCount = item.Count;
                     }
                 }
@@ -1545,9 +1545,9 @@ namespace Application.MainBoundedContext.Services
 
     public class GLAccountStatisticsBag
     {
-        public decimal TotalCredits { get; set; }
+        public decimal Credit { get; set; }
 
-        public decimal TotalDebits { get; set; }
+        public decimal Debit { get; set; }
 
         public decimal OpeningBalance { get; set; }
 

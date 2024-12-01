@@ -438,6 +438,10 @@
             $('#transfersClosingBalanceStatus').val('');
             $('#employeeId').val('');
             $('#transfersUntransferredChequesValue').val('');
+            $('#transfersTotalCredits').val('');
+            $('#transfersTotalDebits').val('');
+            $('#transfersOpeningBalance').val('');
+
 
 
             // Disable submit button
@@ -445,8 +449,11 @@
         }
 
     // Event listener for the "Transfer Cheques" button
-$('#cashTransferButton').on('click', function () {
+$('#cashTransferButton').on('click', function (e) {
 
+    e.preventDefault();
+
+    console.log("cashTransfer btn clicked");
     var cashTransferRequestDTO = {
         amount: $('#transfersAmount').val(),
         reference: $('#transfersReference').val(),
@@ -461,14 +468,12 @@ $('#cashTransferButton').on('click', function () {
         data: JSON.stringify(cashTransferRequestDTO), // Convert DTO object to JSON string
         success: function (response) {
             if (response.redirect) {
-
                 resetAllFields();
             } else if (response.success) {
-
+                console.log("transfer request success");
                 //alert('Customer Receipts: Operation Success');
                 resetAllFields();
             } else {
-
                 //alert('Customer Receipts: Operation Failed\n\n' + (response.errorMessages ? response.errorMessages.join('\n') : 'Unknown error'));
                 //resetAllFields();
             }

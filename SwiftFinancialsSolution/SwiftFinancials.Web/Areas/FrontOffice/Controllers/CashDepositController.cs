@@ -235,7 +235,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
@@ -244,9 +244,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int searchRecordCount = 0;
 
-            DateTime startDate = DateTime.Now;
+            //DateTime startDate = DateTime.Now;
 
-            DateTime endDate = DateTime.Now;
+            //DateTime endDate = DateTime.Now;
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
