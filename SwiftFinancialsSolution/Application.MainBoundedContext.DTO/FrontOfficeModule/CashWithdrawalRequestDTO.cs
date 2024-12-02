@@ -11,6 +11,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 {
     public class CashWithdrawalRequestDTO : BindingModelBase<CashWithdrawalRequestDTO>
     {
+        
+
         public CashWithdrawalRequestDTO()
         {
             AddAllAttributeValidators();
@@ -328,5 +330,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         }
 
         public Guid PaymentVoucherId { get; set; }
+
+        public string PaymentVoucherPayee { get; set; }
     }
 }

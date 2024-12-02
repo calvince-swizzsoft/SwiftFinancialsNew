@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form", enctype = "multipart/form-data", method = "Get" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -108,87 +108,79 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                         @Html.DropDownListFor(model => model.TypeDescription,
-                                                                                                             new SelectList(new List<SelectListItem>
-                                                                                                             {
-                new SelectListItem { Text = "Select Type", Value = "" },
-                new SelectListItem { Text = "Individual-Particulars", Value = "IndividualParticulars" },
-                new SelectListItem { Text = "Partnership-Particulars", Value = "Partnership" },
-                new SelectListItem { Text = "Corporation-Particulars", Value = "Corporation" },
-                new SelectListItem { Text = "Micro-credit-Particulars", Value = "MicroCredit" }
-}, "Value", "Text"),
-                                                                                                             new { @class = "form-control input-md", @id = "customerTypeDropdown" })
+                                        new SelectList(new List<SelectListItem>
+                                               {
+                                                new SelectListItem { Text = "Select Type", Value = "" },
+                                                new SelectListItem { Text = "Individual-Particulars", Value = "IndividualParticulars" },
+                                                new SelectListItem { Text = "Partnership-Particulars", Value = "Partnership" },
+                                                new SelectListItem { Text = "Corporation-Particulars", Value = "Corporation" },
+                                                new SelectListItem { Text = "Micro-credit-Particulars", Value = "MicroCredit" }
+                                                 }, "Value", "Text"),
+                                                new { @class = "form-control input-md", @id = "customerTypeDropdown" })
                                         @Html.ValidationMessageFor(model => model.TypeDescription)
                                     </div>
                                 </div>
-
-                                <!-- Hidden input to store the selected value -->
-                                <input type="hidden" id="selectedCustomerType" name="typedescription" />
-
-
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.StationId)
-                                    @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Description.." } })
-                                </div>
-
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference1, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Reference1, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Reference1, "", new { @class = "text-danger" })
-                                </div>
-
                             </div>
 
-                            <div class="col-4">
-
-                                <div class="form-group" id="data_3">
-                                    @Html.LabelFor(model => model.RegistrationDate, htmlAttributes: new { @class = "" })
-                                    <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input type="text" name="registrationdate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
-                                    </div>
-                                </div>
-
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.StationZoneDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.StationZoneDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Zone", disabled = "disabled" } })
-                                    @Html.ValidationMessageFor(model => model.StationZoneDescription, "", new { @class = "text-danger" })
-                                </div>
-
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference3, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Reference3, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Reference3, "", new { @class = "text-danger" })
-                                </div>
+                            <!-- Hidden input to store the selected value -->
+                            <input type="hidden" id="selectedCustomerType" name="typedescription" />
 
 
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
+                                @Html.HiddenFor(model => model.StationId)
+                                @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Description.." } })
                             </div>
 
-                            <div class="col-4">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.IndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control col-md-12", @placeholder = "Individual Payroll Numbers" } })
-                                    @Html.ValidationMessageFor(model => model.IndividualPayrollNumbers, "", new { @class = "text-danger" })
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Reference1, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Reference1, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Reference1, "", new { @class = "text-danger" })
+                            </div>
+
+                        </div>
+
+                        <div class="col-4">
+
+                            <div class="form-group" id="data_3">
+                                @Html.LabelFor(model => model.RegistrationDate, htmlAttributes: new { @class = "" })
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" name="registrationdate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
                                 </div>
+                            </div>
 
-                                <div class="form-group form-group-lg">
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.StationZoneDescription, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.StationZoneDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Zone", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.StationZoneDescription, "", new { @class = "text-danger" })
+                            </div>
 
-                                    @Html.LabelFor(model => model.StationZoneDivisionDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.StationZoneDivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Division", disabled = "disabled" } })
-                                    @Html.ValidationMessageFor(model => model.StationZoneDivisionDescription, "", new { @class = "text-danger" })
-                                </div>
-
-
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference2, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Reference2, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Reference2, "", new { @class = "text-danger" })
-                                </div>
-
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Reference3, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Reference3, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Reference3, "", new { @class = "text-danger" })
                             </div>
 
 
                         </div>
+
+                        <div class="col-4">
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.IndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control col-md-12", @placeholder = "Individual Payroll Numbers" } })
+                                @Html.ValidationMessageFor(model => model.IndividualPayrollNumbers, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group form-group-lg">
+
+                                @Html.LabelFor(model => model.StationZoneDivisionDescription, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.StationZoneDivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Division", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.StationZoneDivisionDescription, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
                         <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap; font-size: 0.85rem;" id="myTab">
                             <!-- Dynamic Navigation Links -->
                             <li class="nav-item dynamic-tab" id="link-IndividualParticulars" style="display: none;">
@@ -983,7 +975,8 @@
 
 
                             <input type="button" value="Create" class="btn btn-primary" style="width: 150px;" onclick="submitForm()" />
-                        </div>}
+                        </div>
+                    }
 
 
 
@@ -1100,7 +1093,7 @@
 
                 // Append a new row to the table
                 $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `);
 
                 // Clear the form fields after adding
                 clearMemberForm();

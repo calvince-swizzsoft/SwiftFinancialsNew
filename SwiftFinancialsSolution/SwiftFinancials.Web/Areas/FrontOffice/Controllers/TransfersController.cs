@@ -51,11 +51,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+            //_selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
 
+            _selectedTeller = await GetCurrentTeller();
+            
             var missingParameters = new List<string>();
-
-        
 
             if (currentUser == null)
             {
@@ -64,13 +64,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (SelectedTeller == null)
             {
-                missingParameters.Add("Treasury");
+                missingParameters.Add("Teller");
             }
 
             // Check if any parameter is missing
             if (missingParameters.Any())
             {
-                var missingMessage = $"Some features are missing due to lack of: {string.Join(", ", missingParameters)}";
+                var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
 
                 MessageBox.Show(missingMessage,
                     "Cash Transaction",
@@ -102,16 +102,46 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CashTransferRequestDTO cashTransferRequestDTO)
         {
-            /*ashTransferRequestDTO.ValidateAll();*/
 
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+            var selectedTeller = await GetCurrentTeller();
 
-            cashTransferRequestDTO.EmployeeId = SelectedTeller.EmployeeId;
+            var missingParameters = new List<string>();
+
+
+
+            if (currentUser == null)
+            {
+                missingParameters.Add("Active User");
+            }
+
+            if (selectedTeller == null)
+            {
+                missingParameters.Add("Teller");
+            }
+
+            // Check if any parameter is missing
+            if (missingParameters.Any())
+            {
+                var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
+
+                MessageBox.Show(missingMessage,
+                    "Cash Transaction",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                //return Json(new { success = false, message = "Operation error: " + missingMessage });
+            }
+
+            cashTransferRequestDTO.EmployeeId = selectedTeller.EmployeeId;
 
             if (!cashTransferRequestDTO.HasErrors)
             {
+
 
                 var successRequest = await _channelService.AddCashTransferRequestAsync(cashTransferRequestDTO, GetServiceHeader());
 
@@ -121,23 +151,26 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 if (successRequest != null)
                 {
 
-                    MessageBox.Show("Transfer Success", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View(cashTransferRequestDTO);
+                    MessageBox.Show("Cash Transfer Request sent Successfully", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    //return View(cashTransferRequestDTO);
+                    return Json(new { success = true, message = "Operation Success" });
                 }
                 else
                 {
 
 
-                    MessageBox.Show("Transfer failed", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    MessageBox.Show("Cah Transfer Request failed", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-                    return View(cashTransferRequestDTO);
+                    //return View(cashTransferRequestDTO);
+                    return Json(new { success = true, message = "Operation Failed" });
                 }
             }
             else
             {
                 var errorMessages = cashTransferRequestDTO.ErrorMessages;
 
-                return View(cashTransferRequestDTO);
+                return Json(new { success = false, message = errorMessages });
+                //return View(cashTransferRequestDTO);
             }
         }
 
@@ -146,11 +179,39 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<JsonResult> FetchUnTransferredChequesTable(JQueryDataTablesModel jQueryDataTablesModel)
         {
 
-            //var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+            var selectedTeller = await GetCurrentTeller();
 
+            var missingParameters = new List<string>();
+
+
+
+            if (currentUser == null)
+            {
+                missingParameters.Add("Active User");
+            }
+
+            if (selectedTeller == null)
+            {
+                missingParameters.Add("Teller");
+            }
+
+            // Check if any parameter is missing
+            if (missingParameters.Any())
+            {
+                var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
+
+                MessageBox.Show(missingMessage,
+                    "Cash Transaction",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                //return Json(new { success = false, message = "Operation error: " + missingMessage });
+            }
 
             int totalRecordCount = 0;
 
@@ -162,7 +223,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
 
-            var pageCollectionInfo = await _channelService.FindUnTransferredExternalChequesByTellerIdAndFilterInPageAsync(SelectedTeller.Id, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindUnTransferredExternalChequesByTellerIdAndFilterInPageAsync(selectedTeller.Id, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
            
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
@@ -190,24 +251,119 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 ObservableCollection<ExternalChequeDTO> selectedCheques = new ObservableCollection<ExternalChequeDTO>(cheques);
 
-                var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
-                _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+                var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+                _selectedTeller = await GetCurrentTeller();
 
 
-                var transferred = await _channelService.TransferExternalChequesAsync(selectedCheques, SelectedTeller, 0, GetServiceHeader());
+                var chequesInHandChartOfAccountId = await _channelService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCodeAsync((int)SystemGeneralLedgerAccountCode.ExternalChequesInHand, GetServiceHeader());
 
-                if (!transferred)
-                {
-                    return Json(new { success = false, message = "Transfer failed. Please try again." });
+                if (SelectedTeller != null && SelectedTeller.ChartOfAccountId.HasValue && chequesInHandChartOfAccountId != Guid.Empty) {
+
+                    var transferred = await _channelService.TransferExternalChequesAsync(selectedCheques, SelectedTeller, 0, GetServiceHeader());
+
+                    if (!transferred)
+                    {
+                        return Json(new { success = false, message = "Transfer failed. Please try again." });
+                    }
+
+                    var untransferredCheques = await _channelService.FindUnTransferredExternalChequesByTellerId(SelectedTeller.Id, "", GetServiceHeader());
+                    var untransferredChequesValue = untransferredCheques.Sum(cheque => cheque.Amount);
+
+                    //model.EmployeeId = SelectedTeller.EmployeeId;
+                    //model.TotalCredits = SelectedTeller.TotalCredits;
+                    //model.TotalDebits = SelectedTeller.TotalDebits;
+                    //model.BookBalance = SelectedTeller.BookBalance;
+
+                    //model.OpeningBalance = SelectedTeller.OpeningBalance;
+                    //model.ClosingBalance = SelectedTeller.ClosingBalance;
+
+                    //model.UntransferredChequesValue = untransferredChequesValue;
+                    // Construct a JSON response directly
+                    var response = new
+                    {
+                        success = true,
+                        message = "Cheques transferred successfully.",
+                        data = new
+                        {
+                            //EmployeeId = SelectedTeller.EmployeeId,
+                            TotalCredits = SelectedTeller.TotalCredits,
+                            TotalDebits = SelectedTeller.TotalDebits,
+                            BookBalance = SelectedTeller.BookBalance,
+                            OpeningBalance = SelectedTeller.OpeningBalance,
+                            ClosingBalance = SelectedTeller.ClosingBalance,
+                            UntransferredChequesValue = untransferredChequesValue
+                        }
+                    };
+
+                    return Json(response);
+
                 }
 
-                return Json(new { success = true, message = "Cheques transferred successfully." });
+                else
+                {
+
+                    var message = "Sorry, but the requisite teller and / or external cheques in hand account has not been setup!";
+
+
+                    MessageBox.Show(message,
+                        "Cash Transaction",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+
+                    return Json(new { success = false, message = "Operation error: " + message });
+                }
+
             }
             catch (Exception ex)
             {
                 // Log the error
                 return Json(new { success = false, message = "An error occurred while transferring cheques: " + ex.Message });
             }
+        }
+
+
+        private async Task<TellerDTO> GetCurrentTeller()
+        {
+
+            // Get the current user
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+
+            var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
+            var targetCustomer = customers?.FirstOrDefault(c => c.AddressEmail == user.Email);
+
+            if (targetCustomer == null)
+            {
+                TempData["Error"] = "Customer not found.";
+                return null;
+            }
+
+            var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
+            var selectedEmployee = employees?.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
+
+            if (selectedEmployee == null)
+            {
+                TempData["Error"] = "Employee not found for the customer.";
+                return null;
+            }
+
+            var teller = await _channelService.FindTellerByEmployeeIdAsync(selectedEmployee.Id, true, GetServiceHeader());
+
+            if (teller == null)
+            {
+                TempData["Missing Teller"] = "You are working without a Recognized Teller";
+            }
+
+            var generalLedgerAccount = await _channelService.FindGeneralLedgerAccountAsync((Guid)teller.ChartOfAccountId, true, GetServiceHeader());
+
+            teller.BookBalance = generalLedgerAccount.Balance;
+
+
+            return teller;
+
         }
 
 

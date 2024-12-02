@@ -1,11 +1,19 @@
-﻿using Infrastructure.Crosscutting.Framework.Utils;
+﻿using Application.Seedwork;
+using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace Application.MainBoundedContext.DTO.RegistryModule
 {
-    public class NextOfKinDTO
+    public class NextOfKinDTO : BindingModelBase<NextOfKinDTO>
     {
+        public NextOfKinDTO()
+        {
+            AddAllAttributeValidators();
+        }
+
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 
@@ -171,5 +179,10 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        [DataMember]
+        public CustomerDTO CustomerDTO { get; set; }
+
     }
 }
