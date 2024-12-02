@@ -1,7 +1,16 @@
 ﻿
-@model  Application.MainBoundedContext.DTO.AccountsModule.CustomerAccountDTO
+@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 @{
-    ViewBag.Title = "Register Loan";
+    ViewBag.Title = "Restructure Loan";
+
+
+    var apr = 20;
+    var icm = "Reducing Balance";
+    var amountApplied = 300000;
+    var termInMonths = 5;
+
+    var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
+    var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 }
 
 
@@ -123,8 +132,7 @@
     }
 
         .nav-link:hover {
-            background-color: rgba(0, 123, 255, 0.2); /* Light blue on hover */
-            color: #007bff; /* Blue for active link */
+            background-color: rgba(0, 123, 255, 0.2);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
@@ -133,6 +141,60 @@
             transform: translateY(0);
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
+
+
+
+    #repaymentScheduledataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #repaymentScheduledataTable th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #repaymentScheduledataTable th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        #repaymentScheduledataTable tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #repaymentScheduledataTable td {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        #repaymentScheduledataTable tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
+
+        #repaymentScheduledataTable tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        #repaymentScheduledataTable tr:last-child td {
+            border-bottom: none;
+        }
+
+
+    .form-row {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
 </style>
 
 
@@ -161,7 +223,7 @@
 <br />
 <nav class="navbar">
     <ul class="nav-menu">
-        <li>@Html.ActionLink("Loan Restructuring", "Create", "LoanRestructuring", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Loan Restructuring", "Index", "LoanRestructuring", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Guarantor Attachment", "Create", "GuarantorAttachment", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Guarantor Substitution", "Create", "GuarantorSubstitution", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Guarantor Relieving", "Create", "GuarantorRelieving", new { area = "Loaning" }, new { @class = "nav-link" })</li>
@@ -229,27 +291,22 @@
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.StatusDescription, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.Status)
-                                        @Html.EditorFor(model => model.ModifiedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
+                                        @Html.LabelFor(model => model.AccountStatus, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.AccountStatus, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.PrincipalBalance, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.PrincipalBalance)
-                                        @Html.EditorFor(model => model.PrincipalBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.PrincipalBalance, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.PrincipalBalance, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.InterestBalance, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.InterestBalance)
-                                        @Html.EditorFor(model => model.InterestBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.InterestBalance, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.InterestBalance, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                     </div>
                                 </div>
                             </div>
@@ -258,17 +315,14 @@
                                 <div class="col-md-6 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerIndividualFirstName, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.CustomerId)
-                                        @Html.EditorFor(model => model.CustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.CustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                     </div>
                                 </div>
 
                                 <div class="col-md-6 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.CustomerIndividualPayrollNumbers)
-                                        @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                     </div>
                                 </div>
                             </div>
@@ -277,36 +331,28 @@
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.CustomerPersonalIdentificationNumber)
-                                        @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerPersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.CustomerReference1)
-                                        @Html.EditorFor(model => model.CustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerReference1, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CustomerReference1, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.CustomerReference2)
-                                        @Html.EditorFor(model => model.CustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CustomerReference2, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.CustomerReference3)
-                                        @Html.EditorFor(model => model.CustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CustomerReference3, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                     </div>
                                 </div>
                             </div>
@@ -337,7 +383,6 @@
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.LoanProductsDTO.LoanRegistrationLoanProductSectionDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.LoanProductsDTO.LoanRegistrationLoanProductSection)
                                                     @Html.EditorFor(model => model.LoanProductsDTO.LoanRegistrationLoanProductSectionDescription, new
                                                     {
                                                         htmlAttributes = new
@@ -352,7 +397,6 @@
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.LoanProductsDTO.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.LoanProductsDTO.LoanInterestAnnualPercentageRate)
                                                     @Html.EditorFor(model => model.LoanProductsDTO.LoanInterestAnnualPercentageRate, new
                                                     {
                                                         htmlAttributes = new
@@ -367,7 +411,6 @@
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.LoanProductsDTO.LoanRegistrationPaymentFrequencyPerYear, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.LoanProductsDTO.LoanRegistrationPaymentFrequencyPerYear)
                                                     @Html.EditorFor(model => model.LoanProductsDTO.LoanRegistrationPaymentFrequencyPerYearDescription, new
                                                     {
                                                         htmlAttributes = new
@@ -379,6 +422,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
 
                                         <div class="row">
                                             <div class="col-md-3 form-group">
@@ -406,40 +450,28 @@
 
                                         <br />
 
-                                        <h3>Repayment Schedule</h3>
                                         <div class="row">
                                             <div class="col-lg-12">
-                                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
-                                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                        <tr>
-                                                            <th>Period</th>
-                                                            <th>Due Date</th>
-                                                            <th>Starting Balance</th>
-                                                            <th>Payment</th>
-                                                            <th>Interest Payment</th>
-                                                            <th>Principal Payment</th>
-                                                            <th>Ending Balance</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @if (ViewBag.LoanGuarantors != null)
-                                                        {
-                                                            foreach (var guarantors in ViewBag.LoanGuarantors)
-                                                            {
+                                                <div class="tab-content">
+                                                    <div class="table-container">
+                                                        <h3 style="font-size: 1.9rem; text-align: center;">Repayment Schedule</h3>
+                                                        <table id="repaymentScheduledataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                            <thead>
                                                                 <tr>
-                                                                    @*<td>@guarantors.Customer.FullName</td>
-                                                                        <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
-                                                                        <td>@guarantors.Customer.Reference1</td>
-                                                                        <td>@guarantors.AppraisalFactor</td>
-                                                                        <td style="text-align: right;">@guarantors.TotalShares</td>
-                                                                        <td style="text-align: right;">@guarantors.CommittedShares</td>
-                                                                        <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
-                                                                        <td>@guarantors.CreatedDate</td>*@
+                                                                    <th>Period</th>
+                                                                    <th>Due Date</th>
+                                                                    <th>Starting Balance</th>
+                                                                    <th>Payment</th>
+                                                                    <th>Interest Payment</th>
+                                                                    <th>Principal Payment</th>
+                                                                    <th>Ending Balance</th>
                                                                 </tr>
-                                                            }
-                                                        }
-                                                    </tbody>
-                                                </table>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </fieldset>
@@ -472,6 +504,25 @@
             <div class="modal-header bg-primary">
                 <h3 class="font-bold">Customer Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
+
+            <form id="modalFilterForm">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        @Html.Label("Product Code", "Product Code")
+                        @Html.DropDownList("productCode", ProductCode, new { @class = "form-control", id = "productCode" })
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        @Html.Label("RecordStatus", "Record Status")
+                        @Html.DropDownList("recordStatus", RecordStatus, new { @class = "form-control", id = "recordStatus" })
+                    </div>
+
+                    <div class="form-group col-md-4" style="align-content:center;">
+                        <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
+                    </div>
+                </div>
+            </form>
+
             <table id="customerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
@@ -481,13 +532,13 @@
                     </tr>
                 </tbody>
             </table>
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 
 
 <!-- Modal Structure -->
@@ -798,5 +849,100 @@
                     console.error('Error:', error);
                 });
         }
+    </script>
+
+
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var APR = @apr;
+        var ICM = '@icm';
+        var AmountApplied = @amountApplied;
+        var TermInMonths = @termInMonths;
+
+        // Convert APR to monthly interest rate
+        var monthlyInterestRate = APR / 12 / 100;
+
+        var remainingBalance = AmountApplied;
+        var emi = 0;
+        var schedule = [];
+
+        for (var i = 1; i <= TermInMonths; i++) {
+            var interestPayment = 0;
+            var principalPayment = 0;
+
+            switch (ICM) {
+                case "Reducing Balance":
+                    emi = (AmountApplied * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, TermInMonths))
+                          / (Math.pow(1 + monthlyInterestRate, TermInMonths) - 1);
+                    interestPayment = remainingBalance * monthlyInterestRate;
+                    principalPayment = emi - interestPayment;
+                    break;
+
+                case "Straight Line":
+                    interestPayment = (AmountApplied * APR / 100) / TermInMonths;
+                    principalPayment = AmountApplied / TermInMonths;
+                    emi = principalPayment + interestPayment;
+                    break;
+
+                case "Amortization (Straight Line)":
+                    emi = AmountApplied / TermInMonths + (AmountApplied * monthlyInterestRate);
+                    interestPayment = (AmountApplied - ((AmountApplied / TermInMonths) * (i - 1))) * monthlyInterestRate;
+                    principalPayment = emi - interestPayment;
+                    break;
+
+                case "Amortization (Diminishing Balance)":
+                    emi = (AmountApplied * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, TermInMonths))
+                          / (Math.pow(1 + monthlyInterestRate, TermInMonths) - 1);
+                    interestPayment = remainingBalance * monthlyInterestRate;
+                    principalPayment = emi - interestPayment;
+                    break;
+
+                case "Fixed Interest":
+                    interestPayment = AmountApplied * APR / 100 / TermInMonths;
+                    principalPayment = AmountApplied / TermInMonths;
+                    emi = interestPayment + principalPayment;
+                    break;
+
+                default:
+                    console.error("Invalid Interest Calculation Mode.");
+                    return;
+            }
+
+            // Create the schedule entry
+            var entry = {
+                Period: i,
+                DueDate: new Date(new Date().setMonth(new Date().getMonth() + i)).toLocaleDateString(),
+                StartingBalance: remainingBalance.toFixed(2),
+                Payment: emi.toFixed(2),
+                InterestPayment: interestPayment.toFixed(2),
+                PrincipalPayment: principalPayment.toFixed(2),
+                EndingBalance: (remainingBalance - principalPayment).toFixed(2)
+            };
+
+            // Push the entry to the schedule array
+            schedule.push(entry);
+
+            // Update the remaining balance
+            remainingBalance -= principalPayment;
+        }
+
+        // Render the table rows dynamically
+        var tableBody = document.querySelector("#repaymentScheduledataTable tbody");
+        schedule.forEach(function(item) {
+            var row = `
+                <tr>
+                    <td>${item.Period}</td>
+                    <td>${item.DueDate}</td>
+                    <td>${item.StartingBalance}</td>
+                    <td>${item.Payment}</td>
+                    <td>${item.InterestPayment}</td>
+                    <td>${item.PrincipalPayment}</td>
+                    <td>${item.EndingBalance}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    });
     </script>
 }

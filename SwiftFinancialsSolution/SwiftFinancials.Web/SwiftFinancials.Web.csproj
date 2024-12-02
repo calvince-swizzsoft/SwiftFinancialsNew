@@ -1496,6 +1496,7 @@
     <Content Include="Areas\HumanResource\Views\SalaryProcessing\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\ProcessSalary.cshtml" />
     <Content Include="Areas\Registry\Views\ChargeExemptions\Create.cshtml" />
+    <Content Include="Areas\Dashboard\Views\InstantMessaging\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2010,7 +2011,6 @@
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\EmailAlerts\" />
-    <Folder Include="Areas\Dashboard\Views\InstantMessaging\" />
     <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
