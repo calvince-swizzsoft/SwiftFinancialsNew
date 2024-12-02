@@ -823,6 +823,24 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetRelationshipSelectList(string selectedValue)
+        {
+            List<SelectListItem> NextOfKinRelationship = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(NextOfKinRelationship)).Cast<NextOfKinRelationship>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            NextOfKinRelationship.AddRange(items);
+
+            return NextOfKinRelationship;
+        }
+
+
+        [NonAction]
         protected List<SelectListItem> GetNationalitySelectList(string selectedValue)
         {
             List<SelectListItem> nationalities = new List<SelectListItem>();
