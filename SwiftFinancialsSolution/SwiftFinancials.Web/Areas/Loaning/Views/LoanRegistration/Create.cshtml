@@ -980,7 +980,7 @@
             <div class="blue-section">
                 <form id="filterForm">
                     <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
-                        <div class="col-lg-3">
+                        <div class="col-lg-3" hidden>
                             <div class="form-group form-group-lg">
                                 <label for="filterType">Record Status</label>
 
@@ -992,7 +992,7 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-4">
+                        <div class="col-lg-6">
                             <div class="form-group form-group-lg">
                                 <label for="filterType">Loan Filter</label>
 
@@ -1004,7 +1004,7 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-3" style="margin-top: 27px;">
+                        <div class="col-lg-4" style="margin-top: 27px;">
                             <div class="form-group spacing-form-group">
                                 <div class="input-group text-box">
                                     @Html.TextBox("text", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "text" })
@@ -1272,7 +1272,6 @@
         });
     </script>
 
-
     <script>
         document.getElementById('createButton').addEventListener('click', function () {
             const selectedIds = Array.from(
@@ -1280,7 +1279,6 @@
             ).map(checkbox => checkbox.value);
 
             if (selectedIds.length === 0) {
-                alert('Please select at least one collateral.');
                 return;
             }
 
@@ -1300,8 +1298,6 @@
         });
     </script>
 
-
-
     <script>
         var defaultCustomerFilter = $('#customerFilter').val();
         var defaultRecordStatus = $('#recordStatus').val();
@@ -1311,7 +1307,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("CustomerIndex", "FinancialPosition", new { Area = "Dashboard"}))",
+                "sAjaxSource": "@(Url.Action("CustomerIndex", "LoanRegistration", new { Area = "Loaning"}))",
                 "sServerMethod": "POST",
                 "fnServerParams": function (aoData) {
                     aoData.push(
@@ -1370,6 +1366,7 @@
                         $('#CustomerReference2').val(response.data.CustomerReference2);
                         $('#CustomerReference3').val(response.data.CustomerReference3);
 
+                        $('#customerLookupModal').modal('hide');
 
                         if (response.data.PassportPhoto) {
                             document.getElementById('passportPhoto').src = `data:image;base64,${response.data.PassportPhoto}`;
@@ -1403,7 +1400,7 @@
                             document.getElementById('idbackmsg').textContent = 'Identity Card (Back) not available';
                         }
 
-
+                       
                         console.log(response);
                         console.log(response.data.Collaterals);
                         console.log(response.data.StandingOrders);
