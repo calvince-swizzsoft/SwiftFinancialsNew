@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using ServiceStack;
 using SwiftFinancials.Presentation.Infrastructure.Services;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -61,10 +62,14 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             try
             {
                 var customer = await _channelService.FindCustomerAsync(customerId, GetServiceHeader());
+
                 if (customer == null)
                 {
                     return Json(new { success = false, message = "Customer not found." }, JsonRequestBehavior.AllowGet);
                 }
+
+                // Assuming you want to store the customer Id in Session
+                Session["id"] = customer.Id;
 
                 return Json(new
                 {
@@ -72,6 +77,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     data = new
                     {
                         IndividualFirstName = customer.IndividualFirstName,
+                        customerId = customer.Id,
                         IndividualLastName = customer.IndividualLastName,
                         FullName = customer.FullName,
                         StationZoneDivisionEmployerId = customer.StationZoneDivisionEmployerId,
@@ -90,58 +96,61 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
             catch (Exception)
             {
+                // Log the exception (optional)
                 return Json(new { success = false, message = "An error occurred while fetching the customer details." }, JsonRequestBehavior.AllowGet);
             }
         }
 
-        [HttpPost]
-        public ActionResult AssignText(string Remarks, string ZoneId)
-        {
-            Session["Remarks"] = Remarks;
-            Session["ZoneId"] = ZoneId;
-            return null;
-        }
 
-        public async Task<ActionResult> Details(Guid id)
-        {
-            await ServeNavigationMenus();
-            var delegateDTO = await _channelService.FindDelegateAsync(id, GetServiceHeader());
-
-            if (delegateDTO == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(delegateDTO);
-        }
 
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.RelationshipSelectList = GetRelationshipSelectList(string.Empty);
+
+
+
             return View();
         }
 
+
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerDTO customerDTO, ObservableCollection<NextOfKinDTO> nextOfKinCollection)
+        public async Task<ActionResult> Create(NextOfKinDTO nextOfKinDTO, ObservableCollection<NextOfKinDTO> nextOfKinCollection)
         {
-            customerDTO.ValidateAll();
-            foreach (var nextOfKin in nextOfKinCollection)
+            if (Session["id"] != null)
             {
-                nextOfKin.ValidateAll();
+                nextOfKinDTO.CustomerId = (Guid)Session["id"];
             }
 
-            if (!customerDTO.HasErrors && nextOfKinCollection.All(n => !n.HasErrors))
+            ObservableCollection<NextOfKinDTO> nextOfKinCollection1 = new ObservableCollection<NextOfKinDTO>();
+            nextOfKinCollection1.Add(nextOfKinDTO);
+
+            CustomerDTO customerDTO = new CustomerDTO();
+            //customerDTO.ValidateAll();
+            //foreach (var nextOfKin in nextOfKinCollection)
+            //{
+            //    nextOfKin.ValidateAll();
+            //}
+            var customer = await _channelService.FindCustomerAsync(nextOfKinDTO.CustomerId, GetServiceHeader());
+            var result1 = await _channelService.UpdateNextOfKinCollectionAsync(customer, nextOfKinCollection1, GetServiceHeader());
+
+            if (!nextOfKinDTO.HasErrors && nextOfKinCollection.All(n => !n.HasErrors))
             {
                 var result = await _channelService.UpdateNextOfKinCollectionAsync(customerDTO, nextOfKinCollection, GetServiceHeader());
 
                 if (result)
                 {
-                    TempData["SuccessMessage"] = "Next of kin updated successfully!";
+                    TempData["SuccessMessage"] = "Next of kin created successfully!";
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    ModelState.AddModelError("", "An error occurred while updating the next of kin.");
+                    ModelState.AddModelError("", "An error occurred while creating the next of kin.");
                 }
             }
             else
@@ -154,40 +163,19 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 TempData["ErrorMessages"] = customerDTO.ErrorMessages.TrimEnd(';', ' '); // Clean up trailing separators
             }
 
-            return View(customerDTO);
-        }
-
-
-
-        public async Task<ActionResult> Edit(Guid id)
-        {
-            await ServeNavigationMenus();
-            var delegateDTO = await _channelService.FindDelegateAsync(id, GetServiceHeader());
-            return View(delegateDTO);
+            return View(nextOfKinDTO);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, DelegateDTO BindingModelBase)
+        public JsonResult SaveEntries(List<NextOfKinBindingModel> entries)
         {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateDelegateAsync(BindingModelBase, GetServiceHeader());
-                TempData["SuccessMessage"] = "Delegate updated successfully!";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(BindingModelBase);
-            }
+            // Store the data in TempData
+            TempData["Entries"] = entries;
+
+            // Return a success response
+            return Json(new { success = true });
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetDepartmentsAsync(Guid id)
-        {
-            var delegateDTOs = await _channelService.FindDelegateAsync(id, GetServiceHeader());
-            return Json(delegateDTOs, JsonRequestBehavior.AllowGet);
-        }
     }
 
 }
