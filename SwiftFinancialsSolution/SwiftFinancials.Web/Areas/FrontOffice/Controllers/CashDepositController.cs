@@ -443,6 +443,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             SelectedCustomerAccount = transactionModel.CustomerAccount;
 
+            _selectedCustomer = await _channelService.FindCustomerAsync(SelectedCustomerAccount.CustomerId, GetServiceHeader());
+
 
             System.Globalization.NumberFormatInfo _nfi = new CultureInfo("en-US", false).NumberFormat;
             var time = System.DateTime.Now.ToString("dd/mm/yyyy");
@@ -1201,6 +1203,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
 
+
+
+
             SelectedBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
 
@@ -1252,19 +1257,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
 
-            if (SelectedTeller.BookBalance - transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
-            {
-                MessageBox.Show(
-                    "Sorry, the transaction will reduce teller's balance below limit",
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
 
-                return Json(new { success = false, message = "Operation failed" });
-            }
+
 
             // if (SelectedTeller.BookBalance + transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
             // {
@@ -1304,6 +1298,37 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 case FrontOfficeTransactionType.CashWithdrawal:
                 case FrontOfficeTransactionType.CashWithdrawalPaymentVoucher:
+
+                
+                    if (SelectedTeller.BookBalance - transactionModel.TotalValue < SelectedCustomerAccount.CustomerAccountTypeTargetProductMinimumBalance)
+                    {
+
+                        MessageBox.Show("Sorry, this transaction will exceed the allowed minimum balance",
+                   "Cash Transaction",
+                   MessageBoxButtons.OK,
+                   MessageBoxIcon.Information,
+                   MessageBoxDefaultButton.Button1,
+                   MessageBoxOptions.ServiceNotification
+                   );
+
+                        return Json(new { success = false, message = "Operation failed" });
+
+
+                    }
+
+                    if (SelectedTeller.BookBalance - transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
+                    {
+                        MessageBox.Show(
+                            "Sorry, the transaction will reduce teller's balance below limit",
+                            "Cash Transaction",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information,
+                            MessageBoxDefaultButton.Button1,
+                            MessageBoxOptions.ServiceNotification
+                        );
+
+                        return Json(new { success = false, message = "Operation failed" });
+                    }
 
                     if (SelectedCustomerAccount != null)
                     {

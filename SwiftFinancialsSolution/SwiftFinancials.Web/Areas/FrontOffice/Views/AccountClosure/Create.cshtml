@@ -5,6 +5,10 @@
 
     ViewBag.Title = "Create Account Closure";
     var customerTypes = ViewBag.AccountClosureSelectList as List<SelectListItem>;
+    var productCode = ViewBag.ProductCode as List<SelectListItem>;
+    //var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+
+    var customerFilter = ViewBag.CustomerFilterSelectList as List<SelectListItem>;
 
 
 }
@@ -86,7 +90,7 @@
                                         <div class="input-group" data-autoclose="true">
                                             @Html.TextBoxFor(model => model.CustomerAccountCustomerIndividualLastName, new { @class = "form-control", @readonly = "", @id = "CustomerAccountCustomerIndividualLastName" }) <!-- Unique ID here -->
                                             <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#customerAccountLookupModal" onclick="captureDetails();">
+                                                <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();">
                                                     <span class="fa fa-search"></span>
                                                 </a>
                                             </span>
@@ -403,28 +407,162 @@
 
 
 
-<div class="modal  fade" id="customerAccountLookupModal" role="dialog" aria-hidden="true">
+@*<div class="modal  fade" id="customerAccountLookupModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header  bg-primary">
+                    <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                </div>
+                <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">
+                                Loading data from server
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>*@
+
+<div class="modal fade" id="customerLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Customer Account Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
             </div>
-            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-        </div>
+            <div class="modal-body">
+                <!-- Table for Account Closure Requests -->
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="min-width: 1000px;">
+                        <tbody>
+                            <tr>
+                                <td class="dataTables_empty">Loading data from server</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
+                <!-- Filter Form -->
+                <div class="blue-section mt-1">
+                    <form id="CustomerAccountModalFilterForm">
+                        <div class="row align-items-end mb-3">
+                            <div class="col-md-3">
+                                <div id="items-dropdown"></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div id="page-control"></div>
+                            </div>
+                        </div>
+
+                        @*<div class="row align-items-end mb-3">
+
+                            </div>*@
+
+                        <div class="row align-items-end">
+
+                            <div class="col-md-2">
+                                <div class="form-group mb-0">
+
+                                    <div class="input-group">
+
+                                        @Html.DropDownListFor(m => m.CustomerAccountTypeProductCode, productCode, new { @class = "form-control", @id = "productCode" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group mb-0">
+
+                                    <div class="input-group">
+
+                                        @Html.DropDownListFor(m => m.CustomerAccountCustomerFilter, customerFilter,
+                                        new { @class = "form-control", @id = "CustomerAccountCustomerFilter" })
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="col-md-6">
+                                <div id="searchField" class="form-group mb-0"></div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group mb-0">
+                                    <button type="submit" id="refreshButton" class="btn btn-success form-control">Refresh</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <style>
+                    .blue-section {
+                        background-color: #e6f3ff;
+                        padding: 15px;
+                        border-radius: 5px;
+                    }
+
+                    .row.align-items-end {
+                        display: flex;
+                        align-items: flex-end;
+                    }
+
+                        .row.align-items-end > div {
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                    #searchField {
+                        width: 100%;
+                    }
+
+                        #searchField .dataTables_filter {
+                            margin-bottom: 0;
+                            width: 100%;
+                        }
+
+                            #searchField .dataTables_filter label {
+                                width: 100%;
+                                margin-bottom: 0;
+                                display: flex;
+                            }
+
+                            #searchField .dataTables_filter input {
+                                width: 100% !important;
+                                margin-left: 0 !important;
+                                height: calc(1.5em + .75rem + 2px); /* Match Bootstrap's form-control height */
+                            }
+
+                    #items-dropdown .dataTables_length {
+                        margin-bottom: 0;
+                    }
+
+                    #page-control .dataTables_paginate {
+                        float: right;
+                    }
+                </style>
+            </div>
+
+            @*<div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>*@
+        </div>
     </div>
 </div>
+
+
+
+
 <input type="hidden" id="customerId" name="customerId" />
 
 
@@ -479,13 +617,30 @@
 
 
 
-<script>
+    <script>
+
+        // Set Default Value for Filters
+        var defaultProductCode = $('#productCode').val();
+        var defaultCustomerFilter = $('#CustomerAccountCustomerFilter').val();
+
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#CustomerAccountModalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#CustomerAccountsGrid').DataTable().ajax.reload();
+        });
+
     $('#CustomerAccountsGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+        "sAjaxSource": "@(Url.Action("FetchCustomerAccountsTable", "CashDeposit", new { Area = "FrontOffice"}))",
         "sServerMethod": "POST",
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+                { "name": "customerFilter", "value": $('#CustomerAccountCustomerFilter').val() || defaultCustomerFilter }
+            );
+        },
 
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -539,7 +694,7 @@
         // Close the modal after selecting
         $('#customerLookupModal').modal('hide');
     });
-</script>
+    </script>
 
     //ajax form submisstion
     <script>
