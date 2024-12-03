@@ -55,66 +55,117 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            //var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            //var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            //int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
             var pageCollectionInfo = new PageCollectionInfo<CustomerDTO>();
 
             if (recordStatus != null && customerFilter != null)
             {
-                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, jQueryDataTablesModel.sSearch, (int)customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, jQueryDataTablesModel.sSearch, (int)customerFilter, 0, int.MaxValue, GetServiceHeader());
             }
             else if (recordStatus == null && customerFilter != null)
             {
-                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)customerFilter, 0, int.MaxValue, GetServiceHeader());
             }
             else if (customerType != null && customerFilter == null)
             {
-                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+                if (customerType == 0)
+                {
+                    pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, 0, int.MaxValue, GetServiceHeader());
+                }
+
+                if (customerType == 1)
+                {
+                    pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, 0, int.MaxValue, GetServiceHeader());
+                }
+                if (customerType == 2)
+                {
+                    pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, 0, int.MaxValue, GetServiceHeader());
+                }
+                if (customerType == 3)
+                {
+                    pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, 0, int.MaxValue, GetServiceHeader());
+                }
             }
             else if (recordStatus != null && customerFilter == null)
             {
-                pageCollectionInfo = await _channelService.FindCustomersByTypeAndFilterInPageAsync((int)customerType, jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+                pageCollectionInfo = await _channelService.FindCustomersByTypeAndFilterInPageAsync((int)customerType, jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, 0, int.MaxValue, GetServiceHeader());
             }
             else if (recordStatus == null && customerFilter == null)
             {
-                int type = 0;
-                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)type, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)RecordStatus.New, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, 0, int.MaxValue, GetServiceHeader());
 
                 if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
                 {
-                    totalRecordCount = pageCollectionInfo.ItemsCount;
-                    // Order the PageCollection by SerialNumber in descending order (latest to oldest)
-                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection
-                        .OrderByDescending(postingPeriod => postingPeriod.Reference2)
+
+                    var sortedData = pageCollectionInfo.PageCollection
+                        .OrderByDescending(loanCase => loanCase.CreatedDate)
                         .ToList();
 
-                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                    totalRecordCount = sortedData.Count;
 
-                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                    var paginatedData = sortedData
+                        .Skip(jQueryDataTablesModel.iDisplayStart)
+                        .Take(jQueryDataTablesModel.iDisplayLength)
+                        .ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                        ? sortedData.Count
+                        : totalRecordCount;
+
+                    return this.DataTablesJson(
+                        items: paginatedData,
+                        totalRecords: totalRecordCount,
+                        totalDisplayRecords: searchRecordCount,
+                        sEcho: jQueryDataTablesModel.sEcho
+                    );
                 }
+
+                return this.DataTablesJson(
+                    items: new List<CustomerDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+            );
             }
-            else
-            {
-                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-            }
+
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-                // Order the PageCollection by SerialNumber in descending order (latest to oldest)
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection
-                    .OrderByDescending(postingPeriod => postingPeriod.SerialNumber)
+
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
                     .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<CustomerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<CustomerDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
@@ -418,23 +469,20 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
 
 
-
         [HttpPost]
         public async Task<ActionResult> Create(
-CustomerBindingModel customerBindingModel,
-string[] debittypes,
-string[] savingsproducts,
-string[] investmentproducts,
-string typedescription,
-string passportPhotoDataUrl,
-HttpPostedFileBase signaturePhoto,
-HttpPostedFileBase idCardFrontPhoto,
-HttpPostedFileBase idCardBackPhoto,
-HttpPostedFileBase passportPhoto)
-
-
-
+            CustomerBindingModel customerBindingModel,
+            string[] debittypes,
+            string[] savingsproductIds,
+            string[] investmentproductIds,
+            string typedescription,
+            string passportPhotoDataUrl,
+            HttpPostedFileBase signaturePhoto,
+            HttpPostedFileBase idCardFrontPhoto,
+            HttpPostedFileBase idCardBackPhoto,
+            HttpPostedFileBase passportPhoto)
         {
+
             var startDate = Request["registrationdate"];
             var endDate = Request["birthdate"];
 
@@ -470,23 +518,27 @@ HttpPostedFileBase passportPhoto)
             var mandatoryDebitTypes = new ObservableCollection<DebitTypeDTO>();
             var mandatoryProducts = new ProductCollectionInfo();
 
-            if (savingsproducts != null && investmentproducts != null && debittypes != null)
+            if (savingsproductIds != null && investmentproductIds != null && debittypes != null)
             {
-                foreach (var k in savingsproducts)
+                foreach (var savingsProductID in savingsproductIds)
                 {
-                    mandatorySavingsProducts.Add(new SavingsProductDTO { Id = Guid.Parse(k) });
+                    var savingsDTO = await _channelService.FindSavingsProductAsync(Guid.Parse(savingsProductID), GetServiceHeader());
+
+                    mandatorySavingsProducts.Add(savingsDTO);
                 }
                 mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
 
-                foreach (var invest in investmentproducts)
+                foreach (var investmentId in investmentproductIds)
                 {
-                    mandatoryInvestmentProducts.Add(new InvestmentProductDTO { Id = Guid.Parse(invest) });
+                    var investmentDTO = await _channelService.FindInvestmentProductAsync(Guid.Parse(investmentId), GetServiceHeader());
+                    mandatoryInvestmentProducts.Add(investmentDTO);
                 }
                 mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
 
                 foreach (var debit in debittypes)
                 {
-                    mandatoryDebitTypes.Add(new DebitTypeDTO { Id = Guid.Parse(debit) });
+                    var debitTypeDTO = await _channelService.FindDebitTypeAsync(Guid.Parse(debit), GetServiceHeader());
+                    mandatoryDebitTypes.Add(debitTypeDTO);
                 }
             }
 
@@ -545,7 +597,7 @@ HttpPostedFileBase passportPhoto)
                         ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
                         ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
                         await ServeNavigationMenus();
-                        return View("Index", customerBindingModel);
+                        return RedirectToAction("Index", customerBindingModel);
                     }
 
                     else

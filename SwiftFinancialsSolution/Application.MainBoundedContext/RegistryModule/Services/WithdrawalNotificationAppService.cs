@@ -316,7 +316,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                                     var customerLoanAccounts = _customerAccountAppService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductCode(withdrawalNotificationDTO.CustomerId, (int)ProductCode.Loan, serviceHeader);
 
                                     var customerInvestmentAccounts = _customerAccountAppService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductCode(withdrawalNotificationDTO.CustomerId, (int)ProductCode.Investment, serviceHeader);
-
+                                    
                                     _customerAccountAppService.FetchCustomerAccountsProductDescription(customerLoanAccounts, serviceHeader);
                                     _customerAccountAppService.FetchCustomerAccountBalances(customerLoanAccounts, serviceHeader, true);
 

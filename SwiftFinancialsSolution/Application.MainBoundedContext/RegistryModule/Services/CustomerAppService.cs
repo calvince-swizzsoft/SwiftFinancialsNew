@@ -282,6 +282,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                         customerDTO.BranchId = currrentBranch.Id;
                         customerDTO.BranchDescription = currrentBranch.Description;
                         _customerAccountAppService.AddNewCustomerAccounts(customerDTO, mandatoryProducts.SavingsProductCollection, mandatoryProducts.InvestmentProductCollection, mandatoryProducts.LoanProductCollection, serviceHeader);
+                    
                     }
                     #endregion
 
@@ -829,6 +830,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
 
                 ISpecification<Customer> spec = filter;
 
+
                 var sortFields = new List<string> { "SequentialId" };
 
                 return await _customerRepository.AllMatchingPagedAsync<CustomerDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
@@ -845,7 +847,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
 
                 var sortFields = new List<string> { "SequentialId" };
 
-                return await _customerRepository.AllMatchingPagedAsync<CustomerDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+                return await _customerRepository.AllMatchingPagedAsync<CustomerDTO>(spec, pageIndex, pageSize, sortFields, false, serviceHeader);
             }
         }
 
