@@ -105,6 +105,57 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
             if (loaneeCustomer != null)
             {
+                var loanProduct = await _channelService.FindLoanProductAsync(loaneeCustomer.LoanProductId, GetServiceHeader());
+                loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear = loanProduct.LoanRegistrationPaymentFrequencyPerYear;
+                loanCaseDTO.LoanRegistrationMinimumAmount = loanProduct.LoanRegistrationMinimumAmount;
+                loanCaseDTO.LoanRegistrationMinimumInterestAmount = loanProduct.LoanRegistrationMinimumInterestAmount;
+                loanCaseDTO.LoanRegistrationMinimumGuarantors = loanProduct.LoanRegistrationMinimumGuarantors;
+                loanCaseDTO.LoanRegistrationMinimumMembershipPeriod = loanProduct.LoanRegistrationMinimumMembershipPeriod;
+                loanCaseDTO.LoanRegistrationMaximumGuarantees = loanProduct.LoanRegistrationMaximumGuarantees;
+                loanCaseDTO.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement = loanProduct.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement;
+                loanCaseDTO.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage = loanProduct.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage;
+                loanCaseDTO.LoanRegistrationLoanProductSection = loanProduct.LoanRegistrationLoanProductSection;
+                loanCaseDTO.LoanRegistrationLoanProductCategory = loanProduct.LoanRegistrationLoanProductCategory;
+                loanCaseDTO.LoanRegistrationConsecutiveIncome = loanProduct.LoanRegistrationConsecutiveIncome;
+                loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loanProduct.LoanRegistrationInvestmentsMultiplier;
+                loanCaseDTO.LoanRegistrationRejectIfMemberHasBalance = loanProduct.LoanRegistrationRejectIfMemberHasBalance;
+                loanCaseDTO.LoanRegistrationSecurityRequired = loanProduct.LoanRegistrationSecurityRequired;
+                loanCaseDTO.LoanRegistrationAllowSelfGuarantee = loanProduct.LoanRegistrationAllowSelfGuarantee;
+                loanCaseDTO.LoanRegistrationGracePeriod = loanProduct.LoanRegistrationGracePeriod;
+                loanCaseDTO.LoanRegistrationPaymentDueDate = loanProduct.LoanRegistrationPaymentDueDate;
+                loanCaseDTO.LoanRegistrationPayoutRecoveryMode = loanProduct.LoanRegistrationPayoutRecoveryMode;
+                loanCaseDTO.LoanRegistrationPayoutRecoveryPercentage = loanProduct.LoanRegistrationPayoutRecoveryPercentage;
+                loanCaseDTO.LoanRegistrationAggregateCheckOffRecoveryMode = loanProduct.LoanRegistrationAggregateCheckOffRecoveryMode;
+                loanCaseDTO.LoanRegistrationChargeClearanceFee = loanProduct.LoanRegistrationChargeClearanceFee;
+                loanCaseDTO.LoanRegistrationMicrocredit = loanProduct.LoanRegistrationMicrocredit;
+                loanCaseDTO.LoanRegistrationStandingOrderTrigger = loanProduct.LoanRegistrationStandingOrderTrigger;
+                loanCaseDTO.LoanRegistrationTrackArrears = loanProduct.LoanRegistrationTrackArrears;
+                loanCaseDTO.LoanRegistrationChargeArrearsFee = loanProduct.LoanRegistrationChargeArrearsFee;
+                loanCaseDTO.LoanRegistrationEnforceSystemAppraisalRecommendation = loanProduct.LoanRegistrationEnforceSystemAppraisalRecommendation;
+                loanCaseDTO.LoanRegistrationBypassAudit = loanProduct.LoanRegistrationBypassAudit;
+                loanCaseDTO.LoanRegistrationGuarantorSecurityMode = loanProduct.LoanRegistrationGuarantorSecurityMode;
+                loanCaseDTO.LoanRegistrationRoundingType = loanProduct.LoanRegistrationRoundingType;
+                loanCaseDTO.LoanRegistrationDisburseMicroLoanLessDeductions = loanProduct.LoanRegistrationDisburseMicroLoanLessDeductions;
+                loanCaseDTO.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal = loanProduct.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal;
+                loanCaseDTO.LoanRegistrationThrottleScheduledArrearsRecovery = loanProduct.LoanRegistrationThrottleScheduledArrearsRecovery;
+                loanCaseDTO.LoanRegistrationCreateStandingOrderOnLoanAudit = loanProduct.LoanRegistrationCreateStandingOrderOnLoanAudit;
+                loanCaseDTO.TakeHomeType = loanProduct.TakeHomeType;
+                loanCaseDTO.TakeHomePercentage = loanProduct.TakeHomePercentage;
+                loanCaseDTO.TakeHomeFixedAmount = loanProduct.TakeHomeFixedAmount;
+                loanCaseDTO.LoanProductId = loanProduct.Id;
+                loanCaseDTO.LoanProductDescription = loanProduct.Description;
+                loanCaseDTO.InterestCalculationModeDescription = loanProduct.LoanInterestCalculationModeDescription;
+                loanCaseDTO.LoanInterestAnnualPercentageRate = loanProduct.LoanInterestAnnualPercentageRate;
+                loanCaseDTO.LoanProductSectionDescription = loanProduct.LoanRegistrationLoanProductSectionDescription;
+                loanCaseDTO.LoanRegistrationTermInMonths = loanProduct.LoanRegistrationTermInMonths;
+                loanCaseDTO.LoanRegistrationMaximumAmount = loanProduct.LoanRegistrationMaximumAmount;
+                loanCaseDTO.LoanInterestChargeMode = loanProduct.LoanInterestChargeMode;
+                loanCaseDTO.LoanInterestRecoveryMode = loanProduct.LoanInterestRecoveryMode;
+                loanCaseDTO.LoanInterestCalculationMode = loanProduct.LoanInterestCalculationMode;
+
+
+
+
                 //loanCaseDTO.CaseNumber = loaneeCustomer.CaseNumber;
                 //loanCaseDTO.CustomerIndividualFirstName = loaneeCustomer.CustomerIndividualSalutationDescription + " " + loaneeCustomer.CustomerIndividualFirstName + " " +
                 //    loaneeCustomer.CustomerIndividualLastName;
@@ -201,94 +252,82 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(loanCaseDTO);
         }
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Approve(LoanCaseDTO loanCaseDTO)
         {
-            var loanApprovalOption = loanCaseDTO.LoanApprovalOption;
-
-            var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
-
-            var findLoanCaseDetails = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
-
-            loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
-            loanCaseDTO.LoanPurposeId = findLoanCaseDetails.LoanPurposeId;
-            loanCaseDTO.SavingsProductId = findLoanCaseDetails.SavingsProductId;
-            loanCaseDTO.ApprovedDate = DateTime.Now;
-
-            loanCaseDTO.ValidateAll();
-
             try
             {
+                var loanApprovalOption = loanCaseDTO.LoanApprovalOption;
+
+                var findLoanCaseDetails = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
+
+                loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
+                loanCaseDTO.LoanPurposeId = findLoanCaseDetails.LoanPurposeId;
+                loanCaseDTO.SavingsProductId = findLoanCaseDetails.SavingsProductId;
+                loanCaseDTO.ApprovedDate = DateTime.Now;
+
+                loanCaseDTO.ValidateAll();
 
                 if (!loanCaseDTO.HasErrors)
                 {
-                    try
+                    string message = string.Format(
+                        "Do you want to proceed with loan approval for: \n{0}?",
+                        $"{findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper()} " +
+                        $"{findLoanCaseDetails.CustomerIndividualFirstName.ToUpper()} " +
+                        $"{findLoanCaseDetails.CustomerIndividualLastName.ToUpper()}"
+                    );
+
+                    DialogResult result = MessageBox.Show(
+                        message,
+                        "Loan Approval",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+
+                    if (result == DialogResult.Yes)
                     {
+                        await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
 
-                        string message = string.Format(
-                                         "Do you want to proceed with loan approval for: \n{0}?",
-                                             findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " +
-                                             findLoanCaseDetails.CustomerIndividualLastName.ToUpper()
-                                     );
+                        MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-                        // Show the message box with Yes/No options
-                        DialogResult result = MessageBox.Show(
-                            message,
-                            "Loan Approval",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Question,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
-
-                        if (result == DialogResult.Yes)
-                        {
-                            await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
-
-                            //TempData["approve"] = "Loan Approval Successful";
-                            MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                            return RedirectToAction("Index");
-                        }
-                        else
-                        {
-                            await ServeNavigationMenus();
-
-                            ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanApprovalOption.ToString());
-
-                            MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                            return View(loanCaseDTO);
-                        }
-
+                        return RedirectToAction("Index");
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful Failed: {ex.ToString()}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                        await ServeNavigationMenus();
+                        ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanApprovalOption.ToString());
+
+                        MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                         return View(loanCaseDTO);
                     }
-
                 }
                 else
                 {
                     await ServeNavigationMenus();
 
-                    var errorMessages = loanDTO.ErrorMessages;
+                    var errorMessages = loanCaseDTO.ErrorMessages;
+                    string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
                     ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
 
-                    // Combine all error messages into a single string
-                    string errorMessage = string.Join("\n", errorMessages);
+                    MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful: {errorMessage}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-                    MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful. Errors:\n{errorMessage}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                     return View(loanCaseDTO);
                 }
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful Failed: {ex.ToString()}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                MessageBox.Show(Form.ActiveForm, $"An unexpected error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                Console.WriteLine($"Exception in Approve action: {ex}");
                 return View(loanCaseDTO);
             }
         }
+
     }
 }
