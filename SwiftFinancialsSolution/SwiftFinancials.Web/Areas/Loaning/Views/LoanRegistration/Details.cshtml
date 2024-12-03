@@ -5,98 +5,99 @@
 
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
+    .tab {
+        overflow: hidden;
+        background-color: whitesmoke;
+        border-radius: 8px;
+        margin: 20px;
     }
 
-    .tab-header, .sub-tab-header {
-        display: flex;
-        border-bottom: 1px solid #ccc;
-        margin-bottom: 10px;
-    }
-
-    .tab-button, .sub-tab-button {
-        background-color: #f1f1f1;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-        .tab-button:hover, .sub-tab-button:hover {
-            background-color: #ddd;
-        }
-
-        .tab-button.active, .sub-tab-button.active {
-            background-color: #ddd; /* Same as hover background color */
-        }
-
-        .tab-button:focus, .sub-tab-button:focus {
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
             outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            color: black;
+            font-size: 16px;
+            border-radius: 8px 8px 0 0;
+            margin-right: 2px;
         }
 
-    .tab, .sub-tab-content {
+            .tab button:hover {
+                background-color: lightgray;
+            }
+
+            .tab button.active {
+                background-color: lightgray;
+            }
+
+
+    .tabcontent {
         display: none;
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-radius: 0 8px 8px 8px;
+        background-color: white;
+        margin: 0 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: auto;
     }
 
-        .tab-content, .sub-tab-content.active {
-            display: block;
+        .tabcontent h3 {
+            margin-top: 0;
         }
 
-    .tab-content, .sub-tab-content {
-        max-height: 1000px; /* Adjust the height as needed */
-        overflow-y: auto;
-        padding: 10px;
-        border: 1px solid #ccc; /* Borderline around tab content */
-        background-color: #fff;
-        margin-top: 10px;
-    }
 
 
-   
-    #dataTableEntries {
+
+
+    #dataTable {
         width: 100%;
         border-collapse: collapse;
     }
 
-    #dataTableEntries th, td {
-        padding: 15px;
-        text-align: center;
-        border: 1px solid #ddd;
-        transition: background 0.3s, transform 0.3s;
-    }
+        #dataTable th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
 
-    #dataTableEntries th {
-        background: linear-gradient(to bottom, #4a90e2, #003366);
-        color: white;
-        text-transform: uppercase;
-        font-size: 1.1em;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
+        #dataTable th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
 
-    #dataTableEntries tr:hover td {
-        background: rgba(74, 144, 226, 0.2);
-        transform: translateY(-2px);
-    }
+        #dataTable tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
 
-    #dataTableEntries td {
-        background: #f9f9f9;
-        color: #333;
-    }
+        #dataTable td {
+            background: #f9f9f9;
+            color: #333;
+        }
 
-    #dataTableEntries tr:nth-child(even) td {
-        background: #f2f2f2;
-    }
+        #dataTable tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
 
-    #dataTableEntries tr:nth-child(odd) td {
-        background: #ffffff;
-    }
+        #dataTable tr:nth-child(odd) td {
+            background: #ffffff;
+        }
 
-    #dataTableEntries tr:last-child td {
-        border-bottom: none;
-    }
+        #dataTable tr:last-child td {
+            border-bottom: none;
+        }
 </style>
 
 
@@ -127,9 +128,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>View Loan Case</h2>
-                    <hr />
-                    @Html.ActionLink("Back To List", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
+                    <h2>Loan Case Details</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -141,7 +140,6 @@
                 </div>
                 <div class="ibox-content bg-white">
                     <fieldset>
-                        @*Row 1*@
                         <div class="row">
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
@@ -192,8 +190,6 @@
                             </div>
                         </div>
 
-
-                        @*Row 2*@
                         <div class="row">
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
@@ -262,7 +258,6 @@
                             </div>
                         </div>
 
-                        @*Row 3*@
                         <div class="row">
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
@@ -338,7 +333,6 @@
 
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
-                                    @* Loan Balance *@
                                     @Html.LabelFor(model => model.LoanProductLoanBalance, htmlAttributes: new { @class = "" })
                                     @Html.EditorFor(model => model.LoanProductLoanBalance, new
                                {
@@ -360,8 +354,6 @@
                             </div>
                         </div>
 
-
-                        @*Row 4*@
                         <div class="row">
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
@@ -460,53 +452,76 @@
                         </div>
 
 
-                        @*Tabs*@
-                        <div class="tab-header" style="color: black;">
-                            <div class="tab-button active" style="pointer-events: none; cursor: default;">
-                                <i class="fa fa-table" aria-hidden="true"></i> Loan Guarantors
+                        <div class="tab">
+                            <button class="tablinks active" onclick="openTab(event, 'MainTab1')"><i class="fa fa-table" aria-hidden="true"></i> Guarantors</button>
+                            <button class="tablinks" onclick="openTab(event, 'MainTab2')"><i class="fa fa-table" aria-hidden="true"></i> Collaterals</button>
+                        </div>
+
+
+                        <div id="MainTab1" class="tabcontent" style="display: block;">
+                            <div class="table-container">
+                                <h3 style="font-size: 1.9rem; text-align: center;">Guarantors</h3>
+                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Customer</th>
+                                            <th>Appraisal Factor</th>
+                                            <th>Total Shares</th>
+                                            <th>Committed Shares</th>
+                                            <th>Amount Guaranteed</th>
+                                            <th>Date Guaranteed</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.LoanGuarantors != null)
+                                        {
+                                            foreach (var guarantors in ViewBag.LoanGuarantors)
+                                            {
+                                                <tr>
+                                                    <td>@guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
+                                                    <td>@guarantors.AppraisalFactor</td>
+                                                    <td style="text-align: right;">@guarantors.TotalShares</td>
+                                                    <td style="text-align: right;">@guarantors.CommittedShares</td>
+                                                    <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
+                                                    <td>@guarantors.CreatedDate</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
-                        <div id="section1" class="tab active" style="display: block;">
-                            <!-- Loan Guarantors -->
-                            <div class="tab-content">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="table-container">
-                                            <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
-                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                    <tr>
-                                                        <th>Customer</th>
-                                                        <th>Appraisal Factor</th>
-                                                        <th>Total Shares</th>
-                                                        <th>Committed Shares</th>
-                                                        <th>Amount Guaranteed</th>
-                                                        <th>Date Guaranteed</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (ViewBag.LoanGuarantors != null)
-                                                    {
-                                                        foreach (var guarantors in ViewBag.LoanGuarantors)
-                                                        {
-                                                            <tr>
-                                                                <td>@guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
-                                                                <td>@guarantors.AppraisalFactor</td>
-                                                                <td style="text-align: right;">@guarantors.TotalShares</td>
-                                                                <td style="text-align: right;">@guarantors.CommittedShares</td>
-                                                                <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
-                                                                <td>@guarantors.CreatedDate</td>
-                                                            </tr>
-                                                        }
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+
+                        <div id="MainTab2" class="tabcontent">
+                            <div class="table-container">
+                                <h3 style="font-size: 1.9rem; text-align: center;">Collaterals</h3>
+                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Status</th>
+                                            <th>Document Title</th>
+                                            <th>Value</th>
+                                            <th>Date Attached</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.Collaterals != null)
+                                        {
+                                            foreach (var collaterals in ViewBag.Collaterals)
+                                            {
+                                                <tr>
+                                                    <td>@collaterals.CustomerDocumentCollateralStatusDescription</td>
+                                                    <td>@collaterals.CustomerDocumentFileTitle</td>
+                                                    <td style="text-align: right;">@collaterals.Value</td>
+                                                    <td>@collaterals.CreatedDate</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-
                     </fieldset>
                 </div>
             </div>
@@ -516,3 +531,97 @@
 
 
 
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        function openTab(evt, tabName) {
+            evt.preventDefault();
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubTab(evt, subTabName) {
+            evt.preventDefault();
+            var i, subtabcontent, subtablinks;
+            subtabcontent = document.getElementsByClassName("subtabcontent");
+            for (i = 0; i < subtabcontent.length; i++) {
+                subtabcontent[i].style.display = "none";
+            }
+            subtablinks = document.getElementsByClassName("subtablinks");
+            for (i = 0; i < subtablinks.length; i++) {
+                subtablinks[i].className = subtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubSubTab(evt, subSubTabName) {
+            evt.preventDefault();
+            var i, subsubtabcontent, subsubtablinks;
+            subsubtabcontent = document.getElementsByClassName("subsubtabcontent");
+            for (i = 0; i < subsubtabcontent.length; i++) {
+                subsubtabcontent[i].style.display = "none";
+            }
+            subsubtablinks = document.getElementsByClassName("subsubtablinks");
+            for (i = 0; i < subsubtablinks.length; i++) {
+                subsubtablinks[i].className = subsubtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subSubTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        document.getElementById("MainTab1").style.display = "block";
+        document.getElementById("SubTab1-1").style.display = "block";
+        document.getElementById("SubSubTab1-1-1").style.display = "block";
+    </script>
+}
