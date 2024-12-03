@@ -51,6 +51,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
 
             var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
 
@@ -66,7 +67,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
-
+            var levyDTOs = await _channelService.FindLeviesAsync(GetServiceHeader());
+            ViewBag.LevyDTOs = levyDTOs; 
             return View();
         }
 
@@ -108,6 +110,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Add(Guid? id, CommissionDTO commissionDTO)
         {
             await ServeNavigationMenus();
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
 
             ChargeSplitDTOs = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
 
@@ -193,6 +196,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> removeChargeSplit(Guid? id, CommissionDTO commissionDTO)
         {
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
+
             commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
 
             commissionDTO.chargeSplit = Session["chargeSplit"] as ObservableCollection<CommissionSplitDTO>;
@@ -252,6 +257,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CommissionDTO commissionDTO)
         {
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
+
             commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
 
             if (TempData["ChargeSplitDTOs"] != null)

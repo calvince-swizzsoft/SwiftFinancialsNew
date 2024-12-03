@@ -63,7 +63,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
-
+            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
             Guid parseId;
@@ -124,7 +126,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             //string Remarks = "";
             await ServeNavigationMenus();
-
+            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
             Guid parseId;

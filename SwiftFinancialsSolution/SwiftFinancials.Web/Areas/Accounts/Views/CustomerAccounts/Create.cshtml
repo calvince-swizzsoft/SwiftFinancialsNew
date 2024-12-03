@@ -5,6 +5,8 @@
 
     ViewBag.Title = "Create Customer Accounts";
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
+    var customerFilter = ViewBag.CustomerFilters as List<SelectListItem>;
+    var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -451,7 +453,31 @@
                     </tr>
                 </tbody>
             </table>
-
+            <form id="modalFilterForm" style="background-color: #E0f0ff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                <div class="form-row" style="display: flex; justify-content: space-between; align-items: center; gap: 30px;">
+                    <!-- Status Filter -->
+                    <div class="col-lg-3 form-group">
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <label for="recordStatus" style="white-space: nowrap; font-weight: bold;">Status</label>
+                            @Html.DropDownList("recordStatus", recordStatus, "Filter by Status",
+                                new { @class = "form-control", @id = "recordStatus", style = "width: 100%;" })
+                        </div>
+                    </div>
+                    <!-- Advanced Filter -->
+                    <div class="col-lg-3 form-group">
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <label for="customerFilter" style="white-space: nowrap; font-weight: bold;">Advanced</label>
+                            @Html.DropDownList("customerFilter", customerFilter, "Search",
+                                new { @class = "form-control", @id = "customerFilter", style = "width: 100%;" })
+                        </div>
+                    </div>
+                    <!-- Refresh Button -->
+                    <div class="col-lg-2 form-group">
+                        <input type="submit" value="Refresh" class="btn btn-primary"
+                               style="min-width: 120px; background-color: #008080; border-color: #0056b3; " />
+                    </div>
+                </div>
+            </form>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
@@ -961,7 +987,13 @@
                                         "bProcessing": true,
                                         "bServerSide": true,
                                         "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
-                                        "sServerMethod": "POST",
+                                "sServerMethod": "POST",
+                                "fnServerParams": function (aoData) {
+                                    aoData.push(
+                                        { "name": "recordStatus", "value": $('#recordStatus').val() || null },
+                                        { "name": "customerFilter", "value": $('#customerFilter').val() || null }
+                                    );
+                                },
                                         // Callback settings
 
                                         "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {

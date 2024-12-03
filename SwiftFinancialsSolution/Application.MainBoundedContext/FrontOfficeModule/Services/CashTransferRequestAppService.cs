@@ -162,6 +162,7 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
                     if (persisted != null && persisted.Status != (int)CashTransferRequestStatus.Pending)
                     {
                         persisted.Utilized = true;
+                        persisted.Status = (int)CashTransferRequestStatus.Utilized;
                     }
                 }
                 return await dbContextScope.SaveChangesAsync(serviceHeader) > 0;
