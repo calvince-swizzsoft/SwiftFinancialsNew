@@ -33,7 +33,7 @@ namespace SwiftFinancials.Web.Areas.Loaning
             int searchRecordCount = 0;
 
             var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(
-                48828,
+                (int)LoanCaseStatus.Approved,
                 filterValue,
                 filterType,
                 0,
