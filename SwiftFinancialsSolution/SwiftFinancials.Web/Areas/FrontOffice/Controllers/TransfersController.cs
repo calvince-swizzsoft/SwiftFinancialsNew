@@ -51,8 +51,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            //_selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
-
             _selectedTeller = await GetCurrentTeller();
             
             var missingParameters = new List<string>();
@@ -62,7 +60,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 missingParameters.Add("Active User");
             }
 
-            if (SelectedTeller == null)
+            if (_selectedTeller == null)
             {
                 missingParameters.Add("Teller");
             }
@@ -86,13 +84,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var untransferredCheques = await _channelService.FindUnTransferredExternalChequesByTellerId(SelectedTeller.Id, "", GetServiceHeader());
             var untransferredChequesValue = untransferredCheques.Sum(cheque => cheque.Amount);
 
-            model.EmployeeId = SelectedTeller.EmployeeId;
-            model.TotalCredits = SelectedTeller.TotalCredits;
-            model.TotalDebits = SelectedTeller.TotalDebits;
-            model.BookBalance = SelectedTeller.BookBalance;
+            model.EmployeeId = _selectedTeller.EmployeeId;
+            model.TotalCredits = _selectedTeller.TotalCredits;
+            model.TotalDebits = _selectedTeller.TotalDebits;
+            model.BookBalance = _selectedTeller.BookBalance;
 
-            model.OpeningBalance = SelectedTeller.OpeningBalance;
-            model.ClosingBalance = SelectedTeller.ClosingBalance;
+            model.OpeningBalance = _selectedTeller.OpeningBalance;
+            model.ClosingBalance = _selectedTeller.ClosingBalance;
 
             model.UntransferredChequesValue = untransferredChequesValue;
             return View(model);
@@ -141,8 +139,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (!cashTransferRequestDTO.HasErrors)
             {
-
-
                 var successRequest = await _channelService.AddCashTransferRequestAsync(cashTransferRequestDTO, GetServiceHeader());
 
                 //ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(externalChequeDTO.CustomerAccountCustomerType.ToString());

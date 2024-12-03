@@ -775,7 +775,6 @@
                                         <div class="form-group spacing-form-group">
                                             @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "control-label" })
                                             <div class="input-group date">
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                                 <input type="text" name="receivedDate" placeholder="dd-mm-yyyy" class="form-control date-input" id="ReceivedDate">
                                             </div>
                                         </div>
@@ -900,10 +899,6 @@
                                                 <th>Advanced Rate</th>
                                                 <th>Status</th>
                                                 <th>Record Status</th>
-                                                <th>Modified By</th>
-                                                <th>Modified Date</th>
-                                                <th>Created By</th>
-                                                <th>Created Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -994,7 +989,7 @@
 
                         <div class="col-lg-6">
                             <div class="form-group form-group-lg">
-                                <label for="filterType">Loan Filter</label>
+                                <label for="filterType">Customer Filter</label>
 
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
@@ -1427,10 +1422,6 @@
                                     '<td style="text-align: right;">' + collaterals.CollateralAdvanceRate + '</td>' +
                                     '<td>' + collaterals.CollateralStatusDescription + '</td>' +
                                     '<td>' + collaterals.RecordStatusDescription + '</td>' +
-                                    '<td>' + collaterals.ModifiedBy + '</td>' +
-                                    '<td>' + collaterals.ModifiedDate + '</td>' +
-                                    '<td>' + collaterals.CreatedBy + '</td>' +
-                                    '<td>' + collaterals.CreatedDate + '</td>' +
                                     '</tr>';
                                 tbody.append(row);
                             });

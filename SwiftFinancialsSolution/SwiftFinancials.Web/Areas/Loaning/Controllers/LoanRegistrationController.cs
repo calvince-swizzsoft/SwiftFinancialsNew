@@ -329,30 +329,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 //// Collaterals...
                 var collaterals = await _channelService.FindCustomerDocumentsByCustomerIdAndTypeAsync(parseId, (int)CustomerDocumentType.Collateral, GetServiceHeader());
-                foreach (var collateral in collaterals)
+                for (int i = 0; i < collaterals.Count; i++)
                 {
-                    if (collateral.CreatedDate != null) 
-                    {
-                        collateral.CreatedDate = Convert.ToDateTime(collateral.CreatedDate);
-                        collateral.ModifiedDate = Convert.ToDateTime(collateral.ModifiedDate);
-                    }
+                    collaterals[i].CreatedDate = Convert.ToDateTime(collaterals[i].CreatedDate);
+                    collaterals[i].ModifiedDate = Convert.ToDateTime(collaterals[i].ModifiedDate);
                 }
 
-                var investmentsBalance = await _channelService.ComputeEligibleLoanAppraisalInvestmentsBalanceAsync(loanCaseDTO.CustomerId, loanCaseDTO.LoanProductId, GetServiceHeader());
-                loanCaseDTO.LoanProductInvestmentsBalance = investmentsBalance;
-
-                // Latest Income
-                var latestIncome = await _channelService.FindLoanAppraisalCreditBatchEntriesByCustomerIdAsync(loanCaseDTO.CustomerId, loanCaseDTO.LoanProductId, true, GetServiceHeader());
-                loanCaseDTO.LoanProductLatestIncome = latestIncome.Sum(x => x.Balance);
-
-                // loanBalance
-                var findCustomerLoanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(loanCaseDTO.CustomerId, loanCaseDTO.LoanProductId,
-                    true, true, true, true, GetServiceHeader());
-                var bookBalanceTotal = findCustomerLoanAccounts.Sum(q => q.BookBalance);
-                var carryForwardsTotal = findCustomerLoanAccounts.Sum(c => c.CarryForwardsBalance);
-                var LoanBalance = bookBalanceTotal + carryForwardsTotal;
-                loanCaseDTO.LoanProductLoanBalance = LoanBalance;
-
+                
                 return Json(new
                 {
                     success = true,
@@ -422,7 +405,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View("create");
             }
 
-
             var loanProduct = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
             if (loanProduct != null)
             {
@@ -476,13 +458,24 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 Guid customerId = (Guid)Session["CustomerId"];
                 var investmentsBalance = await _channelService.ComputeEligibleLoanAppraisalInvestmentsBalanceAsync(customerId, parseId, GetServiceHeader());
 
+                // Latest Income
+                var latestIncome = await _channelService.FindLoanAppraisalCreditBatchEntriesByCustomerIdAsync(customerId, loanCaseDTO.LoanProductId, true, GetServiceHeader());
+                loanCaseDTO.LoanProductLatestIncome = latestIncome.Sum(x => x.Balance);
+
+                // loanBalance
+                var findCustomerLoanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(loanCaseDTO.CustomerId, loanCaseDTO.LoanProductId,
+                    true, true, true, true, GetServiceHeader());
+                var bookBalanceTotal = findCustomerLoanAccounts.Sum(q => q.BookBalance);
+                var carryForwardsTotal = findCustomerLoanAccounts.Sum(c => c.CarryForwardsBalance);
+                var LoanBalance = bookBalanceTotal + carryForwardsTotal;
+                loanCaseDTO.LoanProductLoanBalance = LoanBalance;
+
+
                 var findloanBalanceCustomerAccount = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(customerId, parseId, true, true, true, true,
                     GetServiceHeader());
                 var bookBal = findloanBalanceCustomerAccount.Sum(x => x.BookBalance);
                 var carryForward = findloanBalanceCustomerAccount.Sum(u => u.CarryForwardsBalance);
                 var loanBalance = bookBal + carryForward;
-
-                var latestIncome = await _channelService.FindLoanAppraisalCreditBatchEntriesByCustomerIdAsync(customerId, parseId, true, GetServiceHeader());
 
                 return Json(new
                 {
@@ -744,45 +737,50 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<JsonResult> CustomerIndex(JQueryDataTablesModel jQueryDataTablesModel, int recordStatus, string text, int customerFilter)
         {
-
             int totalRecordCount = 0;
             int searchRecordCount = 0;
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
             int pageSize = jQueryDataTablesModel.iDisplayLength;
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)RecordStatus.Approved, text, customerFilter, pageIndex, pageSize, GetServiceHeader());
+
+            var pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)RecordStatus.Approved, text, customerFilter, 0, int.MaxValue, GetServiceHeader());
 
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
-                    ? pageCollectionInfo.PageCollection.Count
-                    : totalRecordCount;
 
-                var orderedPageCollection = pageCollectionInfo.PageCollection
-                    .OrderByDescending(item => item.CreatedDate)
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(customer => customer.CreatedDate)
                     .ToList();
 
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
                 return this.DataTablesJson(
-                    items: orderedPageCollection,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<CustomerDTO> { },
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<CustomerDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
+
+
 
 
         [HttpPost]
@@ -822,7 +820,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
 
-                    MessageBox.Show(Form.ActiveForm, "Operation cancelled.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1,
+                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1,
                         MessageBoxOptions.ServiceNotification);
                     return View(loanCaseDTO);
                 }
@@ -947,7 +945,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                             ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
 
-                            MessageBox.Show(Form.ActiveForm, "The selected Member's Registration Period is less than the minimum required to apply for the selected Loan Product.", 
+                            MessageBox.Show(Form.ActiveForm, "The selected Member's Registration Period is less than the minimum required to apply for the selected Loan Product.",
                                 "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
                             return View(loanCaseDTO);
@@ -995,7 +993,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                             await _channelService.UpdateLoanCollateralsByLoanCaseIdAsync(loanCase.Id, collateralDocuments, GetServiceHeader());
 
-                            MessageBox.Show(Form.ActiveForm, "Operation completed successfully.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                            MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             return RedirectToAction("Index");
                         }
                         else
@@ -1012,7 +1010,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                             ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
                             ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
-                            MessageBox.Show(Form.ActiveForm, "Operation cancelled.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                            MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             return View(loanCaseDTO);
                         }
                     }

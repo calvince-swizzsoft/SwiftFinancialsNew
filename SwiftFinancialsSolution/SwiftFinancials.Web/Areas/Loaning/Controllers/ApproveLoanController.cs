@@ -24,32 +24,59 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
-
+            ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
+            ViewBag.LoanCaseStatusSelectList = GetLoanCaseStatusSelectList(string.Empty);
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, string filterValue, int filterType)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Appraised, jQueryDataTablesModel.sSearch, (int)LoanCaseFilter.CustomerFirstName, (jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength), jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(
+                (int)LoanCaseStatus.Appraised,
+                filterValue,
+                filterType,
+                0,
+                int.MaxValue,
+                includeBatchStatus: true,
+                GetServiceHeader()
+            );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<LoanCaseDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
 
@@ -191,54 +218,75 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             loanCaseDTO.ValidateAll();
 
-
-            if (!loanCaseDTO.HasErrors)
+            try
             {
-                string message = string.Format(
-                                 "Do you want to proceed with loan approval for: \n{0}?",
-                                     findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " +
-                                     findLoanCaseDetails.CustomerIndividualLastName.ToUpper()
-                             );
 
-                // Show the message box with Yes/No options
-                DialogResult result = MessageBox.Show(
-                    message,
-                    "Loan Approval",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                if (result == DialogResult.Yes)
+                if (!loanCaseDTO.HasErrors)
                 {
-                    await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
+                    try
+                    {
 
-                    //TempData["approve"] = "Loan Approval Successful";
-                    MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                        string message = string.Format(
+                                         "Do you want to proceed with loan approval for: \n{0}?",
+                                             findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " +
+                                             findLoanCaseDetails.CustomerIndividualLastName.ToUpper()
+                                     );
 
-                    return RedirectToAction("Index");
+                        // Show the message box with Yes/No options
+                        DialogResult result = MessageBox.Show(
+                            message,
+                            "Loan Approval",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button1,
+                            MessageBoxOptions.ServiceNotification
+                        );
+
+                        if (result == DialogResult.Yes)
+                        {
+                            await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
+
+                            //TempData["approve"] = "Loan Approval Successful";
+                            MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                            return RedirectToAction("Index");
+                        }
+                        else
+                        {
+                            await ServeNavigationMenus();
+
+                            ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanApprovalOption.ToString());
+
+                            MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                            return View(loanCaseDTO);
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful Failed: {ex.ToString()}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                        return View(loanCaseDTO);
+                    }
+
                 }
                 else
                 {
                     await ServeNavigationMenus();
 
-                    ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanApprovalOption.ToString());
+                    var errorMessages = loanDTO.ErrorMessages;
+                    ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
 
-                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    // Combine all error messages into a single string
+                    string errorMessage = string.Join("\n", errorMessages);
+
+                    MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful. Errors:\n{errorMessage}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                     return View(loanCaseDTO);
                 }
+
             }
-            else
+            catch (Exception ex)
             {
-                await ServeNavigationMenus();
-
-                var errorMessages = loanDTO.ErrorMessages;
-                ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
-
-                MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful. {errorMessages[0]}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-
+                MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful Failed: {ex.ToString()}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                 return View(loanCaseDTO);
             }
         }

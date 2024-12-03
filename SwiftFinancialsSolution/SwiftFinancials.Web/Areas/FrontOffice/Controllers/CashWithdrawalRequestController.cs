@@ -365,20 +365,26 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     MessageBoxDefaultButton.Button1,
                     MessageBoxOptions.ServiceNotification
                 );
+
+                return Json(new { success = true, message = "Operation Success" });
             }
             else
             {
                 MessageBox.Show(
-                    "An error occurred, please contact Admin",
+                    "Operation Failed, please try again",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error,
                     MessageBoxDefaultButton.Button1,
                     MessageBoxOptions.ServiceNotification
                 );
+
+                return Json(new { success = true, message = "Operation Failed" });
+
             }
 
-            return RedirectToAction("Create");
+            //return RedirectToAction("Create");
+            //return Json(new { success = true, message = "Operation Success" });
         }
 
         private async Task<TellerDTO> FindTellerWithRequestDTO(CashDepositRequestDTO cashDepositRequestDTO)

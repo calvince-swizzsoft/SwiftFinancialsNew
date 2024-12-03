@@ -122,17 +122,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            //_selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
-
-            //_selectedPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
             _selectedTeller = await GetCurrentTeller();
 
-            //if (id == null)
-            //{
-            //    TempData["NullTeller"] = "Message";
-            //    return View();
-            //}
             var missingParameters = new List<string>();
 
             if (currentUser == null)
@@ -183,9 +174,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             /*ashTransferRequestDTO.ValidateAll();*/
 
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            //_selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
-
-            _selectedTeller = await GetCurrentTeller();
+      
+           _selectedTeller = await GetCurrentTeller();
 
             cashTransferRequestDTO.EmployeeId = SelectedTeller.EmployeeId;
 
@@ -242,10 +232,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         model.BranchId = SelectedBranch.Id;
 
                     if (SelectedTreasury != null)
-                        model.DebitChartOfAccountId = SelectedTreasury.ChartOfAccountId;
+                        model.CreditChartOfAccountId = SelectedTreasury.ChartOfAccountId;
 
                     if (SelectedTeller != null && !SelectedTeller.IsLocked)
-                        model.CreditChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
+                        model.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
 
 
                     model.TotalValue = cashTransferRequestDTO.Amount;
@@ -451,7 +441,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return null;
             }
 
-            var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, false, GetServiceHeader());
+            var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, true, GetServiceHeader());
 
             if (teller == null)
             {
