@@ -7,30 +7,7 @@
 
     var chargeType = ViewBag.chargeType as List<SelectListItem>;
 }
-<style>
-    .animated-tabs {
-        font-size: 0.75rem; /* Smaller font size */
-    }
 
-        .animated-tabs .nav-link {
-            transition: all 0.3s ease-in-out; /* Smooth transition for hover effect */
-            padding: 8px 12px; /* Adjust padding for a compact look */
-        }
-
-            /* Hover effect for the tabs */
-            .animated-tabs .nav-link:hover {
-                color: #ffffff; /* Text color on hover */
-                background-color: #007bff; /* Background color change */
-                transform: scale(1.1); /* Slightly scale up */
-                border-radius: 5px; /* Rounded corners for a smooth look */
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-            }
-
-    #myTab .nav-link {
-        font-size: 0.85rem !important; /* Reduce font size */
-        padding: 5px 10px !important; /* Reduce padding */
-    }
-</style>
 
 <style>
     #tabs-container {
@@ -233,168 +210,216 @@
 
 
                         @*<div id="tabs-container" style="text-align: center;">
-                <ul class="nav-tabs">
-                    <li>@Html.ActionLink("Charges", "Create", "Charges")</li>
-                    <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
-                    <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
-                </ul>
-            </div>
+                                <ul class="nav-tabs">
+                                    <li>@Html.ActionLink("Charges", "Create", "Charges")</li>
+                                    <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
+                                    <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
+                                </ul>
+                            </div>
 
-            <br />*@
-
+                            <br />*@
                         <fieldset>
-                            <div class="row mb-4">
+                            <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, new { @class = "form-label fw-bold" })
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Name..." } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.MaximumCharge, new { @class = "form-label fw-bold" })
+                                        @Html.LabelFor(model => model.MaximumCharge, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.MaximumCharge, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
                                         @Html.ValidationMessageFor(model => model.MaximumCharge, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="col-lg-2 d-flex align-items-end">
-                                    <div class="form-check">
-                                        @Html.CheckBoxFor(model => model.IsLocked, new { @class = "form-check-input" })
-                                        @Html.LabelFor(model => model.IsLocked, new { @class = "form-check-label ms-2" })
+                                <div class="col-lg-2">
+                                    <div class="form-group form-group-lg" style="margin-top: 30px;">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
+                        </fieldset>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-                            <!-- Tab Navigation -->
-                            <ul class="nav nav-tabs" id="chargeTabs" role="tablist">
+                        <div class="container mt-5">
+                            <ul class="nav nav-tabs" role="tablist">
+                                @*<li class="nav-item">
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#general" role="tab">General</a>
+                                    </li>*@
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="splits-tab" data-bs-toggle="tab" href="#Splits" role="tab" aria-controls="Splits" aria-selected="true">Splits</a>
+                                    <a class="nav-link" data-bs-toggle="tab" href="#splitting" role="tab">Charge Splitting</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tiers-tab" data-bs-toggle="tab" href="#Tiers" role="tab" aria-controls="Tiers" aria-selected="false">Tiers</a>
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tiers" role="tab">Charge Tiers</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="levies-tab" data-bs-toggle="tab" href="#levies" role="tab" aria-controls="levies" aria-selected="false">Levies</a>
+                                    <a class="nav-link" data-bs-toggle="tab" href="#levies" role="tab">Levies</a>
                                 </li>
                             </ul>
 
-                            <div class="tab-content mt-4" id="chargeTabsContent">
-                                <!-- Splits Tab -->
-                                <div class="tab-pane fade show active" id="Splits" role="tabpanel" aria-labelledby="splits-tab">
-                                    <h3 class="text-primary mb-4">Charge Splitting</h3>
-                                    <div class="row mb-3">
-                                        <div class="col-lg-4">
-                                            @Html.LabelFor(model => model.chargeSplits.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.Id)
-                                            @Html.EditorFor(model => model.chargeSplits.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account..." } })
-                                            @Html.ValidationMessageFor(model => model.chargeSplits.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <div class="form-group">
-                                                @Html.LabelFor(model => model.chargeSplit[0].Description, new { @class = "form-label fw-bold" })
-                                                @Html.EditorFor(model => model.chargeSplit[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Split Name" } })
-                                                @Html.ValidationMessageFor(model => model.chargeSplit[0].Description, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <div class="form-group">
-                                                @Html.LabelFor(model => model.chargeSplit[0].Percentage, new { @class = "form-label fw-bold" })
-                                                @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "00.00000%" } })
-                                                @Html.ValidationMessageFor(model => model.chargeSplit[0].Percentage, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 d-flex align-items-end">
-                                            <div class="form-check">
-                                                @Html.CheckBoxFor(model => model.chargeSplit[0].Leviable, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.chargeSplit[0].Leviable, new { @class = "form-check-label ms-2" })
-                                                @Html.ValidationMessageFor(model => model.chargeSplit[0].Leviable, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="tab-content mt-3">
+                                <!-- General Tab -->
+                                <!--<div class="tab-pane fade show active" id="general" role="tabpanel">
 
-                                <!-- Tiers Tab -->
-                                <div class="tab-pane" id="Tiers" role="tabpanel" aria-labelledby="tiers-tab">
-                                    <h3 class="text-primary">Charge Tiers</h3>
-                                    <div class="row mb-3">
-                                        <!-- Charge Type -->
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.ChargeType, new { @class = "control-label" })
-                                                <div class="input-group">
-                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                    @Html.DropDownListFor(model => model.ChargeType, chargeType, new { @class = "form-control input-md" })
-                                                    @Html.ValidationMessageFor(model => model.ChargeType)
+                                </div>-->
+                                <!-- Charge Splitting Tab -->
+                                <div class="tab-pane fade show active" id="splitting" role="tabpanel">
+                                    <fieldset>
+                                        <h2 style="color: cadetblue;">Charge Splitting</h2>
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.chargeSplits.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.Id)
+                                                    @Html.EditorFor(model => model.chargeSplits.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account..." } })
+                                                    @Html.ValidationMessageFor(model => model.chargeSplits.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.chargeSplit[0].Description, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.chargeSplit[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Split Name" } })
+                                                    @Html.ValidationMessageFor(model => model.chargeSplit[0].Description, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.00000%" } })
+                                                    @Html.ValidationMessageFor(model => model.chargeSplit[0].Percentage, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="form-group form-group-lg" style="margin-top: 30px;">
+                                                    @Html.CheckBoxFor(model => model.chargeSplit[0].Leviable, htmlAttributes: new { @class = "" })
+                                                    @Html.LabelFor(model => model.chargeSplit[0].Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                                    @Html.ValidationMessageFor(model => model.chargeSplit[0].Leviable, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- Range Upper Limit -->
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.fixedeposite[0].RangeUpperLimit, htmlAttributes: new { @class = "form-label fw-bold" })
-                                                @Html.EditorFor(model => model.fixedeposite[0].RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Upper Limit" } })
-                                                @Html.ValidationMessageFor(model => model.fixedeposite[0].RangeUpperLimit, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <!-- Range Lower Limit -->
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.fixedeposite[0].RangeLowerLimit, htmlAttributes: new { @class = "form-label fw-bold" })
-                                                @Html.EditorFor(model => model.fixedeposite[0].RangeLowerLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Lower Limit" } })
-                                                @Html.ValidationMessageFor(model => model.fixedeposite[0].RangeLowerLimit, "", new { @class = "text-danger" })
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-sm">
+                                                    <input type="submit" value="Add" style="width: 150px;" class="btn btn-primary" />
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <!-- Percentage -->
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.fixedeposite[0].Percentage, htmlAttributes: new { @class = "form-label fw-bold" })
-                                                @Html.EditorFor(model => model.fixedeposite[0].Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Percentage" } })
-                                                @Html.ValidationMessageFor(model => model.fixedeposite[0].Percentage, "", new { @class = "text-danger" })
+                                        <row>
+                                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                    <tr>
+                                                        <th style="width: 15%;">G/L Account Name</th>
+                                                        <th style="width: 10%;">Charge Split Name</th>
+                                                        <th style="width: 5%;">Percentage</th>
+                                                        <th style="width: 2%;">Leviable</th>
+                                                        <th style="width: 5%;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.ChargeSplitDTOs != null)
+                                                    {
+                                                        foreach (var commissionSplit in ViewBag.ChargeSplitDTOs)
+                                                        {
+                                                            <tr data-id="@commissionSplit.Id">
+                                                                <td>@commissionSplit.ChartOfAccountAccountName</td>
+                                                                <td>@commissionSplit.Description</td>
+                                                                <td style="text-align: right;">@commissionSplit.Percentage</td>
+                                                                <td>@commissionSplit.Leviable</td>
+                                                                <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                            @if (TempData["tPercentage"] != null)
+                                            {
+                                                <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
+                                            }
+                                        </row>
+                                    </fieldset>
+                                </div>
+
+                                <!-- Charge Tiers Tab -->
+                                <div class="tab-pane fade" id="tiers" role="tabpanel">
+                                    <fieldset>
+                                        <h3 class="text-primary">Charge Tiers</h3>
+                                        <div class="row mb-3">
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.ChargeType, new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                        @Html.DropDownListFor(model => model.ChargeType, chargeType, new { @class = "form-control input-md" })
+                                                        @Html.ValidationMessageFor(model => model.ChargeType)
+                                                    </div>
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.fixedeposite[0].Percentage, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                    @Html.EditorFor(model => model.fixedeposite[0].Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Upper Limit" } })
+                                                    @Html.ValidationMessageFor(model => model.fixedeposite[0].Percentage, "", new { @class = "text-danger" })
+                                                </div>
+
+                                            </div>
+                                            <div class="col-lg-6">
+                                                @*<div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.fixedeposite[0].FIXED, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                    @Html.EditorFor(model => model.fixedeposite[0].RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Upper Limit" } })
+                                                    @Html.ValidationMessageFor(model => model.fixedeposite[0].RangeUpperLimit, "", new { @class = "text-danger" })
+                                                </div>*@
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.fixedeposite[0].RangeUpperLimit, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                    @Html.EditorFor(model => model.fixedeposite[0].RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Upper Limit" } })
+                                                    @Html.ValidationMessageFor(model => model.fixedeposite[0].RangeUpperLimit, "", new { @class = "text-danger" })
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </fieldset>
                                 </div>
 
                                 <!-- Levies Tab -->
-                                <div class="tab-pane" id="levies" role="tabpanel" aria-labelledby="levies-tab">
-                                    <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                        <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                            <thead style="background-color: #4682b4; color: #fff;">
-                                                <tr>
-                                                    <th data-toggle="true">Description</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (ViewBag.LevyDTOs != null)
-                                                {
-                                                    foreach (var save in ViewBag.LevyDTOs)
+                                <div class="tab-pane fade" id="levies" role="tabpanel">
+                                    <fieldset>
+                                        <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                            <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                                <thead style="background-color: #4682b4; color: #fff;">
+                                                    <tr>
+                                                        <th data-toggle="true">Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.LevyDTOs != null)
                                                     {
-                                <tr style="background-color: #f5f5f5;">
-                                    <td>
-                                        <input type="checkbox"
-                                               class="savings-checkbox"
-                                               name="savingsproductIds"
-                                               value="@save.Id"
-                                               @(ViewBag.LevyDTOs) />
-                                        @save.Description
-                                    </td>
-                                </tr>}
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                        foreach (var save in ViewBag.LevyDTOs)
+                                                        {
+                                                            <tr style="background-color: #f5f5f5;">
+                                                                <td>
+                                                                    <input type="checkbox"
+                                                                           class="savings-checkbox"
+                                                                           name="savingsproductIds"
+                                                                           value="@save.Id"
+                                                                           @(ViewBag.LevyDTOs) />
+                                                                    @save.Description
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </fieldset>
                                 </div>
                             </div>
-                        </fieldset>
-
-
+                        </div>
 
                     }
                 </div>
@@ -458,35 +483,6 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Get all tabs and tab content
-            const tabs = document.querySelectorAll('.nav-tabs a');
-            const tabContent = document.querySelectorAll('.tab-pane');
-
-            tabs.forEach((tab) => {
-                tab.addEventListener('click', (e) => {
-                    e.preventDefault();
-
-                    // Remove 'active' class from all tabs and tab panes
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabContent.forEach(content => content.classList.remove('active'));
-
-                    // Add 'active' class to the clicked tab and its corresponding pane
-                    tab.classList.add('active');
-                    const target = document.querySelector(tab.getAttribute('href'));
-                    if (target) {
-                        target.classList.add('active');
-                    }
-                });
-            });
-        });
-    </script>
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script src="~/Scripts/js/navlink.js"></script>
     <script>
 $(document).ready(function () {
     // Function to save the state of the header checkbox to local storage

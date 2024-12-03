@@ -27,7 +27,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             int totalRecordCount = 0;
             int searchRecordCount = 0;
 
-            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            bool sortDescending = jQueryDataTablesModel.sSortDir_.First() == "desc";
             var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
@@ -44,18 +44,29 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                var sortedData = sortAscending
-                    ? pageCollectionInfo.PageCollection
-                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList()
-                    : pageCollectionInfo.PageCollection
-                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList();
+                var sortedData = pageCollectionInfo.PageCollection.AsQueryable();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+                // Apply sorting first, before pagination
+                if (sortedColumns.Contains("CreatedDate"))
+                {
+                    sortedData = sortDescending
+                        ? sortedData.OrderByDescending(item => item.CreatedDate).ThenByDescending(item => item.Id)
+                        : sortedData.OrderBy(item => item.CreatedDate).ThenBy(item => item.Id);
+                }
+
+                // Apply pagination after sorting
+                var pagedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(pageSize)
+                    .ToList();
+
+                // Count records for search
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count()
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: sortedData,
+                    items: pagedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
@@ -71,6 +82,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 );
             }
         }
+
+
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -95,27 +108,52 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             if (!departmentDTO.HasErrors)
             {
-                await _channelService.AddDepartmentAsync(departmentDTO, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                try
+                {
+                    await _channelService.AddDepartmentAsync(departmentDTO, GetServiceHeader());
 
-                TempData["SuccessMessage"] = "Department created successfully!";
+                    MessageBox.Show(
+                        "Operation Success: Department created successfully!",
+                        "Customer Receipts",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
 
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+
+                    MessageBox.Show(
+                        "An error occurred while creating the department. Please try again.",
+                        "Customer Receipts",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                }
             }
             else
             {
-                var errorMessages = departmentDTO.ErrorMessages;
+                string errorMessages = string.Join(Environment.NewLine, departmentDTO.ErrorMessages);
 
-                return View(departmentDTO);
+                MessageBox.Show(
+                    $"Validation Errors: {errorMessages}",
+                    "Customer Receipts",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
             }
+
+            return View(departmentDTO);
         }
+
 
 
         public async Task<ActionResult> Edit(Guid id)
@@ -133,25 +171,52 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateDepartmentAsync(departmentBindingModel, GetServiceHeader()); 
-                MessageBox.Show(
-                                                              "Operation Success",
-                                                              "Customer Receipts",
-                                                              MessageBoxButtons.OK,
-                                                              MessageBoxIcon.Information,
-                                                              MessageBoxDefaultButton.Button1,
-                                                              MessageBoxOptions.ServiceNotification
-                                                          );
+                try
+                {
+                    await _channelService.UpdateDepartmentAsync(departmentBindingModel, GetServiceHeader());
 
-                TempData["SuccessMessage"] = "Department updated successfully!"; 
+                    MessageBox.Show(
+                        "Operation Success: Department updated successfully!",
+                        "Customer Receipts",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
 
-                return RedirectToAction("Index");
+                    TempData["SuccessMessage"] = "Department updated successfully!";
+
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+
+                    MessageBox.Show(
+                        "An error occurred while updating the department. Please try again.",
+                        "Update Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                }
             }
             else
             {
-                return View(departmentBindingModel);
+                MessageBox.Show(
+                    "Validation Errors: Please correct the errors and try again.",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
             }
+
+            return View(departmentBindingModel);
         }
+
 
         [HttpGet]
         public async Task<JsonResult> GetDepartmentsAsync()

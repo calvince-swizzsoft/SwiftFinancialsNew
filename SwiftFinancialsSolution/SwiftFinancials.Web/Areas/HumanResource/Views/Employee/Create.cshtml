@@ -520,18 +520,27 @@
                      console.log("Error fetching data: ", xhr, error, thrown);
                      alert("Failed to load data. Please try again.");
                  }
-        });
-
+             });
+        // Customer selection logic with status check
         $("#s tbody").on("click", "tr", function () {
             var data = customersGrid.row(this).data();
 
-            $('#CustomerId').val(data.Id);
-            $('input[name=CustomerId]').val(data.Id);
-            $('input[name=CustomerFullName]').val(data.FullName);
-            //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
+            // Check if the customer's status is 'Approved'
+            if (data.RecordStatusDescription !== 'Approved') {
+                // Alert the user that they need to select an approved customer
+                alert('Please select a customer with an approved status.');
+            } else {
+                // If status is 'Approved', proceed with setting the values
+                $('#CustomerId').val(data.Id);
+                $('input[name=CustomerId]').val(data.Id);
+                $('input[name=CustomerFullName]').val(data.FullName);
+                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
 
-            $('#customerLookupModal').modal('hide');
+                // Close the modal
+                $('#customerLookupModal').modal('hide');
+            }
         });
+
 
             //EmployeeType typehead starts here
             $('.EmployeeTypesLookup').typeahead({

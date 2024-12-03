@@ -78,6 +78,8 @@
                         @using (Html.BeginForm("Edit", "Salary", new { Area = "HumanResource" }, FormMethod.Post))
                         {
                             @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.Id)
+
                             @Html.HiddenFor(model => model.ProductChartOfAccountCode, new { id = "ProductChartOfAccountCode" })
                             @Html.HiddenFor(model => model.ProductChartOfAccountId, new { id = "ProductChartOfAccountId" })
                             @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductCode, new { id = "CustomerAccountTypeTargetProductCode" })

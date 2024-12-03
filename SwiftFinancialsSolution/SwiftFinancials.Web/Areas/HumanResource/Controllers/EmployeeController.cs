@@ -154,15 +154,45 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                     employeeDTO.IDCardFrontPhoto = document.IDCardFrontPhoto;
                     employeeDTO.IDCardBackPhoto = document.IDCardBackPhoto;
                 }
+                var individualParticular = await _channelService.FindCustomerAsync(customerId, GetServiceHeader());
+                ViewBag.IndividualParticulars = individualParticular;
+
+                // Retrieve referees for the customer
+                var referees = await _channelService.FindRefereeCollectionByCustomerIdAsync(customerId, GetServiceHeader());
+
+                // Assign referees to ViewBag or employeeDTO
+                ViewBag.Referees = referees;
+
+                // Retrive SavingProduct For the customer
+                var savingProducts = await _channelService.FindSavingsProductAsync(customerId, GetServiceHeader());
+                ViewBag.SavingsProducts = savingProducts;
+
+                //Retrive LoadProducts for the Customer
+                var loanAccount = await _channelService.FindLoanProductAsync(customerId, GetServiceHeader());
+                ViewBag.LoanAccount = loanAccount;
+
+                //Retrive Investment Accounts 
+                var investmentAccounts = await _channelService.FindInvestmentProductAsync(customerId, GetServiceHeader());
+                ViewBag.InvestmentAccount = investmentAccounts;
+
+                
 
                 // Return the view with the employee details
                 return View(employeeDTO);
             }
 
-            // Handle the case where the employee is not found
-            TempData["ErrorMessage"] = "Employee not found.";
+            MessageBox.Show(
+                "Operation Success: Employee not found.",
+                "Employee ErrorPage",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information,
+                MessageBoxDefaultButton.Button1,
+                MessageBoxOptions.ServiceNotification
+            );
+
             return RedirectToAction("ErrorPage"); // Replace with your error page action
         }
+
 
 
 
@@ -211,7 +241,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                                                              MessageBoxDefaultButton.Button1,
                                                              MessageBoxOptions.ServiceNotification
                                                          );
-                TempData["SuccessMessage"] = "Employee Created Succeessfully";
 
                 return RedirectToAction("Index");
             }
@@ -228,6 +257,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
+            ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
+            ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
 
             var employeeDTO = await _channelService.FindEmployeeAsync(id, GetServiceHeader());
 
@@ -253,7 +285,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                                                              MessageBoxDefaultButton.Button1,
                                                              MessageBoxOptions.ServiceNotification
                                                          );
-                TempData["SuccessMessage"] = "Employee Updated Successfully";
 
                 return RedirectToAction("Index");
             }

@@ -238,7 +238,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
                 else return null;
             }
         }
-
+       
         public PageCollectionInfo<SalaryCardDTO> FindSalaryCards(int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())

@@ -168,7 +168,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "SalaryPeriods", new { Area = "HumanResource"}))",
+                "sAjaxSource": "@(Url.Action("Index", "SalaryProcessing", new { Area = "HumanResource"}))",
                 "sServerMethod": "POST",
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -189,7 +189,7 @@
 
 
                     var viewButton = `<a class="dropdown-item" href="/HumanResource/SalaryPeriods/view/${aData.Id}">Verify</a>`;
-                    var editButton = `<a class="dropdown-item" href="/HumanResource/SalaryPeriods/edit/${aData.Id}">Edit</a>`;
+                    var editButton = `<a class="dropdown-item" href="/HumanResource/SalaryProcessing/edit/${aData.Id}">Edit</a>`;
 
 
                     $('td:eq(7)', nRow).html(dt_Created);
@@ -255,7 +255,7 @@
             var formattedStartDate = startDate.toISOString().split('T')[0];
             var formattedEndDate = endDate.toISOString().split('T')[0];
 
-            var url = '@(Url.Action("Index", "SalaryPeriods", new { Area = "HumanResource" }))';
+            var url = '@(Url.Action("Index", "SalaryProcessing", new { Area = "HumanResource" }))';
             url += '?startDate=' + formattedStartDate + '&endDate=' + formattedEndDate + '&text=' + text;
 
             $('#FixedDepositsGrid').DataTable().ajax.url(url).load();

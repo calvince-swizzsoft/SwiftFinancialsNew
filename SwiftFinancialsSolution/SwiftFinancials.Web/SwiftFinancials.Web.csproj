@@ -1497,6 +1497,11 @@
     <Content Include="Areas\HumanResource\Views\SalaryProcessing\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\ProcessSalary.cshtml" />
     <Content Include="Areas\Registry\Views\ChargeExemptions\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryCards\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryGroups\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryGroups\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AccountClosure\Settle.cshtml" />
     <Content Include="Areas\Registry\Views\ChargeExemptions\Index.cshtml" />
     <Content Include="Areas\Registry\Views\ChargeExemptions\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\ChargeExemptions\Details.cshtml" />

@@ -329,7 +329,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     await _channelService.AuditExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, GetServiceHeader());
 
-                    TempData["SuccessMessage"] = "Expense payable has been successfully verified.";
+                    MessageBox.Show(
+                                                              "Operation Success: Expense payable has been successfully verified.",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
 
                     ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
                     ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
@@ -342,7 +349,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 }
                 catch (Exception ex)
                 {
-                    TempData["ErrorMessage"] = "An error occurred while verifying the expense payable: " + ex.Message;
+                    MessageBox.Show(
+                                                              "An error occurred while verifying the expense payable: ",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
 
                     ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
                     ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
@@ -356,8 +370,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Validation failed. Please correct the errors and try again.";
-
+                MessageBox.Show(
+                                                              "Operation Success",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
@@ -406,7 +426,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (!isAuthorized)
                 {
-                    TempData["errorMessage"] = "Sorry, but requisite minimum requirements have not been satisfied viz. (batch total/posting period/journal voucher control account)";
+                    MessageBox.Show(
+                                                              "Sorry, but requisite minimum requirements have not been satisfied viz. (batch total/posting period/journal voucher control account)",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
 
                     return View("Create", expensePayableDTO);
                 }

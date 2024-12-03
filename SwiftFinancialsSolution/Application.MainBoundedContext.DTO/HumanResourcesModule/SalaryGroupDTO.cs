@@ -28,6 +28,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+        public string salaryGroups { get; set; }
 
         //HashSet<SalaryGroupEntryDTO> _salaryGroupEntries;
         //[DataMember]

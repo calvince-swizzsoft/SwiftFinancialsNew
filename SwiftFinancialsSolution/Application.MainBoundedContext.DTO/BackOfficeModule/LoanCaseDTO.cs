@@ -935,6 +935,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public static ValidationResult ValidateAmountApplied(object value, ValidationContext context)
         {
             var bindingModel = context.ObjectInstance as LoanCaseDTO;
+
             if (bindingModel == null)
                 throw new NotSupportedException("ObjectInstance must be LoanCaseDTO");
 

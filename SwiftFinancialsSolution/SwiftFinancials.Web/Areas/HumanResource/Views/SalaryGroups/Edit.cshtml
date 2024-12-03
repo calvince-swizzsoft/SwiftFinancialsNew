@@ -2,14 +2,14 @@
 @model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryGroupDTO
 
 @{
-    ViewBag.Title = "Create Salary Group";
+    ViewBag.Title = "Edit Salary Group";
     var chargeTypeDescription = ViewBag.ValueTypeSelectList as List<SelectListItem>;
     var roundingTypeDescription = ViewBag.RoundingTypeSelectList as List<SelectListItem>;
 
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Create Salary Group</h2>
+        <h2>Edit Salary Group</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -18,7 +18,7 @@
                 @Html.ActionLink("Home", "Index", "SalaryGroups", new { Area = "HumanResource" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Create</strong>
+                <strong>Edit</strong>
             </li>
         </ol>
     </div>
@@ -81,6 +81,7 @@
                         @using (Html.BeginForm("Create", "SalaryGroups", new { Area = "HumanResource" }, FormMethod.Post))
                         {
                             @Html.AntiForgeryToken()
+
 
 
                             <fieldset>
@@ -148,7 +149,7 @@
                                     <div id="fixedAmountSection" class="col-lg-6" style="display:none; text-align: left;">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.SalaryGroupEntries[0].ChargeFixedAmount, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.SalaryGroupEntries[0].ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "Enter Amount"  } })
+                                            @Html.EditorFor(model => model.SalaryGroupEntries[0].ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "Enter Amount" } })
                                             @Html.ValidationMessageFor(model => model.SalaryGroupEntries[0].ChargeFixedAmount, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -162,7 +163,7 @@
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.SalaryGroupEntries[0].MinimumValue, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.SalaryGroupEntries[0].MinimumValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Value...."  } })
+                                            @Html.EditorFor(model => model.SalaryGroupEntries[0].MinimumValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Value...." } })
                                             @Html.ValidationMessageFor(model => model.SalaryGroupEntries[0].MinimumValue, "", new { @class = "text-danger" })
                                         </div>
 
@@ -197,7 +198,7 @@
                                             <tr>
                                                 <th>Salary Head</th>
                                                 <th>Charge Type</th>
-                                                <th>Fixed Value</th>
+                                                <th>Fixed Amount</th>
                                                 <th>Minimum Value</th>
                                                 <th>Rounding Type</th>
                                                 <th>Actions</th>
