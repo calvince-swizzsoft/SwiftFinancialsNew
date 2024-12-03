@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form", enctype = "multipart/form-data", method = "Get" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -179,12 +179,6 @@
                                 </div>
 
 
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference2, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Reference2, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Reference2, "", new { @class = "text-danger" })
-                                </div>
-
                             </div>
 
 
@@ -211,9 +205,9 @@
                             @*<li class="nav-item">
                                     <a class="nav-link tab-pane" href="#Referees" data-toggle="tab" style="padding: 5px 10px;">Referees</a>
                                 </li>*@
-                            <li class="nav-item">
-                                <a class="nav-link" href="#mandatoryCreditTypes" data-toggle="tab" style="padding: 5px 10px;">Credit Types</a>
-                            </li>
+                            @*<li class="nav-item">
+                                    <a class="nav-link" href="#mandatoryCreditTypes" data-toggle="tab" style="padding: 5px 10px;">Credit Types</a>
+                                </li>*@
                             <li class="nav-item">
                                 <a class="nav-link" href="#mandatoryInvestmentProducts" data-toggle="tab" style="padding: 5px 10px;">Investment Products</a>
                             </li>
@@ -228,7 +222,6 @@
                             </li>
                         </ul> <!-- Tab Content -->
                         <div class="tab-content">
-
                             <div id="mandatorySavingsProducts" class="tab-pane">
                                 <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
                                     <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
@@ -244,7 +237,11 @@
                                                 {
                                                     <tr style="background-color: #f5f5f5;">
                                                         <td>
-                                                            <input type="checkbox" class="savings-checkbox" name="savingsproducts" value="@save.Id" />
+                                                            <input type="checkbox"
+                                                                   class="savings-checkbox"
+                                                                   name="savingsproductIds"
+                                                                   value="@save.Id"
+                                                                   @(ViewBag.mandatorySavings != null && ViewBag.mandatorySavings.Contains(save.Id) ? "checked" : "") />
                                                             @save.Description
                                                         </td>
                                                     </tr>
@@ -270,7 +267,11 @@
                                                 {
                                                     <tr style="background-color: #f5f5f5;">
                                                         <td>
-                                                            <input type="checkbox" class="savings-checkbox" name="DebitTypes" value="@debitType.Id" />
+                                                            <input type="checkbox"
+                                                                   class="debit-checkbox"
+                                                                   name="DebitTypes"
+                                                                   value="@debitType.Id"
+                                                                   @(ViewBag.mandatoryDebit != null && ViewBag.mandatoryDebit.Contains(debitType.Id) ? "checked" : "") />
                                                             @debitType.Description
                                                         </td>
                                                     </tr>
@@ -280,31 +281,36 @@
                                     </table>
                                 </div>
                             </div>
-                            <div id="mandatoryCreditTypes" class="tab-pane">
-                                <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                    <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                        <thead style="background-color: #4682b4; color: #fff;">
-                                            <tr>
-                                                <th data-toggle="true">Description</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (ViewBag.creditTypes != null)
-                                            {
-                                                foreach (var creditType in ViewBag.creditTypes)
+
+                            @*<div id="mandatoryCreditTypes" class="tab-pane">
+                                    <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                        <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                            <thead style="background-color: #4682b4; color: #fff;">
+                                                <tr>
+                                                    <th data-toggle="true">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.credit != null)
                                                 {
-                                                    <tr style="background-color: #f5f5f5;">
-                                                        <td>
-                                                            <input type="checkbox" class="savings-checkbox" name="CreditTypes" value="@creditType.Id" />
-                                                            @creditType.Description
-                                                        </td>
-                                                    </tr>
+                                                    foreach (var creditType in ViewBag.credit)
+                                                    {
+                                                        <tr style="background-color: #f5f5f5;">
+                                                            <td>
+                                                                <input type="checkbox"
+                                                                       class="credit-checkbox"
+                                                                       name="CreditTypes"
+                                                                       value="@creditType.Id"
+                                                                       @(ViewBag.mandatoryCredit != null && ViewBag.mandatoryCredit.Contains(creditType.Id) ? "checked" : "") />
+                                                                @creditType.Description
+                                                            </td>
+                                                        </tr>
+                                                    }
                                                 }
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>*@
 
 
                             <div id="mandatoryInvestmentProducts" class="tab-pane">
@@ -322,7 +328,11 @@
                                                 {
                                                     <tr style="background-color: #f5f5f5;">
                                                         <td>
-                                                            <input type="checkbox" class="investment-checkbox" name="investmentproducts" value="@invest.Id" />
+                                                            <input type="checkbox"
+                                                                   class="investment-checkbox"
+                                                                   name="investmentproductIds"
+                                                                   value="@invest.Id"
+                                                                   @(ViewBag.mandatoryInvestment != null && ViewBag.mandatoryInvestment.Contains(invest.Id) ? "checked" : "") />
                                                             @invest.Description
                                                         </td>
                                                     </tr>
@@ -332,6 +342,7 @@
                                     </table>
                                 </div>
                             </div>
+
 
 
                             <div id="address" class="tab-pane" role="tabpanel">
@@ -396,8 +407,8 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.Label("Partnership Name", new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.Label("NonIndividual Description", new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.RefereeFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name.." } })
                                         </div>
                                         <div class="form-group form-group-lg">
                                             @Html.Label("Registration date", new { @class = "control-label" })
@@ -497,8 +508,8 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.Label("Corporation Name", new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter corporation name..." } })
+                                            @Html.Label("NonIndividual Description", new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.RefereeFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name.." } })
                                         </div>
                                         <div class="form-group form-group-lg">
                                             @Html.Label("Registration Number", new { @class = "control-label" })
@@ -726,8 +737,8 @@
                                     <div class="col-lg-6">
 
                                         <div class="form-group form-group-lg">
-                                            @Html.Label("Non Individual Description", new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.Label("NonIndividual Description", new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.RefereeFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name.." } })
                                         </div>
                                         <div class="form-group form-group-lg">
                                             @Html.Label("Registration Number", new { @class = "control-label" })
@@ -1061,7 +1072,13 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-
+    @*<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.disabled = true;
+                });
+            });
+        </script>*@
     <script>
         function submitForm() {
             document.getElementById("form").submit();
@@ -1100,7 +1117,7 @@
 
                 // Append a new row to the table
                 $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            `);
 
                 // Clear the form fields after adding
                 clearMemberForm();
@@ -1422,13 +1439,13 @@
             });
 
             $.ajax({
-                url: '@Url.Action("Create", "Customer")', // Update with your controller name
+                url: '/Customer/Create', // Matches the controller name
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     debittypes: debitTypes,
-                    investmentproducts: investmentProducts,
-                    savingsproducts: savingsProducts
+                    savingsproductIds: savingsProducts,
+                    investmentproductIds: investmentProducts
                 }),
                 success: function (response) {
                     // Handle success
@@ -1442,6 +1459,51 @@
         });
     });
 </script>
+
+@*<script>
+    $(document).ready(function () {
+        $('#submitButton').on('click', function () {
+            var debitTypes = [];
+            var investmentProducts = [];
+            var savingsProducts = [];
+
+            // Gather selected debit types
+            $('.debit-checkbox:checked').each(function () {
+                debitTypes.push($(this).val());
+            });
+
+            // Gather selected investment products
+            $('.investment-checkbox:checked').each(function () {
+                investmentProducts.push($(this).val());
+            });
+
+            // Gather selected savings products
+            $('.savings-checkbox:checked').each(function () {
+                savingsProducts.push($(this).val());
+            });
+
+            $.ajax({
+                url: '/Customer/Create', // Matches the controller name
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    debittypes: debitTypes,
+                    savingsproductIds: savingsProducts,
+                    investmentproductIds: investmentProducts
+                }),
+                success: function (response) {
+                    // Handle success
+                    alert("Data submitted successfully!");
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    alert("An error occurred: " + error);
+                }
+            });
+        });
+    });
+</script>*@
+
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>

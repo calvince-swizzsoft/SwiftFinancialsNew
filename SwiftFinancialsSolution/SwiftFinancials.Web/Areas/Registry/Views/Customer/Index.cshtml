@@ -56,25 +56,16 @@
         margin-right: 0;
         margin-bottom: 5px;
     }
-        .nav-link:hover {
-            background-color: rgba(0, 123, 255, 0.2); /* Light blue on hover */
-            color: #007bff;
-            Blue for active link */ transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
 
-    .form-row {
-        border: 2px solid gray;
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 16px;
-        font-weight: bold;
-        background-color: #00e0ff;
+    .nav-link:hover {
+        background-color: rgba(0, 123, 255, 0.2); /* Light blue on hover */
+        color: #007bff;
+        Blue for active link */ transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-        .nav-link:active {
-            transform: translateY(0);
-            box-shadow: 0 1px 2px rgba(0, 0, 0,  0.1);
-        }
+     
+
+   
 </style>
 
 
@@ -112,8 +103,9 @@
         <li>@Html.ActionLink("Delegate", "Index", "Delegate", new { area = "Registry" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Document", "Index", "Document", new { area = "Registry" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("ConditionalLending", "Index", "ConditionalLending", new { area = "Registry" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("ChargeExemptions", "Create", "ChargeExemptions", new { area = "Registry" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("BranchLinkage", "Index", "BranchLinkage", new { area = "Registry" }, new { @class = "nav-link" })</li>
+        @*<li>@Html.ActionLink("ChargeExemptions", "Create", "ChargeExemptions", new { area = "Registry" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("BranchLinkage", "Index", "BranchLinkage", new { area = "Registry" }, new { @class = "nav-link" })</li>*@
+        <li>@Html.ActionLink("NextOfKin", "Create", "NextOfKin", new { area = "Registry" }, new { @class = "nav-link" })</li>
     </ul>
 </nav>
 
@@ -133,6 +125,32 @@
                         });
                     </script>
                 }
+                <form id="modalFilterForm" style="background-color: #E0f0ff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                    <div class="form-row" style="display: flex; justify-content: space-between; align-items: center; gap: 30px;">
+                        <!-- Status Filter -->
+                        <div class="col-lg-3 form-group">
+                            <div style="display: flex; gap: 20px; align-items: center;">
+                                <label for="recordStatus" style="white-space: nowrap; font-weight: bold;">Status</label>
+                                @Html.DropDownList("recordStatus", recordStatus, "Filter by Status",
+                                    new { @class = "form-control", @id = "recordStatus", style = "width: 100%;" })
+                            </div>
+                        </div>
+                        <!-- Advanced Filter -->
+                        <div class="col-lg-3 form-group">
+                            <div style="display: flex; gap: 20px; align-items: center;">
+                                <label for="customerFilter" style="white-space: nowrap; font-weight: bold;">Advanced</label>
+                                @Html.DropDownList("customerFilter", customerFilter, "Search",
+                                    new { @class = "form-control", @id = "customerFilter", style = "width: 100%;" })
+                            </div>
+                        </div>
+                        <!-- Refresh Button -->
+                        <div class="col-lg-2 form-group">
+                            <input type="submit" value="Refresh" class="btn btn-primary"
+                                   style="min-width: 120px; background-color: #008080; border-color: #0056b3; " />
+                        </div>
+                    </div>
+                </form>
+
                 <div class="ibox-title">
                     @Html.ActionLink("Create Customer", "Create", "Customer", new { Area = "Registry" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
@@ -160,25 +178,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <form id="modalFilterForm">
-                        <div class="form-row" style="display: flex; justify-content: space-between; align-items: center; gap: 30px;">
-                            <div class="col-lg-2 form-group">
-                                <div style="display: flex; gap: 30px;">
-                                    <label for="recordStatus">Status</label>
-                                    @Html.DropDownList("recordStatus", recordStatus, "Filter by Status", new { @class = "form-control", @id = "recordStatus" })
-                                </div>
-                            </div>
-                            <div class="col-lg-2 form-group">
-                                <div style="display: flex; gap: 30px;">
-                                    <label for="customerFilter">Advanced </label>
-                                    @Html.DropDownList("customerFilter", customerFilter, "Search", new { @class = "form-control", @id = "customerFilter" })
-                                </div>
-                            </div>
-                            <div class="col-lg-2 form-group">
-                                <input type="submit" value="Refresh" class="btn btn-primary" />
-                            </div>
-                        </div>
-                    </form>
+
                 </div>
             </div>
         </div>

@@ -23,13 +23,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
 
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int? productCode,int? recordStatus)
-       {
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int? productCode, int? recordStatus)
+        {
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -45,31 +47,128 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (productCode != null && recordStatus != null)
             {
                 pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndRecordStatusAndFilterInPageAsync((int)productCode, (int)recordStatus, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+
+                    var sortedData = pageCollectionInfo.PageCollection
+                        .OrderByDescending(loanCase => loanCase.CreatedDate)
+                        .ToList();
+
+                    totalRecordCount = sortedData.Count;
+
+                    var paginatedData = sortedData
+                        .Skip(jQueryDataTablesModel.iDisplayStart)
+                        .Take(jQueryDataTablesModel.iDisplayLength)
+                        .ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                        ? sortedData.Count
+                        : totalRecordCount;
+
+                    return this.DataTablesJson(
+                        items: paginatedData,
+                        totalRecords: totalRecordCount,
+                        totalDisplayRecords: searchRecordCount,
+                        sEcho: jQueryDataTablesModel.sEcho
+                    );
+                }
             }
+
             else if (productCode != null && recordStatus == null)
             {
                 pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync((int)productCode, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+
+                    var sortedData = pageCollectionInfo.PageCollection
+                        .OrderByDescending(loanCase => loanCase.CreatedDate)
+                        .ToList();
+
+                    totalRecordCount = sortedData.Count;
+
+                    var paginatedData = sortedData
+                        .Skip(jQueryDataTablesModel.iDisplayStart)
+                        .Take(jQueryDataTablesModel.iDisplayLength)
+                        .ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                        ? sortedData.Count
+                        : totalRecordCount;
+
+                    return this.DataTablesJson(
+                        items: paginatedData,
+                        totalRecords: totalRecordCount,
+                        totalDisplayRecords: searchRecordCount,
+                        sEcho: jQueryDataTablesModel.sEcho
+                    );
+                }
             }
             else if (productCode == null && recordStatus == null)
             {
                 pageCollectionInfo = await _channelService.FindCustomerAccountsInPageAsync(pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+
+                    var sortedData = pageCollectionInfo.PageCollection
+                        .OrderByDescending(loanCase => loanCase.CreatedDate)
+                        .ToList();
+
+                    totalRecordCount = sortedData.Count;
+
+                    var paginatedData = sortedData
+                        .Skip(jQueryDataTablesModel.iDisplayStart)
+                        .Take(jQueryDataTablesModel.iDisplayLength)
+                        .ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                        ? sortedData.Count
+                        : totalRecordCount;
+
+                    return this.DataTablesJson(
+                        items: paginatedData,
+                        totalRecords: totalRecordCount,
+                        totalDisplayRecords: searchRecordCount,
+                        sEcho: jQueryDataTablesModel.sEcho
+                    );
+                }
             }
             else
             {
                 pageCollectionInfo = await _channelService.FindCustomerAccountsInPageAsync(pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+
+                    var sortedData = pageCollectionInfo.PageCollection
+                        .OrderByDescending(loanCase => loanCase.CreatedDate)
+                        .ToList();
+
+                    totalRecordCount = sortedData.Count;
+
+                    var paginatedData = sortedData
+                        .Skip(jQueryDataTablesModel.iDisplayStart)
+                        .Take(jQueryDataTablesModel.iDisplayLength)
+                        .ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                        ? sortedData.Count
+                        : totalRecordCount;
+
+                    return this.DataTablesJson(
+                        items: paginatedData,
+                        totalRecords: totalRecordCount,
+                        totalDisplayRecords: searchRecordCount,
+                        sEcho: jQueryDataTablesModel.sEcho
+                    );
+                }
             }
 
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-            {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
-            else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            return this.DataTablesJson(
+                items: new List<CustomerDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
@@ -116,7 +215,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             };
 
             TempData["savingsProductDTOs"] = savingsProductDTOs;
-           
+
 
             TempData["customerAccountDTO"] = customerAccountDTO;
             Session["savingsProductDTOs"] = savingsProductDTOs;
@@ -151,7 +250,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             foreach (var expensePayableEntryDTO in customerAccountDTO.investmentProducts)
             {
                 expensePayableEntryDTO.Id = customerAccountDTO.investmentProducts[0].Id;
-                var k = await _channelService.FindInvestmentProductAsync(expensePayableEntryDTO.Id,GetServiceHeader()); 
+                var k = await _channelService.FindInvestmentProductAsync(expensePayableEntryDTO.Id, GetServiceHeader());
                 expensePayableEntryDTO.ChartOfAccountId = customerAccountDTO.CustomerAccountTypeTargetProductId;
                 expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountAccountName;
                 expensePayableEntryDTO.Description = expensePayableEntryDTO.Description;
@@ -186,12 +285,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View("Create", customerAccountDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id,CustomerAccountDTO customerAccount)
+        public async Task<ActionResult> Create(Guid? id, CustomerAccountDTO customerAccount)
         {
             Session["branchid"] = customerAccount.BranchId;
             await ServeNavigationMenus();
             ViewBag.CustomerAccountManagementActionSelectList = GetCustomerAccountManagementActionSelectList(string.Empty);
-
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -253,7 +355,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 customerAccountDTO.BranchDescription = Session["BranchDescription"].ToString();
             }
-            
+
 
             //customerAccountDTO.Investments = Session["benefactorAccounts"] as InvestmentProductDTO;
 

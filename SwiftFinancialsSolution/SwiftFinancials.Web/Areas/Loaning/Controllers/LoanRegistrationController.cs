@@ -75,45 +75,55 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
-
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int loanCaseStatus, string filterValue, int filterType)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(loanCaseStatus, filterValue, filterType, pageIndex, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
-
-            var page = pageCollectionInfo.PageCollection;
-
-            //// Call createpdf class
-            //var createpdf = new CreatePdf();
-            //string fpath = Request.ServerVariables["REMOTE_ADDR"];
-            //var addres = Path.Combine(Server.MapPath("~/Files/"));
-            //createpdf.WritePdf(fpath, addres, page);
-
+            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(
+                loanCaseStatus,
+                filterValue,
+                filterType,
+                0,
+                int.MaxValue,
+                includeBatchStatus: true,
+                GetServiceHeader()
+            );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(LoanCase => LoanCase.CreatedDate).ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<LoanCaseDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
-
-
 
         [HttpPost]
         public async Task<ActionResult> ExportToExcel(JQueryDataTablesModel jQueryDataTablesModel)
@@ -141,8 +151,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             // Return the Excel file as a downloadable file
             return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "LoanCases.xlsx");
         }
-
-
 
         private byte[] GenerateExcelFile(IEnumerable<LoanCaseDTO> loanCases)
         {
@@ -202,8 +210,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-
-
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -211,8 +217,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
 
             var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
+            var loanCollaterals = await _channelService.FindLoanCollateralsByLoanCaseIdAsync(id, GetServiceHeader());
 
             ViewBag.LoanGuarantors = loanGuarantors;
+            ViewBag.Collaterals = loanCollaterals;
 
             return View(loanCaseDTO);
         }
@@ -234,8 +242,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
-
-
         public async Task<ActionResult> LoaneeLookup(Guid? id, LoanCaseDTO loanCaseDTO)
         {
             await ServeNavigationMenus();
@@ -253,7 +259,19 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 if (customer.RecordStatus != (int)RecordStatus.Approved)
                 {
+                    ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                    ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                    ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
 
+
+                    ViewBag.recordStatus = GetRecordStatusSelectList(loanCaseDTO.RecordStatusDescription.ToString());
+                    ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+                    ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
+
+
+                    MessageBox.Show(Form.ActiveForm, "The selected Customer has not yet been approved.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification);
+                    return Json(new { success = false, message = "" });
                 }
 
                 var documents = await GetDocumentsAsync(parseId);
@@ -311,7 +329,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 //// Collaterals...
                 var collaterals = await _channelService.FindCustomerDocumentsByCustomerIdAndTypeAsync(parseId, (int)CustomerDocumentType.Collateral, GetServiceHeader());
-
+                foreach (var collateral in collaterals)
+                {
+                    if (collateral.CreatedDate != null) 
+                    {
+                        collateral.CreatedDate = Convert.ToDateTime(collateral.CreatedDate);
+                        collateral.ModifiedDate = Convert.ToDateTime(collateral.ModifiedDate);
+                    }
+                }
 
                 var investmentsBalance = await _channelService.ComputeEligibleLoanAppraisalInvestmentsBalanceAsync(loanCaseDTO.CustomerId, loanCaseDTO.LoanProductId, GetServiceHeader());
                 loanCaseDTO.LoanProductInvestmentsBalance = investmentsBalance;
@@ -716,14 +741,58 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<JsonResult> CustomerIndex(JQueryDataTablesModel jQueryDataTablesModel, int recordStatus, string text, int customerFilter)
+        {
+
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)RecordStatus.Approved, text, customerFilter, pageIndex, pageSize, GetServiceHeader());
+
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? pageCollectionInfo.PageCollection.Count
+                    : totalRecordCount;
+
+                var orderedPageCollection = pageCollectionInfo.PageCollection
+                    .OrderByDescending(item => item.CreatedDate)
+                    .ToList();
+
+                return this.DataTablesJson(
+                    items: orderedPageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<CustomerDTO> { },
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+        }
 
 
         [HttpPost]
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO, string collateralIds)
         {
+            await ServeNavigationMenus();
+
             if (string.IsNullOrEmpty(collateralIds))
             {
-                string message = string.Format("You have not added any collaterals for this particular loanee. Do you want to proceed?");
+                string message = string.Format("No Collaterals Attached for this Loanee. Do you want to proceed?");
 
                 DialogResult result = MessageBox.Show(
                     message,
@@ -741,6 +810,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 }
                 else
                 {
+                    await ServeNavigationMenus();
+
+                    ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                    ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                    ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+
+
+                    ViewBag.recordStatus = GetRecordStatusSelectList(loanCaseDTO.RecordStatusDescription.ToString());
+                    ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+                    ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
+
+
                     MessageBox.Show(Form.ActiveForm, "Operation cancelled.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1,
                         MessageBoxOptions.ServiceNotification);
                     return View(loanCaseDTO);
@@ -843,10 +924,33 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 {
                     try
                     {
-                        if (loanCaseDTO.AmountApplied <= 50)
+                        // Check member's period to validate if qualify to apply for the product
+                        var membershipPeriod = loanCaseDTO.LoanRegistrationMinimumMembershipPeriod;
+                        var fullCustomerDetails = await _channelService.FindCustomerAsync(loanCaseDTO.CustomerId, GetServiceHeader());
+                        var customerRegistrationDate = fullCustomerDetails.CreatedDate;
+                        var currentDate = DateTime.Now;
+
+                        int totalMonths = (currentDate.Year - customerRegistrationDate.Year) * 12
+                              + currentDate.Month - customerRegistrationDate.Month;
+
+                        if (totalMonths < membershipPeriod)
                         {
-                            MessageBox.Show(Form.ActiveForm, "The amount you are applying for is too low. Enter amount greater than " + loanCaseDTO.AmountApplied, "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                            return View("create", loanCaseDTO);
+                            await ServeNavigationMenus();
+
+                            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+
+
+                            ViewBag.recordStatus = GetRecordStatusSelectList(loanCaseDTO.RecordStatusDescription.ToString());
+                            ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+                            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
+
+
+                            MessageBox.Show(Form.ActiveForm, "The selected Member's Registration Period is less than the minimum required to apply for the selected Loan Product.", 
+                                "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                            return View(loanCaseDTO);
                         }
 
 

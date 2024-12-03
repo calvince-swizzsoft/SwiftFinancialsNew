@@ -1338,5 +1338,15 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Status")]
         public string LoanStatus { get; set; }
 
+
+        //Additional DTOs
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public string FullAccountNumber { get; set; }
+
+        [DataMember]
+        public LoanProductDTO LoanProductsDTO { get; set; }
+
+
     }
 }

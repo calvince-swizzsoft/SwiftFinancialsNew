@@ -1700,14 +1700,13 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
 
                     LoanCaseDTO lcDTO = new LoanCaseDTO();
 
-
                     if (existingLoanCases != null && existingLoanCases.Any(x => x.Status.In((int)LoanCaseStatus.Registered, (int)LoanCaseStatus.Appraised, (int)LoanCaseStatus.Deferred, (int)LoanCaseStatus.Approved, (int)LoanCaseStatus.Audited)))
                     {
-                        bool success = false;
+                        bool issuccess = false;
 
-                        lcDTO.ErrorMessageResult = success ? "" : string.Format("Sorry, but selected customer has a loan case for the selected product currently undergoing processing!");
+                        lcDTO.ErrorMessageResult = issuccess ? "" : string.Format("Sorry, but selected customer has a loan case for the selected product currently undergoing processing!");
 
-                        return success;
+                        return issuccess;
                     }
 
                     _customerAccountAppService.FetchCustomerAccountBalances(new List<CustomerAccountDTO> { customerLoanAccount }, serviceHeader, true);

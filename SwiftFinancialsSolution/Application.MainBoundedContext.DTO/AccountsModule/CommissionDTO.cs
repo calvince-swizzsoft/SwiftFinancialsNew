@@ -204,5 +204,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         public CustomerDTO CustomerDTO { get; set; }
 
+        public ObservableCollection<FixedDepositTypeGraduatedScaleDTO> fixedeposite { get; set; }
+
+        [DataMember]
+        [Display(Name = "G/L Account")]
+        [ValidGuid]
+        public Guid ChartOfAccountId { get; set; }
     }
 }
