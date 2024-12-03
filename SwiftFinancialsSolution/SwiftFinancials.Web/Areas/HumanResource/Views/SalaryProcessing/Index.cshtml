@@ -1,10 +1,10 @@
 ﻿@{
-    ViewBag.Title = "Salary Processing";
+    ViewBag.Title = "Salary Periods";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Salary Processing</h2>
+        <h2>Salary Periods</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -15,7 +15,6 @@
         </ol>
     </div>
 </div>
-
 
 <div class="col-lg-12">
     <div class="nav1">
@@ -59,8 +58,8 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create", "Create", "SalaryProcessing", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
-                    @{ ViewBag.Title = "Salary Processing"; }
+                    @Html.ActionLink("Create", "Create", "SalaryPeriods", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
+                    @{ ViewBag.Title = "Salary Periods"; }
 
                     @if (TempData["SuccessMessage"] != null)
                     {
@@ -190,7 +189,7 @@
 
 
                     var viewButton = `<a class="dropdown-item" href="/HumanResource/SalaryPeriods/view/${aData.Id}">Verify</a>`;
-                    var editButton = `<a class="dropdown-item" href="/HumanResource/SalaryPeriods/edit/${aData.Id}">Edit</a>`;
+                    var editButton = `<a class="dropdown-item" href="/HumanResource/SalaryProcessing/edit/${aData.Id}">Edit</a>`;
 
 
                     $('td:eq(7)', nRow).html(dt_Created);

@@ -1,111 +1,93 @@
-﻿@model  Application.MainBoundedContext.DTO.HumanResourcesModule.PaySlipEntryDTO
-@model  Application.MainBoundedContext.DTO.HumanResourcesModule.PaySlipDTO
-@model  Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryCardDTO
+﻿@model IEnumerable<Application.MainBoundedContext.DTO.HumanResourcesModule.PaySlipDTO>
+
 @{
-    ViewBag.Title = "Pay Slip Details";
+    ViewBag.Title = "Salary Payslips";
 }
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h1>Salary</h1>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
-            </li>
-            <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "PaySlips", new { Area = "HumanResource" }, null)
-            </li>
-            <li class="breadcrumb-item active">
-                <strong>View</strong>
-            </li>
-        </ol>
+
+<h2>Salary Payslips</h2>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <label for="salaryPeriod" class="form-label">Salary Period:</label>
+        <input type="text" class="form-control" id="salaryPeriod" placeholder="Enter Text..." />
+    </div>
+    <div class="col-md-3">
+        <label for="employeeCategory" class="form-label">Employee Category:</label>
+        <input type="text" class="form-control" id="employeeCategory" placeholder="Enter Text..." />
+    </div>
+    <div class="col-md-3">
+        <label for="status" class="form-label">Status:</label>
+        <input type="text" class="form-control" id="status" placeholder="Enter Text..." />
+    </div>
+    <div class="col-md-3">
+        <label for="remarks" class="form-label">Remarks:</label>
+        <input type="text" class="form-control" id="remarks" placeholder="Enter Text..." />
     </div>
 </div>
 
-<div class="wrapper wrapper-content">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox">
-                <div class="ibox-title">
-                    <h2>Pay Slips</h2>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="col-md-13 form-group">
-                                @Html.LabelFor(model => model.SalaryPeriodId, htmlAttributes: new { @class = "control-label" })
-                                <div class="input-group" data-autoclose="true">
-                                    @Html.HiddenFor(model => model.SalaryPeriodId)
-                                    @Html.TextBoxFor(model => model.SalaryPeriodId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link Employee..." })
-                                    <span class="input-group-addon">
-                                        <a data-toggle="modal" data-target="#SalaryPeriodsLookupModal"><span class="fa fa-search"></span></a>
-                                    </span>
-                                </div>
-                            </div>
+<div class="row mb-3">
+    <div class="col-md-3">
+        <label for="taxRelief" class="form-label">Tax Relief:</label>
+        <input type="text" class="form-control" id="taxRelief" />
+    </div>
+    <div class="col-md-3">
+        <label for="maxProvidentFundRelief" class="form-label">Max. Provident Fund Relief:</label>
+        <input type="text" class="form-control" id="maxProvidentFundRelief" />
+    </div>
+    <div class="col-md-3">
+        <label for="maxInsuranceRelief" class="form-label">Max. Insurance Relief:</label>
+        <input type="text" class="form-control" id="maxInsuranceRelief" />
+    </div>
+    <div class="col-md-3">
+        <label for="totalNetPay" class="form-label">Total Net Pay:</label>
+        <input type="text" class="form-control" id="totalNetPay" />
+    </div>
+</div>
 
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.SalaryCardEmployeeEmployeeTypeCategory, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.SalaryCardEmployeeEmployeeTypeCategory, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
-                                @Html.ValidationMessageFor(model => model.SalaryCardEmployeeEmployeeTypeCategory, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Card Number</th>
+            <th>Salary Group</th>
+            <th>Posting Period</th>
+            <th>Net Pay</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var payslip in Model)
+        {
+            <tr class="clickable-row" data-payslip-id="@payslip.Id">
+                <td>@payslip.PaddedSalaryCardCardNumber</td>
+                <td>@payslip.SalaryCardSalaryGroupDescription</td>
+                <td>@payslip.SalaryPeriodPostingPeriodDescription</td>
+                <td>@payslip.NetPay.ToString("N2")</td>
+            </tr>
+        }
+    </tbody>
+</table>
 
-                        <div class="col-lg-6">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
-                                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
-                            </div>
+<script>
+    $(".clickable-row").click(function () {
+        var payslipId = $(this).data("payslip-id");
+        // Load pay slip entries for the selected payslip
+        loadPaySlipEntries(payslipId);
+    });
 
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.Remarks)
-                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Chart of Acccount Name" } })
-                            </div>
-                        </div>
-                    </div>
+    function loadPaySlipEntries(payslipId) {
+        // Make an AJAX request to the controller to fetch the pay slip entries
+        $.ajax({
+            url: "@Url.Action("GetPaySlipEntries", "Payslips")",
+            data: { payslipId: payslipId },
+            success: function (data) {
+                // Update the pay slip entries section of the view with the returned data
+                $("#pay-slip-entries").html(data);
+            }
+        });
+    }
+</script>
 
-                    <div class="col-lg-6">
-                        <div class="form-group form-group-lg">
-                            @Html.LabelFor(model => model.TaxExemption, htmlAttributes: new { @class = "" })
-                            @Html.EditorFor(model => model.TaxExemption, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
-                            @Html.ValidationMessageFor(model => model.TaxExemption, "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="form-group form-group-lg">
-                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                            @Html.HiddenFor(model => model.Remarks)
-                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Chart of Acccount Name" } })
-                        </div>
-                    </div>
-                </div>
-
-                    @using (Html.BeginForm("Create", "SalaryCards", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                        <fieldset>
-                        </fieldset>
-                    }
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @*@Html.ActionLink("Edit", "Edit", "Salary", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })*@
-                                @Html.ActionLink("Back to List", "Index", "PaySlips", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="row">
+    <div class="col-md-12">
+        <partial name="_PaySlipEntries" model="Model.SelectMany(p => p.PaySlipEntries)" />
     </div>
 </div>

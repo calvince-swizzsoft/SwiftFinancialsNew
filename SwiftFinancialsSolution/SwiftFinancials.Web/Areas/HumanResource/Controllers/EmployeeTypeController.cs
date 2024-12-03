@@ -106,7 +106,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                                                              MessageBoxOptions.ServiceNotification
                                                          );
 
-                TempData["SuccessMessage"] = "EmployeeType Created Successfully!!";
                 
 
                 return RedirectToAction("Index");

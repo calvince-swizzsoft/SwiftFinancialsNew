@@ -150,41 +150,74 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 try
                 {
+                    // Fetch holidays for the posting period
+                    var holidays = await _channelService.FindHolidaysAsync(GetServiceHeader());
+
+                    // Check if the leave dates overlap with any holiday
+                    var holidayConflict = holidays.Any(h =>
+                        leaveApplicationBindingModel.DurationStartDate <= h.DurationEndDate &&
+                        leaveApplicationBindingModel.DurationEndDate >= h.DurationStartDate
+                    );
+
+                    if (holidayConflict)
+                    {
+                        // Show error if the leave dates fall within a holiday
+                        MessageBox.Show(
+                            "You cannot apply for leave during a holiday. Please adjust your dates.",
+                            "Holiday Conflict",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning,
+                            MessageBoxDefaultButton.Button1,
+                            MessageBoxOptions.ServiceNotification
+                        );
+                        return RedirectToAction("Create");
+                    }
+
+                    // Map and save leave application
                     await _channelService.AddLeaveApplicationAsync(
                         leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(),
                         GetServiceHeader()
                     );
-                    MessageBox.Show(
-                   "Operation Success: Leave application submitted successfully!",
-                   "Holiday Management",
-                   MessageBoxButtons.OK,
-                   MessageBoxIcon.Information,
-                   MessageBoxDefaultButton.Button1,
-                   MessageBoxOptions.ServiceNotification
-               );
 
+                    MessageBox.Show(
+                        "Operation Success: Leave application submitted successfully!",
+                        "Leave Management",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
 
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                }
-            }
-            else
-            {
-                MessageBox.Show(
-                        "There were validation errors. Please correct them and try again!",
-                        "Validation Errors",
+                    MessageBox.Show(
+                        "An error occurred while submitting your leave application. Please try again.",
+                        "Application Error",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error,
                         MessageBoxDefaultButton.Button1,
                         MessageBoxOptions.ServiceNotification
                     );
+                }
+            }
+            else
+            {
+                MessageBox.Show(
+                    "There were validation errors. Please correct them and try again!",
+                    "Validation Errors",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
             }
 
             return View(leaveApplicationBindingModel);
         }
+
 
 
 
@@ -225,7 +258,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 }
                 catch (Exception ex)
                 {
-                    TempData["ErrorMessage"] = "An error occurred while updating the leave application. Please try again.";
+                    MessageBox.Show(
+                       "An error occurred while updating the leave application. Please try again!",
+                       "Validation Errors",
+                       MessageBoxButtons.OK,
+                       MessageBoxIcon.Error,
+                       MessageBoxDefaultButton.Button1,
+                       MessageBoxOptions.ServiceNotification
+                   );
                     Console.WriteLine(ex.Message);
                 }
             }
@@ -241,7 +281,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                     );
             }
 
-            return View(leaveApplicationBindingModel);
+            return View("Create");
         }
 
 
@@ -263,24 +303,43 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 try
                 {
-                    // Map the selected LeaveAuthOption to a status or pass it to the service as is.
                     var authorizationStatus = leaveApplicationDTO.LeaveAuthOption;
 
-                    // Assuming the service handles the enum directly.
                     await _channelService.AuthorizeLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
+                    MessageBox.Show(
+                           "Operation Success: Leave approved successfully!",
+                           "Leave Management",
+                           MessageBoxButtons.OK,
+                           MessageBoxIcon.Information,
+                           MessageBoxDefaultButton.Button1,
+                           MessageBoxOptions.ServiceNotification
+                       );
 
-                    TempData["SuccessMessage"] = "Leave approval updated successfully!";
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    TempData["ErrorMessage"] = "An error occurred while updating the leave approval. Please try again.";
+                    MessageBox.Show(
+                        "An error occurred while updating the leave approval. Please try again.",
+                        "Application Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
                     Console.WriteLine(ex.Message);
                 }
             }
             else
             {
-                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
+                MessageBox.Show(
+                      "There were validation errors. Please correct them and try again.",
+                      "Error Message",
+                      MessageBoxButtons.OK,
+                      MessageBoxIcon.Error,
+                      MessageBoxDefaultButton.Button1,
+                      MessageBoxOptions.ServiceNotification
+                  );
             }
 
             return View("Index");
@@ -304,43 +363,102 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 try
                 {
-                    // Ensure that the leave application is eligible for recall
-                    // Example: You can check if the status is 'Approved' or 'Pending' before recalling
                     var leaveApplication = await _channelService.FindLeaveApplicationAsync(id);
 
                     if (leaveApplication == null)
                     {
-                        TempData["ErrorMessage"] = "Leave application not found.";
+                        MessageBox.Show(
+                            "Leave application not found!",
+                            "Leave Management",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information,
+                            MessageBoxDefaultButton.Button1,
+                            MessageBoxOptions.ServiceNotification
+                        );
                         return RedirectToAction("Index");
                     }
 
-                    // Call the method to recall the leave application
+                    var currentDate = DateTime.Now;
+                    if (currentDate < leaveApplication.DurationEndDate)
+                    {
+                        var dialogResult = MessageBox.Show(
+                            "The leave period has not yet ended. Is this an emergency?",
+                            "Emergency Recall Confirmation",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning,
+                            MessageBoxDefaultButton.Button1,
+                            MessageBoxOptions.ServiceNotification
+                        );
+
+                        if (dialogResult == DialogResult.No)
+                        {
+                            MessageBox.Show(
+                                "Leave recall canceled. You can only recall this leave after its end date or in case of an emergency.",
+                                "Leave Recall Canceled",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information,
+                                MessageBoxDefaultButton.Button1,
+                                MessageBoxOptions.ServiceNotification
+                            );
+                            return RedirectToAction("Index");
+                        }
+                    }
+
                     bool isRecallSuccessful = await _channelService.RecallLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
 
                     if (isRecallSuccessful)
                     {
-                        TempData["SuccessMessage"] = "Leave recall processed successfully!";
+                        MessageBox.Show(
+                            "Operation Success: Leave recall processed successfully!",
+                            "Leave Management",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information,
+                            MessageBoxDefaultButton.Button1,
+                            MessageBoxOptions.ServiceNotification
+                        );
                     }
                     else
                     {
-                        TempData["ErrorMessage"] = "Failed to process leave recall. Please try again.";
+                        MessageBox.Show(
+                       "Failed to process leave recall. Please try again.",
+                       "Error Message",
+                       MessageBoxButtons.OK,
+                       MessageBoxIcon.Error,
+                       MessageBoxDefaultButton.Button1,
+                       MessageBoxOptions.ServiceNotification
+                   );
                     }
 
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    TempData["ErrorMessage"] = "An error occurred while recalling the leave application. Please try again.";
+                    MessageBox.Show(
+                        "An error occurred while recalling the leave application. Please try again.",
+                        "Application Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
                     Console.WriteLine(ex.Message);
                 }
             }
             else
             {
-                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
+                MessageBox.Show(
+                    "There were validation errors. Please correct them and try again.",
+                    "Validation Errors",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
             }
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
+
 
 
 

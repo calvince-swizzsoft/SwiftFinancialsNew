@@ -1019,6 +1019,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
 
         Task<DateTime?> FindBusinessDayAsync(int addValue, bool nextDay = true, ServiceHeader serviceHeader = null);
+        Task<ObservableCollection<HolidayDTO>> FindHolidaysAsync(ServiceHeader serviceHeader = null);
+
+
+        
 
         #endregion
 
@@ -1075,6 +1079,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> UpdateSalaryCardEntryAsync(SalaryCardEntryDTO salaryCardEntryDTO, ServiceHeader serviceHeader = null);
 
         Task<bool> ResetSalaryCardEntriesAsync(SalaryCardDTO salaryCardDTO, ServiceHeader serviceHeader = null);
+        Task<ObservableCollection<SalaryCardDTO>> FindSalaryCardsAsync(ServiceHeader serviceHeader = null);
 
         #endregion
 

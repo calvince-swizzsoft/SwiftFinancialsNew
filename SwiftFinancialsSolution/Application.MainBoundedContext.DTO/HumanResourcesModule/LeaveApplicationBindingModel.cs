@@ -62,6 +62,10 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         [Display(Name = "Status")]
         public int Status { get; set; }
 
+        [Display(Name = "Status")]
+        public string StatusDescription { get; set; }
+      
+
         [DataMember]
         [Display(Name = "Document #")]
         public string DocumentNumber { get; set; }

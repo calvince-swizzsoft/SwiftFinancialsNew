@@ -2187,5 +2187,22 @@ namespace SwiftFinancials.Web.Controllers
 
             return fixedDepositMaturityActionCategories;
         }
+
+        [NonAction]
+        protected List<SelectListItem> GetCustomerAccountProductCodeSelectList(string selectedValue)
+        {
+            List<SelectListItem> customerAccountProductCodeSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ProductCode)).Cast<ProductCode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            customerAccountProductCodeSelectList.AddRange(items);
+
+            return customerAccountProductCodeSelectList;
+        }
     }
 }

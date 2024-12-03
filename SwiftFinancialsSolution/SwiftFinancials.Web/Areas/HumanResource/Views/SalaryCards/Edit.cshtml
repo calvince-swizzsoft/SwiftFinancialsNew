@@ -1,6 +1,9 @@
 ﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryCardDTO
 
-@{ ViewBag.Title = "Create Salary Card"; }
+@{ ViewBag.Title = "Edit Salary Card";
+    var chargeTypeDescription = ViewBag.ValueTypeSelectList as List<SelectListItem>;
+    var roundingTypeDescription = ViewBag.RoundingTypeSelectList as List<SelectListItem>;
+}
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h2>Salary Card</h2>
@@ -12,7 +15,7 @@
                 @Html.ActionLink("Home", "Index", "SalaryCards", new { Area = "HumanResource" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Create</strong>
+                <strong>Edit</strong>
             </li>
         </ol>
     </div>
@@ -97,7 +100,7 @@
 
 
 
-                        @using (Html.BeginForm("Create", "SalaryCards", new { Area = "HumanResource" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        @using (Html.BeginForm("Edit", "SalaryCards", new { Area = "HumanResource" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
                             @Html.AntiForgeryToken()
                             @Html.HiddenFor(model => model.EmployeeBloodGroupDescription, new { id = "EmployeeBloodGroupDescription" })
@@ -138,71 +141,115 @@
                             <fieldset>
                                 <div class="card mb-4">
                                     <div class="card-body text-dark">
+                                        <!-- Employee and Salary Group Details -->
                                         <div class="row">
-
                                             <div class="col-lg-6">
                                                 @Html.LabelFor(model => model.EmployeeCustomerFullName, new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.EmployeeId, new { id = "EmployeeId" })
                                                 <div class="input-group">
-                                                    @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "EmployeeCustomerFullName", @readonly = "" } })
-                                                    <span class="input-group-addon">
-                                                        <a data-toggle="modal" data-target="#employeeLookup">
-                                                            <span class="fa fa-search"></span>
+                                                    @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control", id = "EmployeeCustomerFullName", @readonly = "readonly" } })
+                                                    <div class="input-group-append">
+                                                        <a data-toggle="modal" data-target="#employeeLookup" class="btn btn-outline-secondary">
+                                                            <i class="fa fa-search"></i>
                                                         </a>
-                                                    </span>
+                                                    </div>
                                                 </div>
-                                                @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
                                             </div>
 
                                             <div class="col-lg-6">
                                                 @Html.LabelFor(model => model.SalaryGroupDescription, new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.SalaryGroupId, new { id = "SalaryGroupId" })
                                                 <div class="input-group">
-                                                    @Html.EditorFor(model => model.SalaryGroupDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "SalaryGroupDescription", @readonly = "" } })
-                                                    <span class="input-group-addon">
-                                                        <a data-toggle="modal" data-target="#salaryGroupLookup">
-                                                            <span class="fa fa-search"></span>
+                                                    @Html.EditorFor(model => model.SalaryGroupDescription, new { htmlAttributes = new { @class = "form-control", id = "SalaryGroupDescription", @readonly = "readonly" } })
+                                                    <div class="input-group-append">
+                                                        <a data-toggle="modal" data-target="#salaryGroupLookup" class="btn btn-outline-secondary">
+                                                            <i class="fa fa-search"></i>
                                                         </a>
-                                                    </span>
+                                                    </div>
                                                 </div>
-                                                @Html.ValidationMessageFor(model => model.SalaryGroupDescription, "", new { @class = "text-danger" })
                                             </div>
-
-
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.TaxExemption, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.TaxExemption, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Ksh.00", id = "TaxExemption", required = "required" } })
-                                                    @Html.ValidationMessageFor(model => model.TaxExemption, "", new { @class = "text-danger" })
-                                                </div>
 
+                                        <!-- Tax Exemption, Insurance Relief, and Remarks -->
+                                        <div class="row mt-3">
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.TaxExemption, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.TaxExemption, new { htmlAttributes = new { @class = "form-control", id = "TaxExemption", placeholder = "Enter tax exemption amount" } })
                                             </div>
-
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.InsuranceReliefAmount, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.InsuranceReliefAmount, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Ksh.00", id = "InsuranceReliefAmount", required = "required" } })
-                                                    @Html.ValidationMessageFor(model => model.InsuranceReliefAmount, "", new { @class = "text-danger" })
-                                                </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.InsuranceReliefAmount, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.InsuranceReliefAmount, new { htmlAttributes = new { @class = "form-control", id = "InsuranceReliefAmount", placeholder = "Enter insurance relief amount" } })
                                             </div>
-
-
-
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
+                                            <div class="col-lg-4">
                                                 @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                                @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control", @placeholder = "Enter Text.....", @required = "required", @rows = "4", @cols = "50" })
-                                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control", id = "Remarks", placeholder = "Enter remarks...", rows = 3 })
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
 
+                                <!-- Salary Heads Grid -->
+                                <ul class="nav nav-tabs" id="salaryHeadsTab">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#salaryHeads" data-toggle="tab">Salary Heads</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="salaryHeads" class="tab-pane fade show active">
+                                        <h4 class="mt-3">Salary Heads</h4>
+                                        @if (ViewBag.SalaryGroupEntries != null && ViewBag.SalaryGroupEntries.Count > 0)
+                                        {
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Salary Head</th>
+                                                        <th>Group Value Type</th>
+                                                        <th>Group Percentage Value</th>
+                                                        <th>Group Fixed Value</th>
+                                                        <th>Group Minimum Value</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var salaryHead in ViewBag.SalaryGroupEntries)
+                                                    {
+                                                        <tr onclick="loadSalaryHeadDetails('@salaryHead.Id', '@salaryHead.ChargeTypeDescription', '@salaryHead.ChargePercentage', '@salaryHead.ChargeFixedAmount')">
+                                                            <td>@salaryHead.SalaryHeadDescription</td>
+                                                            <td>@salaryHead.ChargeTypeDescription</td>
+                                                            <td>@salaryHead.ChargePercentage</td>
+                                                            <td>@salaryHead.ChargeFixedAmount</td>
+                                                            <td>@salaryHead.MinimumValue</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No salary heads found. Click Reset if nothing appears.</p>
+                                        }
+
+                                        <!-- Form to display salary head details -->
+                          
+                                        <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                            <div class="col-md-2">
+                                                @Html.Label("Value Type")
+                                                <input type="text" id="ValueType" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.Label("Group Value")
+                                                <input type="text" id="GroupValue" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-md-2">
+                                                @Html.Label("Card Value")
+                                                <input type="number" id="CardValue" class="form-control" />
+                                            </div>
+                                            @*<button type="button" id="updateSalaryHead" class="btn btn-primary btn-success">Update</button>
+                                            <button type="button" id="resetSalaryDetails" class="btn btn-primary btn-danger">Reset</button>*@
+                                        </div>
 
                                     </div>
                                 </div>
                             </fieldset>
+
+
                             <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
                                 <div class="col-lg-2">
                                     @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
@@ -215,9 +262,8 @@
                                     @Html.ValidationMessageFor(model => model.IsTaxExempt, "", new { @class = "text-danger" })
                                 </div>
 
-                                <input type="submit" value="Create" class="btn btn-primary btn-update" />
+                                <input type="submit" value="Update" class="btn btn-primary btn-update" />
                             </div>
-
                         }
 
 
@@ -392,6 +438,72 @@
     </style>
 
     <script>
+        // Handle the Update button click
+        document.getElementById("updateSalaryHead").addEventListener("click", async function () {
+            // Gather data from the form
+            const salaryCardEntryDTO = {
+                ValueType: document.getElementById("ValueType").value,
+                GroupValue: document.getElementById("GroupValue").value,
+                CardValue: document.getElementById("CardValue").value,
+            };
+
+            try {
+                // Send data to the server
+                const response = await fetch('/SalaryCards/UpdateSalaryCardEntry', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(salaryCardEntryDTO),
+                });
+
+                if (response.ok) {
+                    alert("Salary Head updated successfully!");
+                    location.reload(); 
+                } else {
+                    alert("Failed to update Salary Head.");
+                }
+            } catch (error) {
+                console.error("Error updating Salary Head:", error);
+            }
+        });
+
+        // Handle the Reset button click
+        document.getElementById("resetSalaryDetails").addEventListener("click", async function () {
+            try {
+                const response = await fetch('/SalaryCards/ResetSalaryCardEntries', { method: 'POST' });
+
+                if (response.ok) {
+                    alert("Salary details have been reset.");
+                    location.reload(); 
+                } else {
+                    alert("Failed to reset Salary details.");
+                }
+            } catch (error) {
+                console.error("Error resetting Salary details:", error);
+            }
+        });
+    </script>
+    <script>
+        function loadSalaryHeadDetails(id, valueType, percentage, fixedValue) {
+            document.querySelectorAll("tr").forEach(row => row.style.backgroundColor = ""); 
+            event.currentTarget.style.backgroundColor = "#f0f8ff"; 
+
+            document.getElementById("ValueType").value = valueType;
+
+            if (valueType.toLowerCase() === "percentage") {
+                document.getElementById("GroupValue").value = percentage + " %";
+            } else if (valueType.toLowerCase() === "fixed") {
+                document.getElementById("GroupValue").value = fixedValue;
+            } else {
+                document.getElementById("GroupValue").value = "";
+            }
+
+            let cardValue = (percentage / 100) * fixedValue; 
+            document.getElementById("CardValue").value = cardValue.toFixed(2); 
+        }
+    </script>
+
+
+    <script>
                $(document).ready(function () {
                    $('#employeesGrid').DataTable({
                 "sPaginationType": "full_numbers",
@@ -484,7 +596,7 @@
                             $('#EmployeeCustomerIndividualIdentityCardNumber').val(response.data.EmployeeCustomerIndividualIdentityCardNumber);
 
 
-                             
+
 
 
 
@@ -531,7 +643,7 @@
                 },
                 "aoColumns": [
                     { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-                   
+
                     {
                         "mDataProp": "CreatedDate",
                         "sTitle": "Created Date",
@@ -565,7 +677,7 @@
                         if (response.success) {
                             $('#SalaryGroupDescription').val(response.data.SalaryGroupDescription);
                             $('#SalaryGroupId').val(response.data.SalaryGroupId);
-                            
+
 
 
 
@@ -587,7 +699,7 @@
 
     <script>
         $.ajax({
-            url: '/HumanResource/Create',
+            url: '/HumanResource/Edit',
             type: 'POST',
             success: function (response) {
                 if (response.success) {
@@ -617,6 +729,37 @@
         });
 
 
+    </script>
+    <script>
+        //Dropdown charge Product
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('chargeDropdown');
+            var percentageSection = document.getElementById('percentageSection');
+            var fixedAmountSection = document.getElementById('fixedAmountSection');
+
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '1') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '2') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else if (dropdown.value === '3') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
+                }
+            });
+        });
     </script>
 
 
@@ -729,7 +872,7 @@
             margin-top: 20px; /* Adjust top margin as needed */
         }
     </style>
-   
+
 
 
 
