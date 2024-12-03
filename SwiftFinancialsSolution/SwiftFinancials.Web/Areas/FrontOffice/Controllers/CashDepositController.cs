@@ -1,27 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using System.Windows.Forms;
-using Application.MainBoundedContext.DTO;
+﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
-using Domain.MainBoundedContext.AccountsModule.Aggregates.PostingPeriodAgg;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
 using SwiftFinancials.Presentation.Infrastructure.Models;
 using SwiftFinancials.Web.Areas.Registry.DocumentsModel;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
@@ -161,12 +161,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
-        public async Task<ActionResult> Index()
+        public async Task<System.Web.Mvc.ActionResult> Index()
         {
             await ServeNavigationMenus();
 
             return View();
         }
+
+    
 
 
         private async Task<List<Document>> GetDocumentsAsync(Guid id)
@@ -235,7 +237,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
@@ -244,9 +246,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int searchRecordCount = 0;
 
-            DateTime startDate = DateTime.Now;
+            //DateTime startDate = DateTime.Now;
 
-            DateTime endDate = DateTime.Now;
+            //DateTime endDate = DateTime.Now;
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
@@ -257,14 +259,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
-            if (SelectedTeller != null)
+            if (SelectedTeller != null && !SelectedTeller.IsLocked)
             {
                 var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
                     pageIndex,
                     jQueryDataTablesModel.iDisplayLength,
                     (Guid)SelectedTeller.ChartOfAccountId,
-                    CurrentPostingPeriod.DurationStartDate,
-                    CurrentPostingPeriod.DurationEndDate,
+                    startDate,
+                    endDate,
                     jQueryDataTablesModel.sSearch,
                     20,
                     1,
@@ -275,13 +277,20 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
                 {
+
+
+                    var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
+                    
                     totalRecordCount = pageCollectionInfo.ItemsCount;
 
                     //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
 
+
+                    var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+                    
                     searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
-                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                    return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
                 }
                 else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
 
@@ -330,10 +339,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 var TellerStatements = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(0, 10, (Guid)SelectedTeller.ChartOfAccountId, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, "", 0, 2, true, GetServiceHeader());
 
 
-
-                SelectedTeller.BookBalance = generalLedgerAccount.Balance;
+               
+                //SelectedTeller.BookBalance = generalLedgerAccount.Balance;
                 transactionModel.Teller.BookBalance = SelectedTeller.BookBalance;
                 transactionModel.TellerStatements = TellerStatements;
+                transactionModel.Teller.ChartOfAccountId = SelectedTeller.ChartOfAccountId;
 
             }
 
@@ -827,14 +837,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                             {
 
 
-                                                                bool paymentSuccess = await _channelService.PayCashWithdrawalRequestAsync(targetCashWithdrawalRequest, paymentVoucherDTO);
+                                                                bool paymentSuccess = await _channelService.PayCashWithdrawalRequestAsync(targetCashWithdrawalRequest, paymentVoucherDTO, GetServiceHeader());
 
                                                                 if (paymentSuccess)
                                                                 {
 
 
 
-                                                                    var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs);
+                                                                    var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
 
                                                                     MessageBox.Show(
                                                                       "The authorized cash withdrawal request succesfully be marked as paid!",
@@ -880,7 +890,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                             {
 
 
-                                                                var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs);
+                                                                var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
 
                                                                 //PrintReceipt(authorizedJournal);
                                                                 return true;
@@ -977,7 +987,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                     Category = (int)cashWithdrawalCategory,
                                                     Amount = transactionModel.TotalValue,
                                                     Remarks = transactionModel.Reference,
-                                                    PaymentVoucherId = transactionModel.PaymentVoucher.Id
+                                                    PaymentVoucherId = transactionModel.PaymentVoucher.Id,
+                                                    PaymentVoucherPayee = transactionModel.PaymentVoucher.Payee
                                                 };
 
                                                 // Placeholder for adding a cash withdrawal request
@@ -1008,6 +1019,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                         MessageBoxDefaultButton.Button1,
                                                         MessageBoxOptions.ServiceNotification
                                                     );
+
+                                                    //var updateTargetPaymentVoucherDetails?
 
                                                     return true;
                                                 }
@@ -1170,6 +1183,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
+
+            if ((RecordStatus)SelectedCustomerAccount.RecordStatus != RecordStatus.Approved)
+            {
+
+                MessageBox.Show("Sorry, account is not approved yet",
+           "Cash Transaction",
+           MessageBoxButtons.OK,
+           MessageBoxIcon.Information,
+           MessageBoxDefaultButton.Button1,
+           MessageBoxOptions.ServiceNotification
+           );
+
+                return Json(new { success = false, message = "Opration failed" });
+
+
+            }
+
+
             SelectedBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
 
@@ -1200,6 +1231,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             transactionModel.Reference = string.Format("{0}", SelectedCustomerAccount.CustomerReference1);
             transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
 
+
             transactionModel.Teller = SelectedTeller;
 
             if (transactionModel.CashWithdrawal.Amount > 0)
@@ -1214,10 +1246,39 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
             if (transactionModel.PaymentVoucher.Amount > 0)
-            {
+            {   
                 transactionModel.TotalValue = transactionModel.PaymentVoucher.Amount;
                 transactionModel.Reference = transactionModel.PaymentVoucher.Reference;
             }
+
+
+            if (SelectedTeller.BookBalance - transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
+            {
+                MessageBox.Show(
+                    "Sorry, the transaction will reduce teller's balance below limit",
+                    "Cash Transaction",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                return Json(new { success = false, message = "Operation failed" });
+            }
+
+            // if (SelectedTeller.BookBalance + transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
+            // {
+
+            //     MessageBox.Show("Sorry, the transaction will reduce teller's balance below limit",
+            //"Cash Transaction",
+            //MessageBoxButtons.OK,
+            //MessageBoxIcon.Information,
+            //MessageBoxDefaultButton.Button1,
+            //MessageBoxOptions.ServiceNotification
+            //);
+
+            //     return Json(new { success = false, message = "Opration failed" });
+            // }
 
 
 
@@ -1550,6 +1611,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 }
 
                 // Assign data to the transaction model
+                
+                targetPaymentVoucher.Payee = cashWithdrawalRequest.PaymentVoucherPayee;
                 transactionModel.PaymentVoucher = targetPaymentVoucher;
 
                 // Continue with additional logic...
@@ -2077,6 +2140,61 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else return this.DataTablesJson(items: new List<CashWithdrawalRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
+
+
+        //[HttpPost]
+        //public async Task<ActionResult> GenerateReport(string chartOfAccountId, string startDate, string endDate)
+        //{
+
+        //    var formattedStartDate = DateTime.Parse(startDate);
+
+        //    var formattedEndDate = DateTime.Parse(endDate);
+
+
+        //    var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+            
+        //    // SSRS Report URL (Make sure this points to the correct SSRS report path)
+        //    string reportUrl = "http://desktop-rstq8im/ReportServer?/ReportProject1/Report3";
+
+      
+        //    // Build the URL with parameters
+        //    string fullReportUrl = $"{reportUrl}&ChartOfAccountID={chartOfAccountId}&StartDate={formattedStartDate:yyyy-MM-dd}&EndDate={formattedEndDate:yyyy-MM-dd}&PostingPeriod={postingPeriod.Id}&rs:Command=Render&rs:Format=PDF";
+
+        //    using (var client = new HttpClient())
+        //    {
+        //        // SQL Server Authentication credentials
+        //        //string username = "sa"; // Replace with your SQL Server username
+        //        //string password = "pass123"; // Replace with your SQL Server password
+
+        //        // Set up Basic Authentication using SQL Server credentials (base64 encode username:password)
+        //        var credentials = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{username}:{password}"));
+        //        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", credentials);
+
+        //        // Fetch the report
+        //        var response = await client.GetAsync(fullReportUrl);
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            // If the request is successful, get the report as bytes
+        //            var reportBytes = await response.Content.ReadAsByteArrayAsync();
+
+        //            // Return the report as a downloadable file
+        //            return File(reportBytes, "application/pdf", "TellerReport.pdf");
+        //        }
+        //        else
+        //        {
+        //            // Return an error message if authentication fails
+        //            return Json(new { success = false, message = "Failed to generate the report. Unauthorized access." });
+        //        }
+        //    }
+        //}
+
+
+
+
+
+
+
     }
 }
 

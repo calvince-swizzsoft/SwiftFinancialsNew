@@ -683,34 +683,6 @@ namespace Application.MainBoundedContext.Services
             throw new NotImplementedException();
         }
 
-        //public Tuple<decimal, decimal, int> FindGlAccountStatistics(Guid chartOfAccountId, DateTime startDate, DateTime endDate, int transactionDateFilter, ServiceHeader serviceHeader)
-        //{
-        //    var totalCredits = 0m;
-        //    var totalDebits = 0m;
-        //    var itemsCount = 0;
-
-        //    using (_dbContextScopeFactory.CreateReadOnly())
-        //    {
-        //        var query = _repository.DatabaseSqlQuery<GLAccountStatisticsBag>("EXEC sp_GetGlTotalDebitsCredits @ChartOfAccountID, @StartDate, @EndDate, @TransactionDateFilter", serviceHeader,
-        //            new SqlParameter("ChartOfAccountID", chartOfAccountId),
-        //            new SqlParameter("StartDate", endDate),
-        //            new SqlParameter("EndDate", endDate),
-        //            new SqlParameter("TransactionDateFilter", transactionDateFilter));
-
-        //        if (query != null)
-        //        {
-        //            foreach (var item in query)
-        //            {
-        //                totalCredits = item.Credit;
-        //                totalDebits = item.Debit;
-        //                itemsCount = item.Count;
-        //            }
-        //        }
-        //    }
-
-        //    return new Tuple<decimal, decimal, int>(totalCredits, totalDebits, itemsCount);
-        //}
-
         public Tuple<decimal, decimal, decimal, decimal, int> FindGlAccountStatistics(Guid chartOfAccountId, DateTime startDate, DateTime endDate, int transactionDateFilter, ServiceHeader serviceHeader)
         {
             var totalCredits = 0m;
@@ -721,7 +693,7 @@ namespace Application.MainBoundedContext.Services
 
             using (_dbContextScopeFactory.CreateReadOnly())
             {
-                var query = _repository.DatabaseSqlQuery<GLAccountStatisticsBag>("EXEC sp_GetGlStatistics @ChartOfAccountID, @StartDate, @EndDate, @TransactionDateFilter", serviceHeader,
+                var query = _repository.DatabaseSqlQuery<GLAccountStatisticsBag>("EXEC sp_GetGlTotalDebitsCredits @ChartOfAccountID, @StartDate, @EndDate, @TransactionDateFilter", serviceHeader,
                     new SqlParameter("ChartOfAccountID", chartOfAccountId),
                     new SqlParameter("StartDate", endDate),
                     new SqlParameter("EndDate", endDate),
@@ -731,17 +703,53 @@ namespace Application.MainBoundedContext.Services
                 {
                     foreach (var item in query)
                     {
-                        totalCredits = item.TotalCredits;
-                        totalDebits = item.TotalDebits;
-                        openingBalance = item.OpeningBalance;
-                        closingBalance = item.ClosingBalance;
+                        totalCredits = item.Credit;
+                        totalDebits = item.Debit;
                         itemsCount = item.Count;
                     }
                 }
             }
 
+
+            openingBalance = FindGlAccountBalance(chartOfAccountId, startDate.AddDays(-1), transactionDateFilter, serviceHeader);
+
+            closingBalance = FindGlAccountBalance(chartOfAccountId, UberUtil.AdjustTimeSpan(endDate), transactionDateFilter, serviceHeader);
+
+
             return new Tuple<decimal, decimal, decimal, decimal, int>(totalCredits, totalDebits, openingBalance, closingBalance, itemsCount);
         }
+
+        //public Tuple<decimal, decimal, decimal, decimal, int> FindGlAccountStatistics(Guid chartOfAccountId, DateTime startDate, DateTime endDate, int transactionDateFilter, ServiceHeader serviceHeader)
+        //{
+        //    var totalCredits = 0m;
+        //    var totalDebits = 0m;
+        //    var openingBalance = 0m;
+        //    var closingBalance = 0m;
+        //    var itemsCount = 0;
+
+        //    using (_dbContextScopeFactory.CreateReadOnly())
+        //    {
+        //        var query = _repository.DatabaseSqlQuery<GLAccountStatisticsBag>("EXEC sp_GetGlStatistics @ChartOfAccountID, @StartDate, @EndDate, @TransactionDateFilter", serviceHeader,
+        //            new SqlParameter("ChartOfAccountID", chartOfAccountId),
+        //            new SqlParameter("StartDate", endDate),
+        //            new SqlParameter("EndDate", endDate),
+        //            new SqlParameter("TransactionDateFilter", transactionDateFilter));
+
+        //        if (query != null)
+        //        {
+        //            foreach (var item in query)
+        //            {
+        //                totalCredits = item.TotalCredits;
+        //                totalDebits = item.TotalDebits;
+        //                openingBalance = item.OpeningBalance;
+        //                closingBalance = item.ClosingBalance;
+        //                itemsCount = item.Count;
+        //            }
+        //        }
+        //    }
+
+        //    return new Tuple<decimal, decimal, decimal, decimal, int>(totalCredits, totalDebits, openingBalance, closingBalance, itemsCount);
+        //}
 
         public List<StandingOrderDTO> FindStandingOrdersByEmployerAndTrigger(Guid employerId, int trigger, ServiceHeader serviceHeader)
         {
@@ -1537,9 +1545,9 @@ namespace Application.MainBoundedContext.Services
 
     public class GLAccountStatisticsBag
     {
-        public decimal TotalCredits { get; set; }
+        public decimal Credit { get; set; }
 
-        public decimal TotalDebits { get; set; }
+        public decimal Debit { get; set; }
 
         public decimal OpeningBalance { get; set; }
 

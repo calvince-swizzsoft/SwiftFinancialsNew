@@ -935,6 +935,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public static ValidationResult ValidateAmountApplied(object value, ValidationContext context)
         {
             var bindingModel = context.ObjectInstance as LoanCaseDTO;
+
             if (bindingModel == null)
                 throw new NotSupportedException("ObjectInstance must be LoanCaseDTO");
 
@@ -1297,5 +1298,56 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorDTO { get; set; }
+
+
+
+
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public int RecordStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public string RecordStatusDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(RecordStatus), RecordStatus) ? EnumHelper.GetDescription((RecordStatus)RecordStatus) : string.Empty;
+            }
+        }
+
+        [Display(Name = "Customer Filter")]
+        public int CustomerFilter { get; set; }
+
+        [Display(Name = "Customer Filter")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return EnumHelper.GetDescription((CustomerFilter)CustomerFilter);
+            }
+        }
+        public Guid DocumentID { get; set; }  // Unique identifier for the document
+        
+        public byte[] PassportPhoto { get; set; }
+        public byte[] SignaturePhoto { get; set; }
+        public byte[] IDCardFrontPhoto { get; set; }
+        public byte[] IDCardBackPhoto { get; set; }
+
+        [DataMember]
+        [Display(Name = "Status")]
+        public string LoanStatus { get; set; }
+
+
+        //Additional DTOs
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public string FullAccountNumber { get; set; }
+
+        [DataMember]
+        public LoanProductDTO LoanProductsDTO { get; set; }
+
+
     }
 }

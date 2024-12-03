@@ -149,45 +149,13 @@ namespace SwiftFinancials.Web.Controllers
             return await _applicationUserManager.FindByNameAsync(User.Identity.Name);
         }
 
-        //[NonAction]
-        //public async Task ServeNavigationMenus()
-        //{
-        //    if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
-        //    {
-        //        ViewBag.NavigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-        //    }
-        //    else
-        //    {
-        //        var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
-
-        //        var roles = await _applicationUserManager.GetRolesAsync(user.Id);
-
-        //        var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO> ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
-
-        //        var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-
-        //        var parentsInNavigationItems = navigationItems.Where(x => x.ControllerName == null && x.ActionName == null).ToList();
-
-        //        var userNavigationItems = navigationItems.Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId)).ToList();
-
-        //        userNavigationItems.AddRange(parentsInNavigationItems);
-
-        //        userNavigationItems.ForEach(item => item.Child = userNavigationItems.Where(child => child.AreaCode == item.Code).ToList());
-
-        //        userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
-
-        //        ViewBag.NavigationItems = userNavigationItems;
-        //    }
-        //}
-
 
         [NonAction]
         public async Task ServeNavigationMenus()
         {
             if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
             {
-                var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-                ViewBag.NavigationItems = navigationItems.OrderBy(item => item.Description).ToList();
+                ViewBag.NavigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
             }
             else
             {
@@ -195,30 +163,63 @@ namespace SwiftFinancials.Web.Controllers
 
                 var roles = await _applicationUserManager.GetRolesAsync(user.Id);
 
-                var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO>
-                    ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
+                var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO> ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
 
                 var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
 
-                var parentsInNavigationItems = navigationItems
-                    .Where(x => x.ControllerName == null && x.ActionName == null)
-                    .ToList();
+                var parentsInNavigationItems = navigationItems.Where(x => x.ControllerName == null && x.ActionName == null).ToList();
 
-                var userNavigationItems = navigationItems
-                    .Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId))
-                    .ToList();
+                var userNavigationItems = navigationItems.Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId)).ToList();
 
                 userNavigationItems.AddRange(parentsInNavigationItems);
 
-                userNavigationItems.ForEach(item => item.Child = userNavigationItems
-                    .Where(child => child.AreaCode == item.Code)
-                    .ToList());
+                userNavigationItems.ForEach(item => item.Child = userNavigationItems.Where(child => child.AreaCode == item.Code).ToList());
 
                 userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
 
                 ViewBag.NavigationItems = userNavigationItems.OrderBy(item => item.Description).ToList();
             }
         }
+
+
+        //[NonAction]
+        //public async Task ServeNavigationMenus()
+        //{
+        //    if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
+        //    {
+        //        var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
+        //        ViewBag.NavigationItems = navigationItems.OrderBy(item => item.Description).ToList();
+        //    }
+        //    else
+        //    {
+        //        var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
+
+        //        var roles = await _applicationUserManager.GetRolesAsync(user.Id);
+
+        //        var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO>
+        //            ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
+
+        //        var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
+
+        //        var parentsInNavigationItems = navigationItems
+        //            .Where(x => x.ControllerName == null && x.ActionName == null)
+        //            .ToList();
+
+        //        var userNavigationItems = navigationItems
+        //            .Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId))
+        //            .ToList();
+
+        //        userNavigationItems.AddRange(parentsInNavigationItems);
+
+        //        userNavigationItems.ForEach(item => item.Child = userNavigationItems
+        //            .Where(child => child.AreaCode == item.Code)
+        //            .ToList());
+
+        //        userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
+
+        //        ViewBag.NavigationItems = userNavigationItems.OrderBy(item => item.Description).ToList();
+        //    }
+        //}
 
 
 
@@ -822,6 +823,24 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetRelationshipSelectList(string selectedValue)
+        {
+            List<SelectListItem> NextOfKinRelationship = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(NextOfKinRelationship)).Cast<NextOfKinRelationship>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            NextOfKinRelationship.AddRange(items);
+
+            return NextOfKinRelationship;
+        }
+
+
+        [NonAction]
         protected List<SelectListItem> GetNationalitySelectList(string selectedValue)
         {
             List<SelectListItem> nationalities = new List<SelectListItem>();
@@ -1355,7 +1374,22 @@ namespace SwiftFinancials.Web.Controllers
 
             return chequeTypeChargeRecoveryModes;
         }
+        [NonAction]
+        protected List<SelectListItem> GetChequeType(string selectedValue)
+        {
+            List<SelectListItem> chequeType = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(ChequeBookType)).Cast<ChequeBookType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            chequeType.AddRange(items);
+
+            return chequeType;
+        }
         [NonAction]
         protected List<SelectListItem> GetWithdrawalNotificationCategorySelectList(string selectedValue)
         {

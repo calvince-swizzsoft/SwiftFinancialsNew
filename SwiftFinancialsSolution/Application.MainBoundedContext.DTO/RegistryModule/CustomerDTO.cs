@@ -472,7 +472,15 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [Display(Name = "Guarantor")]
         public string GuarantorDesc { get; set; }
+        //// Additional Document DTO
+        //public Guid DocumentID { get; set; }  // Unique identifier for the document
+        //public Guid CustomerId { get; set; }  // Reference to the associated customer
+        //public byte[] PassportPhoto { get; set; }
+        //public byte[] SignaturePhoto { get; set; }
+        //public byte[] IDCardFrontPhoto { get; set; }
+        //public byte[] IDCardBackPhoto { get; set; }
 
+        //public DateTime DocumentCreatedDate { get; set; } = DateTime.Now;
 
         // Additional
         public MessageGroupDTO messageGroup { get; set; }

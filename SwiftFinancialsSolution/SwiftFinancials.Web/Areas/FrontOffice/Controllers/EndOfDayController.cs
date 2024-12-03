@@ -122,14 +122,34 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+            _selectedTeller = await GetCurrentTeller();
 
-            _selectedPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+            var missingParameters = new List<string>();
 
-            if (id == null)
+            if (currentUser == null)
             {
-                TempData["NullTeller"] = "Message";
-                return View();
+                missingParameters.Add("Active User");
+            }
+
+            if (SelectedTeller == null)
+            {
+                missingParameters.Add("Teller");
+            }
+
+            // Check if any parameter is missing
+            if (missingParameters.Any())
+            {
+                var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
+
+                MessageBox.Show(missingMessage,
+                    "Cash Transaction",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                //return Json(new { success = false, message = "Operation error: " + missingMessage });
             }
             var untransferredCheques = await _channelService.FindUnTransferredExternalChequesByTellerId(SelectedTeller.Id, "", GetServiceHeader());
 
@@ -154,7 +174,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             /*ashTransferRequestDTO.ValidateAll();*/
 
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+      
+           _selectedTeller = await GetCurrentTeller();
 
             cashTransferRequestDTO.EmployeeId = SelectedTeller.EmployeeId;
 
@@ -189,7 +210,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                     //TellerCashBalanceStatus = cashTransferRequestDTO.TellerCashBalanceStatusValue;
 
-                    model.Reference = EnumHelper.GetDescription((TellerCashBalanceStatus)cashTransferRequestDTO.TellerCashBalanceStatusValue);
+                    //model.Reference = EnumHelper.GetDescription((TellerCashBalanceStatus)cashTransferRequestDTO.TellerCashBalanceStatusValue);
+
+                    if (cashTransferRequestDTO.TellerCashBalanceStatusValue == 0)
+                        model.Reference = TellerCashBalanceStatus.Balanced.ToString();
+                    else if (cashTransferRequestDTO.TellerCashBalanceStatusValue < 0)
+                        model.Reference = TellerCashBalanceStatus.Shortage.ToString();
+                    else
+                        model.Reference = TellerCashBalanceStatus.Excess.ToString(); 
+
 
                     if (SelectedTeller != null && !SelectedTeller.IsLocked)
                         model.SecondaryDescription = SelectedTeller.Description;
@@ -203,10 +232,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         model.BranchId = SelectedBranch.Id;
 
                     if (SelectedTreasury != null)
-                        model.DebitChartOfAccountId = SelectedTreasury.ChartOfAccountId;
+                        model.CreditChartOfAccountId = SelectedTreasury.ChartOfAccountId;
 
                     if (SelectedTeller != null && !SelectedTeller.IsLocked)
-                        model.CreditChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
+                        model.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
 
 
                     model.TotalValue = cashTransferRequestDTO.Amount;
@@ -385,6 +414,47 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             return View();
+        }
+
+        private async Task<TellerDTO> GetCurrentTeller()
+        {
+
+            // Get the current user
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+
+            var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
+            var targetCustomer = customers?.FirstOrDefault(c => c.AddressEmail == user.Email);
+
+            if (targetCustomer == null)
+            {
+                TempData["Error"] = "Customer not found.";
+                return null;
+            }
+
+            var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
+            SelectedEmployee = employees?.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
+
+            if (SelectedEmployee == null)
+            {
+                TempData["Error"] = "Employee not found for the customer.";
+                return null;
+            }
+
+            var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, true, GetServiceHeader());
+
+            if (teller == null)
+            {
+                TempData["Missing Teller"] = "You are working without a Recognized Teller";
+            }
+
+            var generalLedgerAccount = await _channelService.FindGeneralLedgerAccountAsync((Guid)teller.ChartOfAccountId, true, GetServiceHeader());
+
+            teller.BookBalance = generalLedgerAccount.Balance;
+
+
+            return teller;
+
         }
 
 

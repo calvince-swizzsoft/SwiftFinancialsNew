@@ -665,6 +665,7 @@
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Registry\Controllers\FindEducationRegisterAsync.cs" />
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
+    <Compile Include="Areas\Registry\Controllers\NextOfKinController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
@@ -1501,6 +1502,13 @@
     <Content Include="Areas\HumanResource\Views\SalaryGroups\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryGroups\Details.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Settle.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\NextOfKin\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_ChequeBooks\Index.cshtml" />
+    <Content Include="Areas\Dashboard\Views\InstantMessaging\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2015,7 +2023,6 @@
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\EmailAlerts\" />
-    <Folder Include="Areas\Dashboard\Views\InstantMessaging\" />
     <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
