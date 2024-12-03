@@ -74,6 +74,16 @@
             width: 100%;
             padding-right: 15px;
         }
+
+        .blue-section1 {
+            background-color: #e6f3ff;
+            padding: 10px; /* Padding inside the border */
+            border-radius: 8px; /* Rounded corners (optional) */
+
+
+            font-size: 16px;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -146,9 +156,9 @@
                                     <li class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#chequeReceiptTab" data-transaction-type="2">Cheque Receipt</a>
                                     </li>
-                                    <li class="nav-item">
+                                    @*<li class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#sundryPaymentTab" data-transaction-type="16">Sundry Payment</a>
-                                    </li>
+                                    </li>*@
                                     <li class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#chargesLeviesTab">Charges & Levies</a>
                                     </li>
@@ -405,8 +415,8 @@
                                                                 @Html.DropDownListFor(model => model.ExternalChequeDTO.ChartOfAccountAccountType, chartOfAccountType, new { @class = "form-control" })
                                                             </div>
                                                         </div>
-                                                        </div>
                                                     </div>
+                                                </div>
 
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -513,7 +523,7 @@
                                     </div>
 
 
-                                    <div id="sundryPaymentTab" class="tab-pane fade" role="tabpanel">
+                                    @*<div id="sundryPaymentTab" class="tab-pane fade" role="tabpanel">
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label for="glAccount" class="text-success">G/L Account:</label>
@@ -555,7 +565,7 @@
                                             <label for="netPayable" class="text-success">Net Payable:</label>
                                             <input type="number" class="form-control" id="netPayable" value="0.00" readonly>
                                         </div>
-                                    </div>
+                                    </div>*@
 
                                     <div id="chargesLeviesTab" class="tab-pane fade" role="tabpanel">
                                         <!-- Content for Charges & Levies tab -->
@@ -578,6 +588,27 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <div class="blue-section1" style="display: flex; justify-content: space-between; padding: 20px 50px; margin-top: 20px; align-items: flex-end;">
+                                <!-- Start Date Section -->
+                                <div class="col-md-4">
+                                    <label for="startDate">Start Date:</label>
+                                    <input type="text" id="startDate" class="form-control" />
+                                </div>
+
+                                <!-- End Date Section -->
+                                <div class="col-md-4" style="margin-left: 20px;">
+                                    <label for="endDate">End Date:</label>
+                                    <input type="text" id="endDate" class="form-control" />
+                                </div>
+
+                                <!-- Button Section -->
+                                <div style="display: flex; gap: 10px;">
+                                    <button type="button" id="refreshButton1" class="btn btn-info">Refresh</button>
+                                    @*<button type="button" id="printButton" class="btn btn-success">Print</button>*@
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
@@ -1088,16 +1119,24 @@
     </script>
 
     <script>
+        $(document).ready(function () {
+            const datePickerOptions = {
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: "dd-mm-yyyy"
+            };
 
-        $('#data_3 .input-group.date').datepicker({
-            startView: 2,
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            autoclose: true,
-            format: "dd/mm/yyyy"  // Set the date format
+            $('#data_3 .input-group.date').datepicker(datePickerOptions);
+            $('#startDate').datepicker(datePickerOptions);
+            $('#endDate').datepicker(datePickerOptions);
         });
+
     </script>
+
+
 
 
     <script>
@@ -1183,38 +1222,69 @@
 
     <script>
 
+    $(document).ready(function () {
+
+        $('#refreshButton1').on('click', function () {
+            // Reload the DataTable when the Refresh button is clicked
+            $('#tellerGlTable').DataTable().ajax.reload();
+            $('#startDate').val('');
+            $('#endDate').val('');
+        });
+
+                          const defaultStartDate = new Date();
+                defaultStartDate.setDate(defaultStartDate.getDate() - 30); // 30 days ago
+                const defaultEndDate = new Date();
+
+
     $('#tellerGlTable').DataTable({
-    "sPaginationType": "full_numbers",
-    "bProcessing": true,
-    "bServerSide": true,
-    "sAjaxSource": "@(Url.Action("Index", "CashDeposit", new { Area = "FrontOffice"}))",
-    "sServerMethod": "POST",
-    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CashDeposit", new { Area = "FrontOffice"}))",
+        "sServerMethod": "POST",
+        "fnServerParams": function (aoData) {
+            // Add startDate and endDate to the server parameters
+            aoData.push(
+                {
+                    "name": "startDate",
+                    "value": $('#startDate').val() || defaultStartDate.toISOString().split('T')[0]
+                },
+                {
+                    "name": "endDate",
+                    "value": $('#endDate').val() || defaultEndDate.toISOString().split('T')[0]
+                }
+            );
+        },
+
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
 
-    var createdDate = new Date(parseInt(aData.JournalCreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-    var h = ("0" + createdDate.getHours()).slice(-2);
-    var m = ("0" + createdDate.getMinutes()).slice(-2);
-    var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var createdDate = new Date(parseInt(aData.JournalCreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-    aData.JournalCreatedDate = dt_Created;
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.JournalCreatedDate = dt_Created;
 
 
-    $('td:eq(1)', nRow).html(dt_Created);
-    return nRow;
-    },
-    "aoColumns": [
-    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
-    { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
-    { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "25%" },
-    { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
-    { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
-    { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
-    { "mDataProp": "ContraGLAccountName", "sTitle": "Contra G/L Account", "sWidth": "15%" }
-    ],
-    "aaSorting": [[1, "desc"]] // Default sorting, adjust index as needed
+             $('td:eq(1)', nRow).html(dt_Created);
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
+            { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
+            { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "25%" },
+            { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
+            { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
+            { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
+            { "mDataProp": "ContraGLAccountName", "sTitle": "Contra G/L Account", "sWidth": "15%" }
+        ],
+        "aaSorting": [[1, "desc"]] // Default sorting, adjust index as needed
     });
+
+
+                })
     </script>
 
 
@@ -1308,7 +1378,8 @@
                 'BranchDescription: \'' + aData.BranchDescription + '\', ' +
                 'StatusDescription: \'' + aData.StatusDescription + '\', ' +
                 'AccountClosureRequestCustomerFullAccountNumber: \'' + aData.CustomerAccountFullAccountNumber + '\', ' +
-                'AccountClosureRequestCustomerAccountTypeTargetProductDescription: \'' + aData.CustomerAccountTypeTargetProductDescription + '\', ' +
+/*                'AccountClosureRequestCustomerAccountTypeTargetProductDescription: \'' + aData.CustomerAccountTypeTargetProductDescription + '\', ' +*/
+                'AccountClosureRequestCustomerAccountTypeTargetProductDescription: \'' + aData.CustomerAccountTypeTargetProductDescription.replace(/'/g, "\\'") + '\', ' +
                 'AccountClosureRequestCustomerAccountCustomerFullName: \'' + aData.CustomerAccountCustomerFullName + '\', ' +
                 'AccountClosureRequestCustomerAccountCustomerReference1: \'' + aData.CustomerAccountCustomerReference1 + '\', ' +
                 'AccountClosureRequestCustomerAccountCustomerReference2: \'' + aData.CustomerAccountCustomerReference2 + '\', ' +
@@ -1317,7 +1388,8 @@
                 'CreatedDate: \'' + aData.CreatedDate + '\', ' + // Missing comma added here
                 'AccountClosureRequestCustomerAccountCustomerIdentificationNumber: \'' + aData.CustomerAccountCustomerIdentificationNumber + '\', ' +
                 'AccountClosureRequestCustomerAccountStatus: \'' + aData.StatusDescription + '\', ' + // Status is reused
-                'AccountClosureRequestCustomerAccountProductName: \'' + aData.CustomerAccountTypeTargetProductDescription + '\', ' + // Product name is reused
+                'AccountClosureRequestCustomerAccountProductName: \'' + aData.CustomerAccountTypeTargetProductDescription.replace(/'/g, "\\'") + '\', ' +
+            /*    'AccountClosureRequestCustomerAccountProductName: \'' + aData.CustomerAccountTypeTargetProductDescription + '\', ' + */
                 'AccountClosureRequestCustomerAccountCustomerIndividualPayrollNumbers: \'' + aData.CustomerAccountCustomerIndividualPayrollNumbers + '\', ' +
                 'AccountClosureRequestCustomerAccountNetRefundable: \'' + aData.NetRefundable + '\', ' +
                 'AccountClosureRequestReason: \'' + aData.Reason + '\', ' +
@@ -1399,6 +1471,7 @@
             $('#StatusDescription').val(data.StatusDescription);
             $('#AccountClosureRequestCustomerFullAccountNumber').val(data.AccountClosureRequestCustomerAccountFullAccountNumber);
             $('#AccountClosureRequestCustomerAccountTypeTargetProductDescription').val(data.AccountClosureRequestCustomerAccountTypeTargetProductDescription);
+
             $('#AccountClosureRequestCustomerAccountCustomerFullName').val(data.AccountClosureRequestCustomerAccountCustomerFullName);
             $('#AccountClosureRequestCustomerAccountCustomerReference1').val(data.AccountClosureRequestCustomerAccountCustomerReference1);
             $('#AccountClosureRequestCustomerAccountCustomerReference2').val(data.AccountClosureRequestCustomerAccountCustomerReference2);
@@ -1410,7 +1483,7 @@
             // Additional fields based on the provided selectUrl data
             $('#AccountClosureRequestCustomerAccountCustomerIdentificationNumber').val(data.AccountClosureRequestCustomerAccountCustomerIdentificationNumber);
             $('#AccountClosureRequestCustomerAccountStatus').val(data.AccountClosureRequestCustomerAccountStatus);
-            $('#AccountClosureRequestCustomerAccountProductName').val(data.AccountClosureRequestCustomerAccountProductName);
+    /*        $('#AccountClosureRequestCustomerAccountProductName').val(data.AccountClosureRequestCustomerAccountProductName);*/
             $('#AccountClosureRequestCustomerAccountCustomerIndividualPayrollNumbers').val(data.AccountClosureRequestCustomerAccountCustomerIndividualPayrollNumbers);
             $('#AccountClosureRequestCustomerAccountNetRefundable').val(data.AccountClosureRequestCustomerAccountNetRefundable);
             $('#AccountClosureRequestReason').val(data.AccountClosureRequestReason);

@@ -227,7 +227,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+            _selectedTeller = await GetCurrentTeller();
             _selectedBranch = await _channelService.FindBranchAsync(SelectedTeller.EmployeeBranchId, GetServiceHeader());
 
             expensePayableDTO.BranchId = SelectedTeller.EmployeeBranchId;
@@ -599,6 +599,47 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<CreditBatchEntryDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+        private async Task<TellerDTO> GetCurrentTeller()
+        {
+
+            // Get the current user
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+
+            var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
+            var targetCustomer = customers?.FirstOrDefault(c => c.AddressEmail == user.Email);
+
+            if (targetCustomer == null)
+            {
+                TempData["Error"] = "Customer not found.";
+                return null;
+            }
+
+            var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
+            SelectedEmployee = employees?.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
+
+            if (SelectedEmployee == null)
+            {
+                TempData["Error"] = "Employee not found for the customer.";
+                return null;
+            }
+
+            var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, false, GetServiceHeader());
+
+            if (teller == null)
+            {
+                TempData["Missing Teller"] = "You are working without a Recognized Teller";
+            }
+
+            var generalLedgerAccount = await _channelService.FindGeneralLedgerAccountAsync((Guid)teller.ChartOfAccountId, true, GetServiceHeader());
+
+            teller.BookBalance = generalLedgerAccount.Balance;
+
+
+            return teller;
+
         }
     }
 }
