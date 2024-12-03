@@ -246,9 +246,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
 
-            var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
+           // var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
+            var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            transactionModel.BranchId =(Guid)currentUser.BranchId;
 
-            transactionModel.BranchId = (Guid)currentUser.BranchId;
+            // transactionModel.BranchId = (Guid)currentUser.BranchId;
 
             var selectedBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
 
