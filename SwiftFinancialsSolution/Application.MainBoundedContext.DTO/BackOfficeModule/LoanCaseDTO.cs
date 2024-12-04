@@ -1350,10 +1350,10 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Section")]
-        public string LoanProductSection { get; set; }
+        public string loanProductSection { get; set; }
         
         [DataMember]
         [Display(Name = "Payment Frequency Per Year")]
-        public string LoanProductPaymentFrequencyPerYear { get; set; }
+        public string loanProductPaymentFrequencyPerYear { get; set; }
     }
 }
