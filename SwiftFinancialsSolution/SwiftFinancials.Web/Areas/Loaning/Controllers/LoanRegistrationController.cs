@@ -335,7 +335,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     collaterals[i].ModifiedDate = Convert.ToDateTime(collaterals[i].ModifiedDate);
                 }
 
-                
+
                 return Json(new
                 {
                     success = true,
@@ -781,8 +781,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-
-
         [HttpPost]
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO, string collateralIds)
         {
@@ -851,16 +849,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             ObservableCollection<CustomerDocumentDTO> collateralDocuments = new ObservableCollection<CustomerDocumentDTO>(dc);
 
 
-
-            var takeBranchId = Guid.Empty;
-
-            var findBranch = await _channelService.FindBranchesAsync(GetServiceHeader());
-            foreach (var id in findBranch)
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (userDTO.BranchId != null)
             {
-                takeBranchId = id.Id;
+                loanCaseDTO.BranchId = (Guid)userDTO.BranchId;
             }
 
-            loanCaseDTO.BranchId = takeBranchId;
 
             var loanProduct = await _channelService.FindLoanProductAsync(loanCaseDTO.LoanProductId, GetServiceHeader());
 
