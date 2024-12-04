@@ -131,11 +131,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             nextOfKinCollection1.Add(nextOfKinDTO);
 
             CustomerDTO customerDTO = new CustomerDTO();
-            //customerDTO.ValidateAll();
-            //foreach (var nextOfKin in nextOfKinCollection)
-            //{
-            //    nextOfKin.ValidateAll();
-            //}
+            
             var customer = await _channelService.FindCustomerAsync(nextOfKinDTO.CustomerId, GetServiceHeader());
             var result1 = await _channelService.UpdateNextOfKinCollectionAsync(customer, nextOfKinCollection1, GetServiceHeader());
 
