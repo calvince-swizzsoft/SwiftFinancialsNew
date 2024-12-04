@@ -169,7 +169,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.CustomerAccountProductCodeSelectList = GetCustomerAccountProductCodeSelectList(string.Empty);
             ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
 
+            
             var accountClosureRequestDTO = new AccountClosureRequestDTO();
 
             if (id.HasValue && id != Guid.Empty)
