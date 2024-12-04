@@ -145,7 +145,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
-        public async Task<ActionResult> Create(Guid? Id, LoanCaseDTO loancaseDTO)
+        public async Task<ActionResult> Create(Guid? Id)
         {
             await ServeNavigationMenus();
 
