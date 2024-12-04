@@ -1259,28 +1259,28 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         // 
         [DataMember]
         [Display(Name = "Security Qualification")]
-        public double LoanQualificationSecurityQualification { get; set; }  
-        
+        public double LoanQualificationSecurityQualification { get; set; }
+
         [DataMember]
         [Display(Name = "System Recommendation")]
-        public double LoanQualificationSystemRecommendation { get; set; } 
-        
+        public double LoanQualificationSystemRecommendation { get; set; }
+
         [DataMember]
         [Display(Name = "Income Qualification")]
-        public double LoanQualificationIncomeQualification { get; set; } 
-        
+        public double LoanQualificationIncomeQualification { get; set; }
+
         [DataMember]
         [Display(Name = "Investments Qualification")]
         public double LoanQualificationInvestmentsQualification { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Attached Loans Balance")]
-        public double LoanQualificationAttachedLoansBalance { get; set; } 
-        
+        public double LoanQualificationAttachedLoansBalance { get; set; }
+
         [DataMember]
         [Display(Name = "Total Loans + Interest")]
-        public double LoanQualificationTotalLoansPlusInterest { get; set; } 
-        
+        public double LoanQualificationTotalLoansPlusInterest { get; set; }
+
         [DataMember]
         [Display(Name = "Loan Amount")]
         public double LoanQualificationLoanAmount { get; set; }
@@ -1290,7 +1290,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Standing Order Principal")]
         public double StandingOrderPrincipal { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Standing Order Interest")]
         public double StandingOrderInterest { get; set; }
@@ -1329,7 +1329,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
             }
         }
         public Guid DocumentID { get; set; }  // Unique identifier for the document
-        
+
         public byte[] PassportPhoto { get; set; }
         public byte[] SignaturePhoto { get; set; }
         public byte[] IDCardFrontPhoto { get; set; }
@@ -1348,6 +1348,12 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         public LoanProductDTO LoanProductsDTO { get; set; }
 
-
+        [DataMember]
+        [Display(Name = "Section")]
+        public string loanProductSection { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Payment Frequency Per Year")]
+        public string loanProductPaymentFrequencyPerYear { get; set; }
     }
 }

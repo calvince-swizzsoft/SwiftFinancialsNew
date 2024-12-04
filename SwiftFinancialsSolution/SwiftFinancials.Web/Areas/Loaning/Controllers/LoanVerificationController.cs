@@ -297,6 +297,5 @@ namespace SwiftFinancials.Web.Areas.Loaning
                 return View(loanCaseDTO);
             }
         }
-
     }
 }
