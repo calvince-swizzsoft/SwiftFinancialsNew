@@ -96,6 +96,8 @@
                                     <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerFullName, htmlAttributes: new { @class = "" })
+                                            @Html.HiddenFor(model => model.CustomerId)
+
                                             @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.CustomerFullName, "", new { @class = "text-danger" })
                                         </div>
@@ -160,222 +162,295 @@
                             </fieldset>
 
 
-                            <!-- Tab Navigation -->
-                            <ul class="nav nav-tabs" id="loanAccountsTab">
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="#individualParticular" data-toggle="tab">Individual Particular</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#address" data-toggle="tab">Address</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#referees" data-toggle="tab">Referees</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#specimen" data-toggle="tab">Specimen</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#savingAccount" data-toggle="tab">Saving Accounts</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#loanAccount" data-toggle="tab">Loan Accounts</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#investmentAccount" data-toggle="tab">Investment Accounts</a>
-                                </li>
-                            </ul>
-
-                                <!-- Tab Content -->
-                    <div class="tab-content">
-                        <!-- Individual Particular Section -->
-                        <div id="individualParticular" class="tab-pane fade show active">
+                            
                             <div class="row">
+                                <!-- Tab Navigation -->
+                                <ul class="nav nav-tabs" id="loanAccountsTab">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#individualParticular" data-toggle="tab">Individual Particular</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#address" data-toggle="tab">Address</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#referees" data-toggle="tab">Referees</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#specimen" data-toggle="tab">Specimen</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#savingAccount" data-toggle="tab">Saving Accounts</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#loanAccount" data-toggle="tab">Loan Accounts</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#investmentAccount" data-toggle="tab">Investment Accounts</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <!-- Individual Particular Section -->
+                                    <div id="individualParticular" class="tab-pane fade show active">
+                                        <div class="row">
 
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerIndividualSalutationDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerIndividualSalutationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerIndividualSalutationDescription, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerIndividualGenderDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerIndividualGenderDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerIndividualGenderDescription, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerIndividualMaritalStatusDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerIndividualMaritalStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerIndividualMaritalStatusDescription, "", new { @class = "text-danger" })
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualSalutationDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualSalutationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualSalutationDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualGenderDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualGenderDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualGenderDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualMaritalStatusDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualMaritalStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualMaritalStatusDescription, "", new { @class = "text-danger" })
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualNationalityDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualNationalityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualNationalityDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualFirstName, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualFirstName, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualLastName, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualLastName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualIdentityCardTypeDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualIdentityCardTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardTypeDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.DesignationDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.DesignationDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- Address Section -->
+                                    <div id="address" class="tab-pane fade">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerAddressLandLine, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerAddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerAddressLandLine, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerAddressPostalCode, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerAddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerAddressPostalCode, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerAddressStreet, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerAddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerAddressStreet, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerAddressAddressLine2, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerAddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine2, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerAddressAddressLine1, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerAddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine1, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.PaddedCustomerSerialNumber, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.PaddedCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.PaddedCustomerSerialNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- Referees Section -->
+                                    <div id="referees" class="tab-pane fade show active">
+
+                                        @if (ViewBag.Referees != null && ViewBag.Referees.Count > 0)
+                                        {
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>FullName</th>
+                                                        <th>Identity Card</th>
+                                                        <th>Nationality</th>
+                                                        <th>Address</th>
+                                                        <th>Mobile Line</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var referees in ViewBag.Referees)
+                                                    {
+                                                        <tr>
+                                                            <td>@referees.WitnessFullName</td>
+                                                            <td>@referees.WitnessIndividualIdentityCardTypeDescription</td>
+                                                            <td>@referees.WitnessIndividualNationalityDescription</td>
+                                                            <td>@referees.WitnessAddressAddressLine2</td>
+                                                            <td>@referees.WitnessAddressMobileLine</td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No referees found for this customer.</p>
+                                        }
+                                    </div>
+                                    <!-- SPECIMEN -->
+                                    <div id="specimen" class="tab-pane fade show active">
+                                        <div id="documentImages">
+                                            <div class="image-container">
+                                                <h3>Passport Photo</h3>
+                                                @if (passportPhoto != null)
+                                                {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(passportPhoto)" alt="Passport Photo" />
+                                                }
+                                                else
+                                                {
+                                                    <p>No passport photo available.</p>
+                                                }
+                                            </div>
+
+                                            <div class="image-container">
+                                                <h3>Signature Photo</h3>
+                                                @if (signaturePhoto != null)
+                                                {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(signaturePhoto)" alt="Signature Photo" />
+                                                }
+                                                else
+                                                {
+                                                    <p>No signature photo available.</p>
+                                                }
+                                            </div>
+
+                                            <div class="image-container">
+                                                <h3>ID Card Front Photo</h3>
+                                                @if (idCardFrontPhoto != null)
+                                                {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(idCardFrontPhoto)" alt="ID Card Front" />
+                                                }
+                                                else
+                                                {
+                                                    <p>No ID Card Front photo available.</p>
+                                                }
+                                            </div>
+
+                                            <div class="image-container">
+                                                <h3>ID Card Back Photo</h3>
+                                                @if (idCardBackPhoto != null)
+                                                {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(idCardBackPhoto)" alt="ID Card Back" />
+                                                }
+                                                else
+                                                {
+                                                    <p>No ID Card Back photo available.</p>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Saving Accounts Section -->
+                                    <div id="savingAccount" class="tab-pane fade">
+                                        @if (ViewBag.SavingsProducts != null && ViewBag.SavingsProducts.Count > 0)
+                                        {
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Maximum Withdrwal Amount</th>
+                                                        <th>Minimum Balance</th>
+                                                        <th>G/L account</th>
+                                                        <th>Priority</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var savings in ViewBag.SavingsProducts)
+                                                    {
+                                                        <tr>
+                                                            <td>@savings.Description</td>
+                                                            <td>@savings.MaximumAllowedWithdrawal</td>
+                                                            <td>@savings.MinimumBalance</td>
+                                                            <td>@savings.ChartOfAccountName</td>
+                                                            <td>@savings.Priority</td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No savings Products found for this customer.</p>
+                                        }
+                                    </div>
+
+
+
+                                    <!-- Investment Accounts Section -->
+                                    <div id="investmentAccount" class="tab-pane fade">
+                                        @if (ViewBag.InvestmentAccount != null && ViewBag.InvestmentAccount.Count > 0)
+                                        {
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parent G/L </th>
+                                                        <th>Name</th>
+                                                        <th>Balance</th>
+                                                        <th>Product Name</th>
+                                                        <th>Priority</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var loan in ViewBag.ViewBag.InvestmentAccount)
+                                                    {
+                                                        <tr>
+                                                            <td>@loan.ParentChartOfAccountNameDescription</td>
+                                                            <td>@loan.Description</td>
+                                                            <td>@loan.MaximumBalance</td>
+                                                            <td>@loan.ProductName</td>
+                                                            <td>@loan.Priority</td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No InvestmentAccount found for this customer.</p>
+                                        }
+                                    </div>
                                 </div>
 
                             </div>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerIndividualNationalityDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerIndividualNationalityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerIndividualNationalityDescription, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerIndividualFirstName, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerIndividualFirstName, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerIndividualLastName, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerIndividualLastName, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerIndividualIdentityCardTypeDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerIndividualIdentityCardTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardTypeDescription, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.DesignationDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.DesignationDescription, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
 
-                        </div>
-
-
-                        <!-- Address Section -->
-                        <div id="address" class="tab-pane fade">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerAddressLandLine, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerAddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerAddressLandLine, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerAddressPostalCode, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerAddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerAddressPostalCode, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerAddressStreet, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerAddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerAddressStreet, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerAddressAddressLine2, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerAddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine2, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.CustomerAddressAddressLine1, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.CustomerAddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine1, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.PaddedCustomerSerialNumber, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.PaddedCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.PaddedCustomerSerialNumber, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <!-- Referees Section -->
-                        <div id="referees" class="tab-pane fade">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div>
-                            <strong>Passport Photo:</strong><br />
-                            @if (passportPhoto != null)
-                            {
-                    <img src="data:image/png;base64,@Convert.ToBase64String(passportPhoto)" alt="Passport Photo" /> }
-                                    else
-                                    {
-                    <p>No passport photo available.</p>}
-                        </div>
-
-                        <div>
-                            <strong>Signature Photo:</strong><br />
-                            @if (signaturePhoto != null)
-                            {
-                    <img src="data:image/png;base64,@Convert.ToBase64String(signaturePhoto)" alt="Signature Photo" /> }
-                                    else
-                                    {
-                    <p>No signature photo available.</p>}
-                        </div>
-
-                        <div>
-                            <strong>ID Card Front Photo:</strong><br />
-                            @if (idCardFrontPhoto != null)
-                            {
-                    <img src="data:image/png;base64,@Convert.ToBase64String(idCardFrontPhoto)" alt="ID Card Front" /> }
-                                    else
-                                    {
-                    <p>No ID Card Front photo available.</p>}
-                        </div>
-
-                        <div>
-                            <strong>ID Card Back Photo:</strong><br />
-                            @if (idCardBackPhoto != null)
-                            {
-                    <img src="data:image/png;base64,@Convert.ToBase64String(idCardBackPhoto)" alt="ID Card Back" /> }
-                                    else
-                                    {
-                    <p>No ID Card Back photo available.</p>}
-                        </div>
-
-
-
-
-
-
-
-                        <!-- Saving Accounts Section -->
-                        <div id="savingAccount" class="tab-pane fade">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Loan Accounts Section -->
-                        <div id="loanAccount" class="tab-pane fade">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Investment Accounts Section -->
-                        <div id="investmentAccount" class="tab-pane fade">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            <!-- Tab Content -->
+                    
 
 
 
@@ -439,6 +514,55 @@
                         background-color: #00e0ff;
                     }
                 </style>
+                <style>
+                    #documentImages {
+                        display: flex;
+                        justify-content: space-around;
+                        align-items: center;
+                        gap: 10px;
+                        padding: 10px;
+                        background-color: #f5f5fa;
+                        border-radius: 15px;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                        perspective: 1200px;
+                        width: 100%;
+                    }
+
+                    .image-container {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        width: 400px;
+                        background: linear-gradient(145deg, #ffffff, #dcdce1);
+                        padding: 15px;
+                        border-radius: 12px;
+                        box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2), -8px -8px 20px rgba(255, 255, 255, 0.5);
+                        transform-style: preserve-3d;
+                        transition: transform 0.4s ease, box-shadow 0.4s ease;
+                    }
+
+                        .image-container h3 {
+                            font-size: 1rem;
+                            color: #333;
+                            margin-bottom: 10px;
+                            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+                        }
+
+                        .image-container img {
+                            width: 100%;
+                            height: 280px;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                            transition: transform 0.3s ease;
+                        }
+
+                        .image-container:hover {
+                            transform: scale(1.05) rotateY(10deg);
+                            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), -8px -8px 20px rgba(255, 255, 255, 0.4);
+                            cursor: pointer;
+                        }
+                </style>
+
 
 
 

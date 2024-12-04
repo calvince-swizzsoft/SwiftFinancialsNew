@@ -22,9 +22,20 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            return View();
-        }
+            // Fetch the currently logged-in user
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (user == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
+            var designationDTO = new DesignationDTO
+            {
+                ActiveUser = user.UserName // Pass the username to the model
+            };
+
+            return View(designationDTO);
+        }
 
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
@@ -76,16 +87,35 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 );
             }
         }
-        
+
+
 
         public async Task<ActionResult> Details(Guid id)
         {
-            await ServeNavigationMenus();
+            var designation = await _channelService.FindDesignationAsync(id);
+            if (designation == null)
+            {
+                // Handle the case when the designation is not found.
+                return HttpNotFound();
+            }
 
-            var designationDTO = await _channelService.FindDesignationAsync(id, GetServiceHeader());
+            // Call the new method to get the transaction thresholds
+            var transactionThresholds = await _channelService.FindTransactionThresholdCollectionByDesignationIdAsync(id, GetServiceHeader());
 
-            return View(designationDTO);
+            // Pass the designation and the transaction thresholds to the view
+            var viewModel = new DesignationDTO
+            {
+                Id = designation.Id,
+                Description = designation.Description,
+                Remarks = designation.Remarks,
+                IsLocked = designation.IsLocked,
+                TransactionThresholds = transactionThresholds 
+            };
+
+            return View(viewModel);
         }
+
+
 
         public async Task<ActionResult> Create()
         {
@@ -110,7 +140,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                                                              MessageBoxDefaultButton.Button1,
                                                              MessageBoxOptions.ServiceNotification
                                                          );
-                TempData["SuccessMessage"] = "Designation Created Succeesfully";
 
                 return RedirectToAction("Index");
             }
@@ -169,7 +198,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                                                 MessageBoxIcon.Information,
                                                 MessageBoxDefaultButton.Button1,
                                                 MessageBoxOptions.ServiceNotification);
-                                return RedirectToAction("Index");
+                                return RedirectToAction("Details");
                             }
                             else
                             {

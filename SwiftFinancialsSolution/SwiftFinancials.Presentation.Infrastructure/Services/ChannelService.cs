@@ -14058,6 +14058,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<HolidayDTO>> FindHolidaysAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<HolidayDTO>>();
+
+            IHolidayService service = GetService<IHolidayService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<HolidayDTO> response = ((IHolidayService)result.AsyncState).EndFindHolidays(result);
+
+                    tcs.TrySetResult(new ObservableCollection<HolidayDTO>(response ?? new List<HolidayDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindHolidays(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         #endregion
 
         #region SalaryHeadDTO
@@ -14773,6 +14805,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+
+        public Task<ObservableCollection<SalaryCardDTO>> FindSalaryCardsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<SalaryCardDTO>>();
+
+            ISalaryCardService service = GetService<ISalaryCardService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<SalaryCardDTO> response = ((ISalaryCardService)result.AsyncState).EndFindSalaryCards(result);
+
+                    tcs.TrySetResult(new ObservableCollection<SalaryCardDTO>(response ?? new List<SalaryCardDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSalaryCards(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
 
         #endregion
 

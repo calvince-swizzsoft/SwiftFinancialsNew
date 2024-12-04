@@ -31,7 +31,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             int totalRecordCount = 0;
             int searchRecordCount = 0;
 
-            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            bool sortDescending = jQueryDataTablesModel.sSortDir_.First() == "desc";
             var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
@@ -48,7 +48,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                var sortedData = sortAscending
+                var sortedData = sortDescending
                     ? pageCollectionInfo.PageCollection
                         .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
                         .ToList()
@@ -143,49 +143,64 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(EmployeeDocumentDTO employeeDocumentDTO, HttpPostedFileBase uploadedFile)
+        public async Task<ActionResult> Create(EmployeeDocumentDTO employeeDocumentDTO, HttpPostedFileBase[] uploadedFiles)
         {
-            if (uploadedFile != null && uploadedFile.ContentLength > 0)
+            if (uploadedFiles != null && uploadedFiles.Any(f => f != null && f.ContentLength > 0))
             {
-                employeeDocumentDTO.FileMIMEType = uploadedFile.ContentType;
-
-                using (var memoryStream = new MemoryStream())
+                foreach (var file in uploadedFiles)
                 {
-                    uploadedFile.InputStream.CopyTo(memoryStream);
-                    employeeDocumentDTO.FileBuffer = memoryStream.ToArray();
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        var individualDocument = employeeDocumentDTO;
+
+                        individualDocument.FileMIMEType = file.ContentType; 
+                        individualDocument.FileName = Path.GetFileName(file.FileName);
+
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            file.InputStream.CopyTo(memoryStream);
+                            individualDocument.FileBuffer = memoryStream.ToArray();
+                        }
+
+                        individualDocument.ValidateAll();
+
+                        if (!individualDocument.HasErrors)
+                        {
+                            await _channelService.AddEmployeeDocumentAsync(individualDocument, GetServiceHeader());
+                        }
+                        else
+                        {
+                            foreach (var error in individualDocument.ErrorMessages)
+                            {
+                                ModelState.AddModelError("", error);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("FileName", "One or more files are invalid.");
+                    }
                 }
 
-                employeeDocumentDTO.FileName = Path.GetFileName(uploadedFile.FileName);
-            }
-            else
-            {
-                ModelState.AddModelError("FileName", "Please upload a valid file.");
-            }
-
-            employeeDocumentDTO.ValidateAll();
-
-            if (!employeeDocumentDTO.HasErrors)
-            {
-                await _channelService.AddEmployeeDocumentAsync(employeeDocumentDTO, GetServiceHeader());
                 MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                    "Operation Success",
+                    "Employee Documents",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
 
                 return RedirectToAction("Index");
             }
-
-            foreach (var error in employeeDocumentDTO.ErrorMessages)
+            else
             {
-                ModelState.AddModelError("", error);
+                ModelState.AddModelError("FileName", "Please upload at least one valid file.");
             }
 
             return View(employeeDocumentDTO);
         }
+
 
 
 
@@ -199,7 +214,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(EmployeeDocumentDTO employeeDocumentDTO, HttpPostedFileBase uploadedFile)
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(Guid id, EmployeeDocumentDTO employeeDocumentDTO, HttpPostedFileBase uploadedFile)
         {
             if (uploadedFile != null && uploadedFile.ContentLength > 0)
             {
@@ -230,7 +246,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 if (success)
                 {
-                    TempData["SuccessMessage"] = "Employee document updated successfully!";
                     return RedirectToAction("Index");
                 }
                 else

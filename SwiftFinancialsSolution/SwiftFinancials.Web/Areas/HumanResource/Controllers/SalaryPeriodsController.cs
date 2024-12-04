@@ -8,6 +8,8 @@ using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -17,6 +19,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
     public class SalaryPeriodsController : MasterController
     {
+        
+
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -76,10 +80,11 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             }
             catch (Exception ex)
             {
-                
+
                 return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
 
 
         public async Task<ActionResult> Details(Guid id)
@@ -111,7 +116,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                     {
                         PostingPeriodDescription = salaryPeriod.Description,
                         PostingPeriodId = salaryPeriod.Id,
-                        
+
 
 
 
@@ -135,7 +140,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             ViewBag.MonthTypeSelectList = GetMonthsAsync(string.Empty);
             ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(string.Empty);
 
-            
+
 
             return View("Create");
         }
@@ -264,7 +269,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 {
                     var salaryPeriod = await _channelService.FindSalaryPeriodAsync(
                         id.Value,
-                        
+
                         GetServiceHeader()
                     );
 

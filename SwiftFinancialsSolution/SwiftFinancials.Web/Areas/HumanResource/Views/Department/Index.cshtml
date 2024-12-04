@@ -80,67 +80,64 @@
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#departmentsGrid').DataTable({
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Department", new { Area = "HumanResource" }))",
-                "sServerMethod": "POST",
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+    <script>
+    $(document).ready(function () {
+    // Initialize the DataTable
+    var table = $('#departmentsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "Department", new { Area = "HumanResource" }))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
 
-                    var dropdownHtml = `
+
+            var dropdownHtml = `
                         <div class="dropdown">
                             <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Action
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    var viewButton = `<a class="dropdown-item" href="/HumanResource/Department/details/${aData.Id}">View</a>`;
-                    var editButton = `<a class="dropdown-item" href="/HumanResource/Department/edit/${aData.Id}">Edit</a>`;
+            var viewButton = `<a class="dropdown-item" href="/HumanResource/Department/details/${aData.Id}">View</a>`;
+            var editButton = `<a class="dropdown-item" href="/HumanResource/Department/edit/${aData.Id}">Edit</a>`;
 
-                    switch (aData.Status) {
-                        case 1: // Pending
-                            dropdownHtml += viewButton + editButton;
-                            break;
-                        default:
-                            dropdownHtml += viewButton + editButton;
-                            break;
-                    }
+            switch (aData.Status) {
+                case 1: // Pending
+                    dropdownHtml += viewButton + editButton;
+                    break;
+                default:
+                    dropdownHtml += viewButton + editButton;
+                    break;
+            }
 
-                    dropdownHtml += `</div></div>`;
+            dropdownHtml += `</div></div>`;
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(dropdownHtml);
+            $('td:eq(3)', nRow).html(dt_Created);
+            $('td:eq(4)', nRow).html(dropdownHtml);
 
-                    return nRow;
-                },
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
-                    { "mDataProp": "IsRegistry", "sTitle": "IsRegistry", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
-            });
-        });
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+            { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
+            { "mDataProp": "IsRegistry", "sTitle": "IsRegistry", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]],  
+    });
 
-        $(document).ajaxStart(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
+    table.ajax.reload(null, false); 
+});
 
-        $(document).ajaxStop(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
     </script>
+
 
 }
 

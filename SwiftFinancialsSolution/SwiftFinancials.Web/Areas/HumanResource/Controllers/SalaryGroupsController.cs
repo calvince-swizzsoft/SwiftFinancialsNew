@@ -58,27 +58,33 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
+            // Fetch the salary group details
             var salaryGroupDTO = await _channelService.FindSalaryGroupAsync(id, GetServiceHeader());
+
+            // Fetch a single entry and convert it to a list
+            var salaryGroupEntry = await _channelService.FindSalaryGroupEntriesBySalaryGroupIdAsync(id, GetServiceHeader());
+
+            // Store data in ViewBag
+            ViewBag.SalaryGroupEntries = salaryGroupEntry; // For individual entries
+
+
+            // Populate ViewBag data for dropdowns
+            ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(string.Empty);
+            ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(string.Empty);
 
             return View(salaryGroupDTO);
         }
 
-        
+
+
+
         [HttpGet]
         public async Task<ActionResult> GetCSalaryHeadDetails(Guid salaryHeadId)
         {
             try
             {
                 var savingsProduct = await _channelService.FindSalaryHeadAsync(salaryHeadId, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
-
+               
 
                 if (savingsProduct == null)
                 {
@@ -141,90 +147,92 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Add(SalaryGroupDTO salaryGroupDTO)
+        public async Task<ActionResult> UpdateTempData(SalaryGroupDTO entries)
         {
-            await ServeNavigationMenus();
-
-            // Retrieve existing SalaryGroupEntryDTOs from TempData or create a new collection if none exists
-            var SalaryGroupEntryDTOs = TempData["SalaryGroupEntryDTO"] as ObservableCollection<SalaryGroupEntryDTO>;
-            if (SalaryGroupEntryDTOs == null)
-                SalaryGroupEntryDTOs = new ObservableCollection<SalaryGroupEntryDTO>();
-
-            // Process the submitted SalaryGroupEntries
-            foreach (var salaryGroupEntryDTO in salaryGroupDTO.SalaryGroupEntries)
+            if (entries == null)
             {
-                salaryGroupEntryDTO.SalaryGroupId = salaryGroupDTO.Id;
-                salaryGroupEntryDTO.SalaryHeadDescription = salaryGroupEntryDTO.SalaryHeadDescription;
-                salaryGroupEntryDTO.ChargeType = salaryGroupEntryDTO.ChargeType;
-                salaryGroupEntryDTO.MinimumValue = salaryGroupEntryDTO.MinimumValue;
-                salaryGroupEntryDTO.RoundingType = salaryGroupEntryDTO.RoundingType;
-
-                // Add to the collection
-                SalaryGroupEntryDTOs.Add(salaryGroupEntryDTO);
+                return Json(new { success = false, message = "Entries list is empty." });
             }
 
-            // Save the updated collection to TempData
-            TempData["SalaryGroupEntryDTO"] = SalaryGroupEntryDTOs;
-            TempData["SalaryGroupDTO"] = salaryGroupDTO;
+            TempData["Entries"] = entries;
+            TempData.Keep("Entries");
 
-            // Return the updated SalaryGroupEntryDTOs to the view via JSON (or use a PartialView)
-            return Json(new { success = true, data = SalaryGroupEntryDTOs });
+            return Json(new { success = true, message = "Entries updated successfully." });
         }
-
 
 
         [HttpPost]
         public async Task<ActionResult> Create(SalaryGroupDTO salaryGroupDTO)
         {
-            salaryGroupDTO = TempData["salaryGroupDTO"] as SalaryGroupDTO;
-
-            Guid salaryGroupSalaryHeadID = salaryGroupDTO.Id;
-
-            salaryGroupDTO.ValidateAll();
-
-            if (!salaryGroupDTO.HasErrors)
+            try
             {
+                // Retrieve entries from TempData
+                var tempEntries = TempData["Entries"] as SalaryGroupDTO;
 
-                var salaryGroup = await _channelService.AddSalaryGroupAsync(salaryGroupDTO, GetServiceHeader());
-
-                if (salaryGroup != null)
+                if (tempEntries == null)
                 {
-                    var salaryGroupEntries = new ObservableCollection<SalaryGroupEntryDTO>();
-
-
-                    foreach (var salaryGroupEntry in salaryGroupDTO.SalaryGroupEntries)
-                    {
-                        salaryGroupEntry.SalaryGroupId = salaryGroupEntry.SalaryGroupId;
-                        salaryGroupEntry.SalaryHeadDescription = salaryGroupEntry.SalaryHeadDescription;
-                        salaryGroupEntry.ChargeType = salaryGroupEntry.ChargeType;
-                        salaryGroupEntry.MinimumValue = salaryGroupEntry.MinimumValue;
-                        salaryGroupEntry.RoundingType = salaryGroupEntry.RoundingType;
-
-                        salaryGroupEntry.SalaryGroupDescription = salaryGroup.Description;
-
-
-                        salaryGroupEntries.Add(salaryGroupEntry);
-                    };
-
-                    if (salaryGroupEntries.Any())
-
-                        await _channelService.UpdateSalaryGroupEntriesBySalaryGroupIdAsync(salaryGroup.Id, salaryGroupEntries, GetServiceHeader());
+                    MessageBox.Show("No entries were found in TempData.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(salaryGroupDTO.ToString());
-                ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(salaryGroupDTO.ToString());
+                salaryGroupDTO.ValidateAll();
 
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = salaryGroupDTO.ErrorMessages;
+                if (!salaryGroupDTO.HasErrors)
+                {
+                    var tempSalaryGroupEntries = TempData["SalaryGroupEntryDTO"] as ObservableCollection<SalaryGroupEntryDTO>
+                                                  ?? new ObservableCollection<SalaryGroupEntryDTO>();
+
+                    // Save SalaryGroup
+                    var salaryGroup = await _channelService.AddSalaryGroupAsync(salaryGroupDTO, GetServiceHeader());
+
+                    if (salaryGroup != null)
+                    {
+                        var salaryGroupEntries = new ObservableCollection<SalaryGroupEntryDTO>();
+
+                        // Combine entries
+                        foreach (var salaryGroupEntry in salaryGroupDTO.SalaryGroupEntries.Concat(tempSalaryGroupEntries))
+                        {
+                            salaryGroupEntry.SalaryGroupId = salaryGroup.Id;
+                            salaryGroupEntry.SalaryGroupDescription = salaryGroup.Description;
+
+                            salaryGroupEntries.Add(salaryGroupEntry);
+                        }
+
+                        if (salaryGroupEntries.Any())
+                        {
+                            await _channelService.UpdateSalaryGroupEntriesBySalaryGroupIdAsync(salaryGroup.Id, salaryGroupEntries, GetServiceHeader());
+                        }
+
+                        MessageBox.Show("Salary group and entries were successfully created.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to save the salary group.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    // Redirect to Index after successful creation
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    MessageBox.Show("Validation errors were found in the submitted data.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+                // Handle errors
                 ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(salaryGroupDTO.ToString());
                 ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(salaryGroupDTO.ToString());
 
                 return View(salaryGroupDTO);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return View(salaryGroupDTO); // Return the view with the current data in case of errors
+            }
         }
+
+
+
+
 
 
         public async Task<ActionResult> Edit(Guid id)

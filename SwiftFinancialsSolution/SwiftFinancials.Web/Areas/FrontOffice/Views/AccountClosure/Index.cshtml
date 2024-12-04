@@ -130,19 +130,21 @@
                     var viewButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/details/${aData.Id}">View</a>`;
                     var approveButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/Approve/${aData.Id}">Approve</a>`;
                     var verifyButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/verify/${aData.Id}">Verify</a>`;
+                    var settleButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/settle/${aData.Id}">Settle</a>`;
+
 
                     switch (aData.Status) {
                         case 1: // Pending
-                            dropdownHtml += viewButton + approveButton + verifyButton;
+                            dropdownHtml += viewButton + approveButton + verifyButton + settleButton;
                             break;
                         case 2: // Audited
                             dropdownHtml += viewButton + verifyButton;
                             break;
                         case 4: // Posted
-                            dropdownHtml += viewButton;
+                            dropdownHtml += viewButton + settleButton;
                             break;
                         default:
-                            dropdownHtml += viewButton;
+                            dropdownHtml += viewButton + settleButton;
                             break;
                     }
 

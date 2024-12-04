@@ -94,15 +94,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             try
             {
                 var savingsProduct = await _channelService.FindSavingsProductAsync(savingsProductId, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
-
+               
 
                 if (savingsProduct == null)
                 {
@@ -145,14 +137,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             try
             {
                 var chartOfAccount = await _channelService.FindChartOfAccountAsync(chartOfAccountId, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                
 
 
                 if (chartOfAccount == null)
@@ -192,45 +177,56 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(SalaryHeadDTO salaryHeadDTO)
         {
-           
+            // Validate the input data
             salaryHeadDTO.ValidateAll();
 
-            if (!salaryHeadDTO.HasErrors)
+            if (salaryHeadDTO.HasErrors)
             {
-                try
-                {
-                    var salaryHead = await _channelService.AddSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
-                    MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
-
-                    TempData["AlertMessage"] = "Salary Head created successfully.";
-
-                    ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
-
-                    return RedirectToAction("Index");
-                }
-                catch (Exception ex)
-                {
-                    TempData["AlertError"] = "An error occurred while creating the Salary Head: " + ex.Message;
-
-                    ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
-
-                    return View(salaryHeadDTO);
-                }
-            }
-            else
-            {
-                var errorMessages = salaryHeadDTO.ErrorMessages;
-                TempData["AlertError"] = "Create Salary Head failed. Please review the form.";
+                MessageBox.Show(
+                    "Validation failed. Please correct the highlighted errors.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
 
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
+                return View(salaryHeadDTO);
+            }
 
+            try
+            {
+                var salaryHead = await _channelService.AddSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
+
+                // Show success message
+                MessageBox.Show(
+                    "Salary Head added successfully.",
+                    "Operation Success",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                // _logger.LogError(ex, "Error occurred while adding salary head");
+
+                // Show error message for the exception
+                MessageBox.Show(
+                    "An unexpected error occurred. Please try again.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                // Repopulate dropdown and return the same view
+                ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
                 return View(salaryHeadDTO);
             }
         }
@@ -250,47 +246,58 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(SalaryHeadDTO salaryHeadDTO)
+        public async Task<ActionResult> Edit(Guid id, SalaryHeadDTO salaryHeadDTO)
         {
 
             salaryHeadDTO.ValidateAll();
 
-            if (!salaryHeadDTO.HasErrors)
+            if (salaryHeadDTO.HasErrors)
             {
-                try
-                {
-                    await _channelService.UpdateSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
-                    MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
-
-                    TempData["AlertMessage"] = "Salary Head Edited Successfully";
-
-                    ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
-
-                    return RedirectToAction("Index");
-                }
-                catch (Exception ex)
-                {
-                    TempData["AlertError"] = "An error occurred while updating the Salary Head: " + ex.Message;
-
-                    ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
-
-                    return View(salaryHeadDTO);
-                }
-            }
-            else
-            {
-                var errorMessages = salaryHeadDTO.ErrorMessages;
-                TempData["AlertError"] = "Create Salary Head failed. Please review the form.";
+                MessageBox.Show(
+                    "Validation failed. Please correct the highlighted errors.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
 
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
+                return View(salaryHeadDTO);
+            }
 
+            try
+            {
+                var salaryHead = await _channelService.UpdateSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
+
+                // Show success message
+                MessageBox.Show(
+                    "Salary Head Updated successfully.",
+                    "Operation Success",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                // _logger.LogError(ex, "Error occurred while adding salary head");
+
+                // Show error message for the exception
+                MessageBox.Show(
+                    "An unexpected error occurred. Please try again.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+
+                // Repopulate dropdown and return the same view
+                ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
                 return View(salaryHeadDTO);
             }
         }

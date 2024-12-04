@@ -82,41 +82,78 @@
 
 
                             <!-- Expense Payables -->
-                            <fieldset>
-                                <div class="card mb-4">
-                                    <div class="card-body text-dark">
-                                        <div class="row">
+                        <fieldset>
+                            <div class="card mb-4">
+                                <div class="card-body text-dark">
+                                    <div class="row">
 
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @readonly="" } })
-                                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @readonly = "" } })
-                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                @Html.CheckBoxFor(model => model.IsLocked, new { @class = "", @disabled = "disabled" })
-                                                @Html.HiddenFor(model => model.IsLocked) <!-- Hidden input ensures the value is submitted -->
-                                                @Html.LabelFor(model => model.IsLocked, new { @class = "form-control", @placeholder = "Is Locked?" })
-                                                @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-sm">
+                                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @readonly = "" } })
+                                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @readonly = "" } })
+                                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
 
                                     </div>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            @Html.CheckBoxFor(model => model.IsLocked, new { @class = "", @disabled = "disabled" })
+                                            @Html.HiddenFor(model => model.IsLocked) <!-- Hidden input ensures the value is submitted -->
+                                            @Html.LabelFor(model => model.IsLocked, new { @class = "form-control", @placeholder = "Is Locked?" })
+                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
                                 </div>
-                            </fieldset>
+                            </div>
+                            <!-- Transaction Threshold Preferences Table -->
+                            <div class="table-responsive mt-3">
+                                <table id="thresholdTable" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>Threshold</th>
+                                            <th>Created By</th>
+                                            <th>Created Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.TransactionThresholds != null && Model.TransactionThresholds.Any())
+                                        {
+                                            for (var i = 0; i < Model.TransactionThresholds.Count(); i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.TransactionThresholds[i].TypeDescription</td>
+                                                    <td>@Model.TransactionThresholds[i].Threshold</td>
+                                                    <td>@Model.TransactionThresholds[i].CreatedBy</td>
+                                                    <td>@Model.TransactionThresholds[i].CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="5" class="text-center">No transaction thresholds found.</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                           
+
+                        </fieldset>
 
                             <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
                                 
@@ -151,46 +188,7 @@
                         border-radius: .25rem;
                     }
 
-                    /* The .nav class is incorrectly nested, so I'll fix that */
-                    .nav {
-                        display: flex;
-                        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
-                        padding: 0;
-                        margin: 5px;
-                        margin-bottom: 0;
-                        border: 2px solid black;
-                        border-radius: 8px;
-                        margin-top: 20px;
-                        gap: 10px; /* Space between links */
-                        text-align: center; /* Centers the text inside links */
-                        padding: 10px;
-                    }
-
-                    .nav-link {
-                        display: flex;
-                        text-decoration: none;
-                        color: #007bff; /* Default text color */
-                        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
-                        border-radius: 4px; /* Rounded corners */
-                        font-size: 14px; /* Adjust font size for better fit */
-                        white-space: nowrap; /* Prevents text from wrapping inside the link */
-                    }
-
-                        .nav-link:hover {
-                            color: #fff; /* Text color on hover */
-                            background-color: #0056b3; /* Background color on hover */
-                        }
-
-                        .nav-link i {
-                            margin-right: 8px; /* Space between icon and text */
-                            font-size: 16px; /* Adjust icon size */
-                        }
-
-                        .nav-link.disabled {
-                            pointer-events: none;
-                            opacity: 0.6;
-                            cursor: not-allowed;
-                        }
+                    
 
                     .col-lg-2 {
                         display: flex;
@@ -409,16 +407,6 @@
             .btn-danger:hover {
                 background-color: #c82333;
                 border-color: #bd2130;
-            }
-
-        /* Ensure no border between tabs and tab content */
-        .nav-tabs {
-            border-bottom: none; /* Remove bottom border from tab navigation */
-        }
-
-            .nav-tabs .nav-link {
-                border: none; /* Remove borders from tab links */
-                border-radius: 0; /* Remove border radius for a cleaner look */
             }
 
         .tab-content {

@@ -28,7 +28,6 @@
 
 
 
-
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
@@ -48,14 +47,35 @@
             $($(this).attr('href')).addClass('active');
         });
 
-        $('#ValueDate').datepicker({
+        $('#DurationStartDate').datepicker({
             format: 'dd-mm-yyyy',
             todayHighlight: true,
             autoclose: true
         });
     });
 </script>
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
 
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#DurationDate').datepicker({
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
 
 
 <div class="wrapper wrapper-content">
@@ -80,83 +100,275 @@
                         @using (Html.BeginForm("Create", "SalaryProcessing", new { Area = "HumanResource" }, FormMethod.Post))
                         {
                             @Html.AntiForgeryToken()
-                            @*@Html.HiddenFor(model => model.ProductChartOfAccountCode, new { id = "ProductChartOfAccountCode" })
-                            @Html.HiddenFor(model => model.ProductChartOfAccountId, new { id = "ProductChartOfAccountId" })
-                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductCode, new { id = "CustomerAccountTypeTargetProductCode" })
-                            @Html.HiddenFor(model => model.CustomerAccountTypeProductCode, new { id = "CustomerAccountTypeProductCode" })
-                            @Html.HiddenFor(model => model.ProductChartOfAccountName, new { id = "ProductChartOfAccountName" })*@
+
+                            @Html.HiddenFor(model => model.EmployeeCategoryDescription, new { id = "EmployeeCategoryDescription" })
+                            @Html.HiddenFor(model => model.EmployeeCategory, new { id = "EmployeeCategory" })
+                            @Html.HiddenFor(model => model.Month, new { id = "Month" })
+                            @Html.HiddenFor(model => model.MonthDescription, new { id = "MonthDescription" })
+
+                            @Html.HiddenFor(model => model.PostedEntries, new { id = "PostedEntries" })
+
+                                            <fieldset>
+                                                <div class="row">
+                                                    <!-- Posting Period Section -->
+                                                    <div class="col-lg-4">
+                                                        @Html.LabelFor(model => model.PostingPeriodDescription, new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
+                                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Select Posting Period" } })
+                                                        @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                                    </div>
+
+                                                    <!-- Employee Category Description Section -->
+                                                    <div class="col-lg-4">
+                                                        @Html.LabelFor(model => model.EmployeeCategoryDescription)
+
+                                                        @Html.EditorFor(model => model.EmployeeCategoryDescription, new
+                                                        {
+                                                            htmlAttributes = new
+                                                            {
+                                                                @class = "form-control",
+                                                                @placeholder = "Autofill...",
+                                                                id = "EmployeeCategoryDescription",
+                                                                @readonly = "readonly"
+                                                            }
+                                                        })
+                                                    </div>
+
+                                                    <!-- Remarks Section -->
+                                                    <div class="col-lg-4">
+                                                        @Html.LabelFor(model => model.Remarks)
+                                                        @Html.EditorFor(model => model.Remarks, new
+                                                        {
+                                                            htmlAttributes = new
+                                                            {
+                                                                @class = "form-control",
+                                                                @placeholder = "Autofill...",
+                                                                id = "Remarks",
+                                                                @readonly = "readonly"
+                                                            }
+                                                        })
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <!-- Tax Relief Amount Section -->
+                                                    <div class="col-lg-4">
+                                                        @Html.LabelFor(model => model.TaxReliefAmount)
+                                                        @Html.EditorFor(model => model.TaxReliefAmount, new
+                                                        {
+                                                            htmlAttributes = new
+                                                            {
+                                                                @class = "form-control",
+                                                                @placeholder = "Autofill...",
+                                                                id = "TaxReliefAmount",
+                                                                @readonly = "readonly"
+                                                            }
+                                                        })
+                                                    </div>
+
+                                                    <!-- Maximum Provident Fund Relief Amount Section -->
+                                                    <div class="col-lg-4">
+                                                        @Html.LabelFor(model => model.MaximumProvidentFundReliefAmount)
+                                                        @Html.EditorFor(model => model.MaximumProvidentFundReliefAmount, new
+                                                        {
+                                                            htmlAttributes = new
+                                                            {
+                                                                @class = "form-control",
+                                                                @placeholder = "Autofill...",
+                                                                id = "MaximumProvidentFundReliefAmount",
+                                                                @readonly = "readonly"
+                                                            }
+                                                        })
+                                                    </div>
+
+                                                    <!-- Maximum Insurance Relief Amount Section -->
+                                                    <div class="col-lg-4">
+                                                        @Html.LabelFor(model => model.MaximumInsuranceReliefAmount)
+                                                        @Html.EditorFor(model => model.MaximumInsuranceReliefAmount, new
+                                                        {
+                                                            htmlAttributes = new
+                                                            {
+                                                                @class = "form-control",
+                                                                @placeholder = "Autofill...",
+                                                                id = "MaximumInsuranceReliefAmount",
+                                                                @readonly = "readonly"
+                                                            }
+                                                        })
+                                                    </div>
+                                                </div>
+
+                                                <ul class="nav nav-tabs" id="loanAccountsTab">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" href="#salaryGroups" data-toggle="tab">Salary Groups</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" href="#branches" data-toggle="tab">Branches</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" href="#departments" data-toggle="tab">Departments</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" href="#employeesSection" data-toggle="tab">Employees</a>
+                                                    </li>
+                                                </ul>
+
+                                                <div class="tab-content">
+                                                    <!-- Loan Accounts Tab Content -->
+                                                    <div id="salaryGroups" class="tab-pane fade show active">
+
+                                                        <h3>Salary Groups</h3>
+                                                        @if (ViewBag.SalaryGroups != null && ViewBag.SalaryGroups.Count > 0)
+                                                        {
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Select</th>
+                                                                        <th>Name</th>
+                                                                        <th>Create Date</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var salaryGroup in ViewBag.SalaryGroups)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>
+                                                                                <input type="checkbox" class="groupSelect" name="selectedGroups" value="@salaryGroup.Id" data-description="@salaryGroup.Description" />
+                                                                            </td>
+                                                                            <td>@salaryGroup.Description</td>
+                                                                            <td>@salaryGroup.CreatedDate.ToString("dd-MM-yyyy")</td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>No salary groups found.</p>
+                                                        }
 
 
-                            <!-- Expense Payables -->
-                            <fieldset>
-                                <div class="row">
-                                    <div class="col-lg-4">
+                                                    </div>
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.PostingPeriodDescription, new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.TextBoxFor(model => model.PostingPeriodDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", id = "PostingPeriodDescription" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#salaryPeriodsLookup"><span class="fa fa-search"></span></a>
-                                                </span>
+                                                    <!-- Investment Accounts Tab Content -->
+                                                    <div id="branches" class="tab-pane fade">
+                                                        <h3>Branches</h3>
+
+                                                        @if (ViewBag.Branches != null && ViewBag.Branches.Count > 0)
+                                                        {
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Name</th>
+                                                                        <th>Account Number</th>
+                                                                        <th>Email</th>
+                                                                        <th>Mobile Line</th>
+
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var Branches in ViewBag.Branches)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@Branches.CustomerFullName</td>
+                                                                            <td>@Branches.CustomerReference1</td>
+                                                                            <td>@Branches.CustomerAddressEmail</td>
+                                                                            <td>@Branches.CustomerAddressMobileLine</td>
+                                                                            <td>@Branches.BranchDescription</td>
+
+
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>No investment accounts found for this customer.</p>
+                                                        }
+                                                    </div>
+
+
+                                                    <!-- Loans Guaranteed Tab Content -->
+                                                    <div id="loansGuaranteed" class="tab-pane fade">
+                                                        <h3>Loans Guaranteed</h3>
+                                                        <!-- Add your content for loans guaranteed here -->
+
+                                                        @if (ViewBag.LoanGuarantors != null && ViewBag.LoanGuarantors.Count > 0)
+                                                        {
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Customer FullName</th>
+                                                                        <th>Guarantor Customer FullName</th>
+                                                                        <th>Loanee Customer FullName</th>
+                                                                        <th>LoanProduct Description</th>
+                                                                        <th>LoanCaseStatus Description</th>
+                                                                        <th>CustomerType Description</th>
+                                                                        <th>CustomerAddress MobileLine</th>
+                                                                        <th>AmountGuaranteed</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var guarantor in ViewBag.LoanGuarantors)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@guarantor.CustomerFullName</td>
+                                                                            <td>@guarantor.GuarantorCustomerFullName</td>
+                                                                            <td>@guarantor.LoaneeCustomerFullName</td>
+                                                                            <td>@guarantor.LoanProductDescription</td>
+                                                                            <td>@guarantor.LoanCaseStatusDescription</td>
+                                                                            <td>@guarantor.CustomerTypeDescription</td>
+                                                                            <td>@guarantor.CustomerAddressMobileLine</td>
+                                                                            <td>@guarantor.AmountGuaranteed</td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>No loan guarantors found for this customer.</p>
+                                                        }
+                                                    </div>
+
+                                                    <div id="employeesSection">
+                                                        <h3>Employees</h3>
+                                                        <table  class="table table-bordered" id="employeeTable">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Employee Name</th>
+                                                                    <th>Card Number</th>
+                                                                    <th>Remarks</th>
+                                                                    <th>Created Date</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <!-- Dynamically populated rows -->
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+
+
+
+
+
+                                                </div>
+
+                                            </fieldset>
+
+
+
+                                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+
+
+
+                                                <input type="submit" value="Create" class="btn btn-primary btn-update" />
                                             </div>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.EmployeeCategoryDescription, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.EmployeeCategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Autofill....", id = "EmployeeCategoryDescription", @readonly = "" } })
-                                            @Html.ValidationMessageFor(model => model.EmployeeCategoryDescription, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Autofill....", id = "Remarks", @readonly = "" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.TaxReliefAmount, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.TaxReliefAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Autofill....", id = "TaxReliefAmount", @readonly = "" } })
-                                            @Html.ValidationMessageFor(model => model.TaxReliefAmount, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.MaximumProvidentFundReliefAmount, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.MaximumProvidentFundReliefAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Autofill....", id = "MaximumProvidentFundReliefAmount", @readonly = "" } })
-                                            @Html.ValidationMessageFor(model => model.MaximumProvidentFundReliefAmount, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.MaximumInsuranceReliefAmount, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.MaximumInsuranceReliefAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Autofill....", id = "MaximumInsuranceReliefAmount", @readonly = "" } })
-                                            @Html.ValidationMessageFor(model => model.MaximumInsuranceReliefAmount, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </fieldset>
-
-                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
 
 
 
-                                <input type="submit" value="Create" class="btn btn-primary btn-update" />
-                            </div>
-
-
-
-                        }
+                                        }
                     </div>
                 </div>
 
@@ -334,159 +546,152 @@
 
 
     <script>
-$(document).ready(function () {
-    $('#salaryPeriodsGrid').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@Url.Action("GetSalaryPeriodsAsync", "SalaryProcessing")",
-        "sServerMethod": "POST",
-        "fnServerData": function (sSource, aoData, fnCallback) {
-            $.ajax({
-                dataType: 'json',
-                type: 'POST',
-                url: sSource,
-                data: aoData,
-                success: function (response) {
-                    fnCallback(response);
-                },
-                error: function () {
-                    alert('Error retrieving data from the server.');
-                }
-            });
-        },
-        "aoColumns": [
-            { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period", "sWidth": "15%" },
-            { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
-            { "mDataProp": "EmployeeCategoryDescription", "sTitle": "Employee Category", "sWidth": "15%" },
-            {
-                "mDataProp": "CreatedDate",
-                "sTitle": "Created Date",
-                "sWidth": "15%",
-                "mRender": function (data) {
-                    var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
-                    return $.datepicker.formatDate('dd/mm/yy', createdDate);
-                }
-            },
-            {
-                "mDataProp": null,
-                "sTitle": "Action",
-                "sWidth": "15%",
-                "bSortable": false,
-                "mRender": function (data, type, row) {
-                    return '<a href="#" class="btn btn-outline-info select-salary-period" data-id="' + row.PostingPeriodId + '">Select</a>';
-                }
-            }
-        ],
-        "aaSorting": [[0, "desc"]]
-    });
+    $(document).ready(function () {
+        var salaryPeriodsMap = {};
 
-    $('#salaryPeriodsGrid tbody').on('click', '.select-salary-period', function () {
-        var salaryPeriodId = $(this).data('id');
+        $('.PostingPeriodsLookup').typeahead({
+            minLength: 1,
+            source: function (query, process) {
+                $.getJSON('@Url.Action("GetSalaryPeriodsAsync", "SalaryProcessing")', function (salaryPeriods) {
+                    if (salaryPeriods && salaryPeriods.length > 0) {
+                        var months = [];
+                        salaryPeriodsMap = {};
 
-        $.ajax({
-            url: '@Url.Action("GetSalaryPeriodDetails", "SalaryProcessing")',
-            type: 'GET',
-            data: { salaryPeriodId: salaryPeriodId },
-            success: function (response) {
-                if (response.success) {
-                    $('#PostingPeriodDescription').val(response.data.PostingPeriodDescription);
-                    $('#PostingPeriodId').val(response.data.PostingPeriodId);
-                    $('#TaxReliefAmount').val(response.data.TaxReliefAmount);
-                    $('#MaximumProvidentFundReliefAmount').val(response.data.MaximumProvidentFundReliefAmount);
-                    $('#MaximumInsuranceReliefAmount').val(response.data.MaximumInsuranceReliefAmount);
-                    $('#Remarks').val(response.data.Remarks);
-                    $('#EmployeeCategoryDescription').val(response.data.EmployeeCategoryDescription);
-                    $('#salaryPeriodsLookup').modal('hide');
-                } else {
-                    alert(response.message);
-                }
+                        $.each(salaryPeriods, function (index, salaryPeriod) {
+                            var description = salaryPeriod.PostingPeriodDescription; // Display month description
+                            months.push(description);
+                            salaryPeriodsMap[description] = salaryPeriod;
+                        });
+
+                        process(months);
+                    } else {
+                        console.warn("No salary periods found.");
+                    }
+                }).fail(function () {
+                    console.error("Failed to fetch salary periods.");
+                });
             },
-            error: function () {
-                alert('An error occurred while fetching the Salary Period details.');
+            updater: function (item) {
+                var selectedSalaryPeriod = salaryPeriodsMap[item];
+                if (selectedSalaryPeriod) {
+                    $('#PostingPeriodId').val(selectedSalaryPeriod.PostingPeriodId);
+                    $('#EmployeeCategoryDescription').val(selectedSalaryPeriod.EmployeeCategoryDescription);
+                    $('#Remarks').val(selectedSalaryPeriod.Remarks);
+                    $('#TaxReliefAmount').val(selectedSalaryPeriod.TaxReliefAmount);
+                    $('#MaximumProvidentFundReliefAmount').val(selectedSalaryPeriod.MaximumProvidentFundReliefAmount);
+                    $('#MaximumInsuranceReliefAmount').val(selectedSalaryPeriod.MaximumInsuranceReliefAmount);
+                    $('#EmployeeCategoryDescription').val(selectedSalaryPeriod.EmployeeCategoryDescription);
+                    $('#EmployeeCategory').val(selectedSalaryPeriod.EmployeeCategory = 0);
+                    $('#Month').val(selectedSalaryPeriod.Month);
+                    $('#MonthDescription').val(selectedSalaryPeriod.MonthDescription);
+                    $('#PostedEntries').val(selectedSalaryPeriod.PostedEntries);
+                    
+
+                    
+                }
+                return item;
             }
         });
     });
-});
     </script>
+
     <script>
-               $(document).ready(function () {
-                   $('#chartofaccountsGrid').DataTable({
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" })",
-                "sServerMethod": "POST",
-                "fnServerData": function (sSource, aoData, fnCallback) {
-                    $.ajax({
-                        dataType: 'json',
-                        type: 'POST',
-                        url: sSource,
-                        data: aoData,
-                        success: function (response) {
-                            fnCallback(response);
-                        },
-                        error: function () {
-                            alert('Error retrieving data from the server.');
-                        }
-                    });
-                },
-                "aoColumns": [
-                    { "mDataProp": "AccountName", "sTitle": "Name", "sWidth": "15%" },
-                    { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
-                    { "mDataProp": "AccountTypeDescription", "sTitle": "Account Type", "sWidth": "15%" },
-                    { "mDataProp": "AccountCode", "sTitle": "Account code", "sWidth": "15%" },
-                    { "mDataProp": "AccountCategoryDescription", "sTitle": "Account Category", "sWidth": "15%" },
-                    {
-                        "mDataProp": "CreatedDate",
-                        "sTitle": "Created Date",
-                        "sWidth": "15%",
-                        "mRender": function (data) {
-                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
-                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
-                        }
-                    },
-                    {
-                        "mDataProp": null,
-                        "sTitle": "Action",
-                        "sWidth": "15%",
-                        "bSortable": false,
-                        "mRender": function (data, type, row) {
-                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
-                        }
-                    }
-                ],
-                "aaSorting": [[0, "desc"]]
+        document.getElementById('selectAll').addEventListener('click', function () {
+            var checkboxes = document.querySelectorAll('.groupSelect');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = this.checked;
             });
+        });
+    </script>
 
-                   $('#chartofaccountsGrid tbody').on('click', '.select-customer', function () {
-                       var chartOfAccountId = $(this).data('id');
+    <script>
+        $(document).on("change", ".groupSelect", function () {
+            const salaryGroupId = $(this).val(); // Get the selected SalaryGroupId
 
+            if ($(this).is(":checked")) {
+                // Send the selected SalaryGroupId to the server
                 $.ajax({
-                    url: '@Url.Action("GetChartOfAccountDetails", "Salary", new { Area = "HumanResource" })',
-                    type: 'GET',
-                    data: { chartOfAccountId: chartOfAccountId },
+                    url: "/SalaryProcessing/CheckEmployeesBySalaryGroup",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ salaryGroupId }), // Send SalaryGroupId
                     success: function (response) {
                         if (response.success) {
-                            $('#ChartOfAccountAccountName').val(response.data.ChartOfAccountAccountName);
-                            $('#ChartOfAccountId').val(response.data.ChartOfAccountId);
+                            const employees = response.data;
+                            // Clear and populate the Employees table
+                            const employeeTableBody = $("#employeeTable tbody");
+                            employeeTableBody.empty(); // Clear previous rows
 
+                            employees.forEach(employee => {
+                                // Fix invalid date handling
+                                const createdDate = new Date(employee.CreatedDate);
+                                const formattedDate = createdDate instanceof Date && !isNaN(createdDate) ? createdDate.toLocaleDateString() : "Invalid Date";
 
-
-
-                            $('#ChartOfAccountLookup').modal('hide');
+                                // Append the employee data to the table
+                                employeeTableBody.append(`
+                                    <tr>
+                                        <td hidden>${employee.EmployeeId}</td> <!-- Make EmployeeId hidden -->
+                                        <td>${employee.EmployeeCustomerFullName}</td>
+                                        <td>${employee.CardNumber}</td>
+                                        <td>${employee.Remarks || "N/A"}</td>
+                                        <td>${formattedDate}</td> <!-- Fix CreatedDate display -->
+                                    </tr>
+                                `);
+                            });
                         } else {
-                            alert(response.message);
+                            alert(response.message || "No employees found for the selected salary group.");
                         }
                     },
                     error: function () {
-                        alert('An error occurred while fetching the Chat Of Account details.');
+                        alert("An error occurred while processing the request.");
                     }
                 });
+            }
+        });
+    </script>
+
+    <script>
+        $(document).on("submit", "#salaryProcessingForm", function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Collect Employee IDs from the table
+            const employeeIds = [];
+            $("#employeeTable tbody tr").each(function () {
+                const employeeId = $(this).find("td:first").text(); // Assuming EmployeeId is in the first cell
+                if (employeeId) {
+                    employeeIds.push(employeeId.trim());
+                }
+            });
+
+            // Include Employee IDs in the form data
+            const formData = $(this).serializeArray(); // Serialize the form fields
+            formData.push({ name: "employeeIds", value: employeeIds });
+
+            // Send the form data via AJAX
+            $.ajax({
+                url: $(this).attr("action"),
+                method: "POST",
+                data: $.param(formData), // Serialize the form data for the server
+                success: function (response) {
+                    if (response.success) {
+                        alert("Salary processing successful!");
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        alert(response.message || "Failed to process salary.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the form.");
+                }
             });
         });
 
     </script>
+
+
+
+
+
 
 
 
