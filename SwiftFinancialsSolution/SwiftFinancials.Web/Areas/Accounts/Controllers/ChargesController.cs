@@ -68,18 +68,24 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
             var levyDTOs = await _channelService.FindLeviesAsync(GetServiceHeader());
-            ViewBag.LevyDTOs = levyDTOs; 
+            ViewBag.LevyDTOs = levyDTOs;
             return View();
         }
 
 
-        public async Task<ActionResult> Charge(CommissionDTO commissionDTO)
+        [HttpPost]
+        public async Task<ActionResult> Chargetiers(CommissionDTO commissionDTO)
         {
-            Session["Description"] = commissionDTO.Description;
-            Session["MaximumCharge"] = commissionDTO.MaximumCharge;
-
-            return View("Create", commissionDTO);
+            // Process the data (save to the database or perform necessary logic)
+            // For simplicity, let's return the data back as a JSON response
+            return Json(new
+            {
+                success = true,
+                message = "Charge tier added successfully",
+                data = commissionDTO
+            });
         }
+
 
 
         public async Task<ActionResult> Search(Guid? id, CommissionDTO commissionDTO)
@@ -468,7 +474,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 else
                 {
                     chargesplits.Add(chargeSplitDTO);
-                   
+
                     sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
 
                     Session["chargeSplit"] = commissionDTO.chargeSplit;
