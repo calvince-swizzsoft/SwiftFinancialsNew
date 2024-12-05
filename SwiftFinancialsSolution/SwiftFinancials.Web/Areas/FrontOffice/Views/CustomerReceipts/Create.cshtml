@@ -71,6 +71,17 @@
             margin-right: 0; /* Ensure no unnecessary right margin */
         }
 
+
+        .blue-section1 {
+            background-color: #e6f3ff;
+            padding: 10px; /* Padding inside the border */
+            border-radius: 8px; /* Rounded corners (optional) */
+
+
+            font-size: 16px;
+            font-weight: bold;
+        }
+
         /* Primary Tabs */
         /*.nav-tabs .nav-link {
             background-color: transparent;
@@ -684,6 +695,25 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                        <div class="blue-section1" style="display: flex; justify-content: space-between; padding: 20px 50px; margin-top: 20px; align-items: flex-end;">
+                                            <!-- Start Date Section -->
+                                            <div class="col-md-4">
+                                                <label for="startDate">Start Date:</label>
+                                                <input type="text" id="startDate" class="form-control" />
+                                            </div>
+
+                                            <!-- End Date Section -->
+                                            <div class="col-md-4" style="margin-left: 20px;">
+                                                <label for="endDate">End Date:</label>
+                                                <input type="text" id="endDate" class="form-control" />
+                                            </div>
+
+                                            <!-- Button Section -->
+                                            <div style="display: flex; gap: 10px;">
+                                                <button type="button" id="refreshButton1" class="btn btn-info">Refresh</button>
+                                                @*<button type="button" id="printButton" class="btn btn-success">Print</button>*@
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -897,10 +927,7 @@
                     </div>
                 </div>
 
-                <!-- Modal Footer (Fixed Controls) -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
+             
             </div>
         </div>
     </div>
@@ -1030,9 +1057,7 @@
                 </style>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
+       
         </div>
     </div>
 </div>
