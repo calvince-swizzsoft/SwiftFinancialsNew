@@ -2524,7 +2524,6 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                         }
                     }
                 }
-
                 #region Bulk-Insert journals
 
                 if (result)

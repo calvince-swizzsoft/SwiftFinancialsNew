@@ -159,22 +159,12 @@
                         <div class="sk-double-bounce1"></div>
                         <div class="sk-double-bounce2"></div>
                     </div>
+
+
                     <div class="blue-section">
                         <form id="filterForm">
                             <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        <label for="filterType">Loan Status</label>
-
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Status, LoanCaseStatus,
-                                            new { @class = "form-control input-md", @id = "loanCaseStatus" })
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-3">
+                                <div class="col-lg-5">
                                     <div class="form-group form-group-lg">
                                         <label for="filterType">Loan Filter</label>
 
@@ -204,6 +194,8 @@
                     </div>
 
                     <br />
+
+
                     <div class="table-responsive">
                         <table id="LoanRegistrationsGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
@@ -234,7 +226,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#LoanRegistrationsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
@@ -242,13 +233,10 @@
                 "sServerMethod": "POST",
 
                 "fnServerParams": function (aoData) {
-                    // Add filter type and value to server params
-                    aoData.push({ "name": "loanCaseStatus", "value": $('#loanCaseStatus').val() });
                     aoData.push({ "name": "filterType", "value": $('#filterType').val() });
                     aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
                 },
 
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -267,46 +255,9 @@
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     aData.ReceivedDate = dt_ReceivedDate;
 
-                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var appraiseUrl = '<a  href="/loaning/LoanRegistration/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
-                    var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
-                    var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
-
-                    // Generate dropdown HTML with conditional logic based on status
-                    var dropdownHtml = `
-                        <div class="dropdown">
-                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
-
-                    // Buttons to be included
-                    var viewButton = `<a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
-                    var AttachGuarantor = `<a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantors</a>`;
-
-                    // Conditional logic for button enabling/disabling based on status
-                    switch (aData.Status) {
-                        case 48826: // Registered
-                            dropdownHtml += viewButton + AttachGuarantor;
-                            break;
-                        // If the status is 48828 (Approved) or any other status, only "View" button will be enabled
-                        default:
-                            dropdownHtml += viewButton;
-                            break;
-                    }
-
-                    dropdownHtml += `</div></div>`;
+                    var verifyUrl = '<a  href="/loaning/LoanVerification/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
 
                     $('td:eq(8)', nRow).html(dt_Created);
-
-                    // Prevent default action for disabled links
-                    $('.dropdown-item.disabled').on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    });
 
                     return nRow;
                 },
@@ -339,4 +290,5 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
+
 }
