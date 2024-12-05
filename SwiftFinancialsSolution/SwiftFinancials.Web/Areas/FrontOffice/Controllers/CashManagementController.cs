@@ -125,7 +125,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<ActionResult> FetchTreasuryTransactions(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
 
@@ -181,11 +181,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-                  pageIndex,
-                  jQueryDataTablesModel.iDisplayLength,
+                  0,
+                  int.MaxValue,
                   (Guid)ActiveTreasury.ChartOfAccountId,
-                  currentPostingPeriod.DurationStartDate,
-                  currentPostingPeriod.DurationEndDate,
+                  startDate,
+                  endDate,
                   jQueryDataTablesModel.sSearch,
                   20,
                   1,
@@ -195,19 +195,32 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
+
+                
+               
+
                 availableBalanceBroughtForward = pageCollectionInfo.AvailableBalanceBroughtFoward;
                 totalCredits = pageCollectionInfo.TotalCredits;
                 totalDebits = pageCollectionInfo.TotalDebits;
                 availableBalanceCarriedForward = pageCollectionInfo.AvailableBalanceCarriedForward;
                 totalRecordCount = pageCollectionInfo.ItemsCount;
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                //searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
+
+
+                var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+
 
                 var response = new
                 {
                     draw = jQueryDataTablesModel.sEcho,
                     recordsTotal = totalRecordCount,
                     recordsFiltered = searchRecordCount,
-                    data = pageCollectionInfo.PageCollection,
+                    data = paginatedData,
                     summary = new
                     {
                         AvailableBalanceBroughtForward = availableBalanceBroughtForward,

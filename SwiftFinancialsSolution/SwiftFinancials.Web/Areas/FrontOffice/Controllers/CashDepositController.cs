@@ -262,8 +262,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (SelectedTeller != null && !SelectedTeller.IsLocked)
             {
                 var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-                    pageIndex,
-                    jQueryDataTablesModel.iDisplayLength,
+                   0, int.MaxValue,
                     (Guid)SelectedTeller.ChartOfAccountId,
                     startDate,
                     endDate,
@@ -280,15 +279,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
                     var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
-                    
+
                     totalRecordCount = pageCollectionInfo.ItemsCount;
 
                     //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
 
 
                     var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
-                    
-                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
 
                     return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
                 }
@@ -299,6 +298,69 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
 
         }
+
+        //[HttpPost]
+        //public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
+        //{
+        //    _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+        //    _selectedTeller = await GetCurrentTeller();
+
+        //    int totalRecordCount = 0;
+
+        //    int searchRecordCount = 0;
+
+        //    //DateTime startDate = DateTime.Now;
+
+        //    //DateTime endDate = DateTime.Now;
+
+        //    int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+
+        //    var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+        //    var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+
+
+        //    if (SelectedTeller != null && !SelectedTeller.IsLocked)
+        //    {
+        //        var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
+        //           0,int.MaxValue,
+        //            (Guid)SelectedTeller.ChartOfAccountId,
+        //            startDate,
+        //            endDate,
+        //            jQueryDataTablesModel.sSearch,
+        //            20,
+        //            1,
+        //            true,
+        //            GetServiceHeader()
+        //        );
+
+
+        //        if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+        //        {
+
+
+        //            var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
+
+        //            totalRecordCount = pageCollectionInfo.ItemsCount;
+
+        //            //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
+
+
+        //            var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+
+        //            searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+
+        //            return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        //        }
+        //        else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+        //    }
+
+        //    return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+        //}
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -1578,65 +1640,90 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (cashWithdrawalRequest.Category == (int)CashWithdrawalCategory.PaymentVoucher)
             {
 
-               //var pv = await _channelService.FindPaymentVoucher
+                //var pv = await _channelService.FindPaymentVoucher
                 SelectedCustomerAccount.Type = (int)FrontOfficeTransactionType.CashWithdrawalPaymentVoucher;
 
-                //transactionModel.PaymentVoucher 
-                // Fetch necessary data
+                // Fetch Cheque Books
                 var chequebooks = await _channelService.FindChequeBooksAsync();
-                var missingParameters = new List<string>();
-
-                // Find target cheque book
                 var targetChequeBook = chequebooks.FirstOrDefault(chq => chq.CustomerAccountId == SelectedCustomerAccount.Id);
+
                 if (targetChequeBook == null)
                 {
-                    missingParameters.Add("Cheque Book");
-                }
-
-                // Fetch payment vouchers
-                var paymentVouchers = targetChequeBook != null
-                    ? await _channelService.FindPaymentVouchersByChequeBookIdAsync(targetChequeBook.Id, GetServiceHeader())
-                    : null;
-
-                if (paymentVouchers == null || !paymentVouchers.Any())
-                {
-                    missingParameters.Add("Payment Vouchers");
-                }
-
-                // Fetch cash withdrawal request
-                var currentCashWithdrawalRequest = await _channelService.FindCashWithdrawalRequestAsync(cashWithdrawalRequestId, GetServiceHeader());
-                if (currentCashWithdrawalRequest == null)
-                {
-                    missingParameters.Add("Cash Withdrawal Request");
-                }
-
-                // Find target payment voucher
-                var targetPaymentVoucher = paymentVouchers?.FirstOrDefault(pv => pv.Id == currentCashWithdrawalRequest?.PaymentVoucherId);
-                if (targetPaymentVoucher == null)
-                {
-                    missingParameters.Add("Payment Voucher");
-                }
-
-                // Handle missing parameters
-                if (missingParameters.Any())
-                {
-                    var missingMessage = $"The operation can't proceed. Missing: {string.Join(", ", missingParameters)}.";
-
+                    var errorMessage = "Operation failed: Missing Cheque Book associated with the selected customer account.";
                     MessageBox.Show(
-                        missingMessage,
+                        errorMessage,
                         "Cash Transaction",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error,
                         MessageBoxDefaultButton.Button1,
                         MessageBoxOptions.ServiceNotification
                     );
-
-                    // Return failure response
-                    return Json(new { success = false, message = "Operation error: " + missingMessage });
+                    return Json(new { success = false, message = errorMessage });
                 }
 
+                // Fetch Payment Vouchers
+                var paymentVouchers = await _channelService.FindPaymentVouchersByChequeBookIdAsync(targetChequeBook.Id, GetServiceHeader());
+                if (paymentVouchers == null || !paymentVouchers.Any())
+                {
+                    var errorMessage = "Operation failed: No Payment Vouchers found for the associated Cheque Book.";
+                    MessageBox.Show(
+                        errorMessage,
+                        "Cash Transaction",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                    return Json(new { success = false, message = errorMessage });
+                }
+
+                // Fetch Cash Withdrawal Request
+                var currentCashWithdrawalRequest = await _channelService.FindCashWithdrawalRequestAsync(cashWithdrawalRequestId, GetServiceHeader());
+                if (currentCashWithdrawalRequest == null)
+                {
+                    var errorMessage = "Operation failed: Missing Cash Withdrawal Request for the given ID.";
+                    MessageBox.Show(
+                        errorMessage,
+                        "Cash Transaction",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                    return Json(new { success = false, message = errorMessage });
+                }
+
+                // Validate Target Payment Voucher
+                var targetPaymentVoucher = paymentVouchers.FirstOrDefault(pv => pv.Id == currentCashWithdrawalRequest.PaymentVoucherId);
+                if (targetPaymentVoucher == null)
+                {
+                    var errorMessage = "Operation failed: No Payment Voucher matches the Cash Withdrawal Request.";
+                    MessageBox.Show(
+                        errorMessage,
+                        "Cash Transaction",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                    return Json(new { success = false, message = errorMessage });
+                }
+
+                //// Proceed with successful operation
+                //var successMessage = "Operation successful.";
+                //MessageBox.Show(
+                //    successMessage,
+                //    "Cash Transaction",
+                //    MessageBoxButtons.OK,
+                //    MessageBoxIcon.Information,
+                //    MessageBoxDefaultButton.Button1,
+                //    MessageBoxOptions.ServiceNotification
+                //);
+                //return Json(new { success = true, message = successMessage });
+
+
                 // Assign data to the transaction model
-                
+
                 targetPaymentVoucher.Payee = cashWithdrawalRequest.PaymentVoucherPayee;
                 transactionModel.PaymentVoucher = targetPaymentVoucher;
 
@@ -2097,7 +2184,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.PaidDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 

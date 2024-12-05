@@ -45,13 +45,15 @@
                 border-bottom-color: transparent; /* To match the Bootstrap look */
             }
 
+        .blue-section1 {
+            background-color: #e6f3ff;
+            padding: 10px; /* Padding inside the border */
+            border-radius: 8px; /* Rounded corners (optional) */
 
-        /*.inner-nav-pills .inner-nav-link.active {
-            color: #fff;*/ /* White text for active pill */
-        /*background-color: #007bff;*/ /* Primary color background for active pill */
-        /*}*/
 
-
+            font-size: 16px;
+            font-weight: bold;
+        }
 
         /* Tab Content */
         .tab-content > .tab-pane,
@@ -112,26 +114,20 @@
                                 <li class="nav-item">
                                     <a class="nav-link active" data-toggle="tab" href="#cashManagement">Cash Management</a>
                                 </li>
-                                @*<li class="nav-item">
-                                        <a class="nav-link" data-toggle="tab" href="#cashWithdrawalRequest">Cash Withdrawal Request</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-toggle="tab" href="#fiscalCatalog">Fiscal Catalog</a>
-                                    </li>*@
                             </ul>
 
                             <div class="tab-content">
                                 <!-- Cash Management Tab -->
                                 <div id="cashManagement" class="tab-pane active">
                                     <!-- Inner Tabs for Cash Management -->
-                                    <ul class="nav inner-nav-tabs" style="margin-bottom: 20px;">
+                                    <ul class="nav inner-nav-tabs" id="subTabs" style="margin-bottom: 20px;">
                                         <li class="nav-item">
                                             <a class="inner-nav-link active" data-toggle="tab" href="#transaction">Transaction</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="inner-nav-link" data-toggle="tab" href="#treasuryGLAccountStatement">Treasury G/L Account Statement</a>
                                         </li>
-                                    </ul>
+                                    </ul> 
 
                                     <div class="inner-tab-content">
                                         <div id="transaction" class="inner-tab-pane active">
@@ -149,7 +145,7 @@
 
                                                 <label class="col-sm-2 col-form-label">Destination:</label>
                                                 <div class="col-sm-4">
-                                                    @*<div class="form-group">*@
+
                                                     @Html.HiddenFor(model => model.Id, new { @id = "Id" })
                                                     @Html.HiddenFor(model => model.DestinationBranchId, new { @id = "DestinationBranchId" })
 
@@ -183,7 +179,7 @@
                                         <!-- Teller G/L Account Statement Tab -->
                                         <div id="treasuryGLAccountStatement" class="inner-tab-pane">
                                             <div class="table-responsive">
-                                                <table id="tellerGlTable" class="table table-striped table-bordered table-hover" style="width:100%;">
+                                                <table id="treasuryGlTable" class="table table-striped table-bordered table-hover" style="width:100%;">
                                                     <tbody>
                                                         <tr>
                                                             <td class="dataTables_empty">
@@ -192,6 +188,7 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
+
                                             </div>
 
 
@@ -214,19 +211,36 @@
                                                 </div>
                                             </div>
 
+
+                                            <div class="blue-section1" style="display: flex; justify-content: space-between; padding: 20px 50px; margin-top: 20px; align-items: flex-end;">
+                                                <!-- Start Date Section -->
+                                                <div class="col-md-4">
+                                                    <label for="startDate">Start Date:</label>
+                                                    <input type="text" id="startDate" class="form-control" />
+                                                </div>
+
+                                                <!-- End Date Section -->
+                                                <div class="col-md-4" style="margin-left: 20px;">
+                                                    <label for="endDate">End Date:</label>
+                                                    <input type="text" id="endDate" class="form-control" />
+                                                </div>
+
+                                                <!-- Button Section -->
+                                                <div style="display: flex; gap: 10px;">
+                                                    <button type="button" id="refreshButton1" class="btn btn-info">Refresh</button>
+                                                    @*<button type="button" id="printButton" class="btn btn-success">Print</button>*@
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Fiscal Catalog Tab -->
-                                <!--<div id="fiscalCatalog" class="tab-pane">-->
-                                <!-- Content for Fiscal Catalog tab -->
-                                <!--</div> -->
                             </div>
 
                             <div class="form-group row" style="margin-top: 20px;">
                                 <div class="col-sm-12 text-right">
-                                    <button id ="submitButton" type="submit" class="btn btn-primary">Create</button>
+                                    <button id="submitButton" type="submit" class="btn btn-primary">Create</button>
                                 </div>
                             </div>
                         </div>
@@ -255,10 +269,6 @@
                     </tr>
                 </tbody>
             </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
@@ -281,10 +291,6 @@
                     </tr>
                 </tbody>
             </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
@@ -306,10 +312,6 @@
                     </tr>
                 </tbody>
             </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
@@ -359,102 +361,162 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+
     <script>
-    $(document).ready(function () {
-        var searchButton = $('#searchButton');
-        var selectedValue = $('#TransactionType').val(); // Get the initial value of the dropdown
+        $(document).ready(function () {
+            // Listen for tab clicks
+            $('#subTabs .inner-nav-link').on('click', function () {
+                const isGLAccountTab = $(this).attr('href') === '#treasuryGLAccountStatement'; // Check if the GL Account tab is active
+                const $submitButton = $('#submitButton');
 
-        function updateSearchButtonTarget() {
-            // Reset data-target
-            searchButton.attr('data-target', '#');
+                if (isGLAccountTab) {
+                    $submitButton.hide(); // Hide the button when the Teller G/L Account Statement tab is active
+                } else {
+                    $submitButton.show(); // Show the button for other tabs
+                }
+            });
+        });
+    </script>
 
-            // Set data-target based on the selected value
-            switch (selectedValue) {
-                case '1':
-                    searchButton.attr('data-target', '#TresuriesLookupModal');
-                    break;
-                case '2':
-                case '4':
-                    searchButton.attr('data-target', '#BankssLookupModal');
-                    break;
-                case '8':
-                    searchButton.attr('data-target', '#EmployeeLookupModal');
-                    break;
-                default:
-                    searchButton.attr('data-target', '#TresuriesLookupModal');
-                    break;
+    <script>
+        $(document).ready(function () {
+            var searchButton = $('#searchButton');
+            var selectedValue = $('#TransactionType').val(); // Get the initial value of the dropdown
+
+            function updateSearchButtonTarget() {
+                // Reset data-target
+                searchButton.attr('data-target', '#');
+
+                // Set data-target based on the selected value
+                switch (selectedValue) {
+                    case '1':
+                        searchButton.attr('data-target', '#TresuriesLookupModal');
+                        break;
+                    case '2':
+                    case '4':
+                        searchButton.attr('data-target', '#BankssLookupModal');
+                        break;
+                    case '8':
+                        searchButton.attr('data-target', '#EmployeeLookupModal');
+                        break;
+                    default:
+                        searchButton.attr('data-target', '#TresuriesLookupModal');
+                        break;
+                }
             }
-        }
 
-      
-        updateSearchButtonTarget();
 
-        $('#TransactionType').change(function () {
-            selectedValue = $(this).val();
             updateSearchButtonTarget();
+
+            $('#TransactionType').change(function () {
+                selectedValue = $(this).val();
+                updateSearchButtonTarget();
+            });
+
+            if (selectedValue) {
+                $('#TransactionType').val(selectedValue).change();
+            }
         });
 
-        if (selectedValue) {
-            $('#TransactionType').val(selectedValue).change();
-        }
-    });
 
+    </script>
 
-
-
-
-
- $('#tellerGlTable').DataTable({
-    "sPaginationType": "full_numbers",
-    "bProcessing": true,
-    "bServerSide": true,
-    "sAjaxSource": "@Url.Action("Index", "CashManagement", new { Area = "FrontOffice" })",
-    "sServerMethod": "POST",
-    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-        var createdDate = new Date(parseInt(aData.JournalCreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-        var h = ("0" + createdDate.getHours()).slice(-2);
-        var m = ("0" + createdDate.getMinutes()).slice(-2);
-        var s = ("0" + createdDate.getSeconds()).slice(-2);
-        var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-        aData.JournalCreatedDate = dt_Created;
-        $('td:eq(1)', nRow).html(dt_Created);
-        return nRow;
-    },
-    "aoColumns": [
-        { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
-        { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
-        { "mDataProp": "JournalPrimaryDescription", "sTitle": "Primary Description", "sWidth": "25%" },
-        { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
-        { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
-        { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
-        { "mDataProp": "ContraGLAccountName", "sTitle": "Contra G/L Account", "sWidth": "15%" }
-    ],
-    "aaSorting": [[1, "desc"]], // Default sorting, adjust index as needed
-    "fnDrawCallback": function (settings) {
-        // Access the JSON response
-        var jsonResponse = settings.json;
-
-        // Update the summary data
-        $('#AvailableBalanceBroughtForward').val(jsonResponse.summary.AvailableBalanceBroughtForward);
-        $('#TotalCredits').val(jsonResponse.summary.TotalCredits);
-        $('#TotalDebits').val(jsonResponse.summary.TotalDebits);
-        $('#AvailableBalanceCarriedForward').val(jsonResponse.summary.AvailableBalanceCarriedForward);
-    }
-});
+    <script>
 
 
         $(document).ready(function () {
-            $('#data_3 .input-group.date').datepicker({
-                startView: 2,
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                autoclose: true,
-            });
-        });
-             //Station typehead starts here
 
-     
+            $('#refreshButton1').on('click', function () {
+                // Reload the DataTable when the Refresh button is clicked
+                $('#treasuryGlTable').DataTable().ajax.reload();
+                $('#startDate').val('');
+                $('#endDate').val('');
+            });
+
+            const defaultStartDate = new Date();
+            defaultStartDate.setDate(defaultStartDate.getDate() - 30); // 30 days ago
+            const defaultEndDate = new Date();
+
+            $('#treasuryGlTable').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("FetchTreasuryTransactions", "CashManagement", new { Area = "FrontOffice" })",
+                "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    // Add startDate and endDate to the server parameters
+                    aoData.push(
+                        {
+                            "name": "startDate",
+                            "value": $('#startDate').val() || defaultStartDate.toISOString().split('T')[0]
+                        },
+                        {
+                            "name": "endDate",
+                            "value": $('#endDate').val() || defaultEndDate.toISOString().split('T')[0]
+                        }
+                    );
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.JournalCreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.JournalCreatedDate = dt_Created;
+                    $('td:eq(1)', nRow).html(dt_Created);
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
+                    { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
+                    { "mDataProp": "JournalPrimaryDescription", "sTitle": "Primary Description", "sWidth": "25%" },
+                    { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
+                    { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
+                    { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
+                    { "mDataProp": "ContraGLAccountName", "sTitle": "Contra G/L Account", "sWidth": "15%" }
+                ],
+                "aaSorting": [[1, "desc"]], // Default sorting, adjust index as needed
+                "fnDrawCallback": function (settings) {
+                    // Access the JSON response
+                    var jsonResponse = settings.json;
+
+                    console.log(jsonResponse);
+
+                    // Update the summary data
+                    $('#AvailableBalanceBroughtForward').val(jsonResponse.summary.AvailableBalanceBroughtForward);
+                    $('#TotalCredits').val(jsonResponse.summary.TotalCredits);
+                    $('#TotalDebits').val(jsonResponse.summary.TotalDebits);
+                    $('#AvailableBalanceCarriedForward').val(jsonResponse.summary.AvailableBalanceCarriedForward);
+                }
+            });
+
+        })
+
+    </script>
+
+
+    <script>
+        /*$(document).ready(function () {*/
+        const datePickerOptions = {
+            startView: 2,
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+            format: "dd-mm-yyyy"
+        };
+
+        $('#data_3 .input-group.date').datepicker(datePickerOptions);
+        $('#startDate').datepicker(datePickerOptions);
+        $('#endDate').datepicker(datePickerOptions);
+        /*        });*/
+
+    </script>
+
+    <script>
+
+
         $('#EmployeesGrid').DataTable({
             // Ajax settings
             "sPaginationType": "full_numbers",
@@ -510,7 +572,7 @@ $("#EmployeesGrid tbody").on("click", ".select-btn", function() {
     console.log($(this).data());
 
 
-    
+
     $('#Id').val(id);
     $('input[name=Id]').val(id);
     $('#DestinationBranchId').val(destinationBranchId);
@@ -521,17 +583,9 @@ $("#EmployeesGrid tbody").on("click", ".select-btn", function() {
 });
 
 
-    $(document).ready(function () {
-        $('#data_3 .input-group.date').datepicker({
-            startView: 2,
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            autoclose: true,
-        });
-    });
+    </script>
 
-
+    <script>
 
 $('#TresuriessGrid').DataTable({
     // Ajax settings
@@ -587,23 +641,11 @@ $("#TresuriessGrid tbody").on("click", ".select-btn", function() {
     $('#TresuriesLookupModal').modal('hide');
 });
 
-// Add click event for lookup buttons to mimic the behavior of select button
-//$("#TresuriessGrid tbody").on("click", ".lookup-btn", function() {
-//    var id = $(this).data('id');
-//    var description = $(this).data('description');
-//    var branchId = $(this).data('branchId');
 
-//    // Set values based on selected data
-//    $('#Id').val(id);
-//    $('#DestinationBranchId').val(branchId);
-//    $('#DestinationDescription').val(description);
-
-//    // Close the modal permanently
-//    $('#TresuriesLookupModal').modal('hide');
-//});
+    </script>
 
 
-
+    <script>
 
 $('#BankssGrid').DataTable({
     // Ajax settings
@@ -622,8 +664,6 @@ $('#BankssGrid').DataTable({
         aData.CreatedDate = dt_Created;
 
         var selectUrl = '<button data-id="' + aData.Id + '" data-description="' + aData.Description + '" class="btn btn-outline-info select-btn">Select</button>';
-
-
 
         $('td:eq(2)', nRow).html(dt_Created);
         $('td:eq(3)', nRow).html(selectUrl);
@@ -646,37 +686,16 @@ $("#BankssGrid tbody").on("click", ".select-btn", function() {
 
     // Set values based on selected data
     $('#Id').val(id);
-  /*  $('input[name=BranchId]').val(id);*/
- /*   $('#DestinationBranchId').val(branchId);*/
     $('#DestinationDescription').val(description);
 
     // Close the modal
     $('#BankssLookupModal').modal('hide');
 });
 
-// Behavior for lookup buttons
-//$(".lookup-btn").click(function() {
-//    var id = $(this).data('id');
-//    var description = $(this).data('description');
-
-//    // Set values based on selected data
-//    $('#Id').val(id);
-//    $('input[name=BranchId]').val(id);
-//    $('#DestinationDescription').val(description);
-
-//    // Close the modal
-//    $('#BankssLookupModal').modal('hide');
-//});
-
-
-
-
-
-
-
     </script>
 
     <script>
+
 
         function resetAllFields() {
             /*            $('#CustomerAccountNewAvailableBalance').val('');*/
@@ -686,41 +705,42 @@ $("#BankssGrid tbody").on("click", ".select-btn", function() {
             $('#DestinationBranchId').val('');
             $('#DestinationDescription').val('');
 
-       
+
+
         }
 
-        $(document).ready(function () {
-            $('#submitButton').click(function (e) {
+        /* $(document).ready(function () {*/
+        $('#submitButton').click(function (e) {
 
-                e.preventDefault();
-                $.ajax({
-                    url: $('#cashManagementForm').attr('action'),
-                    type: 'POST',
-                    data: $('#cashManagementForm').serialize(),
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.redirect) {
+            e.preventDefault();
+            $.ajax({
+                url: $('#cashManagementForm').attr('action'),
+                type: 'POST',
+                data: $('#cashManagementForm').serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    if (response.redirect) {
 
-                            resetAllFields();
-                        } else if (response.success) {
+                        resetAllFields();
+                        $('#treasuryGlTable').DataTable().ajax.reload();
+                    } else if (response.success) {
 
-                            //alert('Customer Receipts: Operation Success');
-                            resetAllFields();
-                        } else {
-
-                            //alert('Customer Receipts: Operation Failed\n\n' + (response.errorMessages ? response.errorMessages.join('\n') : 'Unknown error'));
-                            //resetAllFields();
-                        }
-                    },
-                    error: function (xhr, status, error) {
-
-                        //alert('An error occurred while submitting the form. Please try again.');
-                        //resetAllFields();
-                        console.error(error);
+                        //alert('Customer Receipts: Operation Success');
+                        resetAllFields();
+                        $('#treasuryGlTable').DataTable().ajax.reload();
+                        /* getTreasuryGlTable().ajax.reload(null, false);*/
+                    } else {
+                        resetAllFields();
+                        $('#treasuryGlTable').DataTable().ajax.reload();
                     }
-                });
+                },
+                error: function (xhr, status, error) {
+                    //resetAllFields();
+                    console.error(error);
+                }
             });
         });
+      /*      });*/
 
     </script>
 }
