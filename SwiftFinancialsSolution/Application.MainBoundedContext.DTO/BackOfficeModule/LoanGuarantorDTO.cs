@@ -606,5 +606,32 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public int RecordStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public string RecordStatusDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(RecordStatus), RecordStatus) ? EnumHelper.GetDescription((RecordStatus)RecordStatus) : string.Empty;
+            }
+        }
+
+        [Display(Name = "Customer Filter")]
+        public int CustomerFilter { get; set; }
+
+        [Display(Name = "Customer Filter")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return EnumHelper.GetDescription((CustomerFilter)CustomerFilter);
+            }
+        }
     }
 }
