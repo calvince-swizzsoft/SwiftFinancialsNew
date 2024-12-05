@@ -74,6 +74,17 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.CustomerFilter = GetCustomerFilterSelectList(string.Empty);
+
+            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+
+            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+
+            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
+
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -138,6 +149,51 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<JsonResult> CustomerIndex(JQueryDataTablesModel jQueryDataTablesModel, int recordStatus, string text, int customerFilter)
+        {
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
+
+
+            var pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)RecordStatus.Approved, text, customerFilter, 0, int.MaxValue, GetServiceHeader());
+
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(customer => customer.CreatedDate)
+                    .ToList();
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+
+            return this.DataTablesJson(
+                items: new List<CustomerDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
+        }
 
 
         [HttpPost]
@@ -158,8 +214,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 if (Session["LoanProductIdID"] != null)
                     LoanProductId = (Guid)Session["LoanProductIdID"];
 
-                guarantorLookUp.TotalShares = 300000;
+                var products = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(id, new[] { (int)ProductCode.Savings, (int)ProductCode.Loan, (int)ProductCode.Investment },
+                    true, true, true, true, GetServiceHeader());
+                var savingsProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Savings).ToList();
+                var loanProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Loan).ToList();
+                var investmentProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Investment).ToList();
 
+                List<decimal> sBalance = new List<decimal>();
+                List<decimal> iBalance = new List<decimal>();
+
+                foreach (var savingsBalances in savingsProducts)
+                {
+                    sBalance.Add(savingsBalances.BookBalance);
+                }
+
+                foreach (var investmentsBalances in investmentProducts)
+                {
+                    iBalance.Add(investmentsBalances.BookBalance);
+                }
+
+                guarantorLookUp.TotalShares = sBalance.Sum() + iBalance.Sum();
 
                 guarantorLookUp.GuarantorFullName = loanGuarantor.FullName;
                 guarantorLookUp.GuarantorId = loanGuarantor.Id;
@@ -393,6 +467,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 }
                 else
                 {
+
+                    await ServeNavigationMenus();
+
+                    ViewBag.recordStatus = GetRecordStatusSelectList(loanGuarantorDTO.RecordStatusDescription.ToString());
+                    ViewBag.customerFilter = GetCustomerFilterSelectList(loanGuarantorDTO.CustomerFilterDescription.ToString());
+
                     MessageBox.Show(Form.ActiveForm, "Operation Cancelled Succeffully", "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Warning,
                        MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
@@ -404,10 +484,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 await ServeNavigationMenus();
 
-                var errorMessages = loanGuarantorDTO.ErrorMessages;
+                ViewBag.recordStatus = GetRecordStatusSelectList(loanGuarantorDTO.RecordStatusDescription.ToString());
+                ViewBag.customerFilter = GetCustomerFilterSelectList(loanGuarantorDTO.CustomerFilterDescription.ToString());
 
-                MessageBox.Show(Form.ActiveForm, "Operation failed.", "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification);
+                var errorMessages = loanGuarantorDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
+                MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful: {errorMessage}", "Loan Guarantors", MessageBoxButtons.OK, MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
                 return View(loanGuarantorDTO);
             }

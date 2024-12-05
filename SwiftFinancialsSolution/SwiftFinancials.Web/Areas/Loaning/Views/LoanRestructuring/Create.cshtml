@@ -1,7 +1,7 @@
 ﻿
 @model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 @{
-    ViewBag.Title = "Restructure Loan";
+    ViewBag.Title = "Loan Restructuring";
 
 
     var apr = 20;
@@ -209,7 +209,6 @@
         padding: 15px;
         border-radius: 8px;
     }
-
 </style>
 
 
@@ -296,10 +295,10 @@
                                 <div class="col-md-3 form-group">
                                     @Html.LabelFor(model => model.FullAccountNumber, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
-                                        @Html.HiddenFor(model => model.Id)
-                                        @Html.TextBoxFor(model => model.CustomerIndividualIdentityCardNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                        @Html.HiddenFor(model => model.CustomerAccountId)
+                                        @Html.TextBoxFor(model => model.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
                                         <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#fullAccountNumberLookupModal"><span class="fa fa-search"></span></a>
+                                            <a data-toggle="modal" data-target="#CustomerAccountLookUpModal"><span class="fa fa-search"></span></a>
                                         </span>
                                     </div>
                                 </div>
@@ -395,8 +394,8 @@
 
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanProductSection, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanProductSection, new
+                                                    @Html.LabelFor(model => model.loanProductSection, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.loanProductSection, new
                                                     {
                                                         htmlAttributes = new
                                                         {
@@ -423,8 +422,8 @@
 
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanProductPaymentFrequencyPerYear, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanProductPaymentFrequencyPerYear, new
+                                                    @Html.LabelFor(model => model.loanProductPaymentFrequencyPerYear, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.loanProductPaymentFrequencyPerYear, new
                                                     {
                                                         htmlAttributes = new
                                                         {
@@ -440,23 +439,42 @@
                                         <div class="row">
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    <label>Payment Per Period</label>
-                                                    <input type="text" name="PaymentPerPeriod" class="form-control" />
+                                                    @Html.LabelFor(model => model.PaymentPerPeriod, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.PaymentPerPeriod, new
+                                                    {
+                                                        htmlAttributes = new
+                                                        {
+                                                            @class = "form-control required"
+                                                        }
+                                                    })
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    <label>Number of Periods</label>
-                                                    <input type="text" name="NumberOfPeriods" class="form-control" />
+                                                    @Html.LabelFor(model => model.NumberOfPeriods, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.NumberOfPeriods, new
+                                                    {
+                                                        htmlAttributes = new
+                                                        {
+                                                            @class = "form-control required",
+                                                            @min=1
+                                                        }
+                                                    })
                                                 </div>
                                             </div>
 
 
                                             <div class="col-md-6 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    <label>Reference</label>
-                                                    <input type="text" name="Reference" class="form-control" />
+                                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.Reference, new
+                                                    {
+                                                        htmlAttributes = new
+                                                        {
+                                                            @class = "form-control required"
+                                                        }
+                                                    })
                                                 </div>
                                             </div>
                                         </div>
@@ -511,7 +529,7 @@
 
 
 
-<div class="modal  fade" id="CustomerAccountLookUpModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="CustomerAccountLookUpModal" role="dialog" aria-hidden="true" style="width: auto;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
@@ -521,7 +539,14 @@
             <div class="blue-section">
                 <form id="filterForm">
                     <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
-                        <div class="col-lg-6">
+                        <div class="col-lg-3">
+                            <div class="form-group form-group-lg">
+                                @Html.Label("Product Code", "Product Code")
+                                @Html.DropDownList("productCode", ProductCode, new { @class = "form-control", id = "productCode" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
                             <div class="form-group form-group-lg">
                                 <label for="filterType">Customer Filter</label>
 
@@ -533,7 +558,7 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-4" style="margin-top: 27px;">
+                        <div class="col-lg-3" style="margin-top: 27px;">
                             <div class="form-group spacing-form-group">
                                 <div class="input-group text-box">
                                     @Html.TextBox("text", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "text" })
@@ -573,8 +598,6 @@
         </div>
     </div>
 </div>
-
-
 
 <!-- Modal Structure -->
 <div class="modal fade" id="loanCasesModal" tabindex="-1" role="dialog" aria-labelledby="loanCasesModalLabel" aria-hidden="true" style="width: 100%;">
@@ -729,6 +752,7 @@
     <script>
         var defaultCustomerFilter = $('#customerFilter').val();
         var defaulText = $('#text').val();
+        var defaulProductCode = $('#productCode').val();
 
         $('#customerAccountsGrid').DataTable({
                 "sPaginationType": "full_numbers",
@@ -739,7 +763,8 @@
                 "fnServerParams": function (aoData) {
                     aoData.push(
                         { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter },
-                        { "name": "text", "value": $('#text').val() || defaulText }
+                        { "name": "text", "value": $('#text').val() || defaulText },
+                        { "name": "productCode", "value": $('#productCode').val() || defaulProductCode }
                     );
                 },
 
@@ -754,18 +779,17 @@
 
                     var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomer(\'' + aData.Id + '\')">Select</button>';
 
-                    $('td:eq(8)', nRow).html(dt_Created);
-                    $('td:eq(9)', nRow).html(selectUrl);
+                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(selectUrl);
 
                     return nRow;
                 },
                 "aoColumns": [
+                    { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Code", "sWidth": "10%" },
                     { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "10%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "5%" },
                     { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "5%" },
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-                    { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "5%" },
                     { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "15%" },
                     { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
@@ -787,13 +811,23 @@
                 data: { Id: id },
                 success: function (response) {
                     if (response.success) {
-                        $('#CustomerId').val(response.data.CustomerId);
+                        $('#FullAccountNumber').val(response.data.FullAccountNumber);
+                        $('#CustomerAccountId').val(response.data.CustomerAccountId);
+                        $('#AccountStatus').val(response.data.AccountStatus);
+                        $('#PrincipalBalance').val(response.data.PrincipalBalance);
+                        $('#InterestBalance').val(response.data.InterestBalance);
                         $('#CustomerIndividualFirstName').val(response.data.CustomerIndividualFirstName);
-                        $('#CustomerStationZoneDivisionEmployerDescription').val(response.data.CustomerStationZoneDivisionEmployerDescription);
-                        $('#CustomerStation').val(response.data.CustomerStation);
+                        $('#CustomerIndividualPayrollNumbers').val(response.data.CustomerIndividualPayrollNumbers);
+                        $('#CustomerPersonalIdentificationNumber').val(response.data.CustomerPersonalIdentificationNumber);
                         $('#CustomerReference1').val(response.data.CustomerReference1);
                         $('#CustomerReference2').val(response.data.CustomerReference2);
                         $('#CustomerReference3').val(response.data.CustomerReference3);
+                        $('#LoanProductId').val(response.data.LoanProductId);
+                        $('#LoanProductDescription').val(response.data.LoanProductDescription);
+                        $('#loanProductSection').val(response.data.loanProductSection);
+                        $('#LoanInterestAnnualPercentageRate').val(response.data.LoanInterestAnnualPercentageRate);
+                        $('#loanProductPaymentFrequencyPerYear').val(response.data.loanProductPaymentFrequencyPerYear);
+                        $('#NumberOfPeriods').val(response.data.NumberOfPeriods);
 
                         $('#CustomerAccountLookUpModal').modal('hide');
                     } else {
@@ -817,7 +851,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value 
+                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value
                 },
                 body: JSON.stringify(formData)
             })
