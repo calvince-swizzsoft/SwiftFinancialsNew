@@ -1,7 +1,7 @@
 ﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanGuarantorDTO
 
 @{
-    ViewBag.Title = "Attach Guarantor";
+    ViewBag.Title = "Add Guarantors";
 
 
     var CustomerFilter = ViewBag.CustomerFilter as List<SelectListItem>;
@@ -364,11 +364,11 @@
                             </div>
                         </fieldset>
 
-                        <hr title="Guarantor linkage" />
 
-                        @*<section id="section2" class="section">*@
+                        <br />
+
                         <fieldset>
-                            <h2>Link Guarantor</h2>
+                            <h2>Guarantor Details</h2>
 
                             <br />
                             <div class="row">
@@ -685,6 +685,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        function toggleCategory(categoryTitle) {
+            var reportList = categoryTitle.nextElementSibling;
+            var toggleIcon = categoryTitle.querySelector('.toggle-icon');
+
+            if (reportList.style.display === 'none') {
+                reportList.style.display = 'grid';
+                toggleIcon.innerHTML = '&#9650;';
+            } else {
+                reportList.style.display = 'none';
+                toggleIcon.innerHTML = '&#9660;';
+            }
+        }
+    </script>
 
     <script>
         document.getElementById('openModalBtn').addEventListener('click', function (event) {
