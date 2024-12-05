@@ -93,7 +93,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.PaidDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 

@@ -532,7 +532,7 @@
                                                             <div class="form-group">
                                                                 @Html.LabelFor(model => model.ChequeDeposit.DrawerBankBranch, htmlAttributes: new { @class = "control-label" })
                                                                 @*@Html.HiddenFor(model => model.BranchId)*@
-                                                                @Html.EditorFor(model => model.ChequeDeposit.DrawerBankBranch, new { htmlAttributes = new { @id = "DrawerBankDescription", @class = "form-control required", placeholder = "Branch Name" } })
+                                                                @Html.EditorFor(model => model.ChequeDeposit.DrawerBankBranch, new { htmlAttributes = new { @id = "DrawerBankDescription", @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
                                                                 @Html.ValidationMessageFor(model => model.ChequeDeposit.DrawerBankBranch, "", new { @class = "text-danger" })
                                                             </div>
                                                         </div>
@@ -1641,7 +1641,7 @@
                 const defaultEndDate = new Date();
 
 
-    $('#tellerGlTable').DataTable({
+  $('#tellerGlTable').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
@@ -1838,15 +1838,17 @@
                     dataType: 'json',
                     success: function (response) {
                         if (response.redirect) {
-
+                            $('#tellerGlTable').DataTable().ajax.reload();
                             resetAllFields();
                         } else if (response.success) {
 
                             //alert('Saving Receipts: Operation Success');
                             resetAllFields();
+                            $('#tellerGlTable').DataTable().ajax.reload();
                         } else {
                             //alert('Saving Receipts: Operation Failed');
                             //alert('Customer Receipts: Operation Failed\n\n' + (response.errorMessages ? response.errorMessages.join('\n') : 'Unknown error'));
+                            $('#tellerGlTable').DataTable().ajax.reload();
                             resetAllFields();
                         }
                     },
@@ -2497,20 +2499,6 @@
         "aaSorting": [[1, "desc"]]
         });
 
-                //$(document).on('click', '#cashDepositSelectButton', function (e) {
-                //    e.preventDefault();
-
-                //    const rowData = $('#cashDepositRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
-                //    const requestId = rowData.Id; // Get the ID of the selected item
-
-                //    // Show the modal
-                //    $('#paymentModal').modal('show');
-
-                //    // Set up the modal buttons for approval and rejection
-                //    $('#paymentBtn').off('click').on('click', function () {
-                //        handleCashDepositRequest(requestId); // Handle approve
-                //    });
-                //});
 
         $(document).on('click', '#cashDepositSelectButton', function (e) {
             e.preventDefault();
@@ -2521,47 +2509,6 @@
             // Directly handle the cash deposit request
             handleCashDepositRequest(requestId);
         });
-
-
-
-        // Use event delegation to handle clicks on dynamically generated buttons
-        //$(document).on('click', '.select-action-button', function (e) {
-        //    e.preventDefault();
-
-        //    // Retrieve the row element closest to the button
-        //    const $row = $(this).closest('tr');
-
-        //    // Get the closest table and the DataTable API instance for the table
-        //    const $table = $row.closest('table');
-        //    const table = $table.DataTable();
-
-        //    // Get the row data using DataTables API
-        //    const rowData = table.row($row).data();
-        //    const requestId = rowData.Id; // Get the ID of the selected item
-
-        //    console.log("Selected Request ID:", requestId);
-
-        //    // Show the modal
-        //    $('#paymentModal').modal('show');
-
-        //    // Get the table ID
-        //    const tableId = $table.attr('id');
-        //    console.log("Table ID is:", tableId);
-
-        //    // Set up modal buttons for approval and rejection
-        //    $('#paymentBtn').off('click').on('click', function () {
-        //        if (tableId === 'cashDepositRequestsTable') {
-        //            handleCashDepositRequest(requestId); // Handle cash deposit approval
-        //        } else if (tableId === 'cashWithdrawalRequestsTable') {
-        //            handleCashWithdrawalRequest(requestId); // Handle cash withdrawal approval
-        //        } else if (tableId === 'cashTransferRequestsTable') {
-        //            handleCashTransferRequest(requestId); // Handle cash transfer approval
-        //        } else {
-        //            console.error('Unknown table ID:', tableId);
-        //        }
-        //    });
-        //});
-
 
         async function handleCashDepositRequest(cashDepositRequestId) {
             console.log("cashdepositrequest is", cashDepositRequestId);
