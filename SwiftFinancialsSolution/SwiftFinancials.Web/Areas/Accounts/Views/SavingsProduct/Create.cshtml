@@ -198,6 +198,9 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <input type="text" id="commissionSearch" class="form-control mb-3" placeholder="Search Commissions ..." onkeyup="filterCommissions()" />
+
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
@@ -212,7 +215,7 @@
                                             {
                                                 <tr>
                                                     <td>
-                                                        <input type="checkbox" name="commisionIds" value="@commission.Id" />
+                                                        <input type="checkbox" name="commissionIds" value="@commission.Id" />
                                                     </td>
                                                     <td>@commission.Description</td>
                                                 </tr>
@@ -226,7 +229,6 @@
                                         }
                                     </tbody>
                                 </table>
-                                <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
                         </fieldset>
                     }
@@ -245,6 +247,24 @@
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
+
+    <script>
+        function filterCommissions() {
+            var input = document.getElementById("commissionSearch");
+            var filter = input.value.toLowerCase();
+            var table = document.querySelector("table tbody");
+            var rows = table.querySelectorAll("tr");
+
+            rows.forEach(function (row) {
+                var description = row.querySelector("td:nth-child(2)") ? row.querySelector("td:nth-child(2)").innerText.toLowerCase() : '';
+                if (description.indexOf(filter) > -1) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    </script>
 
     <script>
         $(document).ready(function () {
