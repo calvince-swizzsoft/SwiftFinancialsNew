@@ -55,6 +55,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
+        public async Task<ActionResult> Index()
+        {
+            await ServeNavigationMenus();
+            ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
+            return View();
+        }
+
         public async Task<ActionResult> Search(Guid? id)
         {
             //string Remarks = "";
@@ -114,18 +121,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
-
-
-
-        public async Task<ActionResult> Index()
-        {
-            await ServeNavigationMenus();
-            ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
-            return View();
-        }
-
         [HttpPost]
-        public async Task<ActionResult> FetchTreasuryTransactions(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
+      
+        public async Task<JsonResult> FetchTreasuryTransactions(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
 
@@ -145,38 +143,38 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ActiveTreasury = await _channelService.FindTreasuryByBranchIdAsync((Guid)activeUser.BranchId, true, GetServiceHeader());
 
             // Collect missing parameters
-            var missingParameters = new List<string>();
+            //var missingParameters = new List<string>();
 
-            if (currentPostingPeriod == null)
-            {
-                missingParameters.Add("Posting Period");
-            }
+            //if (currentPostingPeriod == null)
+            //{
+            //    missingParameters.Add("Posting Period");
+            //}
 
-            if (activeUser == null)
-            {
-                missingParameters.Add("Active User");
-            }
+            //if (activeUser == null)
+            //{
+            //    missingParameters.Add("Active User");
+            //}
 
-            if (ActiveTreasury == null)
-            {
-                missingParameters.Add("Treasury");
-            }
+            //if (ActiveTreasury == null)
+            //{
+            //    missingParameters.Add("Treasury");
+            //}
 
-            // Check if any parameter is missing
-            if (missingParameters.Any())
-            {
-                var missingMessage = $"Some features may not work due to lack of: {string.Join(", ", missingParameters)}";
+            //// Check if any parameter is missing
+            //if (missingParameters.Any())
+            //{
+            //    var missingMessage = $"Some features may not work due to lack of: {string.Join(", ", missingParameters)}";
 
-                MessageBox.Show(missingMessage,
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+            //    MessageBox.Show(missingMessage,
+            //        "Cash Transaction",
+            //        MessageBoxButtons.OK,
+            //        MessageBoxIcon.Information,
+            //        MessageBoxDefaultButton.Button1,
+            //        MessageBoxOptions.ServiceNotification
+            //    );
 
-                return Json(new { success = false, message = "Operation error: " + missingMessage });
-            }
+            //    return Json(new { success = false, message = "Operation error: " + missingMessage });
+            //}
 
 
 
@@ -195,10 +193,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-
-                
-               
-
                 availableBalanceBroughtForward = pageCollectionInfo.AvailableBalanceBroughtFoward;
                 totalCredits = pageCollectionInfo.TotalCredits;
                 totalDebits = pageCollectionInfo.TotalDebits;
@@ -300,8 +294,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             var tellers = await _channelService.FindTellerAsync(parseId, includeBalance, GetServiceHeader());
-
-
 
             if (tellers != null)
             {
