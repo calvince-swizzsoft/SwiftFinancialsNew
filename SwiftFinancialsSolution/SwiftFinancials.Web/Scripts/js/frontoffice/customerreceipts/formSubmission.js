@@ -17,14 +17,17 @@
                 if (response.redirect) {
 
                     resetAllFields();
+                    $('#tellerGlTableCustomerReceipts').DataTable().ajax.reload();
                 } else if (response.success) {
 
                     //alert('Customer Receipts: Operation Success');
                     resetAllFields();
+                    $('#tellerGlTableCustomerReceipts').DataTable().ajax.reload();
                 } else {
 
                     //alert('Customer Receipts: Operation Failed\n\n' + (response.errorMessages ? response.errorMessages.join('\n') : 'Unknown error'));
                     resetAllFields();
+                    $('#tellerGlTableCustomerReceipts').DataTable().ajax.reload();
                 }
             },
             error: function (xhr, status, error) {

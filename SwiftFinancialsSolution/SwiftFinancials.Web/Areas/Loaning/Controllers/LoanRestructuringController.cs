@@ -82,50 +82,47 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> CustomerAccountIndex(JQueryDataTablesModel jQueryDataTablesModel, string text, int customerFilter)
+        public async Task<JsonResult> CustomerAccountIndex(JQueryDataTablesModel jQueryDataTablesModel,int productCode, string text, int customerFilter)
         {
             int totalRecordCount = 0;
             int searchRecordCount = 0;
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
             int pageSize = jQueryDataTablesModel.iDisplayLength;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndRecordStatusAndFilterInPageAsync((int)ProductCode.Loan, (int)CustomerAccountStatus.Normal, text,
-                customerFilter, pageIndex, pageSize, true, true, true, true, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndRecordStatusAndFilterInPageAsync(productCode, (int)RecordStatus.Approved, text,
+                 customerFilter, pageIndex, pageSize, true, true, true, true, GetServiceHeader());
+
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                var sortedData = pageCollectionInfo.PageCollection
-                    .OrderByDescending(customer => customer.CreatedDate)
-                    .ToList();
-
-                totalRecordCount = sortedData.Count;
-
-                var paginatedData = sortedData
-                    .Skip(jQueryDataTablesModel.iDisplayStart)
-                    .Take(jQueryDataTablesModel.iDisplayLength)
-                    .ToList();
-
+                totalRecordCount = pageCollectionInfo.ItemsCount;
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
-                    ? sortedData.Count
+                    ? pageCollectionInfo.PageCollection.Count
                     : totalRecordCount;
 
+                var orderedPageCollection = pageCollectionInfo.PageCollection
+                    .OrderByDescending(item => item.CreatedDate)
+                    .ToList();
+
                 return this.DataTablesJson(
-                    items: paginatedData,
+                    items: orderedPageCollection,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-
-            return this.DataTablesJson(
-                items: new List<CustomerAccountDTO>(),
-                totalRecords: totalRecordCount,
-                totalDisplayRecords: searchRecordCount,
-                sEcho: jQueryDataTablesModel.sEcho
-            );
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<CustomerAccountDTO> { },
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
         }
-
-
 
 
         public async Task<ActionResult> CustomerAccountLookUp(Guid? id, LoanCaseDTO loanCaseDTO)
@@ -139,13 +136,66 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View("create");
             }
 
+            var findCustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
+            if(findCustomerAccount!=null)
+            {
+                loanCaseDTO.FullAccountNumber = findCustomerAccount.FullAccountNumber;
+                loanCaseDTO.CustomerAccountId = findCustomerAccount.Id;
+                loanCaseDTO.AccountStatus = findCustomerAccount.StatusDescription;
+                loanCaseDTO.PrincipalBalance = findCustomerAccount.PrincipalBalance;
+                loanCaseDTO.InterestBalance = findCustomerAccount.InterestBalance;
+                loanCaseDTO.CustomerIndividualFirstName = findCustomerAccount.CustomerFullName;
+                loanCaseDTO.CustomerIndividualPayrollNumbers = findCustomerAccount.CustomerIndividualPayrollNumbers;
+                loanCaseDTO.CustomerPersonalIdentificationNumber = findCustomerAccount.CustomerPersonalIdentificationNumber;
+                loanCaseDTO.CustomerReference1 = findCustomerAccount.CustomerReference1;
+                loanCaseDTO.CustomerReference2 = findCustomerAccount.CustomerReference2;
+                loanCaseDTO.CustomerReference3 = findCustomerAccount.CustomerReference3;
+
+                var findProduct = await _channelService.FindLoanProductAsync(findCustomerAccount.CustomerAccountTypeTargetProductId, GetServiceHeader());
+                if (findProduct != null)
+                {
+                    loanCaseDTO.LoanProductId = findProduct.Id;
+                    loanCaseDTO.LoanProductDescription = findProduct.Description;
+                    loanCaseDTO.loanProductSection = findProduct.LoanRegistrationLoanProductSectionDescription;
+                    loanCaseDTO.LoanInterestAnnualPercentageRate = findProduct.LoanInterestAnnualPercentageRate;
+                    loanCaseDTO.loanProductPaymentFrequencyPerYear = findProduct.LoanRegistrationPaymentFrequencyPerYearDescription;
+                    loanCaseDTO.NumberOfPeriods = findProduct.LoanRegistrationTermInMonths;
+                }
+
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        FullAccountNumber= loanCaseDTO.FullAccountNumber,
+                        CustomerAccountId = loanCaseDTO.CustomerAccountId,
+                        AccountStatus = loanCaseDTO.AccountStatus,
+                        PrincipalBalance = loanCaseDTO.PrincipalBalance,
+                        InterestBalance = loanCaseDTO.InterestBalance,
+                        CustomerIndividualFirstName = loanCaseDTO.CustomerIndividualFirstName,
+                        CustomerIndividualPayrollNumbers = loanCaseDTO.CustomerIndividualPayrollNumbers,
+                        CustomerPersonalIdentificationNumber = loanCaseDTO.CustomerPersonalIdentificationNumber,
+                        CustomerReference1 = loanCaseDTO.CustomerReference1,
+                        CustomerReference2 = loanCaseDTO.CustomerReference2,
+                        CustomerReference3 = loanCaseDTO.CustomerReference3,
+
+                        LoanProductId = loanCaseDTO.LoanProductId,
+                        LoanProductDescription = loanCaseDTO.LoanProductDescription,
+                        loanProductSection = loanCaseDTO.loanProductSection,
+                        LoanInterestAnnualPercentageRate = loanCaseDTO.LoanInterestAnnualPercentageRate,
+                        loanProductPaymentFrequencyPerYear = loanCaseDTO.loanProductPaymentFrequencyPerYear,
+                        NumberOfPeriods = loanCaseDTO.NumberOfPeriods
+                    }
+                });
+            }
 
             return Json(new { success = false, message = "Customer not found" });
         }
 
 
 
-        public async Task<ActionResult> Create(Guid? Id)
+        public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
 
@@ -172,33 +222,25 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO, double PaymentPerPeriod, double NumberOfPeriods, string Reference)
+        public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO, double PaymentPerPeriod, double NumberOfPeriods, string Reference)
         {
-            customerAccountDTO.CustomerAccountTypeTargetProductId = (Guid)Session["productId"];
-            customerAccountDTO = Session["customerAccountDTO"] as CustomerAccountDTO;
-
-            customerAccountDTO.NumberOfPeriods = NumberOfPeriods;
-            customerAccountDTO.PaymentPerPeriod = PaymentPerPeriod;
-            customerAccountDTO.Reference = Reference;
-
-            var findbranchId = await _channelService.FindCustomerAccountsByCustomerIdAsync(customerAccountDTO.CustomerId, true, true, true, true, GetServiceHeader());
-
-            Guid branchId = Guid.Empty;
-            foreach (var pickBranchId in findbranchId)
-            {
-                branchId = pickBranchId.BranchId;
-            }
-
-            customerAccountDTO.BranchId = branchId;
-
-            customerAccountDTO.ValidateAll();
-
             await ServeNavigationMenus();
 
-            if (!customerAccountDTO.HasErrors)
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (userDTO.BranchId != null)
             {
-                var submit = await _channelService.RestructureLoanAsync(customerAccountDTO.BranchId, customerAccountDTO.Id, customerAccountDTO.NumberOfPeriods, customerAccountDTO.PaymentPerPeriod,
-                    customerAccountDTO.Reference, 1234, GetServiceHeader());
+                loanCaseDTO.BranchId = (Guid)userDTO.BranchId;
+            }
+
+            var customerAccountDetails = await _channelService.FindCustomerAccountAsync(loanCaseDTO.CustomerAccountId, true, true, true, true, GetServiceHeader());
+            var loanCase = await _channelService.FindLastLoanCaseByCustomerIdAsync(customerAccountDetails.CustomerId, loanCaseDTO.LoanProductId, GetServiceHeader());
+
+            loanCase.ValidateAll();
+
+            if (!loanCase.HasErrors)
+            {
+                var submit = await _channelService.RestructureLoanAsync(loanCaseDTO.BranchId, loanCaseDTO.CustomerAccountId, loanCaseDTO.NumberOfPeriods, loanCaseDTO.PaymentPerPeriod,
+                    loanCaseDTO.Reference, 1234, GetServiceHeader());
 
                 if (submit == false)
                 {
@@ -217,7 +259,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
             else
             {
-                var errorMessages = customerAccountDTO.ErrorMessages;
+                var errorMessages = loanCaseDTO.ErrorMessages;
                 return View();
             }
         }

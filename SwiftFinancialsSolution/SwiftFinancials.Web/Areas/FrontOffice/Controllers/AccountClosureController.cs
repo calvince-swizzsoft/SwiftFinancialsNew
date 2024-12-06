@@ -245,7 +245,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         GetServiceHeader()
                     );
 
-                    accountClosureRequestDTO.NetRefundable = totalInvestmentBalance - totalLoanBalance;
+                    accountClosureRequestDTO.NetRefundable = Math.Abs(totalInvestmentBalance) - Math.Abs(totalLoanBalance);
 
                     ViewBag.LoanAccounts = loanAccounts.Take(3).ToList();
                     ViewBag.InvestmentAccounts = investmentProduct;

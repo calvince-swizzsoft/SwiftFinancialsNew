@@ -361,7 +361,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     }
                 });
             }
-            return Json(new { success = false, message = "Customer not found" });
+            return Json(new { success = false, message = "Customer Account not found" });
         }
 
         public async Task<ActionResult> LoanPurposeLookup(Guid? id, LoanCaseDTO loanCaseDTO)
