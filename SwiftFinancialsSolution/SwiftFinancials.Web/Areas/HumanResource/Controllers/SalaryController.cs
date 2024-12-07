@@ -40,42 +40,44 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             var pageCollectionInfo = await _channelService.FindSalaryHeadsByFilterInPageAsync(
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 includeProductDescription,
                 GetServiceHeader()
             );
 
-            if (pageCollectionInfo != null)
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                var sortedData = sortAscending
-                    ? pageCollectionInfo.PageCollection
-                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList()
-                    : pageCollectionInfo.PageCollection
-                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(salaryHeadDTO => salaryHeadDTO.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: sortedData,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<SalaryHeadDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<SalaryHeadDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
 
@@ -114,6 +116,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                         ProductChartOfAccountName = savingsProduct.ChartOfAccountAccountName,
                         CustomerAccountTypeProductCode = savingsProduct.Code,
                         CustomerAccountTypeTargetProductCode = savingsProduct.Code,
+                        ChartOfAccountCostCenterId = savingsProduct.ChartOfAccountCostCenterId,
+                        ChartOfAccountCostCenterDescription = savingsProduct.ChartOfAccountCostCenterDescription,
 
 
 
@@ -168,6 +172,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             await ServeNavigationMenus();
 
             ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(string.Empty);
+            ViewBag.SalaryHeadCategorySelectList = GetSalaryHeadCategorySelectList(string.Empty);
 
 
             return View();

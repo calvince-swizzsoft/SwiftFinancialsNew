@@ -29,8 +29,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime? startDate, DateTime? endDate)
         {
+            if (!startDate.HasValue)
+                startDate = DateTime.MinValue;
+
+            if (!endDate.HasValue)
+                endDate = DateTime.MaxValue;
+
             int totalRecordCount = 0;
             int searchRecordCount = 0;
 
@@ -45,42 +51,49 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 var pageCollectionInfo = await _channelService.FindSalaryPeriodsByFilterInPageAsync(
                     status,
-                    startDate,
-                    endDate,
+                    startDate.Value,
+                    endDate.Value,
                     jQueryDataTablesModel.sSearch,
-                    pageIndex,
-                    pageSize,
+                    0,
+                    int.MaxValue,
                     GetServiceHeader()
                 );
 
                 if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
                 {
-                    totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                    var sortedData = pageCollectionInfo.PageCollection
+                        .OrderByDescending(salaryProcessingDTO => salaryProcessingDTO.CreatedDate)
+                        .ToList();
+
+                    totalRecordCount = sortedData.Count;
+
+                    var paginatedData = sortedData
+                        .Skip(jQueryDataTablesModel.iDisplayStart)
+                        .Take(jQueryDataTablesModel.iDisplayLength)
+                        .ToList();
 
                     searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
-                        ? pageCollectionInfo.PageCollection.Count
+                        ? sortedData.Count
                         : totalRecordCount;
 
                     return this.DataTablesJson(
-                        items: pageCollectionInfo.PageCollection,
+                        items: paginatedData,
                         totalRecords: totalRecordCount,
                         totalDisplayRecords: searchRecordCount,
                         sEcho: jQueryDataTablesModel.sEcho
                     );
                 }
-                else
-                {
-                    return this.DataTablesJson(
-                        items: new List<SalaryProcessingDTO>(),
-                        totalRecords: totalRecordCount,
-                        totalDisplayRecords: searchRecordCount,
-                        sEcho: jQueryDataTablesModel.sEcho
-                    );
-                }
+
+                return this.DataTablesJson(
+                    items: new List<SalaryProcessingDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+            );
             }
             catch (Exception ex)
             {
-
                 return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -93,6 +106,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             var salaryPeriodDTO = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
             //var chartOfAccount = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
+            ViewBag.MonthTypeSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(string.Empty);
 
             return View(salaryPeriodDTO);
         }
@@ -181,6 +196,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             await ServeNavigationMenus();
 
             var salaryPeriod = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
+            ViewBag.MonthTypeSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(string.Empty);
 
             return View(salaryPeriod);
         }

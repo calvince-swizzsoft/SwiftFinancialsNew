@@ -40,49 +40,90 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             var pageCollectionInfo = await _channelService.FindSalaryCardsByFilterInPageAsync(
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
             );
 
-            if (pageCollectionInfo != null)
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                var sortedData = sortAscending
-                    ? pageCollectionInfo.PageCollection
-                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList()
-                    : pageCollectionInfo.PageCollection
-                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(salaryCardDTO => salaryCardDTO.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: sortedData,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<SalaryCardDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<SalaryCardDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
+            // Find the SalaryCard
             var salaryCardDTO = await _channelService.FindSalaryCardAsync(id, GetServiceHeader());
+            if (salaryCardDTO == null)
+            {
+                MessageBox.Show(
+                    "Salary Card not found!",
+                    "Salary Card",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
+                return RedirectToAction("Index");
+            }
 
+            // Store the SalaryGroupId in TempData
+            if (salaryCardDTO.SalaryGroupId != Guid.Empty)
+            {
+                TempData["SalaryGroupId"] = salaryCardDTO.SalaryGroupId;
+
+                // Find the SalaryGroupEntries associated with the SalaryGroupId
+                var salaryGroupEntries = await _channelService.FindSalaryGroupEntriesBySalaryGroupIdAsync(salaryCardDTO.SalaryGroupId, GetServiceHeader());
+
+                if (salaryGroupEntries == null || !salaryGroupEntries.Any())
+                {
+                    MessageBox.Show(
+                        "No Salary Group Entries found for the provided Salary Group ID!",
+                        "Salary Group Entry",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                }
+                else
+                {
+                    ViewBag.SalaryGroupEntries = salaryGroupEntries;
+                }
+            }
+
+            // Return the SalaryCard to the view
             return View(salaryCardDTO);
         }
 
@@ -184,6 +225,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+
             ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(string.Empty);
             ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(string.Empty);
 
@@ -256,6 +298,30 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(salaryCardDTO);
         }
 
+        //[HttpGet]
+        //public async Task<ActionResult> GetSalaryGroupEntryDetails(Guid salaryGroupId)
+        //{
+        //    try
+        //    {
+        //        var salaryGroupEntries = await _channelService.FindSalaryGroupEntriesBySalaryGroupIdAsync(salaryGroupId, GetServiceHeader());
+
+        //        if (salaryGroupEntries == null || !salaryGroupEntries.Any())
+        //        {
+        //            return Json(new { success = false, message = "Salary Group entries not found." }, JsonRequestBehavior.AllowGet);
+        //        }
+
+        //        // Populate ViewBag
+        //        ViewBag.SalaryGroupEntries = salaryGroupEntries;
+
+        //        return PartialView("_SalaryGroupDetailsPartial", salaryGroupEntries); // Use a partial view to render the details dynamically.
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle error appropriately
+        //        return Json(new { success = false, message = "An error occurred while fetching the Salary Group details." }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
+
 
 
         public async Task<ActionResult> Edit(Guid id)
@@ -307,56 +373,62 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, SalaryCardDTO salaryCardDTO)
         {
+            // Validate the SalaryCard DTO (make sure to handle errors)
             salaryCardDTO.ValidateAll();
 
-            // Retrieve SalaryGroupId from TempData
+            if (salaryCardDTO.HasErrors)
+            {
+                // If there are validation errors, return the view with the error messages
+                return View(salaryCardDTO);
+            }
+
+            // Retrieve the SalaryGroupId from TempData (if set)
             if (TempData["SalaryGroupId"] != null)
             {
                 salaryCardDTO.SalaryGroupId = (Guid)TempData["SalaryGroupId"];
             }
 
-            if (!salaryCardDTO.HasErrors)
+            // Check if a SalaryGroupId is provided (this is critical)
+            if (salaryCardDTO.SalaryGroupId == Guid.Empty)
             {
-                try
-                {
-                    await _channelService.UpdateSalaryCardAsync(salaryCardDTO, GetServiceHeader());
+                ModelState.AddModelError("SalaryGroupId", "Salary Group is required.");
+                return View(salaryCardDTO);
+            }
 
+            try
+            {
+                // Update the SalaryCard with the selected SalaryGroup
+                var updateSuccess = await _channelService.UpdateSalaryCardAsync(salaryCardDTO, GetServiceHeader());
+
+                if (updateSuccess)
+                {
+                    // You can show success messages using MessageBox or any other notification
                     MessageBox.Show(
                         "Operation Success",
-                        "Customer Receipts",
+                        "Salary Group Update",
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
+                        MessageBoxIcon.Information
                     );
 
                     return RedirectToAction("Index");
                 }
-                catch (Exception ex)
+                else
                 {
-                    TempData["ErrorMessage"] = "An error occurred while updating the salary card. Please try again.";
-                    Console.WriteLine(ex.Message);
+                    // Handle unsuccessful update
+                    TempData["ErrorMessage"] = "There was an issue updating the Salary Group.";
+                    return View(salaryCardDTO);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show(
-                    "There were validation errors. Please correct them and try again!",
-                    "Validation Errors",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                // Handle any exceptions that occur during the update
+                TempData["ErrorMessage"] = "An error occurred while updating the SalaryCard. Please try again.";
+                return View(salaryCardDTO);
             }
-
-            // Return to the view if validation errors or update failure occur
-            return View(salaryCardDTO);
         }
 
 

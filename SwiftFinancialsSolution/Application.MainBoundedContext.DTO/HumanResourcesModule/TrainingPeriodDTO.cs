@@ -3,6 +3,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
+using System.Collections.Generic;
+
 namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 {
     public class TrainingPeriodDTO : BindingModelBase<TrainingPeriodDTO>
@@ -75,5 +77,8 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        public List<TrainingPeriodEntryDTO> TrainingPeriodEntries { get; set; }
+
     }
 }

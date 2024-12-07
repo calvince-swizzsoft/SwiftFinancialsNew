@@ -230,6 +230,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return Json(new { success = false, message = "No cheques selected." });
             }
 
+            if (bankLinkageDTO == null || bankLinkageDTO.Id == Guid.Empty) // Assuming `BankAccountId` is a mandatory field
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Bank linkage is required. Please enter the bank linkage details and try again."
+                });
+            }
+
             var serviceHeader = GetServiceHeader();
             bool isSuccess = true;
             string errorMessage = string.Empty;
@@ -261,12 +270,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     cheque.BankLinkageChartOfAccountId = (Guid)TempData["BankLinkageChartOfAccountId"];
                     cheque.ChartOfAccountAccountName = TempData["ChartOfAccountAccountName"].ToString();
-                    bankLinkageDTO = TempData["BankLinkageDTO"] as BankLinkageDTO;
-                }
-
-                if (!isSuccess)
-                {
-                    return Json(new { success = false, message = errorMessage });
                 }
 
                 var externalChequeDTOs = new ObservableCollection<ExternalChequeDTO>(selectedCheques.Select(cheque => new ExternalChequeDTO
@@ -275,7 +278,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     Number = cheque.Number,
                     Amount = cheque.Amount,
                     BankLinkageChartOfAccountId = cheque.BankLinkageChartOfAccountId,
-                    BankLinkageChartOfAccountAccountName = cheque.BankLinkageChartOfAccountName,
+                    BankLinkageChartOfAccountAccountName = cheque.ChartOfAccountAccountName,
                 }).ToList());
 
                 var result = await _channelService.BankExternalChequesAsync(

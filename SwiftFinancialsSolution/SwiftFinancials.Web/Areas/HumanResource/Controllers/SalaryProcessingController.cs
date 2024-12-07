@@ -26,8 +26,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime? startDate, DateTime? endDate)
         {
+            if (!startDate.HasValue)
+                startDate = DateTime.MinValue;
+
+            if (!endDate.HasValue)
+                endDate = DateTime.MaxValue;
+
             int totalRecordCount = 0;
             int searchRecordCount = 0;
 
@@ -42,45 +48,53 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 var pageCollectionInfo = await _channelService.FindSalaryPeriodsByFilterInPageAsync(
                     status,
-                    startDate,
-                    endDate,
+                    startDate.Value,
+                    endDate.Value,
                     jQueryDataTablesModel.sSearch,
-                    pageIndex,
-                    pageSize,
+                    0,
+                    int.MaxValue,
                     GetServiceHeader()
                 );
 
                 if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
                 {
-                    totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                    var sortedData = pageCollectionInfo.PageCollection
+                        .OrderByDescending(salaryProcessingDTO => salaryProcessingDTO.CreatedDate)
+                        .ToList();
+
+                    totalRecordCount = sortedData.Count;
+
+                    var paginatedData = sortedData
+                        .Skip(jQueryDataTablesModel.iDisplayStart)
+                        .Take(jQueryDataTablesModel.iDisplayLength)
+                        .ToList();
 
                     searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
-                        ? pageCollectionInfo.PageCollection.Count
+                        ? sortedData.Count
                         : totalRecordCount;
 
                     return this.DataTablesJson(
-                        items: pageCollectionInfo.PageCollection,
+                        items: paginatedData,
                         totalRecords: totalRecordCount,
                         totalDisplayRecords: searchRecordCount,
                         sEcho: jQueryDataTablesModel.sEcho
                     );
                 }
-                else
-                {
-                    return this.DataTablesJson(
-                        items: new List<SalaryProcessingDTO>(),
-                        totalRecords: totalRecordCount,
-                        totalDisplayRecords: searchRecordCount,
-                        sEcho: jQueryDataTablesModel.sEcho
-                    );
-                }
+
+                return this.DataTablesJson(
+                    items: new List<SalaryProcessingDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+            );
             }
             catch (Exception ex)
             {
-                
                 return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
 
 
         public async Task<ActionResult> Details(Guid id)
@@ -173,19 +187,19 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 if (TempData["SelectedSalaryGroupId"] == null || TempData["EmployeeIds"] == null)
                 {
-                    ShowMessageBox("No salary group or employees were selected.");
+                    ShowMessageBox("No salary group or employees were selected.", MessageBoxIcon.Warning);
                     return View(salaryPeriodDTO);
                 }
 
                 var salaryGroupId = Guid.Parse(TempData["SelectedSalaryGroupId"].ToString());
                 var employeeIds = TempData["EmployeeIds"].ToString()
-                                            .Split(',')
-                                            .Select(Guid.Parse)
-                                            .ToList();
+                                                .Split(',')
+                                                .Select(Guid.Parse)
+                                                .ToList();
 
                 if (!employeeIds.Any())
                 {
-                    ShowMessageBox("No employees selected.");
+                    ShowMessageBox("No employees selected.", MessageBoxIcon.Warning);
                     return View(salaryPeriodDTO);
                 }
 
@@ -208,42 +222,50 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 if (!employees.Any())
                 {
-                    ShowMessageBox("No valid employees found for the provided IDs.");
+                    ShowMessageBox("No valid employees found for the provided IDs.", MessageBoxIcon.Warning);
                     return View(salaryPeriodDTO);
                 }
 
                 var isProcessed = await _channelService.ProcessSalaryPeriodAsync(salaryPeriodDTO, employees, GetServiceHeader());
                 if (isProcessed)
                 {
-                    // Fetch and post pay slips for the processed salary period
+                    // Fetch payslips for the processed salary period
                     var paySlips = await _channelService.FindPaySlipsBySalaryPeriodIdAsync(salaryPeriodDTO.Id, GetServiceHeader());
 
                     if (paySlips != null && paySlips.Any())
                     {
                         foreach (var paySlip in paySlips)
                         {
+                            // Check if payslip already exists
+                            var existingPaySlips = await _channelService.FindPaySlipsBySalaryPeriodIdAsync(paySlip.SalaryPeriodId, GetServiceHeader());
+                            if (existingPaySlips.Any(p => p.Id == paySlip.Id))
+                            {
+                                Console.WriteLine($"PaySlip with ID  already exists. Skipping.");
+                                continue;
+                            }
+
+                            // Post only new payslips
                             var isPosted = await _channelService.PostPaySlipAsync(paySlip.SalaryPeriodId, salaryPeriodDTO.ModuleNavigationItemCode, GetServiceHeader());
                             if (!isPosted)
                             {
-                                ShowMessageBox($"PaySlip with ID {paySlip.SalaryPeriodId} failed to post.");
-                                TempData["WarningMessage"] = $"PaySlip with ID {paySlip.SalaryPeriodId} failed to post.";
+                                ShowMessageBox($"PaySlip with ID  failed to post.", MessageBoxIcon.Error);
+                                TempData["WarningMessage"] = $"PaySlip with ID failed to post.";
                             }
                         }
                     }
 
-                    ShowMessageBox("Salary period processed and pay slips posted successfully.");
-                    TempData["SuccessMessage"] = "Salary period processed and pay slips posted successfully.";
+                    ShowMessageBox("Salary period processed and pay slips posted successfully.", MessageBoxIcon.Information);
                     return RedirectToAction("Index");
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Failed to process the salary period.");
-                    ShowMessageBox("Failed to process the salary period.");
+                    ShowMessageBox("Failed to process the salary period.", MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                ShowMessageBox("An unexpected error occurred. Please try again.");
+                ShowMessageBox("An unexpected error occurred. Please try again.", MessageBoxIcon.Error);
                 Console.Error.WriteLine($"Error: {ex.Message}\nStack Trace: {ex.StackTrace}");
                 ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
             }
@@ -251,17 +273,18 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(salaryPeriodDTO);
         }
 
-        private void ShowMessageBox(string message)
+        private void ShowMessageBox(string message, MessageBoxIcon icon)
         {
             MessageBox.Show(
                 message,
-                "Customer Receipts",
+                "Salary Processing",
                 MessageBoxButtons.OK,
-                MessageBoxIcon.Information,
+                icon,
                 MessageBoxDefaultButton.Button1,
                 MessageBoxOptions.ServiceNotification
             );
         }
+
 
 
 
