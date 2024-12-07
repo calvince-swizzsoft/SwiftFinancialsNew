@@ -1019,7 +1019,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 {
                     await ServeNavigationMenus();
 
-                    var errorMessages = loanCaseDTO.ErrorMessages;
                     ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
                     ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                     ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
@@ -1029,7 +1028,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
 
-                    MessageBox.Show(Form.ActiveForm, "Operation failed.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    var errorMessages = loanCaseDTO.ErrorMessages;
+                    string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
+                    MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful: {errorMessage}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
                     return View(loanCaseDTO);
                 }
 

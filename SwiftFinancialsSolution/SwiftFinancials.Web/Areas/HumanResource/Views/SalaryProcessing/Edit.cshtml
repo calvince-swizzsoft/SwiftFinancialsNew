@@ -203,15 +203,15 @@
                                     <li class="nav-item">
                                         <a class="nav-link active" href="#salaryGroups" data-toggle="tab">Salary Groups</a>
                                     </li>
-                                    <li class="nav-item">
+                                    @*<li class="nav-item">
                                         <a class="nav-link" href="#branches" data-toggle="tab">Branches</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="#departments" data-toggle="tab">Departments</a>
-                                    </li>
-                                    <li class="nav-item">
+                                    </li>*@
+                                    @*<li class="nav-item">
                                         <a class="nav-link" href="#employeesSection" data-toggle="tab">Employees</a>
-                                    </li>
+                                    </li>*@
                                 </ul>
 
                                 <div class="tab-content">
@@ -333,7 +333,7 @@
                                         }
                                     </div>
 
-                                    <div id="employeesSection">
+                                    <div id="employeesSection" >
                                         <h3>Employees</h3>
                                         <table class="table table-bordered" id="employeeTable">
                                             <thead>
@@ -341,7 +341,6 @@
                                                     <th>Employee Name</th>
                                                     <th>Card Number</th>
                                                     <th>Remarks</th>
-                                                    <th>Created Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -365,7 +364,7 @@
 
 
 
-                                <input type="submit" value="Create" class="btn btn-primary btn-update" />
+                                <input type="submit" value="ProcessSalary" class="btn btn-primary btn-update" />
                             </div>
 
 
@@ -636,7 +635,6 @@
                                             <td>${employee.EmployeeCustomerFullName}</td>
                                             <td>${employee.CardNumber}</td>
                                             <td>${employee.Remarks || "N/A"}</td>
-                                            <td>${formattedDate}</td> <!-- Fix CreatedDate display -->
                                         </tr>
                                     `);
                             });

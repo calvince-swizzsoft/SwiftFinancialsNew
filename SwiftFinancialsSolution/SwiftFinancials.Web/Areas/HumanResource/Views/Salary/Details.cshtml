@@ -92,14 +92,9 @@
                                             @Html.ValidationMessageFor(model => model.TypeDescription, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ProductDescription, new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId, new { id = "CustomerAccountTypeTargetProductId" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.TextBoxFor(model => model.ProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", id = "ProductDescription" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#productLookup"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
+                                            @Html.LabelFor(model => model.ProductDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.ProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = ".....", @readonly = "" } })
+                                            @Html.ValidationMessageFor(model => model.ProductDescription, "", new { @class = "text-danger" })
                                         </div>
 
 
@@ -120,6 +115,20 @@
 
 
                                     </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CategoryDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "....", @readonly = "" } })
+                                            @Html.ValidationMessageFor(model => model.CategoryDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.IsOneOff, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?", @readonly="" } })
+                                            @Html.LabelFor(model => model.IsOneOff, htmlAttributes: new { @class = "" })
+                                            @Html.ValidationMessageFor(model => model.IsOneOff, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
                                 </div>
                             </fieldset>
 

@@ -56,101 +56,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        //// Get Savings Account
-        //private async Task<List<SelectListItem>> GetSavingsAccountAsync()
-        //{
-        //    await ServeNavigationMenus();
 
-        //    var savingsAccount = new List<SelectListItem>();
-
-        //    using (SqlConnection conn = new SqlConnection(connectionString))
-        //    {
-        //        await conn.OpenAsync();
-        //        var query = "SELECT CategoryID, CategoryName FROM ReportCategories Order By CategoryName ASC";
-        //        using (SqlCommand cmd = new SqlCommand(query, conn))
-        //        {
-        //            using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-        //            {
-        //                while (await reader.ReadAsync())
-        //                {
-        //                    savingsAccount.Add(new CustomerAccountDTO
-        //                    {
-        //                        Value = reader["CategoryID"].ToString(),
-        //                        Text = reader["CategoryName"].ToString()
-        //                    });
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return categories;
-        //}
-
-
-        //// Get Investments Account
-        //private async Task<List<SelectListItem>> GetInvestmentsAsync()
-        //{
-        //    await ServeNavigationMenus();
-
-        //    var categories = new List<SelectListItem>();
-
-        //    using (SqlConnection conn = new SqlConnection(connectionString))
-        //    {
-        //        await conn.OpenAsync();
-        //        var query = "SELECT CategoryID, CategoryName FROM ReportCategories Order By CategoryName ASC";
-        //        using (SqlCommand cmd = new SqlCommand(query, conn))
-        //        {
-        //            using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-        //            {
-        //                while (await reader.ReadAsync())
-        //                {
-        //                    categories.Add(new SelectListItem
-        //                    {
-        //                        Value = reader["CategoryID"].ToString(),
-        //                        Text = reader["CategoryName"].ToString()
-        //                    });
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return categories;
-        //}
-
-
-
-        //// Get Loans Account
-        //private async Task<List<SelectListItem>> GetCategoriesAsync()
-        //{
-        //    await ServeNavigationMenus();
-
-        //    var categories = new List<SelectListItem>();
-
-        //    using (SqlConnection conn = new SqlConnection(connectionString))
-        //    {
-        //        await conn.OpenAsync();
-        //        var query = "SELECT CategoryID, CategoryName FROM ReportCategories Order By CategoryName ASC";
-        //        using (SqlCommand cmd = new SqlCommand(query, conn))
-        //        {
-        //            using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-        //            {
-        //                while (await reader.ReadAsync())
-        //                {
-        //                    categories.Add(new SelectListItem
-        //                    {
-        //                        Value = reader["CategoryID"].ToString(),
-        //                        Text = reader["CategoryName"].ToString()
-        //                    });
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return categories;
-        //}
-
-
-        public async Task<ActionResult> CustomerLookUp(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        public async Task<ActionResult> CustomerLookUp(Guid? id, LoanCaseDTO loanCaseDTO)
         {
             Guid parseId;
 
@@ -159,33 +66,23 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View("create");
             }
 
-            Session["CustomerId"] = parseId;
-
-
-            if (Session["guarantor"] != null)
-            {
-                loanGuarantorDTO = Session["guarantor"] as LoanGuarantorDTO;
-            }
-
-
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
             if (customer != null)
             {
-                loanGuarantorDTO.LoaneeCustomerId = customer.Id;
-                loanGuarantorDTO.LoaneeCustomerIndividualFirstName = customer.IndividualSalutationDescription + " " + customer.IndividualFirstName + " " + customer.IndividualLastName;
-                loanGuarantorDTO.CustomerNonIndividualDescription = customer.TypeDescription;
-                loanGuarantorDTO.EmployerDescription = customer.StationZoneDivisionEmployerDescription;
-                loanGuarantorDTO.EmployerId = customer.StationZoneDivisionEmployerId;
-                loanGuarantorDTO.StationDescription = customer.StationDescription;
-                loanGuarantorDTO.StationId = customer.StationId;
-                loanGuarantorDTO.CustomerPersonalIdentificationNumber = customer.PersonalIdentificationNumber;
-                loanGuarantorDTO.CustomerReference1 = customer.Reference1;
-                loanGuarantorDTO.CustomerReference2 = customer.Reference2;
-                loanGuarantorDTO.CustomerReference3 = customer.Reference3;
+                loanCaseDTO.CustomerId = customer.Id;
+                loanCaseDTO.CustomerIndividualFirstName = customer.FullName;
+                loanCaseDTO.CustomerNonIndividualDescription = customer.TypeDescription;
+                loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+                loanCaseDTO.CustomerStation = customer.StationDescription;
+                loanCaseDTO.CustomerPersonalIdentificationNumber = customer.PersonalIdentificationNumber;
+                loanCaseDTO.CustomerReference1 = customer.Reference1;
+                loanCaseDTO.CustomerReference2 = customer.Reference2;
+                loanCaseDTO.CustomerReference3 = customer.Reference3;
+                loanCaseDTO.Remarks = customer.Remarks;
 
 
                 var productCodes = new int[] { (int)ProductCode.Savings, (int)ProductCode.Investment, (int)ProductCode.Loan };
-                var findAccountsbyCode = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync((Guid)loanGuarantorDTO.LoaneeCustomerId, productCodes, true, true, true, false, GetServiceHeader());
+                var findAccountsbyCode = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync((Guid)loanCaseDTO.CustomerId, productCodes, true, true, true, false, GetServiceHeader());
 
                 // savings Product
                 var savingsAccounts = findAccountsbyCode.Where(account => account.CustomerAccountTypeProductCode == (int)ProductCode.Savings).ToList();
@@ -196,28 +93,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 // loans Product
                 var loansAccounts = findAccountsbyCode.Where(account => account.CustomerAccountTypeProductCode == (int)ProductCode.Loan).ToList();
 
-
-                // Get Loan
-
-                // Loan Applications
-                //var loanApplications = await LoanApplications();
+                // Loans Guaranteed
+                var loansGuaranteed = await _channelService.FindLoanGuarantorsByCustomerIdAsync(parseId, GetServiceHeader());
 
                 return Json(new
                 {
                     success = true,
                     data = new
                     {
-                        LoaneeCustomerId = loanGuarantorDTO.LoaneeCustomerId,
-                        LoaneeCustomerIndividualFirstName = loanGuarantorDTO.LoaneeCustomerIndividualFirstName,
-                        CustomerNonIndividualDescription = loanGuarantorDTO.CustomerNonIndividualDescription,
-                        EmployerDescription = loanGuarantorDTO.EmployerDescription,
-                        EmployerId = loanGuarantorDTO.EmployerId,
-                        StationDescription = loanGuarantorDTO.StationDescription,
-                        StationId = loanGuarantorDTO.StationId,
-                        CustomerPersonalIdentificationNumber = loanGuarantorDTO.CustomerPersonalIdentificationNumber,
-                        CustomerReference1 = loanGuarantorDTO.CustomerReference1,
-                        CustomerReference2 = loanGuarantorDTO.CustomerReference2,
-                        CustomerReference3 = loanGuarantorDTO.CustomerReference3,
+                        CustomerId = loanCaseDTO.CustomerId,
+                        CustomerIndividualFirstName = loanCaseDTO.CustomerIndividualFirstName,
+                        CustomerNonIndividualDescription = loanCaseDTO.CustomerNonIndividualDescription,
+                        CustomerStationZoneDivisionEmployerDescription = loanCaseDTO.CustomerStationZoneDivisionEmployerDescription,
+                        CustomerStation = loanCaseDTO.CustomerStation,
+                        CustomerPersonalIdentificationNumber = loanCaseDTO.CustomerPersonalIdentificationNumber,
+                        CustomerReference1 = loanCaseDTO.CustomerReference1,
+                        CustomerReference2 = loanCaseDTO.CustomerReference2,
+                        CustomerReference3 = loanCaseDTO.CustomerReference3,
+                        Remarks = loanCaseDTO.Remarks,
+
+                        LoansGuaranteed = loansGuaranteed,
                         SavingsAccounts = savingsAccounts,
                         InvestmentsAccounts = investmentsAccounts,
                         LoansAccounts = loansAccounts
@@ -229,82 +124,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return Json(new { success = false, message = string.Empty });
         }
 
-
-        [HttpPost]
-        public async Task<ActionResult> LoanApplications(Guid? loaneeId)
-        {
-
-            //await _channelService.FindLoanGuarantorsByLoaneeCustomerIdAndLoanProductIdAsync();
-
-            return RedirectToAction("Create");
-        }
-
-        public async Task<ActionResult> Details(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var dataCapture = await _channelService.FindDataAttachmentPeriodAsync(id, GetServiceHeader());
-
-            return View(dataCapture);
-        }
-
-
-
-
-
-        public async Task<ActionResult> GuarantorLookUp(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
-        {
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View("create");
-            }
-
-
-            if (Session["customer"] != null)
-            {
-                loanGuarantorDTO = Session["customer"] as LoanGuarantorDTO;
-            }
-
-            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-            if (customer != null)
-            {
-                loanGuarantorDTO.GuarantorId = customer.Id;
-                loanGuarantorDTO.GuarantorFullName = customer.IndividualSalutationDescription + " " + customer.IndividualFirstName + " " + customer.IndividualLastName;
-                loanGuarantorDTO.GuarantorTypeDescription = customer.TypeDescription;
-                loanGuarantorDTO.GuarantorEmployerDescription = customer.StationZoneDivisionEmployerDescription;
-                loanGuarantorDTO.GuarantorEmployerId = customer.StationZoneDivisionEmployerId;
-                loanGuarantorDTO.GuarantorStationDescription = customer.StationDescription;
-                loanGuarantorDTO.GuarantorStationId = customer.StationId;
-                loanGuarantorDTO.GuarantorIdentificationNumber = customer.PersonalIdentificationNumber;
-                loanGuarantorDTO.GuarantorRef1 = customer.Reference1;
-                loanGuarantorDTO.GuarantorRef2 = customer.Reference2;
-                loanGuarantorDTO.GuarantorRef3 = customer.Reference3;
-
-                return Json(new
-                {
-                    success = true,
-                    data = new
-                    {
-                        GuarantorId = loanGuarantorDTO.GuarantorId,
-                        GuarantorFullName = loanGuarantorDTO.GuarantorFullName,
-                        GuarantorTypeDescription = loanGuarantorDTO.GuarantorTypeDescription,
-                        GuarantorEmployerDescription = loanGuarantorDTO.GuarantorEmployerDescription,
-                        GuarantorEmployerId = loanGuarantorDTO.GuarantorEmployerId,
-                        GuarantorStationDescription = loanGuarantorDTO.GuarantorStationDescription,
-                        GuarantorStationId = loanGuarantorDTO.GuarantorStationId,
-                        GuarantorIdentificationNumber = loanGuarantorDTO.GuarantorIdentificationNumber,
-                        GuarantorRef1 = loanGuarantorDTO.GuarantorRef1,
-                        GuarantorRef2 = loanGuarantorDTO.GuarantorRef2,
-                        GuarantorRef3 = loanGuarantorDTO.GuarantorRef3
-                    }
-                });
-            }
-
-            MessageBox.Show(Form.ActiveForm, "Customer not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-            return Json(new { success = false, message = string.Empty });
-        }
 
 
 
@@ -327,22 +146,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanGuarantorDTO.HasErrors)
             {
-                //await _channelService.AttachLoanGuarantorsAsync()
-
-                TempData["message"] = "Successfully created Data Period";
-
                 return RedirectToAction("Index");
             }
             else
             {
-                //var errorMessages = dataPeriodDTO.ErrorMessages.ToString();
-
-                //TempData["BugdetBalance"] = errorMessages;
-
-                TempData["messageError"] = "Could not create Data Period";
-
-                //ViewBag.MonthSelectList = GetMonthsAsync(dataPeriodDTO.MonthDescription);
-
                 await ServeNavigationMenus();
 
                 return View();

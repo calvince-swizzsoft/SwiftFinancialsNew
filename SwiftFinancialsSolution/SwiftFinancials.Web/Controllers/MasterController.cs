@@ -38,7 +38,7 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<CustomerAccountSignatoryDTO> customerAccountSignatoryDTOs;
         public ObservableCollection<CustomerAccountDTO> customerAccountDTOs;
         public ObservableCollection<CommissionDTO> CommissionDTOs;
-
+        public ObservableCollection<GraduatedScaleDTO> graduatedScaleDTOS;
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
         public ObservableCollection<BankBranchDTO> bankBranches;
 
@@ -769,6 +769,24 @@ namespace SwiftFinancials.Web.Controllers
             salaryHead.AddRange(items);
 
             return salaryHead;
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetSalaryHeadCategorySelectList(string selectedValue)
+        {
+            List<SelectListItem> salaryHeadCategory= new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(SalaryHeadCategory)).Cast<SalaryHeadCategory>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            salaryHeadCategory.AddRange(items);
+
+            return salaryHeadCategory;
         }
 
         [NonAction]

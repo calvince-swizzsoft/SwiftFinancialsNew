@@ -596,7 +596,7 @@
     <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeDocumentsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PaySlipsController.cs" />
-    <Compile Include="Areas\HumanResource\Controllers\PeriodClosingController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\PeriodClosingsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryCardsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryGroupsController.cs" />
@@ -1203,7 +1203,6 @@
     <Content Include="Areas\HumanResource\Views\SalaryGroups\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryCards\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryCards\Create.cshtml" />
-    <Content Include="Areas\HumanResource\Views\SalaryPeriods\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\Details.cshtml" />
@@ -1531,6 +1530,12 @@
     <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_ChequeBooks\Index.cshtml" />
     <Content Include="Areas\Dashboard\Views\InstantMessaging\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryPeriods\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryCards\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosings\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryPeriods\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryPeriods\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosings\Close.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

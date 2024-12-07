@@ -450,6 +450,19 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 if (result == DialogResult.Yes)
                 {
+                    //loanGuarantorDTO.TotalShares = await _channelService.ComputeEligibleLoanAppraisalInvestmentsBalanceAsync(loanGuarantorDTO.Id, SelectedLoanProduct.Id);
+                    //loanGuarantorDTO.AppraisalFactor = await _channelService.GetGuarantorAppraisalFactorAsync(loanGuarantorDTO.Id, loanGuarantorDTO.TotalShares);
+
+                    //var loanGuarantors = await _channelService.FindLoanGuarantorsByCustomerIdAsync(SelectedGuarantorCustomer.Id);
+
+                    //if (loanGuarantors != null && loanGuarantors.Any())
+                    //{
+                    //    NewLoanGuarantor.CommittedShares = loanGuarantors.Where(x => x.Status == (int)LoanGuarantorStatus.Attached && x.LoanCaseStatus.In(new int[] { (int)LoanCaseStatus.Audited, (int)LoanCaseStatus.Disbursed })).Sum(x => x.AmountGuaranteed);
+
+                    //    NewLoanGuarantor.CurrentGuarantees = loanGuarantors.Where(x => x.Status == (int)LoanGuarantorStatus.Attached && x.LoanCaseStatus.In(new int[] { (int)LoanCaseStatus.Audited, (int)LoanCaseStatus.Disbursed })).Count();
+                    //}
+
+
                     await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loancaseId, loanguarantors, GetServiceHeader());
 
                     MessageBox.Show(Form.ActiveForm, "Operation Completed Succeffully", "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Information,

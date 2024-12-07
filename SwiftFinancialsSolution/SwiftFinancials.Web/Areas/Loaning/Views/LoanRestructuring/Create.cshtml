@@ -3,17 +3,9 @@
 @{
     ViewBag.Title = "Loan Restructuring";
 
-
-    var apr = 20;
-    var icm = "Reducing Balance";
-    var amountApplied = 300000;
-    var termInMonths = 5;
-
     var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
     var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
     var CustomerFilter = ViewBag.CustomerFilter as List<SelectListItem>;
-
-
 
     var recordStatus = ViewBag.recordStatus as List<SelectListItem>;
     var customerFilter = ViewBag.customerFilter as List<SelectListItem>;
@@ -240,8 +232,6 @@
         <li>@Html.ActionLink("Loan Restructuring", "Index", "LoanRestructuring", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Guarantor Attachment", "Create", "GuarantorAttachment", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Guarantor Substitution", "Create", "GuarantorSubstitution", new { area = "Loaning" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Guarantor Relieving", "Create", "GuarantorRelieving", new { area = "Loaning" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Guarantor Management", "Create", "GuarantorManagement", new { area = "Loaning" }, new { @class = "nav-link" })</li>
     </ul>
 </nav>
 
@@ -863,100 +853,5 @@
                     console.error('Error:', error);
                 });
         }
-    </script>
-
-
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var APR = @apr;
-        var ICM = '@icm';
-        var AmountApplied = @amountApplied;
-        var TermInMonths = @termInMonths;
-
-        // Convert APR to monthly interest rate
-        var monthlyInterestRate = APR / 12 / 100;
-
-        var remainingBalance = AmountApplied;
-        var emi = 0;
-        var schedule = [];
-
-        for (var i = 1; i <= TermInMonths; i++) {
-            var interestPayment = 0;
-            var principalPayment = 0;
-
-            switch (ICM) {
-                case "Reducing Balance":
-                    emi = (AmountApplied * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, TermInMonths))
-                          / (Math.pow(1 + monthlyInterestRate, TermInMonths) - 1);
-                    interestPayment = remainingBalance * monthlyInterestRate;
-                    principalPayment = emi - interestPayment;
-                    break;
-
-                case "Straight Line":
-                    interestPayment = (AmountApplied * APR / 100) / TermInMonths;
-                    principalPayment = AmountApplied / TermInMonths;
-                    emi = principalPayment + interestPayment;
-                    break;
-
-                case "Amortization (Straight Line)":
-                    emi = AmountApplied / TermInMonths + (AmountApplied * monthlyInterestRate);
-                    interestPayment = (AmountApplied - ((AmountApplied / TermInMonths) * (i - 1))) * monthlyInterestRate;
-                    principalPayment = emi - interestPayment;
-                    break;
-
-                case "Amortization (Diminishing Balance)":
-                    emi = (AmountApplied * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, TermInMonths))
-                          / (Math.pow(1 + monthlyInterestRate, TermInMonths) - 1);
-                    interestPayment = remainingBalance * monthlyInterestRate;
-                    principalPayment = emi - interestPayment;
-                    break;
-
-                case "Fixed Interest":
-                    interestPayment = AmountApplied * APR / 100 / TermInMonths;
-                    principalPayment = AmountApplied / TermInMonths;
-                    emi = interestPayment + principalPayment;
-                    break;
-
-                default:
-                    console.error("Invalid Interest Calculation Mode.");
-                    return;
-            }
-
-            // Create the schedule entry
-            var entry = {
-                Period: i,
-                DueDate: new Date(new Date().setMonth(new Date().getMonth() + i)).toLocaleDateString(),
-                StartingBalance: remainingBalance.toFixed(2),
-                Payment: emi.toFixed(2),
-                InterestPayment: interestPayment.toFixed(2),
-                PrincipalPayment: principalPayment.toFixed(2),
-                EndingBalance: (remainingBalance - principalPayment).toFixed(2)
-            };
-
-            // Push the entry to the schedule array
-            schedule.push(entry);
-
-            // Update the remaining balance
-            remainingBalance -= principalPayment;
-        }
-
-        // Render the table rows dynamically
-        var tableBody = document.querySelector("#repaymentScheduledataTable tbody");
-        schedule.forEach(function(item) {
-            var row = `
-                <tr>
-                    <td>${item.Period}</td>
-                    <td>${item.DueDate}</td>
-                    <td>${item.StartingBalance}</td>
-                    <td>${item.Payment}</td>
-                    <td>${item.InterestPayment}</td>
-                    <td>${item.PrincipalPayment}</td>
-                    <td>${item.EndingBalance}</td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
-    });
     </script>
 }

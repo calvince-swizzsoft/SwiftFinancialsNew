@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Services;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.MessagingModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Microsoft.AspNet.Identity;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -200,7 +204,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
 
                 withdrawalNotificationDTO.CustomerId = customer.Id;
-                withdrawalNotificationDTO.CustomerFullName = customer.Description;               
+                withdrawalNotificationDTO.CustomerFullName = customer.Description;
                 //Session["Test"] =Request.Form["h"] + "";
                 //string mimi = Session["Test"].ToString();
                 Session["withdrawalNotificationDTO"] = withdrawalNotificationDTO;
@@ -401,6 +405,62 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 await _channelService.SettleWithdrawalNotificationAsync(withdrawalNotificationDTO, (int)MembershipWithdrawalSettlementOption.Settle, 1, GetServiceHeader());
 
+
+                var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+                if (userDTO.BranchId != null)
+                {
+                    withdrawalNotificationDTO.BranchId = (Guid)userDTO.BranchId;
+                }
+                var companies = await _channelService.FindBranchAsync(withdrawalNotificationDTO.BranchId, GetServiceHeader());
+                var j = await _channelService.FindCompanyAsync(companies.Id, GetServiceHeader());
+
+                var customer = await _channelService.FindCustomerAsync(withdrawalNotificationDTO.CustomerId, GetServiceHeader());
+
+                #region Send Text Notification
+
+                // Validate the mobile number format and length
+                // Validate the mobile number format and length
+                if (!string.IsNullOrWhiteSpace(customer.AddressMobileLine) &&
+                    Regex.IsMatch(customer.AddressMobileLine, @"^\+(?:[0-9]??){6,14}[0-9]$") &&
+                    customer.AddressMobileLine.Length >= 13)
+                {
+                    // Build the SMS body message
+                    var smsBody = new StringBuilder();
+                    smsBody.AppendFormat("Dear {0},\nDear member, you have withdrawn from {1} on {2}.",
+                        withdrawalNotificationDTO.CustomerFullName,  // Index {0}
+                        withdrawalNotificationDTO.BranchDescription,                               // Index {1}
+                        DateTime.Now.ToString("MMMM dd, yyyy"));     // Index {2}
+
+                    smsBody.Append(!string.IsNullOrWhiteSpace(withdrawalNotificationDTO.CustomerReference2)
+                        ? $"\nYour membership number is {withdrawalNotificationDTO.CustomerReference2}."
+                        : $"\nYour serial number is {withdrawalNotificationDTO.CustomerSerialNumber}.");
+
+
+                    // Create the text alert DTO
+                    var textAlertDTO = new TextAlertDTO
+                    {
+                        BranchId = withdrawalNotificationDTO.BranchId,
+                        TextMessageOrigin = (int)MessageOrigin.Within,
+                        TextMessageRecipient = customer.AddressMobileLine, // Corrected to use the customer's mobile line
+                        TextMessageBody = smsBody.ToString(),
+                        MessageCategory = (int)MessageCategory.SMSAlert,
+                        AppendSignature = false,
+                        TextMessagePriority = (int)QueuePriority.Highest,
+                    };
+
+                    // Add to the collection of text alerts
+                    var textAlertDTOs = new ObservableCollection<TextAlertDTO> { textAlertDTO };
+
+                    // Send the text alerts asynchronously
+                    await _channelService.AddTextAlertsAsync(textAlertDTOs, GetServiceHeader());
+                }
+
+                #endregion
+
+
+
+
+
                 return RedirectToAction("Index");
             }
             else
@@ -421,7 +481,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var creditBatchDTO = await _channelService.FindWithdrawalNotificationAsync(id, GetServiceHeader());
 
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-           
+
 
             Guid parseId;
 
@@ -454,13 +514,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         public async Task<ActionResult> DeathClaim(WithdrawalNotificationDTO withdrawalNotificationDTO, ObservableCollection<WithdrawalSettlementDTO> withdrawalSettlementDTOs, InsuranceCompanyDTO insuranceCompanyDTO)
         {
             //var mandatoryInvestmentProducts = new ObservableCollection<WithdrawalSettlementDTO>();
-            var k =await _channelService.FindWithdrawalSettlementsByWithdrawalNotificationIdAsync(withdrawalNotificationDTO.Id, false, GetServiceHeader());
+            var k = await _channelService.FindWithdrawalSettlementsByWithdrawalNotificationIdAsync(withdrawalNotificationDTO.Id, false, GetServiceHeader());
             k = withdrawalSettlementDTOs;
             withdrawalNotificationDTO.ValidateAll();
 
             if (!withdrawalNotificationDTO.HasErrors)
             {
-                await _channelService.ProcessDeathSettlementsAsync(withdrawalNotificationDTO, withdrawalSettlementDTOs, insuranceCompanyDTO,1, GetServiceHeader());
+                await _channelService.ProcessDeathSettlementsAsync(withdrawalNotificationDTO, withdrawalSettlementDTOs, insuranceCompanyDTO, 1, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
