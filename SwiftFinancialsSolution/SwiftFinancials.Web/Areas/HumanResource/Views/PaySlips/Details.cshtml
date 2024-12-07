@@ -6,50 +6,18 @@
 
 <h2>Salary Payslips</h2>
 
-<div class="row mb-3">
-    <div class="col-md-3">
-        <label for="salaryPeriod" class="form-label">Salary Period:</label>
-        <input type="text" class="form-control" id="salaryPeriod" placeholder="Enter Text..." />
-    </div>
-    <div class="col-md-3">
-        <label for="employeeCategory" class="form-label">Employee Category:</label>
-        <input type="text" class="form-control" id="employeeCategory" placeholder="Enter Text..." />
-    </div>
-    <div class="col-md-3">
-        <label for="status" class="form-label">Status:</label>
-        <input type="text" class="form-control" id="status" placeholder="Enter Text..." />
-    </div>
-    <div class="col-md-3">
-        <label for="remarks" class="form-label">Remarks:</label>
-        <input type="text" class="form-control" id="remarks" placeholder="Enter Text..." />
-    </div>
-</div>
-
-<div class="row mb-3">
-    <div class="col-md-3">
-        <label for="taxRelief" class="form-label">Tax Relief:</label>
-        <input type="text" class="form-control" id="taxRelief" />
-    </div>
-    <div class="col-md-3">
-        <label for="maxProvidentFundRelief" class="form-label">Max. Provident Fund Relief:</label>
-        <input type="text" class="form-control" id="maxProvidentFundRelief" />
-    </div>
-    <div class="col-md-3">
-        <label for="maxInsuranceRelief" class="form-label">Max. Insurance Relief:</label>
-        <input type="text" class="form-control" id="maxInsuranceRelief" />
-    </div>
-    <div class="col-md-3">
-        <label for="totalNetPay" class="form-label">Total Net Pay:</label>
-        <input type="text" class="form-control" id="totalNetPay" />
-    </div>
-</div>
-
 <table class="table table-striped table-hover">
     <thead>
         <tr>
             <th>Card Number</th>
-            <th>Salary Group</th>
             <th>Posting Period</th>
+            <th>Month</th>
+            <th>Status</th>
+            <th>Nationality</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile Number</th>
+            <th>Salary Group</th>
             <th>Net Pay</th>
         </tr>
     </thead>
@@ -58,8 +26,14 @@
         {
             <tr class="clickable-row" data-payslip-id="@payslip.Id">
                 <td>@payslip.PaddedSalaryCardCardNumber</td>
-                <td>@payslip.SalaryCardSalaryGroupDescription</td>
                 <td>@payslip.SalaryPeriodPostingPeriodDescription</td>
+                <td>@payslip.SalaryPeriodMonthDescription</td>
+                <td>@payslip.SalaryPeriodStatusDescription</td>
+                <td>@payslip.SalaryCardEmployeeCustomerIndividualNationalityDescription</td>
+                <td>@payslip.SalaryCardEmployeeCustomerFullName</td>
+                <td>@payslip.SalaryCardEmployeeCustomerAddressEmail</td>
+                <td>@payslip.SalaryCardEmployeeCustomerAddressMobileLine</td>
+                <td>@payslip.SalaryCardSalaryGroupDescription</td>
                 <td>@payslip.NetPay.ToString("N2")</td>
             </tr>
         }

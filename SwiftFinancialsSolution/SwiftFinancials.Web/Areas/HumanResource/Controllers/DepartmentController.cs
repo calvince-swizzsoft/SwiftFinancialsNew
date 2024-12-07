@@ -35,53 +35,55 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             var pageCollectionInfo = await _channelService.FindDepartmentsByFilterInPageAsync(
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
             );
 
-            if (pageCollectionInfo != null)
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                var sortedData = pageCollectionInfo.PageCollection.AsQueryable();
-
-                // Apply sorting first, before pagination
-                if (sortedColumns.Contains("CreatedDate"))
-                {
-                    sortedData = sortDescending
-                        ? sortedData.OrderByDescending(item => item.CreatedDate).ThenByDescending(item => item.Id)
-                        : sortedData.OrderBy(item => item.CreatedDate).ThenBy(item => item.Id);
-                }
-
-                // Apply pagination after sorting
-                var pagedData = sortedData
-                    .Skip(jQueryDataTablesModel.iDisplayStart)
-                    .Take(pageSize)
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(departmentDTO => departmentDTO.CreatedDate)
                     .ToList();
 
-                // Count records for search
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
-                    ? sortedData.Count()
+                    ? sortedData.Count
                     : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: pagedData,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<DepartmentDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<DepartmentDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
+        //else
+        //{
+        //    return this.DataTablesJson(
+        //        items: new List<DepartmentDTO>(),
+        //        totalRecords: totalRecordCount,
+        //        totalDisplayRecords: searchRecordCount,
+        //        sEcho: jQueryDataTablesModel.sEcho
+        //    );
+        //}
+
 
 
 
@@ -184,7 +186,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                         MessageBoxOptions.ServiceNotification
                     );
 
-                    TempData["SuccessMessage"] = "Department updated successfully!";
 
                     return RedirectToAction("Index");
                 }

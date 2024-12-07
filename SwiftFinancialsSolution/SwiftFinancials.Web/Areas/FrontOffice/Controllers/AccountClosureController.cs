@@ -999,103 +999,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(accountClosureRequestDTO);
         }
 
-
-        //public async Task<ActionResult> CustomerLookUp(Guid? id)
-        //{
-        //    await ServeNavigationMenus();
-
-            
-        //    Guid parseId;
-
-        //    if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-        //    {
-        //        return View();
-        //    }
-
-        //    var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-        //    if (customer != null)
-        //    {
-                
-
-        //        var CustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(customer.Id, true, true, true, true, GetServiceHeader());
-
-        //        var referees = await _channelService.FindRefereeCollectionByCustomerIdAsync(parseId, GetServiceHeader());
-        //        //var managementHistory=await _channelService.
-
-                
-
-               
-
-        //        // Loans Guaranteed
-        //        var loansGuaranteed = await _channelService.FindLoanGuarantorsByCustomerIdAsync(parseId, GetServiceHeader());
-
-        //        // Loan Guarantors
-        //        List<AccountClosureRequestDTO> loaneeLoanGuarantors = await GetLoanGuarantorsAsync(parseId);
-        //        for (int i = 0; i < loaneeLoanGuarantors.Count; i++)
-        //        {
-        //            var customerDetails = loaneeLoanGuarantors[i];
-        //            var customername = await _channelService.FindCustomerAsync(customerDetails.CustomerId, GetServiceHeader());
-
-        //            loaneeLoanGuarantors[i].CustomerIndividualFirstName = customername.IndividualFirstName;
-        //            loaneeLoanGuarantors[i].CustomerIndividualLastName = customername.IndividualLastName;
-
-        //            loaneeLoanGuarantors[i].CreatedDate = Convert.ToDateTime(loaneeLoanGuarantors[i].CreatedDate);
-        //        }
+        
 
 
 
 
-        //        var loanAccount = CustomerAccounts.Where(w => w.CustomerAccountTypeProductCode == (int)ProductCode.Loan).Sum(e => e.BookBalance);
-        //        var InvestmentAccount = CustomerAccounts.Where(w => w.CustomerAccountTypeProductCode == (int)ProductCode.Investment).Sum(e => e.BookBalance);
-
-        //        var savingsCarryForward = CustomerAccounts.Where(w => w.CustomerAccountTypeProductCode == (int)ProductCode.Savings).Sum(e => e.AvailableBalance);
-        //        var savingsBalance = (loanAccount + savingsCarryForward);
 
 
-        //        // Electronic Funds Transfer
-        //        // Method to find electronic funds transfer???
-
-
-
-        //        List<Tuple<decimal, int>> investmentsBalance = new List<Tuple<decimal, int>>();
-
-        //        var loanAccounts = CustomerAccounts.Where(w => w.CustomerAccountTypeProductCode == (int)ProductCode.Loan);
-
-        //        foreach (var Ids in loanAccounts)
-        //        {
-        //            var xFactor = await _channelService.ComputeEligibleLoanAppraisalInvestmentsBalanceAsync(parseId, Ids.CustomerAccountTypeTargetProductId);
-
-        //            investmentsBalance.Add(new Tuple<decimal, int>(xFactor, 0));
-        //        }
-
-        //        return Json(new
-        //        {
-        //            success = true,
-        //            data = new
-        //            {
-                       
-        //                // Tables Data
-        //                CustomerAccounts = CustomerAccounts,
-        //                Referees = referees,
-        //                StandingOrders = allStandingOrders,
-        //                Signatories = allSignatories,
-        //                AlternateChannels = allAlternateChannels,
-        //                UnclearedCheques = allExternalCheques,
-        //                FixedDeposits = allfixedDeposits,
-        //                LoanGuarantors = loaneeLoanGuarantors,
-        //                LoansGuaranteed = loansGuaranteed,
-
-                       
-        //            }
-        //        });
-        //    }
-
-        //    return Json(new { success = false, message = "Customer not found" });
-        //}
-
-
-
-         
 
 
     }

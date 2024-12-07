@@ -930,9 +930,9 @@
                                             <input type="file" class="form-control mt-3" id="passportPhotoUpload" accept="image/*" onchange="previewImage(event, 'capturedImage')" />
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label for="capturedImage" class="mb-2">Captured or Uploaded Passport Photo</label>
-                                        <div class="passport-photo-preview">
+                                    <div class="col-md-6">
+                                        <div class="passport-photo-preview text-center">
+                                            <label for="capturedImage" class="mb-2">Captured or Uploaded Passport Photo</label>
                                             <img id="capturedImage" src="" alt="Captured Image" style="width: 80%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
                                         </div>
                                     </div>
@@ -940,32 +940,34 @@
                                 </div>
 
                                 <!-- Signature and ID Photos Section -->
-                                <div class="form-group row" style="margin-top: 100px;">
-                                    <!-- Signature Photo -->
-                                    <div class="col-md-3" style="margin-right: 100px;">
-                                        <div class="image-placeholder">
-                                            <img id="signaturePhotoPreview" src="" alt="Signature Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                <div class="form-group row mt-5">
+                                    <div class="row">
+                                        <!-- Signature Photo -->
+                                        <div class="col-md-4">
+                                            <div class="image-placeholder text-center">
+                                                <img id="signaturePhotoPreview" src="" alt="Signature Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                                <label for="signaturePhoto" class="mt-3 mb-2">Signature Photo</label>
+                                                <input type="file" name="signaturePhoto" class="form-control" id="signaturePhotoInput" accept="image/*" onchange="previewImage(event, 'signaturePhotoPreview')" />
+                                            </div>
                                         </div>
-                                        <label for="signaturePhoto" class="mt-3 mb-2">Signature Photo</label>
-                                        <input type="file" name="signaturePhoto" class="form-control" id="signaturePhotoInput" accept="image/*" onchange="previewImage(event, 'signaturePhotoPreview')" />
-                                    </div>
 
-                                    <!-- ID Card Front Photo -->
-                                    <div class="col-md-3" style="margin-right: 100px;">
-                                        <div class="image-placeholder">
-                                            <img id="idCardFrontPreview" src="" alt="ID Card Front Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                        <!-- ID Card Front Photo -->s
+                                        <div class="col-md-4">
+                                            <div class="image-placeholder text-center">
+                                                <img id="idCardFrontPreview" src="" alt="ID Card Front Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                                <label for="idCardFrontPhoto" class="mt-3 mb-2">Identity Card Front Photo (via Upload)</label>
+                                                <input type="file" name="idCardFrontPhoto" class="form-control" id="idCardFrontPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardFrontPreview')" />
+                                            </div>
                                         </div>
-                                        <label for="idCardFrontPhoto" class="mt-3 mb-2">Identity Card Front Photo (via Upload)</label>
-                                        <input type="file" name="idCardFrontPhoto" class="form-control" id="idCardFrontPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardFrontPreview')" />
-                                    </div>
 
-                                    <!-- ID Card Back Photo -->
-                                    <div class="col-md-3">
-                                        <div class="image-placeholder">
-                                            <img id="idCardBackPreview" src="" alt="ID Card Back Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                        <!-- ID Card Back Photo -->
+                                        <div class="col-md-4">
+                                            <div class="image-placeholder text-center">
+                                                <img id="idCardBackPreview" src="" alt="ID Card Back Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                                <label for="idCardBackPhoto" class="mt-3 mb-2">Identity Card Back Photo (via Upload)</label>
+                                                <input type="file" name="idCardBackPhoto" class="form-control" id="idCardBackPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardBackPreview')" />
+                                            </div>
                                         </div>
-                                        <label for="idCardBackPhoto" class="mt-3 mb-2">Identity Card Back Photo (via Upload)</label>
-                                        <input type="file" name="idCardBackPhoto" class="form-control" id="idCardBackPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardBackPreview')" />
                                     </div>
                                 </div>
                             </div>
@@ -1072,13 +1074,13 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    @*<script>
+    <script>
             document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                     checkbox.disabled = true;
                 });
             });
-        </script>*@
+        </script>
     <script>
         function submitForm() {
             document.getElementById("form").submit();
@@ -1117,7 +1119,7 @@
 
                 // Append a new row to the table
                 $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            `);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    `);
 
                 // Clear the form fields after adding
                 clearMemberForm();
@@ -1461,48 +1463,48 @@
 </script>
 
 @*<script>
-    $(document).ready(function () {
-        $('#submitButton').on('click', function () {
-            var debitTypes = [];
-            var investmentProducts = [];
-            var savingsProducts = [];
+        $(document).ready(function () {
+            $('#submitButton').on('click', function () {
+                var debitTypes = [];
+                var investmentProducts = [];
+                var savingsProducts = [];
 
-            // Gather selected debit types
-            $('.debit-checkbox:checked').each(function () {
-                debitTypes.push($(this).val());
-            });
+                // Gather selected debit types
+                $('.debit-checkbox:checked').each(function () {
+                    debitTypes.push($(this).val());
+                });
 
-            // Gather selected investment products
-            $('.investment-checkbox:checked').each(function () {
-                investmentProducts.push($(this).val());
-            });
+                // Gather selected investment products
+                $('.investment-checkbox:checked').each(function () {
+                    investmentProducts.push($(this).val());
+                });
 
-            // Gather selected savings products
-            $('.savings-checkbox:checked').each(function () {
-                savingsProducts.push($(this).val());
-            });
+                // Gather selected savings products
+                $('.savings-checkbox:checked').each(function () {
+                    savingsProducts.push($(this).val());
+                });
 
-            $.ajax({
-                url: '/Customer/Create', // Matches the controller name
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    debittypes: debitTypes,
-                    savingsproductIds: savingsProducts,
-                    investmentproductIds: investmentProducts
-                }),
-                success: function (response) {
-                    // Handle success
-                    alert("Data submitted successfully!");
-                },
-                error: function (xhr, status, error) {
-                    // Handle error
-                    alert("An error occurred: " + error);
-                }
+                $.ajax({
+                    url: '/Customer/Create', // Matches the controller name
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        debittypes: debitTypes,
+                        savingsproductIds: savingsProducts,
+                        investmentproductIds: investmentProducts
+                    }),
+                    success: function (response) {
+                        // Handle success
+                        alert("Data submitted successfully!");
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        alert("An error occurred: " + error);
+                    }
+                });
             });
         });
-    });
-</script>*@
+    </script>*@
 
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

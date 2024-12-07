@@ -23,6 +23,8 @@ namespace SwiftFinancials.Web
 
             //Whenever JQueryDataTablesModel is a parameter in an action, the JQueryDataTablesModelBinder should be used when binding the model.
             ModelBinders.Binders.Add(typeof(JQueryDataTablesModel), new JQueryDataTablesModelBinder());
+
+            //SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
         }
 
         protected void Application_Error()
@@ -40,5 +42,6 @@ namespace SwiftFinancials.Web
 
             Infrastructure.Crosscutting.Framework.Adapter.TypeAdapterFactory.SetCurrent(typeAdapterFactory);
         }
+
     }
 }
