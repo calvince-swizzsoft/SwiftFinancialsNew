@@ -408,7 +408,7 @@
                             <td style="text-align: right;">
                                 <a href="@Url.Action("EditReport", "SSRSReportSetting")/${report.Id}" style="margin-right: 10px;" title="Edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 
-                                <a href="javascript:void(0);" onclick="deleteReport(${report.Id})" style="margin-right: 10px;" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                <a href="javascript:void(0);" onclick="deleteReport(${report.Id})" style="margin-right: 10px; color: red;" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
 
                                 <a href="@Url.Action("DownloadReport", "SSRSReportSetting")/${report.Id}" title="Download"><i class="fa fa-download" aria-hidden="true"></i></a>
                             </td>
