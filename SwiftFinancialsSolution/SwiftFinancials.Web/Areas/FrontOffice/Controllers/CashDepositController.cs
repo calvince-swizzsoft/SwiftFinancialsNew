@@ -501,7 +501,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                       MessageBoxOptions.ServiceNotification
                                                   );
 
-
+                                   
                                 }
 
                                 #region Send Text Notification
@@ -541,10 +541,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                 #endregion
 
-                                return true;
-                                //PrintReceipt(withinLimitsCashDepositJournal);
+                                
+                                
                                 // Replace the _messageService.Show method
-                                MessageBox.Show("Operation completed successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                //MessageBox.Show("Operation completed successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                                 // Replace the second _messageService.ShowQuestion method
                                 var printConfirmationResult = MessageBox.Show("Do you want to print?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -552,52 +552,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 if (printConfirmationResult == DialogResult.Yes)
                                 {
                                     #region compose receipt data
-
-                                    var nfi = new NumberFormatInfo();
-                                    nfi.CurrencySymbol = string.Empty;
-
-                                    var receiptDataSB = new StringBuilder();
-                                    var topIndent = new StringBuilder();
-                                    var leftIndent = new StringBuilder();
-                                    var footer = string.Empty;
-
-                                    if (SelectedBranch != null)
-                                    {
-                                        for (int i = 0; i < SelectedBranch.CompanyTransactionReceiptTopIndentation; i++)
-                                            topIndent.Append("\n");
-
-                                        for (int i = 0; i < SelectedBranch.CompanyTransactionReceiptLeftIndentation; i++)
-                                            leftIndent.Append("\t");
-
-                                        footer = SelectedBranch.CompanyTransactionReceiptFooter;
-                                    }
-
-                                    // Additional receipt data processing can go here...
-
-                                    // Compose the receipt content
-                                    receiptDataSB.Append(topIndent);
-                                    receiptDataSB.Append(leftIndent);
-                                    receiptDataSB.AppendLine("End of Day Transaction Receipt");
-                                    receiptDataSB.Append(leftIndent);
-                                    receiptDataSB.AppendLine("-------------------------");
-                                    receiptDataSB.Append(leftIndent);
-                                    receiptDataSB.AppendLine("Date: " + DateTime.Now.ToString("g", CultureInfo.InvariantCulture));
-                                    receiptDataSB.Append(leftIndent);
-                                    receiptDataSB.AppendLine("Amount: " + string.Format(nfi, "{0:C}", transactionModel.TotalValue));
-                                    receiptDataSB.Append(leftIndent);
-                                    receiptDataSB.AppendLine("-------------------------");
-                                    receiptDataSB.Append(leftIndent);
-                                    receiptDataSB.AppendLine(footer);
-
-                                    receiptContent = receiptDataSB.ToString();
-
                                     // Print the receipt
-                                    PrintReceipt(receiptContent);
+                                    PrintReceipt(withinLimitsCashDepositJournal);
 
                                     #endregion
 
-                                    
+
                                 }
+
+                                return true;
                             //break;
 
                             case CashDepositCategory.AboveMaximumAllowed:
@@ -677,7 +640,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                         );
                                                     }
 
-                                                    //PrintReceipt(authorizedJournal);
+                                                    PrintReceipt(authorizedJournal);
                                                     return true;
                                                 }
                                                 else
@@ -962,7 +925,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                                        MessageBoxDefaultButton.Button1,
                                                                      MessageBoxOptions.ServiceNotification
                                                                   );
-                                                                    //PrintReceipt(authorizedJournal);
+                                                                    PrintReceipt(authorizedJournal);
                                                                     return true;
                                                                 }
                                                                 else
@@ -1000,7 +963,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                                                 var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
 
-                                                                //PrintReceipt(authorizedJournal);
+                                                                PrintReceipt(authorizedJournal);
                                                                 return true;
                                                             }
                                                             else
@@ -1180,7 +1143,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                        MessageBoxOptions.ServiceNotification
                                                    );
 
-                                    //PrintReceipt(withinLimitsJournal);
+                                    PrintReceipt(withinLimitsJournal);
                                     return true;
 
                                 //break;
@@ -1234,6 +1197,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             if (chequeDepositJournal != null && !chequeDepositJournal.HasErrors)
                             {
                                 MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                PrintReceipt(chequeDepositJournal);
                                 return true;
                             }
 
@@ -1583,7 +1547,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (isTransactionSuccessful)
                 {
-                    // Construct the success response
+                    //Construct the success response
                     var response = new
                     {
                         Status = "Success",
@@ -1593,13 +1557,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         Timestamp = DateTime.Now
                     };
 
-                    // Show the success message
-                    MessageBox.Show(response.Message,
-                        "Cash Transaction",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification);
+                    //// Show the success message
+                    //MessageBox.Show(response.Message,
+                    //    "Cash Transaction",
+                    //    MessageBoxButtons.OK,
+                    //    MessageBoxIcon.Information,
+                    //    MessageBoxDefaultButton.Button1,
+                    //    MessageBoxOptions.ServiceNotification);
 
                     // Return the success response
                     return Json(response);
@@ -2346,36 +2310,105 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
-        private void PrintReceipt(string receiptContent)
+        //private void PrintReceipt(string receiptContent)
+        //{
+        //    try
+        //    {
+        //        PrintDocument printDocument = new PrintDocument();
+        //        printDocument.PrinterSettings = new PrinterSettings
+        //        {
+        //            PrinterName = new PrinterSettings().PrinterName // Gets the default printer
+        //        };
+        //        printDocument.PrintPage += (sender, e) =>
+        //        {
+        //            // Draw the receipt content onto the print page
+        //            e.Graphics.DrawString(receiptContent, new Font("Courier New", 10), Brushes.Black, new RectangleF(0, 0, e.PageBounds.Width, e.PageBounds.Height));
+        //        };
+
+        //        PrintDialog printDialog = new PrintDialog
+        //        {
+        //            Document = printDocument
+        //        };
+
+        //        if (printDialog.ShowDialog() == DialogResult.OK)
+        //        {
+        //            printDocument.Print();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error printing receipt: {ex.Message}", "Print Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+
+        private void PrintReceipt(JournalDTO journal)
         {
             try
             {
+                // Build the receipt content from the journal data
+                var receiptContent = BuildReceiptContent(journal);
+
                 PrintDocument printDocument = new PrintDocument();
                 printDocument.PrinterSettings = new PrinterSettings
                 {
-                    PrinterName = new PrinterSettings().PrinterName // Gets the default printer
+                    PrinterName = "EPSON L3250 Series" // Hardcoding the printer name
                 };
+
                 printDocument.PrintPage += (sender, e) =>
                 {
                     // Draw the receipt content onto the print page
                     e.Graphics.DrawString(receiptContent, new Font("Courier New", 10), Brushes.Black, new RectangleF(0, 0, e.PageBounds.Width, e.PageBounds.Height));
                 };
 
-                PrintDialog printDialog = new PrintDialog
-                {
-                    Document = printDocument
-                };
+                //PrintDialog printDialog = new PrintDialog
+                //{
+                //    Document = printDocument
+                //};
 
-                if (printDialog.ShowDialog() == DialogResult.OK)
-                {
-                    printDocument.Print();
-                }
+                //if (printDialog.ShowDialog() == DialogResult.OK)
+                //{
+                //    printDocument.Print();
+                //}
+
+                printDocument.Print();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error printing receipt: {ex.Message}", "Print Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        // Helper method to build the receipt content
+        private string BuildReceiptContent(JournalDTO journal)
+        {
+            var builder = new StringBuilder();
+
+            // Add headers
+            builder.AppendLine("===== Transaction Receipt =====");
+            builder.AppendLine($"Transaction ID: {journal.Id}");
+            builder.AppendLine($"Sequential ID: {journal.SequentialId}");
+            builder.AppendLine($"Branch: {journal.BranchDescription}");
+            builder.AppendLine($"Posting Period: {journal.PostingPeriodDescription}");
+            builder.AppendLine($"Total Value: {journal.TotalValue:C}"); // Format as currency
+            builder.AppendLine($"Primary Description: {journal.PrimaryDescription}");
+            builder.AppendLine($"Secondary Description: {journal.SecondaryDescription}");
+            builder.AppendLine($"Reference: {journal.Reference}");
+            builder.AppendLine($"Transaction Date: {journal.CreatedDate:yyyy-MM-dd HH:mm:ss}");
+
+            // Add environment details
+            builder.AppendLine("\n===== Environment Details =====");
+            builder.AppendLine($"User: {journal.ApplicationUserName}");
+            builder.AppendLine($"Machine Name: {journal.EnvironmentMachineName}");
+            builder.AppendLine($"IP Address: {journal.EnvironmentIPAddress}");
+
+            // Add a footer
+            builder.AppendLine("\n===============================");
+            builder.AppendLine("Thank you for using our services!");
+
+            return builder.ToString();
+        }
+
 
 
         //[HttpPost]
