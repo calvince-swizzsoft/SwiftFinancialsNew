@@ -290,6 +290,7 @@
                                         @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductId, new { @id = "CustomerAccountTypeTargetProductId" })
                                         @Html.LabelFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductDescription, "Product Name:", new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductParentId, new { @id = "CustomerAccountTypeTargetProductParentId" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId, new { @id = "PostingPeriodId" })
                                         @Html.TextBoxFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductDescription, new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control", @readonly = "readonly" })
                                     </div>
                                 </div>
@@ -732,7 +733,7 @@
                                         <!-- Button Section -->
                                         <div style="display: flex; gap: 10px;">
                                             <button type="button" id="refreshButton1" class="btn btn-info">Refresh</button>
-                                            @*<button type="button" id="printButton" class="btn btn-success">Print</button>*@
+                                            <button type="button" id="printButton" class="btn btn-success">Print</button>
                                         </div>
                                     </div>
 
@@ -1581,45 +1582,116 @@
     <script>
 
         $(document).ready(function () {
-            // Event listener for the Print button
             $('#printButton').on('click', function () {
-
-                const defaultStartDate = new Date();
-                defaultStartDate.setDate(defaultStartDate.getDate() - 30); // 30 days ago
-                const defaultEndDate = new Date();
-
-                const startDate = $('#startDate').val();
-                const endDate = $('#endDate').val();
-
+                const startDateInput = $('#startDate').val();
+                const endDateInput = $('#endDate').val();
                 const chartOfAccountId = $('#TellerChartOfAccountId').val();
+                const postingPeriodId = $('#PostingPeriodId').val();
 
-                // Validate that dates are provided
-                if (!startDate || !endDate) {
+                console.log("posting period id id", postingPeriodId);
+                console.log("chart of account id is", chartOfAccountId);
+
+                // Validate inputs
+                if (!startDateInput || !endDateInput) {
                     alert('Please enter both Start Date and End Date.');
                     return;
                 }
 
-                // Send AJAX request to generate the report
-                $.ajax({
-                    url: '/FrontOffice/CashDeposit/GenerateReport',
-                    type: 'POST',
-                    data: {
-                        chartOfAccountId: chartOfAccountId,
-                        startDate: startDate || defaultStartDate,
-                        endDate: endDate || defaultEndDate
-                    },
-                    success: function (response) {
-                        // Open the report in a new tab or window
-                        const reportWindow = window.open('', '_blank');
-                        reportWindow.document.write(response);
-                        reportWindow.document.close();
-                    },
-                    error: function (xhr, status, error) {
-                        alert('An error occurred while generating the report: ' + error);
-                    }
-                });
+                const startDate = new Date(startDateInput);
+                const endDate = new Date(endDateInput);
+
+                if (isNaN(startDate) || isNaN(endDate)) {
+                    alert('Invalid date format. Please enter valid dates.');
+                    return;
+                }
+
+                if (startDate > endDate) {
+                    alert('Start Date cannot be later than End Date.');
+                    return;
+                }
+
+                // Format the dates as yyyy-MM-dd
+                const formattedStartDate = startDate.toISOString().split('T')[0];
+                const formattedEndDate = endDate.toISOString().split('T')[0];
+
+                console.log("formattedSTARTDATE IS", formattedStartDate);
+                console.log("formattedEndDATE IS", formattedEndDate);
+
+                const reportUrl = `http://desktop-rstq8im/ReportServer?/Teller%20Transactions` +
+                    `&ChartOfAccountID=${encodeURIComponent(chartOfAccountId)}` +
+                    `&StartDate=${encodeURIComponent(formattedStartDate)}` +
+                    `&EndDate=${encodeURIComponent(formattedEndDate)}` +
+                    `&PostingPeriod=${encodeURIComponent(postingPeriodId)}` +
+                    `&rs:Command=Render&rs:Format=PDF`;
+
+
+                // Open the URL in a new tab
+                window.open(reportUrl, '_blank');
             });
         });
+
+
+
+        //$(document).ready(function () {
+        //    // Event listener for the Print button
+        //    $('#printButton').on('click', function () {
+
+        //        const defaultStartDate = new Date();
+        //        defaultStartDate.setDate(defaultStartDate.getDate() - 30); // 30 days ago
+        //        const defaultEndDate = new Date();
+
+        //        const startDateInput = $('#startDate').val();
+        //        const endDateInput = $('#endDate').val();
+
+        //        const chartOfAccountId = $('#TellerChartOfAccountId').val();
+
+        //        // Validate that dates are provided
+        //        if (!startDateInput || !endDateInput) {
+        //            alert('Please enter both Start Date and End Date.');
+        //            return;
+        //        }
+
+        //        // Parse and validate the date inputs
+        //        const startDate = new Date(startDateInput);
+        //        const endDate = new Date(endDateInput);
+
+        //        if (isNaN(startDate) || isNaN(endDate)) {
+        //            alert('Invalid date format. Please enter valid dates.');
+        //            return;
+        //        }
+
+        //        // Ensure that startDate is not later than endDate
+        //        if (startDate > endDate) {
+        //            alert('Start Date cannot be later than End Date.');
+        //            return;
+        //        }
+
+        //        // Format the dates as "yyyy-MM-dd" to send to the backend
+        //        const formattedStartDate = startDate.toISOString().split('T')[0]; // e.g., 2024-12-01
+        //        const formattedEndDate = endDate.toISOString().split('T')[0];     // e.g., 2024-12-31
+
+        //        // Send AJAX request to generate the report
+        //        $.ajax({
+        //            url: '/FrontOffice/CashDeposit/GenerateReport',
+        //            type: 'POST',
+        //            data: {
+        //                chartOfAccountId: chartOfAccountId,
+        //                startDate: formattedStartDate,
+        //                endDate: formattedEndDate
+        //            },
+        //            success: function (response) {
+        //                // Open the report in a new tab or window
+        //                const reportWindow = window.open('', '_blank');
+        //                reportWindow.document.write(response);
+        //                reportWindow.document.close();
+        //            },
+        //            error: function (xhr, status, error) {
+        //                alert('An error occurred while generating the report: ' + error);
+        //            }
+        //        });
+        //    });
+        //});
+
 
 
     </script>
@@ -1819,6 +1891,10 @@
             $('#PaymentVoucherReference').val('');
             $('#PaymentVoucherId').val('');
 
+            $('#PostingPeriodId').val('');
+
+
+
             // Disable submit button
             $('#submitButton').prop('disabled', true);
         }
@@ -1942,7 +2018,7 @@
                         console.log(data);
                         console.log(JSON.stringify(data));
 
-
+                  
                         $('#CustomerAccountAvailableBalance').val(data.AvailableBalance);
                         $('#CustomerAccountBookBalance').val(data.BookBalance);
                         $('#CustomerAccountCustomerFullName').val(data.CustomerFullName);

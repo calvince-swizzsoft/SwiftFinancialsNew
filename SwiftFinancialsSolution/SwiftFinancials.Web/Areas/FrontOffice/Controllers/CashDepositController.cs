@@ -3,9 +3,11 @@ using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using Application.MainBoundedContext.DTO.MessagingModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
+using Microsoft.Reporting.WebForms.Internal.Soap.ReportingServices2005.Execution;
 using SwiftFinancials.Presentation.Infrastructure.Models;
 using SwiftFinancials.Web.Areas.Registry.DocumentsModel;
 using SwiftFinancials.Web.Controllers;
@@ -15,12 +17,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Drawing;
+using System.Drawing.Printing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Services.Protocols;
 using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
@@ -46,6 +53,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
+
+        private string receiptContent;
         decimal PreviousTellerBalance;
         decimal NewTellerBalance;
         private PageCollectionInfo<GeneralLedgerTransaction> TellerStatements;
@@ -319,16 +328,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
             ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
-            if (id != null)
-            {
-                ViewBag.Documents = GetDocumentsAsync(id.Value);
-            }
-
-            CustomerTransactionModel transactionModel = new CustomerTransactionModel();
-
 
             _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
+
+            CustomerTransactionModel transactionModel = new CustomerTransactionModel();
 
             if (_selectedTeller != null)
             {
@@ -342,14 +346,20 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 var TellerStatements = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(0, 10, (Guid)SelectedTeller.ChartOfAccountId, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, "", 0, 2, true, GetServiceHeader());
 
 
-               
+
                 //SelectedTeller.BookBalance = generalLedgerAccount.Balance;
                 transactionModel.Teller.BookBalance = SelectedTeller.BookBalance;
                 transactionModel.TellerStatements = TellerStatements;
                 transactionModel.Teller.ChartOfAccountId = SelectedTeller.ChartOfAccountId;
+                transactionModel.PostingPeriodId = _currentPostingPeriod.Id;
 
             }
 
+
+            if (id != null)
+            {
+                ViewBag.Documents = GetDocumentsAsync(id.Value);
+            }
 
 
             if (id == null || id == Guid.Empty || !Guid.TryParse(id.ToString(), out Guid parseId))
@@ -429,7 +439,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return View(transactionModel);
             }
             // If no customer is found, return the view with no model
-            return View();
+            return View(transactionModel);
         }
 
 
@@ -444,7 +454,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var proceedAuthorizedCashDepositRequest = default(bool);
             var proceedCashDepositAuthorizationRequest = default(bool);
 
-            SelectedCustomerAccount = transactionModel.CustomerAccount;
+            //SelectedCustomerAccount = transactionModel.CustomerAccount;
+            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, true, true, true, true, GetServiceHeader());
 
             _selectedCustomer = await _channelService.FindCustomerAsync(SelectedCustomerAccount.CustomerId, GetServiceHeader());
 
@@ -493,8 +504,100 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                 }
 
+                                #region Send Text Notification
+                                // Validate the mobile number format and length
+                                // Validate the mobile number format and length
+                                if (!string.IsNullOrWhiteSpace(SelectedCustomer.AddressMobileLine) &&
+                           Regex.IsMatch(SelectedCustomer.AddressMobileLine, @"^\+(?:[0-9]??){6,14}[0-9]$") &&
+                           SelectedCustomer.AddressMobileLine.Length >= 13)
+                                {
+                                    // Build the SMS body message
+                                    var smsBody = new StringBuilder();
+                                    smsBody.AppendFormat(
+                                        "Dear customer, your account has been credited with a cash deposit of KES {0} at {1} on {2}. Thank you for banking with us!",
+                                        transactionModel.TotalValue,                          
+                                        SelectedCustomerAccount.BranchDescription,            
+                                        DateTime.Now.ToString("MMMM dd, yyyy")               
+                                    );
+
+                                    
+                                    var textAlertDTO = new TextAlertDTO
+                                    {
+                                        BranchId = SelectedCustomerAccount.BranchId,
+                                        TextMessageOrigin = (int)MessageOrigin.Within,
+                                        TextMessageRecipient = SelectedCustomer.AddressMobileLine,
+                                        TextMessageBody = smsBody.ToString(),
+                                        MessageCategory = (int)MessageCategory.SMSAlert,
+                                        AppendSignature = false,
+                                        TextMessagePriority = (int)QueuePriority.Highest,
+                                    };
+
+                                   
+                                    var textAlertDTOs = new ObservableCollection<TextAlertDTO> { textAlertDTO };
+
+                                   
+                                    await _channelService.AddTextAlertsAsync(textAlertDTOs, GetServiceHeader());
+                                }
+
+                                #endregion
+
                                 return true;
-                            //PrintReceipt(withinLimitsCashDepositJournal);
+                                //PrintReceipt(withinLimitsCashDepositJournal);
+                                // Replace the _messageService.Show method
+                                MessageBox.Show("Operation completed successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                // Replace the second _messageService.ShowQuestion method
+                                var printConfirmationResult = MessageBox.Show("Do you want to print?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                                if (printConfirmationResult == DialogResult.Yes)
+                                {
+                                    #region compose receipt data
+
+                                    var nfi = new NumberFormatInfo();
+                                    nfi.CurrencySymbol = string.Empty;
+
+                                    var receiptDataSB = new StringBuilder();
+                                    var topIndent = new StringBuilder();
+                                    var leftIndent = new StringBuilder();
+                                    var footer = string.Empty;
+
+                                    if (SelectedBranch != null)
+                                    {
+                                        for (int i = 0; i < SelectedBranch.CompanyTransactionReceiptTopIndentation; i++)
+                                            topIndent.Append("\n");
+
+                                        for (int i = 0; i < SelectedBranch.CompanyTransactionReceiptLeftIndentation; i++)
+                                            leftIndent.Append("\t");
+
+                                        footer = SelectedBranch.CompanyTransactionReceiptFooter;
+                                    }
+
+                                    // Additional receipt data processing can go here...
+
+                                    // Compose the receipt content
+                                    receiptDataSB.Append(topIndent);
+                                    receiptDataSB.Append(leftIndent);
+                                    receiptDataSB.AppendLine("End of Day Transaction Receipt");
+                                    receiptDataSB.Append(leftIndent);
+                                    receiptDataSB.AppendLine("-------------------------");
+                                    receiptDataSB.Append(leftIndent);
+                                    receiptDataSB.AppendLine("Date: " + DateTime.Now.ToString("g", CultureInfo.InvariantCulture));
+                                    receiptDataSB.Append(leftIndent);
+                                    receiptDataSB.AppendLine("Amount: " + string.Format(nfi, "{0:C}", transactionModel.TotalValue));
+                                    receiptDataSB.Append(leftIndent);
+                                    receiptDataSB.AppendLine("-------------------------");
+                                    receiptDataSB.Append(leftIndent);
+                                    receiptDataSB.AppendLine(footer);
+
+                                    receiptContent = receiptDataSB.ToString();
+
+                                    // Print the receipt
+                                    PrintReceipt(receiptContent);
+
+                                    #endregion
+
+                                    
+                                }
                             //break;
 
                             case CashDepositCategory.AboveMaximumAllowed:
@@ -1188,6 +1291,19 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
+            if (SelectedCustomerAccount == null) {
+
+                MessageBox.Show("Please select a customer account",
+   "Cash Transaction",
+   MessageBoxButtons.OK,
+   MessageBoxIcon.Information,
+   MessageBoxDefaultButton.Button1,
+   MessageBoxOptions.ServiceNotification
+   );
+
+                return Json(new { success = false, message = "Opration failed" });
+
+            }
 
             if ((RecordStatus)SelectedCustomerAccount.RecordStatus != RecordStatus.Approved)
             {
@@ -1261,21 +1377,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
-
-
-            // if (SelectedTeller.BookBalance + transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
-            // {
-
-            //     MessageBox.Show("Sorry, the transaction will reduce teller's balance below limit",
-            //"Cash Transaction",
-            //MessageBoxButtons.OK,
-            //MessageBoxIcon.Information,
-            //MessageBoxDefaultButton.Button1,
-            //MessageBoxOptions.ServiceNotification
-            //);
-
-            //     return Json(new { success = false, message = "Opration failed" });
-            // }
 
 
 
@@ -1378,7 +1479,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     // Refresh the selected customer account
                     SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, false, true, false, false, GetServiceHeader());
-
+                    SelectedCustomer = await _channelService.FindCustomerAsync(SelectedCustomerAccount.CustomerId);
                     // Update the transaction type dropdown
                     ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
 
@@ -2196,54 +2297,161 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
+        [HttpGet]
+        public async Task<ActionResult> GenerateReport(string chartOfAccountId, string startDate, string endDate)
+        {
+            try
+            {
+                // Parse the date inputs
+                var formattedStartDate = DateTime.Parse(startDate);
+                var formattedEndDate = DateTime.Parse(endDate);
+
+                // Fetch the current posting period
+                var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+
+                // SSRS Report URL (Ensure the path and parameters match your setup)
+                string reportUrl = "http://desktop-rstq8im/ReportServer?/TellerTransactions";
+
+                // Build the full URL with parameters
+                string fullReportUrl = $"{reportUrl}&ChartOfAccountID={chartOfAccountId}" +
+                                       $"&StartDate={formattedStartDate:yyyy-MM-dd}" +
+                                       $"&EndDate={formattedEndDate:yyyy-MM-dd}" +
+                                       $"&PostingPeriod={postingPeriod.Id}" +
+                                       $"&rs:Command=Render&rs:Format=PDF";
+
+                using (var client = new HttpClient())
+                {
+                    // Fetch the report directly without authentication
+                    var response = await client.GetAsync(fullReportUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // If successful, retrieve the report as a byte array
+                        var reportBytes = await response.Content.ReadAsByteArrayAsync();
+
+                        // Return the report as a downloadable PDF file
+                        return File(reportBytes, "application/pdf", "TellerReport.pdf");
+                    }
+                    else
+                    {
+                        // Handle errors and return appropriate feedback
+                        return Json(new { success = false, message = $"Failed to generate the report. Status Code: {response.StatusCode}" });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions and return an error message
+                return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
+            }
+        }
+
+        private void PrintReceipt(string receiptContent)
+        {
+            try
+            {
+                PrintDocument printDocument = new PrintDocument();
+                printDocument.PrinterSettings = new PrinterSettings
+                {
+                    PrinterName = new PrinterSettings().PrinterName // Gets the default printer
+                };
+                printDocument.PrintPage += (sender, e) =>
+                {
+                    // Draw the receipt content onto the print page
+                    e.Graphics.DrawString(receiptContent, new Font("Courier New", 10), Brushes.Black, new RectangleF(0, 0, e.PageBounds.Width, e.PageBounds.Height));
+                };
+
+                PrintDialog printDialog = new PrintDialog
+                {
+                    Document = printDocument
+                };
+
+                if (printDialog.ShowDialog() == DialogResult.OK)
+                {
+                    printDocument.Print();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error printing receipt: {ex.Message}", "Print Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
         //[HttpPost]
-        //public async Task<ActionResult> GenerateReport(string chartOfAccountId, string startDate, string endDate)
+        //public async Task<ActionResult> GenerateReport(
+        //    string chartOfAccountId,
+        //    DateTime startDate,
+        //    DateTime endDate
+        //)
         //{
-
-        //    var formattedStartDate = DateTime.Parse(startDate);
-
-        //    var formattedEndDate = DateTime.Parse(endDate);
-
-
+        //    // Fetch the current posting period
         //    var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-            
-        //    // SSRS Report URL (Make sure this points to the correct SSRS report path)
-        //    string reportUrl = "http://desktop-rstq8im/ReportServer?/ReportProject1/Report3";
 
-      
-        //    // Build the URL with parameters
-        //    string fullReportUrl = $"{reportUrl}&ChartOfAccountID={chartOfAccountId}&StartDate={formattedStartDate:yyyy-MM-dd}&EndDate={formattedEndDate:yyyy-MM-dd}&PostingPeriod={postingPeriod.Id}&rs:Command=Render&rs:Format=PDF";
-
-        //    using (var client = new HttpClient())
+        //    // Configure ReportExecutionService
+        //    var rs = new ReportExecutionService
         //    {
-        //        // SQL Server Authentication credentials
-        //        //string username = "sa"; // Replace with your SQL Server username
-        //        //string password = "pass123"; // Replace with your SQL Server password
+        //        Url = "http://desktop-rstq8im/ReportServer/ReportExecution2005.asmx",
+        //        Credentials = System.Net.CredentialCache.DefaultCredentials
+        //    };
 
-        //        // Set up Basic Authentication using SQL Server credentials (base64 encode username:password)
-        //        var credentials = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{username}:{password}"));
-        //        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", credentials);
+        //    // Set up the report parameters
+        //    var parameters = new ParameterValue[]
+        //    {
+        //new ParameterValue { Name = "ChartOfAccountID", Value = chartOfAccountId }, // Text
+        //new ParameterValue { Name = "StartDate", Value = startDate.ToString("yyyy-MM-dd") }, // Datetime
+        //new ParameterValue { Name = "EndDate", Value = endDate.ToString("yyyy-MM-dd") }, // Datetime
+        //new ParameterValue { Name = "PostingPeriod", Value = postingPeriod.Id.ToString() } // Text
+        //    };
 
-        //        // Fetch the report
-        //        var response = await client.GetAsync(fullReportUrl);
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            // If the request is successful, get the report as bytes
-        //            var reportBytes = await response.Content.ReadAsByteArrayAsync();
+        //    // Define report path and format
+        //    string reportPath = "/Teller Transactions"; // Adjust the path as per your report server
+        //    string format = "PDF";  // Format can be PDF, Excel, Word, etc.
 
-        //            // Return the report as a downloadable file
-        //            return File(reportBytes, "application/pdf", "TellerReport.pdf");
-        //        }
-        //        else
-        //        {
-        //            // Return an error message if authentication fails
-        //            return Json(new { success = false, message = "Failed to generate the report. Unauthorized access." });
-        //        }
+        //    try
+        //    {
+        //        // Load the report
+        //        rs.ExecutionHeaderValue = new ExecutionHeader();
+        //        ExecutionInfo execInfo = rs.LoadReport(reportPath, null);
+
+        //        // Set parameters for the report
+        //        rs.SetExecutionParameters(parameters, "en-US");
+
+        //        // Render the report
+        //        string mimeType, encoding, fileNameExtension;
+        //        string deviceInfo = null; // Optional, can define settings like page size, margin, etc.
+        //        Warning[] warnings;
+        //        string[] streamIds;
+        //        byte[] result = rs.Render(
+        //            format,
+        //            deviceInfo,
+        //            out mimeType,
+        //            out encoding,
+        //            out fileNameExtension,
+        //            out warnings,
+        //            out streamIds
+        //        );
+
+        //        // Return the report as a downloadable file
+        //        //var fileName = "TellerReport.pdf";
+        //        //return File(result, "application/pdf", fileName);
+        //        return new FileStreamResult(new MemoryStream(result), "application/pdf");
+        //    }
+        //    catch (SoapException ex)
+        //    {
+        //        Console.WriteLine("Error rendering report: " + ex.Message);
+
+        //        // Return an error message or view
+        //        return Content("An error occurred while generating the report: " + ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("Unexpected error: " + ex.Message);
+
+        //        // Return an error message or view
+        //        return Content("An unexpected error occurred: " + ex.Message);
         //    }
         //}
-
-
-
 
 
 
