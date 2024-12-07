@@ -223,6 +223,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(productCode, jQueryDataTablesModel.sSearch, customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
             //var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeFilterInPageAsync(productCode, recordStatus, jQueryDataTablesModel.sSearch, 2, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
 
+            //var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+
+
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
@@ -299,69 +302,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         }
 
-        //[HttpPost]
-        //public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
-        //{
-        //    _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-        //    _selectedTeller = await GetCurrentTeller();
-
-        //    int totalRecordCount = 0;
-
-        //    int searchRecordCount = 0;
-
-        //    //DateTime startDate = DateTime.Now;
-
-        //    //DateTime endDate = DateTime.Now;
-
-        //    int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-
-        //    var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-        //    var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-
-
-        //    if (SelectedTeller != null && !SelectedTeller.IsLocked)
-        //    {
-        //        var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-        //           0,int.MaxValue,
-        //            (Guid)SelectedTeller.ChartOfAccountId,
-        //            startDate,
-        //            endDate,
-        //            jQueryDataTablesModel.sSearch,
-        //            20,
-        //            1,
-        //            true,
-        //            GetServiceHeader()
-        //        );
-
-
-        //        if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-        //        {
-
-
-        //            var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
-
-        //            totalRecordCount = pageCollectionInfo.ItemsCount;
-
-        //            //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
-
-
-        //            var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
-
-        //            searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
-
-        //            return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        //        }
-        //        else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-
-        //    }
-
-        //    return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-
-        //}
-
+     
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();

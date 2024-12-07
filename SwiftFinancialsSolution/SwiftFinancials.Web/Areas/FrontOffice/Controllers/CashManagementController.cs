@@ -55,6 +55,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
+        public async Task<ActionResult> Index()
+        {
+            await ServeNavigationMenus();
+            ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
+            return View();
+        }
+
         public async Task<ActionResult> Search(Guid? id)
         {
             //string Remarks = "";
@@ -114,18 +121,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
-
-
-
-        public async Task<ActionResult> Index()
-        {
-            await ServeNavigationMenus();
-            ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
-            return View();
-        }
-
         [HttpPost]
-        public async Task<ActionResult> FetchTreasuryTransactions(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
+      
+        public async Task<JsonResult> FetchTreasuryTransactions(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
 
@@ -195,10 +193,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-
-                
-               
-
                 availableBalanceBroughtForward = pageCollectionInfo.AvailableBalanceBroughtFoward;
                 totalCredits = pageCollectionInfo.TotalCredits;
                 totalDebits = pageCollectionInfo.TotalDebits;
@@ -300,8 +294,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             var tellers = await _channelService.FindTellerAsync(parseId, includeBalance, GetServiceHeader());
-
-
 
             if (tellers != null)
             {

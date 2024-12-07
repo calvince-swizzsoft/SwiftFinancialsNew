@@ -17,6 +17,8 @@ using Application.MainBoundedContext.DTO.AdministrationModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using System.Globalization;
 using System.Text;
+using System.Drawing.Printing;
+using System.Drawing;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
@@ -105,7 +107,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         private bool IsBusy { get; set; } // Property to indicate if an operation is in progress
 
-
+        private string receiptContent;
         // GET: FrontOffice/EndOfDay
         public async Task<ActionResult> Index()
         {
@@ -381,10 +383,32 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                         // Additional receipt data processing can go here...
 
+                                        // Compose the receipt content
+                                        receiptDataSB.Append(topIndent);
+                                        receiptDataSB.Append(leftIndent);
+                                        receiptDataSB.AppendLine("End of Day Transaction Receipt");
+                                        receiptDataSB.Append(leftIndent);
+                                        receiptDataSB.AppendLine("-------------------------");
+                                        receiptDataSB.Append(leftIndent);
+                                        receiptDataSB.AppendLine("Date: " + DateTime.Now.ToString("g", CultureInfo.InvariantCulture));
+                                        receiptDataSB.Append(leftIndent);
+                                        receiptDataSB.AppendLine("Amount: " + string.Format(nfi, "{0:C}", model.TotalValue)); // Example amount
+                                        receiptDataSB.Append(leftIndent);
+                                        receiptDataSB.AppendLine("-------------------------");
+                                        receiptDataSB.Append(leftIndent);
+                                        receiptDataSB.AppendLine(footer);
+
+                                        receiptContent = receiptDataSB.ToString();
+
+                                        #endregion
+
+                                        // Print the receipt
+                                        PrintReceipt(receiptContent);
+
                                         #endregion
                                     }
                                 }
-                                #endregion
+                                
                             }
 
 
@@ -455,6 +479,38 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return teller;
 
+        }
+
+
+        private void PrintReceipt(string receiptContent)
+        {
+            try
+            {
+                PrintDocument printDocument = new PrintDocument();
+                printDocument.PrinterSettings = new PrinterSettings
+                {
+                    PrinterName = new PrinterSettings().PrinterName // Gets the default printer
+                };
+                printDocument.PrintPage += (sender, e) =>
+                {
+                    // Draw the receipt content onto the print page
+                    e.Graphics.DrawString(receiptContent, new Font("Courier New", 10), Brushes.Black, new RectangleF(0, 0, e.PageBounds.Width, e.PageBounds.Height));
+                };
+
+                PrintDialog printDialog = new PrintDialog
+                {
+                    Document = printDocument
+                };
+
+                if (printDialog.ShowDialog() == DialogResult.OK)
+                {
+                    printDocument.Print();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error printing receipt: {ex.Message}", "Print Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 
