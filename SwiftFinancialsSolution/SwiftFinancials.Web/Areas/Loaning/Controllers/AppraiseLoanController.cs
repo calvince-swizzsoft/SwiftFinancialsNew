@@ -93,6 +93,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
+            var attachedLoans = await _channelService.FindAttachedLoansByLoanCaseIdAsync(parseId, GetServiceHeader());
+
             Session["loanCaseId"] = parseId;
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());

@@ -1,16 +1,14 @@
 ﻿
 @model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 @{
-    ViewBag.Title = "Restructure Loan";
-
-
-    var apr = 20;
-    var icm = "Reducing Balance";
-    var amountApplied = 300000;
-    var termInMonths = 5;
+    ViewBag.Title = "Loan Restructuring";
 
     var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
     var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+    var CustomerFilter = ViewBag.CustomerFilter as List<SelectListItem>;
+
+    var recordStatus = ViewBag.recordStatus as List<SelectListItem>;
+    var customerFilter = ViewBag.customerFilter as List<SelectListItem>;
 }
 
 
@@ -195,6 +193,14 @@
         padding: 15px;
         border-radius: 8px;
     }
+
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
 </style>
 
 
@@ -226,8 +232,6 @@
         <li>@Html.ActionLink("Loan Restructuring", "Index", "LoanRestructuring", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Guarantor Attachment", "Create", "GuarantorAttachment", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Guarantor Substitution", "Create", "GuarantorSubstitution", new { area = "Loaning" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Guarantor Relieving", "Create", "GuarantorRelieving", new { area = "Loaning" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Guarantor Management", "Create", "GuarantorManagement", new { area = "Loaning" }, new { @class = "nav-link" })</li>
     </ul>
 </nav>
 
@@ -281,10 +285,10 @@
                                 <div class="col-md-3 form-group">
                                     @Html.LabelFor(model => model.FullAccountNumber, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
-                                        @Html.HiddenFor(model => model.Id)
-                                        @Html.TextBoxFor(model => model.CustomerIndividualIdentityCardNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                        @Html.HiddenFor(model => model.CustomerAccountId)
+                                        @Html.TextBoxFor(model => model.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
                                         <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#fullAccountNumberLookupModal"><span class="fa fa-search"></span></a>
+                                            <a data-toggle="modal" data-target="#CustomerAccountLookUpModal"><span class="fa fa-search"></span></a>
                                         </span>
                                     </div>
                                 </div>
@@ -360,7 +364,6 @@
                             <br />
 
 
-                            @*Tabs*@
                             <div class="tab-header" style="color: black;">
                                 <div class="tab-button active" style="pointer-events: none; cursor: default;">
                                     <i class="fa fa-table" aria-hidden="true"></i> Rescheduling
@@ -368,22 +371,21 @@
                             </div>
 
                             <div id="section1" class="tab active" style="display: block;">
-                                <!-- Loan Guarantors -->
                                 <div class="tab-content">
                                     <fieldset>
                                         <div class="row">
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
                                                     <label>Loan Product</label>
-                                                    @Html.HiddenFor(model => model.LoanProductsDTO.Id)
-                                                    @Html.EditorFor(model => model.LoanProductsDTO.Description, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                                    @Html.HiddenFor(model => model.LoanProductId)
+                                                    @Html.EditorFor(model => model.LoanProductDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanProductsDTO.LoanRegistrationLoanProductSectionDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanProductsDTO.LoanRegistrationLoanProductSectionDescription, new
+                                                    @Html.LabelFor(model => model.loanProductSection, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.loanProductSection, new
                                                     {
                                                         htmlAttributes = new
                                                         {
@@ -396,8 +398,8 @@
 
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanProductsDTO.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanProductsDTO.LoanInterestAnnualPercentageRate, new
+                                                    @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new
                                                     {
                                                         htmlAttributes = new
                                                         {
@@ -410,8 +412,8 @@
 
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanProductsDTO.LoanRegistrationPaymentFrequencyPerYear, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanProductsDTO.LoanRegistrationPaymentFrequencyPerYearDescription, new
+                                                    @Html.LabelFor(model => model.loanProductPaymentFrequencyPerYear, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.loanProductPaymentFrequencyPerYear, new
                                                     {
                                                         htmlAttributes = new
                                                         {
@@ -427,23 +429,42 @@
                                         <div class="row">
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    <label>Payment Per Period</label>
-                                                    <input type="text" name="PaymentPerPeriod" class="form-control" />
+                                                    @Html.LabelFor(model => model.PaymentPerPeriod, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.PaymentPerPeriod, new
+                                                    {
+                                                        htmlAttributes = new
+                                                        {
+                                                            @class = "form-control required"
+                                                        }
+                                                    })
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    <label>Number of Periods</label>
-                                                    <input type="text" name="NumberOfPeriods" class="form-control" />
+                                                    @Html.LabelFor(model => model.NumberOfPeriods, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.NumberOfPeriods, new
+                                                    {
+                                                        htmlAttributes = new
+                                                        {
+                                                            @class = "form-control required",
+                                                            @min=1
+                                                        }
+                                                    })
                                                 </div>
                                             </div>
 
 
                                             <div class="col-md-6 form-group">
                                                 <div class="form-group form-group-lg">
-                                                    <label>Reference</label>
-                                                    <input type="text" name="Reference" class="form-control" />
+                                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.Reference, new
+                                                    {
+                                                        htmlAttributes = new
+                                                        {
+                                                            @class = "form-control required"
+                                                        }
+                                                    })
                                                 </div>
                                             </div>
                                         </div>
@@ -498,32 +519,61 @@
 
 
 
-<div class="modal  fade" id="fullAccountNumberLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="CustomerAccountLookUpModal" role="dialog" aria-hidden="true" style="width: auto;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
                 <h3 class="font-bold">Customer Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
 
-            <form id="modalFilterForm">
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        @Html.Label("Product Code", "Product Code")
-                        @Html.DropDownList("productCode", ProductCode, new { @class = "form-control", id = "productCode" })
-                    </div>
+            <div class="blue-section">
+                <form id="filterForm">
+                    <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                        <div class="col-lg-3">
+                            <div class="form-group form-group-lg">
+                                @Html.Label("Product Code", "Product Code")
+                                @Html.DropDownList("productCode", ProductCode, new { @class = "form-control", id = "productCode" })
+                            </div>
+                        </div>
 
-                    <div class="form-group col-md-4">
-                        @Html.Label("RecordStatus", "Record Status")
-                        @Html.DropDownList("recordStatus", RecordStatus, new { @class = "form-control", id = "recordStatus" })
-                    </div>
+                        <div class="col-lg-4">
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Customer Filter</label>
 
-                    <div class="form-group col-md-4" style="align-content:center;">
-                        <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
-                    </div>
-                </div>
-            </form>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.CustomerFilter, customerFilter,
+                                    new { @class = "form-control input-md", @id = "customerFilter" })
+                                </div>
+                            </div>
+                        </div>
 
-            <table id="customerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                        <div class="col-lg-3" style="margin-top: 27px;">
+                            <div class="form-group spacing-form-group">
+                                <div class="input-group text-box">
+                                    @Html.TextBox("text", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "text" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1" style="margin-top:20px;">
+                            <div class="form-group form-group-sm">
+                                <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br />
+
+            <style>
+                #customerAccountsGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+
+            <table id="customerAccountsGrid" class="table table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -538,8 +588,6 @@
         </div>
     </div>
 </div>
-
-
 
 <!-- Modal Structure -->
 <div class="modal fade" id="loanCasesModal" tabindex="-1" role="dialog" aria-labelledby="loanCasesModalLabel" aria-hidden="true" style="width: 100%;">
@@ -689,88 +737,28 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
+    <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
+
     <script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
+        var defaultCustomerFilter = $('#customerFilter').val();
+        var defaulText = $('#text').val();
+        var defaulProductCode = $('#productCode').val();
 
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-
-            //Customers Lookup
-            $('#customerAccountsGrid').DataTable({
-                // Ajax settings
+        $('#customerAccountsGrid').DataTable({
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" }))",
+                "sAjaxSource": "@(Url.Action("CustomerAccountIndex", "LoanRestructuring", new { Area = "Loaning"}))",
                 "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter },
+                        { "name": "text", "value": $('#text').val() || defaulText },
+                        { "name": "productCode", "value": $('#productCode').val() || defaulProductCode }
+                    );
+                },
 
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
@@ -779,170 +767,91 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/loaning/LoanRestructuring/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomer(\'' + aData.Id + '\')">Select</button>';
 
                     $('td:eq(7)', nRow).html(dt_Created);
                     $('td:eq(8)', nRow).html(selectUrl);
 
                     return nRow;
                 },
-                // Display settings
-                // Display settings
                 "aoColumns": [
-                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "7%" },
-                    { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "7%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Account Status", "sWidth": "5%" },
+                    { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Code", "sWidth": "10%" },
+                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "10%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
                     { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "5%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "7%" },
-                    { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "5%" },
-                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "5%", "bSortable": false }
-                ],
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "15%" },
+                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
 
-            $("#s tbody").on("click", "tr", function () {
-                var data = companiesGrid.row(this).data();
-
-                $('#CustomerId').val(data.Id);
-                $('input[name=CustomerId]').val(data.Id);
-                $('input[name=CustomerFullName]').val(data.FullName);
-                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-                $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-                $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-                $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+                $('#filterForm').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#customerAccountsGrid').DataTable().ajax.reload();
+                });
 
 
-                $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-                $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-                $('#CompaniesLookup').modal('hide');
+        function selectCustomer(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Loaning/LoanRestructuring/CustomerAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        $('#FullAccountNumber').val(response.data.FullAccountNumber);
+                        $('#CustomerAccountId').val(response.data.CustomerAccountId);
+                        $('#AccountStatus').val(response.data.AccountStatus);
+                        $('#PrincipalBalance').val(response.data.PrincipalBalance);
+                        $('#InterestBalance').val(response.data.InterestBalance);
+                        $('#CustomerIndividualFirstName').val(response.data.CustomerIndividualFirstName);
+                        $('#CustomerIndividualPayrollNumbers').val(response.data.CustomerIndividualPayrollNumbers);
+                        $('#CustomerPersonalIdentificationNumber').val(response.data.CustomerPersonalIdentificationNumber);
+                        $('#CustomerReference1').val(response.data.CustomerReference1);
+                        $('#CustomerReference2').val(response.data.CustomerReference2);
+                        $('#CustomerReference3').val(response.data.CustomerReference3);
+                        $('#LoanProductId').val(response.data.LoanProductId);
+                        $('#LoanProductDescription').val(response.data.LoanProductDescription);
+                        $('#loanProductSection').val(response.data.loanProductSection);
+                        $('#LoanInterestAnnualPercentageRate').val(response.data.LoanInterestAnnualPercentageRate);
+                        $('#loanProductPaymentFrequencyPerYear').val(response.data.loanProductPaymentFrequencyPerYear);
+                        $('#NumberOfPeriods').val(response.data.NumberOfPeriods);
+
+                        $('#CustomerAccountLookUpModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
             });
-        });
-
-
-
+        }
 
 
         function sendFormData() {
-            // Create an object to hold the form data
             let formData = {
                 PaymentPerPeriod: document.querySelector('[name="PaymentPerPeriod"]').value,
                 Reference: document.querySelector('[name="Reference"]').value
             };
 
-            // Send the data to the first controller using fetch
             fetch('/LoanRestructuring/Create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value // Include this line if you are using Anti-Forgery Token
+                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value
                 },
                 body: JSON.stringify(formData)
             })
                 .then(response => response.json())
                 .then(data => {
-                    // Handle the response data here
                     console.log('Form Data Submitted:', data);
                 })
                 .catch((error) => {
                     console.error('Error:', error);
                 });
         }
-    </script>
-
-
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var APR = @apr;
-        var ICM = '@icm';
-        var AmountApplied = @amountApplied;
-        var TermInMonths = @termInMonths;
-
-        // Convert APR to monthly interest rate
-        var monthlyInterestRate = APR / 12 / 100;
-
-        var remainingBalance = AmountApplied;
-        var emi = 0;
-        var schedule = [];
-
-        for (var i = 1; i <= TermInMonths; i++) {
-            var interestPayment = 0;
-            var principalPayment = 0;
-
-            switch (ICM) {
-                case "Reducing Balance":
-                    emi = (AmountApplied * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, TermInMonths))
-                          / (Math.pow(1 + monthlyInterestRate, TermInMonths) - 1);
-                    interestPayment = remainingBalance * monthlyInterestRate;
-                    principalPayment = emi - interestPayment;
-                    break;
-
-                case "Straight Line":
-                    interestPayment = (AmountApplied * APR / 100) / TermInMonths;
-                    principalPayment = AmountApplied / TermInMonths;
-                    emi = principalPayment + interestPayment;
-                    break;
-
-                case "Amortization (Straight Line)":
-                    emi = AmountApplied / TermInMonths + (AmountApplied * monthlyInterestRate);
-                    interestPayment = (AmountApplied - ((AmountApplied / TermInMonths) * (i - 1))) * monthlyInterestRate;
-                    principalPayment = emi - interestPayment;
-                    break;
-
-                case "Amortization (Diminishing Balance)":
-                    emi = (AmountApplied * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, TermInMonths))
-                          / (Math.pow(1 + monthlyInterestRate, TermInMonths) - 1);
-                    interestPayment = remainingBalance * monthlyInterestRate;
-                    principalPayment = emi - interestPayment;
-                    break;
-
-                case "Fixed Interest":
-                    interestPayment = AmountApplied * APR / 100 / TermInMonths;
-                    principalPayment = AmountApplied / TermInMonths;
-                    emi = interestPayment + principalPayment;
-                    break;
-
-                default:
-                    console.error("Invalid Interest Calculation Mode.");
-                    return;
-            }
-
-            // Create the schedule entry
-            var entry = {
-                Period: i,
-                DueDate: new Date(new Date().setMonth(new Date().getMonth() + i)).toLocaleDateString(),
-                StartingBalance: remainingBalance.toFixed(2),
-                Payment: emi.toFixed(2),
-                InterestPayment: interestPayment.toFixed(2),
-                PrincipalPayment: principalPayment.toFixed(2),
-                EndingBalance: (remainingBalance - principalPayment).toFixed(2)
-            };
-
-            // Push the entry to the schedule array
-            schedule.push(entry);
-
-            // Update the remaining balance
-            remainingBalance -= principalPayment;
-        }
-
-        // Render the table rows dynamically
-        var tableBody = document.querySelector("#repaymentScheduledataTable tbody");
-        schedule.forEach(function(item) {
-            var row = `
-                <tr>
-                    <td>${item.Period}</td>
-                    <td>${item.DueDate}</td>
-                    <td>${item.StartingBalance}</td>
-                    <td>${item.Payment}</td>
-                    <td>${item.InterestPayment}</td>
-                    <td>${item.PrincipalPayment}</td>
-                    <td>${item.EndingBalance}</td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
-    });
     </script>
 }

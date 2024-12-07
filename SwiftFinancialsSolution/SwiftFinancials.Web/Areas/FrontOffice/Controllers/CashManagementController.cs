@@ -55,6 +55,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
+        public async Task<ActionResult> Index()
+        {
+            await ServeNavigationMenus();
+            ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
+            return View();
+        }
+
         public async Task<ActionResult> Search(Guid? id)
         {
             //string Remarks = "";
@@ -114,18 +121,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
-
-
-
-        public async Task<ActionResult> Index()
-        {
-            await ServeNavigationMenus();
-            ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
-            return View();
-        }
-
         [HttpPost]
-        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+      
+        public async Task<JsonResult> FetchTreasuryTransactions(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
 
@@ -181,11 +179,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-                  pageIndex,
-                  jQueryDataTablesModel.iDisplayLength,
+                  0,
+                  int.MaxValue,
                   (Guid)ActiveTreasury.ChartOfAccountId,
-                  currentPostingPeriod.DurationStartDate,
-                  currentPostingPeriod.DurationEndDate,
+                  startDate,
+                  endDate,
                   jQueryDataTablesModel.sSearch,
                   20,
                   1,
@@ -200,14 +198,23 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 totalDebits = pageCollectionInfo.TotalDebits;
                 availableBalanceCarriedForward = pageCollectionInfo.AvailableBalanceCarriedForward;
                 totalRecordCount = pageCollectionInfo.ItemsCount;
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                //searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
+
+
+                var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+
 
                 var response = new
                 {
                     draw = jQueryDataTablesModel.sEcho,
                     recordsTotal = totalRecordCount,
                     recordsFiltered = searchRecordCount,
-                    data = pageCollectionInfo.PageCollection,
+                    data = paginatedData,
                     summary = new
                     {
                         AvailableBalanceBroughtForward = availableBalanceBroughtForward,
@@ -287,8 +294,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             var tellers = await _channelService.FindTellerAsync(parseId, includeBalance, GetServiceHeader());
-
-
 
             if (tellers != null)
             {

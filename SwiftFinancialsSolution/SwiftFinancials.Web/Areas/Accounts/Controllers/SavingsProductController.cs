@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -58,19 +59,41 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
+            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            ViewBag.Commisions = commissionDTOs;
+            ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(string.Empty);
+            ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
+            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
+            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(SavingsProductDTO savingsProductDTO)
+        public async Task<ActionResult> Create(SavingsProductDTO savingsProductDTO, string[] commisionIds)
         {
+            ObservableCollection<CommissionDTO> commissionDTOs = new ObservableCollection<CommissionDTO>();
+            if (commisionIds != null && commisionIds.Any())
+            {
+                var selectedIds = commisionIds.Select(Guid.Parse).ToList();
+              
+                foreach (var commisionid in selectedIds)
+                {
+                    var commission = await _channelService.FindCommissionAsync(commisionid, GetServiceHeader());
+                    commissionDTOs.Add(commission);
+                }
+                // Process the selected IDs as needed
+            }
+
+
+
+
             savingsProductDTO.ValidateAll();
 
             if (!savingsProductDTO.HasErrors)
             {
-                await _channelService.AddSavingsProductAsync(savingsProductDTO, GetServiceHeader());
+            var results=  await _channelService.AddSavingsProductAsync(savingsProductDTO, GetServiceHeader());
 
+                await _channelService.UpdateCommissionsBySavingsProductIdAsync(results.Id, commissionDTOs,2,1,GetServiceHeader());
                 TempData["AlertMessage"] = "Savings Product created successfully";
 
                 return RedirectToAction("Index");

@@ -223,6 +223,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(productCode, jQueryDataTablesModel.sSearch, customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
             //var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeFilterInPageAsync(productCode, recordStatus, jQueryDataTablesModel.sSearch, 2, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
 
+            //var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+
+
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
@@ -262,8 +265,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (SelectedTeller != null && !SelectedTeller.IsLocked)
             {
                 var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-                    pageIndex,
-                    jQueryDataTablesModel.iDisplayLength,
+                   0, int.MaxValue,
                     (Guid)SelectedTeller.ChartOfAccountId,
                     startDate,
                     endDate,
@@ -280,15 +282,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
                     var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
-                    
+
                     totalRecordCount = pageCollectionInfo.ItemsCount;
 
                     //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
 
 
                     var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
-                    
-                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
 
                     return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
                 }
@@ -300,6 +302,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         }
 
+     
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -442,6 +445,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var proceedCashDepositAuthorizationRequest = default(bool);
 
             SelectedCustomerAccount = transactionModel.CustomerAccount;
+
+            _selectedCustomer = await _channelService.FindCustomerAsync(SelectedCustomerAccount.CustomerId, GetServiceHeader());
 
 
             System.Globalization.NumberFormatInfo _nfi = new CultureInfo("en-US", false).NumberFormat;
@@ -1201,6 +1206,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
 
+
+
+
             SelectedBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
 
@@ -1252,19 +1260,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
 
-            if (SelectedTeller.BookBalance - transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
-            {
-                MessageBox.Show(
-                    "Sorry, the transaction will reduce teller's balance below limit",
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
 
-                return Json(new { success = false, message = "Operation failed" });
-            }
+
 
             // if (SelectedTeller.BookBalance + transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
             // {
@@ -1304,6 +1301,37 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 case FrontOfficeTransactionType.CashWithdrawal:
                 case FrontOfficeTransactionType.CashWithdrawalPaymentVoucher:
+
+                
+                    if (SelectedTeller.BookBalance - transactionModel.TotalValue < SelectedCustomerAccount.CustomerAccountTypeTargetProductMinimumBalance)
+                    {
+
+                        MessageBox.Show("Sorry, this transaction will exceed the allowed minimum balance",
+                   "Cash Transaction",
+                   MessageBoxButtons.OK,
+                   MessageBoxIcon.Information,
+                   MessageBoxDefaultButton.Button1,
+                   MessageBoxOptions.ServiceNotification
+                   );
+
+                        return Json(new { success = false, message = "Operation failed" });
+
+
+                    }
+
+                    if (SelectedTeller.BookBalance - transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
+                    {
+                        MessageBox.Show(
+                            "Sorry, the transaction will reduce teller's balance below limit",
+                            "Cash Transaction",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information,
+                            MessageBoxDefaultButton.Button1,
+                            MessageBoxOptions.ServiceNotification
+                        );
+
+                        return Json(new { success = false, message = "Operation failed" });
+                    }
 
                     if (SelectedCustomerAccount != null)
                     {
@@ -1553,65 +1581,90 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (cashWithdrawalRequest.Category == (int)CashWithdrawalCategory.PaymentVoucher)
             {
 
-               //var pv = await _channelService.FindPaymentVoucher
+                //var pv = await _channelService.FindPaymentVoucher
                 SelectedCustomerAccount.Type = (int)FrontOfficeTransactionType.CashWithdrawalPaymentVoucher;
 
-                //transactionModel.PaymentVoucher 
-                // Fetch necessary data
+                // Fetch Cheque Books
                 var chequebooks = await _channelService.FindChequeBooksAsync();
-                var missingParameters = new List<string>();
-
-                // Find target cheque book
                 var targetChequeBook = chequebooks.FirstOrDefault(chq => chq.CustomerAccountId == SelectedCustomerAccount.Id);
+
                 if (targetChequeBook == null)
                 {
-                    missingParameters.Add("Cheque Book");
-                }
-
-                // Fetch payment vouchers
-                var paymentVouchers = targetChequeBook != null
-                    ? await _channelService.FindPaymentVouchersByChequeBookIdAsync(targetChequeBook.Id, GetServiceHeader())
-                    : null;
-
-                if (paymentVouchers == null || !paymentVouchers.Any())
-                {
-                    missingParameters.Add("Payment Vouchers");
-                }
-
-                // Fetch cash withdrawal request
-                var currentCashWithdrawalRequest = await _channelService.FindCashWithdrawalRequestAsync(cashWithdrawalRequestId, GetServiceHeader());
-                if (currentCashWithdrawalRequest == null)
-                {
-                    missingParameters.Add("Cash Withdrawal Request");
-                }
-
-                // Find target payment voucher
-                var targetPaymentVoucher = paymentVouchers?.FirstOrDefault(pv => pv.Id == currentCashWithdrawalRequest?.PaymentVoucherId);
-                if (targetPaymentVoucher == null)
-                {
-                    missingParameters.Add("Payment Voucher");
-                }
-
-                // Handle missing parameters
-                if (missingParameters.Any())
-                {
-                    var missingMessage = $"The operation can't proceed. Missing: {string.Join(", ", missingParameters)}.";
-
+                    var errorMessage = "Operation failed: Missing Cheque Book associated with the selected customer account.";
                     MessageBox.Show(
-                        missingMessage,
+                        errorMessage,
                         "Cash Transaction",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error,
                         MessageBoxDefaultButton.Button1,
                         MessageBoxOptions.ServiceNotification
                     );
-
-                    // Return failure response
-                    return Json(new { success = false, message = "Operation error: " + missingMessage });
+                    return Json(new { success = false, message = errorMessage });
                 }
 
+                // Fetch Payment Vouchers
+                var paymentVouchers = await _channelService.FindPaymentVouchersByChequeBookIdAsync(targetChequeBook.Id, GetServiceHeader());
+                if (paymentVouchers == null || !paymentVouchers.Any())
+                {
+                    var errorMessage = "Operation failed: No Payment Vouchers found for the associated Cheque Book.";
+                    MessageBox.Show(
+                        errorMessage,
+                        "Cash Transaction",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                    return Json(new { success = false, message = errorMessage });
+                }
+
+                // Fetch Cash Withdrawal Request
+                var currentCashWithdrawalRequest = await _channelService.FindCashWithdrawalRequestAsync(cashWithdrawalRequestId, GetServiceHeader());
+                if (currentCashWithdrawalRequest == null)
+                {
+                    var errorMessage = "Operation failed: Missing Cash Withdrawal Request for the given ID.";
+                    MessageBox.Show(
+                        errorMessage,
+                        "Cash Transaction",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                    return Json(new { success = false, message = errorMessage });
+                }
+
+                // Validate Target Payment Voucher
+                var targetPaymentVoucher = paymentVouchers.FirstOrDefault(pv => pv.Id == currentCashWithdrawalRequest.PaymentVoucherId);
+                if (targetPaymentVoucher == null)
+                {
+                    var errorMessage = "Operation failed: No Payment Voucher matches the Cash Withdrawal Request.";
+                    MessageBox.Show(
+                        errorMessage,
+                        "Cash Transaction",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1,
+                        MessageBoxOptions.ServiceNotification
+                    );
+                    return Json(new { success = false, message = errorMessage });
+                }
+
+                //// Proceed with successful operation
+                //var successMessage = "Operation successful.";
+                //MessageBox.Show(
+                //    successMessage,
+                //    "Cash Transaction",
+                //    MessageBoxButtons.OK,
+                //    MessageBoxIcon.Information,
+                //    MessageBoxDefaultButton.Button1,
+                //    MessageBoxOptions.ServiceNotification
+                //);
+                //return Json(new { success = true, message = successMessage });
+
+
                 // Assign data to the transaction model
-                
+
                 targetPaymentVoucher.Payee = cashWithdrawalRequest.PaymentVoucherPayee;
                 transactionModel.PaymentVoucher = targetPaymentVoucher;
 
@@ -2072,7 +2125,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.PaidDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 

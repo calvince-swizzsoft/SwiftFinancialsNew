@@ -6,6 +6,15 @@ var defaultCustomerFilter = $('#CustomerFilter').val();
 console.log(defaultCustomerFilter);
 console.log(defaultRecordStatus);
 
+function parseAspNetDate(dateString) {
+    if (dateString) {
+        const timestamp = parseInt(dateString.match(/\d+/)[0], 10); // Extract timestamp
+        const date = new Date(timestamp); // Convert to Date object
+        return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    }
+    return '';
+}
+
 //Refresh button for reloading the Datable after Applying the filters
 $('#CustomerModalFilterForm').on('submit', function (e) {
     e.preventDefault();
@@ -87,7 +96,7 @@ function fetchCustomerDetails(customerId) {
                 $('#StationZoneDivisionEmployerDescription').val(data.StationZoneDivisionEmployerDescription);
                 $('#StationId').val(data.StationId);
                 $('#StationDescription').val(data.StationDescription);
-                $('#RegistrationDate').val(data.RegistrationDate);
+                $('#RegistrationDate').val(parseAspNetDate(data.RegistrationDate));
                 $('#IdentificationNumber').val(data.IdentificationNumber);
                 $('#Reference1').val(data.Reference1);
                 $('#Reference2').val(data.Reference2);

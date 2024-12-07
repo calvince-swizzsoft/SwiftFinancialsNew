@@ -441,8 +441,6 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
         }
 
 
-
-
         [HttpPost]
         public async Task<JsonResult> CustomerIndex(JQueryDataTablesModel jQueryDataTablesModel, int recordStatus, string text, int customerFilter)
         {

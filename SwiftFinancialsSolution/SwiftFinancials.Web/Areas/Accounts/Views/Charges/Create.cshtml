@@ -6,6 +6,7 @@
     ViewBag.Title = "Create Charges";
 
     var chargeType = ViewBag.chargeType as List<SelectListItem>;
+    var commissions = ViewBag.LevyDTOs;
 }
 
 
@@ -33,9 +34,7 @@
 
         .nav-tabs a {
             text-decoration: none;
-            font-size: 14px;
             color: #333;
-            font-weight: bold; /* Set font weight to bold */
             padding: 10px 15px;
             border-bottom: 2px solid transparent;
             transition: border-bottom-color 0.3s ease-in-out;
@@ -51,6 +50,8 @@
                 color: #007bff;
             }
 </style>
+
+
 
 
 <style>
@@ -73,7 +74,6 @@
         }
 
         #ChargeSplits th {
-            font-weight: bold;
         }
 
         #ChargeSplits tbody tr:nth-child(even) {
@@ -267,7 +267,7 @@
                                 <!-- General Tab -->
                                 <!--<div class="tab-pane fade show active" id="general" role="tabpanel">
 
-                                </div>-->
+    </div>-->
                                 <!-- Charge Splitting Tab -->
                                 <div class="tab-pane fade show active" id="splitting" role="tabpanel">
                                     <fieldset>
@@ -286,21 +286,18 @@
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.chargeSplit[0].Description, htmlAttributes: new { @class = "" })
                                                     @Html.EditorFor(model => model.chargeSplit[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Split Name" } })
-                                                    @Html.ValidationMessageFor(model => model.chargeSplit[0].Description, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
                                                     @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.00000%" } })
-                                                    @Html.ValidationMessageFor(model => model.chargeSplit[0].Percentage, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
                                             <div class="col-lg-2">
                                                 <div class="form-group form-group-lg" style="margin-top: 30px;">
                                                     @Html.CheckBoxFor(model => model.chargeSplit[0].Leviable, htmlAttributes: new { @class = "" })
                                                     @Html.LabelFor(model => model.chargeSplit[0].Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                                    @Html.ValidationMessageFor(model => model.chargeSplit[0].Leviable, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
                                         </div>
@@ -351,78 +348,181 @@
 
                                 <!-- Charge Tiers Tab -->
                                 <div class="tab-pane fade" id="tiers" role="tabpanel">
-                                    <fieldset>
-                                        <h3 class="text-primary">Charge Tiers</h3>
-                                        <div class="row mb-3">
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.ChargeType, new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.ChargeType, chargeType, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.ChargeType)
+                                    @using (Html.BeginForm("Chargetiers", "Charges", new { Area = "Accounts" }, FormMethod.Post))
+                                    {
+                                        <fieldset>
+                                            <h3 class="text-primary">Charge Tiers</h3>
+                                            <div class="row mb-3">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.ChargeType, new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.ChargeType, chargeType, new { @class = "form-control input-md", id = "ChargeType" })
+                                                            @Html.ValidationMessageFor(model => model.ChargeType)
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.fixedeposite[0].RangeLowerLimit, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                        @Html.EditorFor(model => model.fixedeposite[0].RangeLowerLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Lower Limit", id = "RangeLowerLimit" } })
+                                                    </div>
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.fixedeposite[0].RangeUpperLimit, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                        @Html.EditorFor(model => model.fixedeposite[0].RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Upper Limit", id = "RangeUpperLimit" } })
                                                     </div>
                                                 </div>
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.fixedeposite[0].Percentage, htmlAttributes: new { @class = "form-label fw-bold" })
-                                                    @Html.EditorFor(model => model.fixedeposite[0].Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Upper Limit" } })
-                                                    @Html.ValidationMessageFor(model => model.fixedeposite[0].Percentage, "", new { @class = "text-danger" })
-                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.fixedeposite[0].ChargePercentage, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                        @Html.EditorFor(model => model.fixedeposite[0].ChargePercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Percentage", id = "Percentage" } })
+                                                    </div>
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.fixedeposite[0].ChargeFixedAmount, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                        @Html.EditorFor(model => model.fixedeposite[0].ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Percentage", id = "Percentage" } })
+                                                    </div>
 
-                                            </div>
-                                            <div class="col-lg-6">
-                                                @*<div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.fixedeposite[0].FIXED, htmlAttributes: new { @class = "form-label fw-bold" })
-                                                    @Html.EditorFor(model => model.fixedeposite[0].RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Upper Limit" } })
-                                                    @Html.ValidationMessageFor(model => model.fixedeposite[0].RangeUpperLimit, "", new { @class = "text-danger" })
-                                                </div>*@
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.fixedeposite[0].RangeUpperLimit, htmlAttributes: new { @class = "form-label fw-bold" })
-                                                    @Html.EditorFor(model => model.fixedeposite[0].RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Upper Limit" } })
-                                                    @Html.ValidationMessageFor(model => model.fixedeposite[0].RangeUpperLimit, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                        </div>
-                                    </fieldset>
+                                            <button type="button" id="addChargeTierBtn" class="btn btn-primary">Add Charge Tier</button>
+
+                                        </fieldset>
+
+                                        <!-- Data Table -->
+                                        <table class="table table-bordered" id="chargeTiersTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Charge Type</th>
+                                                    <th>Range Lower Limit</th>
+                                                    <th>Range Upper Limit</th>
+                                                    <th>Percentage</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Rows will be appended dynamically here -->
+                                            </tbody>
+                                        </table>
+
+                                        <script>
+    $(document).ready(function () {
+        // Load existing data from localStorage on page load
+        const storedData = localStorage.getItem('chargeTiers');
+        if (storedData) {
+            const rows = JSON.parse(storedData).map(scale => `
+                <tr>
+                    <td>${scale.ChargeType}</td>
+                    <td>${scale.RangeLowerLimit}</td>
+                    <td>${scale.RangeUpperLimit}</td>
+                    <td>${scale.Percentage}</td>
+                </tr>
+            `);
+            $('#chargeTiersTable tbody').html(rows.join(''));
+        }
+
+        $('#addChargeTierBtn').click(function () {
+            const data = {
+                ChargeType: $('#ChargeType').val(),
+                fixedeposite: [{
+                    RangeLowerLimit: $('#RangeLowerLimit').val(),
+                    RangeUpperLimit: $('#RangeUpperLimit').val(),
+                    Percentage: $('#Percentage').val()
+                }]
+            };
+
+            // Save to server
+            $.ajax({
+                url: '@Url.Action("Chargetiers")',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    if (response.success) {
+                        // Append the new row to the table
+                        const row = `
+                            <tr>
+                                <td>${data.ChargeType}</td>
+                                <td>${data.fixedeposite[0].RangeLowerLimit}</td>
+                                <td>${data.fixedeposite[0].RangeUpperLimit}</td>
+                                <td>${data.fixedeposite[0].Percentage}</td>
+                            </tr>`;
+                        $('#chargeTiersTable tbody').append(row);
+
+                        // Save to localStorage
+                        const existingData = JSON.parse(localStorage.getItem('chargeTiers')) || [];
+                        existingData.push({
+                            ChargeType: data.ChargeType,
+                            RangeLowerLimit: data.fixedeposite[0].RangeLowerLimit,
+                            RangeUpperLimit: data.fixedeposite[0].RangeUpperLimit,
+                            Percentage: data.fixedeposite[0].Percentage
+                        });
+                        localStorage.setItem('chargeTiers', JSON.stringify(existingData));
+
+                        // Clear input fields
+                        $('#ChargeType').val('');
+                        $('#RangeLowerLimit').val('');
+                        $('#RangeUpperLimit').val('');
+                        $('#Percentage').val('');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing the request.');
+                }
+            });
+        });
+
+        // Clear localStorage on page unload (when navigating away)
+        $(window).on('beforeunload', function () {
+            localStorage.removeItem('chargeTiers');
+        });
+    });
+                                        </script>
+
+
+                                    }
                                 </div>
 
                                 <!-- Levies Tab -->
-                                <div class="tab-pane fade" id="levies" role="tabpanel">
-                                    <fieldset>
-                                        <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
-                                            <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
-                                                <thead style="background-color: #4682b4; color: #fff;">
+                                <form id="commissionForm" method="post" action="@Url.Action("Create", "Charges", new { area = "Accounts" })">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Select</th>
+                                                <th>Commission Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (commissions != null)
+                                            {
+                                                foreach (var commission in commissions)
+                                                {
                                                     <tr>
-                                                        <th data-toggle="true">Description</th>
+                                                        <td>
+                                                            <input type="checkbox" name="commissionIds" value="@commission.Id" />
+                                                        </td>
+                                                        <td>@commission.Description</td>
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (ViewBag.LevyDTOs != null)
-                                                    {
-                                                        foreach (var save in ViewBag.LevyDTOs)
-                                                        {
-                                                            <tr style="background-color: #f5f5f5;">
-                                                                <td>
-                                                                    <input type="checkbox"
-                                                                           class="savings-checkbox"
-                                                                           name="savingsproductIds"
-                                                                           value="@save.Id"
-                                                                           @(ViewBag.LevyDTOs) />
-                                                                    @save.Description
-                                                                </td>
-                                                            </tr>
-                                                        }
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </fieldset>
-                                </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="2">No commissions available</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+
                             </div>
                         </div>
 
                     }
                 </div>
+
+
+
 
                 <div class="ibox-content bg-white text-info">
                     @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post))
@@ -482,6 +582,102 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+<script>document.getElementById("commissionForm").addEventListener("submit", function (event) {
+        const selected = document.querySelectorAll('input[name="commissionIds"]:checked');
+        if (selected.length === 0) {
+            event.preventDefault();
+            alert("Please select at least one commission.");
+        }
+    });
+</script>
+    @*<script>$(document).ready(function () {
+                // Load table data from localStorage
+                const storedData = localStorage.getItem('chargeTiers');
+                if (storedData) {
+                    const rows = JSON.parse(storedData).map(scale => `
+                    <tr>
+                        <td>${scale.ChargeType}</td>
+                        <td>${scale.RangeLowerLimit}</td>
+                        <td>${scale.RangeUpperLimit}</td>
+                        <td>${scale.Percentage}</td>
+                    </tr>
+                `);
+                    $('#chargeTiersTable tbody').html(rows.join(''));
+                }
+
+                $('#addChargeTierBtn').click(function () {
+                    const data = {
+                        ChargeType: $('#ChargeType').val(),
+                        RangeLowerLimit: $('#RangeLowerLimit').val(),
+                        RangeUpperLimit: $('#RangeUpperLimit').val(),
+                        Percentage: $('#Percentage').val()
+                    };
+
+                    // Append to table
+                    const row = `
+                    <tr>
+                        <td>${data.ChargeType}</td>
+                        <td>${data.RangeLowerLimit}</td>
+                        <td>${data.RangeUpperLimit}</td>
+                        <td>${data.Percentage}</td>
+                    </tr>`;
+                    $('#chargeTiersTable tbody').append(row);
+
+                    // Save to localStorage
+                    const existingData = JSON.parse(localStorage.getItem('chargeTiers')) || [];
+                    existingData.push(data);
+                    localStorage.setItem('chargeTiers', JSON.stringify(existingData));
+
+                    // Clear input fields
+                    $('#ChargeType').val('');
+                    $('#RangeLowerLimit').val('');
+                    $('#RangeUpperLimit').val('');
+                    $('#Percentage').val('');
+                });
+            });
+        </script>*@
+    @*<script>
+        $(document).ready(function () {
+            // Save all data from the table to the server
+            $('#saveAllBtn').click(function () {
+                const chargeTiers = [];
+
+                // Collect data from the table rows
+                $('#chargeTiersTable tbody tr').each(function () {
+                    const row = $(this);
+                    const chargeTier = {
+                        ChargeType: row.find('td:eq(0)').text(),
+                        fixedeposite: [{
+                            RangeLowerLimit: row.find('td:eq(1)').text(),
+                            RangeUpperLimit: row.find('td:eq(2)').text(),
+                            Percentage: row.find('td:eq(3)').text()
+                        }]
+                    };
+                    chargeTiers.push(chargeTier);
+                });
+
+                // Send data to the server
+                $.ajax({
+                    url: '@Url.Action("SaveChargeTiers")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({ chargeTiers: chargeTiers }),
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Charge tiers saved successfully!');
+                        } else {
+                            alert('Failed to save charge tiers: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while saving the charge tiers.');
+                    }
+                });
+            });
+        });
+        </script>*@
+
+
 
     <script>
 $(document).ready(function () {
@@ -861,7 +1057,6 @@ $(document).ready(function () {
             border: none;
             border-radius: 8px;
             padding: 10px 20px;
-            font-size: 16px;
             font-family: 'Arial', sans-serif;
             color: white;
             cursor: not-allowed;

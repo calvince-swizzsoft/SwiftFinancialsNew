@@ -335,7 +335,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     collaterals[i].ModifiedDate = Convert.ToDateTime(collaterals[i].ModifiedDate);
                 }
 
-                
+
                 return Json(new
                 {
                     success = true,
@@ -361,7 +361,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     }
                 });
             }
-            return Json(new { success = false, message = "Customer not found" });
+            return Json(new { success = false, message = "Customer Account not found" });
         }
 
         public async Task<ActionResult> LoanPurposeLookup(Guid? id, LoanCaseDTO loanCaseDTO)
@@ -781,8 +781,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-
-
         [HttpPost]
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO, string collateralIds)
         {
@@ -851,16 +849,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             ObservableCollection<CustomerDocumentDTO> collateralDocuments = new ObservableCollection<CustomerDocumentDTO>(dc);
 
 
-
-            var takeBranchId = Guid.Empty;
-
-            var findBranch = await _channelService.FindBranchesAsync(GetServiceHeader());
-            foreach (var id in findBranch)
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (userDTO.BranchId != null)
             {
-                takeBranchId = id.Id;
+                loanCaseDTO.BranchId = (Guid)userDTO.BranchId;
             }
 
-            loanCaseDTO.BranchId = takeBranchId;
 
             var loanProduct = await _channelService.FindLoanProductAsync(loanCaseDTO.LoanProductId, GetServiceHeader());
 
@@ -1025,7 +1019,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 {
                     await ServeNavigationMenus();
 
-                    var errorMessages = loanCaseDTO.ErrorMessages;
                     ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
                     ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                     ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
@@ -1035,7 +1028,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
 
-                    MessageBox.Show(Form.ActiveForm, "Operation failed.", "Loan Registration", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    var errorMessages = loanCaseDTO.ErrorMessages;
+                    string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
+                    MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful: {errorMessage}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
                     return View(loanCaseDTO);
                 }
 

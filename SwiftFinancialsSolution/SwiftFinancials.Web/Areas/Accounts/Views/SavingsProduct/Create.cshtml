@@ -1,9 +1,14 @@
 ﻿@model  Application.MainBoundedContext.DTO.AccountsModule.SavingsProductDTO
+@using System.Linq
 
 @{
     /**/
 
     ViewBag.Title = "Create Savings Product";
+    var commissions = ViewBag.Commisions;
+    var queuePriorities = ViewBag.SystemTransactionType as List<SelectListItem>;
+    var Charge = ViewBag.ChargeBenefactor as List<SelectListItem>;
+    var Alternate = ViewBag.AlternateChannelType as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -73,7 +78,7 @@
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
-                                    
+
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.MaximumAllowedDeposit, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.MaximumAllowedDeposit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Allowed Deposit", @required = "" } })
@@ -167,6 +172,65 @@
                             </div>
                         </fieldset>
 
+                        <h1>Charges</h1>
+                        <fieldset>
+                            <legend>Select Commissions</legend>
+                            <form id="commissionForm" method="post" action="@Url.Action("Create", "SavingsProduct", new { area = "Accounts" })">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="col-md-12 form-group">
+                                            @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Priority, Charge, new { @class = "form-control input-md", style = "border: 1px solid #ccc;" })
+                                                @Html.ValidationMessageFor(model => model.Priority)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Priority, queuePriorities, new { @class = "form-control input-md", style = "border: 1px solid #ccc;" })
+                                                @Html.ValidationMessageFor(model => model.Priority)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input type="text" id="commissionSearch" class="form-control mb-3" placeholder="Search Commissions ..." onkeyup="filterCommissions()" />
+
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Commission Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (commissions != null)
+                                        {
+                                            foreach (var commission in commissions)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="commissionIds" value="@commission.Id" />
+                                                    </td>
+                                                    <td>@commission.Description</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </form>
+                        </fieldset>
                     }
                 </div>
             </div>
@@ -183,6 +247,24 @@
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
+
+    <script>
+        function filterCommissions() {
+            var input = document.getElementById("commissionSearch");
+            var filter = input.value.toLowerCase();
+            var table = document.querySelector("table tbody");
+            var rows = table.querySelectorAll("tr");
+
+            rows.forEach(function (row) {
+                var description = row.querySelector("td:nth-child(2)") ? row.querySelector("td:nth-child(2)").innerText.toLowerCase() : '';
+                if (description.indexOf(filter) > -1) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    </script>
 
     <script>
         $(document).ready(function () {

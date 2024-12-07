@@ -854,7 +854,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         [Description("Verified")]
         Audited = 0xBEBA + 6,
         [Description("Restructured")]
-        Restructured = 0xBEBA + 7,
+        Restructured = 0xBEBA + 7, //48833
     }
 
     public enum LoanCaseFilter

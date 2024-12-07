@@ -955,11 +955,11 @@
                                     </div>
 
                                     <div class="tab">
-                                        <button class="tablinks active" onclick="openTab(event, 'MainTab8')"><i class="fa fa-table" aria-hidden="true"></i> Attached Loans</button>
-                                        <button class="tablinks" onclick="openTab(event, 'MainTab9')"><i class="fa fa-table" aria-hidden="true"></i> Repayment Schedule</button>
+                                        <button class="tablinks active" onclick="openTab(event, 'Tab8')"><i class="fa fa-table" aria-hidden="true"></i> Attached Loans</button>
+                                        <button class="tablinks" onclick="openTab(event, 'Tab9')"><i class="fa fa-table" aria-hidden="true"></i> Repayment Schedule</button>
                                     </div>
 
-                                    <div id="MainTab8" class="tabcontent" style="display: block;">
+                                    <div id="Tab8" class="tabcontent" style="display: block;">
                                         <div class="tab-content">
                                             <div class="table-container">
                                                 <h3 style="font-size: 1.9rem; text-align: center;">Attached Loans</h3>
@@ -982,7 +982,7 @@
                                     </div>
 
 
-                                    <div id="MainTab9" class="tabcontent">
+                                    <div id="Tab9" class="tabcontent">
                                         <div class="tab-content">
                                             <div class="table-container">
                                                 <h3 style="font-size: 1.9rem; text-align: center;">Repayment Schedule</h3>
@@ -1166,6 +1166,62 @@
         document.getElementById("SubSubTab1-1-1").style.display = "block";
     </script>
 
+
+
+    <script>
+        function openTab(evt, tabName) {
+            evt.preventDefault();
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubTab(evt, subTabName) {
+            evt.preventDefault();
+            var i, subtabcontent, subtablinks;
+            subtabcontent = document.getElementsByClassName("subtabcontent");
+            for (i = 0; i < subtabcontent.length; i++) {
+                subtabcontent[i].style.display = "none";
+            }
+            subtablinks = document.getElementsByClassName("subtablinks");
+            for (i = 0; i < subtablinks.length; i++) {
+                subtablinks[i].className = subtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubSubTab(evt, subSubTabName) {
+            evt.preventDefault();
+            var i, subsubtabcontent, subsubtablinks;
+            subsubtabcontent = document.getElementsByClassName("subsubtabcontent");
+            for (i = 0; i < subsubtabcontent.length; i++) {
+                subsubtabcontent[i].style.display = "none";
+            }
+            subsubtablinks = document.getElementsByClassName("subsubtablinks");
+            for (i = 0; i < subsubtablinks.length; i++) {
+                subsubtablinks[i].className = subsubtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subSubTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        document.getElementById("Tab1").style.display = "block";
+        document.getElementById("SubTab1-1").style.display = "block";
+        document.getElementById("SubSubTab1-1-1").style.display = "block";
+    </script>
+
+
+
+
     <script>
        $('#incomeAdjustmentsGrid').DataTable({
                 // Ajax settings
@@ -1231,7 +1287,6 @@
         }
     </script>
 
-
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -1267,12 +1322,12 @@
 
                 var tableBody = $("#incomeAdjustmentsdataTable tbody");
                 var newRow = `
-                                                    <tr data-id="${incomeAdjustmentId}">
-                                                        <td>${description}</td>
-                                                        <td>${typeDescription}</td>
-                                                        <td style="text-align: right;">${amount}</td>
-                                                        <td><button type="button" class="btn btn-danger remove-entry" data-id="${incomeAdjustmentId}">Remove</button></td>
-                                                    </tr>`;
+                                                        <tr data-id="${incomeAdjustmentId}">
+                                                            <td>${description}</td>
+                                                            <td>${typeDescription}</td>
+                                                            <td style="text-align: right;">${amount}</td>
+                                                            <td><button type="button" class="btn btn-danger remove-entry" data-id="${incomeAdjustmentId}">Remove</button></td>
+                                                        </tr>`;
                 tableBody.append(newRow);
 
                 // Clear the input fields after adding to the table
@@ -1297,9 +1352,6 @@
             });
         });
     </script>
-
-
-
 
     <script>
         $(document).ready(function () {
@@ -1334,7 +1386,6 @@
             });
         });
     </script>
-
 
     <script>
     document.addEventListener("DOMContentLoaded", function() {

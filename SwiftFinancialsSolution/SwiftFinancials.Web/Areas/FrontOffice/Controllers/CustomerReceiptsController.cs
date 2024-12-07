@@ -77,22 +77,18 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
-        
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
-            //var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
-            var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+            var selectedTeller = await GetCurrentTeller();
 
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
 
-            DateTime startDate = DateTime.Now;
+            //DateTime startDate = DateTime.Now;
 
-            DateTime endDate = DateTime.Now;
+            //DateTime endDate = DateTime.Now;
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
@@ -102,14 +98,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
 
-            if (currentTeller != null)
+
+            if (selectedTeller != null && !selectedTeller.IsLocked)
             {
                 var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-                    pageIndex,
-                    jQueryDataTablesModel.iDisplayLength,
-                    (Guid)currentTeller.ChartOfAccountId,
-                    currentPostingPeriod.DurationStartDate,
-                    currentPostingPeriod.DurationEndDate,
+                   0, int.MaxValue,
+                    (Guid)selectedTeller.ChartOfAccountId,
+                    startDate,
+                    endDate,
                     jQueryDataTablesModel.sSearch,
                     20,
                     1,
@@ -120,15 +116,20 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
                 {
+
+
+                    var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
+
                     totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                    //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
 
-                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
 
+                    var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
 
-                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
 
-                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                    return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
                 }
                 else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
 
@@ -137,6 +138,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
 
         }
+
 
 
         public async Task<ActionResult> Create(Guid? id)
@@ -240,8 +242,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
 
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+            //var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
 
+            var currentTeller = await GetCurrentTeller(); 
             
             model.BranchId = currentTeller.EmployeeBranchId;
 
@@ -341,6 +344,48 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+
+        private async Task<TellerDTO> GetCurrentTeller()
+        {
+
+            // Get the current user
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+
+            var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
+            var targetCustomer = customers?.FirstOrDefault(c => c.AddressEmail == user.Email);
+
+            if (targetCustomer == null)
+            {
+                TempData["Error"] = "Customer not found.";
+                return null;
+            }
+
+            var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
+            var selectedEmployee = employees?.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
+
+            if (selectedEmployee == null)
+            {
+                TempData["Error"] = "Employee not found for the customer.";
+                return null;
+            }
+
+            var teller = await _channelService.FindTellerByEmployeeIdAsync(selectedEmployee.Id, false, GetServiceHeader());
+
+            if (teller == null)
+            {
+                TempData["Missing Teller"] = "You are working without a Recognized Teller";
+            }
+
+            var generalLedgerAccount = await _channelService.FindGeneralLedgerAccountAsync((Guid)teller.ChartOfAccountId, true, GetServiceHeader());
+
+            teller.BookBalance = generalLedgerAccount.Balance;
+
+
+            return teller;
+
         }
 
     }
