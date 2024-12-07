@@ -543,7 +543,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@Url.Action("Index", "Customer", new { Area = "Registry" })",
+                "sAjaxSource": "@Url.Action("customer", "MicroCreditGroups", new { Area = "Registry" })",
                 "sServerMethod": "POST",
                 "fnServerData": function (sSource, aoData, fnCallback) {
                     $.ajax({
