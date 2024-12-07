@@ -1074,13 +1074,13 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    @*<script>
+    <script>
             document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                     checkbox.disabled = true;
                 });
             });
-        </script>*@
+        </script>
     <script>
         function submitForm() {
             document.getElementById("form").submit();
