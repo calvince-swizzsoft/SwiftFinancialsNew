@@ -190,6 +190,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 using (var command = new SqlCommand(query, connection))
                 {
+
                     command.Parameters.AddWithValue("@CustomerId", id);
 
                     using (var reader = await command.ExecuteReaderAsync())
