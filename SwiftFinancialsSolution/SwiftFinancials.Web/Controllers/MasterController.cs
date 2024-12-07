@@ -771,6 +771,24 @@ namespace SwiftFinancials.Web.Controllers
             return salaryHead;
         }
 
+
+        [NonAction]
+        protected List<SelectListItem> GetSalaryHeadCategorySelectList(string selectedValue)
+        {
+            List<SelectListItem> salaryHeadCategory= new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(SalaryHeadCategory)).Cast<SalaryHeadCategory>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            salaryHeadCategory.AddRange(items);
+
+            return salaryHeadCategory;
+        }
+
         [NonAction]
         protected List<SelectListItem> GetValueGroupTypeSelectList(string selectedValue)
         {

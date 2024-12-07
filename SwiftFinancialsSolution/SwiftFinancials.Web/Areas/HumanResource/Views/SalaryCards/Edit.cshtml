@@ -143,29 +143,37 @@
                                     <div class="card-body text-dark">
                                         <!-- Employee and Salary Group Details -->
                                         <div class="row">
+
                                             <div class="col-lg-6">
                                                 @Html.LabelFor(model => model.EmployeeCustomerFullName, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.EmployeeId, new { id = "EmployeeId" })
                                                 <div class="input-group">
-                                                    @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control", id = "EmployeeCustomerFullName", @readonly = "readonly" } })
-                                                    <div class="input-group-append">
-                                                        <a data-toggle="modal" data-target="#employeeLookup" class="btn btn-outline-secondary">
-                                                            <i class="fa fa-search"></i>
+                                                    @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "EmployeeCustomerFullName", @readonly = "" } })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#employeeLookup">
+                                                            <span class="fa fa-search"></span>
                                                         </a>
-                                                    </div>
+                                                    </span>
                                                 </div>
+                                                @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
                                             </div>
 
                                             <div class="col-lg-6">
                                                 @Html.LabelFor(model => model.SalaryGroupDescription, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.SalaryGroupId, new { id = "SalaryGroupId" })
                                                 <div class="input-group">
-                                                    @Html.EditorFor(model => model.SalaryGroupDescription, new { htmlAttributes = new { @class = "form-control", id = "SalaryGroupDescription", @readonly = "readonly" } })
-                                                    <div class="input-group-append">
-                                                        <a data-toggle="modal" data-target="#salaryGroupLookup" class="btn btn-outline-secondary">
-                                                            <i class="fa fa-search"></i>
+                                                    @Html.EditorFor(model => model.SalaryGroupDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "SalaryGroupDescription", @readonly = "" } })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#salaryGroupLookup">
+                                                            <span class="fa fa-search"></span>
                                                         </a>
-                                                    </div>
+                                                    </span>
                                                 </div>
+                                                @Html.ValidationMessageFor(model => model.SalaryGroupDescription, "", new { @class = "text-danger" })
                                             </div>
+
+
+
                                         </div>
 
                                         <!-- Tax Exemption, Insurance Relief, and Remarks -->

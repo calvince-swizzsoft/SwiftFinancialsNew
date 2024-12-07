@@ -1025,13 +1025,13 @@
                                                                     </div>
                                                                 </div>
 
-                                                                <div id="investmentsProductSection" class="col-lg-6">
+                                                                <div id="investmentsProductSection" class="col-lg-6" style="display:none; text-align: left;">
                                                                     <div class="">
                                                                         <div class="form-group form-group-lg">
                                                                             @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @class = "control-label" })
                                                                             <div class="input-group" data-autoclose="true">
                                                                                 @Html.HiddenFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @id = "ProductId" })
-                                                                                @Html.TextBoxFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductDescription, new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control input-md alpha alphaspace required", @placeholder = "Lookup Loan product...", @readonly = "readonly" })
+                                                                                @Html.TextBoxFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductDescription, new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control input-md alpha alphaspace required", @placeholder = "Lookup Investment product...", @readonly = "readonly" })
                                                                                 <span class="input-group-addon">
                                                                                     <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
                                                                                 </span>

@@ -237,31 +237,35 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             loanCase.ValidateAll();
 
-            if (!loanCase.HasErrors)
-            {
-                var submit = await _channelService.RestructureLoanAsync(loanCaseDTO.BranchId, loanCaseDTO.CustomerAccountId, loanCaseDTO.NumberOfPeriods, loanCaseDTO.PaymentPerPeriod,
+            var submit = await _channelService.RestructureLoanAsync(loanCaseDTO.BranchId, loanCaseDTO.CustomerAccountId, loanCaseDTO.NumberOfPeriods, loanCaseDTO.PaymentPerPeriod,
                     loanCaseDTO.Reference, 1234, GetServiceHeader());
+            return View();
 
-                if (submit == false)
-                {
-                    TempData["ExistingLoanCase"] = "Sorry, but selected customer has a loan case for the selected product currently undergoing processing!";
-                    return View();
-                }
+            //if (!loanCase.HasErrors)
+            //{
+            //    var submit = await _channelService.RestructureLoanAsync(loanCaseDTO.BranchId, loanCaseDTO.CustomerAccountId, loanCaseDTO.NumberOfPeriods, loanCaseDTO.PaymentPerPeriod,
+            //        loanCaseDTO.Reference, 1234, GetServiceHeader());
 
-                TempData["Create"] = "Loan Restructuring Successful";
+            //    if (submit == false)
+            //    {
+            //        TempData["ExistingLoanCase"] = "Sorry, but selected customer has a loan case for the selected product currently undergoing processing!";
+            //        return View();
+            //    }
 
-                Session.Remove("productId");
-                Session.Remove("customerAccountDTO");
+            //    TempData["Create"] = "Loan Restructuring Successful";
 
-                Session.Clear();
+            //    Session.Remove("productId");
+            //    Session.Remove("customerAccountDTO");
 
-                return View();
-            }
-            else
-            {
-                var errorMessages = loanCaseDTO.ErrorMessages;
-                return View();
-            }
+            //    Session.Clear();
+
+            //    return View();
+            //}
+            //else
+            //{
+            //    var errorMessages = loanCaseDTO.ErrorMessages;
+            //    return View();
+            //}
         }
     }
 }

@@ -9,7 +9,7 @@
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Edit Salary Group</h2>
+        <h2>Create Salary Group</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -78,16 +78,17 @@
                 <div class="card">
                     <div class="card-body">
 
-                        @using (Html.BeginForm("Create", "SalaryGroups", new { Area = "HumanResource" }, FormMethod.Post))
+                        @using (Html.BeginForm("Edit", "SalaryGroups", new { Area = "HumanResource" }, FormMethod.Post))
                         {
                             @Html.AntiForgeryToken()
-
 
 
                             <fieldset>
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <!-- Hidden fields -->
+                                        @Html.HiddenFor(model => model.Id)
+
                                         @Html.HiddenFor(model => model.SalaryGroupEntries[0].SalaryHeadIsOneOff, new { id = "SalaryHeadIsOneOff" })
                                         @Html.HiddenFor(model => model.SalaryGroupEntries[0].SalaryHeadCustomerAccountTypeTargetProductId, new { id = "SalaryHeadCustomerAccountTypeTargetProductId" })
                                         @Html.HiddenFor(model => model.SalaryGroupEntries[0].SalaryHeadCustomerAccountTypeTargetProductCode, new { id = "SalaryHeadCustomerAccountTypeTargetProductCode" })
@@ -198,7 +199,9 @@
                                             <tr>
                                                 <th>Salary Head</th>
                                                 <th>Charge Type</th>
-                                                <th>Fixed Amount</th>
+                                                <th>Charge Fixed Amount</th>
+                                                <th>Charge Percentage</th>
+
                                                 <th>Minimum Value</th>
                                                 <th>Rounding Type</th>
                                                 <th>Actions</th>
@@ -216,7 +219,7 @@
                             <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
 
 
-                                <input type="submit" value="Create" class="btn btn-primary btn-update" />
+                                <input type="submit" value="Update" class="btn btn-primary btn-update" />
 
                             </div>
 
@@ -535,7 +538,7 @@
             var entryTableBody = document.querySelector('#entryTable tbody');
 
             // Store entries in a JavaScript array
-            var entries = [];
+            var salaryGroupEntries = [];
 
             // Dropdown change handler
             dropdown.addEventListener('change', function () {
@@ -555,20 +558,29 @@
             addEntryButton.addEventListener('click', function () {
                 var salaryHeadDescription = document.getElementById('SalaryHeadDescription').value;
                 var chargeType = dropdown.options[dropdown.selectedIndex].text;
-                var chargeValue = dropdown.value === '0' || dropdown.value === '1'
-                    ? document.querySelector('#percentageSection input').value
-                    : document.querySelector('#fixedAmountSection input').value;
+                var chargeFixedAmount = document.querySelector('#fixedAmountSection input').value || '';
+                var chargePercentage = document.querySelector('#percentageSection input').value || '';
                 var minimumValue = document.querySelector('input[name="SalaryGroupEntries[0].MinimumValue"]').value;
                 var roundingType = dropdown.value;
 
+                // Fetch hidden field values
+                var salaryHeadIsOneOff = document.getElementById('SalaryHeadIsOneOff').value;
+                var salaryHeadCustomerAccountTypeTargetProductId = document.getElementById('SalaryHeadCustomerAccountTypeTargetProductId').value;
+                var salaryHeadCustomerAccountTypeTargetProductCode = document.getElementById('SalaryHeadCustomerAccountTypeTargetProductCode').value;
+                var salaryHeadCustomerAccountTypeProductCode = document.getElementById('SalaryHeadCustomerAccountTypeProductCode').value;
+                var salaryHeadCategoryDescription = document.getElementById('SalaryHeadCategoryDescription').value;
+                var salaryHeadChartOfAccountId = document.getElementById('SalaryHeadChartOfAccountId').value;
+                var salaryHeadTypeDescription = document.getElementById('SalaryHeadTypeDescription').value;
+                var salaryHeadId = document.getElementById('SalaryHeadId').value;
+
                 // Validate inputs
-                if (!salaryHeadDescription || !chargeValue || !minimumValue) {
+                if (!salaryHeadDescription || (!chargeFixedAmount && !chargePercentage) || !minimumValue) {
                     alert("All fields must be filled out before adding an entry.");
                     return;
                 }
 
                 // Check for duplicates
-                if (entries.some(entry => entry.SalaryHeadDescription === salaryHeadDescription)) {
+                if (salaryGroupEntries.some(entry => entry.SalaryHeadDescription === salaryHeadDescription)) {
                     alert("An entry with the same Salary Head Description already exists.");
                     return;
                 }
@@ -577,32 +589,42 @@
                 var newEntry = {
                     SalaryHeadDescription: salaryHeadDescription,
                     ChargeType: chargeType,
-                    ChargeValue: chargeValue,
+                    ChargeFixedAmount: chargeFixedAmount,
+                    ChargePercentage: chargePercentage,
                     MinimumValue: minimumValue,
-                    RoundingType: roundingType
+                    RoundingType: roundingType,
+                    SalaryHeadIsOneOff: salaryHeadIsOneOff,
+                    SalaryHeadCustomerAccountTypeTargetProductId: salaryHeadCustomerAccountTypeTargetProductId,
+                    SalaryHeadCustomerAccountTypeTargetProductCode: salaryHeadCustomerAccountTypeTargetProductCode,
+                    SalaryHeadCustomerAccountTypeProductCode: salaryHeadCustomerAccountTypeProductCode,
+                    SalaryHeadCategoryDescription: salaryHeadCategoryDescription,
+                    SalaryHeadChartOfAccountId: salaryHeadChartOfAccountId,
+                    SalaryHeadTypeDescription: salaryHeadTypeDescription,
+                    SalaryHeadId: salaryHeadId
                 };
 
                 // Add to entries array
-                entries.push(newEntry);
+                salaryGroupEntries.push(newEntry);
 
                 // Append to table
                 var row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${salaryHeadDescription}</td>
-                    <td>${chargeType}</td>
-                    <td>${chargeValue}</td>
-                    <td>${minimumValue}</td>
-                    <td>${roundingType}</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm remove-entry">Remove</button>
-                    </td>
-                `;
+                <td>${salaryHeadDescription}</td>
+                <td>${chargeType}</td>
+                <td>${chargeFixedAmount}</td>
+                <td>${chargePercentage}</td>
+                <td>${minimumValue}</td>
+                <td>${roundingType}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm remove-entry">Remove</button>
+                </td>
+            `;
                 entryTableBody.appendChild(row);
 
                 // Attach remove handler
                 row.querySelector('.remove-entry').addEventListener('click', function () {
                     entryTableBody.removeChild(row);
-                    entries = entries.filter(e => e !== newEntry); // Remove from array
+                    salaryGroupEntries = salaryGroupEntries.filter(e => e !== newEntry); // Remove from array
                     syncWithTempData(); // Update TempData
                 });
 
@@ -631,13 +653,14 @@
                         'Content-Type': 'application/json',
                         'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
                     },
-                    body: JSON.stringify(entries)
+                    body: JSON.stringify(salaryGroupEntries)
                 })
                     .then(response => response.json())
                     .then(data => console.log('TempData updated successfully:', data))
                     .catch(error => console.error('Error updating TempData:', error));
             }
         });
+
     </script>
 
 

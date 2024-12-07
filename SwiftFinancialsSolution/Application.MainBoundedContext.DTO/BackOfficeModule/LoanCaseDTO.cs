@@ -1055,13 +1055,21 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "First Name")]
         public string GuarantorIndividualFirstName { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Type")]
+        public string GuarantorTypeDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Remarks")]
+        public string GuarantorRemarks { get; set; }
 
         [DataMember]
         [Display(Name = "Other Names")]
         public string GuarantorIndividualLastName { get; set; }
 
         [DataMember]
-        [Display(Name = "Customer")]
+        [Display(Name = "Substitute Guarantor")]
         public string GuarantorName { get; set; }
 
         [DataMember]

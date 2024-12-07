@@ -1,10 +1,9 @@
-﻿@model  Application.MainBoundedContext.DTO.HumanResourcesModule.TrainingPeriodDTO
-@{
-    ViewBag.Title = "Training Period Details";
-}
+﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.TrainingPeriodDTO
+
+@{ ViewBag.Title = "TrainingPeriod"; }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Training Periods</h2>
+        <h2>View TrainingPeriod</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -19,11 +18,72 @@
     </div>
 </div>
 
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#DurationStartDate').datepicker({
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#DurationDate').datepicker({
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -33,36 +93,213 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
 
-                                @Html.DisplayFor(model => model.Description)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Venue)</strong><br>
+                <div class="card">
+                    <div class="card-body">
 
-                                @Html.DisplayFor(model => model.Venue)<br>
-                            </p>
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
 
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "TrainingPeriod", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "TrainingPeriod", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
+                        @using (Html.BeginForm("Edit", "TrainingPeriod", new { Area = "HumanResource" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.Id)
+
+                            @*@Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeId, new { id = "EmployeeId" })*@
+                            @*@Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerStationId, new { id = "EmployeeCustomerStationId" })
+
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerTypeDescription, new { id = "EmployeeCustomerTypeDescription" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerIndividualSalutationDescription, new { id = "EmployeeCustomerIndividualSalutationDescription" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerIndividualIdentityCardNumber, new { id = "EmployeeCustomerIndividualIdentityCardNumber" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerIndividualNationalityDescription, new { id = "EmployeeCustomerIndividualNationalityDescription" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeePaddedCustomerSerialNumber, new { id = "EmployeePaddedCustomerSerialNumber" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerIndividualPayrollNumbers, new { id = "EmployeeCustomerIndividualPayrollNumbers" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerIndividualFirstName, new { id = "EmployeeCustomerIndividualFirstName" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerIndividualLastName, new { id = "EmployeeCustomerIndividualLastName" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerIndividualGenderDescription, new { id = "EmployeeCustomerIndividualGenderDescription" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerIndividualMaritalStatusDescription, new { id = "EmployeeCustomerIndividualMaritalStatusDescription" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerAddressAddressLine1, new { id = "EmployeeCustomerAddressAddressLine1" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerIndividualGenderDescription, new { id = "EmployeeCustomerIndividualGenderDescription" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerAddressAddressLine2, new { id = "EmployeeCustomerAddressAddressLine2" })
+
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerAddressStreet, new { id = "EmployeeCustomerAddressStreet" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerAddressPostalCode, new { id = "EmployeeCustomerAddressPostalCode" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerAddressCity, new { id = "EmployeeCustomerAddressCity" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerAddressEmail, new { id = "EmployeeCustomerAddressEmail" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerAddressLandLine, new { id = "EmployeeCustomerAddressLandLine" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerAddressMobileLine, new { id = "EmployeeCustomerAddressMobileLine" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerStationDescription, new { id = "EmployeeCustomerStationDescription" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerReference1, new { id = "EmployeeCustomerReference1" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerReference2, new { id = "EmployeeCustomerReference2" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerReference3, new { id = "EmployeeCustomerReference3" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerReference1, new { id = "EmployeeCustomerReference1" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerReference1, new { id = "EmployeeCustomerReference1" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerReference1, new { id = "EmployeeCustomerReference1" })
+                            @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerReference1, new { id = "EmployeeCustomerReference1" })*@
+
+
+
+                            <fieldset>
+                                <div class="card mb-4">
+                                    <div class="card-body text-dark">
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                @Html.Label("Upload Documents", new { @class = "control-label" })
+                                                <div class="input-group">
+                                                    <input type="file"
+                                                           id="documentUpload"
+                                                           name="uploadedFiles"
+                                                           class="form-control required"
+                                                           accept=".pdf"
+                                                           multiple
+                                                           required />
+                                                </div>
+                                                <large>Current file: @Model.FileName</large>
+
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+
+                                                    @Html.LabelFor(model => model.FileTitle, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.FileTitle, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.FileTitle, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.TextAreaFor(model => model.Description, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text.....", @required = "" })
+                                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.DocumentNumber, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.TextAreaFor(model => model.DocumentNumber, new { @rows = 3, @class = "form-control", @placeholder = "Enter Number.....", @required = "" })
+                                                    @Html.ValidationMessageFor(model => model.DocumentNumber, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+
+                                                    @Html.LabelFor(model => model.Venue, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.Venue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.Venue, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Enter Date.....", id = "DurationStartDate", required = "required" } })
+                                                    <span id="DurationStartDateError" class="text-danger" style="display:none;"></span>
+                                                    @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Enter Date.....", id = "DurationDate", required = "required" } })
+                                                    <span id="DurationEndDateError" class="text-danger" style="display:none;"></span>
+                                                    @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+
+                                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Value....", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text.....", @required = "" })
+                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            @*<div class="col-lg-6">
+                                                @Html.LabelFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerFullName, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerId, new { id = "EmployeeCustomerId" })
+                                                <div class="input-group">
+                                                    @Html.EditorFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "EmployeeCustomerFullName", @readonly = "" } })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#customerLookup">
+                                                            <span class="fa fa-search"></span>
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(model => model.TrainingPeriodEntries[0].EmployeeCustomerFullName, "", new { @class = "text-danger" })
+                                            </div>*@
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+
+
+                                <p>
+                                    @Html.ActionLink("Edit", "Edit", "TrainingPeriod", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                    @Html.ActionLink("Back to List", "Index", "TrainingPeriod", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                </p>
+                            </div>
+                        }
+
+
                     </div>
                 </div>
+
+                <style>
+                    .card {
+                        margin-bottom: 20px;
+                    }
+
+
+                    .form-group-lg {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-control {
+                        border-radius: .25rem;
+                    }
+
+
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #00e0ff;
+                    }
+                </style>
+
+
+
             </div>
         </div>
     </div>

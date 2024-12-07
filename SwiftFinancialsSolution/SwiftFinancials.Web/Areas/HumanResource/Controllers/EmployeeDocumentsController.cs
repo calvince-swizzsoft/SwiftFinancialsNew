@@ -39,41 +39,43 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             var pageCollectionInfo = await _channelService.FindEmployeeDocumentsByFilterInPageAsync(
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
             );
 
-            if (pageCollectionInfo != null)
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                var sortedData = sortDescending
-                    ? pageCollectionInfo.PageCollection
-                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList()
-                    : pageCollectionInfo.PageCollection
-                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(employeeDocumentDTO => employeeDocumentDTO.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: sortedData,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<EmployeeDocumentDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+               items: new List<EmployeeDocumentDTO>(),
+               totalRecords: totalRecordCount,
+               totalDisplayRecords: searchRecordCount,
+               sEcho: jQueryDataTablesModel.sEcho
+               );
         }
         
         public async Task<ActionResult> Details(Guid id)
