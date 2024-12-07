@@ -7,7 +7,6 @@ using Application.MainBoundedContext.DTO.MessagingModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
-using Microsoft.Reporting.WebForms.Internal.Soap.ReportingServices2005.Execution;
 using SwiftFinancials.Presentation.Infrastructure.Models;
 using SwiftFinancials.Web.Areas.Registry.DocumentsModel;
 using SwiftFinancials.Web.Controllers;
