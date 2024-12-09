@@ -12,8 +12,8 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System.Diagnostics;
 using System.Windows.Forms;
-
-
+using Application.MainBoundedContext.DTO.RegistryModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 
 namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
 {
@@ -149,7 +149,60 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
 
 
 
+        public async Task<ActionResult> customer()
+        {
+            await ServeNavigationMenus();
 
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> customer(JQueryDataTablesModel jQueryDataTablesModel, Guid microCreditGroupId)
+        {
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
+            int customerType = 3;
+            // Fetch paginated data using microCreditGroupId
+            var pageCollectionInfo = await _channelService.FindCustomersByTypeAndFilterInPageAsync((int)customerType, jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, 0, int.MaxValue, GetServiceHeader());
+
+            if (pageCollectionInfo != null)
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                // Sort data based on columns
+                var sortedData = sortAscending
+                    ? pageCollectionInfo.PageCollection
+                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                        .ToList()
+                    : pageCollectionInfo.PageCollection
+                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                        .ToList();
+
+                // Adjust record count for search
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+
+                // Return DataTables-compatible JSON
+                return this.DataTablesJson(
+                    items: sortedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+
+            return this.DataTablesJson(
+                items: new List<CustomerDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
+        }
 
         public async Task<ActionResult> Details(Guid id)
         {

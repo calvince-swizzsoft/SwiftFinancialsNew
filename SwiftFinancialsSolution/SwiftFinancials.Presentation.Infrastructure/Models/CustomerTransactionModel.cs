@@ -283,6 +283,23 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
 
         public List<ExternalChequeDTO>  CustomerAccountUnclearedCheques { get; set; }
 
+        public List<Guid> ChequePayableCustomerAccountIds { get; set; }
+
+        public string ChequePayableCustomerAccountIdsJson {
+
+            get
+            {
+
+                return JsonConvert.SerializeObject(ChequePayableCustomerAccountIds);
+            }
+
+            set
+            {
+
+                ChequePayableCustomerAccountIds = JsonConvert.DeserializeObject<List<Guid>>(value);
+            }
+        }
+
         public List<CustomerAccountSignatoryDTO> CustomerAccountSignatories { get; set; }
 
         public List<ElectronicStatementOrderDTO> CustomerAccountMiniStatement { get; set; }

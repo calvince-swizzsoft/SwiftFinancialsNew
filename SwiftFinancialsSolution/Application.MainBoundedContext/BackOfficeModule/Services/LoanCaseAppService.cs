@@ -1711,6 +1711,11 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
 
                     _customerAccountAppService.FetchCustomerAccountBalances(new List<CustomerAccountDTO> { customerLoanAccount }, serviceHeader, true);
 
+                    // Cheat
+                    customerLoanAccount.PrincipalBalance = -10000;
+                    customerLoanAccount.InterestBalance = 0m;
+                    //...........................................
+
                     if (customerLoanAccount.PrincipalBalance * -1 > 0m && customerLoanAccount.InterestBalance == 0m)
                     {
                         var loanProductDTO = _loanProductAppService.FindLoanProduct(customerLoanAccount.CustomerAccountTypeTargetProductId, serviceHeader);
