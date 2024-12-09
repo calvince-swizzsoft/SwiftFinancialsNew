@@ -82,7 +82,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> CustomerAccountIndex(JQueryDataTablesModel jQueryDataTablesModel,int productCode, string text, int customerFilter)
+        public async Task<JsonResult> CustomerAccountIndex(JQueryDataTablesModel jQueryDataTablesModel, string text, int customerFilter)
         {
             int totalRecordCount = 0;
             int searchRecordCount = 0;
@@ -91,7 +91,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndRecordStatusAndFilterInPageAsync(productCode, (int)RecordStatus.Approved, text,
+            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndRecordStatusAndFilterInPageAsync((int)ProductCode.Loan, (int)RecordStatus.Approved, text,
                  customerFilter, pageIndex, pageSize, true, true, true, true, GetServiceHeader());
 
 
@@ -124,7 +124,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-
         public async Task<ActionResult> CustomerAccountLookUp(Guid? id, LoanCaseDTO loanCaseDTO)
         {
             await ServeNavigationMenus();
@@ -137,7 +136,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
             var findCustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
-            if(findCustomerAccount!=null)
+            if (findCustomerAccount != null)
             {
                 loanCaseDTO.FullAccountNumber = findCustomerAccount.FullAccountNumber;
                 loanCaseDTO.CustomerAccountId = findCustomerAccount.Id;
@@ -168,7 +167,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     success = true,
                     data = new
                     {
-                        FullAccountNumber= loanCaseDTO.FullAccountNumber,
+                        FullAccountNumber = loanCaseDTO.FullAccountNumber,
                         CustomerAccountId = loanCaseDTO.CustomerAccountId,
                         AccountStatus = loanCaseDTO.AccountStatus,
                         PrincipalBalance = loanCaseDTO.PrincipalBalance,
@@ -192,8 +191,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             return Json(new { success = false, message = "Customer not found" });
         }
-
-
 
         public async Task<ActionResult> Create()
         {
@@ -219,12 +216,16 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
-
-
         [HttpPost]
-        public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO, double PaymentPerPeriod, double NumberOfPeriods, string Reference)
+        public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO, double? PaymentPerPeriod, double? NumberOfPeriods, string Reference,
+            Guid CustomerAccountId, Guid LoanProductId)
         {
             await ServeNavigationMenus();
+
+            ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+            ViewBag.CustomerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+
+            ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(loanCaseDTO.filterTextDescription.ToString());
 
             var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             if (userDTO.BranchId != null)
@@ -235,37 +236,16 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var customerAccountDetails = await _channelService.FindCustomerAccountAsync(loanCaseDTO.CustomerAccountId, true, true, true, true, GetServiceHeader());
             var loanCase = await _channelService.FindLastLoanCaseByCustomerIdAsync(customerAccountDetails.CustomerId, loanCaseDTO.LoanProductId, GetServiceHeader());
 
-            loanCase.ValidateAll();
-
-            var submit = await _channelService.RestructureLoanAsync(loanCaseDTO.BranchId, loanCaseDTO.CustomerAccountId, loanCaseDTO.NumberOfPeriods, loanCaseDTO.PaymentPerPeriod,
+            if (PaymentPerPeriod == null || NumberOfPeriods == null || Reference == null || CustomerAccountId == Guid.Empty || LoanProductId == Guid.Empty)
+            {
+                TempData["Empty"] = "Warning! Make sure that all fields are provided.";
+                return View(loanCaseDTO);
+            }
+            
+            var submit = await _channelService.RestructureLoanAsync(loanCaseDTO.BranchId, CustomerAccountId, loanCaseDTO.NumberOfPeriods, loanCaseDTO.PaymentPerPeriod,
                     loanCaseDTO.Reference, 1234, GetServiceHeader());
-            return View();
 
-            //if (!loanCase.HasErrors)
-            //{
-            //    var submit = await _channelService.RestructureLoanAsync(loanCaseDTO.BranchId, loanCaseDTO.CustomerAccountId, loanCaseDTO.NumberOfPeriods, loanCaseDTO.PaymentPerPeriod,
-            //        loanCaseDTO.Reference, 1234, GetServiceHeader());
-
-            //    if (submit == false)
-            //    {
-            //        TempData["ExistingLoanCase"] = "Sorry, but selected customer has a loan case for the selected product currently undergoing processing!";
-            //        return View();
-            //    }
-
-            //    TempData["Create"] = "Loan Restructuring Successful";
-
-            //    Session.Remove("productId");
-            //    Session.Remove("customerAccountDTO");
-
-            //    Session.Clear();
-
-            //    return View();
-            //}
-            //else
-            //{
-            //    var errorMessages = loanCaseDTO.ErrorMessages;
-            //    return View();
-            //}
+            return View("Index");
         }
     }
 }

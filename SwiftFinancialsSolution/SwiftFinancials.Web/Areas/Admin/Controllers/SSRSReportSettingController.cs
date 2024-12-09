@@ -22,10 +22,21 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         {
             await ServeNavigationMenus();
 
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            var userId = string.Empty;
+            var user = string.Empty;
+
+            if (userDTO.Id != null)
+            {
+                userId = userDTO.Id;
+                user = userDTO.UserName;
+            }
+
             var categories = await GetCategoriesAsync();
             ViewBag.Categories = categories;
             return View();
         }
+
 
         [HttpPost]
         public async Task<ActionResult> UploadReport(HttpPostedFileBase reportFile, int? categoryId, string reportname)

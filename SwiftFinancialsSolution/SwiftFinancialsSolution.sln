@@ -145,7 +145,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.WindowsServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.SalaryPeriodPosting", "SwiftFinancials.SalaryPeriodPosting\SwiftFinancials.SalaryPeriodPosting.csproj", "{07C5919F-FA4B-49AD-933F-7A47F8C9BA11}"
 EndProject
-Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "Report Project1", "Report Project1\Report Project1.rptproj", "{A31A51FF-C27A-4881-91D8-8C962BD23535}"
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "SwiftFinancials.Reporting", "Report Project1\SwiftFinancials.Reporting.rptproj", "{A31A51FF-C27A-4881-91D8-8C962BD23535}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.6 Reporting", "1.6 Reporting", "{46E9CAB3-91A9-4224-852E-08447AD1F78D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -474,6 +476,8 @@ Global
 		{660BAE5C-4432-4B7C-8CB0-E860B8B3465D} = {90CA39EC-0735-4732-94FE-EE02F1CD59BF}
 		{2FB8EA4C-6D83-44FB-B1D7-39086AD3071B} = {83140B1B-214C-463A-8713-0456717DAD85}
 		{07C5919F-FA4B-49AD-933F-7A47F8C9BA11} = {AD41104C-9202-4E7E-90C5-E980B69A670B}
+		{A31A51FF-C27A-4881-91D8-8C962BD23535} = {46E9CAB3-91A9-4224-852E-08447AD1F78D}
+		{46E9CAB3-91A9-4224-852E-08447AD1F78D} = {4C488AA7-E8C4-4A53-BFEB-05C87752FAE1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24D31609-C5B7-4C31-9618-B4E7669C4305}
