@@ -5,6 +5,8 @@
 
     var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
     var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+
+    var loanProductSection = ViewBag.LoanProductSection as List<SelectListItem>;
 }
 
 <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
@@ -18,7 +20,13 @@
     }
 
 
-
+   
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
 
 
 
@@ -276,30 +284,34 @@
 
                             <div class="amount-section">
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.AmountGuaranteed, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.AmountGuaranteed, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @id = "amountGuaranteed" } })
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.PrincipalAttached, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.PrincipalAttached, new { htmlAttributes = new { @class = "form-control", @id = "principalAttached", @oninput = "calculateApportionedAndShortage()" } })
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.InterestAttached, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.InterestAttached, new { htmlAttributes = new { @class = "form-control", @id = "interestAttached", @oninput = "calculateApportionedAndShortage()" } })
                                         </div>
                                     </div>
+
+                                    <div class="col-lg-2 mt-3">
+                                        <input type="submit"  class="btn btn-primary" style="border-radius: 7px; margin-top: 10px;" value="Update" />
+                                    </div>
                                 </div>
 
                                 <div class="row mt-4">
-                                    <div class="col-lg-5">
+                                    <div class="col-lg-2">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Apportioned, htmlAttributes: new { @class = "" })
                                             <input type="text" id="apportioned" class="form-control" readonly="readonly" />
@@ -307,7 +319,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-5">
+                                    <div class="col-lg-2">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Shortage, htmlAttributes: new { @class = "" })
                                             <input type="text" id="shortage" class="form-control" readonly="readonly" />
@@ -324,19 +336,16 @@
                             <br />
                             <div class="amount-section">
                                 <div class="row">
-                                    <div class="col-md-6 form-group">
+                                    <div class="col-md-9 form-group">
                                         @Html.LabelFor(model => model.AttachTo, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
                                             @Html.HiddenFor(model => model.AttachToId)
-                                            @Html.TextBoxFor(model => model.AttachTo, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                            @Html.TextBoxFor(model => model.AttachTo, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Product..." })
                                             <span class="input-group-addon">
                                                 <a data-toggle="modal" data-target="#AttachToLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
                                         </div>
                                     </div>
-
-                                    <div class="col-lg-3"></div>
-                                    <div class="col-lg-2"></div>
 
                                     <div class="col-lg-1 mt-3">
                                         <input type="submit" onclick="sendFormData()" class="btn btn-primary" style="border-radius: 7px;" value="Update" />
@@ -399,32 +408,56 @@
 
 
 
-<div class="modal  fade" id="AttachToLookupModal" role="dialog" aria-hidden="true">
+
+<div class="modal  fade" id="AttachToLookupModal" role="dialog" aria-hidden="true" style="width: auto;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h3 class="font-bold">Customer Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                <h3 class="font-bold">Loan Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
 
-            <form id="modalFilterForm2">
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        @Html.Label("Product Code", "Product Code")
-                        @Html.DropDownList("productCode2", ProductCode, new { @class = "form-control", id = "productCode2" })
-                    </div>
+            <div class="blue-section">
+                <form id="loanProductfilterForm">
+                    <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                        <div class="col-lg-3">
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Section</label>
 
-                    <div class="form-group col-md-4">
-                        @Html.Label("RecordStatus", "Record Status")
-                        @Html.DropDownList("recordStatus2", RecordStatus, new { @class = "form-control", id = "recordStatus2" })
-                    </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.LoanRegistrationLoanProductSection, loanProductSection,
+                                    new { @class = "form-control input-md", @id = "section" })
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="form-group col-md-4" style="align-content:center;">
-                        <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
-                    </div>
-                </div>
-            </form>
+                        <div class="col-lg-6" style="margin-top: 27px;">
+                            <div class="form-group spacing-form-group">
+                                <div class="input-group text-box">
+                                    @Html.TextBox("sectionValue", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "sectionValue" })
+                                </div>
+                            </div>
+                        </div>
 
-            <table id="AttachTocustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                        <div class="col-lg-1" style="margin-top:20px;">
+                            <div class="form-group form-group-sm">
+                                <input type="submit" value="Refresh" id="loanProductapplyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br />
+
+
+            <style>
+                #loanProductsGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+
+            <table id="loanProductsGrid" class="table table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -433,6 +466,7 @@
                     </tr>
                 </tbody>
             </table>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
@@ -444,6 +478,22 @@
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
@@ -453,6 +503,8 @@
     @Scripts.Render("~/plugins/typehead")
 
     @*<script src="~/Scripts/js/navlink.js"></script>*@
+
+    <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
     <script>
         var defaultProductCode = $('#productCode').val();
@@ -595,8 +647,6 @@
             $('guarantorForm').submit();
         }
 
-
-
         function calculateApportionedAndShortage() {
             // Get values from the form
             var amountGuaranteed = parseFloat(document.getElementById('amountGuaranteed').value) || 0;
@@ -618,75 +668,78 @@
 
 
     <script>
-       ////////// Credit customer accounts lookup modal/////////
-        // Set Default Value for Filters
-        var defaultProductCode2 = $('#productCode2').val();
-        var defaultRecordStatus2 = $('#recordStatus2').val();
+       //Loan Product....
+        var defaultSection = $('#section').val();
+        var defaultSectionText = $('#sectionValue').val();
 
-        $('#AttachTocustomerAccountsGrid').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
-        "sServerMethod": "POST",
-        //Ensure to include the filters in the Ajax request
-        "fnServerParams": function (aoData) {
-            aoData.push(
-                { "name": "productCode2", "value": $('#productCode2').val() || defaultProductCode2 },
-                { "name": "recordStatus2", "value": $('#recordStatus2').val() || defaultRecordStatus2 }
+        $('#loanProductsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("LoanProductIndex", "LoanRegistration", new { Area = "Loaning"}))",
+                "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "section", "value": $('#section').val() || defaultSection },
+                        { "name": "sectionValue", "value": $('#sectionValue').val() || defaultSectionText }
+                    );
+                },
 
-            );
-        },
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-            var h = ("0" + createdDate.getHours()).slice(-2);
-            var m = ("0" + createdDate.getMinutes()).slice(-2);
-            var s = ("0" + createdDate.getSeconds()).slice(-2);
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-            aData.CreatedDate = dt_Created;
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
 
-            var selectUrl = '<button class="btn btn-outline-info" onclick="selectAttachToCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectProduct(\'' + aData.Id + '\')">Select</button>';
 
-            $('td:eq(5)', nRow).html(dt_Created);
-            $('td:eq(6)', nRow).html(selectUrl);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
 
-            return nRow;
-        },
-        "aoColumns": [
-            { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "10%" },
-            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "10%" },
-            { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "10%" },
-            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "LoanRegistrationLoanProductSectionDescription", "sTitle": "Section", "sWidth": "5%" },
+                    { "mDataProp": "LoanRegistrationLoanProductCategoryDescription", "sTitle": "Category", "sWidth": "5%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+                    { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term(Months)", "sWidth": "2%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
 
-        $('#modalFilterForm2').on('submit', function (e) {
-            e.preventDefault();
-            $('#AttachTocustomerAccountsGrid').DataTable().ajax.reload();
-        });
+        $('#loanProductfilterForm').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#loanProductsGrid').DataTable().ajax.reload();
+                });
+        function selectProduct(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Loaning/GuarantorAttachment/AttachToCustomerAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
 
-        function selectAttachToCustomerAccounts(id) {
-    $.ajax({
-        url: '/Loaning/GuarantorAttachment/AttachToCustomerAccountLookUp',
-        type: 'POST',
-        data: { Id: id },
-        success: function (response) {
-            if (response.success) {
-                $('#AttachTo').val(response.data.AttachTo);
-                $('#AttachToId').val(response.data.AttachToId);
-                $('#AttachToLookupModal').modal('hide');
-            } else {
-                alert(response.message);
-            }
-        },
-        error: function () {
-            alert('An error occurred while processing your request.');
+                        console.log(response.data.AttachTo);
+                        console.log(response.data.AttachToId);
+
+                        $('#AttachTo').val(response.data.AttachTo);
+                        $('#AttachToId').val(response.data.AttachToId);
+
+
+                        $('#AttachToLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
         }
-    });
-}
     </script>
 }

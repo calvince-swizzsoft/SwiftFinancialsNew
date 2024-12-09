@@ -330,10 +330,19 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
             var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
             var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+            CustomerDTO customerDTO = new CustomerDTO();
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (userDTO.BranchId != null)
+            {
+                customerDTO.BranchId = (Guid)userDTO.BranchId;
+            }
+            var companies = await _channelService.FindBranchAsync(customerDTO.BranchId, GetServiceHeader());
+            var j = await _channelService.FindCompanyAsync(companies.CompanyId, GetServiceHeader());
 
+            var attached = await _channelService.FindAttachedProductsByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
 
+            var mandatorydebitTypes = await _channelService.FindDebitTypesByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
 
-            var mandatorydebitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
             var mandatorycreditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
             var mandatoryinvestmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
             var mandatorysavingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
@@ -360,10 +369,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.creditTypes = creditTypes; // Original credit types
 
             // Separate ViewBag properties for mandatory items
-            ViewBag.mandatoryInvestment = mandatoryinvestmentProducts.Select(m => m.Id).ToList(); ;
-            ViewBag.mandatorySavings = mandatorysavingsProducts.Select(m => m.Id).ToList();
+            ViewBag.mandatoryInvestment = attached.InvestmentProductCollection.Select(m => m.Id).ToList();
+            ViewBag.mandatorySavings = attached.SavingsProductCollection.Select(m => m.Id).ToList();
             ViewBag.mandatoryDebit = mandatorydebitTypes.Select(m => m.Id).ToList();
-            ViewBag.mandatoryCreditTypes = mandatorycreditTypes.Select(m => m.Id).ToList();
+            ViewBag.mandatoryCreditTypes = mandatorydebitTypes.Select(m => m.Id).ToList();
 
 
 
@@ -542,11 +551,27 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 }
             }
 
+
+
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            //if (userDTO.BranchId != null)
+            //{
+            //    customerBindingModel.BranchId = (Guid)userDTO.BranchId;
+            //}
+            //var companies = await _channelService.FindBranchAsync(customerBindingModel.BranchId, GetServiceHeader());
+            //var j = await _channelService.FindCompanyAsync(companies.CompanyId, GetServiceHeader());
+            //var mandatorydebitTypes = await _channelService.FindDebitTypesByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
+            //var attached = await _channelService.FindAttachedProductsByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
+
+            //mandatoryInvestmentProducts = attached.InvestmentProductCollection;
+            //mandatorySavingsProducts = attached.SavingsProductCollection;
+            //mandatoryDebitTypes = mandatorydebitTypes;
+            //mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
+            //mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
+
             // Initialize ViewBag Select Lists based on Customer Type
             InitializeViewBagSelectLists(customerBindingModel);
-
             // Retrieve user information
-            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             if (userDTO.BranchId != null)
             {
                 customerBindingModel.BranchId = (Guid)userDTO.BranchId;
@@ -573,8 +598,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     var result = await _channelService.AddCustomerAsync(
      customerDTO,
      mandatoryDebitTypes.ToList(),
-     mandatoryProducts.InvestmentProductCollection,
-     mandatoryProducts.SavingsProductCollection,
+     mandatoryInvestmentProducts,
+    mandatorySavingsProducts,
      mandatoryProducts,
      1,
      GetServiceHeader()
@@ -876,7 +901,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
             ViewBag.recordstatus = GetRecordStatusSelectList(string.Empty);
             ViewBag.type = customerDTO.Type;
-
+            TempData["Reference2"] = customerDTO.Reference2;
             // Define a mapping dictionary
             var typeMapping = new Dictionary<string, string>
 {
@@ -947,7 +972,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 customerBindingModel.NonIndividualDescription = customerBindingModel.RefereeFirstName;
             }
             customerBindingModel.IndividualBirthDate = new DateTime(1990, DateTime.Today.Month, DateTime.Today.Day);
-
+            if (TempData["Reference2"] != null)
+            {
+                customerBindingModel.Reference2 = TempData["Reference2"].ToString();
+            }
             ////cheat
             //var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();
             //var mandatorySavingsProducts = new List<SavingsProductDTO>();
@@ -1024,6 +1052,24 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     );
                     TempData["SuccessMessage"] = "customer created successfully";
 
+                    if (result == true)
+                    {
+                        // TempData["SuccessMessage"] = "Teller created successfully.";
+
+                        System.Windows.Forms.MessageBox.Show(
+                            "Customer " + customerDTO.FullName + " Edited successfully.",
+                            "Success",
+                            System.Windows.Forms.MessageBoxButtons.OK,
+                            System.Windows.Forms.MessageBoxIcon.Information,
+                            System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                            System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                        );
+                        ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+                        ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+                        ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+                        await ServeNavigationMenus();
+                        return RedirectToAction("Index", customerBindingModel);
+                    }
                     if (signaturePhoto != null)
                     {
                         await SaveDocumentAsync(ProcessDocumentUpload(customerDTO.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
