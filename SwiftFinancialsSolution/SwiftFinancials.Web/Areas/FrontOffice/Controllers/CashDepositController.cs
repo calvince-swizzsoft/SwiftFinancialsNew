@@ -227,14 +227,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            //productCode = 1;
-
             var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(productCode, jQueryDataTablesModel.sSearch, customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
-            //var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeFilterInPageAsync(productCode, recordStatus, jQueryDataTablesModel.sSearch, 2, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
-
-            //var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
-
-
+     
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
@@ -258,18 +252,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int searchRecordCount = 0;
 
-            //DateTime startDate = DateTime.Now;
-
-            //DateTime endDate = DateTime.Now;
-
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-
 
             if (SelectedTeller != null && !SelectedTeller.IsLocked)
             {
@@ -293,10 +281,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
 
                     totalRecordCount = pageCollectionInfo.ItemsCount;
-
-                    //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
-
-
+         
                     var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
 
                     searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
@@ -345,8 +330,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 var TellerStatements = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(0, 10, (Guid)SelectedTeller.ChartOfAccountId, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, "", 0, 2, true, GetServiceHeader());
 
-
-
                 //SelectedTeller.BookBalance = generalLedgerAccount.Balance;
                 transactionModel.Teller.BookBalance = SelectedTeller.BookBalance;
                 transactionModel.TellerStatements = TellerStatements;
@@ -373,7 +356,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             bool includeInterestBalanceForLoanAccounts = false;
             bool considerMaturityPeriodForInvestmentAccounts = false;
 
-            // Fetch customer details
             var customerAccount = await _channelService.FindCustomerAccountAsync(
                 parseId,
                 includeBalances,
@@ -438,13 +420,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
                 return View(transactionModel);
             }
-            // If no customer is found, return the view with no model
+    
             return View(transactionModel);
         }
-
-
-        // public async 
-
 
         private async Task<Boolean> ProcessCustomerTransactionAsync(CustomerTransactionModel transactionModel)
         {
@@ -501,50 +479,26 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                       MessageBoxOptions.ServiceNotification
                                                   );
 
-                                   
+
+                                    PrintReceipt(withinLimitsCashDepositJournal);
+
+                                    string cashDepositTextTemplate = "Dear customer, your account has been credited with a cash deposit of KES {0} at {1} Branch {2}.";
+                                    await SendTextNotificationAsync(cashDepositTextTemplate, SelectedCustomer, SelectedCustomerAccount, transactionModel.TotalValue, transactionModel.Reference, transactionModel.PrimaryDescription);
+                                    return true;
                                 }
 
-                                #region Send Text Notification
-       
-                                if (!string.IsNullOrWhiteSpace(SelectedCustomer.AddressMobileLine) &&
-                           Regex.IsMatch(SelectedCustomer.AddressMobileLine, @"^\+(?:[0-9]??){6,14}[0-9]$") &&
-                           SelectedCustomer.AddressMobileLine.Length >= 13)
+                                else
                                 {
-                                    // Build the SMS body message
-                                    var smsBody = new StringBuilder();
-                                    smsBody.AppendFormat(
-                                        "Dear customer, your account has been credited with a cash deposit of KES {0} at {1} on {2}. Thank you for banking with us!",
-                                        transactionModel.TotalValue,                          
-                                        SelectedCustomerAccount.BranchDescription,            
-                                        DateTime.Now.ToString("MMMM dd, yyyy")               
-                                    );
 
-                                    
-                                    var textAlertDTO = new TextAlertDTO
-                                    {
-                                        BranchId = SelectedCustomerAccount.BranchId,
-                                        TextMessageOrigin = (int)MessageOrigin.Within,
-                                        TextMessageRecipient = SelectedCustomer.AddressMobileLine,
-                                        TextMessageBody = smsBody.ToString(),
-                                        MessageCategory = (int)MessageCategory.SMSAlert,
-                                        AppendSignature = false,
-                                        TextMessagePriority = (int)QueuePriority.Highest,
-                                    };
+                                    MessageBox.Show(
+                                                "Sorry, but the authorized cash deposit request could not be marked as posted!",
+                                                "Authorization Request",
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Exclamation);
 
-                                   
-                                    var textAlertDTOs = new ObservableCollection<TextAlertDTO> { textAlertDTO };
-
-                                   
-                                    await _channelService.AddTextAlertsAsync(textAlertDTOs, GetServiceHeader());
+                                    return false;
                                 }
-
-                                #endregion
-
-                                PrintReceipt(withinLimitsCashDepositJournal);
-
-                                return true;
-                            //break;
-
+                        
                             case CashDepositCategory.AboveMaximumAllowed:
 
                                 var createNewCashDepositRequest = default(bool);
@@ -602,7 +556,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                     var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
 
                                                     //basic
-                                                    transactionModel.CustomerAccount.NewAvailableBalance = transactionModel.CustomerAccount.AvailableBalance + transactionModel.TotalValue;
+                                                    //transactionModel.CustomerAccount.NewAvailableBalance = transactionModel.CustomerAccount.AvailableBalance + transactionModel.TotalValue;
                                                     var updateAboveLimitResult = await _channelService.UpdateCustomerAccountAsync(transactionModel.CustomerAccount, GetServiceHeader());
 
 
@@ -619,10 +573,28 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                             MessageBoxDefaultButton.Button1,
                                                             MessageBoxOptions.ServiceNotification
                                                         );
-                                                    }
 
-                                                    PrintReceipt(authorizedJournal);
-                                                    return true;
+
+                                                        string cashDepositAboveLimitTextTemplate = "Dear customer, your account has been credited with a cash deposit of KES {0} at {1} Branch {2}.";
+                                                        await SendTextNotificationAsync(cashDepositAboveLimitTextTemplate, SelectedCustomer, SelectedCustomerAccount, transactionModel.TotalValue, transactionModel.Reference, transactionModel.PrimaryDescription);
+
+                                                        PrintReceipt(authorizedJournal);
+                                                        return true;
+                                                    }
+                                                    
+                                                    else
+                                                    {
+                                                        MessageBox.Show(
+                                                       "Sorry, but the authorized cash deposit request could not be marked as posted!",
+                                                       "Authorization Request",
+                                                       MessageBoxButtons.OK,
+                                                       MessageBoxIcon.Exclamation
+                                                   );
+
+
+                                                        return false;
+
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -836,7 +808,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                             if (targetCashWithdrawalRequest != null)
                                             {
                                                 var result = MessageBox.Show(
-                                                    string.Format("Txn Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
+                                                    string.Format("Transaction Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
                                                     targetCashWithdrawalRequest.TypeDescription,
                                                     string.Format(_nfi, "{0:C}", targetCashWithdrawalRequest.Amount),
                                                     targetCashWithdrawalRequest.StatusDescription),
@@ -894,8 +866,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                                 if (paymentSuccess)
                                                                 {
 
-
-
                                                                     var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
 
                                                                     MessageBox.Show(
@@ -906,6 +876,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                                        MessageBoxDefaultButton.Button1,
                                                                      MessageBoxOptions.ServiceNotification
                                                                   );
+
+                                                                    string cashWithdrawalTextTemplate = "Payment voucher of KES {0} {4}, {5} {2}.";
+                                                                    await SendTextNotificationAsync(cashWithdrawalTextTemplate, SelectedCustomer, SelectedCustomerAccount, transactionModel.TotalValue, transactionModel.Reference, transactionModel.PrimaryDescription);
                                                                     PrintReceipt(authorizedJournal);
                                                                     return true;
                                                                 }
@@ -943,6 +916,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
                                                                 var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
+
+
+                                                                string cashWithdrawalTextTemplate = "Dear customer, your account has been debited with KES {0} at {1} Branch {2}.";
+                                                                await SendTextNotificationAsync(cashWithdrawalTextTemplate, SelectedCustomer, SelectedCustomerAccount, transactionModel.TotalValue, transactionModel.Reference, transactionModel.PrimaryDescription);
+
 
                                                                 PrintReceipt(authorizedJournal);
                                                                 return true;
@@ -1046,7 +1024,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                 // Placeholder for adding a cash withdrawal request
 
                                                 var addRequestResult = await _channelService.AddCashWithdrawalRequestAsync(customerTransactionAuthRequest, GetServiceHeader());
-                                                //var addRequestResult = await AddCashWithdrawalRequestAsync(customerTransactionAuthRequest);
+                                              
 
                                                 if (addRequestResult != null)
                                                 {
@@ -1123,6 +1101,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                        MessageBoxDefaultButton.Button1,
                                                        MessageBoxOptions.ServiceNotification
                                                    );
+
+                                    string cashWithdrawalTextTemplate1 = "Dear customer, your account has been debited with KES {0} at {1} Branch {2}.";
+                                    await SendTextNotificationAsync(cashWithdrawalTextTemplate1, SelectedCustomer, SelectedCustomerAccount, transactionModel.TotalValue, transactionModel.Reference, transactionModel.PrimaryDescription);
 
                                     PrintReceipt(withinLimitsJournal);
                                     return true;
@@ -1209,6 +1190,46 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             if (chequeDepositJournal != null && !chequeDepositJournal.HasErrors)
                             {
                                 MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                                #region Send Text Notification
+
+                                if (!string.IsNullOrWhiteSpace(SelectedCustomer.AddressMobileLine) &&
+                           Regex.IsMatch(SelectedCustomer.AddressMobileLine, @"^\+(?:[0-9]??){6,14}[0-9]$") &&
+                           SelectedCustomer.AddressMobileLine.Length >= 13)
+                                {
+                                    // Build the SMS body message
+                                    var smsBody = new StringBuilder();
+                                    smsBody.AppendFormat(
+                                        "Dear customer, {0} of {1} has been effected on your fosa account at {2} at Branch {3}",
+                                        transactionModel.Reference,
+                                        transactionModel.TotalValue,
+                                        SelectedCustomerAccount.BranchDescription,
+                                        SelectedCustomerAccount.BranchCompanyDescription,
+                                        DateTime.Now.ToString("MMMM dd, yyyy")
+                                    );
+
+
+                                    var textAlertDTO = new TextAlertDTO
+                                    {
+                                        BranchId = SelectedCustomerAccount.BranchId,
+                                        TextMessageOrigin = (int)MessageOrigin.Within,
+                                        TextMessageRecipient = SelectedCustomer.AddressMobileLine,
+                                        TextMessageBody = smsBody.ToString(),
+                                        MessageCategory = (int)MessageCategory.SMSAlert,
+                                        AppendSignature = false,
+                                        TextMessagePriority = (int)QueuePriority.Highest,
+                                    };
+
+
+                                    var textAlertDTOs = new ObservableCollection<TextAlertDTO> { textAlertDTO };
+
+
+                                    await _channelService.AddTextAlertsAsync(textAlertDTOs, GetServiceHeader());
+                                }
+
+                                #endregion
+
+
                                 PrintReceipt(chequeDepositJournal);
                                 return true;
                             }
@@ -1775,12 +1796,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             try
             {
-                // Call the asynchronous method to process the customer transaction
                 bool isTransactionSuccessful = await ProcessCustomerTransactionAsync(transactionModel);
 
                 if (isTransactionSuccessful)
                 {
-                    // Construct the success response
                     var response = new
                     {
                         Status = "Success",
@@ -1789,8 +1808,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         AccountNumber = transactionModel.CashWithdrawal.CustomerAccountFullAccountNumber,
                         Timestamp = DateTime.Now
                     };
-
-                    // Show the success message
                     MessageBox.Show(response.Message,
                         "Cash Transaction",
                         MessageBoxButtons.OK,
@@ -1798,12 +1815,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         MessageBoxDefaultButton.Button1,
                         MessageBoxOptions.ServiceNotification);
 
-                    // Return the success response
+            
                     return Json(response);
                 }
                 else
                 {
-                    // Construct the failure response
                     var failureResponse = new
                     {
                         Status = "Error",
@@ -1811,21 +1827,18 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         Timestamp = DateTime.Now
                     };
 
-                    // Show the error message
                     MessageBox.Show(failureResponse.Message,
                         "Cash Transaction",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Exclamation,
                         MessageBoxDefaultButton.Button1,
                         MessageBoxOptions.ServiceNotification);
-
-                    // Return the failure response
                     return Json(failureResponse);
                 }
             }
             catch (Exception ex)
             {
-                // Handle unexpected exceptions
+          
                 var errorResponse = new
                 {
                     Status = "Error",
@@ -1833,7 +1846,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     Timestamp = DateTime.Now
                 };
 
-                // Show the exception error message
                 MessageBox.Show(errorResponse.Message,
                     "Cash Transaction",
                     MessageBoxButtons.OK,
@@ -2420,6 +2432,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
+
+
+
         //[HttpPost]
         //public async Task<ActionResult> GenerateReport(
         //    string chartOfAccountId,
@@ -2495,6 +2510,47 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         //    }
         //}
 
+        public static async Task SendTextNotificationAsync(string MessageTemplate, CustomerDTO Recipient, CustomerAccountDTO RecipientAccount, decimal Amount, string Reference, string PrimaryDescription)
+        {
+
+            if (!string.IsNullOrWhiteSpace(Recipient.AddressMobileLine) &&
+                         Regex.IsMatch(Recipient.AddressMobileLine, @"^\+(?:[0-9]??){6,14}[0-9]$") &&
+                         Recipient.AddressMobileLine.Length >= 13)
+            {
+                // Build the SMS body message
+                var smsBody = new StringBuilder();
+                smsBody.AppendFormat(
+                    MessageTemplate,
+                    Amount,
+                    RecipientAccount.BranchDescription,
+                    RecipientAccount.BranchCompanyDescription,
+                    DateTime.Now.ToString("MMMM dd, yyyy"),
+                    Reference, 
+                    PrimaryDescription
+                );
+
+
+                var textAlertDTO = new TextAlertDTO
+                {
+                    BranchId = RecipientAccount.BranchId,
+                    TextMessageOrigin = (int)MessageOrigin.Within,
+                    TextMessageRecipient = Recipient.AddressMobileLine,
+                    TextMessageBody = smsBody.ToString(),
+                    MessageCategory = (int)MessageCategory.SMSAlert,
+                    AppendSignature = false,
+                    TextMessagePriority = (int)QueuePriority.Highest,
+                };
+
+
+                var textAlertDTOs = new ObservableCollection<TextAlertDTO> { textAlertDTO };
+
+                var masterController = new MasterController();
+
+                await masterController._channelService.AddTextAlertsAsync(textAlertDTOs, masterController.GetServiceHeader());
+            }
+
+
+        }
 
 
 
