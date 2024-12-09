@@ -448,7 +448,7 @@
                                                         htmlAttributes = new
                                                         {
                                                             @class = "form-control required",
-                                                            @min=1
+                                                            @min = 1
                                                         }
                                                     })
                                                 </div>
@@ -529,14 +529,7 @@
             <div class="blue-section">
                 <form id="filterForm">
                     <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
-                        <div class="col-lg-3">
-                            <div class="form-group form-group-lg">
-                                @Html.Label("Product Code", "Product Code")
-                                @Html.DropDownList("productCode", ProductCode, new { @class = "form-control", id = "productCode" })
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4">
+                        <div class="col-lg-5">
                             <div class="form-group form-group-lg">
                                 <label for="filterType">Customer Filter</label>
 
@@ -548,7 +541,7 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-3" style="margin-top: 27px;">
+                        <div class="col-lg-4" style="margin-top: 27px;">
                             <div class="form-group spacing-form-group">
                                 <div class="input-group text-box">
                                     @Html.TextBox("text", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "text" })
@@ -753,8 +746,7 @@
                 "fnServerParams": function (aoData) {
                     aoData.push(
                         { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter },
-                        { "name": "text", "value": $('#text').val() || defaulText },
-                        { "name": "productCode", "value": $('#productCode').val() || defaulProductCode }
+                        { "name": "text", "value": $('#text').val() || defaulText }
                     );
                 },
 
@@ -834,7 +826,10 @@
         function sendFormData() {
             let formData = {
                 PaymentPerPeriod: document.querySelector('[name="PaymentPerPeriod"]').value,
-                Reference: document.querySelector('[name="Reference"]').value
+                Reference: document.querySelector('[name="Reference"]').value,
+                CustomerAccountId: document.querySelector('[name="CustomerAccountId"]').value,
+                LoanProductId: document.querySelector('[name="LoanProductId"]').value,
+                NumberOfPeriods: document.querySelector('[name="NumberOfPeriods"]').value
             };
 
             fetch('/LoanRestructuring/Create', {

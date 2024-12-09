@@ -142,9 +142,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
             return Json(new { success = false, message = "Customer account not found" });
-        } 
-        
-        
+        }
+
+
         public async Task<ActionResult> AttachToCustomerAccountLookUp(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
         {
             await ServeNavigationMenus();
@@ -156,12 +156,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View("create");
             }
 
-            var accounts = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
+            var loanProduct = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
 
-            if (accounts != null)
+            if (loanProduct != null)
             {
-                loanGuarantorDTO.AttachTo = accounts.CustomerFullName;
-                loanGuarantorDTO.AttachToId = accounts.Id; 
+                loanGuarantorDTO.AttachTo = loanProduct.Description;
+                loanGuarantorDTO.AttachToId = loanProduct.Id;
 
                 return Json(new
                 {
@@ -185,6 +185,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
 
+            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
+
+
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
 
@@ -203,6 +206,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO, string GuarantorsJson)
         {
+            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanGuarantorDTO.LoanRegistrationLoanProductSectionDescription.ToString());
+
 
             ObservableCollection<LoanGuarantorDTO> loanGuarantors = JsonConvert.DeserializeObject<ObservableCollection<LoanGuarantorDTO>>(GuarantorsJson);
 

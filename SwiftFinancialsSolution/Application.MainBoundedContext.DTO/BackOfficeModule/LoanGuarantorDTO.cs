@@ -633,5 +633,21 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 return EnumHelper.GetDescription((CustomerFilter)CustomerFilter);
             }
         }
+
+
+
+        [DataMember]
+        [Display(Name = "Section")]
+        public int LoanRegistrationLoanProductSection { get; set; }
+
+        [DataMember]
+        [Display(Name = "Section")]
+        public string LoanRegistrationLoanProductSectionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LoanProductSection), LoanRegistrationLoanProductSection) ? EnumHelper.GetDescription((LoanProductSection)LoanRegistrationLoanProductSection) : string.Empty;
+            }
+        }
     }
 }
