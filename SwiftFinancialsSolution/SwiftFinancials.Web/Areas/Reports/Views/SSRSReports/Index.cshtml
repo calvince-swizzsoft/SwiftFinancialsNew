@@ -1,22 +1,22 @@
 ﻿@model IEnumerable<SwiftFinancials.Web.Areas.Reports.Models.ReportByCategoryViewModel>
 
-    @{
+@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    }
+}
 
-    <h2>Reports by Category</h2>
-
-
-    <div class="search-container">
-        <input type="text" id="reportSearchInput" placeholder="Search for a report..." onkeyup="searchReports()" />
-        <p class="text-danger" id="searchNotFound" style="display: none;"></p>
-    </div>
+<h2>Reports by Category</h2>
 
 
-    <div class="category-container">
-        @foreach (var categoryGroup in Model.GroupBy(r => r.CategoryName))
-        {
+<div class="search-container">
+    <input type="text" id="reportSearchInput" placeholder="Search for a report..." onkeyup="searchReports()" />
+    <p class="text-danger" id="searchNotFound" style="display: none;"></p>
+</div>
+
+
+<div class="category-container">
+    @foreach (var categoryGroup in Model.GroupBy(r => r.CategoryName))
+    {
         <div class="category-group">
             <h3 class="category-title" onclick="toggleCategory(this)">
                 @categoryGroup.Key (@categoryGroup.Count())
@@ -26,30 +26,30 @@
             <div class="report-list" style="display: none;">
                 @if (!categoryGroup.Any())
                 {
-                <p class="no-reports-message">No reports available in this category.</p>
+                    <p class="no-reports-message">No reports available in this category.</p>
                 }
                 else
                 {
-                foreach (var report in categoryGroup)
-                {
-                var fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(report.FileName);
-                var encodedFileName = fileNameWithoutExtension.Replace(" ", "%20");
+                    foreach (var report in categoryGroup)
+                    {
+                        var fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(report.FileName);
+                        var encodedFileName = fileNameWithoutExtension.Replace(" ", "%20");
 
-                <a href="http://desktop-rstq8im/Reports/browse/@encodedFileName" target="_blank" class="report-card">
-                    <div class="report-icon">
-                        <i class="fa fa-file-o" aria-hidden="true"></i>
-                    </div>
-                    <div class="report-title">@report.ReportName</div>
-                </a>
-                }
+                        <a href="http://desktop-8qo7i7b/Reports/report/@encodedFileName" target="_blank" class="report-card">
+                            <div class="report-icon">
+                                <i class="fa fa-file-o" aria-hidden="true"></i>
+                            </div>
+                            <div class="report-title">@report.ReportName</div>
+                        </a>
+                    }
                 }
             </div>
         </div>
-        }
-    </div>
+    }
+</div>
 
-    <link href="~/Scripts/css/SSRSGenerateReportIndex.css" rel="stylesheet" />
-    <script>
+<link href="~/Scripts/css/SSRSGenerateReportIndex.css" rel="stylesheet" />
+<script>
     function toggleCategory(categoryTitle) {
         var reportList = categoryTitle.nextElementSibling;
         var toggleIcon = categoryTitle.querySelector('.toggle-icon');
@@ -107,4 +107,4 @@
         }
     }
 
-    </script>
+</script>

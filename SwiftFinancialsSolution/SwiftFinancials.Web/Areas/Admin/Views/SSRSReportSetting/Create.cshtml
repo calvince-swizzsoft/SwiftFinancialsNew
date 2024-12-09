@@ -319,16 +319,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>To open Microsoft Report Builder, please follow these steps:</p>
-                <ol>
-                    <li>Go to your Start Menu or Search bar.</li>
-                    <li>Search for <strong>"Microsoft Report Builder"</strong>.</li>
-                    <li>Click on the application to open it.</li>
-                </ol>
-                <p>If you don't have Report Builder installed, you can download it from the official Microsoft website:</p>
+                <p><a href="https://www.microsoft.com/en-us/download/details.aspx?id=53613&msockid=3d5b7fb1f644673d00996abcf7d26662"></a> Download Report Builder</p>
+                <p><a href="https://www.microsoft.com/en-us/download/details.aspx?id=104502&msockid=3d5b7fb1f644673d00996abcf7d26662"></a> Download Microsoft SQL Server 2022 Reporting Services</p>
 
-                <p><a href="https://www.microsoft.com/en-us/download/details.aspx?id=53613" target="_blank">Download Report Builder &gt;&gt;</a></p>
-                <p><a href="http://desktop-trhql6c/Reports_Test/browse/" target="_blank">Upload reports to portal  &gt;&gt;</a></p>
+                <p><a href="http://desktop-8qo7i7b/Reports/browse/" target="_blank">Upload reports to portal  &gt;&gt;</a></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: red;">Close</button>
@@ -408,7 +402,7 @@
                             <td style="text-align: right;">
                                 <a href="@Url.Action("EditReport", "SSRSReportSetting")/${report.Id}" style="margin-right: 10px;" title="Edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 
-                                <a href="javascript:void(0);" onclick="deleteReport(${report.Id})" style="margin-right: 10px;" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                <a href="javascript:void(0);" onclick="deleteReport(${report.Id})" style="margin-right: 10px; color: red;" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
 
                                 <a href="@Url.Action("DownloadReport", "SSRSReportSetting")/${report.Id}" title="Download"><i class="fa fa-download" aria-hidden="true"></i></a>
                             </td>
