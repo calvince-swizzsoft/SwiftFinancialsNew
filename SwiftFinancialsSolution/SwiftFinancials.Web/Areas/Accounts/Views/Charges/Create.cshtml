@@ -267,7 +267,7 @@
                                 <!-- General Tab -->
                                 <!--<div class="tab-pane fade show active" id="general" role="tabpanel">
 
-    </div>-->
+                                </div>-->
                                 <!-- Charge Splitting Tab -->
                                 <div class="tab-pane fade show active" id="splitting" role="tabpanel">
                                     <fieldset>
@@ -481,40 +481,40 @@
 
                                     }
                                 </div>
-
-                                <!-- Levies Tab -->
-                                <form id="commissionForm" method="post" action="@Url.Action("Create", "Charges", new { area = "Accounts" })">
-                                    <table class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Select</th>
-                                                <th>Commission Description</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (commissions != null)
-                                            {
-                                                foreach (var commission in commissions)
+                                <div class="tab-pane fade" id="levies" role="tabpanel">
+                                    <!-- Levies Tab -->
+                                    <form id="commissionForm" method="post" action="@Url.Action("Create", "Charges", new { area = "Accounts" })">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Select</th>
+                                                    <th>Commission Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (commissions != null)
+                                                {
+                                                    foreach (var commission in commissions)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" name="commissionIds" value="@commission.Id" />
+                                                            </td>
+                                                            <td>@commission.Description</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
                                                 {
                                                     <tr>
-                                                        <td>
-                                                            <input type="checkbox" name="commissionIds" value="@commission.Id" />
-                                                        </td>
-                                                        <td>@commission.Description</td>
+                                                        <td colspan="2">No commissions available</td>
                                                     </tr>
                                                 }
-                                            }
-                                            else
-                                            {
-                                                <tr>
-                                                    <td colspan="2">No commissions available</td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </form>
-
+                                            </tbody>
+                                        </table>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
 
@@ -582,14 +582,15 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
-<script>document.getElementById("commissionForm").addEventListener("submit", function (event) {
-        const selected = document.querySelectorAll('input[name="commissionIds"]:checked');
-        if (selected.length === 0) {
-            event.preventDefault();
-            alert("Please select at least one commission.");
-        }
-    });
-</script>
+    <script>
+        document.getElementById("commissionForm").addEventListener("submit", function (event) {
+            const selected = document.querySelectorAll('input[name="commissionIds"]:checked');
+            if (selected.length === 0) {
+                event.preventDefault();
+                alert("Please select at least one commission.");
+            }
+        });
+    </script>
     @*<script>$(document).ready(function () {
                 // Load table data from localStorage
                 const storedData = localStorage.getItem('chargeTiers');
