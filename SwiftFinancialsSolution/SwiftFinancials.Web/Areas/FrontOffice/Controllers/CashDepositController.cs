@@ -215,7 +215,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         [HttpPost]
         public async Task<JsonResult> FetchCustomerAccountsTable(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int customerFilter)
-        {
+      {
 
             int totalRecordCount = 0;
 
@@ -505,8 +505,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 }
 
                                 #region Send Text Notification
-                                // Validate the mobile number format and length
-                                // Validate the mobile number format and length
+       
                                 if (!string.IsNullOrWhiteSpace(SelectedCustomer.AddressMobileLine) &&
                            Regex.IsMatch(SelectedCustomer.AddressMobileLine, @"^\+(?:[0-9]??){6,14}[0-9]$") &&
                            SelectedCustomer.AddressMobileLine.Length >= 13)
@@ -541,24 +540,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                 #endregion
 
-                                
-                                
-                                // Replace the _messageService.Show method
-                                //MessageBox.Show("Operation completed successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                                // Replace the second _messageService.ShowQuestion method
-                                var printConfirmationResult = MessageBox.Show("Do you want to print?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                                if (printConfirmationResult == DialogResult.Yes)
-                                {
-                                    #region compose receipt data
-                                    // Print the receipt
-                                    PrintReceipt(withinLimitsCashDepositJournal);
-
-                                    #endregion
-
-
-                                }
+                                PrintReceipt(withinLimitsCashDepositJournal);
 
                                 return true;
                             //break;
@@ -585,7 +567,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                         // Set IsBusy to true to indicate an ongoing operation
                                         IsBusy = true;
-
 
                                         // Format the message
                                         string message = string.Format(
@@ -1192,7 +1173,38 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             transactionModel.PrimaryDescription = string.Format("{0} - {1}", transactionModel.PrimaryDescription, NewExternalCheque.Number);
 
                             var externalChequeResult = await _channelService.AddExternalChequeAsync(NewExternalCheque, GetServiceHeader());
+
+                            
+                            if (externalChequeResult != null)
+                            {
+
+                                var ExternalChequePayables = new List<ExternalChequePayableDTO>();
+
+
+                                foreach (Guid payableId in transactionModel.ChequePayableCustomerAccountIds)
+                                {
+
+
+                                    var externalChequePayable = new ExternalChequePayableDTO
+                                    {
+                                        ExternalChequeId = externalChequeResult.Id,
+                                        ExternalChequeNumber = externalChequeResult.Number,
+                                        CustomerAccountId = payableId
+                                    };
+
+                                    ExternalChequePayables.Add(externalChequePayable);
+                                }
+
+
+                              
+
+                                if (ExternalChequePayables != null)
+                                    await _channelService.UpdateExternalChequePayablesByExternalChequeIdAsync(externalChequeResult.Id, new ObservableCollection<ExternalChequePayableDTO>(ExternalChequePayables), GetServiceHeader());
+   
+                            }
+
                             var chequeDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
+
 
                             if (chequeDepositJournal != null && !chequeDepositJournal.HasErrors)
                             {
@@ -1258,11 +1270,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (SelectedCustomerAccount == null) {
 
                 MessageBox.Show("Please select a customer account",
-   "Cash Transaction",
-   MessageBoxButtons.OK,
-   MessageBoxIcon.Information,
-   MessageBoxDefaultButton.Button1,
-   MessageBoxOptions.ServiceNotification
+               "Cash Transaction",
+               MessageBoxButtons.OK,
+               MessageBoxIcon.Information,
+               MessageBoxDefaultButton.Button1,
+               MessageBoxOptions.ServiceNotification
    );
 
                 return Json(new { success = false, message = "Opration failed" });
@@ -2123,11 +2135,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int searchRecordCount = 0;
 
-
-            //var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-            //DateTime startDate = postingPeriod.DurationStartDate;
-            //DateTime endDate = postingPeriod.DurationStartDate;
-
             DateTime startDate = DateTime.MinValue;
 
             DateTime endDate = DateTime.MaxValue;
@@ -2233,17 +2240,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 );
 
-                //return View(SelectedCustomerAccount);
-
                 return Json(new { success = false, message = "Operation Failed" });
-
 
             }
 
             var pageCollectionInfo = await _channelService.FindCashTransferRequestsByFilterInPageAsync((Guid)SelectedTeller.EmployeeId, startDate, endDate, status, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-
-
-            //var pageCollectionInfo = await _channelService.FindCashWithdrawalRequestsByFilterInPageAsync(startDate, endDate, 2, "", 2, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -2344,39 +2345,47 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         private void PrintReceipt(JournalDTO journal)
         {
-            try
+            var printConfirmationResult = MessageBox.Show("Do you want to print?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (printConfirmationResult == DialogResult.Yes)
             {
-                // Build the receipt content from the journal data
-                var receiptContent = BuildReceiptContent(journal);
 
-                PrintDocument printDocument = new PrintDocument();
-                printDocument.PrinterSettings = new PrinterSettings
+
+                try
                 {
-                    PrinterName = "EPSON L3250 Series" // Hardcoding the printer name
-                };
+                    // Build the receipt content from the journal data
+                    var receiptContent = BuildReceiptContent(journal);
 
-                printDocument.PrintPage += (sender, e) =>
+                    PrintDocument printDocument = new PrintDocument();
+                    printDocument.PrinterSettings = new PrinterSettings
+                    {
+                        PrinterName = "EPSON L3250 Series" // Hardcoding the printer name
+                    };
+
+                    printDocument.PrintPage += (sender, e) =>
+                    {
+                        // Draw the receipt content onto the print page
+                        e.Graphics.DrawString(receiptContent, new Font("Courier New", 10), Brushes.Black, new RectangleF(0, 0, e.PageBounds.Width, e.PageBounds.Height));
+                    };
+
+                    //PrintDialog printDialog = new PrintDialog
+                    //{
+                    //    Document = printDocument
+                    //};
+
+                    //if (printDialog.ShowDialog() == DialogResult.OK)
+                    //{
+                    //    printDocument.Print();
+                    //}
+
+                    printDocument.Print();
+                }
+
+                catch (Exception ex)
                 {
-                    // Draw the receipt content onto the print page
-                    e.Graphics.DrawString(receiptContent, new Font("Courier New", 10), Brushes.Black, new RectangleF(0, 0, e.PageBounds.Width, e.PageBounds.Height));
-                };
-
-                //PrintDialog printDialog = new PrintDialog
-                //{
-                //    Document = printDocument
-                //};
-
-                //if (printDialog.ShowDialog() == DialogResult.OK)
-                //{
-                //    printDocument.Print();
-                //}
-
-                printDocument.Print();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error printing receipt: {ex.Message}", "Print Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                    MessageBox.Show($"Error printing receipt: {ex.Message}", "Print Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }                   
         }
 
         // Helper method to build the receipt content
