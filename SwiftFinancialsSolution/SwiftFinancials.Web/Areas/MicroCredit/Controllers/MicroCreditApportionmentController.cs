@@ -42,44 +42,43 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             var pageCollectionInfo = await _channelService.FindMicroCreditGroupMembersByMicroCreditGroupIdInPageAsync(
                 microCreditGroupId,  // Ensure the group ID is passed
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
             );
 
-            if (pageCollectionInfo != null)
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                // Sort data based on columns
-                var sortedData = sortAscending
-                    ? pageCollectionInfo.PageCollection
-                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList()
-                    : pageCollectionInfo.PageCollection
-                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(microCreditGroupDTO => microCreditGroupDTO.CreatedDate)
+                    .ToList();
 
-                // Adjust record count for search
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                // Return DataTables-compatible JSON
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
                 return this.DataTablesJson(
-                    items: sortedData,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<MicroCreditGroupMemberDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<MicroCreditGroupDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
 

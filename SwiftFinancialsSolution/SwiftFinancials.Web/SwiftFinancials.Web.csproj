@@ -575,6 +575,7 @@
     <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeDocumentsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PaySlipsController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\PeriodClosingController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PeriodClosingsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryCardsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryController.cs" />
@@ -1510,10 +1511,10 @@
     <Content Include="Areas\Dashboard\Views\InstantMessaging\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryCards\Details.cshtml" />
-    <Content Include="Areas\HumanResource\Views\PeriodClosings\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Edit.cshtml" />
-    <Content Include="Areas\HumanResource\Views\PeriodClosings\Close.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosing\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosing\Close.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2032,8 +2033,8 @@
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
     <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\Default\" />
     <Folder Include="Areas\HumanResource\Views\Delegate\" />
-    <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Loaning\Views\AddCollateral\" />
     <Folder Include="Areas\Loaning\Views\RepaymentSchedule\" />
