@@ -1536,6 +1536,7 @@
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\PeriodClosings\Close.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosings\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

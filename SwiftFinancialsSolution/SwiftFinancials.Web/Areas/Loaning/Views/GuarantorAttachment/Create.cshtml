@@ -1,5 +1,6 @@
-﻿
-@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanGuarantorDTO
+﻿@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanGuarantorDTO
+
+
 @{
     ViewBag.Title = "Guarantor Attachment";
 
@@ -7,6 +8,8 @@
     var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 
     var loanProductSection = ViewBag.LoanProductSection as List<SelectListItem>;
+
+    var customerFilter = ViewBag.customerFilter as List<SelectListItem>;
 }
 
 <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
@@ -20,7 +23,7 @@
     }
 
 
-   
+
     .blue-section {
         margin-top: 20px;
         background-color: #e0f0ff;
@@ -73,6 +76,18 @@
             transform: translateY(0);
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
+
+
+
+    #dataTable:hover {
+        cursor: pointer;
+    }
+
+
+    .highlight-row {
+        background-color: #e0f7fa; /* Light cyan color for the highlight */
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
 </style>
 
 
@@ -252,7 +267,7 @@
                             <br />
 
 
-                            @*Tabs*@
+                            <input type="hidden" id="tableDataJson" name="TableDataJson" />
                             <div id="section1" class="tab active" style="display: block;">
                                 <div class="table-container">
                                     <h3 style="font-size: 1.9rem; text-align: center;">Guarantors</h3>
@@ -261,6 +276,7 @@
                                     <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
                                         <thead>
                                             <tr>
+                                                <th>#</th>
                                                 <th>Status</th>
                                                 <th>Customer Name</th>
                                                 <th>Total Shares</th>
@@ -268,7 +284,6 @@
                                                 <th>Amount Guaranteed</th>
                                                 <th>Principal Attached</th>
                                                 <th>Interest Attached</th>
-                                                <th>Payroll Numbers</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -280,8 +295,7 @@
                             <br />
                             <br />
 
-                            <input type="hidden" id="guarantorsData" name="GuarantorsJson" />
-
+                            
                             <div class="amount-section">
                                 <div class="row">
                                     <div class="col-lg-3">
@@ -306,7 +320,7 @@
                                     </div>
 
                                     <div class="col-lg-2 mt-3">
-                                        <input type="submit"  class="btn btn-primary" style="border-radius: 7px; margin-top: 10px;" value="Update" />
+                                        <input type="button" onclick="updateRow()" class="btn btn-primary" style="border-radius: 7px; margin-top: 10px;" value="Update" />
                                     </div>
                                 </div>
 
@@ -327,8 +341,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-2 mt-3">
-                                        <input type="submit" onclick="sendFormData()" class="btn btn-primary" style="border-radius: 7px; margin-top: 10px;" value="Reset" />
+                                    <div class="col-lg-1 mt-3">
+                                        <input type="button" onclick="clearApportionments()" class="btn btn-primary" style="border-radius: 7px; margin-top: 10px; width: 80px;" value="Reset" />
                                     </div>
                                 </div>
                             </div>
@@ -336,7 +350,7 @@
                             <br />
                             <div class="amount-section">
                                 <div class="row">
-                                    <div class="col-md-9 form-group">
+                                    <div class="col-md-3 form-group">
                                         @Html.LabelFor(model => model.AttachTo, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
                                             @Html.HiddenFor(model => model.AttachToId)
@@ -348,7 +362,7 @@
                                     </div>
 
                                     <div class="col-lg-1 mt-3">
-                                        <input type="submit" onclick="sendFormData()" class="btn btn-primary" style="border-radius: 7px;" value="Update" />
+                                        <input type="submit" onclick="prepareTableData()" class="btn btn-primary" style="border-radius: 7px; width: 150px;" value="Update" />
                                     </div>
                                 </div>
 
@@ -362,15 +376,54 @@
 </div>
 
 
-
-
-<div class="modal  fade" id="fullAccountNumberLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="fullAccountNumberLookupModal" role="dialog" aria-hidden="true" style="width: auto;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
                 <h3 class="font-bold">Customer Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <table id="customerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+
+            <div class="blue-section">
+                <form id="filterForm">
+                    <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                        <div class="col-lg-5">
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Customer Filter</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.CustomerFilter, customerFilter,
+                                    new { @class = "form-control input-md", @id = "customerFilter" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4" style="margin-top: 27px;">
+                            <div class="form-group spacing-form-group">
+                                <div class="input-group text-box">
+                                    @Html.TextBox("text", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "text" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1" style="margin-top:20px;">
+                            <div class="form-group form-group-sm">
+                                <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br />
+
+            <style>
+                #customerAccountsGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+
+            <table id="customerAccountsGrid" class="table table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -379,35 +432,12 @@
                     </tr>
                 </tbody>
             </table>
-
-            <form id="modalFilterForm">
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        @Html.Label("Product Code", "Product Code")
-                        @Html.DropDownList("productCode", ProductCode, new { @class = "form-control", id = "productCode" })
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        @Html.Label("RecordStatus", "Record Status")
-                        @Html.DropDownList("recordStatus", RecordStatus, new { @class = "form-control", id = "recordStatus" })
-                    </div>
-
-                    <div class="form-group col-md-4" style="align-content:center;">
-                        <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
-                    </div>
-                </div>
-            </form>
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
-
-
-
-
 
 <div class="modal  fade" id="AttachToLookupModal" role="dialog" aria-hidden="true" style="width: auto;">
     <div class="modal-dialog modal-lg">
@@ -474,7 +504,6 @@
     </div>
 </div>
 
-
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -502,57 +531,123 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-    @*<script src="~/Scripts/js/navlink.js"></script>*@
-
     <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
     <script>
-        var defaultProductCode = $('#productCode').val();
-        var defaultRecordStatus = $('#recordStatus').val();
-        $('#customerAccountsGrid').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
-        "sServerMethod": "POST",
-        "fnServerParams": function (aoData) {
-            aoData.push(
-                { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
-                { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus }
+        let selectedRow = null; 
 
-            );
-        },
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-            var h = ("0" + createdDate.getHours()).slice(-2);
-            var m = ("0" + createdDate.getMinutes()).slice(-2);
-            var s = ("0" + createdDate.getSeconds()).slice(-2);
+        document.querySelector("#dataTable tbody").addEventListener("click", function (event) {
+            const row = event.target.closest("tr");
+            if (!row) return;
 
-            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-            aData.CreatedDate = dt_Created;
+            if (selectedRow) {
+                selectedRow.classList.remove("highlight-row");
+            }
 
-            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
+            row.classList.add("highlight-row");
+            selectedRow = row;
 
-            $('td:eq(5)', nRow).html(dt_Created);
-            $('td:eq(6)', nRow).html(selectUrl);
-
-            return nRow;
-        },
-        "aoColumns": [
-            { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "10%" },
-            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "10%" },
-            { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "10%" },
-            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
-
-        $('#modalFilterForm').on('submit', function (e) {
-            e.preventDefault();
-            $('#customerAccountsGrid').DataTable().ajax.reload();
+            const cells = row.querySelectorAll("td");
+            document.getElementById("amountGuaranteed").value = cells[6]?.textContent.trim() || "";
+            document.getElementById("principalAttached").value = cells[7]?.textContent.trim() || "";
+            document.getElementById("interestAttached").value = cells[8]?.textContent.trim() || "";
         });
+
+        function updateRow() {
+            if (selectedRow) {
+                const amountGuaranteed = document.getElementById("amountGuaranteed").value;
+                const principalAttached = document.getElementById("principalAttached").value;
+                const interestAttached = document.getElementById("interestAttached").value;
+                
+                const cells = selectedRow.querySelectorAll("td");
+                cells[6].textContent = amountGuaranteed;
+                cells[7].textContent = principalAttached;
+                cells[8].textContent = interestAttached;
+
+                selectedRow.classList.remove("highlight-row");
+                selectedRow = null;
+            } else {
+                alert("Please select a row to update.");
+            }
+        }
+
+        function prepareTableData() {
+            const table = document.getElementById("dataTable");
+            const rows = table.querySelectorAll("tbody tr");
+
+            const tableData = [];
+            rows.forEach((row) => {
+                const cells = row.querySelectorAll("td");
+                console.log("ID Cell Content:", cells[1]?.textContent.trim()); 
+                if (cells.length > 0) {
+                    tableData.push({
+                        Id: cells[1]?.textContent.trim() || "",
+                        StatusDescription: cells[2]?.textContent.trim() || "",
+                        CustomerName: cells[3]?.textContent.trim() || "",
+                        TotalShares: cells[4]?.textContent.trim() || "",
+                        CommittedShares: cells[5]?.textContent.trim() || "",
+                        AmountGuaranteed: cells[6]?.textContent.trim() || "",
+                        PrincipalAttached: cells[7]?.textContent.trim() || "",
+                        InterestAttached: cells[8]?.textContent.trim() || "",
+                    });
+                }
+            });
+
+            document.getElementById("tableDataJson").value = JSON.stringify(tableData);
+            console.log("Serialized Table Data:", JSON.stringify(tableData)); 
+        }
+    </script>
+
+    <script>
+         var defaultCustomerFilter = $('#customerFilter').val();
+        var defaulText = $('#text').val();
+        var defaulProductCode = $('#productCode').val();
+
+        $('#customerAccountsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("CustomerAccountIndex", "LoanRestructuring", new { Area = "Loaning"}))",
+                "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter },
+                        { "name": "text", "value": $('#text').val() || defaulText }
+                    );
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Code", "sWidth": "10%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
+                    { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "5%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "15%" },
+                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                $('#filterForm').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#customerAccountsGrid').DataTable().ajax.reload();
+                });
 
         function selectCustomerAccounts(id) {
             $.ajax({
@@ -577,9 +672,8 @@
                         $('#amountGuaranteed').val(response.data.AmountGuaranteed);
                         $('#EmployerDescription').val(response.data.EmployerDescription);
 
-                        var guarantors = response.data.Guarantors;
+                        var guarantors = response.data.LoanGuarantors;
                         const noDataMessage = document.querySelector('.no-data-message');
-
 
                         if (!guarantors || guarantors.length === 0) {
                             noDataMessage.style.display = 'block';
@@ -589,19 +683,23 @@
                             var tbody = $('#dataTable tbody');
                             tbody.empty();
 
-
+                            var c = 1;
                             guarantors.forEach(function (guarantor) {
+                                var customerName = guarantor.CustomerIndividualFirstName + ' ' + guarantor.CustomerIndividualLastName;
+                                console.log(guarantor.id);
                                 var row = '<tr>' +
+                                    '<td>' + c + '</td>' +
+                                    '<td style="display: none;">' + guarantor.Id + '</td>' +
                                     '<td>' + guarantor.StatusDescription + '</td>' +
-                                    '<td>' + guarantor.CustomerIndividualFirstName + ' ' + guarantor.CustomerIndividualLastName + '</td>' +
+                                    '<td>' + customerName + '</td>' +
                                     '<td>' + guarantor.TotalShares + '</td>' +
                                     '<td>' + guarantor.CommittedShares + '</td>' +
-                                    '<td><input type="number" class="amount-guaranteed" value="' + guarantor.AmountGuaranteed + '" /></td>' +
-                                    '<td>' + guarantor.PrincipalAttached + '</td>' +
-                                    '<td>' + guarantor.InterestAttached + '</td>' +
-                                    '<td>' + guarantor.CustomerIndividualPayrollNumbers + '</td>' +
+                                    '<td style="text-align: right;">' + guarantor.AmountGuaranteed + '</td>' +
+                                    '<td style="text-align: right;">' + guarantor.PrincipalAttached + '</td>' +
+                                    '<td style="text-align: right;">' + guarantor.InterestAttached + '</td>' +
                                     '</tr>';
                                 tbody.append(row);
+                                c++;
                             });
 
                             $('#fullAccountNumberLookupModal').modal('hide');
@@ -616,56 +714,27 @@
             });
         }
 
-
-
-
-
-
-        function gatherGuarantorData() {
-            var guarantors = [];
-            $('#dataTable tbody tr').each(function () {
-                var row = $(this);
-                var guarantor = {
-                    StatusDescription: row.find('td:eq(0)').text(),
-                    CustomerIndividualFirstName: row.find('td:eq(1)').text(),
-                    TotalShares: row.find('td:eq(2)').text(),
-                    CommittedShares: row.find('td:eq(3)').text(),
-                    AmountGuaranteed: row.find('td:eq(4)').text(),
-                    PrincipalAttached: row.find('td:eq(5)').text(),
-                    InterestAttached: row.find('td:eq(6)').text(),
-                    CustomerIndividualPayrollNumbers: row.find('td:eq(7)').text()
-                };
-                guarantors.push(guarantor);
-            });
-
-            $('#guarantorsData').val(JSON.stringify(guarantors));
-        }
-
-        function sendFormData() {
-            gatherGuarantorData();
-
-            $('guarantorForm').submit();
-        }
-
         function calculateApportionedAndShortage() {
-            // Get values from the form
             var amountGuaranteed = parseFloat(document.getElementById('amountGuaranteed').value) || 0;
             var principalAttached = parseFloat(document.getElementById('principalAttached').value) || 0;
             var interestAttached = parseFloat(document.getElementById('interestAttached').value) || 0;
 
-            // Calculate apportioned (Principal + Interest)
             var apportioned = principalAttached + interestAttached;
 
-            // Calculate shortage (AmountGuaranteed - Apportioned)
             var shortage = amountGuaranteed - apportioned;
 
-            // Set the calculated values to the fields
             document.getElementById('apportioned').value = apportioned.toFixed(2);
-            document.getElementById('shortage').value = shortage >= 0 ? shortage.toFixed(2) : 0; // Ensure shortage doesn't go below 0
+            document.getElementById('shortage').value = shortage >= 0 ? shortage.toFixed(2) : 0;
+        }
+
+        function clearApportionments() {
+            document.getElementById("apportioned").value = "";
+            document.getElementById("shortage").value = "";
+            document.getElementById("interestAttached").value = "";
+            document.getElementById("principalAttached").value = "";
+            document.getElementById("amountGuaranteed").value = "";
         }
     </script>
-
-
 
     <script>
        //Loan Product....
@@ -718,7 +787,7 @@
         function selectProduct(id) {
             console.log("Selected ID:", id);
             $.ajax({
-                url: '/Loaning/GuarantorAttachment/AttachToCustomerAccountLookUp',
+                url: '/Loaning/GuarantorAttachment/AttachToLookUp',
                 type: 'POST',
                 data: { Id: id },
                 success: function (response) {

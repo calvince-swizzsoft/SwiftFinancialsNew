@@ -649,5 +649,22 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 return Enum.IsDefined(typeof(LoanProductSection), LoanRegistrationLoanProductSection) ? EnumHelper.GetDescription((LoanProductSection)LoanRegistrationLoanProductSection) : string.Empty;
             }
         }
+
+
+
+        public List<Guarantor> Guarantors { get; set; } = new List<Guarantor>();
+    }
+
+
+    public class Guarantor
+    {
+        public string Id { get; set; }
+        public string AmountGuaranteed { get; set; }
+        public string CommittedShares { get; set; }
+        public string CustomerName { get; set; }
+        public string InterestAttached { get; set; }
+        public string PrincipalAttached { get; set; }
+        public string StatusDescription { get; set; }
+        public string TotalShares { get; set; }        
     }
 }
