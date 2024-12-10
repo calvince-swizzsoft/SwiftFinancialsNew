@@ -168,6 +168,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(salaryPeriodDTO);
         }
 
+
+        public async Task<ActionResult> Edit()
+        {
+            await ServeNavigationMenus();
+            return View();
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, SalaryProcessingDTO salaryPeriodDTO)
