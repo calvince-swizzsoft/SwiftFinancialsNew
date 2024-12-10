@@ -187,6 +187,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Add(Guid? id, CustomerAccountDTO customerAccountDTO)
         {
             await ServeNavigationMenus();
+
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+
+
             if (Session["BranchId"] != null)
             {
                 customerAccountDTO.BranchId = (Guid)Session["BranchId"];

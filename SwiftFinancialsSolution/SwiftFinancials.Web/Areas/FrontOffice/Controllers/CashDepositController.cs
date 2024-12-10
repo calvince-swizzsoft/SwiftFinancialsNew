@@ -176,8 +176,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View();
         }
 
-    
-
 
         private async Task<List<Document>> GetDocumentsAsync(Guid id)
         {
@@ -190,7 +188,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 using (var command = new SqlCommand(query, connection))
                 {
-
                     command.Parameters.AddWithValue("@CustomerId", id);
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -202,8 +199,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
                                 SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
                                 IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
-                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
-                            });
+                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3],
+
+                            }
+                            );
+
                         }
                     }
                 }
@@ -211,7 +211,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return documents;
         }
-
 
         [HttpPost]
         public async Task<JsonResult> FetchCustomerAccountsTable(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int customerFilter)
@@ -341,7 +340,23 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (id != null)
             {
-                ViewBag.Documents = GetDocumentsAsync(id.Value);
+                var documents = await GetDocumentsAsync(id.Value);
+                if (documents.Any())
+                {
+                    var document = documents.First();
+
+                    TempData["PassportPhoto"] = document.PassportPhoto;
+                    TempData["SignaturePhoto"] = document.SignaturePhoto;
+                    TempData["idCardFront"] = document.IDCardFrontPhoto;
+                    TempData["idCardBack"] = document.IDCardBackPhoto;
+
+                    // Sending the images as Base64 encoded strings to be used in AJAX
+                    ViewBag.PassportPhoto = document.PassportPhoto != null ? Convert.ToBase64String(document.PassportPhoto) : null;
+                    ViewBag.SignaturePhoto = document.SignaturePhoto != null ? Convert.ToBase64String(document.SignaturePhoto) : null;
+                    ViewBag.IDCardFrontPhoto = document.IDCardFrontPhoto != null ? Convert.ToBase64String(document.IDCardFrontPhoto) : null;
+                    ViewBag.IDCardBackPhoto = document.IDCardBackPhoto != null ? Convert.ToBase64String(document.IDCardBackPhoto) : null;
+                }
+
             }
 
 
@@ -1447,25 +1462,34 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
             transactionModel.ValidateAll();
-
             if (transactionModel.HasErrors)
             {
+                var errorMessages = transactionModel.ErrorMessages
+                    .Select(error => error)
+                    .ToList();
+
+                // Combine all error messages into a single string
+                string combinedErrorMessage = string.Join("; ", errorMessages);
+
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
 
+                // Show detailed error in a message box
+                MessageBox.Show($"Transaction Error: {combinedErrorMessage}",
+                    "Cash Transaction",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
 
-                MessageBox.Show("Transaction Error",
-               "Cash Transaction",
-               MessageBoxButtons.OK,
-               MessageBoxIcon.Exclamation,
-               MessageBoxDefaultButton.Button1,
-               MessageBoxOptions.ServiceNotification
-
-               );
-
-                //return View(SelectedCustomerAccount);
-
-                return Json(new { success = false, message = "Operation Failed" });
+                // Return JSON response with detailed error message
+                return Json(new
+                {
+                    success = false,
+                    message = $"Operation Failed: {combinedErrorMessage}"
+                });
             }
+
 
             try
             {
@@ -2046,7 +2070,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
 
 
-            var savingsProduct = await _channelService.FindSavingsProductAsync(model.CustomerAccount.CustomerAccountTypeTargetProductId, GetServiceHeader());
+            SavingsProductDTO savingsProduct = null;
+
+            
+
+            if (model != null)
+            { 
+              savingsProduct  = await _channelService.FindSavingsProductAsync(model.CustomerAccount.CustomerAccountTypeTargetProductId, GetServiceHeader());
+            }
             ObservableCollection<CommissionDTO> commissions = null;
 
             //default to ordinary savings
@@ -2054,7 +2085,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var products = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
 
-                savingsProduct = products[0];
+                savingsProduct = products.FirstOrDefault(product => product.Id == Guid.Parse("4623CC2E-E0BB-E811-A815-000C29142092"));
+
             }
 
             switch (target.ToLower())

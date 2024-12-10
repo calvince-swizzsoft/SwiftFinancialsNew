@@ -13,13 +13,57 @@
     //var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 
     var customerFilter = ViewBag.CustomerFilterSelectList as List<SelectListItem>;
-    var documents = ViewBag.Documents as List<SwiftFinancials.Web.Areas.Registry.DocumentsModel.Document>;
+    //var documents = ViewBag.Documents as List<SwiftFinancials.Web.Areas.Registry.DocumentsModel.Document>;
+
+    var passportPhoto = TempData["PassportPhoto"] as byte[];
+    var signaturePhoto = TempData["SignaturePhoto"] as byte[];
+    var idCardFront = TempData["idCardFront"] as byte[];
+    var idCardBack = TempData["idCardBack"] as byte[]; }
 }
 
 <head>
 
 
     <style>
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 400px;
+            background: linear-gradient(145deg, #ffffff, #dcdce1);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2), -8px -8px 20px rgba(255, 255, 255, 0.5);
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+
+            .image-container h3 {
+                font-size: 1rem;
+                color: #333;
+                margin-bottom: 10px;
+                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            }
+
+
+            .image-container img {
+                width: 100%;
+                height: 280px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                transition: transform 0.3s ease;
+            }
+
+
+            .image-container:hover {
+                transform: scale(1.05) rotateY(10deg);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), -8px -8px 20px rgba(255, 255, 255, 0.4);
+                cursor: pointer;
+            }
+
+
         .custom-modal-styles {
             max-width: 850px; /* Fixed width for modal */
             max-height: 850px; /* Fixed height */
@@ -74,8 +118,7 @@
 
         /* General styling for all .inner-nav-tabs */
         .inner-nav-tabs .inner-nav-link,
-        .inner-inner-nav-tabs .inner-inner-nav-link
-        {
+        .inner-inner-nav-tabs .inner-inner-nav-link {
             display: block;
             padding: 0.5rem 1rem;
             color: #007bff;
@@ -86,15 +129,13 @@
         }
 
             .inner-nav-tabs .inner-nav-link:hover,
-            .inner-inner-nav-tabs .inner-inner-nav-link:hover
-            {
+            .inner-inner-nav-tabs .inner-inner-nav-link:hover {
                 color: #0056b3;
                 background-color: #e9ecef;
             }
 
             .inner-nav-tabs .inner-nav-link.active,
-            .inner-inner-nav-tabs .inner-inner-nav-link.active
-            {
+            .inner-inner-nav-tabs .inner-inner-nav-link.active {
                 color: #495057;
                 background-color: #fff;
                 border: 1px solid #dee2e6;
@@ -102,25 +143,17 @@
             }
 
 
-        /*.inner-nav-pills .inner-nav-link.active {
-            color: #fff;*/ /* White text for active pill */
-        /*background-color: #007bff;*/ /* Primary color background for active pill */
-        /*}*/
-
-
 
         /* Tab Content */
         .tab-content > .tab-pane,
         .inner-tab-content > .inner-tab-pane,
-        .inner-inner-tab-content > .inner-inner-tab-pane
-        {
+        .inner-inner-tab-content > .inner-inner-tab-pane {
             display: none;
         }
 
             .tab-content > .tab-pane.active,
             .inner-tab-content > .inner-tab-pane.active,
-            .inner-inner-tab-content > .inner-inner-tab-pane.active
-            {
+            .inner-inner-tab-content > .inner-inner-tab-pane.active {
                 display: block;
             }
 
@@ -606,7 +639,7 @@
                                                     <div id="chequePayables" class="inner-inner-tab-pane">
                                                         @*<div class="card-body">*@
                                                         <div class="table-responsive">
-                                                            <table id="CustomerAccountsGrid1" class="table table-striped table-bordered table-hover" style="width:100%";>
+                                                            <table id="CustomerAccountsGrid1" class="table table-striped table-bordered table-hover" style="width:100%" ;>
                                                                 <tbody>
                                                                     <tr>
                                                                         <td class="dataTables_empty">Loading data from server</td>
@@ -619,35 +652,35 @@
                                                         <div class="blue-section mt-1">
                                                             @*<form id="CustomerAccountModalFilterForm">*@
 
-                                                                <div class="row align-items-end">
+                                                            <div class="row align-items-end">
 
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group mb-0">
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group mb-0">
 
-                                                                            <div class="input-group">
+                                                                        <div class="input-group">
 
-                                                                                @Html.DropDownListFor(m => m.CustomerAccount.CustomerAccountTypeProductCode, productCode, new { @class = "form-control", @id = "productCode" })
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group mb-0">
-
-                                                                            <div class="input-group">
-
-                                                                                @Html.DropDownListFor(m => m.CustomerAccount.CustomerFilter, customerFilter,
-                                                                                new { @class = "form-control", @id = "CustomerAccountCustomerFilter" })
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group mb-0">
-                                                                            <button type="submit" id="refreshButton" class="btn btn-success form-control">Refresh</button>
+                                                                            @Html.DropDownListFor(m => m.CustomerAccount.CustomerAccountTypeProductCode, productCode, new { @class = "form-control", @id = "productCode1" })
                                                                         </div>
                                                                     </div>
                                                                 </div>
+
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group mb-0">
+
+                                                                        <div class="input-group">
+
+                                                                            @Html.DropDownListFor(m => m.CustomerAccount.CustomerFilter, customerFilter,
+                                                                            new { @class = "form-control", @id = "CustomerAccountCustomerFilter1" })
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group mb-0">
+                                                                        <button type="submit" id="refreshButton2" class="btn btn-success form-control">Refresh</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                             @*</form>*@
                                                         </div>
 
@@ -776,7 +809,7 @@
 
                                             <!-- Button Section -->
                                             <div style="display: flex; gap: 10px;">
-                                                <button type="button" id="refreshButton1" class="btn btn-info">Refresh</button>
+                                                <button type="button" id="refreshButton" class="btn btn-info">Refresh</button>
                                                 <button type="button" id="printButton" class="btn btn-success">Print</button>
                                             </div>
                                         </div>
@@ -1158,133 +1191,65 @@
                                         </div>
                                         <!-- Specimen Tab -->
                                         <div id="specimen" class="inner-tab-pane">
-                                            @if (documents != null && documents.Any())
-                                            {
-                                                foreach (var document in documents)
-                                                {
-                                                    <div class="document-section card shadow-sm mb-4">
-                                                        <div class="card-body">
-                                                            <h4 class="card-title text-secondary">Document Set</h4>
-                                                            <div class="row">
-                                                                @if (document.PassportPhoto != null)
-                                                                {
-                                                                    <div class="col-md-3 text-center">
-                                                                        <h5>Passport Photo</h5>
-                                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.PassportPhoto)" alt="Passport Photo" class="img-thumbnail mb-2" width="200" />
-                                                                    </div> }
-                                                                else
-                                                                {
-                                                                    <div class="col-md-3 text-center">
-                                                                        <h5>Passport Photo</h5>
-                                                                        <p>No Passport Photo available</p>
-                                                                    </div>}
+                                            <div id="documentImages" title="Click on an image to view in full-screen">
 
-                                                                @if (document.SignaturePhoto != null)
-                                                                {
-                                                                    <div class="col-md-3 text-center">
-                                                                        <h5>Signature Photo</h5>
-                                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.SignaturePhoto)" alt="Signature Photo" class="img-thumbnail mb-2" width="200" />
-                                                                    </div> }
-                                                                else
-                                                                {
-                                                                    <div class="col-md-3 text-center">
-                                                                        <h5>Signature Photo</h5>
-                                                                        <p>No Signature Photo available</p>
-                                                                    </div>}
-
-                                                                @if (document.IDCardFrontPhoto != null)
-                                                                {
-                                                                    <div class="col-md-3 text-center">
-                                                                        <h5>ID Card Front</h5>
-                                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.IDCardFrontPhoto)" alt="ID Card Front" class="img-thumbnail mb-2" width="200" />
-                                                                    </div> }
-                                                                else
-                                                                {
-                                                                    <div class="col-md-3 text-center">
-                                                                        <h5>ID Card Front</h5>
-                                                                        <p>No ID Card Front available</p>
-                                                                    </div>}
-
-                                                                @if (document.IDCardBackPhoto != null)
-                                                                {
-                                                                    <div class="col-md-3 text-center">
-                                                                        <h5>ID Card Back</h5>
-                                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.IDCardBackPhoto)" alt="ID Card Back" class="img-thumbnail mb-2" width="200" />
-                                                                    </div> }
-                                                                else
-                                                                {
-                                                                    <div class="col-md-3 text-center">
-                                                                        <h5>ID Card Back</h5>
-                                                                        <p>No ID Card Back available</p>
-                                                                    </div>}
-                                                            </div>
-                                                        </div>
-                                                    </div>}
-                                            }
-                                            else
-                                            {
-                                                <p>No documents available for this customer.</p>}
-
-                                            <style>
-                                                body {
-                                                    background-color: #f4f6f9;
-                                                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                                                }
-
-                                                h2 {
-                                                    margin-bottom: 30px;
-                                                }
-
-                                                .document-section.card {
-                                                    border-radius: 15px;
-                                                    background: linear-gradient(145deg, #e6e6e6, #ffffff);
-                                                    box-shadow: 20px 20px 40px #d9d9d9, -20px -20px 40px #ffffff;
-                                                    transition: all 0.3s ease;
-                                                    overflow: hidden;
-                                                }
-
-                                                    .document-section.card:hover {
-                                                        transform: translateY(-10px) scale(1.02);
-                                                        box-shadow: 20px 20px 60px #d1d1d1, -20px -20px 60px #ffffff;
+                                                <!-- Passport Photo -->
+                                                <div class="image-container" onclick="openFullscreen('passportPhoto')">
+                                                    <h3>Passport Photo</h3>
+                                                    @if (passportPhoto != null)
+                                                    {
+                                                        <img src="data:image/png;base64,@Convert.ToBase64String(passportPhoto)" alt="Passport Photo" />
                                                     }
-
-                                                .card-body {
-                                                    padding: 20px;
-                                                    background: linear-gradient(145deg, #ffffff, #f0f0f0);
-                                                    border-radius: 10px;
-                                                    box-shadow: inset 5px 5px 10px #d9d9d9, inset -5px -5px 10px #ffffff;
-                                                }
-
-                                                .card-title {
-                                                    font-size: 1.5rem;
-                                                    font-weight: 700;
-                                                    color: #333;
-                                                    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-                                                }
-
-                                                h5 {
-                                                    margin-top: 10px;
-                                                    color: #007bff;
-                                                    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-                                                }
-
-                                                img {
-                                                    border: 2px solid #007bff;
-                                                    border-radius: 10px;
-                                                    transition: transform 0.3s ease, box-shadow 0.3s ease;
-                                                    box-shadow: 5px 5px 15px rgba(0, 123, 255, 0.2);
-                                                    width: 230px;
-                                                }
-
-                                                    img:hover {
-                                                        transform: scale(1.05);
-                                                        box-shadow: 10px 10px 20px rgba(0, 123, 255, 0.3);
+                                                    else
+                                                    {
+                                                        <p>No passport photo available.</p>
                                                     }
+                                                    <div id="ppmsg" style="color: red; text-align: center; vertical-align: central;"></div>
+                                                </div>
 
-                                                .row {
-                                                    margin-bottom: 10px;
-                                                }
-                                            </style>
+                                                <!-- Signature Photo -->
+                                                <div class="image-container" onclick="openFullscreen('signaturePhoto')">
+                                                    <h3>Signature Photo</h3>
+                                                    @if (signaturePhoto != null)
+                                                    {
+                                                        <img src="data:image/png;base64,@Convert.ToBase64String(signaturePhoto)" alt="Signature Photo" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>No signature photo available.</p>
+                                                    }
+                                                    <div id="smsg" style="color: red; text-align: center; vertical-align: central;"></div>
+                                                </div>
+
+                                                <!-- ID Card Front Photo -->
+                                                <div class="image-container" onclick="openFullscreen('idCardFront')">
+                                                    <h3>ID Card Front</h3>
+                                                    @if (idCardFront != null)
+                                                    {
+                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(idCardFront)" alt="ID Card Front" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>No ID Card Front photo available.</p>
+                                                    }
+                                                    <div id="idfrontmsg" style="color: red; text-align: center; vertical-align: central;"></div>
+                                                </div>
+
+                                                <!-- ID Card Back Photo -->
+                                                <div class="image-container" onclick="openFullscreen('idCardBack')">
+                                                    <h3>ID Card Back</h3>
+                                                    @if (idCardBack != null)
+                                                    {
+                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(idCardBack)" alt="ID Card Back" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>No ID Card Back photo available.</p>
+                                                    }
+                                                    <div id="idbackmsg" style="color: red; text-align: center; vertical-align: central;"></div>
+                                                </div>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1323,7 +1288,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         @Html.HiddenFor(model => model.Teller.ChartOfAccountId, new { @id = "TellerChartOfAccountId" })
-                                        @Html.LabelFor(model => model.Teller.BookBalance, "Teller Balance", htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.Teller.BookBalance, "Current Teller Balance", htmlAttributes: new { @class = "", @id = "TellerBookBalance" })
                                         @Html.EditorFor(model => model.Teller.BookBalance, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.Teller.BookBalance, "", new { @class = "text-danger" })
                                     </div>
@@ -1331,12 +1296,14 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.Teller.BookBalance, "New Teller Balance", htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Teller.BookBalance, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.Teller.BookBalance, new { htmlAttributes = new { @id = "TellerNewBookBalance", @class = "form-control", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.Teller.BookBalance, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
+
                         </div>
+
 
 
                         <div class="form-group" style="margin-top: 20px; text-align: right;">
@@ -1420,7 +1387,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group mb-0">
-                                    <button type="submit" id="refreshButton" class="btn btn-success form-control">Refresh</button>
+                                    <button type="submit" id="refreshButton1" class="btn btn-success form-control">Refresh</button>
                                 </div>
                             </div>
                         </div>
@@ -1541,25 +1508,6 @@
 </div>
 
 
-@*<div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="paymentModalLabel">Pay Request</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-footer">
-                    <button id="paymentBtn" type="button" class="btn btn-secondary">
-                        Pay
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>*@
-
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -1602,6 +1550,32 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        $(document).ready(function () {
+            // Function to fetch image data using AJAX
+            function loadImage(imageType) {
+                $.ajax({
+                    url: '/Customer/Details/' + imageType, // This is the URL where you want to load the image from
+                    type: 'GET',
+                    success: function (response) {
+                        $('#' + imageType).attr('src', 'data:image/jpeg;base64,' + response.imageData); // This will set the image source from the base64 string
+                        $('#' + imageType + 'msg').text(''); // Clear any error message
+                    },
+                    error: function () {
+                        $('#' + imageType + 'msg').text('Failed to load image'); // Display error if any
+                    }
+                });
+            }
+
+            // Call the loadImage function on page load for each image
+            loadImage('passportPhoto');
+            loadImage('signaturePhoto');
+            loadImage('idCardFront');
+            loadImage('idCardBack');
+        });
+
+    </script>
 
 
     <script>
@@ -1654,10 +1628,6 @@
                 window.open(reportUrl, '_blank');
             });
         });
-
-
-
-
     </script>
 
 
@@ -1665,14 +1635,14 @@
 
     $(document).ready(function () {
 
-        $('#refreshButton1').on('click', function () {
+        $('#refreshButton').on('click', function () {
             // Reload the DataTable when the Refresh button is clicked
             $('#tellerGlTable').DataTable().ajax.reload();
             $('#startDate').val('');
             $('#endDate').val('');
         });
 
-                          const defaultStartDate = new Date();
+                const defaultStartDate = new Date();
                 defaultStartDate.setDate(defaultStartDate.getDate() - 30); // 30 days ago
                 const defaultEndDate = new Date();
 
@@ -1684,7 +1654,7 @@
         "sAjaxSource": "@(Url.Action("Index", "CashDeposit", new { Area = "FrontOffice"}))",
         "sServerMethod": "POST",
         "fnServerParams": function (aoData) {
-  
+
             aoData.push(
                 {
                     "name": "startDate",
@@ -1730,18 +1700,37 @@
 
     <script>
         $(document).ready(function () {
+
+
+            //console.log('Initial TellerBookBalance:', $('#TellerBookBalance').val());
+
+            //$('#TellerNewBookBalance').val($('#TellerBookBalance').val());
+
+
             function updateNewAvailableBalance(isDeposit, valueFieldId) {
                 // Parse values as floats and default to 0 if invalid
+
                 let customerAccountAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0;
+                let tellerBookBalance = parseFloat($('#TellerBookBalance').val()) || 0;
                 let value = parseFloat($(valueFieldId).val()) || 0;
 
-                // Update the new available balance based on deposit/withdrawal
-                let newBalance = isDeposit
-                    ? customerAccountAvailableBalance + value
-                    : customerAccountAvailableBalance - value;
+                let newBalance;
+                let tellerNewBookBalance;
 
-                $('#CustomerAccountNewAvailableBalance').val(newBalance);
+                if (isDeposit) {
+
+                    newBalance = customerAccountAvailableBalance + value;
+                    tellerNewBookBalance = tellerBookBalance - value;
+                } else {
+
+                    newBalance = customerAccountAvailableBalance - value;
+                    tellerNewBookBalance = tellerBookBalance + value;
+                }
+
+                $('#CustomerAccountNewAvailableBalance').val(newBalance.toFixed(2)); // Keeping two decimal places
+                $('#TellerNewBookBalance').val(tellerNewBookBalance.toFixed(2));
             }
+
 
             // Initial calculations based on default values
             updateNewAvailableBalance(true, '#TotalValue');
@@ -1869,7 +1858,7 @@
 
                 e.preventDefault();
 
-                
+
                 var payeeValue = $('#PaymentVoucherPayee').val();
 
                 var selectedPayables = [];
@@ -1929,7 +1918,7 @@
                     },
                     error: function (xhr, status, error) {
 
-       
+
                         console.error(error);
 
                         $('.payable-checkbox').prop('checked', false);
@@ -1944,14 +1933,15 @@
 
 
     <script>
-               // Set Default Value for Filters
+
         var defaultProductCode = $('#productCode').val();
                 var defaultCustomerFilter = $('#CustomerAccountCustomerFilter').val();
 
-        //Refresh button for reloading the Datable after Applying the filters
-        $('#CustomerAccountModalFilterForm').on('submit', function (e) {
-                            e.preventDefault();
-                            $('#CustomerAccountsGrid').DataTable().ajax.reload();
+
+        $('#refreshButton1').on('click', function (e) {
+            console.log("refreshButton1 clicked");
+            e.preventDefault();
+            $('#CustomerAccountsGrid').DataTable().ajax.reload();
         });
 
 
@@ -1979,7 +1969,7 @@
                 { "mDataProp": "CustomerFullName", "sTitle": "Name", "sWidth": "20%" },
                 { "mDataProp": "FullAccountNumber", "sTitle": "Account No.", "sWidth": "20%" },
                 { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "15%" },
-                { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "15%" },
+                { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product", "sWidth": "15%" },
                 { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%", "bSortable": false }
             ],
 
@@ -2152,7 +2142,7 @@
 
         aData.CreatedDate = formatDate(createdDate);
 
-  
+
         $('td:eq(4)', nRow).html(aData.WriteDate);
         $('td:eq(5)', nRow).html(aData.PaidFlaggedDate);
         $('td:eq(6)', nRow).html(aData.CreatedDate);
@@ -2184,7 +2174,7 @@
             console.log("entered setPaymentVoucherDetails with vouchernumber:", voucherNumber);
             console.log("entered setPaymentVoucherDetails with paymentvoucherid:", id);
             $('#PaymentVoucherNumber').val(voucherNumber);
-       
+
              $('#PaymentVoucherId').val(id);
 
             $('#PaymentVouchersLookupModal').modal('hide');
@@ -2222,7 +2212,7 @@
                     var branchId = "";
                     BranchId = BranchesMap[item].Id;
                     $('#BranchId').val(BranchId);
-  
+
                     return item;
                 }
             });
@@ -2260,42 +2250,47 @@
                             transactionType = 'Unknown Transaction';
                     }
 
+                    var formData = $('#savingsReceiptsPaymentsForm').serialize();
+
+                    console.log("target in fetchknowncharges is", target);
+
                     // Call the FetchKnownCharges method via AJAX
                     $.ajax({
                         url: '/CashDeposit/FetchKnownCharges',
                         type: 'POST',
-                        data: { target: target },
+                        data: {
+                            model: formData,
+                            target: target
+                        },
                         success: function (response) {
                             if (response.success) {
-                                var model = response.data;
-                                var commissions = model.Commissions;
-
+                                var commissions = response.data;
 
                                 if (commissions && commissions.length > 0) {
                                     var tableBody = '';
                                     $.each(commissions, function (index, commission) {
                                         tableBody += '<tr>' +
-                                            '<td>' + commission.Description + '</td>' +
-                                            '<td>' + commission.MaximumCharge + '</td>' +
-                                            '<td>' + commission.ExtendedChargeBenefactorDescription + '</td>' +
+                                            '<td>' + (commission.Description || 'N/A') + '</td>' +
+                                            '<td>' + (commission.MaximumCharge || 'N/A') + '</td>' +
+                                            '<td>' + (commission.ExtendedChargeBenefactorDescription || 'N/A') + '</td>' +
                                             '</tr>';
                                     });
 
-                                    // Insert the rows into the tbody of the table
                                     $('#chargesLevies tbody').html(tableBody);
                                 } else {
-                                    // If no commissions, display a message with the transaction type
-                                    var noDataMessage = 'No commissions available for this ' + transactionType + ' transaction';
+                                    var transactionType = target.replace('#', '').replace(/([A-Z])/g, ' $1').toLowerCase();
+                                    var noDataMessage = 'No commissions available for this ' + transactionType + ' transaction.';
                                     $('#chargesLevies tbody').html('<tr><td colspan="3">' + noDataMessage + '</td></tr>');
                                 }
                             } else {
-                                console.log("Error:", response.message);
+                                alert("Error: " + response.message);
                             }
                         },
                         error: function (xhr, status, error) {
-                            console.log("AJAX error:", error);
+                            alert("An error occurred while fetching charges: " + error);
                         }
                     });
+
                 }
             }
 
@@ -2341,7 +2336,7 @@
 
                     return nRow;
                 },
-        
+
                 "aoColumns": [
                     { "mDataProp": "Code", "sTitle": "BankCode", "sWidth": "20%" },
                     { "mDataProp": "Description", "sTitle": "BankName", "sWidth": "5%" },
@@ -2361,7 +2356,7 @@
                                 data: { id: bankId },
                                 success: function (data) {
                                     if (data) {
-                                 
+
                                         $('#DrawerBankId').val(data.Id);
                                         $('#DrawerBankName').val(data.Description);
                                         $('#DrawerBankLinkageChartOfAccoundId').val(data.BankLinkageChartOfAccountId);
@@ -2518,7 +2513,7 @@
             e.preventDefault();
 
             const rowData = $('#cashDepositRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
-            const requestId = rowData.Id; 
+            const requestId = rowData.Id;
 
             handleCashDepositRequest(requestId);
         });
@@ -2539,7 +2534,7 @@
                 cashDepositRequestsTable.ajax.reload(null, false);
                 resetAllFields();
             } catch (error) {
-         
+
                 console.error("Error occurred while processing the request: ", error);
             }
         }
@@ -2601,11 +2596,11 @@
 
                 console.log(result);
                 $('#paymentModal').modal('hide');
-        
+
                 cashWithdrawalRequestsTable.ajax.reload(null, false);
                 resetAllFields();
             } catch (error) {
-           
+
                 console.error("Error occurred while processing the request: ", error);
             }
         }
@@ -2655,7 +2650,7 @@
 
             const rowData = $('#cashTransferRequestsTable').DataTable().row($(this).closest('tr')).data(); // Get the data for the clicked row
             const requestId = rowData.Id;
-         
+
             handleCashTransferRequest(requestId);
         });
 
@@ -2674,11 +2669,11 @@
 
                 console.log(result);
                 $('#paymentModal').modal('hide');
-   
+
                 cashTransferRequestsTable.ajax.reload(null, false);
                 resetAllFields();
             } catch (error) {
-          
+
                 console.error("Error occurred while processing the request: ", error);
             }
         }
@@ -2688,15 +2683,15 @@
 
     <script>
 
-        $('#refreshButton1').on('click', function () {
+        $('#refreshButton2').on('click', function () {
             // Reload the DataTable when the Refresh button is clicked
             $('#CustomerAccountsGrid1').DataTable().ajax.reload();
-            $('#productCode').val('');
-            $('#CustomerAccountCustomerFilter').val('');
+            $('#productCode1').val('');
+            $('#CustomerAccountCustomerFilter1').val('');
         });
 
         var defaultProductCode = $('#productCode').val();
-        var defaultCustomerFilter = $('#CustomerAccountCustomerFilter').val();
+        var defaultCustomerFilter = $('#CustomerAccountCustomerFilter1').val();
 
         var customerAccountsTable = $('#CustomerAccountsGrid1').DataTable({
         "sPaginationType": "full_numbers",
@@ -2706,8 +2701,8 @@
         "sServerMethod": "POST",
         "fnServerParams": function (aoData) {
             aoData.push(
-                { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
-                { "name": "customerFilter", "value": $('#CustomerAccountCustomerFilter').val() || defaultCustomerFilter }
+                { "name": "productCode", "value": $('#productCode1').val() || defaultProductCode },
+                { "name": "customerFilter", "value": $('#CustomerAccountCustomerFilter1').val() || defaultCustomerFilter }
             );
         },
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -2744,7 +2739,7 @@
             "sRow": "aligned-row"
         },
 
-        "aaSorting": [[6, "desc"]], 
+        "aaSorting": [[6, "desc"]],
     });
 
 
