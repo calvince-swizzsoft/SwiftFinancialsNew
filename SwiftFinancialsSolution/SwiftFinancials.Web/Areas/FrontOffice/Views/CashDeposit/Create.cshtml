@@ -750,36 +750,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Teller G/L Account Statement Tab -->
-                                @*<div id="tellerGlAccountStatement" class="tab-pane">
-                                        <div class="table-responsive">
-                                            <table id="tellerGlTable" class="table table-striped table-bordered table-hover" style="width:100%;">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="dataTables_empty">
-                                                            Loading data from server
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-
-                                            </table>
-                                            <div class="blue-section1" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
-                                                <div class="col-md-5">
-                                                    <label for="startDate">Start Date:</label>
-                                                    <input type="text" id="startDate" class="form-control" />
-                                                </div>
-
-                                                <div class="col-md-5">
-                                                    <label for="endDate">End Date:</label>
-                                                    <input type="text" id="endDate" class="form-control" />
-                                                </div>
-                                                <button type="button" id="refreshButton1" class="btn btn-info">Refresh</button>
-
-
-                                            </div>
-                                        </div>
-                                    </div>*@
-
                                 <div id="tellerGlAccountStatement" class="tab-pane">
                                     <div class="table-responsive">
                                         <table id="tellerGlTable" class="table table-striped table-bordered table-hover" style="width:100%;">
@@ -1923,7 +1893,12 @@
 
                 else {
 
-                    if (transactionType = 'Cheque Deposit') {
+                    var transactionType = $('#CustomerAccount_Type').val();
+
+
+                    console.log("transaction type is", transactionType);
+
+                    if (transactionType == 3) {
 
                         alert("please select a cheque payable");
 

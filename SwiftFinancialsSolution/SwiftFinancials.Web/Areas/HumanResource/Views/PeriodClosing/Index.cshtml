@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 @{
     ViewBag.Title = "SalaryPeriods Closing";
 }
@@ -40,7 +40,7 @@
                 <a href="@Url.Action("Index", "PaySlips", new { Area = "HumanResource" })" class="nav-link">
                     <i class="fa fa-cog"></i> Pay Slips
                 </a>
-                <a href="@Url.Action("Index", "PeriodClosings", new { Area = "HumanResource" })" class="nav-link">
+                <a href="@Url.Action("Index", "PeriodClosing", new { Area = "HumanResource" })" class="nav-link">
                     <i class="fa fa-cog"></i> Close Salary Period
                 </a>
 
@@ -118,7 +118,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "PeriodClosings", new { Area = "HumanResource" }))",
+                "sAjaxSource": "@(Url.Action("Index", "PeriodClosing", new { Area = "HumanResource" }))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -139,8 +139,8 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
 
-                    var viewButton = `<a class="dropdown-item" href="/HumanResource/PeriodClosings/close/${aData.Id}">View</a>`;
-                    var CloseSalaryButton = `<a class="dropdown-item" href="/HumanResource/PeriodClosings/close/${aData.Id}">ClosePeriod</a>`;
+                    var viewButton = `<a class="dropdown-item" href="/HumanResource/PeriodClosing/close/${aData.Id}">View</a>`;
+                    var CloseSalaryButton = `<a class="dropdown-item" href="/HumanResource/PeriodClosing/close/${aData.Id}">ClosePeriod</a>`;
 
 
 

@@ -131,10 +131,16 @@
                                     @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Description.." } })
                                 </div>
 
+                                @*<div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Reference1, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Reference1, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.Reference1, "", new { @class = "text-danger" })
+                                    </div>*@
+
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference1, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Reference1, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Reference1, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.Reference3, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Reference3, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Reference3, "", new { @class = "text-danger" })
                                 </div>
 
                             </div>
@@ -153,12 +159,6 @@
                                     @Html.LabelFor(model => model.StationZoneDescription, htmlAttributes: new { @class = "" })
                                     @Html.EditorFor(model => model.StationZoneDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Zone", disabled = "disabled" } })
                                     @Html.ValidationMessageFor(model => model.StationZoneDescription, "", new { @class = "text-danger" })
-                                </div>
-
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference3, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Reference3, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Reference3, "", new { @class = "text-danger" })
                                 </div>
 
 
@@ -917,58 +917,51 @@
                                 </div>
                             </div>
 
-                            <div id="SpecimenCapture" class="tab-pane" role="tabpanel">
+                            <div id="SpecimenCapture" class="tab-pane p-4" role="tabpanel">
                                 <link href="~/Scripts/css/WebCam.css" rel="stylesheet" />
 
-                                <!-- Passport Photo Section -->
-                                <div class="form-group row mb-5">
-                                    <div class="col-md-6">
-                                        <div class="passport-photo-container p-3 text-center">
-                                            <label for="passportPhoto" class="mb-2">Passport Photo (via Webcam or Upload)</label>
-                                            <video id="webcam" autoplay style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);"></video>
-                                            <button type="button" class="btn btn-primary mt-3" onclick="captureImage()">Capture Passport Photo</button>
+                                <div class="container rounded p-4" style="background: #f8f9fa; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+
+                                    <!-- Passport Photo Section -->
+                                    <div class="row mb-4">
+                                        <div class="col-md-6 text-center">
+                                            <h5 class="mb-3">Passport Photo</h5>
+                                            <video id="webcam" autoplay class="rounded shadow-sm" style="width: 100%; border: 2px solid #007bff;"></video>
+                                            <button type="button" class="btn btn-primary mt-3" onclick="captureImage()">Capture Photo</button>
                                             <input type="file" class="form-control mt-3" id="passportPhotoUpload" accept="image/*" onchange="previewImage(event, 'capturedImage')" />
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="passport-photo-preview text-center">
-                                            <label for="capturedImage" class="mb-2">Captured or Uploaded Passport Photo</label>
-                                            <img id="capturedImage" src="" alt="Captured Image" style="width: 80%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                        <div class="col-md-6 text-center">
+                                            <h5 class="mb-3">Captured/Uploaded Photo</h5>
+                                            <img id="capturedImage" src="" alt="Captured Image" class="rounded shadow-sm" style="width: 80%; border: 2px solid #007bff;" />
                                         </div>
                                     </div>
+
                                     <input type="hidden" name="passportPhotoDataUrl" id="passportPhotoDataUrl" />
-                                </div>
 
-                                <!-- Signature and ID Photos Section -->
-                                <div class="form-group row mt-5">
-                                    <div class="row">
+                                    <!-- Signature and ID Photos Section -->
+                                    <div class="row g-4">
                                         <!-- Signature Photo -->
-                                        <div class="col-md-4">
-                                            <div class="image-placeholder text-center">
-                                                <img id="signaturePhotoPreview" src="" alt="Signature Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
-                                                <label for="signaturePhoto" class="mt-3 mb-2">Signature Photo</label>
-                                                <input type="file" name="signaturePhoto" class="form-control" id="signaturePhotoInput" accept="image/*" onchange="previewImage(event, 'signaturePhotoPreview')" />
-                                            </div>
+                                        <div class="col-md-4 text-center">
+                                            <h6 class="mb-3">Signature Photo</h6>
+                                            <img id="signaturePhotoPreview" src="" alt="Signature Preview" class="rounded shadow-sm" style="width: 100%; border: 2px solid #007bff;" />
+                                            <input type="file" name="signaturePhoto" class="form-control mt-3" id="signaturePhotoInput" accept="image/*" onchange="previewImage(event, 'signaturePhotoPreview')" />
                                         </div>
 
-                                        <!-- ID Card Front Photo -->s
-                                        <div class="col-md-4">
-                                            <div class="image-placeholder text-center">
-                                                <img id="idCardFrontPreview" src="" alt="ID Card Front Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
-                                                <label for="idCardFrontPhoto" class="mt-3 mb-2">Identity Card Front Photo (via Upload)</label>
-                                                <input type="file" name="idCardFrontPhoto" class="form-control" id="idCardFrontPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardFrontPreview')" />
-                                            </div>
+                                        <!-- ID Card Front Photo -->
+                                        <div class="col-md-4 text-center">
+                                            <h6 class="mb-3">ID Card Front</h6>
+                                            <img id="idCardFrontPreview" src="" alt="ID Card Front Preview" class="rounded shadow-sm" style="width: 100%; border: 2px solid #007bff;" />
+                                            <input type="file" name="idCardFrontPhoto" class="form-control mt-3" id="idCardFrontPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardFrontPreview')" />
                                         </div>
 
                                         <!-- ID Card Back Photo -->
-                                        <div class="col-md-4">
-                                            <div class="image-placeholder text-center">
-                                                <img id="idCardBackPreview" src="" alt="ID Card Back Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
-                                                <label for="idCardBackPhoto" class="mt-3 mb-2">Identity Card Back Photo (via Upload)</label>
-                                                <input type="file" name="idCardBackPhoto" class="form-control" id="idCardBackPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardBackPreview')" />
-                                            </div>
+                                        <div class="col-md-4 text-center">
+                                            <h6 class="mb-3">ID Card Back</h6>
+                                            <img id="idCardBackPreview" src="" alt="ID Card Back Preview" class="rounded shadow-sm" style="width: 100%; border: 2px solid #007bff;" />
+                                            <input type="file" name="idCardBackPhoto" class="form-control mt-3" id="idCardBackPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardBackPreview')" />
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
 
@@ -1073,14 +1066,16 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
-
     <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    checkbox.disabled = true;
-                });
+        document.addEventListener('DOMContentLoaded', () => {
+            // Select all relevant checkboxes
+            document.querySelectorAll('.investment-checkbox, .debit-checkbox, .savings-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('click', (e) => e.preventDefault());
             });
-        </script>
+        });
+    </script>
+
+
     <script>
         function submitForm() {
             document.getElementById("form").submit();
@@ -1119,7 +1114,7 @@
 
                 // Append a new row to the table
                 $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    `);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `);
 
                 // Clear the form fields after adding
                 clearMemberForm();

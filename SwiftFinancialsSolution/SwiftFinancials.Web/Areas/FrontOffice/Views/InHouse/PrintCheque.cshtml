@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cheque Details</title>
 
-    <!-- CSS and JavaScript Libraries -->
+    <!-- CSS Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert2.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert2.all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         body {
@@ -29,16 +27,11 @@
             margin: auto;
         }
 
-            #chequeDetails h1, #chequeDetails p {
-                margin: 5px 0;
-            }
-
-        .cheque-header {
+        .cheque-header, .cheque-footer {
             display: flex;
             justify-content: space-between;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
             margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
         }
 
         .cheque-info {
@@ -47,15 +40,10 @@
             margin-bottom: 10px;
         }
 
-            .cheque-info div {
-                width: 45%;
-            }
-
-        .cheque-footer {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 10px;
+        .signature-section {
+            margin-top: 20px;
             border-top: 1px solid #ddd;
+            padding-top: 10px;
         }
 
         button {
@@ -70,28 +58,27 @@
             margin: 20px auto;
         }
 
-            button:hover {
-                background-color: #45a049;
+
+
+        <text>
+        media print {
+            body {
+                background-color: #fff;
             }
 
-        #loadingSpinner {
-            display: none;
-            text-align: center;
-            margin-top: 20px;
-        }
+            #chequeDetails {
+                box-shadow: none;
+                border: none;
+            }
 
+            button {
+                display: none;
+            }
+        }
+        </text>
     </style>
 </head>
 <body>
-
-    <h1 class="card">Cheque Details</h1>
-
-    <div id="loadingSpinner">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-
     @if (ViewBag.ChequePrintData != null)
     {
         var cheque = ViewBag.ChequePrintData;
@@ -113,136 +100,23 @@
                 <div><strong>Reference:</strong> @cheque.Reference</div>
                 <div><strong>Wordified Amount:</strong> @cheque.WordifiedAmount</div>
             </div>
-           
+
             <div class="cheque-footer">
                 <div><strong>Account:</strong> @cheque.BankAccount</div>
                 <div><strong>G/L Account:</strong> @cheque.DebitChartOfAccountAccountName</div>
             </div>
+
+            <div class="signature-section">
+                <span class="signature-label">Authorized Signature:</span>
+                <div class="signature-line"></div>
+            </div>
         </div>
     }
-
-    <button onclick="printAndDownload()">Print and Download</button>
-
+    <button onclick="printCheque()">Print</button>
 
     <script>
-        function generatePDF() {
-            document.getElementById('loadingSpinner').style.display = 'block';
-
-            var { jsPDF } = window.jspdf;
-            var doc = new jsPDF();
-
-            doc.html(document.getElementById("chequeDetails"), {
-                callback: function (doc) {
-                    doc.save("ChequeDetails.pdf");
-                    document.getElementById('loadingSpinner').style.display = 'none';
-                },
-                x: 10, 
-                y: 10, 
-                html2canvas: {
-                    scale: 0.5 
-                }
-            });
-        }
-
-
-
         function printCheque() {
-            var printContents = document.getElementById("chequeDetails").innerHTML;
-            var printWindow = window.open('', '_blank', 'height=600,width=800');
-
-            if (printWindow) {
-                printWindow.document.write('<html><head><title>Cheque Details</title>');
-                printWindow.document.write('<style>' +
-                    'body {' +
-                    '    font-family: "Roboto", sans-serif;' +
-                    '    padding: 20px;' +
-                    '    background-color: #e6e6e6;' +
-                    '}' +
-                    '#chequeDetails {' +
-                    '    margin-top: 20px;' +
-                    '    padding: 25px;' +
-                    '    border: 1px solid #333;' +
-                    '    border-radius: 8px;' +
-                    '    background-color: #fff;' +
-                    '    width: 100%;' +
-                    '    max-width: 600px;' +
-                    '    margin: auto;' +
-                    '}' +
-                    '#chequeDetails h1, #chequeDetails p {' +
-                    '    margin: 5px 0;' +
-                    '}' +
-                    '.cheque-header {' +
-                    '    display: flex;' +
-                    '    justify-content: space-between;' +
-                    '    padding-bottom: 10px;' +
-                    '    border-bottom: 1px solid #ddd;' +
-                    '    margin-bottom: 15px;' +
-                    '}' +
-                    '.cheque-info {' +
-                    '    display: flex;' +
-                    '    justify-content: space-between;' +
-                    '    margin-bottom: 10px;' +
-                    '}' +
-                    '.cheque-info div {' +
-                    '    width: 45%;' +
-                    '}' +
-                    '.cheque-footer {' +
-                    '    display: flex;' +
-                    '    justify-content: space-between;' +
-                    '    padding-top: 10px;' +
-                    '    border-top: 1px solid #ddd;' +
-                    '}' +
-                    'button {' +
-                    '    background-color: #4CAF50;' +
-                    '    color: white;' +
-                    '    border: none;' +
-                    '    padding: 10px 20px;' +
-                    '    cursor: pointer;' +
-                    '    font-size: 16px;' +
-                    '    border-radius: 5px;' +
-                    '    display: block;' +
-                    '    margin: 20px auto;' +
-                    '}' +
-                    'button:hover {' +
-                    '    background-color: #45a049;' +
-                    '}' +
-                    '#loadingSpinner {' +
-                    '    display: none;' +
-                    '    text-align: center;' +
-                    '    margin-top: 20px;' +
-                    '}' +
-                    '</style>');
-                printWindow.document.write('</head><body>');
-                printWindow.document.write(printContents);
-                printWindow.document.write('</body></html>');
-
-                printWindow.document.close();
-                printWindow.focus();
-                printWindow.print();
-                printWindow.close();
-            } else {
-                Swal.fire('Unable to open the print window. Please disable popup blockers and try again.');
-            }
-        }
-
-
-        function printAndDownload() {
-            printCheque();
-
-            Swal.fire({
-                title: 'Print and Download',
-                text: "Do you want to download the cheque details as a PDF?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Print and Download!',
-                cancelButtonText: 'No, cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    generatePDF();
-                }
-            });
+            window.print();
         }
     </script>
 
