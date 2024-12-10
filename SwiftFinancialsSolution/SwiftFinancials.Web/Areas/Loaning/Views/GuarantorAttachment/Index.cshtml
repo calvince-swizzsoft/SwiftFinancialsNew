@@ -137,6 +137,27 @@
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
 
+    <!-- Include SweetAlert library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+    $(document).ready(function () {
+        // Check if SweetAlertMessage exists
+        @if (TempData["SweetAlertMessage"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: "Notification",
+                    text: "@TempData["SweetAlertMessage"]",
+                    icon: "@TempData["SweetAlertType"]",
+                    confirmButtonText: "OK"
+                });
+            </text>
+        }
+    });
+    </script>
+
+
     <script type="text/javascript">
 
         $(document).ready(function () {

@@ -659,6 +659,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
     public class Guarantor
     {
         public string Id { get; set; }
+        public string CustomerId { get; set; }
         public string AmountGuaranteed { get; set; }
         public string CommittedShares { get; set; }
         public string CustomerName { get; set; }

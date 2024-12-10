@@ -548,9 +548,9 @@
             selectedRow = row;
 
             const cells = row.querySelectorAll("td");
-            document.getElementById("amountGuaranteed").value = cells[6]?.textContent.trim() || "";
-            document.getElementById("principalAttached").value = cells[7]?.textContent.trim() || "";
-            document.getElementById("interestAttached").value = cells[8]?.textContent.trim() || "";
+            document.getElementById("amountGuaranteed").value = cells[7]?.textContent.trim() || "";
+            document.getElementById("principalAttached").value = cells[8]?.textContent.trim() || "";
+            document.getElementById("interestAttached").value = cells[9]?.textContent.trim() || "";
         });
 
         function updateRow() {
@@ -560,9 +560,9 @@
                 const interestAttached = document.getElementById("interestAttached").value;
                 
                 const cells = selectedRow.querySelectorAll("td");
-                cells[6].textContent = amountGuaranteed;
-                cells[7].textContent = principalAttached;
-                cells[8].textContent = interestAttached;
+                cells[7].textContent = amountGuaranteed;
+                cells[8].textContent = principalAttached;
+                cells[9].textContent = interestAttached;
 
                 selectedRow.classList.remove("highlight-row");
                 selectedRow = null;
@@ -582,13 +582,14 @@
                 if (cells.length > 0) {
                     tableData.push({
                         Id: cells[1]?.textContent.trim() || "",
-                        StatusDescription: cells[2]?.textContent.trim() || "",
-                        CustomerName: cells[3]?.textContent.trim() || "",
-                        TotalShares: cells[4]?.textContent.trim() || "",
-                        CommittedShares: cells[5]?.textContent.trim() || "",
-                        AmountGuaranteed: cells[6]?.textContent.trim() || "",
-                        PrincipalAttached: cells[7]?.textContent.trim() || "",
-                        InterestAttached: cells[8]?.textContent.trim() || "",
+                        CustomerId: cells[2]?.textContent.trim() || "",
+                        StatusDescription: cells[3]?.textContent.trim() || "",
+                        CustomerName: cells[4]?.textContent.trim() || "",
+                        TotalShares: cells[5]?.textContent.trim() || "",
+                        CommittedShares: cells[6]?.textContent.trim() || "",
+                        AmountGuaranteed: cells[7]?.textContent.trim() || "",
+                        PrincipalAttached: cells[8]?.textContent.trim() || "",
+                        InterestAttached: cells[9]?.textContent.trim() || "",
                     });
                 }
             });
@@ -690,6 +691,7 @@
                                 var row = '<tr>' +
                                     '<td>' + c + '</td>' +
                                     '<td style="display: none;">' + guarantor.Id + '</td>' +
+                                    '<td style="display: none;">' + guarantor.CustomerId + '</td>' +
                                     '<td>' + guarantor.StatusDescription + '</td>' +
                                     '<td>' + customerName + '</td>' +
                                     '<td>' + guarantor.TotalShares + '</td>' +

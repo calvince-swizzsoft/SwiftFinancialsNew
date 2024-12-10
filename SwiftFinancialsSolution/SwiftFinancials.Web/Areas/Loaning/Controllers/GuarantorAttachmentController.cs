@@ -298,6 +298,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     AmountGuaranteed = Convert.ToDecimal(guarantor.AmountGuaranteed),
                     CommittedShares = Convert.ToDecimal(guarantor.CommittedShares),
                     Id = Guid.Parse(guarantor.Id),
+                    CustomerId = Guid.Parse(guarantor.CustomerId),
                     InterestAttached = Convert.ToDecimal(guarantor.InterestAttached),
                     PrincipalAttached = Convert.ToDecimal(guarantor.PrincipalAttached),
                     TotalShares = Convert.ToDecimal(guarantor.TotalShares)
@@ -311,37 +312,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanGuarantorDTO.HasErrors)
             {
-                string message = string.Format(
-                                      "Do you want to proceed and attach the selected Loan guarantors?"
-                                  );
-
-                DialogResult result = MessageBox.Show(
-                   message,
-                   "Attach Loan Guarantor",
-                   MessageBoxButtons.YesNo,
-                   MessageBoxIcon.Question,
-                   MessageBoxDefaultButton.Button1,
-                   MessageBoxOptions.ServiceNotification
-               );
-
-                if (result == DialogResult.Yes)
-                {
-                    var loanguarantorAttachmentHistory = await _channelService.AttachLoanGuarantorsAsync(loanGuarantorDTO.CustomerAccountAccountId, loanGuarantorDTO.AttachToId, LoanGuarantorDetails, 1234, GetServiceHeader());
-
-                    MessageBox.Show("Operation completed successfully.", "Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                    Session.Clear();
-
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanGuarantorDTO.LoanRegistrationLoanProductSectionDescription.ToString());
-                    ViewBag.customerFilter = GetCustomerFilterSelectList(loanGuarantorDTO.CustomerFilterDescription.ToString());
-
-                    MessageBox.Show("Operation cancelled.", "Attach Guarantor", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View("Create", loanGuarantorDTO);
-                }
+                var loanguarantorAttachmentHistory = await _channelService.AttachLoanGuarantorsAsync(loanGuarantorDTO.CustomerAccountAccountId, loanGuarantorDTO.AttachToId, LoanGuarantorDetails, 1234, GetServiceHeader());
+                TempData["Success"] = "Operation Completed Successfully.";
+                TempData["SweetAlertType"] = "success";
+                return RedirectToAction("Index");
             }
             else
             {
