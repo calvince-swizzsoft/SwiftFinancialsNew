@@ -2058,8 +2058,6 @@
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Alternatechannel\" />
     <Folder Include="Areas\Accounts\Views\Credit\" />
-    <Folder Include="Areas\Accounts\Views\Default1\" />
-    <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\EmailAlerts\" />
