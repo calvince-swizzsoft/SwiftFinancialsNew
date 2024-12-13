@@ -147,7 +147,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.SalaryPerio
 EndProject
 Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "SwiftFinancials.Reporting", "Report Project1\SwiftFinancials.Reporting.rptproj", "{A31A51FF-C27A-4881-91D8-8C962BD23535}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.6 Reporting", "1.6 Reporting", "{46E9CAB3-91A9-4224-852E-08447AD1F78D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.6 - Reporting", "1.6 - Reporting", "{46E9CAB3-91A9-4224-852E-08447AD1F78D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
