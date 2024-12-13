@@ -16,7 +16,7 @@
                 @Html.ActionLink("Home", "Index", "SalaryProcessing", new { Area = "HumanResource" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Create</strong>
+                <strong>ProcessSalary</strong>
             </li>
         </ol>
     </div>
@@ -26,6 +26,8 @@
 
 
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -97,7 +99,7 @@
 
                 <div class="card">
                     <div class="card-body">
-                        @using (Html.BeginForm("Create", "SalaryProcessing", new { Area = "HumanResource" }, FormMethod.Post))
+                        @using (Html.BeginForm("ProcessSalary", "SalaryProcessing", new { Area = "HumanResource" }, FormMethod.Post))
                         {
                             @Html.AntiForgeryToken()
                             @Html.HiddenFor(model => model.Id)
@@ -203,19 +205,19 @@
                                     <li class="nav-item">
                                         <a class="nav-link active" href="#salaryGroups" data-toggle="tab">Salary Groups</a>
                                     </li>
-                                    @*<li class="nav-item">
+                                    <li class="nav-item">
                                         <a class="nav-link" href="#branches" data-toggle="tab">Branches</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="#departments" data-toggle="tab">Departments</a>
-                                    </li>*@
-                                    @*<li class="nav-item">
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link" href="#employeesSection" data-toggle="tab">Employees</a>
-                                    </li>*@
+                                    </li>
                                 </ul>
 
                                 <div class="tab-content">
-                                    <!-- Loan Accounts Tab Content -->
+                                    <!-- SalryGroup Tab Content -->
                                     <div id="salaryGroups" class="tab-pane fade show active">
 
                                         <h3>Salary Groups</h3>
@@ -251,7 +253,7 @@
 
                                     </div>
 
-                                    <!-- Investment Accounts Tab Content -->
+                                    <!-- Branches Tab Content -->
                                     <div id="branches" class="tab-pane fade">
                                         <h3>Branches</h3>
 
@@ -260,10 +262,11 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                     <tr>
+                                                        <th>Select</th>
+
                                                         <th>Name</th>
-                                                        <th>Account Number</th>
-                                                        <th>Email</th>
-                                                        <th>Mobile Line</th>
+                                                        <th>Address</th>
+                                                        <th>Street</th>
 
                                                     </tr>
                                                 </thead>
@@ -271,11 +274,12 @@
                                                     @foreach (var Branches in ViewBag.Branches)
                                                     {
                                                         <tr>
-                                                            <td>@Branches.CustomerFullName</td>
-                                                            <td>@Branches.CustomerReference1</td>
-                                                            <td>@Branches.CustomerAddressEmail</td>
-                                                            <td>@Branches.CustomerAddressMobileLine</td>
-                                                            <td>@Branches.BranchDescription</td>
+                                                            <td>
+                                                                <input type="checkbox" class="groupSelect" name="selectedGroups" value="@Branches.Id" data-description="@Branches.Description" />
+                                                            </td>
+                                                            <td>@Branches.Description</td>
+                                                            <td>@Branches.AddressAddressLine1</td>
+                                                            <td>@Branches.AddressStreet</td>
 
 
                                                         </tr>
@@ -285,43 +289,37 @@
                                         }
                                         else
                                         {
-                                            <p>No investment accounts found for this customer.</p>
+                                            <p>No Branches found for this the employee.</p>
                                         }
                                     </div>
 
 
-                                    <!-- Loans Guaranteed Tab Content -->
-                                    <div id="loansGuaranteed" class="tab-pane fade">
-                                        <h3>Loans Guaranteed</h3>
-                                        <!-- Add your content for loans guaranteed here -->
+                                    <!-- Department Tab Content -->
+                                    <div id="departments" class="tab-pane fade">
+                                        <h3>Department</h3>
 
-                                        @if (ViewBag.LoanGuarantors != null && ViewBag.LoanGuarantors.Count > 0)
+                                        @if (ViewBag.Departments != null && ViewBag.Departments.Count > 0)
                                         {
                                             <table class="table table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th>Customer FullName</th>
-                                                        <th>Guarantor Customer FullName</th>
-                                                        <th>Loanee Customer FullName</th>
-                                                        <th>LoanProduct Description</th>
-                                                        <th>LoanCaseStatus Description</th>
-                                                        <th>CustomerType Description</th>
-                                                        <th>CustomerAddress MobileLine</th>
-                                                        <th>AmountGuaranteed</th>
+                                                        <th>Select</th>
+
+                                                        <th>Name</th>
+                                                        <th>Created Date</th>
+
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach (var guarantor in ViewBag.LoanGuarantors)
+                                                    @foreach (var department in ViewBag.Departments)
                                                     {
                                                         <tr>
-                                                            <td>@guarantor.CustomerFullName</td>
-                                                            <td>@guarantor.GuarantorCustomerFullName</td>
-                                                            <td>@guarantor.LoaneeCustomerFullName</td>
-                                                            <td>@guarantor.LoanProductDescription</td>
-                                                            <td>@guarantor.LoanCaseStatusDescription</td>
-                                                            <td>@guarantor.CustomerTypeDescription</td>
-                                                            <td>@guarantor.CustomerAddressMobileLine</td>
-                                                            <td>@guarantor.AmountGuaranteed</td>
+                                                            <td>
+                                                                <input type="checkbox" class="groupSelect" name="selectedGroups" value="@department.Id" data-description="@department.Description" />
+                                                            </td>
+                                                            <td>@department.Description</td>
+                                                            <td>@department.CreatedDate.ToString("dd-MM-yyyy")</td>
+
                                                         </tr>
                                                     }
                                                 </tbody>
@@ -333,7 +331,7 @@
                                         }
                                     </div>
 
-                                    <div id="employeesSection" >
+                                    <div id="employeesSection" class="tab-pane fade">
                                         <h3>Employees</h3>
                                         <table class="table table-bordered" id="employeeTable">
                                             <thead>
@@ -404,7 +402,12 @@
                         border-radius: 5px; /* Rounded corners (optional) */
                         font-size: 16px;
                         font-weight: bold;
-                        background-color: #00e0ff;
+                        background-color: #e0f0ff;
+                    }
+                </style>
+                <style>
+                    .highlight {
+                        background-color: #f0c14b; /* Light yellow color for highlighting */
                     }
                 </style>
 
@@ -539,11 +542,15 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-    <style>
-        .highlight {
-            background-color: #f0c14b; /* Light yellow color for highlighting */
-        }
-    </style>
+
+    <script>
+        $(document).ready(function () {
+            $('#loanAccountsTab a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                console.log("Activated tab: " + $(e.target).attr("href"));
+            });
+        });
+
+    </script>
 
 
     <script>
@@ -630,13 +637,13 @@
 
                                 // Append the employee data to the table
                                 employeeTableBody.append(`
-                                        <tr>
-                                            <td hidden>${employee.EmployeeId}</td> <!-- Make EmployeeId hidden -->
-                                            <td>${employee.EmployeeCustomerFullName}</td>
-                                            <td>${employee.CardNumber}</td>
-                                            <td>${employee.Remarks || "N/A"}</td>
-                                        </tr>
-                                    `);
+                                                <tr>
+                                                    <td hidden>${employee.EmployeeId}</td> <!-- Make EmployeeId hidden -->
+                                                    <td>${employee.EmployeeCustomerFullName}</td>
+                                                    <td>${employee.CardNumber}</td>
+                                                    <td>${employee.Remarks || "N/A"}</td>
+                                                </tr>
+                                            `);
                             });
                         } else {
                             alert(response.message || "No employees found for the selected salary group.");
@@ -687,6 +694,51 @@
         });
 
     </script>
+
+    @*<script>
+        $(document).on("change", ".groupSelect", function () {
+            const branchId = $(this).val(); // Get the selected SalaryGroupId
+
+            if ($(this).is(":checked")) {
+                // Send the selected SalaryGroupId to the server
+                $.ajax({
+                    url: "/SalaryProcessing/CheckEmployeesByBrach",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ branchId }), // Send SalaryGroupId
+                    success: function (response) {
+                        if (response.success) {
+                            const employees = response.data;
+                            // Clear and populate the Employees table
+                            const employeeTableBody = $("#employeeTable tbody");
+                            employeeTableBody.empty(); // Clear previous rows
+
+                            employees.forEach(employee => {
+                                // Fix invalid date handling
+                                const createdDate = new Date(employee.CreatedDate);
+                                const formattedDate = createdDate instanceof Date && !isNaN(createdDate) ? createdDate.toLocaleDateString() : "Invalid Date";
+
+                                // Append the employee data to the table
+                                employeeTableBody.append(`
+                                                <tr>
+                                                    <td hidden>${employee.EmployeeId}</td> <!-- Make EmployeeId hidden -->
+                                                    <td>${employee.EmployeeCustomerFullName}</td>
+                                                    <td>${employee.CardNumber}</td>
+                                                    <td>${employee.Remarks || "N/A"}</td>
+                                                </tr>
+                                            `);
+                            });
+                        } else {
+                            alert(response.message || "No employees found for the selected salary group.");
+                        }
+                    },
+                    error: function () {
+                        alert("An error occurred while processing the request.");
+                    }
+                });
+            }
+        });
+    </script>*@
 
 
 

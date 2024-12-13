@@ -100,62 +100,34 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(paySlipDTO);
         }
 
-        //public async Task<ActionResult> Create()
-        //{
-        //    await ServeNavigationMenus();
+        public async Task<JsonResult> ViewPaySlip(Guid? paySlipId)
+        {
+            if (!paySlipId.HasValue)
+            {
+                return Json(new { error = "Payslip ID is required." }, JsonRequestBehavior.AllowGet);
+            }
 
-        //    return View();
-        //}
+            try
+            {
+                var serviceHeader = GetServiceHeader();
+                var paySlipEntries = await _channelService.FindPaySlipEntriesByPaySlipIdAsync(paySlipId.Value, serviceHeader);
 
-        //[HttpPost]
-        //public async Task<ActionResult> Create(HolidayDTO holidayDTO)
-        //{
-        //    var startDate = Request["startDate"];
+                if (paySlipEntries == null || !paySlipEntries.Any())
+                {
+                    return Json(new { error = "Payslip not found." }, JsonRequestBehavior.AllowGet);
+                }
 
-        //    var endDate = Request["endDate"];
-
-        //    holidayDTO.DurationStartDate = DateTime.Parse(startDate).Date;
-
-        //    holidayDTO.DurationEndDate = DateTime.Parse(endDate).Date;
-        //    holidayDTO.ValidateAll();
-
-        //    if (!holidayDTO.HasErrors)
-        //    {
-        //        await _channelService.AddHolidayAsync(holidayDTO, GetServiceHeader());
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        var errorMessages = holidayDTO.ErrorMessages;
-
-        //        return View(holidayDTO);
-        //    }
-        //}
+                return Json(new { data = paySlipEntries }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // Log exception
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Edit(Guid id, HolidayDTO holidayBindingModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        await _channelService.UpdateHolidayAsync(holidayBindingModel, GetServiceHeader());
 
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        return View(holidayBindingModel);
-        //    }
-        //}
 
-        //[HttpGet]
-        //public async Task<JsonResult> GetHolidaysAsync()
-        //{
-        //    var holidaysDTOs = await _channelService.FindCompaniesAsync(GetServiceHeader());
-
-        //    return Json(holidaysDTOs, JsonRequestBehavior.AllowGet);
-        //}
     }
 }

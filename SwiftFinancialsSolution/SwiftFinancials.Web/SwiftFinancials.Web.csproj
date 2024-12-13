@@ -62,16 +62,16 @@
       <HintPath>..\packages\ClosedXML.0.102.3\lib\netstandard2.0\ClosedXML.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Shared">
-      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Web">
-      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
     </Reference>
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.2.1.35\lib\net461\Dapper.dll</HintPath>
@@ -1520,7 +1520,7 @@
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\ProcessSalary.cshtml" />
     <Content Include="Areas\Registry\Views\ChargeExemptions\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryCards\Edit.cshtml" />
-    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryProcessing\ProcessSalary.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryGroups\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryGroups\Details.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Settle.cshtml" />
@@ -1537,6 +1537,11 @@
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\PeriodClosing\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PeriodClosing\Close.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosings\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosings\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosings\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslip.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosings\Close.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2059,8 +2064,6 @@
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Alternatechannel\" />
     <Folder Include="Areas\Accounts\Views\Credit\" />
-    <Folder Include="Areas\Accounts\Views\Default1\" />
-    <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\EmailAlerts\" />
