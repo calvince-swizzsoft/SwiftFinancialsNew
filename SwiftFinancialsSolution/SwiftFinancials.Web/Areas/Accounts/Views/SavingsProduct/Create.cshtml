@@ -179,28 +179,25 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="col-md-12 form-group">
-                                            @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.ChargeType, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.Priority, Charge, new { @class = "form-control input-md", style = "border: 1px solid #ccc;" })
-                                                @Html.ValidationMessageFor(model => model.Priority)
+                                                @Html.DropDownListFor(model => model.ChargeType, Charge, new { @class = "form-control input-md", style = "border: 1px solid #ccc;" })
+                                                @Html.ValidationMessageFor(model => model.ChargeType)
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.ChargeBenefactor, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.Priority, queuePriorities, new { @class = "form-control input-md", style = "border: 1px solid #ccc;" })
-                                                @Html.ValidationMessageFor(model => model.Priority)
+                                                @Html.DropDownListFor(model => model.ChargeBenefactor, queuePriorities, new { @class = "form-control input-md", style = "border: 1px solid #ccc;" })
+                                                @Html.ValidationMessageFor(model => model.ChargeBenefactor)
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <input type="text" id="commissionSearch" class="form-control mb-3" placeholder="Search Commissions ..." onkeyup="filterCommissions()" />
-
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
@@ -215,7 +212,7 @@
                                             {
                                                 <tr>
                                                     <td>
-                                                        <input type="checkbox" name="commissionIds" value="@commission.Id" />
+                                                        <input type="checkbox" name="commisionIds" value="@commission.Id" />
                                                     </td>
                                                     <td>@commission.Description</td>
                                                 </tr>
@@ -229,6 +226,7 @@
                                         }
                                     </tbody>
                                 </table>
+                                <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
                         </fieldset>
                     }
@@ -247,24 +245,6 @@
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
-
-    <script>
-        function filterCommissions() {
-            var input = document.getElementById("commissionSearch");
-            var filter = input.value.toLowerCase();
-            var table = document.querySelector("table tbody");
-            var rows = table.querySelectorAll("tr");
-
-            rows.forEach(function (row) {
-                var description = row.querySelector("td:nth-child(2)") ? row.querySelector("td:nth-child(2)").innerText.toLowerCase() : '';
-                if (description.indexOf(filter) > -1) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
-            });
-        }
-    </script>
 
     <script>
         $(document).ready(function () {

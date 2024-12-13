@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Create Text Alert Charges";
+    var commissions = ViewBag.Commisions;
     var queuePriorities = ViewBag.SystemTransactionType as List<SelectListItem>;
     var Charge = ViewBag.ChargeBenefactor as List<SelectListItem>;
     var Alternate = ViewBag.AlternateChannelType as List<SelectListItem>;
@@ -54,26 +55,19 @@
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    @Html.LabelFor(model => model.RecoverySource, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.RecoverySource, Charge, new { @class = "form-control input-md", style = "border: 1px solid #ccc;" })
-                                        @Html.ValidationMessageFor(model => model.RecoverySource)
-                                    </div>
-                                </div>
-                            </div>
 
                             <div class="row">
+
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", style = "border: 1px solid #ccc;" } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.RecoverySource, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.RecoverySource, Charge, new { @class = "form-control input-md", style = "border: 1px solid #ccc;" })
+                                            @Html.ValidationMessageFor(model => model.RecoverySource)
+                                        </div>
                                     </div>
                                 </div>
-
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.RecoveryMode, new { @class = "control-label" })
@@ -86,53 +80,39 @@
                                 </div>
                             </div>
 
-                            <!-- Tabs for charges -->
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="charges-tab" data-toggle="tab" href="#charges" role="tab" aria-controls="charges" aria-selected="true">Applicable Charges</a>
-                                        </li>
-                                        @*<li class="nav-item">
-                                            <a class="nav-link" id="other-tab" data-toggle="tab" href="#other" role="tab" aria-controls="other" aria-selected="false">Other Information</a>
-                                        </li>*@
-                                    </ul>
-                                    <div class="tab-content" id="myTabContent">
-                                        <div class="tab-pane fade show active" id="charges" role="tabpanel" aria-labelledby="charges-tab">
-                                            <h3>Applicable Charges</h3>
-                                            <div class="form-group">
-                                                <div style="text-align: left;">
-                                                    <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
-                                                    <label for="headerCheckbox" style="font-weight: bold;">Select All</label>
-                                                </div>
-
-                                                <div class="table-responsive">
-                                                    <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" style="border: 1px solid #ddd; border-radius: 5px; margin-top: 10px;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Select</th>
-                                                                <th>Name</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td colspan="2" class="dataTables_empty">Loading data from server</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-
-                                                <input type="submit" value="Create" class="btn btn-primary" />
-                                            </div>
-                                        </div>
-                                        <!--<div class="tab-pane fade" id="other" role="tabpanel" aria-labelledby="other-tab">
-                                            <h3>Other Information</h3>-->
-                                            <!-- You can add additional fields or information here -->
-                                            <!--<p>Placeholder for other information related to text alert charges.</p>
-                                        </div>-->
-                                    </div>
-                                </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Commission Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (commissions != null)
+                                        {
+                                            foreach (var commission in commissions)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="commisionIds" value="@commission.Id" />
+                                                    </td>
+                                                    <td>@commission.Description</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
+
+
+                            <button type="submit" id="submitCharges" class="btn btn-primary">Submit</button>
                         </fieldset>
                     }
                 </div>
