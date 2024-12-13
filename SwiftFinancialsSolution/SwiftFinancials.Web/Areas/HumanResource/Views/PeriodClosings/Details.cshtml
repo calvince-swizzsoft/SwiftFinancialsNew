@@ -7,7 +7,7 @@
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Salary Period</h1>
+        <h1>Close salary period</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -126,12 +126,12 @@
                         <div class="ibox-content m-b-sm border-bottom">
                             @using (Html.BeginForm("Create", "SalaryPeriods", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                             {
-                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
-                                <p>
-                                    @Html.ActionLink("Edit", "Edit", "SalaryPeriods", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                    @Html.ActionLink("Back to List", "Index", "SalaryPeriods", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                </p>
-                            </div>
+                                <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                    <p>
+                                        @Html.ActionLink("Edit", "Edit", "PeriodClosings", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                        @Html.ActionLink("Back to List", "Index", "PeriodClosings", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                    </p>
+                                </div>
                             }
                         </div>
                     }

@@ -133,16 +133,16 @@
 
                     switch (aData.Status) {
                         case 1: // Pending
-                            dropdownHtml += viewButton + editButton + recallButton + approveButton;
+                            dropdownHtml += viewButton + editButton  + approveButton;
                             break;
                         case 2: // Approved
-                            dropdownHtml += viewButton; // No edit or recall allowed
+                            dropdownHtml += viewButton + recallButton; // No edit or recall allowed
                             break;
                         case 3: // Another specific status (e.g., Rejected)
                             dropdownHtml += viewButton + approveButton; // Example of actions allowed
                             break;
                         default: // Other cases (e.g., Completed, Canceled)
-                            dropdownHtml += viewButton; // Only the view button
+                            dropdownHtml += viewButton + recallButton; // Only the view button
                             break;
                     }
 

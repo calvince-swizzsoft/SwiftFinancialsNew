@@ -32,69 +32,108 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
+                    <fieldset>
+                        <div class="card mb-4">
+                            <div class="card-body text-dark">
+                                <div class="row">
 
-                                @Html.DisplayFor(model => model.Description)<br>
-                            </p>
+                                    <div class="col-lg-6">
+                                        @Html.LabelFor(model => model.UnitTypeDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.UnitTypeDescription, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.UnitTypeDescription, new { htmlAttributes = new { @class = "Description Name required", placeholder = "Enter Text....", @readonly = "" } })
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Entitlement)</strong><br>
+                                    </div>
 
-                                @Html.DisplayFor(model => model.Entitlement)<br>
-                            </p>
+                                    <div class="col-lg-6">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "Description Name required", placeholder = "Enter Text....", @readonly = "" } })
+                                    </div>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.TargetGenderDescription)</strong><br>
 
-                                @Html.DisplayFor(model => model.TargetGenderDescription)<br>
-                            </p>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.UnitTypeDescription)</strong><br>
 
-                                @Html.DisplayFor(model => model.UnitTypeDescription)<br>
-                            </p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Entitlement, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Entitlement, new { htmlAttributes = new { @class = "form-control", @placeholder = "Entitlement Days.", @required = "", @readonly = "" } })
+                                            @Html.ValidationMessageFor(model => model.Entitlement, "", new { @class = "text-danger" })
+                                        </div>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong><br>
+                                    </div>
 
-                                @Html.DisplayFor(model => model.IsLocked)<br>
-                            </p>
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.TargetGenderDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.TargetGenderDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Entitlement Days.", @required = "", @readonly = "" } })
+                                                @Html.ValidationMessageFor(model => model.TargetGenderDescription, "", new { @class = "text-danger" })
+                                            </div>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.ExcludeHolidays)</strong><br>
 
-                                @Html.DisplayFor(model => model.ExcludeHolidays)<br>
-                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.ExcludeWeekends)
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.ExcludeWeekends)</strong><br>
+                                        @Html.LabelFor(model => model.ExcludeWeekends, htmlAttributes: new { @class = "", @readonly = "" })
+                                        @Html.ValidationMessageFor(model => model.ExcludeWeekends, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.ExcludeHolidays)
 
-                                @Html.DisplayFor(model => model.ExcludeWeekends)<br>
-                            </p>
+                                        @Html.LabelFor(model => model.ExcludeHolidays, htmlAttributes: new { @class = "", @readonly = "" })
+                                        @Html.ValidationMessageFor(model => model.ExcludeHolidays, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?", @readonly = "" } })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                    <p>
+                                        @Html.ActionLink("Edit", "Edit", "LeaveType", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                        @Html.ActionLink("Back to List", "Index", "LeaveType", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                    </p>
 
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
+                                </div>
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
 
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "Membership", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "Membership", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+<style>
+    .card {
+        margin-bottom: 20px;
+    }
+
+
+
+    .col-lg-2 {
+        display: flex;
+        align-items: center; /* Center the title vertically */
+        justify-content: center; /* Center the title horizontally if needed */
+        padding: 0; /* Remove default padding if necessary */
+        border-radius: 4px; /* Rounded corners */
+    }
+
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #e0f0ff;
+    }
+</style>
 

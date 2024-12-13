@@ -23,30 +23,61 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View();
         }
 
+        
+
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortDescending = jQueryDataTablesModel.sSortDir_.First() == "desc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindLeaveTypesFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLeaveTypesFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                0,
+                int.MaxValue,
+                GetServiceHeader()
+            );
+
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(leaveTypeDTO => leaveTypeDTO.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<LeaveTypeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
 
+            return this.DataTablesJson(
+                items: new List<LeaveTypeDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
+        }
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -85,9 +116,10 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
+           
+            var LeaveTypeDTO = await _channelService.FindLeaveTypeAsync(id, GetServiceHeader());
             ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
             ViewBag.UnitTypes = GetUnitTypes(string.Empty);
-            var LeaveTypeDTO = await _channelService.FindLeaveTypeAsync(id, GetServiceHeader());
 
             return View(LeaveTypeDTO);
         }

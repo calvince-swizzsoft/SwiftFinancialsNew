@@ -162,23 +162,106 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
 
 
-        public async Task<ActionResult> Create(Guid id)
+        public async Task<ActionResult> ProcessSalary(Guid id)
         {
             await ServeNavigationMenus();
 
-            var salaryPeriodDTO = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
-            ViewBag.MonthTypeSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(string.Empty);
+            var salaryPeriod = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
 
+            // Fetch salary groups
             var salaryGroups = await _channelService.FindSalaryGroupsAsync(GetServiceHeader());
             ViewBag.SalaryGroups = salaryGroups;
 
-            return View(salaryPeriodDTO);
+            // Fetch branches
+            var branches = await _channelService.FindBranchesAsync(GetServiceHeader());
+            ViewBag.Branches = branches;
+
+            // Fetch departments
+            var departments = await _channelService.FindDepartmentsAsync(GetServiceHeader());
+            ViewBag.Departments = departments;
+
+            return View(salaryPeriod);
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> ProcessSalary(Guid id, SalaryProcessingDTO salaryPeriodDTO)
+        //{
+        //    try
+        //    {
+        //        // Step 1: Validate input parameters
+        //        if (salaryPeriodDTO == null)
+        //            throw new ArgumentNullException(nameof(salaryPeriodDTO));
+
+        //        if (TempData["SelectedEmployeeIds"] == null)
+        //        {
+        //            ShowMessageBox("No employees were selected for processing.", MessageBoxIcon.Warning);
+        //            return View(salaryPeriodDTO);
+        //        }
+
+        //        // Step 2: Parse selected employee IDs
+        //        var employeeIds = TempData["SelectedEmployeeIds"].ToString()
+        //                             .Split(',')
+        //                             .Select(Guid.Parse)
+        //                             .ToList();
+
+        //        if (!employeeIds.Any())
+        //        {
+        //            ShowMessageBox("No employees found for processing.", MessageBoxIcon.Warning);
+        //            return View(salaryPeriodDTO);
+        //        }
+
+        //        // Step 3: Fetch employees from the service
+        //        var employees = new ObservableCollection<EmployeeDTO>();
+        //        foreach (var employeeId in employeeIds)
+        //        {
+        //            var employee = await _channelService.FindEmployeeAsync(employeeId, GetServiceHeader());
+        //            if (employee != null)
+        //            {
+        //                employees.Add(employee);
+        //            }
+        //        }
+
+        //        if (!employees.Any())
+        //        {
+        //            ShowMessageBox("No valid employees found for processing.", MessageBoxIcon.Warning);
+        //            return View(salaryPeriodDTO);
+        //        }
+
+        //        // Step 4: Call the ProcessSalaryPeriodAsync method
+        //        var isProcessed = await _channelService.ProcessSalaryPeriodAsync(salaryPeriodDTO, employees, GetServiceHeader());
+        //        if (isProcessed)
+        //        {
+        //            var payslips = await _channelService.FindPaySlipsBySalaryPeriodIdAsync(salaryPeriodDTO.Id, GetServiceHeader());
+        //            foreach (var payslipid in payslips)
+        //            {
+        //                await _channelService.PostPaySlipAsync(payslipid.Id, 1234, GetServiceHeader());
+        //            }
+
+
+        //            ShowMessageBox("Salary period processed successfully.", MessageBoxIcon.Information);
+        //            return RedirectToAction("Index");
+        //        }
+        //        else
+        //        {
+        //            ShowMessageBox("Failed to process the salary period.", MessageBoxIcon.Error);
+        //            ModelState.AddModelError(string.Empty, "Failed to process the salary period.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Step 5: Handle exceptions
+        //        ShowMessageBox("An unexpected error occurred while processing the salary period. Please try again.", MessageBoxIcon.Error);
+        //        Console.Error.WriteLine($"Error: {ex.Message}\nStack Trace: {ex.StackTrace}");
+        //        ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
+        //    }
+
+        //    // Step 6: Return the view in case of issues
+        //    return View(salaryPeriodDTO);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Guid id, SalaryProcessingDTO salaryPeriodDTO)
+        public async Task<ActionResult> ProcessSalary(Guid id, SalaryProcessingDTO salaryPeriodDTO)
         {
             try
             {
@@ -229,29 +312,10 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 var isProcessed = await _channelService.ProcessSalaryPeriodAsync(salaryPeriodDTO, employees, GetServiceHeader());
                 if (isProcessed)
                 {
-                    // Fetch payslips for the processed salary period
-                    var paySlips = await _channelService.FindPaySlipsBySalaryPeriodIdAsync(salaryPeriodDTO.Id, GetServiceHeader());
-
-                    if (paySlips != null && paySlips.Any())
+                    var payslips = await _channelService.FindPaySlipsBySalaryPeriodIdAsync(salaryPeriodDTO.Id, GetServiceHeader());
+                    foreach (var payslipid in payslips)
                     {
-                        foreach (var paySlip in paySlips)
-                        {
-                            // Check if payslip already exists
-                            var existingPaySlips = await _channelService.FindPaySlipsBySalaryPeriodIdAsync(paySlip.SalaryPeriodId, GetServiceHeader());
-                            if (existingPaySlips.Any(p => p.Id == paySlip.Id))
-                            {
-                                Console.WriteLine($"PaySlip with ID  already exists. Skipping.");
-                                continue;
-                            }
-
-                            // Post only new payslips
-                            var isPosted = await _channelService.PostPaySlipAsync(paySlip.SalaryPeriodId, salaryPeriodDTO.ModuleNavigationItemCode, GetServiceHeader());
-                            if (!isPosted)
-                            {
-                                ShowMessageBox($"PaySlip with ID  failed to post.", MessageBoxIcon.Error);
-                                TempData["WarningMessage"] = $"PaySlip with ID failed to post.";
-                            }
-                        }
+                        await _channelService.PostPaySlipAsync(payslipid.Id, 1234, GetServiceHeader());
                     }
 
                     ShowMessageBox("Salary period processed and pay slips posted successfully.", MessageBoxIcon.Information);
@@ -286,22 +350,16 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
 
+       
 
 
 
 
 
-        public async Task<ActionResult> Edit(Guid id)
-        {
-            await ServeNavigationMenus();
 
-            var salaryPeriod = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
 
-            var salaryGroups = await _channelService.FindSalaryGroupsAsync(GetServiceHeader());
-            ViewBag.SalaryGroups = salaryGroups;
+        
 
-            return View(salaryPeriod);
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

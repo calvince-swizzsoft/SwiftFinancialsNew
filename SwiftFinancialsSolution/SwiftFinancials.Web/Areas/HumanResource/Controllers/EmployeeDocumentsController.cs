@@ -87,6 +87,38 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(employeeDocumentDTO);
         }
 
+        //public async Task<ActionResult> Details(Guid id)
+        //{
+        //    await ServeNavigationMenus();
+
+        //    var employeeDocumentDTO = await _channelService.FindEmployeeDocumentAsync(id, GetServiceHeader());
+
+        //    // Add file information to the ViewBag or Model for rendering in the view
+        //    if (employeeDocumentDTO != null)
+        //    {
+        //        ViewBag.FileDownloadUrl = Url.Action("Download", "EmployeeDocument", new { id = employeeDocumentDTO.Id });
+        //    }
+
+        //    return View(employeeDocumentDTO);
+        //}
+
+        //public async Task<ActionResult> Download(Guid id)
+        //{
+        //    var employeeDocumentDTO = await _channelService.FindEmployeeDocumentAsync(id, GetServiceHeader());
+
+        //    if (employeeDocumentDTO != null && employeeDocumentDTO.FileBuffer != null)
+        //    {
+        //        return File(
+        //            employeeDocumentDTO.FileBuffer,
+        //            employeeDocumentDTO.FileMIMEType,
+        //            employeeDocumentDTO.FileName
+        //        );
+        //    }
+
+        //    // If file is not found, show an error or redirect
+        //    return HttpNotFound("File not found or has been deleted.");
+        //}
+
 
         [HttpGet]
         public async Task<ActionResult> GetCustomerDetails(Guid employeeId)
