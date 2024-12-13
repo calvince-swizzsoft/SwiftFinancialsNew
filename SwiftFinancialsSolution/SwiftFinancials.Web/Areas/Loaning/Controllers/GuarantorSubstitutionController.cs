@@ -222,51 +222,60 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO, string loansGuaranteedIds)
         {
             await ServeNavigationMenus();
+            ViewBag.CustomerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+            ViewBag.RecordStatus = GetRecordStatusSelectList(loanCaseDTO.RecordStatusDescription.ToString());
 
-            if (loansGuaranteedIds == string.Empty || loansGuaranteedIds == "")
+            try
             {
-                TempData["EmptyLoansGuaranteedIds"] = "Select at least one Loan Guaranteed complete Guarantor Substitution!";
-                return Json(new { success = false, message = string.Empty });
-            }
-
-            if (loanCaseDTO.CustomerId == Guid.Empty || loanCaseDTO.GuarantorId == Guid.Empty)
-            {
-                TempData["CustomerGuarantorEmpty"] = "Customer and Substitute Guarantor required to complete Guarantor Substitution!";
-                return Json(new { success = false, message = string.Empty });
-            }
-
-
-            var loansGuaranteedIdsList = loansGuaranteedIds.Split(',').ToList();
-            List<Guid> loansGuaranteedGuidList = new List<Guid>();
-
-            foreach (var ids in loansGuaranteedIdsList)
-            {
-                if (Guid.TryParse(ids, out Guid LGIds))
+                if (loansGuaranteedIds == string.Empty || loansGuaranteedIds == "")
                 {
-                    loansGuaranteedGuidList.Add(LGIds);
+                    TempData["EmptyLoansGuaranteedIds"] = "Select at least one Loan Guaranteed complete Guarantor Substitution!";
+                    return View();
                 }
-            }
 
-
-            var LoanGuaranteedDetails = new ObservableCollection<LoanGuarantorDTO>();
-            foreach (var details in loansGuaranteedGuidList)
-            {
-                var x = await _channelService.FindLoanGuarantorAsync(details, GetServiceHeader());
-                if (x != null)
+                if (loanCaseDTO.CustomerId == Guid.Empty || loanCaseDTO.GuarantorId == Guid.Empty)
                 {
-                    LoanGuaranteedDetails.Add(x);
+                    TempData["CustomerGuarantorEmpty"] = "Customer and Substitute Guarantor required to complete Guarantor Substitution!";
+                    return View();
                 }
-            }
 
-            await _channelService.SubstituteLoanGuarantorsAsync(loanCaseDTO.GuarantorId, LoanGuaranteedDetails, 1234, GetServiceHeader());
-            TempData["Success"] = "Operation Completed Successfully.";
-            return View();
+
+                var loansGuaranteedIdsList = loansGuaranteedIds.Split(',').ToList();
+                List<Guid> loansGuaranteedGuidList = new List<Guid>();
+
+                foreach (var ids in loansGuaranteedIdsList)
+                {
+                    if (Guid.TryParse(ids, out Guid LGIds))
+                    {
+                        loansGuaranteedGuidList.Add(LGIds);
+                    }
+                }
+
+
+                var LoanGuaranteedDetails = new ObservableCollection<LoanGuarantorDTO>();
+                foreach (var details in loansGuaranteedGuidList)
+                {
+                    var x = await _channelService.FindLoanGuarantorAsync(details, GetServiceHeader());
+                    if (x != null)
+                    {
+                        LoanGuaranteedDetails.Add(x);
+                    }
+                }
+
+                await _channelService.SubstituteLoanGuarantorsAsync(loanCaseDTO.GuarantorId, LoanGuaranteedDetails, 1234, GetServiceHeader());
+                TempData["Success"] = "Operation Completed Successfully.";
+                return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["Exception"] = "Guarantor Substitution Failed. Cause:\n" + ex.ToString();
+                return View();
+            }
         }
     }
 }
