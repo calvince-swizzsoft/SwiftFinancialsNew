@@ -290,7 +290,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
             // Operations Sub-Menus
             new NavigationMenu { AreaCode = 0x00011170 + 2, IsArea = false, Description = "Loan Cases", Icon = "fa fa-address-book", ControllerName = "LoanRegistration", ActionName = "Index", AreaName = "Loaning", Code = 0x00011170 + 6 },
-            new NavigationMenu { AreaCode = 0x00011170 + 2, IsArea = false, Description = "Loaning", Icon = "fa fa-book", ControllerName = "LoanRestructuring", ActionName = "Create", AreaName = "Loaning", Code = 0x00011170 + 7 },
+            new NavigationMenu { AreaCode = 0x00011170 + 2, IsArea = false, Description = "Loaning", Icon = "fa fa-book", ControllerName = "LoanRestructuring", ActionName = "Index", AreaName = "Loaning", Code = 0x00011170 + 7 },
             new NavigationMenu { AreaCode = 0x00011170 + 2, IsArea = false, Description = "Data Capture", Icon = "fa fa-database", ControllerName = "DataCapture", ActionName = "Index", AreaName = "Loaning", Code = 0x00011170 + 8 },
             new NavigationMenu { AreaCode = 0x00011170 + 2, IsArea = false, Description = "Back Office Transfer", Icon = "fa fa-database", ControllerName = "BackOfficeTransfer", ActionName = "Create", AreaName = "Accounts", Code = 0x00011170 + 9 }, 
 

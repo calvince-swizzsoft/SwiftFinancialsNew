@@ -12,9 +12,12 @@
 
     var recordStatus = ViewBag.recordStatus as List<SelectListItem>;
     var customerFilter = ViewBag.customerFilter as List<SelectListItem>;
+
+
+    var successMessage = TempData["Success"] as string;
+    var customerGuarantorEmpty = TempData["CustomerGuarantorEmpty"] as string;
+    var emptyLoansGuaranteedIds = TempData["EmptyLoansGuaranteedIds"] as string;
 }
-
-
 
 <style>
     .tab {
@@ -309,10 +312,60 @@
 
 
 
+
+    .section-container {
+        border: 1px solid #00000080;
+        border-radius: 5px;
+        padding: 20px;
+        background-color: #fff;
+        width: 100%;
+        margin: auto;
+        position: relative;
+    }
+
+    .section-title {
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background-color: #fff;
+        padding: 0 10px;
+        font-weight: bold;
+        color: black;
+    }
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+
+
+    .no-dataLoansGuaranteed-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .no-dataSavingsAccounts-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .no-dataLoanAccounts-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .no-dataInvestmentsAccounts-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
 </style>
-
-
-
 
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -332,8 +385,6 @@
     </div>
 </div>
 
-
-
 <br />
 <nav class="navbar">
     <ul class="nav-menu">
@@ -351,6 +402,50 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Guarantor Substitution</h2>
+
+                    @if (successMessage != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Completed Successfully.',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
+
+                    @if (customerGuarantorEmpty != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Customer and Substitute Guarantor required to complete Guarantor Substitution!',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (emptyLoansGuaranteedIds != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Select at least one Guaranteed Loan to complete Guarantor Substitution!',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -371,7 +466,7 @@
                                     @Html.LabelFor(model => model.CustomerFullName, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.CustomerId)
-                                        @Html.TextBoxFor(model => model.CustomerIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Search Customer..." })
+                                        @Html.TextBoxFor(model => model.CustomerIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @disabled = "", @placeholder = "Search Customer..." })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#CustomerLookupModal"><span class="fa fa-search"></span></a>
                                         </span>
@@ -381,21 +476,21 @@
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerTypeDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerNonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.CustomerNonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerStationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.CustomerStationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerStation, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerStation, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.CustomerStation, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
                                     </div>
                                 </div>
                             </div>
@@ -404,14 +499,14 @@
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerReference1, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.CustomerReference1, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerReference1, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -419,7 +514,7 @@
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerReference2, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.CustomerReference2, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -427,7 +522,7 @@
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerReference3, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.CustomerReference3, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -437,24 +532,33 @@
                                 <div class="col-md-12 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text..." } })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
 
 
+                        <style>
+                            #popover-button {
+                                position: absolute;
+                                right: 50px;
+                            }
+                        </style>
                         <div class="tab">
                             <button class="tablinks active" onclick="openTab(event, 'MainTab1')"><i class="fa fa-table" aria-hidden="true"></i> Loans Guaranteed</button>
                             <button class="tablinks" onclick="openTab(event, 'MainTab2')"><i class="fa fa-table" aria-hidden="true"></i> Savings Accounts</button>
                             <button class="tablinks" onclick="openTab(event, 'MainTab3')"><i class="fa fa-table" aria-hidden="true"></i> Loans Accounts</button>
                             <button class="tablinks" onclick="openTab(event, 'MainTab4')"><i class="fa fa-table" aria-hidden="true"></i> Investments Accounts</button>
+
+                            <button id="popover-button" data-toggle="popover" title="Guarantor Substitution" data-content="Only Loans Guaranteed with status &quot;Attached&quot; can be subjected to Substitution." type="button"><i class="fa fa-question-circle" aria-hidden="true"></i></button>
                         </div>
 
                         <input type="hidden" id="loansguaranteedInput" name="loansGuaranteedIds" value="" />
                         <div id="MainTab1" class="tabcontent" style="display: block;">
                             <div class="table-container">
                                 <h3 style="font-size: 1.9rem; text-align: center;">Loans Guaranteed</h3>
+                                <div id="noDataLoansGuaranteedMessage" class="no-dataLoansGuaranteed-message mt-2">No Data Available!</div>
                                 <table id="loansGuaranteed" class="footable table table-striped toggle-arrow-tiny grey-table">
                                     <thead>
                                         <tr>
@@ -465,7 +569,7 @@
                                             <th>Committed Shares</th>
                                             <th>Amount Guaranteed</th>
                                             <th>Amount Pledged</th>
-                                            <th>Customer Name</th>
+                                            <th>Loanee</th>
                                             <th>Identity Card Number</th>
                                             <th>Payroll Numbers</th>
                                         </tr>
@@ -476,10 +580,10 @@
                             </div>
                         </div>
 
-
                         <div id="MainTab2" class="tabcontent">
                             <div class="table-container">
                                 <h3 style="font-size: 1.9rem; text-align: center;">Savings Accounts</h3>
+                                <div id="noDataSavingsAccountsMessage" class="no-dataSavingsAccounts-message mt-2">No Data Available!</div>
                                 <table id="savingsAccountsTable" class="footable table table-striped toggle-arrow-tiny grey-table">
                                     <thead>
                                         <tr>
@@ -502,6 +606,7 @@
                         <div id="MainTab3" class="tabcontent">
                             <div class="table-container">
                                 <h3 style="font-size: 1.9rem; text-align: center;">Loans Accounts</h3>
+                                <div id="noDataLoanAccountsMessage" class="no-dataLoanAccounts-message mt-2">No Data Available!</div>
                                 <table id="loanAccountTable" class="footable table table-striped toggle-arrow-tiny grey-table">
                                     <thead>
                                         <tr>
@@ -524,6 +629,7 @@
                         <div id="MainTab4" class="tabcontent">
                             <div class="table-container">
                                 <h3 style="font-size: 1.9rem; text-align: center;">Investments Accounts</h3>
+                                <div id="noDataInvestmentsAccountsMessage" class="no-dataInvestmentsAccounts-message mt-2">No Data Available!</div>
                                 <table id="investmentsAccountsTable" class="footable table table-striped toggle-arrow-tiny grey-table">
                                     <thead>
                                         <tr>
@@ -543,88 +649,89 @@
                             </div>
                         </div>
 
-
-
                         <br />
                         <br />
                         <br />
-                        <div class="row">
-                            <div class="col-md-3 form-group">
-                                @Html.LabelFor(model => model.GuarantorName, new { @class = "control-label" })
-                                <div class="input-group" data-autoclose="true">
-                                    @Html.HiddenFor(model => model.GuarantorId)
-                                    @Html.TextBoxFor(model => model.GuarantorIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Substitute Guarantor..." })
-                                    <span class="input-group-addon">
-                                        <a data-toggle="modal" data-target="#substituteGuarantorLookupModal"><span class="fa fa-search"></span></a>
-                                    </span>
+
+
+                        <div class="section-container">
+                            <div class="section-title">Substitute</div>
+                            <div class="row">
+                                <div class="col-md-3 form-group">
+                                    @Html.LabelFor(model => model.GuarantorName, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.GuarantorId)
+                                        @Html.TextBoxFor(model => model.GuarantorIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @disabled = "", @placeholder = "Link Substitute Guarantor..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#substituteGuarantorLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorTypeDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorTypeDescription, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorEmployerDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorEmployerDescription, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorStationDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorStationDescription, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorIdentificationNumber, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                        @Html.ValidationMessageFor(model => model.GuarantorIdentificationNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
 
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.GuarantorTypeDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.GuarantorTypeDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorReference1, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorReference1, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorReference2, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorReference2, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorReference3, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorReference3, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.GuarantorEmployerDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.GuarantorEmployerDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorRemarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorRemarks, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.GuarantorStationDescription, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.GuarantorStationDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.GuarantorIdentificationNumber, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.GuarantorIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                                    @Html.ValidationMessageFor(model => model.GuarantorIdentificationNumber, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.GuarantorReference1, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.GuarantorReference1, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.GuarantorReference2, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.GuarantorReference2, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.GuarantorReference3, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.GuarantorReference3, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12 form-group">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.GuarantorRemarks, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.GuarantorRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text...", @readonly = "readonly" } })
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="amount-section">
+                            <div class="row">
                                 <div class="col-lg-1">
                                     <button id="createButton" class="btn btn-primary" style="width: 150px;">Create</button>
                                 </div>
@@ -636,9 +743,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 <div class="modal  fade" id="CustomerLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -716,12 +820,11 @@
     </div>
 </div>
 
-
 <div class="modal  fade" id="substituteGuarantorLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                <h3 class="font-bold">Substitute Guarantor Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
             <div class="blue-section">
                 <form id="filterForm2">
@@ -792,9 +895,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 
 
@@ -870,44 +970,7 @@
 
     <script>
         $(document).ready(function () {
-            $('#ReceivedDate').inputmask('99-99-9999', {
-                'placeholder': 'dd-mm-yyyy',
-                'autoUnmask': true
-            });
-
-            $('#ReceivedDate').datepicker({
-                format: 'dd-mm-yyyy',
-                autoclose: true,
-                todayHighlight: true,
-                language: navigator.language.split('-')[0],
-                orientation: "bottom left"
-            });
-        });
-    </script>
-
-    <script>
-        document.getElementById('createButton').addEventListener('click', function () {
-            const selectedIds = Array.from(
-                document.querySelectorAll('.collateral-checkbox:checked')
-            ).map(checkbox => checkbox.value);
-
-            if (selectedIds.length === 0) {
-                return;
-            }
-
-            const collateralIdsInput = document.getElementById('collateralIdsInput');
-            if (collateralIdsInput) {
-                collateralIdsInput.value = selectedIds.join(',');
-            } else {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'collateralIds';
-                input.id = 'collateralIdsInput';
-                input.value = selectedIds.join(',');
-                document.getElementById('loanForm').appendChild(input);
-            }
-
-            document.getElementById('loanForm').submit();
+            $('[data-toggle="popover"]').popover();
         });
     </script>
 
@@ -984,29 +1047,27 @@
 
                         $('#customerLookupModal').modal('hide');
 
-                        console.log(response);
-                        console.log(response.data.loansGuaranteed);
-                        console.log(response.data.savingsAccounts);
-                        console.log(response.data.investmentsAccounts);
-                        console.log(response.data.loanAccounts);
-
                         //Loans Guaranteed
                         var loansGuaranteed = response.data.LoansGuaranteed;
+                        const nodataLoansGuaranteedDataMessage = document.querySelector('.no-dataLoansGuaranteed-message');
                         if (!loansGuaranteed || loansGuaranteed.length === 0) {
+                            nodataLoansGuaranteedDataMessage.style.display = 'block';
                             $('#loansGuaranteed tbody').empty();
                         } else {
+                            nodataLoansGuaranteedDataMessage.style.display = 'none';
                             var tbody = $('#loansGuaranteed tbody');
                             tbody.empty();
-
+                            console.log(loansGuaranteed);
                             loansGuaranteed.forEach(function (loansGuaranteed) {
+                                var isCheckboxEnabled = loansGuaranteed.Status === 0 ? '' : 'disabled';
                                 var row = '<tr>' +
-                                    '<td><input type="checkbox" class="loansGuaranteed-checkbox" value="' + loansGuaranteed.Id + '"></td>' +
+                                    '<td><input type="checkbox" class="loansGuaranteed-checkbox" value="' + loansGuaranteed.Id + '" ' + isCheckboxEnabled + '></td>' +
                                     '<td>' + loansGuaranteed.StatusDescription + '</td>' +
                                     '<td>' + loansGuaranteed.LoanProductDescription + '</td>' +
                                     '<td style="text-align: right;">' + loansGuaranteed.TotalShares + '</td>' +
                                     '<td style="text-align: right;">' + loansGuaranteed.CommittedShares + '</td>' +
-                                    '<td style="text-align: right;">' + loansGuaranteed.AmountGuaranteed.ToString("C") + '</td>' +
-                                    '<td style="text-align: right;">' + loansGuaranteed.AmountPledged.ToString("C") + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuaranteed.AmountGuaranteed + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuaranteed.AmountPledged + '</td>' +
                                     '<td>' + loansGuaranteed.LoaneeCustomerFullName + '</td>' +
                                     '<td>' + loansGuaranteed.LoaneeCustomerIndividualIdentityCardNumber + '</td>' +
                                     '<td>' + loansGuaranteed.CustomerIndividualPayrollNumbers + '</td>' +
@@ -1023,21 +1084,22 @@
                                     selectedIdsField.value = selectedIds.join(',');
                                 }
                             });
+
                             $('#customerLookupModal').modal('hide');
                         }
 
 
                         // Savings Accounts
                         var savingsAccounts = response.data.SavingsAccounts;
-                        //const noStandingOrderssDataMessage = document.querySelector('.no-dataStandingOrders-message');
+                        const nodatadataSavingsAccountsDataMessage = document.querySelector('.no-dataSavingsAccounts-message');
                         if (!savingsAccounts || savingsAccounts.length === 0) {
-                            //noStandingOrderssDataMessage.style.display = 'block';
+                            nodatadataSavingsAccountsDataMessage.style.display = 'block';
                             $('#savingsAccountsTable tbody').empty();
                         } else {
-                            //noStandingOrderssDataMessage.style.display = 'none';
+                            nodatadataSavingsAccountsDataMessage.style.display = 'none';
                             var tbody = $('#savingsAccountsTable tbody');
                             tbody.empty();
-
+                            console.log(savingsAccounts);
                             savingsAccounts.forEach(function (savingsAccounts) {
                                 var row = '<tr>' +
                                     '<td>' + savingsAccounts.FullAccountNumber + '</td>' +
@@ -1046,28 +1108,26 @@
                                     '<td>' + savingsAccounts.CustomerReference2 + '</td>' +
                                     '<td>' + savingsAccounts.CustomerReference3 + '</td>' +
                                     '<td>' + savingsAccounts.CustomerAccountTypeTargetProductDescription + '</td>' +
-                                    '<td style="text-align: right;">' + savingsAccounts.AvailableBalance.ToString("C") + '</td>' +
-                                    '<td style="text-align: right;">' + savingsAccounts.BookBalance.ToString("C") + '</td>' +
-                                    '<td>' + savingsAccounts.CreatedDate + '</td>' +
+                                    '<td style="text-align: right;">' + savingsAccounts.AvailableBalance + '</td>' +
+                                    '<td style="text-align: right;">' + savingsAccounts.BookBalance + '</td>' +
                                     '</tr>';
                                 tbody.append(row);
                             });
-
                             $('#customerLookupModal').modal('hide');
                         }
 
 
                         // Investments Accounts
                         var investmentsAccounts = response.data.InvestmentsAccounts;
-                        //const noStandingOrderssDataMessage = document.querySelector('.no-dataStandingOrders-message');
+                        const nodataInvestmentsAccountsDataMessage = document.querySelector('.no-dataInvestmentsAccounts-message');
                         if (!investmentsAccounts || investmentsAccounts.length === 0) {
-                            //noStandingOrderssDataMessage.style.display = 'block';
+                            nodataInvestmentsAccountsDataMessage.style.display = 'block';
                             $('#investmentsAccountsTable tbody').empty();
                         } else {
-                            //noStandingOrderssDataMessage.style.display = 'none';
+                            nodataInvestmentsAccountsDataMessage.style.display = 'none';
                             var tbody = $('#investmentsAccountsTable tbody');
                             tbody.empty();
-
+                            console.log(investmentsAccounts);
                             investmentsAccounts.forEach(function (investmentsAccounts) {
                                 var row = '<tr>' +
                                     '<td>' + investmentsAccounts.FullAccountNumber + '</td>' +
@@ -1076,29 +1136,26 @@
                                     '<td>' + investmentsAccounts.CustomerReference2 + '</td>' +
                                     '<td>' + investmentsAccounts.CustomerReference3 + '</td>' +
                                     '<td>' + investmentsAccounts.CustomerAccountTypeTargetProductDescription + '</td>' +
-                                    '<td style="text-align: right;">' + investmentsAccounts.AvailableBalance.ToString("C") + '</td>' +
-                                    '<td style="text-align: right;">' + investmentsAccounts.BookBalance.ToString("C") + '</td>' +
-                                    '<td>' + investmentsAccounts.CreatedDate + '</td>' +
+                                    '<td style="text-align: right;">' + investmentsAccounts.AvailableBalance + '</td>' +
+                                    '<td style="text-align: right;">' + investmentsAccounts.BookBalance + '</td>' +
                                     '</tr>';
                                 tbody.append(row);
                             });
-
                             $('#customerLookupModal').modal('hide');
                         }
 
 
-
                         // Loans Accounts
                         var loanAccounts = response.data.LoansAccounts;
-                        /*const noStandingOrderssDataMessage = document.querySelector('.no-dataStandingOrders-message');*/
+                        const nodataLoanAccountsDataMessage = document.querySelector('.no-dataLoanAccounts-message');
                         if (!loanAccounts || loanAccounts.length === 0) {
-                            //noStandingOrderssDataMessage.style.display = 'block';
+                            nodataLoanAccountsDataMessage.style.display = 'block';
                             $('#loanAccountTable tbody').empty();
                         } else {
-                            //noStandingOrderssDataMessage.style.display = 'none';
+                            nodataLoanAccountsDataMessage.style.display = 'none';
                             var tbody = $('#loanAccountTable tbody');
                             tbody.empty();
-
+                            console.log(loanAccounts);
                             loanAccounts.forEach(function (loanAccounts) {
                                 var row = '<tr>' +
                                     '<td>' + loanAccounts.FullAccountNumber + '</td>' +
@@ -1107,16 +1164,13 @@
                                     '<td>' + loanAccounts.CustomerReference2 + '</td>' +
                                     '<td>' + loanAccounts.CustomerReference3 + '</td>' +
                                     '<td>' + loanAccounts.CustomerAccountTypeTargetProductDescription + '</td>' +
-                                    '<td style="text-align: right;">' + loanAccounts.AvailableBalance.ToString("C") + '</td>' +
-                                    '<td style="text-align: right;">' + loanAccounts.BookBalance.ToString("C") + '</td>' +
-                                    '<td>' + loanAccounts.CreatedDate + '</td>' +
+                                    '<td style="text-align: right;">' + loanAccounts.AvailableBalance + '</td>' +
+                                    '<td style="text-align: right;">' + loanAccounts.BookBalance + '</td>' +
                                     '</tr>';
                                 tbody.append(row);
                             });
-
                             $('#customerLookupModal').modal('hide');
                         }
-
 
                         $('#customerLookupModal').modal('hide');
                     } else {
@@ -1130,21 +1184,91 @@
         }
     </script>
 
+    <script>
+        var defaultCustomerFilter2 = $('#customerFilter2').val();
+        var defaultRecordStatus2 = $('#recordStatus2').val();
+        var defaulText2 = $('#text2').val();
+
+        $('#substituteGuarantorsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("CustomerIndex", "GuarantorSubstitution", new { Area = "Loaning"}))",
+                "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "customerFilter2", "value": $('#customerFilter2').val() || defaultCustomerFilter2 },
+                        { "name": "recordStatus2", "value": $('#recordStatus2').val() || defaultRecordStatus2 },
+                        { "name": "text2", "value": $('#text2').val() || defaulText2 }
+                    );
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectSubstituteCustomer(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "5%" },
+                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "5%" },
+                    { "mDataProp": "Reference2", "sTitle": "Membership Number", "sWidth": "5%" },
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "IndividualIdentityCardNumber", "sTitle": "Identity Card Number", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                $('#filterForm2').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#substituteGuarantorsGrid').DataTable().ajax.reload();
+                });
+
+
+        function selectSubstituteCustomer(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Loaning/GuarantorSubstitution/SubstituteCustomerLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        $('#GuarantorId').val(response.data.GuarantorId);
+                        $('#GuarantorIndividualFirstName').val(response.data.GuarantorIndividualFirstName);
+                        $('#GuarantorTypeDescription').val(response.data.GuarantorTypeDescription);
+                        $('#GuarantorEmployerDescription').val(response.data.GuarantorEmployerDescription);
+                        $('#GuarantorStationDescription').val(response.data.GuarantorStationDescription);
+                        $('#GuarantorIdentificationNumber').val(response.data.GuarantorIdentificationNumber);
+                        $('#GuarantorReference1').val(response.data.GuarantorReference1);
+                        $('#GuarantorReference2').val(response.data.GuarantorReference2);
+                        $('#GuarantorReference3').val(response.data.GuarantorReference3);
+                        $('#GuarantorRemarks').val(response.data.GuarantorRemarks);
+
+                        $('#substituteGuarantorLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
+
 
     <script>
-        $(document).ready(function () {
-            $('#data_3 .input-group.date').datepicker({
-                startView: 2,
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                autoclose: true,
-            });
-        });
-
-
-
-
         function openTab(evt, tabName) {
             evt.preventDefault();
             var i, tabcontent, tablinks;

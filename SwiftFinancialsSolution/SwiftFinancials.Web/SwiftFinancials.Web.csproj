@@ -1541,6 +1541,7 @@
     <Content Include="Areas\HumanResource\Views\PeriodClosings\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PeriodClosings\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslip.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosings\Close.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2063,8 +2064,6 @@
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Alternatechannel\" />
     <Folder Include="Areas\Accounts\Views\Credit\" />
-    <Folder Include="Areas\Accounts\Views\Default1\" />
-    <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\EmailAlerts\" />
