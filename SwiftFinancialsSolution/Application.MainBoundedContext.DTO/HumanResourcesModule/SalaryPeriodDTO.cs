@@ -133,5 +133,8 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         public ObservableCollection<DepartmentDTO> SelectedDepartments { get; set; }
         
         
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
     public class SalaryPeriodsController : MasterController
     {
-        
+
 
         public async Task<ActionResult> Index()
         {
@@ -168,9 +168,27 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!salaryPeriodDTO.HasErrors)
             {
                 var salaryPeriod = await _channelService.AddSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
+
+                if (salaryPeriod.ErrorMessageResult != null)
+                {
+                    await ServeNavigationMenus();
+                    MessageBox.Show(
+                                                             "Operation Unsuccessful: "+ salaryPeriod.ErrorMessageResult,
+                                                             "Salary Periods",
+                                                             MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Information,
+                                                             MessageBoxDefaultButton.Button1,
+                                                             MessageBoxOptions.ServiceNotification
+                                                         );
+                    ViewBag.MonthTypeSelectList = GetMonthsAsync(salaryPeriodDTO.Month.ToString());
+                    ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(salaryPeriodDTO.EmployeeCategoryDescription.ToString());
+                    return View();
+                }
+
+
                 MessageBox.Show(
                                                              "Operation Success",
-                                                             "Customer Receipts",
+                                                             "Salary Periods",
                                                              MessageBoxButtons.OK,
                                                              MessageBoxIcon.Information,
                                                              MessageBoxDefaultButton.Button1,
@@ -213,7 +231,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 await _channelService.UpdateSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
                 MessageBox.Show(
                                                              "Operation Success",
-                                                             "Customer Receipts",
+                                                             "Salary Period",
                                                              MessageBoxButtons.OK,
                                                              MessageBoxIcon.Information,
                                                              MessageBoxDefaultButton.Button1,

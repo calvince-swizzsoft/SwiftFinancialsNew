@@ -73,6 +73,8 @@
             <div class="ibox">
                 <div class="ibox-title">
                     @Html.ActionLink("Create Salary Period", "Create", "SalariPeriods", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("View PaySlip", "ViewPaySlip", "PaySlips", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -141,6 +143,7 @@
 
 
                     var viewButton = `<a class="dropdown-item" href="/HumanResource/Payslips/details/${aData.Id}">PaySlip</a>`;
+                    var payslipButton = `<a class="dropdown-item" href="/HumanResource/Payslips/viewPaySlip/${aData.Id}">ViewPaySlip</a>`;
 
 
 
@@ -149,10 +152,10 @@
 
                     switch (aData.Status) {
                         case 1: // Pending
-                            dropdownHtml += viewButton;
+                            dropdownHtml += viewButton + payslipButton;
                             break;
                         default:
-                            dropdownHtml += viewButton;
+                            dropdownHtml += viewButton + payslipButton;
                             break;
                     }
 
