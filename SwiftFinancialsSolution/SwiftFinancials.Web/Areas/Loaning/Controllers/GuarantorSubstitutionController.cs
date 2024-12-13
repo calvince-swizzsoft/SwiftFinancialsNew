@@ -139,7 +139,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 // Loans Guaranteed
                 var loansGuaranteed = await _channelService.FindLoanGuarantorsByCustomerIdAsync(parseId, GetServiceHeader());
-
+                
                 return Json(new
                 {
                     success = true,

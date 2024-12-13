@@ -339,6 +339,32 @@
         padding: 15px;
         border-radius: 8px;
     }
+
+
+
+    .no-dataLoansGuaranteed-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .no-dataSavingsAccounts-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .no-dataLoanAccounts-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .no-dataInvestmentsAccounts-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
 </style>
 
 
@@ -513,17 +539,26 @@
                         </fieldset>
 
 
+                        <style>
+                            #popover-button {
+                                position: absolute;
+                                right: 50px;
+                            }
+                        </style>
                         <div class="tab">
                             <button class="tablinks active" onclick="openTab(event, 'MainTab1')"><i class="fa fa-table" aria-hidden="true"></i> Loans Guaranteed</button>
                             <button class="tablinks" onclick="openTab(event, 'MainTab2')"><i class="fa fa-table" aria-hidden="true"></i> Savings Accounts</button>
                             <button class="tablinks" onclick="openTab(event, 'MainTab3')"><i class="fa fa-table" aria-hidden="true"></i> Loans Accounts</button>
                             <button class="tablinks" onclick="openTab(event, 'MainTab4')"><i class="fa fa-table" aria-hidden="true"></i> Investments Accounts</button>
+
+                            <button id="popover-button" data-toggle="popover" title="Guarantor Substitution" data-content="Only Loans Guaranteed with status &quot;Attached&quot; can be subjected to Substitution." type="button"><i class="fa fa-question-circle" aria-hidden="true"></i></button>
                         </div>
 
                         <input type="hidden" id="loansguaranteedInput" name="loansGuaranteedIds" value="" />
                         <div id="MainTab1" class="tabcontent" style="display: block;">
                             <div class="table-container">
                                 <h3 style="font-size: 1.9rem; text-align: center;">Loans Guaranteed</h3>
+                                <div id="noDataLoansGuaranteedMessage" class="no-dataLoansGuaranteed-message mt-2">No Data Available!</div>
                                 <table id="loansGuaranteed" class="footable table table-striped toggle-arrow-tiny grey-table">
                                     <thead>
                                         <tr>
@@ -548,6 +583,7 @@
                         <div id="MainTab2" class="tabcontent">
                             <div class="table-container">
                                 <h3 style="font-size: 1.9rem; text-align: center;">Savings Accounts</h3>
+                                <div id="noDataSavingsAccountsMessage" class="no-dataSavingsAccounts-message mt-2">No Data Available!</div>
                                 <table id="savingsAccountsTable" class="footable table table-striped toggle-arrow-tiny grey-table">
                                     <thead>
                                         <tr>
@@ -570,6 +606,7 @@
                         <div id="MainTab3" class="tabcontent">
                             <div class="table-container">
                                 <h3 style="font-size: 1.9rem; text-align: center;">Loans Accounts</h3>
+                                <div id="noDataLoanAccountsMessage" class="no-dataLoanAccounts-message mt-2">No Data Available!</div>
                                 <table id="loanAccountTable" class="footable table table-striped toggle-arrow-tiny grey-table">
                                     <thead>
                                         <tr>
@@ -592,6 +629,7 @@
                         <div id="MainTab4" class="tabcontent">
                             <div class="table-container">
                                 <h3 style="font-size: 1.9rem; text-align: center;">Investments Accounts</h3>
+                                <div id="noDataInvestmentsAccountsMessage" class="no-dataInvestmentsAccounts-message mt-2">No Data Available!</div>
                                 <table id="investmentsAccountsTable" class="footable table table-striped toggle-arrow-tiny grey-table">
                                     <thead>
                                         <tr>
@@ -931,6 +969,12 @@
     </script>
 
     <script>
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+        });
+    </script>
+
+    <script>
         var defaultCustomerFilter = $('#customerFilter').val();
         var defaultRecordStatus = $('#recordStatus').val();
         var defaulText = $('#text').val();
@@ -1001,17 +1045,23 @@
                         $('#CustomerReference3').val(response.data.CustomerReference3);
                         $('#Remarks').val(response.data.Remarks);
 
+                        $('#customerLookupModal').modal('hide');
+
                         //Loans Guaranteed
                         var loansGuaranteed = response.data.LoansGuaranteed;
+                        const nodataLoansGuaranteedDataMessage = document.querySelector('.no-dataLoansGuaranteed-message');
                         if (!loansGuaranteed || loansGuaranteed.length === 0) {
+                            nodataLoansGuaranteedDataMessage.style.display = 'block';
                             $('#loansGuaranteed tbody').empty();
                         } else {
+                            nodataLoansGuaranteedDataMessage.style.display = 'none';
                             var tbody = $('#loansGuaranteed tbody');
                             tbody.empty();
                             console.log(loansGuaranteed);
                             loansGuaranteed.forEach(function (loansGuaranteed) {
+                                var isCheckboxEnabled = loansGuaranteed.Status === 0 ? '' : 'disabled';
                                 var row = '<tr>' +
-                                    '<td><input type="checkbox" class="loansGuaranteed-checkbox" value="' + loansGuaranteed.Id + '"></td>' +
+                                    '<td><input type="checkbox" class="loansGuaranteed-checkbox" value="' + loansGuaranteed.Id + '" ' + isCheckboxEnabled + '></td>' +
                                     '<td>' + loansGuaranteed.StatusDescription + '</td>' +
                                     '<td>' + loansGuaranteed.LoanProductDescription + '</td>' +
                                     '<td style="text-align: right;">' + loansGuaranteed.TotalShares + '</td>' +
@@ -1034,17 +1084,19 @@
                                     selectedIdsField.value = selectedIds.join(',');
                                 }
                             });
+
+                            $('#customerLookupModal').modal('hide');
                         }
 
 
                         // Savings Accounts
                         var savingsAccounts = response.data.SavingsAccounts;
-                        //const noStandingOrderssDataMessage = document.querySelector('.no-dataStandingOrders-message');
+                        const nodatadataSavingsAccountsDataMessage = document.querySelector('.no-dataSavingsAccounts-message');
                         if (!savingsAccounts || savingsAccounts.length === 0) {
-                            //noStandingOrderssDataMessage.style.display = 'block';
+                            nodatadataSavingsAccountsDataMessage.style.display = 'block';
                             $('#savingsAccountsTable tbody').empty();
                         } else {
-                            //noStandingOrderssDataMessage.style.display = 'none';
+                            nodatadataSavingsAccountsDataMessage.style.display = 'none';
                             var tbody = $('#savingsAccountsTable tbody');
                             tbody.empty();
                             console.log(savingsAccounts);
@@ -1061,17 +1113,18 @@
                                     '</tr>';
                                 tbody.append(row);
                             });
+                            $('#customerLookupModal').modal('hide');
                         }
 
 
                         // Investments Accounts
                         var investmentsAccounts = response.data.InvestmentsAccounts;
-                        //const noStandingOrderssDataMessage = document.querySelector('.no-dataStandingOrders-message');
+                        const nodataInvestmentsAccountsDataMessage = document.querySelector('.no-dataInvestmentsAccounts-message');
                         if (!investmentsAccounts || investmentsAccounts.length === 0) {
-                            //noStandingOrderssDataMessage.style.display = 'block';
+                            nodataInvestmentsAccountsDataMessage.style.display = 'block';
                             $('#investmentsAccountsTable tbody').empty();
                         } else {
-                            //noStandingOrderssDataMessage.style.display = 'none';
+                            nodataInvestmentsAccountsDataMessage.style.display = 'none';
                             var tbody = $('#investmentsAccountsTable tbody');
                             tbody.empty();
                             console.log(investmentsAccounts);
@@ -1088,17 +1141,18 @@
                                     '</tr>';
                                 tbody.append(row);
                             });
+                            $('#customerLookupModal').modal('hide');
                         }
 
 
                         // Loans Accounts
                         var loanAccounts = response.data.LoansAccounts;
-                        /*const noStandingOrderssDataMessage = document.querySelector('.no-dataStandingOrders-message');*/
+                        const nodataLoanAccountsDataMessage = document.querySelector('.no-dataLoanAccounts-message');
                         if (!loanAccounts || loanAccounts.length === 0) {
-                            //noStandingOrderssDataMessage.style.display = 'block';
+                            nodataLoanAccountsDataMessage.style.display = 'block';
                             $('#loanAccountTable tbody').empty();
                         } else {
-                            //noStandingOrderssDataMessage.style.display = 'none';
+                            nodataLoanAccountsDataMessage.style.display = 'none';
                             var tbody = $('#loanAccountTable tbody');
                             tbody.empty();
                             console.log(loanAccounts);
@@ -1115,8 +1169,8 @@
                                     '</tr>';
                                 tbody.append(row);
                             });
+                            $('#customerLookupModal').modal('hide');
                         }
-
 
                         $('#customerLookupModal').modal('hide');
                     } else {
