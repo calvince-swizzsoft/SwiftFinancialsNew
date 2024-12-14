@@ -41,53 +41,28 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
+
             int searchRecordCount = 0;
 
-            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
-            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-            int pageSize = jQueryDataTablesModel.iDisplayLength;
+            List<string> sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindDesignationsByFilterInPageAsync(
-                jQueryDataTablesModel.sSearch,
-                0,
-                int.MaxValue,
-                GetServiceHeader()
-            );
+            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var pageCollectionInfo = await _channelService.FindDesignationsByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                var sortedData = pageCollectionInfo.PageCollection
-                    .OrderByDescending(designationDTO => designationDTO.CreatedDate)
-                    .ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(bank => bank.CreatedDate).ToList();
 
-                totalRecordCount = sortedData.Count;
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
-                var paginatedData = sortedData
-                    .Skip(jQueryDataTablesModel.iDisplayStart)
-                    .Take(jQueryDataTablesModel.iDisplayLength)
-                    .ToList();
-
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
-                    ? sortedData.Count
-                    : totalRecordCount;
-
-                return this.DataTablesJson(
-                    items: paginatedData,
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-
-            return this.DataTablesJson(
-                items: new List<DesignationDTO>(),
-                totalRecords: totalRecordCount,
-                totalDisplayRecords: searchRecordCount,
-                sEcho: jQueryDataTablesModel.sEcho
-                );
+            else return this.DataTablesJson(items: new List<DesignationDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
@@ -135,8 +110,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 await _channelService.AddDesignationAsync(designationDTO, GetServiceHeader());
                 MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
+                                                             "Operation Success: Designation Created Successful!",
+                                                             "Success",
                                                              MessageBoxButtons.OK,
                                                              MessageBoxIcon.Information,
                                                              MessageBoxDefaultButton.Button1,
@@ -238,7 +213,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                                             MessageBoxIcon.Information,
                                             MessageBoxDefaultButton.Button1,
                                             MessageBoxOptions.ServiceNotification);
-                            return RedirectToAction("Index");
+                            return RedirectToAction("Details");
                         }
                         else
                         {

@@ -143,7 +143,10 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
                     var salaryPeriods = _salaryPeriodRepository.AllMatching(spec, serviceHeader);
 
                     if (salaryPeriods != null && salaryPeriods.Any(x => x.Status == (int)SalaryPeriodStatus.Closed || x.Status == (int)SalaryPeriodStatus.Open))
-                        throw new InvalidOperationException(string.Format("Sorry, but there is already an open/closed {0} payroll period for the month of {1}!", salaryPeriodDTO.EmployeeCategoryDescription, salaryPeriodDTO.MonthDescription));
+                    {
+                        salaryPeriodDTO.ErrorMessageResult = string.Format("Sorry, but there is already an open/closed {0} payroll period for the month of {1}!", salaryPeriodDTO.EmployeeCategoryDescription, salaryPeriodDTO.MonthDescription);
+                        return salaryPeriodDTO;
+                    }
                     else
                     {
                         var salaryPeriod = SalaryPeriodFactory.CreateSalaryPeriod(salaryPeriodDTO.PostingPeriodId, salaryPeriodDTO.Month, salaryPeriodDTO.EmployeeCategory, salaryPeriodDTO.TaxReliefAmount, salaryPeriodDTO.MaximumProvidentFundReliefAmount, salaryPeriodDTO.MaximumInsuranceReliefAmount, salaryPeriodDTO.Remarks);
@@ -152,7 +155,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
                         salaryPeriod.ExecutePayoutStandingOrders = salaryPeriodDTO.ExecutePayoutStandingOrders;
                         salaryPeriod.Status = (int)SalaryPeriodStatus.Open;
                         salaryPeriod.CreatedBy = serviceHeader.ApplicationUserName;
-                     
+
                         _salaryPeriodRepository.Add(salaryPeriod, serviceHeader);
 
                         dbContextScope.SaveChanges(serviceHeader);
@@ -194,7 +197,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
                         current.ExecutePayoutStandingOrders = salaryPeriodDTO.ExecutePayoutStandingOrders;
                         current.Status = persisted.Status;
                         current.CreatedBy = persisted.CreatedBy;
-                       
+
                         _salaryPeriodRepository.Merge(persisted, current, serviceHeader);
 
                         return dbContextScope.SaveChanges(serviceHeader) >= 0;

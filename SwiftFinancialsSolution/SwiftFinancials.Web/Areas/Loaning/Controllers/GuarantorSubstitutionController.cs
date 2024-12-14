@@ -55,7 +55,51 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+        [HttpPost]
+        public async Task<JsonResult> CustomerIndex(JQueryDataTablesModel jQueryDataTablesModel, int recordStatus2, string text2, int customerFilter2)
+        {
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
+
+            var pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)RecordStatus.Approved, text2, customerFilter2, 0, int.MaxValue, GetServiceHeader());
+
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(customer => customer.CreatedDate)
+                    .ToList();
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+
+            return this.DataTablesJson(
+                items: new List<CustomerDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
+        }
 
         public async Task<ActionResult> CustomerLookUp(Guid? id, LoanCaseDTO loanCaseDTO)
         {
@@ -95,7 +139,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 // Loans Guaranteed
                 var loansGuaranteed = await _channelService.FindLoanGuarantorsByCustomerIdAsync(parseId, GetServiceHeader());
-
+                
                 return Json(new
                 {
                     success = true,
@@ -120,14 +164,56 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 });
             }
 
-            MessageBox.Show(Form.ActiveForm, "Customer not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+            TempData["customerNotFound"] = "Customer Not Found!";
             return Json(new { success = false, message = string.Empty });
         }
 
+        public async Task<ActionResult> SubstituteCustomerLookUp(Guid? id, LoanCaseDTO loanCaseDTO)
+        {
+            Guid parseId;
 
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View("create");
+            }
 
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            if (customer != null)
+            {
+                loanCaseDTO.GuarantorId = customer.Id;
+                loanCaseDTO.GuarantorIndividualFirstName = customer.FullName;
+                loanCaseDTO.GuarantorTypeDescription = customer.TypeDescription;
+                loanCaseDTO.GuarantorEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+                loanCaseDTO.GuarantorStationDescription = customer.StationDescription;
+                loanCaseDTO.GuarantorIdentificationNumber = customer.PersonalIdentificationNumber;
+                loanCaseDTO.GuarantorReference1 = customer.Reference1;
+                loanCaseDTO.GuarantorReference2 = customer.Reference2;
+                loanCaseDTO.GuarantorReference3 = customer.Reference3;
+                loanCaseDTO.GuarantorRemarks = customer.Remarks;
 
-        public async Task<ActionResult> Create(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        GuarantorId = loanCaseDTO.GuarantorId,
+                        GuarantorIndividualFirstName = loanCaseDTO.GuarantorIndividualFirstName,
+                        GuarantorTypeDescription = loanCaseDTO.GuarantorTypeDescription,
+                        GuarantorEmployerDescription = loanCaseDTO.GuarantorEmployerDescription,
+                        GuarantorStationDescription = loanCaseDTO.GuarantorStationDescription,
+                        GuarantorIdentificationNumber = loanCaseDTO.GuarantorIdentificationNumber,
+                        GuarantorReference1 = loanCaseDTO.GuarantorReference1,
+                        GuarantorReference2 = loanCaseDTO.GuarantorReference2,
+                        GuarantorReference3 = loanCaseDTO.GuarantorReference3,
+                        GuarantorRemarks = loanCaseDTO.GuarantorRemarks
+                    }
+                });
+            }
+            TempData["substituteNotFound"] = "Substitute Guarantor Not Found!";
+            return Json(new { success = false, message = string.Empty });
+        }
+
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
 
@@ -136,22 +222,58 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
+        public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO, string loansGuaranteedIds)
         {
+            await ServeNavigationMenus();
+            ViewBag.CustomerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+            ViewBag.RecordStatus = GetRecordStatusSelectList(loanCaseDTO.RecordStatusDescription.ToString());
 
-            loanGuarantorDTO.ValidateAll();
-
-            if (!loanGuarantorDTO.HasErrors)
+            try
             {
-                return RedirectToAction("Index");
+                if (loansGuaranteedIds == string.Empty || loansGuaranteedIds == "")
+                {
+                    TempData["EmptyLoansGuaranteedIds"] = "Select at least one Loan Guaranteed complete Guarantor Substitution!";
+                    return View();
+                }
+
+                if (loanCaseDTO.CustomerId == Guid.Empty || loanCaseDTO.GuarantorId == Guid.Empty)
+                {
+                    TempData["CustomerGuarantorEmpty"] = "Customer and Substitute Guarantor required to complete Guarantor Substitution!";
+                    return View();
+                }
+
+
+                var loansGuaranteedIdsList = loansGuaranteedIds.Split(',').ToList();
+                List<Guid> loansGuaranteedGuidList = new List<Guid>();
+
+                foreach (var ids in loansGuaranteedIdsList)
+                {
+                    if (Guid.TryParse(ids, out Guid LGIds))
+                    {
+                        loansGuaranteedGuidList.Add(LGIds);
+                    }
+                }
+
+
+                var LoanGuaranteedDetails = new ObservableCollection<LoanGuarantorDTO>();
+                foreach (var details in loansGuaranteedGuidList)
+                {
+                    var x = await _channelService.FindLoanGuarantorAsync(details, GetServiceHeader());
+                    if (x != null)
+                    {
+                        LoanGuaranteedDetails.Add(x);
+                    }
+                }
+
+                await _channelService.SubstituteLoanGuarantorsAsync(loanCaseDTO.GuarantorId, LoanGuaranteedDetails, 1234, GetServiceHeader());
+                TempData["Success"] = "Operation Completed Successfully.";
+                return View();
             }
-            else
+            catch (Exception ex)
             {
-                await ServeNavigationMenus();
-
+                TempData["Exception"] = "Guarantor Substitution Failed. Cause:\n" + ex.ToString();
                 return View();
             }
         }

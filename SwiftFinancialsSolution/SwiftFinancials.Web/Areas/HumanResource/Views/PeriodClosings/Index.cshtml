@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "SalaryPeriods";
+    ViewBag.Title = "SalaryProcessing";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -72,7 +72,6 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create Salary Period", "Create", "SalaryPeriods", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -119,7 +118,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "SalaryPeriods", new { Area = "HumanResource" }))",
+                "sAjaxSource": "@(Url.Action("Index", "PeriodClosings", new { Area = "HumanResource" }))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -140,8 +139,8 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
 
-                    var viewButton = `<a class="dropdown-item" href="/HumanResource/SalaryPeriods/details/${aData.Id}">View</a>`;
-                    var editButton = `<a class="dropdown-item" href="/HumanResource/SalaryPeriods/edit/${aData.Id}">Edit</a>`;
+                    var viewButton = `<a class="dropdown-item" href="/HumanResource/PeriodClosings/details/${aData.Id}">View</a>`;
+                    var closeButton = `<a class="dropdown-item" href="/HumanResource/PeriodClosings/close/${aData.Id}">ClosePeriod</a>`;
 
 
 
@@ -150,10 +149,10 @@
 
                     switch (aData.Status) {
                         case 1: // Pending
-                            dropdownHtml += viewButton + editButton;
+                            dropdownHtml += viewButton + closeButton;
                             break;
                         default:
-                            dropdownHtml += viewButton + editButton;
+                            dropdownHtml += viewButton + closeButton;
                             break;
                     }
 
