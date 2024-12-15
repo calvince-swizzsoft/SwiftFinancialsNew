@@ -138,17 +138,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
             var activeUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             ActiveTreasury = await _channelService.FindTreasuryByBranchIdAsync((Guid)activeUser.BranchId, true, GetServiceHeader());
 
             // Collect missing parameters
             var missingParameters = new List<string>();
-
-            if (currentPostingPeriod == null)
-            {
-                missingParameters.Add("Posting Period");
-            }
 
             if (activeUser == null)
             {
@@ -179,8 +173,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-                  0,
-                  int.MaxValue,
+                  pageIndex,
+                  jQueryDataTablesModel.iDisplayLength,
                   (Guid)ActiveTreasury.ChartOfAccountId,
                   startDate,
                   endDate,
@@ -203,7 +197,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
 
 
-                var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+                //var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
 
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
@@ -214,7 +208,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     draw = jQueryDataTablesModel.sEcho,
                     recordsTotal = totalRecordCount,
                     recordsFiltered = searchRecordCount,
-                    data = paginatedData,
+                    data = pageCollectionInfo.PageCollection,
                     summary = new
                     {
                         AvailableBalanceBroughtForward = availableBalanceBroughtForward,

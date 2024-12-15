@@ -18,15 +18,26 @@
     var passportPhoto = TempData["PassportPhoto"] as byte[];
     var signaturePhoto = TempData["SignaturePhoto"] as byte[];
     var idCardFront = TempData["idCardFront"] as byte[];
-    var idCardBack = TempData["idCardBack"] as byte[]; 
-    
-    }
+    var idCardBack = TempData["idCardBack"] as byte[];
+
+}
 
 
 <head>
 
 
     <style>
+
+        input {
+            color: #000; /* Black text */
+        }
+
+            input[readonly] {
+                color: #000; /* Black text */
+                background-color: #fff; /* White background */
+                border-color: #ccc; /* Light gray border */
+            }
+
 
         .customDatatableStyles {
             width: 100%;
@@ -42,7 +53,7 @@
 
         .customDatatableStyles, th {
             background: linear-gradient(to bottom, #4a90e2, #003366);
-         /*   color: white;*/
+            /*   color: white;*/
             text-transform: uppercase;
             font-size: 1.1em;
             position: sticky;
@@ -167,7 +178,7 @@
         .inner-inner-nav-tabs .inner-inner-nav-link {
             display: block;
             padding: 0.5rem 1rem;
-            color: #007bff;
+            color: #000;
             background-color: transparent;
             border-radius: 0.25rem;
             transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
@@ -508,15 +519,15 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group form-group-lg">
                                                             @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductMaximumAllowedDeposit, new { @id = "CustomerAccountTypeTargetProductMaximumAllowedDeposit" })
-                                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
-                                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @id = "TotalValue", @class = "form-control" } })
+                                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @id = "TotalValue", @class = "form-control", style = "color: #000;" } })
                                                             @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                                         </div>
 
 
                                                         <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
-                                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @id = "Reference", @class = "form-control" } })
+                                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @id = "Reference", @class = "form-control", style = "color: #000;" } })
                                                             @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                                         </div>
 
@@ -1309,21 +1320,21 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        @Html.LabelFor(model => model.CustomerAccount.AvailableBalance, "Available Balance", htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.CustomerAccount.AvailableBalance, "Available Balance", htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CustomerAccount.AvailableBalance, new { htmlAttributes = new { @id = "CustomerAccountAvailableBalance", @class = "form-control", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccount.AvailableBalance, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        @Html.LabelFor(model => model.CustomerAccount.BookBalance, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.CustomerAccount.BookBalance, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CustomerAccount.BookBalance, new { htmlAttributes = new { @id = "CustomerAccountBookBalance", @class = "form-control", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccount.BookBalance, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        @Html.LabelFor(model => model.CustomerAccount.NewAvailableBalance, "New Available Balance", htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.CustomerAccount.NewAvailableBalance, "New Available Balance", htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CustomerAccount.NewAvailableBalance, new { htmlAttributes = new { @id = "CustomerAccountNewAvailableBalance", @class = "form-control", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccount.NewAvailableBalance, "", new { @class = "text-danger" })
                                     </div>
@@ -1334,14 +1345,14 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         @Html.HiddenFor(model => model.Teller.ChartOfAccountId, new { @id = "TellerChartOfAccountId" })
-                                        @Html.LabelFor(model => model.Teller.BookBalance, "Current Teller Balance", htmlAttributes: new { @class = ""})
-                                        @Html.EditorFor(model => model.Teller.BookBalance, new { htmlAttributes = new { @id = "TellerBookBalance",  @class = "form-control", @readonly = "readonly" } })
+                                        @Html.LabelFor(model => model.Teller.BookBalance, "Current Teller Balance", htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Teller.BookBalance, new { htmlAttributes = new { @id = "TellerBookBalance", @class = "form-control", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.Teller.BookBalance, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        @Html.LabelFor(model => model.Teller.BookBalance, "New Teller Balance", htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.Teller.BookBalance, "New Teller Balance", htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.Teller.BookBalance, new { htmlAttributes = new { @id = "TellerNewBookBalance", @class = "form-control", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.Teller.BookBalance, "", new { @class = "text-danger" })
                                     </div>
@@ -1374,13 +1385,13 @@
             <div class="modal-body">
                 <!-- Table for Account Closure Requests -->
                 @*<div class="table-responsive" style="overflow-x: auto;">*@
-                    <table id="CustomerAccountsGrid" class="customDatatableStyles footable table table-striped toggle-arrow-tiny grey-table">
-                        <tbody>
-                            <tr>
-                                <td class="dataTables_empty">Loading data from server</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <table id="CustomerAccountsGrid" class="customDatatableStyles footable table table-striped toggle-arrow-tiny grey-table">
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
                 @*</div>*@
 
                 <!-- Filter Form -->
@@ -1589,7 +1600,12 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
-   
+
+
+    <!-- Include SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <script>
         $(document).ready(function () {
             // Function to fetch image data using AJAX
@@ -1622,7 +1638,7 @@
         $(document).ready(function () {
             $('#printButton').on('click', function () {
                 const startDateInput = $('#startDate').val();
-                const endDateInput = $('#endDate').val();  
+                const endDateInput = $('#endDate').val();
 
                 const chartOfAccountId = $('#TellerChartOfAccountId').val();
                 const postingPeriodId = $('#PostingPeriodId').val();
@@ -1676,7 +1692,7 @@
     $(document).ready(function () {
 
         $('#refreshButton').on('click', function () {
-          
+
             $('#tellerGlTable').DataTable().ajax.reload();
             $('#startDate').val('');
             $('#endDate').val('');
@@ -1741,14 +1757,14 @@
         $(document).ready(function () {
             function updateNewAvailableBalance(isDeposit, valueFieldId) {
 
-              
-        
+
+
                 let tellerBookBalance = parseFloat($('#TellerBookBalance').val());
 
                 let customerAccountAvailableBalance = parseFloat($('#CustomerAccountAvailableBalance').val()) || 0;
 
                 const customerAccountBookBalance = parseFloat($('#CustomerAccountBookBalance').val()) || 0;
- 
+
                 let value = parseFloat($(valueFieldId).val()) || 0;
                 let newCustomerBalance = customerAccountAvailableBalance;
                 let newTellerBalance = tellerBookBalance;
@@ -1781,7 +1797,7 @@
             });
         });
     </script>
-      
+
 
 
 
@@ -1895,71 +1911,85 @@
         $(document).ready(function () {
 
             $('#submitButton').click(function (e) {
-
                 e.preventDefault();
-                var payeeValue = $('#PaymentVoucherPayee').val();
 
-                var selectedPayables = [];
+                // Display the SweetAlert confirmation prompt
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to proceed with the submission?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!',
+                    cancelButtonText: 'No, go back'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If user confirms, proceed with submission
+                        var payeeValue = $('#PaymentVoucherPayee').val();
+                        var selectedPayables = [];
 
+                        // Gather selected ChequePayables (if any) only when relevant
+                        $('.payable-checkbox:checked').each(function () {
+                            var accountId = $(this).data('account-id'); // Get the 'data-account-id' attribute (customer account ID)
+                            console.log("pushing..", accountId);
+                            selectedPayables.push(accountId);
+                        });
 
-                // Gather selected ChequePayables (if any) only when relevant
-                $('.payable-checkbox:checked').each(function () {
-                    var accountId = $(this).data('account-id'); // Get the 'data-account-id' attribute (customer account ID)
-                    console.log("pushing..", accountId);
-                    selectedPayables.push(accountId); 
-                });
+                        var formData = $('#savingsReceiptsPaymentsForm').serialize();
 
-                var formData = $('#savingsReceiptsPaymentsForm').serialize();
+                        console.log("formdata is", formData);
 
-                console.log("formdata is", formData);
+                        if (selectedPayables.length > 0) {
+                            console.log(selectedPayables);
+                            formData += '&ChequePayableCustomerAccountIdsJson=' + encodeURIComponent(JSON.stringify(selectedPayables));
+                        } else {
+                            var transactionType = $('#CustomerAccount_Type').val();
 
-                if (selectedPayables.length > 0) {
-                    console.log(selectedPayables);
-                    formData += '&ChequePayableCustomerAccountIdsJson=' + encodeURIComponent(JSON.stringify(selectedPayables));
-                }
-
-                else {
-
-                    var transactionType = $('#CustomerAccount_Type').val();
-
-                    if (transactionType == 3) {
-
-                        alert("please select a cheque payable");
-
-                        return;
-                    }
-                }
-
-                $.ajax({
-                    url: $('#savingsReceiptsPaymentsForm').attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    dataType: 'json',
-                    success: function (response) {
-                        console.log("Response received:", response);
-                        console.log("Response successs?:", response.success);
-
-                        if (response.success) {
-                            console.log("Teller book balance:", response.TellerBookBalance);
-                            $('#TellerBookBalance').val(response.TellerBookBalance);
-                            $('.payable-checkbox').prop('checked', false);
+                            if (transactionType == 3) {
+                                Swal.fire('Error', 'Please select a cheque payable.', 'error');
+                                return;
+                            }
                         }
 
-                        // Reload DataTable and reset fields in all cases
-                        $('#tellerGlTable').DataTable().ajax.reload();
-                        resetAllFields();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error occurred:", error);
-                        alert("An error occurred while processing the request. Please try again.");
+                        $.ajax({
+                            url: $('#savingsReceiptsPaymentsForm').attr('action'),
+                            type: 'POST',
+                            data: formData,
+                            dataType: 'json',
+                            success: function (response) {
+                                console.log("Response received:", response);
+                                console.log("Response success?:", response.success);
 
-                        // Ensure checkboxes are reset even on error
-                        $('.payable-checkbox').prop('checked', false);
+                                if (response.success) {
+                                    console.log("Teller book balance:", response.TellerBookBalance);
+                                    $('#TellerBookBalance').val(response.TellerBookBalance);
+                                    $('.payable-checkbox').prop('checked', false);
+
+                                    // Show success message
+                                    Swal.fire('Success', 'Form submitted successfully.', 'success');
+                                }
+
+                                // Reload DataTable and reset fields in all cases
+                                $('#tellerGlTable').DataTable().ajax.reload();
+                                resetAllFields();
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error occurred:", error);
+                                Swal.fire('Error', 'An error occurred while processing the request. Please try again.', 'error');
+
+                                // Ensure checkboxes are reset even on error
+                                $('.payable-checkbox').prop('checked', false);
+                            }
+                        });
+                    } else {
+                        // If user cancels, simply return to the form
+                        console.log("Submission cancelled by user.");
                     }
                 });
-
             });
         });
+
 
     </script>
 
@@ -2040,19 +2070,19 @@
                     if (data) {
 
                         var accountType = data.CustomerAccountTypeProductCode;
-                       
+
                         if (accountType != 1) {
-               
+
                             $('#CustomerAccountAvailableBalance').closest('.form-group').hide();
                             $('#CustomerAccountNewAvailableBalance').closest('.form-group').hide();
 
-                  
+
                             $('#CustomerAccountBookBalance').closest('.col-md-4').removeClass('col-md-4').addClass('col-md-12');
                         } else {
 
                             $('#CustomerAccountBookBalance').closest('.col-md-12').removeClass('col-md-12').addClass('col-md-4');
 
-           
+
                             $('#CustomerAccountAvailableBalance').closest('.form-group').show();
                             $('#CustomerAccountNewAvailableBalance').closest('.form-group').show();
                         }
@@ -2273,8 +2303,39 @@
 
     <script>
         $(document).ready(function () {
+            function getTransactionType(target) {
+                const transactionMap = {
+                    '#cashDeposit': 'Cash Deposit',
+                    '#cashWithdrawal': 'Cash Withdrawal',
+                    '#chequeDeposit': 'Cheque Deposit',
+                    '#paymentVoucher': 'Payment Voucher',
+                };
+                return transactionMap[target] || 'Cash Deposit';
+            }
+
+            function updateChargesTable(commissions, transactionType) {
+                if (commissions && commissions.length > 0) {
+                    let tableBody = commissions.map(commission => `
+                <tr>
+                    <td>${commission.Description || 'N/A'}</td>
+                    <td>${commission.MaximumCharge || 'N/A'}</td>
+                    <td>${commission.ExtendedChargeBenefactorDescription || 'N/A'}</td>
+                </tr>
+            `).join('');
+                    $('#chargesLevies tbody').html(tableBody);
+                } else {
+                    $('#chargesLevies tbody').html(`<tr><td colspan="3">No charges available for ${transactionType.toLowerCase()}</td></tr>`);
+                }
+            }
+
+
 
             function handleTabClick(target) {
+                if (target === '#chargesLevies') {
+                    // Skip fetching charges for the chargesLevies tab
+                    return;
+                }
+
                 if (target) {
                     // Switch active tabs
                     $('.inner-tab-pane').removeClass('active');
@@ -2283,27 +2344,10 @@
                     $('a[href="' + target + '"]').addClass('active');
 
                     // Derive transaction type from target ID
-                    var transactionType = '';
-                    switch (target) {
-                        case '#cashDeposit':
-                            transactionType = 'Cash Deposit';
-                            break;
-                        case '#cashWithdrawal':
-                            transactionType = 'Cash Withdrawal';
-                            break;
-                        case '#chequeDeposit':
-                            transactionType = 'Cheque Deposit';
-                            break;
-                        case '#paymentVoucher':
-                            transactionType = 'Payment Voucher';
-                            break;
-                        default:
-                            transactionType = 'Cash Deposit';
-                    }
+                    var transactionType = getTransactionType(target);
 
                     var formData = $('#savingsReceiptsPaymentsForm').serialize();
 
-   
                     // Call the FetchKnownCharges method via AJAX
                     $.ajax({
                         url: '/CashDeposit/FetchKnownCharges',
@@ -2316,26 +2360,7 @@
                             if (response.success) {
                                 var commissions = response.data;
 
-                                if (commissions && commissions.length > 0) {
-                                    var tableBody = '';
-                                    $.each(commissions, function (index, commission) {
-                                        tableBody += '<tr>' +
-                                            '<td>' + (commission.Description || 'N/A') + '</td>' +
-                                            '<td>' + (commission.MaximumCharge || 'N/A') + '</td>' +
-                                            '<td>' + (commission.ExtendedChargeBenefactorDescription || 'N/A') + '</td>' +
-                                            '</tr>';
-                                    });
-
-                                    $('#chargesLevies tbody').html(tableBody);
-                                } else {
-                                    if (target === '#chargesLevies') {
-                                        target = '#cashDeposit'
-                                    }
-                         
-                                    var transactionType = target.replace('#', '').replace(/([A-Z])/g, ' $1').toLowerCase();
-                                    var noDataMessage = 'No charges available for ' + transactionType;
-                                    $('#chargesLevies tbody').html('<tr><td colspan="3">' + noDataMessage + '</td></tr>');
-                                }
+                                updateChargesTable(commissions, transactionType);
                             } else {
                                 alert("Error: " + response.message);
                             }
@@ -2344,9 +2369,9 @@
                             alert("An error occurred while fetching charges: " + error);
                         }
                     });
-
                 }
             }
+
 
             // Bind click events to the inner-nav-link elements
             $('.inner-nav-link').on('click', function (e) {

@@ -443,39 +443,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         private async Task<TellerDTO> GetCurrentTeller()
         {
 
+
+            bool includeBalance = true;
             // Get the current user
             var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-
-            var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
-            var targetCustomer = customers?.FirstOrDefault(c => c.AddressEmail == user.Email);
-
-            if (targetCustomer == null)
-            {
-                TempData["Error"] = "Customer not found.";
-                return null;
-            }
-
-            var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
-            SelectedEmployee = employees?.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
-
-            if (SelectedEmployee == null)
-            {
-                TempData["Error"] = "Employee not found for the customer.";
-                return null;
-            }
-
-            var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, true, GetServiceHeader());
+            var teller = await _channelService.FindTellerByEmployeeIdAsync((Guid)user.EmployeeId, includeBalance, GetServiceHeader());
 
             if (teller == null)
             {
                 TempData["Missing Teller"] = "You are working without a Recognized Teller";
             }
-
-            var generalLedgerAccount = await _channelService.FindGeneralLedgerAccountAsync((Guid)teller.ChartOfAccountId, true, GetServiceHeader());
-
-            teller.BookBalance = generalLedgerAccount.Balance;
-
 
             return teller;
 

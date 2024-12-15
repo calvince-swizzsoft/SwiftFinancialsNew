@@ -93,7 +93,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
             var results=  await _channelService.AddSavingsProductAsync(savingsProductDTO, GetServiceHeader());
 
-                await _channelService.UpdateCommissionsBySavingsProductIdAsync(results.Id, commissionDTOs,2,1,GetServiceHeader());
+                await _channelService.UpdateCommissionsBySavingsProductIdAsync(results.Id, commissionDTOs,savingsProductDTO.ChargeType,savingsProductDTO.ChargeBenefactor,GetServiceHeader());
                 TempData["AlertMessage"] = "Savings Product created successfully";
 
                 return RedirectToAction("Index");
