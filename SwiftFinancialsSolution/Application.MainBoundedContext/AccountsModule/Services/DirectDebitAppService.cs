@@ -63,7 +63,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     if (matchedDirectDebit != null && matchedDirectDebit.Any())
                     {
                         //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
-                        directDebitDTO.ErrorMessageResult = string.Format("Sorry, but Direct Debit \"{0}\" already exists!", directDebitDTO.Description.ToUpper());
+                        directDebitDTO.ErrorMessageResult = string.Format("Sorry, but Direct Debit {0} already exists!", directDebitDTO.Description.ToUpper());
                         return directDebitDTO;
                     }
                     else

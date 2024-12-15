@@ -40,7 +40,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Product")]
-        [ValidGuid]
         public Guid CustomerAccountTypeTargetProductId { get; set; }
 
         [DataMember]
@@ -131,5 +130,43 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         public string ErrorMessageResult { get; set; }
+
+        [DataMember]
+        [Display(Name = "Section")]
+        public int LoanRegistrationLoanProductSection { get; set; }
+
+        [DataMember]
+        [Display(Name = "Section")]
+        public string LoanRegistrationLoanProductSectionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LoanProductSection), LoanRegistrationLoanProductSection) ? EnumHelper.GetDescription((LoanProductSection)LoanRegistrationLoanProductSection) : string.Empty;
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Product")]
+        public Guid LoanCustomerAccountTypeTargetProductId { get; set; }
+        [DataMember]
+        [Display(Name = "Product Name")]
+        public string LoanCustomerAccountTypeTargetProductDescription { get; set; }
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public int LoanCustomerAccountTypeTargetProductCode { get; set; }
+
+
+
+
+        [DataMember]
+        [Display(Name = "Product")]
+        public Guid InvestmentCustomerAccountTypeTargetProductId { get; set; }
+        [DataMember]
+        [Display(Name = "Product Name")]
+        public string InvestmentCustomerAccountTypeTargetProductDescription { get; set; }
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public int InvestmentCustomerAccountTypeTargetProductCode { get; set; }
+
     }
 }
