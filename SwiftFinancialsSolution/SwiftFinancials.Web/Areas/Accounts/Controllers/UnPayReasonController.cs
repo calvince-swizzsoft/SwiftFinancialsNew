@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using Application.MainBoundedContext.DTO;
+﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -9,24 +8,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using SwiftFinancials.Web.Controllers;
-using SwiftFinancials.Web.Helpers;
-using Application.MainBoundedContext.DTO;
-using Application.MainBoundedContext.DTO.AccountsModule;
-using Application.MainBoundedContext.DTO.FrontOfficeModule;
-using System.Threading.Tasks;
-using Application.MainBoundedContext.DTO.AdministrationModule;
-using Application.MainBoundedContext.DTO.HumanResourcesModule;
-using Application.MainBoundedContext.DTO.RegistryModule;
-using Infrastructure.Crosscutting.Framework.Utils;
-using SwiftFinancials.Presentation.Infrastructure.Models;
-using System.Windows.Forms;
-using Microsoft.AspNet.Identity;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
@@ -126,8 +107,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             );
         }
 
-
-
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -135,9 +114,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var unPayReasonDTO = await _channelService.FindUnPayReasonAsync(id, GetServiceHeader());
 
             var applicableCharges = await _channelService.FindCommissionsByUnPayReasonIdAsync(id, GetServiceHeader());
+            var commissions = await _channelService.FindCommissionsAsync(GetServiceHeader());
 
-            ViewBag.applicableCharges = applicableCharges;
+            var applicableChargeIds = new HashSet<Guid>(applicableCharges.Select(ac => ac.Id));
 
+            ViewBag.CheckedStates = commissions.ToDictionary(
+                c => c.Id,
+                c => applicableChargeIds.Contains(c.Id) 
+            );
+
+            ViewBag.Commissions = commissions;
             return View(unPayReasonDTO);
         }
 
