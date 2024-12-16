@@ -120,7 +120,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.CheckedStates = commissions.ToDictionary(
                 c => c.Id,
-                c => applicableChargeIds.Contains(c.Id) 
+                c => applicableChargeIds.Contains(c.Id)
             );
 
             ViewBag.Commissions = commissions;
@@ -190,17 +190,43 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var unPayReasonDTO = await _channelService.FindUnPayReasonAsync(id, GetServiceHeader());
 
+            var applicableCharges = await _channelService.FindCommissionsByUnPayReasonIdAsync(id, GetServiceHeader());
+            var commissions = await _channelService.FindCommissionsAsync(GetServiceHeader());
+
+            var applicableChargeIds = new HashSet<Guid>(applicableCharges.Select(ac => ac.Id));
+
+            ViewBag.CheckedStatesEdit = commissions.ToDictionary(
+                c => c.Id,
+                c => applicableChargeIds.Contains(c.Id)
+            );
+
+            ViewBag.CommissionsEdit = commissions;
             return View(unPayReasonDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(UnPayReasonDTO unpayReasonDTO, ObservableCollection<CommissionDTO> selectedRows)
+        public async Task<ActionResult> Edit(UnPayReasonDTO unpayReasonDTO, string SelectedIds)
         {
+            var commissions = new ObservableCollection<CommissionDTO>();
+
+            var ids = SelectedIds.Split(',').Select(Guid.Parse).ToList();
+
+            if (ids != null)
+            {
+                foreach (var commission in ids)
+                {
+                    var foundCommission = await _channelService.FindCommissionAsync(commission, GetServiceHeader());
+                    commissions.Add(foundCommission);
+                }
+            }
+
+
             if (!unpayReasonDTO.HasErrors)
             {
                 await _channelService.UpdateUnPayReasonAsync(unpayReasonDTO, GetServiceHeader());
 
-                await _channelService.UpdateCommissionsByUnPayReasonIdAsync(unpayReasonDTO.Id, selectedRows);
+                if (SelectedIds != null)
+                    await _channelService.UpdateCommissionsByUnPayReasonIdAsync(unpayReasonDTO.Id, commissions);
 
                 TempData["Edit"] = "Unpay Reason Edited Successfully";
 
@@ -213,8 +239,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(unpayReasonDTO);
             }
         }
-
-
     }
 }
 
