@@ -25,26 +25,42 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindDirectDebitsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindDirectDebitsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(commission => commission.CreatedDate).ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<DirectDebitDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<DirectDebitDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
 
@@ -202,20 +218,31 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     return View();
                 }
 
+                Session["savingsProductId"] = null;
+                Session["loanProductId"] = null;
+                Session["investmentProductId"] = null;
                 Session.Clear();
+
                 TempData["Create"] = "Done";
 
                 return RedirectToAction("Index");
             }
             else
             {
+                Session["savingsProductId"] = null;
+                Session["loanProductId"] = null;
+                Session["investmentProductId"] = null;
+                Session.Clear();
+
                 var errorMessages = directDebitDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
 
                 ViewBag.ProductCode = GetProductCodeSelectList(directDebitDTO.CustomerAccountTypeProductCodeDescription.ToString());
                 ViewBag.ChargeType = GetChargeTypeSelectList(directDebitDTO.ChargeType.ToString());
                 ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(directDebitDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
-                TempData["CreateError"] = "Failed to create Direct Debit";
+                TempData["CreateError"] = "Failed to create Direct Debit: " + errorMessage;
 
                 return View(directDebitDTO);
             }
@@ -225,21 +252,38 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var directDebitDTO = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
+            var findDirectDebits = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
+            var directDebit = findDirectDebits.SingleOrDefault(dd => dd.Id == id);
 
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
 
-            return View(directDebitDTO);
+            return View(directDebit);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, DirectDebitDTO directDebitDTO)
         {
-            if (ModelState.IsValid)
+            await ServeNavigationMenus();
+
+            if (Session["savingsProductId"] != null)
+                directDebitDTO.CustomerAccountTypeTargetProductId = (Guid)Session["savingsProductId"];
+            if (Session["loanProductId"] != null)
+                directDebitDTO.CustomerAccountTypeTargetProductId = (Guid)Session["loanProductId"];
+            if (Session["investmentProductId"] != null)
+                directDebitDTO.CustomerAccountTypeTargetProductId = (Guid)Session["investmentProductId"];
+
+
+            if (!directDebitDTO.HasErrors)
             {
                 await _channelService.UpdateDirectDebitAsync(directDebitDTO, GetServiceHeader());
+
+                Session["savingsProductId"] = null;
+                Session["loanProductId"] = null;
+                Session["investmentProductId"] = null;
+                Session.Clear();
 
                 TempData["Edit"] = "Successfully Edited Direct Debit";
 
@@ -247,21 +291,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
+                Session["savingsProductId"] = null;
+                Session["loanProductId"] = null;
+                Session["investmentProductId"] = null;
+                Session.Clear();
+
+                var errorMessages = directDebitDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
                 ViewBag.ProductCode = GetProductCodeSelectList(directDebitDTO.CustomerAccountTypeProductCode.ToString());
                 ViewBag.ChargeType = GetChargeTypeSelectList(directDebitDTO.ChargeType.ToString());
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(directDebitDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
-                TempData["EditError"] = "Failed to Edit Direct Debit";
+                TempData["EditError"] = "Failed to Edit Direct Debit: " + errorMessage;
 
                 return View(directDebitDTO);
             }
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetDirectDebitsAsync()
-        {
-            var directDebitsDTOs = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
-
-            return Json(directDebitsDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }

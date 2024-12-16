@@ -57,6 +57,20 @@
                         </script>
                     }
 
+                     @if (TempData["CreateError"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["CreateError"]',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
