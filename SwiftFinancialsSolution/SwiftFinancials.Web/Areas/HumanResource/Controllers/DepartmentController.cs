@@ -131,7 +131,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                     MessageBox.Show(
                         "An error occurred while creating the department. Please try again.",
-                        "Customer Receipts",
+                        "Department Management",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error,
                         MessageBoxDefaultButton.Button1,
@@ -145,7 +145,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 MessageBox.Show(
                     $"Validation Errors: {errorMessages}",
-                    "Customer Receipts",
+                    "Department Management",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning,
                     MessageBoxDefaultButton.Button1,
@@ -179,7 +179,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                     MessageBox.Show(
                         "Operation Success: Department updated successfully!",
-                        "Customer Receipts",
+                        "Department Management",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information,
                         MessageBoxDefaultButton.Button1,

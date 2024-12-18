@@ -126,6 +126,20 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         }
 
         [DataMember]
+        [Display(Name = "Known ChargeType")]
+        public int KnownChargeType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Known ChargeType")]
+        public string KnownChargeTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LoanProductKnownChargeType), KnownChargeType) ? EnumHelper.GetDescription((LoanProductKnownChargeType)KnownChargeType) : string.Empty;
+            }
+        }
+
+        [DataMember]
         [Display(Name = "System Transaction Type")]
         public int SystemTransactionType { get; set; }
 

@@ -236,8 +236,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 await _channelService.AddEmployeeAsync(employeeBindingModel, GetServiceHeader());
                 MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
+                                                             "Operation Success; Employee Added Successful",
+                                                             "Success",
                                                              MessageBoxButtons.OK,
                                                              MessageBoxIcon.Information,
                                                              MessageBoxDefaultButton.Button1,
@@ -280,8 +280,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 await _channelService.UpdateEmployeeAsync(employeeBindingModel, GetServiceHeader());
                 MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
+                                                             "Operation Success: Employee Updated",
+                                                             "Successs",
                                                              MessageBoxButtons.OK,
                                                              MessageBoxIcon.Information,
                                                              MessageBoxDefaultButton.Button1,

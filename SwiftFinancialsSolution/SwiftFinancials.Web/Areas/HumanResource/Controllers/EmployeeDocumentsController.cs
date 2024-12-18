@@ -270,13 +270,13 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 bool success = await _channelService.UpdateEmployeeDocumentAsync(employeeDocumentDTO, GetServiceHeader());
                 MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                    "Operation Success",
+                    "Employee Documents",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
 
                 if (success)
                 {

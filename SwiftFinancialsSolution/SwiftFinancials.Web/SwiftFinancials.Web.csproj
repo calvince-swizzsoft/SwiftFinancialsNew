@@ -1542,6 +1542,7 @@
     <Content Include="Areas\HumanResource\Views\PeriodClosings\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslip.cshtml" />
     <Content Include="Areas\HumanResource\Views\PeriodClosings\Close.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\_PaySlipEntries.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
