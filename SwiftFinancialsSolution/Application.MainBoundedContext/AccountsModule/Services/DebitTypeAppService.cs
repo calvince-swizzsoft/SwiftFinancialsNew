@@ -70,7 +70,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     if (matcheddebitType != null && matcheddebitType.Any())
                     {
                         //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
-                        debitTypeDTO.ErrorMessageResult = string.Format("Sorry, but Commission \"{0}\" already exists!", debitTypeDTO.Description.ToUpper());
+                        debitTypeDTO.ErrorMessageResult = string.Format("Sorry, but Debit Type {0} already exists!", debitTypeDTO.Description.ToUpper());
                         return debitTypeDTO;
                     }
                     else
