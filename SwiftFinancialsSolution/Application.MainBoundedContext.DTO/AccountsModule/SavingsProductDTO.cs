@@ -1,6 +1,7 @@
 ﻿using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Extensions;
+using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -133,5 +134,36 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public bool ThrottleOverTheCounterWithdrawals { get; set; }
 
         public CustomerAccountDTO Accounts { get; set; }
+
+
+
+        [DataMember]
+        [Display(Name = "Charge Born By")]
+        public int ChargeBenefactor { get; set; }
+
+        [DataMember]
+        [Display(Name = "Charge Born By")]
+        public string ChargeBenefactorDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(ChargeBenefactor), ChargeBenefactor) ? EnumHelper.GetDescription((ChargeBenefactor)ChargeBenefactor) : string.Empty;
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Charge Type")]
+        public int ChargeType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Charge Type")]
+        public string ChargeTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(ChargeType), ChargeType) ? EnumHelper.GetDescription((ChargeType)ChargeType) : string.Empty;
+            }
+        }
+
     }
 }

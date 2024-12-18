@@ -60,6 +60,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            ViewBag.Commisions = commissionDTOs;
             ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(string.Empty);
             ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
@@ -70,16 +72,38 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(DynamicChargeDTO levyDTO,CustomerAccountDTO customerAccountDTO, ObservableCollection<CommissionDTO> selectedRows)
+        public async Task<ActionResult> Create(DynamicChargeDTO levyDTO, string[] commisionIds)
         {
+            var commissionList = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            ViewBag.Commisions = commissionList;
+            ObservableCollection<CommissionDTO> commissionDTOs = new ObservableCollection<CommissionDTO>();
+            var selectedIds = commisionIds.Select(Guid.Parse).ToList();
+            // var commissions = new ObservableCollection<CommissionDTO>(selectedIds.Select(rowId => new CommissionDTO { Id = rowId }));
+
+
+            foreach (var commisionid in selectedIds)
+            {
+                var commission = await _channelService.FindCommissionAsync(commisionid, GetServiceHeader());
+                commissionDTOs.Add(commission);
+            }
             levyDTO.ValidateAll();
             
             if (!levyDTO.HasErrors)
             {
-                await _channelService.ComputeTariffsByTextAlertAsync(levyDTO.RecoverySource,customerAccountDTO.TotalValue,customerAccountDTO, GetServiceHeader());
+                //UpdateCommissionsBySystemTransactionCodeAsync
+                await _channelService.UpdateCommissionsBySystemTransactionCodeAsync(levyDTO.RecoveryMode, commissionDTOs, levyDTO.RecoverySource,GetServiceHeader());
                 TempData["Successfully"] = "Successfully Text Alart Charges";
+            
+                var commissions = await _channelService.FindCommissionsAsync(GetServiceHeader());
+                ViewBag.Commisions = commissions;
+                ViewBag.SystemTransactionType = GetSystemTransactionTypeList(levyDTO.RecoverySource.ToString());
+
+                ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoverySource.ToString());
+                ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.RecoverySource.ToString());
+                ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoverySource.ToString());
+                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
                 await ServeNavigationMenus();
-                return RedirectToAction("Create");
+                return View("Create");
             }
             else
             {

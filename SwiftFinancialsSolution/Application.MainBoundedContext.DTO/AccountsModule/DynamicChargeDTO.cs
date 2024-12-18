@@ -19,7 +19,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Name")]
-        [Required]
         public string Description { get; set; }
 
         [DataMember]

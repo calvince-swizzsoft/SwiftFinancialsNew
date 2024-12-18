@@ -1045,8 +1045,6 @@
                         $('#CustomerReference3').val(response.data.CustomerReference3);
                         $('#Remarks').val(response.data.Remarks);
 
-                        $('#customerLookupModal').modal('hide');
-
                         //Loans Guaranteed
                         var loansGuaranteed = response.data.LoansGuaranteed;
                         const nodataLoansGuaranteedDataMessage = document.querySelector('.no-dataLoansGuaranteed-message');
@@ -1084,8 +1082,6 @@
                                     selectedIdsField.value = selectedIds.join(',');
                                 }
                             });
-
-                            $('#customerLookupModal').modal('hide');
                         }
 
 
@@ -1113,7 +1109,6 @@
                                     '</tr>';
                                 tbody.append(row);
                             });
-                            $('#customerLookupModal').modal('hide');
                         }
 
 
@@ -1141,7 +1136,6 @@
                                     '</tr>';
                                 tbody.append(row);
                             });
-                            $('#customerLookupModal').modal('hide');
                         }
 
 
@@ -1169,10 +1163,9 @@
                                     '</tr>';
                                 tbody.append(row);
                             });
-                            $('#customerLookupModal').modal('hide');
                         }
 
-                        $('#customerLookupModal').modal('hide');
+                        $('#CustomerLookupModal').modal('hide');
                     } else {
                         alert(response.message);
                     }
