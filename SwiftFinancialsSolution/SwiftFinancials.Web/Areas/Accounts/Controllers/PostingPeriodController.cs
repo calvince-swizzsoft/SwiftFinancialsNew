@@ -67,14 +67,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(PostingPeriodDTO postingPeriodDTO)
         {
-            var startDate = Request["startDate"];
-
-            var endDate = Request["endDate"];
-
-            postingPeriodDTO.DurationStartDate = DateTime.Parse(startDate).Date;
-
-            postingPeriodDTO.DurationEndDate = DateTime.Parse(endDate).Date;
-
+            
             postingPeriodDTO.ValidateAll();
 
             if (!postingPeriodDTO.HasErrors)
@@ -104,13 +97,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, PostingPeriodDTO postingPeriodDTO)
         {
-            var startDate = Request["startDate"];
-
-            var endDate = Request["endDate"];
-
-            postingPeriodDTO.DurationStartDate = DateTime.Parse(startDate).Date;
-
-            postingPeriodDTO.DurationEndDate = DateTime.Parse(endDate).Date;
+            
             if (!postingPeriodDTO.HasErrors)
             {
                 await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO.MapTo<PostingPeriodDTO>(), GetServiceHeader());

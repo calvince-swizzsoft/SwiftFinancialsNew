@@ -21,38 +21,39 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Debit Type</h2>
+                    <h2>Debit Types</h2>
                     <hr />
                     @Html.ActionLink("Create Debit Type", "Create", "DebitType", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
-                    <br />
-                    <br />
 
                     @if (TempData["Create"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Create"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Completed Successfully.',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
                     }
 
                     @if (TempData["Edit"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Edit"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Completed Successfully.',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
                     }
+
 
                     <div class="ibox-tools">
                         <a class="collapse-link">

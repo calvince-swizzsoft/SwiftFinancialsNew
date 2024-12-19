@@ -2,6 +2,7 @@
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Microsoft.AspNet.Identity;
 using SwiftFinancials.Presentation.Infrastructure.Models;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -386,27 +387,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             //return RedirectToAction("Create");
             //return Json(new { success = true, message = "Operation Success" });
         }
-
-        private async Task<TellerDTO> FindTellerWithRequestDTO(CashDepositRequestDTO cashDepositRequestDTO)
-        {
-            var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
-            var customerToDebit = customers.FirstOrDefault(c => c.AddressEmail == cashDepositRequestDTO.CreatedBy);
-            var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
-            var targetEmployee = employees.FirstOrDefault(e => e.CustomerId == customerToDebit.Id);
-            var tellerToDebit = await _channelService.FindTellerByEmployeeIdAsync(targetEmployee.Id, true, GetServiceHeader());
-
-            return tellerToDebit;
-        }
+ 
 
         private async Task<TellerDTO> FindTellerWithRequestDTO(CashWithdrawalRequestDTO cashWithdrawalRequestDTO)
         {
-            var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
-            var customerToDebit = customers.FirstOrDefault(c => c.AddressEmail == cashWithdrawalRequestDTO.CreatedBy);
-            var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
-            var targetEmployee = employees.FirstOrDefault(e => e.CustomerId == customerToDebit.Id);
-            var tellerToDebit = await _channelService.FindTellerByEmployeeIdAsync(targetEmployee.Id, true, GetServiceHeader());
+
+            bool includeBalance = true;
+            // Get the current user
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            var tellerToDebit = await _channelService.FindTellerByEmployeeIdAsync((Guid)user.EmployeeId, includeBalance, GetServiceHeader());
+
+            if (tellerToDebit == null)
+            {
+                TempData["Missing Teller to Debit"] = "You are working without a Recognized Teller";
+            }
 
             return tellerToDebit;
+ 
         }
 
 

@@ -100,15 +100,15 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 await _channelService.AddEmployeeTypeAsync(employeeTypeDTO, GetServiceHeader());
                 MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                    "Operation Success",
+                    "Employee Documents",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
 
-                
+
 
                 return RedirectToAction("Index");
             }
@@ -137,13 +137,13 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 await _channelService.UpdateEmployeeTypeAsync(employeeTypeBindingModel, GetServiceHeader());
                 MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                    "Operation Success",
+                    "Employee Documents",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.ServiceNotification
+                );
                 ViewBag.EmployeeCategorySelectList = GetEmployeeCategorySelectList(employeeTypeBindingModel.Category.ToString());
                 TempData["SuccessMessage"] = "EmployeeType Updated Successfully!!";
 

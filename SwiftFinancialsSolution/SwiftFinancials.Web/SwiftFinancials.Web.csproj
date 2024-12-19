@@ -540,8 +540,6 @@
     <Compile Include="Areas\Accounts\Controllers\GLAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\IndefiniteChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InterAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\IntraAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
@@ -1126,9 +1124,6 @@
     <Content Include="Areas\Accounts\Views\UnPayReason\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\UnPayReason\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\UnPayReason\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Create.cshtml" />
@@ -1137,7 +1132,6 @@
     <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
@@ -1542,6 +1536,7 @@
     <Content Include="Areas\HumanResource\Views\PeriodClosings\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslip.cshtml" />
     <Content Include="Areas\HumanResource\Views\PeriodClosings\Close.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\_PaySlipEntries.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

@@ -234,13 +234,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 if (loansGuaranteedIds == string.Empty || loansGuaranteedIds == "")
                 {
-                    TempData["EmptyLoansGuaranteedIds"] = "Select at least one Loan Guaranteed complete Guarantor Substitution!";
+                    TempData["EmptyLoansGuaranteedIds"] = "Null";
                     return View();
                 }
 
                 if (loanCaseDTO.CustomerId == Guid.Empty || loanCaseDTO.GuarantorId == Guid.Empty)
                 {
-                    TempData["CustomerGuarantorEmpty"] = "Customer and Substitute Guarantor required to complete Guarantor Substitution!";
+                    TempData["CustomerGuarantorEmpty"] = "Null";
                     return View();
                 }
 
@@ -268,7 +268,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 }
 
                 await _channelService.SubstituteLoanGuarantorsAsync(loanCaseDTO.GuarantorId, LoanGuaranteedDetails, 1234, GetServiceHeader());
-                TempData["Success"] = "Operation Completed Successfully.";
+                TempData["Success"] = "Success";
                 return View();
             }
             catch (Exception ex)

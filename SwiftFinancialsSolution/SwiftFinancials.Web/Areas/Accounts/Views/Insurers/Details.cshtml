@@ -1,19 +1,16 @@
-﻿@model  Application.MainBoundedContext.DTO.AccountsModule.InsuranceCompanyDTO
-@{
-    ViewBag.Title = "Details";
-}
+﻿
 
-<h2>Details</h2>
+@model  Application.MainBoundedContext.DTO.AccountsModule.InsuranceCompanyDTO
 
 @{
-    ViewBag.Title = "Insurance Company Details";
+    /**/
+
+    ViewBag.Title = "Create Insurance Company";
 }
 
-<!-- _Layout.cshtml or individual views -->
-<link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
+    <div class="col-lg-12">
         <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -23,93 +20,88 @@
                 @Html.ActionLink("Home", "Index", "Insurers", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Details</strong>
+                <strong>Create</strong>
             </li>
         </ol>
     </div>
 </div>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>View Insurers</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
 
+                <div class="ibox-content bg-white">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                </div>
 
-<div>
-    <h3>View insurance Company</h3>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
+                                </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ChartOfAccountId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ChartOfAccountId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressAddressLine1)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AddressAddressLine1)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressAddressLine2)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AddressAddressLine2)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressStreet)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AddressStreet)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressPostalCode)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AddressPostalCode)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressLandLine)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AddressLandLine)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressEmail)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AddressEmail)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressCity)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AddressCity)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressMobileLine)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AddressMobileLine)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsLocked)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IsLocked)
-        </dd>
-       
-    </dl>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                </div>
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group form-group-lg">
+                                    @Html.DisplayFor(model => model.IsLocked)
+                                    @Html.DisplayNameFor(model => model.IsLocked)
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-
-    @{
-        var url = Url.Action("Index", "Insurers", new { Area = "Accounts" });
-    }
-    <a href="@url" class="btn btn-primary">Return To List</a>
-
-</div>
-

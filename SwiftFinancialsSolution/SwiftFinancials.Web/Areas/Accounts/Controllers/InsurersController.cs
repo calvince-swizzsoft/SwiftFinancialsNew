@@ -25,40 +25,45 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             int totalRecordCount = 0;
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
-            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
-
             var pageCollectionInfo = await _channelService.FindInsuranceCompaniesByFilterInPageAsync(
                 jQueryDataTablesModel.sSearch,
-                jQueryDataTablesModel.iDisplayStart,
-                jQueryDataTablesModel.iDisplayLength,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
             );
 
-            var data = new List<InsuranceCompanyDTO>();
-
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                var sortedPageCollection = sortAscending
-                    ? pageCollectionInfo.PageCollection.OrderBy(bankLinkage => bankLinkage.CreatedDate)
-                    : pageCollectionInfo.PageCollection.OrderByDescending(bankLinkage => bankLinkage.CreatedDate);
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .ToList();
 
-                data = sortedPageCollection.ToList();
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
-                    ? data.Count
+                    ? sortedData.Count
                     : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
 
-            return Json(new
-            {
-                draw = jQueryDataTablesModel.sEcho,
-                recordsTotal = totalRecordCount,
-                recordsFiltered = searchRecordCount,
-                data
-            });
+            return this.DataTablesJson(
+                items: new List<InsuranceCompanyDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -69,11 +74,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-
-        public async Task<ActionResult> Create(Guid? id, InsuranceCompanyDTO insuranceCompanyDTO)
+        public async Task<ActionResult> ChartOfAccountLookUp(Guid? id, InsuranceCompanyDTO insuranceCompanyDTO)
         {
             await ServeNavigationMenus();
-                    
+
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -89,20 +93,35 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 insuranceCompanyDTO.ChartOfAccountId = chartOfAccount.Id;
                 insuranceCompanyDTO.ChartOfAccountAccountName = chartOfAccount.AccountName;
 
-                Session["chartOfAccountId"] = insuranceCompanyDTO.ChartOfAccountId;
-                Session["chartOfAccountName"] = insuranceCompanyDTO.ChartOfAccountAccountName;
 
-                
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        ChartOfAccountId = insuranceCompanyDTO.ChartOfAccountId,
+                        ChartOfAccountAccountName = insuranceCompanyDTO.ChartOfAccountAccountName
+                    }
+                });
             }
+            return Json(new { success = false, message = "Product Not Found!" });
+        }
 
-            return View(insuranceCompanyDTO);
-            
+
+        public async Task<ActionResult> Create()
+        {
+            await ServeNavigationMenus();
+
+            return View();
+
         }
 
 
         [HttpPost]
         public async Task<ActionResult> Create(InsuranceCompanyDTO insuranceCompanyDTO)
         {
+            await ServeNavigationMenus();
+
             insuranceCompanyDTO.ValidateAll();
 
             if (!insuranceCompanyDTO.HasErrors)
@@ -111,19 +130,20 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 TempData["AlertMessage"] = "Insurance Company created successfully";
 
-                TempData["RefreshPage"] = true;
-
                 return RedirectToAction("Index");
             }
             else
             {
+                await ServeNavigationMenus();
                 var errorMessages = insuranceCompanyDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
 
-                TempData["RefreshPage"] = true;
-
+                TempData["CreateError"] = "Operation Failed: " + errorMessage;
                 return View(insuranceCompanyDTO);
             }
         }
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -134,11 +154,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(insuranceCompanyDTO);
         }
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, InsuranceCompanyDTO insuranceCompanyDTO)
         {
-            if (ModelState.IsValid)
+            await ServeNavigationMenus();
+            if (!insuranceCompanyDTO.HasErrors)
             {
                 await _channelService.UpdateInsuranceCompanyAsync(insuranceCompanyDTO, GetServiceHeader());
 
@@ -148,21 +171,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
-                TempData["editError"] = "Failed to Update Insurace Company ";
+                await ServeNavigationMenus();
+                var errorMessages = insuranceCompanyDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
+                TempData["editError"] = "Operation Failed: " + errorMessage;
 
                 return View(insuranceCompanyDTO);
             }
         }
-
-        [HttpGet]
-        public async Task<JsonResult> GetInsuranceCompanyAsync()
-        {
-            var insuranceCompanyDTOs = await _channelService.FindInsuranceCompaniesAsync(GetServiceHeader());
-
-            return Json(insuranceCompanyDTOs, JsonRequestBehavior.AllowGet);
-        }
-
-
-
     }
 }
