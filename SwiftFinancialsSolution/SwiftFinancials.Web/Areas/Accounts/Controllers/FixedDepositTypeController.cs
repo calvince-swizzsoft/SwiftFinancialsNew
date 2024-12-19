@@ -51,6 +51,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(id, GetServiceHeader());
+            var AttachedloanProduct = await _channelService.FindAttachedProductsByFixedDepositTypeIdAsync(id, GetServiceHeader());
+            var ApplicableLevies = await _channelService.FindLeviesByFixedDepositTypeIdAsync(id, GetServiceHeader());
+
+            ViewBag.ApplicableLevies = ApplicableLevies;
+            ViewBag.AttachedloanProduct = AttachedloanProduct.LoanProductCollection;
 
             return View(fixedDepositTypeDTO);
         }
@@ -58,39 +63,54 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create(Guid? Id)
         {
             await ServeNavigationMenus();
-
-            Guid parseId;
-
-            if (Id == Guid.Empty || !Guid.TryParse(Id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            var loanProduct = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
-
-
-            FixedDepositTypeDTO loanProductDTO = new FixedDepositTypeDTO();
-
-            if (loanProduct != null)
-            {
-                loanProductDTO.Months = loanProduct.LoanRegistrationTermInMonths;
-                //loanProductDTO.] = loanProduct.Id;
-                //loanProductDTO.EnforceMonthValueDate = loanProduct.Id;
-                //loanProductDTO.InterestChargedChartOfAccountId = loanProduct.Id;
-                //loanProductDTO.InterestReceivedChartOfAccountAccountName = loanProduct.AccountName;
-            }
+            var AttachedloanProduct = await _channelService.FindLoanProductsAsync(GetServiceHeader());
+            ViewBag.AttachedloanProduct = AttachedloanProduct;
+            var ApplicableLevies = await _channelService.FindLeviesAsync(GetServiceHeader());
+            ViewBag.ApplicableLevies = ApplicableLevies;
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(FixedDepositTypeDTO fixedDepositTypeDTO, ObservableCollection<LevyDTO> selectedRows)
+        public async Task<ActionResult> Create(FixedDepositTypeDTO fixedDepositTypeDTO, string[] commisionIds, string[] ExcemptedommisionId)
         {
             fixedDepositTypeDTO.ValidateAll();
             bool enforceFixedDepositBands = false;
+
+            ObservableCollection<LevyDTO> levyDTOs = new ObservableCollection<LevyDTO>();
+
+            if (ExcemptedommisionId != null && ExcemptedommisionId.Any())
+            {
+                var selectedIds = ExcemptedommisionId.Select(Guid.Parse).ToList();
+
+                foreach (var commisionid in selectedIds)
+                {
+                    var commission = await _channelService.FindLevyAsync(commisionid, GetServiceHeader());
+                    levyDTOs.Add(commission);
+                }
+                // Process the selected IDs as needed
+            }
+
+
+
+            List<LoanProductDTO> commissionDTOs = new List<LoanProductDTO>();
+            if (commisionIds != null && commisionIds.Any())
+            {
+                var selectedIds = commisionIds.Select(Guid.Parse).ToList();
+
+                foreach (var commisionid in selectedIds)
+                {
+                    var commission = await _channelService.FindLoanProductAsync(commisionid, GetServiceHeader());
+                    commissionDTOs.Add(commission);
+                }
+                // Process the selected IDs as needed
+            }
+
+            ProductCollectionInfo productCollectionInfo = new ProductCollectionInfo();
+            productCollectionInfo.LoanProductCollection = commissionDTOs;
             if (!fixedDepositTypeDTO.HasErrors)
             {
                 var result = await _channelService.AddFixedDepositTypeAsync(fixedDepositTypeDTO, enforceFixedDepositBands, GetServiceHeader());
-                await _channelService.UpdateLeviesByFixedDepositTypeIdAsync(fixedDepositTypeDTO.Id, selectedRows, GetServiceHeader());
+                await _channelService.UpdateLeviesByFixedDepositTypeIdAsync(result.Id, levyDTOs, GetServiceHeader());
                 // if (result.ErrorMessageResult != null || result.ErrorMessageResult != string.Empty)
                 if (result.ErrorMessageResult != null)
                 {
@@ -98,7 +118,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     await ServeNavigationMenus();
                     return View();
                 }
-                await _channelService.UpdateLeviesByFixedDepositTypeIdAsync(fixedDepositTypeDTO.Id, selectedRows, GetServiceHeader());
+
+                await _channelService.UpdateAttachedProductsByFixedDepositTypeIdAsync(result.Id, productCollectionInfo, GetServiceHeader());
                 TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }

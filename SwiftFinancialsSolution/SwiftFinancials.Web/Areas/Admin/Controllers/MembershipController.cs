@@ -11,6 +11,9 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using Application.MainBoundedContext.DTO;
 using SwiftFinancials.Presentation.Infrastructure.Util;
+using System.Collections.ObjectModel;
+using DistributedServices.Seedwork.EndpointBehaviors;
+using System.ServiceModel;
 
 namespace SwiftFinancials.Web.Areas.Admin.Controllers
 {
@@ -112,31 +115,141 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
+            // var roles = await _channelService.GetAllRolesAsync(GetServiceHeader());
+            var roles = _applicationRoleManager.Roles.ToList();
 
+            ViewBag.role = roles.Select(role => new { role.Name }).ToList();
+
+            ViewBag.Commisions = roles.Select(role => new {role.Name }).ToList();
             Guid parseId;
-
+            var branch = await _channelService.FindBranchesAsync(GetServiceHeader());
+            ViewBag.branches = branch;
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
                 return View();
             }
 
-            var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
-
+          
             UserBindingModel userBindingModel = new UserBindingModel();
 
-            if (branch != null)
-            {
-                userBindingModel.BranchId = branch.Id;
-                userBindingModel.BranchDescription = branch.Description;
-            }
+            //if (branch != null)
+            //{
+            //    userBindingModel.BranchId = branch.Id;
+            //    userBindingModel.BranchDescription = branch.Description;
+            //}
+
 
             return View(userBindingModel);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetEmployeeDetails(Guid employeeId)
+        {
+            try
+            {
+                var employee = await _channelService.FindEmployeeAsync(employeeId, GetServiceHeader());
+                var dep = await _channelService.FindEmployeeTypeAsync(employee.EmployeeTypeId, GetServiceHeader());
+
+                if (employee == null)
+                {
+                    return Json(new { success = false, message = "Employee not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        EmployeeCustomerFullName = employee.Customer.FullName,
+                        EmployeeCustomerId = employee.CustomerId,
+                        EmployeeId = employee.Id,
+                        EmployeeBloodGroupDescription = employee.BloodGroupDescription,
+                        EmployeeNationalHospitalInsuranceFundNumber = employee.NationalHospitalInsuranceFundNumber,
+                        EmployeeNationalSocialSecurityFundNumber = employee.NationalSocialSecurityFundNumber,
+                        EmployeeCustomerPersonalIdentificationNumber = employee.CustomerPersonalIdentificationNumber,
+                        EmployeeEmployeeTypeCategoryDescription = employee.EmployeeTypeCategoryDescription,
+                        EmployeeEmployeeTypeDescription = employee.EmployeeTypeDescription,
+                        EmployeeDepartmentDescription = employee.DepartmentDescription,
+                        EmployeeDepartmentId = employee.DepartmentId,
+                        EmployeeDesignationDescription = employee.DesignationDescription,
+                        EmployeeDesignationId = employee.DesignationId,
+                        EmployeeBranchDescription = employee.BranchDescription,
+                        EmployeeBranchId = employee.BranchId,
+                        EmployeeCustomerIndividualGenderDescription = employee.CustomerIndividualGenderDescription,
+                        EmployeeCustomerIndividualPayrollNumbers = employee.CustomerIndividualPayrollNumbers,
+                        EmployeeEmployeeTypeId = employee.EmployeeTypeId,
+                        EmployeeEmployeeTypeChartOfAccountId = employee.EmployeeTypeChartOfAccountId,
+                        PhoneNumber= employee.CustomerAddressMobileLine,
+
+                        department = dep.Description,
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the Employee details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetBranchesDetails(Guid? branchId)
+        {
+            try
+            {
+
+                Guid parseId;
+
+                if (branchId == Guid.Empty || !Guid.TryParse(branchId.ToString(), out parseId))
+                {
+                    return View();
+                }
+
+                var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+
+
+                //if (branch != null)
+                //{
+                //    userBindingModel.BranchId = branch.Id,
+                //    userBindingModel.BranchDescription = branch.Description,
+                //}
+                if (branch == null)
+                {
+                    return Json(new { success = false, message = "Employee not found." }, JsonRequestBehavior.AllowGet);
+                }
+                UserBindingModel userBindingModel = new UserBindingModel();
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+
+                        BranchId = branch.Id,
+                        BranchDescription = branch.Description,
+                    }
+                },
+                    JsonRequestBehavior.AllowGet);
+            }
+
+
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the Employee details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         // POST: SystemUser/Create
         [HttpPost]
-        public async Task<ActionResult> Create(UserBindingModel userBindingModel)
+        public async Task<ActionResult> Create(UserBindingModel userBindingModel, string[] commisionIds, string[] roles)
         {
+
+            var employee = await _channelService.FindEmployeeAsync(userBindingModel.EmployeeId, GetServiceHeader());
+            userBindingModel.FirstName = employee.CustomerIndividualFirstName;
+            userBindingModel.OtherNames = employee.CustomerIndividualLastName;
+            userBindingModel.PhoneNumber = employee.CustomerAddressMobileLine;
+
             userBindingModel.ValidateAll();
 
             if (userBindingModel.HasErrors)
@@ -147,8 +260,24 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
                 return View();
             }
-
+            List<AuditTrailDTO> auditTrailDTOs = new List<AuditTrailDTO>();
+            ObservableCollection<string> role = new ObservableCollection<string>();
             var userDTO = await _channelService.AddNewMembershipAsync(userBindingModel.MapTo<UserDTO>(), GetServiceHeader());
+            var result = await _channelService.AddUserToRolesAsync(userDTO.UserName, role, GetServiceHeader());
+            AuditTrailDTO auditLogDTO = new AuditTrailDTO();
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+            auditLogDTO.EnvironmentIPAddress = serviceHeader.EnvironmentIPAddress;
+            auditLogDTO.EnvironmentMACAddress = serviceHeader.EnvironmentMACAddress;
+            auditLogDTO.EnvironmentMachineName = serviceHeader.EnvironmentMachineName;
+            auditLogDTO.ApplicationUserName = serviceHeader.ApplicationUserName;
+            auditLogDTO.EnvironmentMotherboardSerialNumber = serviceHeader.EnvironmentMotherboardSerialNumber;
+            auditLogDTO.EnvironmentProcessorId = serviceHeader.EnvironmentProcessorId;
+            auditLogDTO.EnvironmentDomainName = serviceHeader.EnvironmentDomainName;
+            auditLogDTO.EnvironmentOSVersion = serviceHeader.EnvironmentOSVersion;
+            auditTrailDTOs.Add(auditLogDTO);
+
+            var k = await _channelService.AddAuditTrailsAsync(auditTrailDTOs, GetServiceHeader());
+
 
             if (userDTO != null)
             {

@@ -37,5 +37,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [DataMember]
         public CustomerDTO CustomerDTO { get; set; }
 
+        public string ErrorMessageResult;
+
     }
 }

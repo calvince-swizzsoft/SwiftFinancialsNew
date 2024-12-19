@@ -1,10 +1,10 @@
 ﻿@model Application.MainBoundedContext.DTO.RegistryModule.ConditionalLendingDTO
-
+@using System.Linq
 
 @{
-
-
     ViewBag.Title = "Create ConditionalLending";
+    var Customer = ViewBag.CustomerDTOs;
+
 }
 
 
@@ -61,96 +61,132 @@
 
 
 
-                        <div class="form-horizontal">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <!-- Upper row with one column -->
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="col-md-13 form-group">
-                                        @Html.LabelFor(model => model.LoanProductDescription, new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.LoanProductId)
-                                            @Html.TextBoxFor(model => model.LoanProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#LoanProductLookup"><span class="fa fa-search"></span></a>
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        <!-- Upper row with one column -->
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="col-md-13 form-group">
+                                    @Html.LabelFor(model => model.LoanProductDescription, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.LoanProductId)
+                                        @Html.TextBoxFor(model => model.LoanProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#LoanProductLookup"><span class="fa fa-search"></span></a>
+                                        </span>
                                     </div>
                                 </div>
 
                             </div>
 
-                            <h3>Customer Details</h3>
-
-                            <!-- Lower row with three columns -->
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="col-md-13 form-group">
-                                        @Html.LabelFor(model => model.CustomerDTO.FullName, new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.CustomerDTO.Id, new { @id = "CustomerDTO_Id" })
-                                            @Html.TextBoxFor(model => model.CustomerDTO.FullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @id = "CustomerDTO_FullName" })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#customerLookup"><span class="fa fa-search"></span></a>
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="CustomerDTO_Reference1">Account Number</label>
-                                        <input type="text" id="CustomerDTO_Reference1" class="form-control" readonly />
-                                    </div> 
-
-                                    <div class="form-group">
-                                        <label for="CustomerDTO_Remarks">Remarks </label>
-                                        <input type="text" id="CustomerDTO_Remarks" class="form-control" readonly />
-                                    </div>
-
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label for="CustomerDTO_StationZoneDivisionEmployerDescription">Employer </label>
-                                        <input type="text" id="CustomerDTO_StationZoneDivisionEmployerDescription" class="form-control" readonly />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="CustomerDTO_Reference2">File Number</label>
-                                        <input type="text" id="CustomerDTO_Reference2" class="form-control" readonly />
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-
-                                    <div class="form-group">
-                                        <label for="CustomerDTO_StationZoneDescription">Zone</label>
-                                        <input type="text" id="CustomerDTO_StationZoneDescription" class="form-control" readonly />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="CustomerDTO_IndividualPayrollNumbers">Payroll Numbers</label>
-                                        <input type="text" id="CustomerDTO_IndividualPayrollNumbers" class="form-control" readonly />
-                                    </div>
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
+                        </div>
 
-                            <div class="form-group form-group-sm">
-                                <div class="col-md-offset-2 col-md-10">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
+                        <h3>Customer Details</h3>
+
+                        <!-- Lower row with three columns -->
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.CustomerDTO.FullName, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.CustomerDTO.Id, new { @id = "CustomerDTO_Id" })
+                                        @Html.TextBoxFor(model => model.CustomerDTO.FullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @id = "CustomerDTO_FullName" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#customerLookup"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="CustomerDTO_StationZoneDivisionEmployerDescription">Station</label>
+                                    <input type="text" id="CustomerDTO_StationZoneDivisionEmployerDescription" class="form-control" readonly />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="CustomerDTO_StationZoneDivisionEmployerDescription">Employer</label>
+                                    <input type="text" id="CustomerDTO_StationZoneDivisionEmployerDescription" class="form-control" readonly />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="CustomerDTO_Reference2">File Number</label>
+                                    <input type="text" id="CustomerDTO_Reference2" class="form-control" readonly />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="CustomerDTO_StationZoneDescription">Zone</label>
+                                    <input type="text" id="CustomerDTO_StationZoneDescription" class="form-control" readonly />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="CustomerDTO_IndividualPayrollNumbers">Payroll Numbers</label>
+                                    <input type="text" id="CustomerDTO_IndividualPayrollNumbers" class="form-control" readonly />
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Add Button -->
+                        <button type="button" class="btn btn-primary" id="addCustomerButton">Add</button>
+
+                        <!-- Table to Display Added Data -->
+                        <table class="table table-bordered" id="customerTable">
+                            <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Station</th>
+                                    <th>Employer</th>
+                                    <th>File Number</th>
+                                    <th>Zone</th>
+                                    <th>Payroll Numbers</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+
+                        <script>
+                            document.getElementById("addCustomerButton").addEventListener("click", function () {
+                                const fullName = document.getElementById("CustomerDTO_FullName").value;
+                                const station = document.getElementById("CustomerDTO_StationZoneDivisionEmployerDescription").value;
+                                const employer = document.getElementById("CustomerDTO_StationZoneDivisionEmployerDescription").value;
+                                const fileNumber = document.getElementById("CustomerDTO_Reference2").value;
+                                const zone = document.getElementById("CustomerDTO_StationZoneDescription").value;
+                                const payrollNumbers = document.getElementById("CustomerDTO_IndividualPayrollNumbers").value;
+
+                                const table = document.getElementById("customerTable").getElementsByTagName("tbody")[0];
+                                const newRow = table.insertRow();
+
+                                newRow.innerHTML = `
+                                    <td>${fullName}</td>
+                                    <td>${station}</td>
+                                    <td>${employer}</td>
+                                    <td>${fileNumber}</td>
+                                    <td>${zone}</td>
+                                    <td>${payrollNumbers}</td>
+                                `;
+                            });
+                        </script>
+
+
+
+
+                        <div class="form-group form-group-sm">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Create" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
                     }
                 </div>
             </div>
@@ -229,8 +265,6 @@
     </div>
 </div>
 
-
-
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -273,9 +307,7 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
-
-
-
+   
     <script>
 $(document).ready(function () {
     $('#LoanProductsGrid').DataTable({

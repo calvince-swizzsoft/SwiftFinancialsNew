@@ -93,6 +93,45 @@
                             </div>
                         </div>
 
+
+                        <div class="panel-heading">General Ledger</div>
+                        <div class="panel-body">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>General Ledger</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.Generalledger != null)
+                                    {
+                                        foreach (var commission in ViewBag.Generalledger)
+                                        {
+                                    <tr>
+                                        <td>
+                                        </td>
+                                        <td>@commission.ChartOfAccountAccountName</td>
+                                        <td>@commission.SystemGeneralLedgerAccountCodeDescription</td>
+                                        <td>@commission.ChartOfAccountCostCenterDescription</td>
+
+
+                                    </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="2">No General Ledger available</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
