@@ -59,7 +59,10 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                 var conditionalLendings = await _conditionalLendingRepository.AllMatchingAsync(spec, serviceHeader);
 
                 if (conditionalLendings != null && conditionalLendings.Any())
-                    throw new InvalidOperationException("Sorry, but the selected loan product already exists in conditional lendings!");
+                {
+                    conditionalLendingDTO.ErrorMessageResult = string.Format("Sorry, but the selected loan product already exists in conditional lendings!");
+                    return conditionalLendingDTO;
+                }
                 else
                 {
                     var conditionalLending = ConditionalLendingFactory.CreateConditionalLending(conditionalLendingDTO.LoanProductId, conditionalLendingDTO.Description);

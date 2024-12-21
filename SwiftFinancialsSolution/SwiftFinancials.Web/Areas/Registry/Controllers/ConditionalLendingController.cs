@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using Domain.MainBoundedContext.RegistryModule.Aggregates.ConditionalLendingEntryAgg;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -53,16 +55,24 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpGet]
         public async Task<ActionResult> GetCustomerDetails(Guid customerId)
         {
+
+            CustomerDTOs = TempData["CustomerDTOs"] as ObservableCollection<CustomerDTO>;
+            if (CustomerDTOs == null)
+                CustomerDTOs = new ObservableCollection<CustomerDTO>();
+            CustomerDTO CustomerDTO = new CustomerDTO();
             try
             {
                 var c = new CustomerDTO();
 
                 var customer = await _channelService.FindCustomerAsync(customerId, GetServiceHeader());
+
+                CustomerDTOs.Add(customer);
+                TempData["CustomerDTOs"] = CustomerDTOs;
+                ViewBag.CustomerDTOs = CustomerDTOs;
                 if (customer == null)
                 {
                     return Json(new { success = false, message = "Customer not found." }, JsonRequestBehavior.AllowGet);
                 }
-
 
                 c.IndividualFirstName = customer.IndividualFirstName;
                 c.IndividualLastName = customer.IndividualLastName;
@@ -80,10 +90,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 conditionalLendingDTO.CustomerDTO = customer;
 
                 return Json(new
+
+
                 {
                     success = true,
                     data = new
                     {
+                        ViewBag.CustomerDTOs,
                         Id = c.Id,
                         IndividualFirstName = customer.IndividualFirstName,
                         IndividualLastName = customer.IndividualLastName,
@@ -106,6 +119,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 return Json(new { success = false, message = "An error occurred while fetching the customer details." }, JsonRequestBehavior.AllowGet);
             }
+
         }
 
 
@@ -158,6 +172,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+            CustomerDTOs = TempData["CustomerDTOs"] as ObservableCollection<CustomerDTO>;
+            ViewBag.CustomerDTOs = CustomerDTOs;
 
             return View();
         }
@@ -165,11 +181,42 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ConditionalLendingDTO conditionalLendingDTO)
         {
+            CustomerDTOs = TempData["CustomerDTOs"] as ObservableCollection<CustomerDTO>;
+            ObservableCollection<ConditionalLendingEntryDTO> conditionalLendingEntryCollection = new ObservableCollection<ConditionalLendingEntryDTO>();
+            ConditionalLendingEntryDTO conditionalLendingEntry = new ConditionalLendingEntryDTO();
+
+            foreach (var customer in CustomerDTOs)
+            {
+
+                conditionalLendingEntry.CustomerId = customer.Id;
+                conditionalLendingEntryCollection.Add(conditionalLendingEntry);
+
+            }
             conditionalLendingDTO.ValidateAll();
 
             if (!conditionalLendingDTO.HasErrors)
             {
-                await _channelService.AddConditionalLendingAsync(conditionalLendingDTO, GetServiceHeader());
+                var result = await _channelService.AddConditionalLendingAsync(conditionalLendingDTO, GetServiceHeader());
+                if (result.ErrorMessageResult != null)
+                {
+                    System.Windows.Forms.MessageBox.Show(
+                          "FAILED" + result.ErrorMessageResult,
+                          "Success",
+                          System.Windows.Forms.MessageBoxButtons.OK,
+                          System.Windows.Forms.MessageBoxIcon.Information,
+                          System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                          System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                      );
+                    ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+                    ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+                    ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+                    await ServeNavigationMenus();
+                    return RedirectToAction("cREATE", conditionalLendingDTO);
+
+                }
+
+
+                await _channelService.UpdateConditionalLendingEntryCollectionByConditionalLendingIdAsync(result.Id, conditionalLendingEntryCollection, GetServiceHeader());
 
                 TempData["SuccessMessage"] = "conditionalLending created successfully!";
 

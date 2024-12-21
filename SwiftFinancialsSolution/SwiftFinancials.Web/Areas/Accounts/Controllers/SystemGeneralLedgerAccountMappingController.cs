@@ -59,6 +59,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(string.Empty);
+
+            var k = await _channelService.FindSystemGeneralLedgerAccountMappingsAsync(GetServiceHeader());
+            ViewBag.Generalledger = k;
             return View();
         }
 
@@ -79,7 +82,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(string.Empty);
 
                     TempData["ErrorMsg"] = result.ErrorMessageResult;
-
+                    var k = await _channelService.FindSystemGeneralLedgerAccountMappingsAsync(GetServiceHeader());
+                    ViewBag.Generalledger = k;
                     return View();
                 }
 
@@ -91,7 +95,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var errorMessages = systemGeneralLedgerAccountMappingDTO.ErrorMessages;
                 ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(systemGeneralLedgerAccountMappingDTO.SystemGeneralLedgerAccountCode.ToString());
-
+                var k = await _channelService.FindSystemGeneralLedgerAccountMappingsAsync(GetServiceHeader());
+                ViewBag.Generalledger = k;
                 TempData["CreateError"] = "Failed to Map G/L Account";
 
                 return View(systemGeneralLedgerAccountMappingDTO);
