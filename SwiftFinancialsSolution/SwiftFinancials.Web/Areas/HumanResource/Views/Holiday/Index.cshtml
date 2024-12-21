@@ -3,21 +3,20 @@
     ViewBag.Title = "Holidays";
 }
 
-@if (TempData["SuccessMessage"] != null)
+<head>
+    <!-- Add this to your head section if it's not already included -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.all.min.js"></script>
+</head>
+@if (TempData["Message"] != null)
 {
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
+    <script>
+            Swal.fire({
+                icon: '@TempData["MessageType"]', // success, error, warning
+                title: '@TempData["Message"]',
+                showConfirmButton: true
+            });
+    </script>
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">

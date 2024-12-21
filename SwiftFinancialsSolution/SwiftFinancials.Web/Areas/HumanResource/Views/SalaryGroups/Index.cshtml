@@ -17,6 +17,19 @@
         </ol>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if (TempData["AlertMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            title: "Notification",
+            text: "@TempData["AlertMessage"]",
+            icon: "@TempData["AlertType"]"
+        });
+    </script>
+}
+
 
 <div class="col-lg-12">
     <div class="nav1">

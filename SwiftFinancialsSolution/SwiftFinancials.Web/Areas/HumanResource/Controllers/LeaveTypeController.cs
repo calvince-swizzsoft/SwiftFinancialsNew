@@ -103,15 +103,18 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!leaveTypeBindingModel.HasErrors)
             {
                 await _channelService.AddNewLeaveTypeAsync(leaveTypeBindingModel.MapTo<LeaveTypeDTO>(), GetServiceHeader());
+                TempData["AlertMessage"] = "Leave type created successfully!";
+                TempData["AlertType"] = "success";
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = leaveTypeBindingModel.ErrorMessages;
-
+                TempData["AlertMessage"] = string.Join("<br>", leaveTypeBindingModel.ErrorMessages);
+                TempData["AlertType"] = "error";
                 return View(leaveTypeBindingModel);
             }
         }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -131,14 +134,20 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateLeaveTypeAsync(leaveTypeBindingModel, GetServiceHeader());
+                TempData["AlertMessage"] = "Leave type updated successfully!";
+                TempData["AlertType"] = "success";
 
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["AlertMessage"] = "Failed to update leave type. Please correct the errors and try again.";
+                TempData["AlertType"] = "error";
+
                 return View(leaveTypeBindingModel);
             }
         }
+
 
         [HttpGet]
         public async Task<JsonResult> GetLeaveTypesAsync()

@@ -41,7 +41,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 jQueryDataTablesModel.sSearch,
                 0,
                 int.MaxValue,
-                GetServiceHeader()
+                GetServiceHeader() 
             );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
@@ -215,15 +215,10 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                         ModelState.AddModelError("FileName", "One or more files are invalid.");
                     }
                 }
+                TempData["Message"] = "Operation Success: Employee Documents Created Successfully!";
+                TempData["MessageType"] = "Success";
 
-                MessageBox.Show(
-                    "Operation Success",
-                    "Employee Documents",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+               
 
                 return RedirectToAction("Index");
             }
@@ -269,14 +264,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!employeeDocumentDTO.HasErrors)
             {
                 bool success = await _channelService.UpdateEmployeeDocumentAsync(employeeDocumentDTO, GetServiceHeader());
-                MessageBox.Show(
-                    "Operation Success",
-                    "Employee Documents",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["Message"] = "Operation Success: Employee Documents updated Successfully!";
+                TempData["MessageType"] = "Success";
+                
 
                 if (success)
                 {
@@ -284,6 +274,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 }
                 else
                 {
+                    TempData["Message"] = "An error occurred while updating the document.";
+                    TempData["MessageType"] = "error";
                     ModelState.AddModelError("", "An error occurred while updating the document.");
                 }
             }

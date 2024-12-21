@@ -32,15 +32,14 @@
         border: 2px solid gray; /* Border color set to gray */
         padding: 10px; /* Padding inside the border */
         border-radius: 5px; /* Rounded corners (optional) */
-        margin:10px;
-
+        margin: 10px;
         align-items: center; /* Center content vertically */
         justify-content: center; /* Center content horizontally */
         font-size: 15px; /* Set font size to 15px */
         text-align: center; /* Center text within elements */
-       
+
         font-weight: bold;
-        background-color: #00e0ff;
+        background-color: #e0f0ff;
         color: black;
     }
 
@@ -242,7 +241,7 @@
                     <h2 style="font-style: italic; margin-bottom: 0;">Credit Batch</h2>
                 </div>
 
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     <div class="main">
 
                         @using (Html.BeginForm("Add", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { id = "addCreditBatchForm" }))
@@ -535,7 +534,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-2">
+                                <div class="col-lg-3">
                                     <div class="form-group form-group-sm">
                                         @Html.CheckBoxFor(model => model.RecoverArrearages, new { htmlAttributes = new { @class = "form-control", @placeholder = "Recover Arrearages?" } })
                                         @Html.LabelFor(model => model.RecoverArrearages, htmlAttributes: new { @class = "" })
@@ -551,7 +550,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-3">
+                                <div class="col-lg-1">
                                     <div class="form-group form-group-sm">
                                         @Html.CheckBoxFor(model => model.RecoverCarryForwards, new { htmlAttributes = new { @class = "form-control", @placeholder = "Recover Carry Forwards?" } })
                                         @Html.LabelFor(model => model.RecoverCarryForwards, htmlAttributes: new { @class = "" })
@@ -561,7 +560,7 @@
 
                                 <div class="col-lg-1">
                                     <div class="form-group" style="text-align:center;">
-                                        <input type="submit" value="Create" class="btn btn-primary" style=" margin-left: 10px; border-radius: 4px; background-color: dodgerblue;" />
+                                        <input type="submit" value="Create" class="btn btn-primary" style=" margin-left: 10px; border-radius: 4px; " />
                                     </div>
                                 </div>
                                 

@@ -211,14 +211,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!salaryPeriodDTO.HasErrors)
             {
                 await _channelService.UpdateSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                TempData["AlertMessage"] = "SalaryPeriod Closed successfully!";
+                TempData["AlertType"] = "success";
+               
 
                 return RedirectToAction("Index");
             }
