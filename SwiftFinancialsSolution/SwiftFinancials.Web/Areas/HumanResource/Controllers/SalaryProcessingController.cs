@@ -270,19 +270,19 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 if (TempData["SelectedSalaryGroupId"] == null || TempData["EmployeeIds"] == null)
                 {
-                    ShowMessageBox("No salary group or employees were selected.", MessageBoxIcon.Warning);
+                    SetSweetAlert("No salary group or employees were selected.", "warning");
                     return View(salaryPeriodDTO);
                 }
 
                 var salaryGroupId = Guid.Parse(TempData["SelectedSalaryGroupId"].ToString());
                 var employeeIds = TempData["EmployeeIds"].ToString()
-                                                .Split(',')
-                                                .Select(Guid.Parse)
-                                                .ToList();
+                                                        .Split(',')
+                                                        .Select(Guid.Parse)
+                                                        .ToList();
 
                 if (!employeeIds.Any())
                 {
-                    ShowMessageBox("No employees selected.", MessageBoxIcon.Warning);
+                    SetSweetAlert("No employees selected.", "warning");
                     return View(salaryPeriodDTO);
                 }
 
@@ -305,7 +305,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 if (!employees.Any())
                 {
-                    ShowMessageBox("No valid employees found for the provided IDs.", MessageBoxIcon.Warning);
+                    SetSweetAlert("No valid employees found for the provided IDs.", "warning");
                     return View(salaryPeriodDTO);
                 }
 
@@ -318,18 +318,18 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                         await _channelService.PostPaySlipAsync(payslipid.Id, 1234, GetServiceHeader());
                     }
 
-                    ShowMessageBox("Salary period processed and pay slips posted successfully.", MessageBoxIcon.Information);
+                    SetSweetAlert("Salary period processed and pay slips posted successfully.", "success");
                     return RedirectToAction("Index");
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Failed to process the salary period.");
-                    ShowMessageBox("Failed to process the salary period.", MessageBoxIcon.Error);
+                    SetSweetAlert("Failed to process the salary period.", "error");
                 }
             }
             catch (Exception ex)
             {
-                ShowMessageBox("An unexpected error occurred. Please try again.", MessageBoxIcon.Error);
+                SetSweetAlert("An unexpected error occurred. Please try again.", "error");
                 Console.Error.WriteLine($"Error: {ex.Message}\nStack Trace: {ex.StackTrace}");
                 ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
             }
@@ -337,20 +337,13 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(salaryPeriodDTO);
         }
 
-        private void ShowMessageBox(string message, MessageBoxIcon icon)
+        private void SetSweetAlert(string message, string icon)
         {
-            MessageBox.Show(
-                message,
-                "Salary Processing",
-                MessageBoxButtons.OK,
-                icon,
-                MessageBoxDefaultButton.Button1,
-                MessageBoxOptions.ServiceNotification
-            );
+            TempData["SweetAlertMessage"] = message;
+            TempData["SweetAlertIcon"] = icon;
         }
 
 
-       
 
 
 
@@ -358,7 +351,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
 
 
-        
+
+
 
 
         [HttpPost]

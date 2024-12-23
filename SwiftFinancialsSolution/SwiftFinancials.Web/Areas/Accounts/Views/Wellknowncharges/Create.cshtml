@@ -1,119 +1,113 @@
 ﻿@model Application.MainBoundedContext.DTO.AccountsModule.SystemTransactionTypeInCommissionDTO
-@{
-    var commissions = ViewBag.Commisions;
-    ViewBag.Title = "Create Well Known Charges";
-    var systemTransactionType = ViewBag.SystemTransactionType as List<SelectListItem>
-    ?? new List<SelectListItem>
-        ();
-        var chargeType = ViewBag.Chargetype as List<SelectListItem>
-            ?? new List<SelectListItem>
-                ();
-                }
+@{ var commissions = ViewBag.Commisions;
+                ViewBag.Title = "Create Well Known Charges";
+                var systemTransactionType = ViewBag.SystemTransactionType as List<SelectListItem>
+                ?? new List<SelectListItem>
+                    ();
+                var chargeType = ViewBag.Chargetype as List<SelectListItem>
+                    ?? new List<SelectListItem>
+                        (); }
 
-                <div class="row wrapper border-bottom white-bg page-heading">
-                    <div class="col-lg-12">
-                        <h1>Accounts</h1>
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">@Html.ActionLink("Dashboard", "Index", "Home")</li>
-                            <li class="breadcrumb-item">@Html.ActionLink("Home", "Index", "WellKnownCharges", new { Area = "Accounts" })</li>
-                            <li class="breadcrumb-item active"><strong>Create</strong></li>
-                        </ol>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">@Html.ActionLink("Dashboard", "Index", "Home")</li>
+            <li class="breadcrumb-item">@Html.ActionLink("Home", "Index", "WellKnownCharges", new { Area = "Accounts" })</li>
+            <li class="breadcrumb-item active"><strong>Create</strong></li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Create Well Known Charges</h2>
+                    @if (TempData["Successfully"] != null)
+                    {
+        <div class="alert alert-primary">
+            <strong>Successfully!</strong> @TempData["Successfully"]
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>}
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
                     </div>
                 </div>
 
-                <div class="wrapper wrapper-content">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="ibox">
-                                <div class="ibox-title">
-                                    <h2>Create Well Known Charges</h2>
-                                    @if (TempData["Successfully"] != null)
-                                    {
-                                    <div class="alert alert-primary">
-                                        <strong>Successfully!</strong> @TempData["Successfully"]
-                                        <button type="button" class="close" data-dismiss="alert">
-                                            <span>&times;</span>
-                                        </button>
-                                    </div>
-                                    }
-                                    <div class="ibox-tools">
-                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                        <a class="close-link"><i class="fa fa-times"></i></a>
-                                    </div>
-                                </div>
+                <div class="ibox-content bg-white text-primary">
+                    @using (Html.BeginForm("Create", "Wellknowncharges", new { Area = "Accounts" }, FormMethod.Post, new { id = "wellKnownChargesForm" }))
+                    {
+        @Html.AntiForgeryToken()
+                        <fieldset>
 
-                                <div class="ibox-content bg-white text-primary">
-                                    @using (Html.BeginForm("Create", "Wellknowncharges", new { Area = "Accounts" }, FormMethod.Post, new { id = "wellKnownChargesForm" }))
-                                    {
-                                    @Html.AntiForgeryToken()
-                                    <fieldset>
-
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.SystemTransactionType, new { @class = "control-label" })
-                                            @Html.DropDownListFor(model => model.SystemTransactionType, systemTransactionType, new { @class = "form-control input-md", @id = "Systemtransactionype" })
-                                            @Html.ValidationMessageFor(model => model.SystemTransactionType)
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6 form-group">
-                                                @Html.LabelFor(model => model.ComplementType, new { @class = "control-label" })
-                                                @Html.DropDownListFor(model => model.ComplementType, chargeType, new { @class = "form-control input-md", @id = "ComplementType" })
-                                                @Html.ValidationMessageFor(model => model.ComplementType)
-                                            </div>
-                                            <div class="col-md-6 form-group">
-                                                @Html.LabelFor(model => model.ComplementFixedAmount, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.ComplementFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Fixed Amount.", @id = "ComplementFixedAmount" } })
-                                            </div>
-
-                                        </div>                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Select</th>
-                                                        <th>Commission Description</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (commissions != null)
-                                                    {
-                                                    foreach (var commission in commissions)
-                                                    {
-                                                    <tr>
-                                                        <td>
-                                                            <input type="checkbox" name="commisionIds" value="@commission.Id" />
-                                                        </td>
-                                                        <td>@commission.Description</td>
-                                                    </tr>
-                                                    }
-                                                    }
-                                                    else
-                                                    {
-                                                    <tr>
-                                                        <td colspan="2">No commissions available</td>
-                                                    </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <button type="submit" id="submitCharges" class="btn btn-primary">Submit</button>
-                                    </fieldset>
-                                    }
-                                </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SystemTransactionType, new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.SystemTransactionType, systemTransactionType, new { @class = "form-control input-md", @id = "Systemtransactionype" })
+                                @Html.ValidationMessageFor(model => model.SystemTransactionType)
                             </div>
-                        </div>
-                    </div>
+
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    @Html.LabelFor(model => model.ComplementType, new { @class = "control-label" })
+                                    @Html.DropDownListFor(model => model.ComplementType, chargeType, new { @class = "form-control input-md", @id = "ComplementType" })
+                                    @Html.ValidationMessageFor(model => model.ComplementType)
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    @Html.LabelFor(model => model.ComplementFixedAmount, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ComplementFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Fixed Amount.", @id = "ComplementFixedAmount" } })
+                                </div>
+
+                            </div>                                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Commission Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (commissions != null)
+                                        {
+                                            foreach (var commission in commissions)
+                                            {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="commisionIds" value="@commission.Id" />
+                            </td>
+                            <td>@commission.Description</td>
+                        </tr> }
+                                        }
+                                        else
+                                        {
+                        <tr>
+                            <td colspan="2">No commissions available</td>
+                        </tr>}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <button type="submit" id="submitCharges" class="btn btn-primary">Submit</button>
+                        </fieldset>}
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                @section Scripts {
-                @Scripts.Render("~/plugins/wizardSteps")
-                @Scripts.Render("~/plugins/validate")
-                @Scripts.Render("~/plugins/typehead")
-                @Scripts.Render("~/plugins/dataTables")
-                @Scripts.Render("~/plugins/sweetalert")
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@section Scripts {
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/sweetalert")
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                <script>$(document).ready(function () {
+    <script>$(document).ready(function () {
             $('#Systemtransactionype').change(function () {
                 loadCommissions($(this).val());
             });
@@ -146,4 +140,4 @@
                 unlinked.forEach(item => appendRow(item));
             }
         });</script>
-                }
+}

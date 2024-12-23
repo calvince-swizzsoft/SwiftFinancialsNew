@@ -2256,5 +2256,39 @@ namespace SwiftFinancials.Web.Controllers
 
             return customerAccountProductCodeSelectList;
         }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanProductChargeBasisValueSelectList(string selectedValue)
+        {
+            List<SelectListItem> ChargeBasisValue = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanProductChargeBasisValue)).Cast<LoanProductChargeBasisValue>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            ChargeBasisValue.AddRange(items);
+
+            return ChargeBasisValue;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanProductKnownChargeTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> KnownChargeType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanProductKnownChargeType)).Cast<LoanProductKnownChargeType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            KnownChargeType.AddRange(items);
+
+            return KnownChargeType;
+        }
     }
 }

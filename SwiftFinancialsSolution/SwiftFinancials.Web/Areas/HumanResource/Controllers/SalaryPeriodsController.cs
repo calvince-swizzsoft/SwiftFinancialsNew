@@ -171,43 +171,33 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 if (salaryPeriod.ErrorMessageResult != null)
                 {
+                    TempData["AlertMessage"] = $"Operation Unsuccessful: {salaryPeriod.ErrorMessageResult}";
+                    TempData["AlertType"] = "error";
+
                     await ServeNavigationMenus();
-                    MessageBox.Show(
-                                                             "Operation Unsuccessful: "+ salaryPeriod.ErrorMessageResult,
-                                                             "Salary Periods",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
                     ViewBag.MonthTypeSelectList = GetMonthsAsync(salaryPeriodDTO.Month.ToString());
                     ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(salaryPeriodDTO.EmployeeCategoryDescription.ToString());
+
                     return View();
                 }
 
-
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Salary Periods",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                TempData["AlertMessage"] = "Operation Success";
+                TempData["AlertType"] = "success";
 
                 ViewBag.MonthTypeSelectList = GetMonthsAsync(salaryPeriodDTO.Month.ToString());
                 ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(salaryPeriodDTO.EmployeeCategoryDescription.ToString());
-                //ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryCardDTO.Type.ToString());
 
-                //await GetChartOfAccountsAsync(id);
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = salaryPeriodDTO.ErrorMessages;
+                TempData["AlertMessage"] = "Validation errors found. Please fix the errors and try again.";
+                TempData["AlertType"] = "warning";
+
                 return View(salaryPeriodDTO);
             }
         }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -229,22 +219,21 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!salaryPeriodDTO.HasErrors)
             {
                 await _channelService.UpdateSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Salary Period",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+
+                TempData["AlertMessage"] = "Operation Success";
+                TempData["AlertType"] = "success";
 
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["AlertMessage"] = "Validation errors found. Please fix the errors and try again.";
+                TempData["AlertType"] = "warning";
+
                 return View(salaryPeriodDTO);
             }
         }
+
 
         [HttpGet]
         public async Task<ActionResult> GetsalaryPeriodDetails(Guid salaryPeriodId)

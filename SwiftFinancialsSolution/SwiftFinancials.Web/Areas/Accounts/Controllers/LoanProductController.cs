@@ -209,7 +209,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
             ViewBag.ChargeType = GetTakeHomeTypeSelectList(string.Empty);
             ViewBag.AuxiliaryLoanConditions = GetAuxiliaryLoanConditionSelectList(string.Empty);
-
+            ViewBag.LoanProductChargeBasisValue = GetLoanProductChargeBasisValueSelectList(string.Empty);
+            ViewBag.LoanProductKnownChargeType = GetLoanProductKnownChargeTypeSelectList(string.Empty);
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -239,16 +240,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> SelectedCharges(List<DynamicChargeDTO> charges)
+        public ActionResult StoreSelectedWellknownCharges(List<CommissionDTO> SelectedWellknownCharges)
         {
-            // Process the charges as needed
-            foreach (var charge in charges)
+            // If selectedCharges is null or empty, clear the session
+            if (SelectedWellknownCharges != null && SelectedWellknownCharges.Count > 0)
             {
-                // Handle each charge
+                var observableCharges = new ObservableCollection<CommissionDTO>(SelectedWellknownCharges);
+                Session["SelectedWellknownCharges"] = observableCharges;
+            }
+            else
+            {
+                // Optionally clear session if no charges are selected
+                Session.Remove("SelectedWellknownCharges");
             }
 
             return Json(new { success = true });
         }
+
 
         [HttpPost]
         public ActionResult StoreSelectedCharges(List<DynamicChargeDTO> selectedCharges)
@@ -358,7 +366,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             try
             {
-                // Retrieve session data
                 var sessionData = new
                 {
                     Deductibles = Session["deductiles"] as ObservableCollection<LoanProductDeductibleDTO>,
@@ -371,14 +378,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     SelectedInvestmentProducts = Session["selectedInvestmentProducts"] as ProductCollectionInfo,
                     SelectedSavingProducts = Session["selectedSavingProducts"] as ProductCollectionInfo,
                     SelectedInvestments = Session["selectedInvestments"] as ProductCollectionInfo,
+                    SelectedWellknownCharges = Session["SelectedWellknownCharges"] as ObservableCollection<CommissionDTO>,
                 };
 
-                // Create loan product
-                var loanProduct = await _channelService.AddLoanProductAsync(loanProductDTO, GetServiceHeader());
-                if (loanProduct.HasErrors) return Json(new { success = false, message = "An error occurred while creating the loan product.", errors = loanProduct.ErrorMessages });
+                var firstCommission = sessionData.SelectedWellknownCharges?.FirstOrDefault();
+                int loanProductKnownChargeType = firstCommission?.ChargeBasisValue ?? 0; 
+                int loanProductChargeBasisValue = firstCommission?.KnownChargeType ?? 0; 
 
-                // Update associated data
-                await UpdateAssociatedData(loanProduct.Id, sessionData);
+                var loanProduct = await _channelService.AddLoanProductAsync(loanProductDTO, GetServiceHeader());
+                if (loanProduct.HasErrors)
+                {
+                    return Json(new { success = false, message = "An error occurred while creating the loan product.", errors = loanProduct.ErrorMessages });
+                }
+
+                await UpdateAssociatedData(loanProduct.Id, sessionData, loanProductKnownChargeType, loanProductChargeBasisValue);
+
+                ClearSessionData();
 
                 return Json(new { success = true, message = "Loan product created successfully." });
             }
@@ -388,20 +403,58 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        private async Task UpdateAssociatedData(Guid loanProductId, dynamic sessionData)
+
+        private void ClearSessionData()
+        {
+            string[] sessionKeys = new[]
+            {
+        "deductiles",
+        "cycles",
+        "auxiliaryAppraisal",
+        "lendingConditions",
+        "selectedCharges",
+        "selectedProducts",
+        "selectedLoans",
+        "selectedInvestmentProducts",
+        "selectedSavingProducts",
+        "selectedInvestments",
+        "SelectedWellknownCharges"
+    };
+
+            foreach (var key in sessionKeys)
+            {
+                Session.Remove(key);
+            }
+        }
+
+
+        private async Task UpdateAssociatedData(Guid loanProductId, dynamic sessionData, int loanProductKnownChargeType, int loanProductChargeBasisValue)
         {
             await _channelService.UpdateLoanProductDeductiblesByLoanProductIdAsync(loanProductId, sessionData.Deductibles, GetServiceHeader());
             await _channelService.UpdateLoanCyclesByLoanProductIdAsync(loanProductId, sessionData.Cycles, GetServiceHeader());
             await _channelService.UpdateLoanProductAuxilliaryAppraisalFactorsByLoanProductIdAsync(loanProductId, sessionData.AuxiliaryAppraisal, GetServiceHeader());
             await _channelService.UpdateLoanProductAuxiliaryConditionsByBaseLoanProductIdAsync(loanProductId, sessionData.LendingConditions, GetServiceHeader());
 
-            // Handle dynamic charges and product updates
             await UpdateDynamicCharges(loanProductId, sessionData.SelectedCharges);
             await UpdateProductCollections(loanProductId, sessionData.SelectedProducts);
             await UpdateProductCollections(loanProductId, sessionData.SelectedLoans, isLoan: true);
             await UpdateProductCollections(loanProductId, sessionData.SelectedInvestmentProducts);
             await UpdateProductCollections(loanProductId, sessionData.SelectedSavingProducts);
             await UpdateProductCollections(loanProductId, sessionData.SelectedInvestments);
+
+            await UpdateCommissions(loanProductId, sessionData.SelectedWellknownCharges, loanProductKnownChargeType, loanProductChargeBasisValue);
+        }
+        private async Task UpdateCommissions(Guid loanProductId, ObservableCollection<CommissionDTO> commissions, int loanProductKnownChargeType, int loanProductChargeBasisValue)
+        {
+            if (commissions != null)
+            {
+                await _channelService.UpdateCommissionsByLoanProductIdAsync(
+                    loanProductId,
+                    commissions,
+                    loanProductKnownChargeType,
+                    loanProductChargeBasisValue,
+                    GetServiceHeader());
+            }
         }
 
         private async Task UpdateDynamicCharges(Guid loanProductId, ObservableCollection<DynamicChargeDTO> charges)

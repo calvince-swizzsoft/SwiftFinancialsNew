@@ -99,16 +99,11 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!employeeTypeDTO.HasErrors)
             {
                 await _channelService.AddEmployeeTypeAsync(employeeTypeDTO, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
-
+                TempData["Message"] = "Operation Success: Employee Type Created Successfully!";
+                TempData["MessageType"] = "Success";
                 
+
+
 
                 return RedirectToAction("Index");
             }
@@ -136,16 +131,10 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateEmployeeTypeAsync(employeeTypeBindingModel, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                TempData["Message"] = "Operation Success: Employee Type Updated Successfully!";
+                TempData["MessageType"] = "Success";
+               
                 ViewBag.EmployeeCategorySelectList = GetEmployeeCategorySelectList(employeeTypeBindingModel.Category.ToString());
-                TempData["SuccessMessage"] = "EmployeeType Updated Successfully!!";
 
                 return RedirectToAction("Index");
             }

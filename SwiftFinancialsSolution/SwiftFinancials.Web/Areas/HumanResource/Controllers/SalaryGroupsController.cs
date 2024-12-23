@@ -198,14 +198,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             var tempEntries = new List<SalaryGroupEntryDTO>();
             try
             {
-                // Retrieve entries from TempData
                 if (TempData["Entries"] != null)
                 {
                     tempEntries = TempData["Entries"] as List<SalaryGroupEntryDTO>;
                 }
                 else
                 {
-                    MessageBox.Show("No entries were found in TempData.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    TempData["AlertMessage"] = "No entries were found in TempData.";
+                    TempData["AlertType"] = "error";
                     return View(salaryGroupDTO);
                 }
 
@@ -219,14 +219,17 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                     await _channelService.UpdateSalaryGroupEntriesBySalaryGroupIdAsync(salaryGroup.Id, salaryGroupEntries, GetServiceHeader());
 
+                    TempData["AlertMessage"] = "Salary Group created successfully.";
+                    TempData["AlertType"] = "success";
+
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    MessageBox.Show("Validation errors were found in the submitted data.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    TempData["AlertMessage"] = "Validation errors were found in the submitted data.";
+                    TempData["AlertType"] = "warning";
                 }
 
-                // Handle errors
                 ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(salaryGroupDTO.ToString());
                 ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(salaryGroupDTO.ToString());
 
@@ -234,10 +237,15 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An unexpected error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return View(salaryGroupDTO); // Return the view with the current data in case of errors
+                Console.WriteLine(ex.Message); 
+
+                TempData["AlertMessage"] = $"An unexpected error occurred: {ex.Message}";
+                TempData["AlertType"] = "error";
+
+                return View(salaryGroupDTO); 
             }
         }
+
 
 
 
@@ -264,71 +272,65 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             try
             {
-                // Retrieve entries from TempData if necessary
-                var tempEntries = TempData["Entries"] as List<SalaryGroupEntryDTO>;  // Get the list of entries from TempData
+                var tempEntries = TempData["Entries"] as List<SalaryGroupEntryDTO>;  
 
                 if (tempEntries != null)
                 {
-                    // Convert the List to ObservableCollection
                     var salaryGroupEntries = new ObservableCollection<SalaryGroupEntryDTO>(tempEntries);
 
-                    // Merge them with the current salary group entries and convert back to List
                     salaryGroupDTO.SalaryGroupEntries = salaryGroupDTO.SalaryGroupEntries
                         .Concat(salaryGroupEntries)
-                        .ToList(); // Convert the merged collection to a List
+                        .ToList(); 
                 }
 
-                // Validate the salary group data
                 salaryGroupDTO.ValidateAll();
 
                 if (!salaryGroupDTO.HasErrors)
                 {
-                    // Update the SalaryGroup
                     await _channelService.UpdateSalaryGroupAsync(salaryGroupDTO, GetServiceHeader());
 
-                    // Update SalaryGroupEntries
                     if (salaryGroupDTO.SalaryGroupEntries.Any())
                     {
                         var salaryGroupEntries = new ObservableCollection<SalaryGroupEntryDTO>(salaryGroupDTO.SalaryGroupEntries);
 
-                        // Call the method to update SalaryGroupEntries
                         bool updateSuccessful = await _channelService.UpdateSalaryGroupEntriesBySalaryGroupIdAsync(id, salaryGroupEntries, GetServiceHeader());
 
                         if (updateSuccessful)
                         {
-                            // Success message or redirect
-                            MessageBox.Show("Salary group entries updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            TempData["AlertMessage"] = "Salary group entries updated successfully.";
+                            TempData["AlertType"] = "success";
                         }
                         else
                         {
-                            MessageBox.Show("Failed to update salary group entries.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            TempData["AlertMessage"] = "Failed to update salary group entries.";
+                            TempData["AlertType"] = "error";
                         }
                     }
 
-                    // Set ViewBag for dropdowns or other data needed for the view
                     ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(salaryGroupDTO.ToString());
                     ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(salaryGroupDTO.ToString());
 
-                    // Redirect to the Index after a successful update
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    // Handle errors if validation failed
                     var errorMessages = salaryGroupDTO.ErrorMessages;
 
                     ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(salaryGroupDTO.ToString());
                     ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(salaryGroupDTO.ToString());
 
-                    // Return the view with the error messages
+                    TempData["AlertMessage"] = "Validation errors found. Please fix the errors and try again.";
+                    TempData["AlertType"] = "warning";
+
                     return View(salaryGroupDTO);
                 }
             }
             catch (Exception ex)
             {
-                // Handle any unexpected errors
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return View(salaryGroupDTO); // Return the view with the current data in case of errors
+                TempData["AlertMessage"] = $"An error occurred: {ex.Message}";
+                TempData["AlertType"] = "error";
+
+                return View(salaryGroupDTO);
             }
         }
 

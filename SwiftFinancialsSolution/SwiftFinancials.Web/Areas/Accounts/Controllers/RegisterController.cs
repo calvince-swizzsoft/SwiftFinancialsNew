@@ -192,9 +192,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!alternateChannelDTO.HasErrors)
             {
                 var result = await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
+                System.Windows.Forms.MessageBox.Show(
+                           "Alternate Channel for  " + result.CustomerFullName + " Linked successfully.",
+                           "Success",
+                           System.Windows.Forms.MessageBoxButtons.OK,
+                           System.Windows.Forms.MessageBoxIcon.Information,
+                           System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                           System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                       );
                 // Display a success message in a MessageBox with line breaks and formatted content
-                string message = $"Successfully Created\nAlternate channel for {alternateChannelDTO.CustomerFullName}";
-                System.Windows.Forms.MessageBox.Show(message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //string message = $"Successfully Created\nAlternate channel for {alternateChannelDTO.CustomerFullName}";
+                //System.Windows.Forms.MessageBox.Show(message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 //TempData["SuccessMessage"] = $"Successfully created Alternate channel For Member {alternateChannelDTO.CustomerFullName}";
 
                 if (result.ErrorMessageResult != null)

@@ -68,6 +68,19 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             // Get connection string from Web.config
             _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
         }
+
+        public class OperationResult
+        {
+            public bool Success { get; set; }
+
+            public bool Dialog { get; set; }
+            public string Message { get; set; }
+
+            public CustomerTransactionModel TransactionData { get; set; }
+
+            public JournalDTO TransactionJournal { get; set; }
+        }
+
         public PostingPeriodDTO CurrentPostingPeriod
         {
 
@@ -215,9 +228,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         [HttpPost]
         public async Task<JsonResult> FetchCustomerAccountsTable(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int customerFilter)
-      {
-
-
+        {
             bool includeBalances = false;
             bool includeProductDescription = true;
             bool includeInterestBalanceForLoanAccounts = false;
@@ -260,7 +271,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
-
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
@@ -282,8 +292,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
                 {
-
-
                     var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
 
                     totalRecordCount = pageCollectionInfo.ItemsCount;
@@ -447,7 +455,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(transactionModel);
         }
 
-        private async Task<Boolean> ProcessCustomerTransactionAsync(CustomerTransactionModel transactionModel)
+        private async Task<OperationResult> ProcessCustomerTransactionAsync(CustomerTransactionModel transactionModel)
         {
 
             var proceedAuthorizedCashWithdrawalRequest = default(bool);
@@ -459,7 +467,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, true, true, true, true, GetServiceHeader());
 
             _selectedCustomer = await _channelService.FindCustomerAsync(SelectedCustomerAccount.CustomerId, GetServiceHeader());
-
 
             System.Globalization.NumberFormatInfo _nfi = new CultureInfo("en-US", false).NumberFormat;
             var time = System.DateTime.Now.ToString("dd/mm/yyyy");
@@ -493,33 +500,43 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 {
                                     string message = $"Operation success: Customer's new balance is {transactionModel.CustomerAccount.NewAvailableBalance}";
 
-                                    MessageBox.Show(
-                                                      message,
-                                                      "CashDeposit Request",
-                                                      MessageBoxButtons.OK,
-                                                      MessageBoxIcon.Information,
-                                                      MessageBoxDefaultButton.Button1,
-                                                      MessageBoxOptions.ServiceNotification
-                                                  );
-
-
-                                    PrintReceipt(withinLimitsCashDepositJournal);
-
                                     string cashDepositTextTemplate = "Dear customer, your account has been credited with a cash deposit of KES {0} at {1} Branch {2}.";
                                     await SendTextNotificationAsync(cashDepositTextTemplate, SelectedCustomer, SelectedCustomerAccount, transactionModel.TotalValue, transactionModel.Reference, transactionModel.PrimaryDescription);
-                                    return true;
+
+                                    return new OperationResult
+                                    {
+                                        Success = true,
+                                        Dialog = false,
+                                        Message = message,
+                                        TransactionJournal = new JournalDTO
+                                        {
+
+                                            Id = withinLimitsCashDepositJournal.Id,
+                                            SequentialId = withinLimitsCashDepositJournal.SequentialId,
+                                            BranchDescription = withinLimitsCashDepositJournal.BranchDescription,
+                                            PrimaryDescription = withinLimitsCashDepositJournal.PrimaryDescription,
+                                            SecondaryDescription = withinLimitsCashDepositJournal.SecondaryDescription,
+                                            PostingPeriodDescription = withinLimitsCashDepositJournal.PostingPeriodDescription,
+                                            ApplicationUserName = withinLimitsCashDepositJournal.ApplicationUserName,
+                                            CreatedDate = withinLimitsCashDepositJournal.CreatedDate,
+                                            TotalValue = withinLimitsCashDepositJournal.TotalValue,
+                                            Reference = withinLimitsCashDepositJournal.Reference
+                                        }
+
+                                    };
+                                 
                                 }
 
                                 else
                                 {
+                                    return new OperationResult
+                                    {
 
-                                    MessageBox.Show(
-                                                "Sorry, but the authorized cash deposit request could not be marked as posted!",
-                                                "Authorization Request",
-                                                MessageBoxButtons.OK,
-                                                MessageBoxIcon.Exclamation);
+                                        Success = false,
+                                        Dialog = false, 
+                                        Message = "Sorry, but the authorized cash deposit request could not be marked as posted!",
 
-                                    return false;
+                                    };
                                 }
                         
                             case CashDepositCategory.AboveMaximumAllowed:
@@ -534,12 +551,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                     if (targetCashDepositRequest != null)
                                     {
-
                                         // Check if another operation is already in progress
                                         if (IsBusy)
                                         {
-                                            MessageBox.Show("Please wait until the current operation is complete.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                            return false;
+                                            return new OperationResult
+                                            {
+
+                                                Success = false,
+                                                Dialog = false,
+                                                Message = "Please wait until the current operation is complete.",
+
+                                            };
                                         }
 
                                         // Set IsBusy to true to indicate an ongoing operation
@@ -550,99 +572,22 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                             "Txn Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
                                             EnumHelper.GetDescription(CashDepositCategory.AboveMaximumAllowed),
                                             string.Format(_nfi, "{0:C}", targetCashDepositRequest.Amount),
-                                            targetCashDepositRequest.StatusDescription,
-                                            MessageBoxDefaultButton.Button1,
-                                            MessageBoxOptions.ServiceNotification
+                                            targetCashDepositRequest.StatusDescription                             
                                         );
 
-                                        // Show a message box with Yes/No options
-                                        DialogResult result = MessageBox.Show(
-                                            Form.ActiveForm,
-                                            message,
-                                            "Authorization Request",
-                                            MessageBoxButtons.YesNo,
-                                            MessageBoxIcon.Question,
-                                            MessageBoxDefaultButton.Button1,
-                                            MessageBoxOptions.ServiceNotification
-                                        );
 
-                                        if (result == DialogResult.Yes && !proceedAuthorizedCashDepositRequest)
+                                        return new OperationResult
                                         {
-                                            proceedAuthorizedCashDepositRequest = true;
+                                            Success = false,
+                                            Dialog = true,
+                                            Message = message,
+                                            TransactionData = new CustomerTransactionModel {
 
-                                            #region Proceed with Authorized Transaction Request
-
-                                            if (targetCashDepositRequest.Status == (int)CashDepositRequestAuthStatus.Authorized)
-                                            {
-                                                if (await _channelService.PostCashDepositRequestAsync(targetCashDepositRequest, GetServiceHeader()))
-                                                {
-                                                    var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
-
-                                                    //basic
-                                                    //transactionModel.CustomerAccount.NewAvailableBalance = transactionModel.CustomerAccount.AvailableBalance + transactionModel.TotalValue;
-                                                    var updateAboveLimitResult = await _channelService.UpdateCustomerAccountAsync(transactionModel.CustomerAccount, GetServiceHeader());
-
-
-                                                    if (updateAboveLimitResult)
-                                                    {
-                                                        string successmessage = $"Customer new balance is {transactionModel.CustomerAccount.NewAvailableBalance}";
-
-                                                        // Use MessageBox with ServiceNotification to show the message in any context
-                                                        MessageBox.Show(
-                                                            successmessage,
-                                                            "Success",
-                                                            MessageBoxButtons.OK,
-                                                            MessageBoxIcon.Information,
-                                                            MessageBoxDefaultButton.Button1,
-                                                            MessageBoxOptions.ServiceNotification
-                                                        );
-
-
-                                                        string cashDepositAboveLimitTextTemplate = "Dear customer, your account has been credited with a cash deposit of KES {0} at {1} Branch {2}.";
-                                                        await SendTextNotificationAsync(cashDepositAboveLimitTextTemplate, SelectedCustomer, SelectedCustomerAccount, transactionModel.TotalValue, transactionModel.Reference, transactionModel.PrimaryDescription);
-
-                                                        PrintReceipt(authorizedJournal);
-                                                        return true;
-                                                    }
-                                                    
-                                                    else
-                                                    {
-                                                        MessageBox.Show(
-                                                       "Sorry, but the authorized cash deposit request could not be marked as posted!",
-                                                       "Authorization Request",
-                                                       MessageBoxButtons.OK,
-                                                       MessageBoxIcon.Exclamation
-                                                   );
-
-
-                                                        return false;
-
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    MessageBox.Show(
-                                                        "Sorry, but the authorized cash deposit request could not be marked as posted!",
-                                                        "Authorization Request",
-                                                        MessageBoxButtons.OK,
-                                                        MessageBoxIcon.Exclamation
-                                                    );
-
-                                                    //ResetView();
-                                                    return false;
-                                                }
+                                                CreditCustomerAccountId = SelectedCustomerAccount.Id,
+                                                CashDepositRequestId = targetCashDepositRequest.Id
+                                            
                                             }
-                                            else
-                                            {
-                                                IsBusy = false;
-                                            }
-
-                                            #endregion
-                                        }
-                                        else
-                                        {
-                                            IsBusy = false;
-                                        }
+                                        };                               
                                     }
                                     else createNewCashDepositRequest = true;
                                 }
@@ -655,107 +600,22 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                         EnumHelper.GetDescription(cashDepositCategory)
                                     );
 
-                                    // Show the message box with Yes/No options
-                                    DialogResult result = MessageBox.Show(
-                                        message,
-                                        "Authorization Request",
-                                        MessageBoxButtons.YesNo,
-                                        MessageBoxIcon.Question,
-                                        MessageBoxDefaultButton.Button1,
-                                        MessageBoxOptions.ServiceNotification
-                                    );
 
-                                    if (result == DialogResult.Yes && !proceedCashDepositAuthorizationRequest)
+                                    return new OperationResult
                                     {
-                                        proceedCashDepositAuthorizationRequest = true;
-
-                                        #region Proceed to Place Cash Deposit Authorization Request
-
-                                        var customerTransactionAuthRequest = new CashDepositRequestDTO
+                                        Success = false,
+                                        Dialog = true,
+                                        Message = message,
+                                        TransactionData = new CustomerTransactionModel
                                         {
-                                            BranchId = SelectedBranch.Id,
-                                            CustomerAccountId = SelectedCustomerAccount.Id,
-                                            CustomerAccountCustomerAccountTypeTargetProductId = SelectedCustomerAccount.CustomerAccountTypeTargetProductId,
-                                            CustomerAccountCustomerAccountTypeProductCode = SelectedCustomerAccount.CustomerAccountTypeProductCode,
-                                            CustomerAccountCustomerAccountTypeTargetProductCode = SelectedCustomerAccount.CustomerAccountTypeTargetProductCode,
-                                            Amount = transactionModel.TotalValue,
-                                            Remarks = transactionModel.Reference,
-                                        };
-
-                                        try
-                                        {
-                                            var opResult = await _channelService.AddCashDepositRequestAsync(customerTransactionAuthRequest);
-
-                                            if (opResult != null)
-                                            {
-                                                // Clear data and reset view
-                                                transactionModel = null;
-                                                SelectedCustomerAccount = null;
-                                                //SelectedCustomer = null;
-
-                                                //WithDrawalAmount = 0m;
-                                                //DepositAmount = 0m;
-                                                //Tariffs = null;
-
-                                                // Notify users
-                                                //await _onlineNotifier.NotifyUsersInPermissionType((int)SystemPermissionType.CashDepositRequestAuthorization, string.Format("{0} Request!", EnumHelper.GetDescription(cashDepositCategory)));
-
-                                                MessageBox.Show(
-                                                    Form.ActiveForm,
-                                                    "Operation completed successfully.",
-                                                    "Success",
-                                                    MessageBoxButtons.OK,
-                                                    MessageBoxIcon.Information,
-                                                     MessageBoxDefaultButton.Button1,
-                                                     MessageBoxOptions.ServiceNotification
-                                                );
-
-                                                return true;
-                                            }
-                                            else
-                                            {
-                                                // Show failure message
-                                                MessageBox.Show(
-                                                    "Operation failed!",
-                                                    "Error",
-                                                    MessageBoxButtons.OK,
-                                                    MessageBoxIcon.Error,
-                                                     MessageBoxDefaultButton.Button1,
-                                                     MessageBoxOptions.ServiceNotification
-                                                );
-
-                                                // Reset the view or form
-                                                //ResetView();
-
-                                                return false;
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            // Show exception message
-                                            MessageBox.Show(
-
-                                                $"An error occurred: {ex.Message}",
-                                                "Error",
-                                                MessageBoxButtons.OK,
-                                                MessageBoxIcon.Error,
-                                                 MessageBoxDefaultButton.Button1,
-                                                     MessageBoxOptions.ServiceNotification
-                                            );
-
-                                            // Reset the view or form
-                                            //ResetView();
-                                            return false;
-                                        }
-
-                                        #endregion
-                                    }
-                                    else
-                                    {
-                                        IsBusy = false;
-                                    }
+                                            CreditCustomerAccountId = SelectedCustomerAccount.Id,
+                                            TotalValue = transactionModel.TotalValue,
+                                            Reference = transactionModel.Reference,
+                                            CashDepositCategory = (int)cashDepositCategory
+                                        } 
+                                    };
+                   
                                 }
-
 
                                 break;
 
@@ -773,17 +633,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                         if (transactionModel.Teller.BookBalance < transactionModel.TotalValue)
                         {
-                            MessageBox.Show(
-                                "Sorry, but your teller G/L account has insufficient cash!", // Message
-                                "Cash Withdrawal", // Title of the message box
-                                MessageBoxButtons.OK, // Button to display
-                                MessageBoxIcon.Exclamation, // Icon to display (exclamation mark)
-                                MessageBoxDefaultButton.Button1,
-                                MessageBoxOptions.ServiceNotification
-                            );
+                  
+                            return new OperationResult
+                            {
 
-                            //ResetView();
-                            return false;
+                                Success = false,
+                                Message = "Sorry, but your teller G/L account has insufficient cash!"
+                            };
+
+              
                         }
 
                         else
@@ -830,151 +688,36 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                             if (targetCashWithdrawalRequest != null)
                                             {
-                                                var result = MessageBox.Show(
-                                                    string.Format("Transaction Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
-                                                    targetCashWithdrawalRequest.TypeDescription,
-                                                    string.Format(_nfi, "{0:C}", targetCashWithdrawalRequest.Amount),
-                                                    targetCashWithdrawalRequest.StatusDescription),
-                                                    "CashWithdrawal Request",
-                                                    MessageBoxButtons.YesNo,
-                                                    MessageBoxIcon.Question,
-                                                     MessageBoxDefaultButton.Button1,
-                                                     MessageBoxOptions.ServiceNotification
-                                                );
+                                            string message = string.Format(
+                                            "Txn Request of {1} is {2} for this customer account.\n\nDo you want to proceed?",
+                                            EnumHelper.GetDescription(CashWithdrawalCategory.AboveMaximumAllowed),
+                                            string.Format(_nfi, "{0:C}", targetCashWithdrawalRequest.Amount),
+                                            targetCashWithdrawalRequest.StatusDescription
+                                            );
 
-                                                if (result == DialogResult.Yes && !proceedAuthorizedCashWithdrawalRequest)
+
+                                                return new OperationResult
                                                 {
-                                                    proceedAuthorizedCashWithdrawalRequest = true;
-
-                                                    #region Proceed with Authorized Transaction Request?
-
-                                                    if (targetCashWithdrawalRequest.Status == (int)CashWithdrawalRequestAuthStatus.Authorized)
+                                                    Success = false,
+                                                    Dialog = true,
+                                                    Message = message,
+                                                    TransactionData = new CustomerTransactionModel
                                                     {
-                                                        if (cashWithdrawalCategory == CashWithdrawalCategory.PaymentVoucher)
-                                                        {
-                                                            PaymentVoucherDTO paymentVoucherDTO = new PaymentVoucherDTO();
 
-                                                            //SelectedPaymentVoucher.Amount = transactionModel.TotalValue;
-                                                            //SelectedPaymentVoucher.Reference = transactionModel.Reference;
-                                                            paymentVoucherDTO.Amount = transactionModel.TotalValue;
-                                                            paymentVoucherDTO.Reference = transactionModel.Reference;
-                                                            paymentVoucherDTO.Id = transactionModel.PaymentVoucher.Id;
-                                                            paymentVoucherDTO.WriteDate = transactionModel.PaymentVoucher.WriteDate;
-                                                            paymentVoucherDTO.Payee = transactionModel.PaymentVoucher.Payee;
+                                                      //cashWithdrawalRequestId =  targetCashWithdrawalRequest.Id.ToString(),
+                                                       
+                                                       DebitCustomerAccountId = SelectedCustomerAccount.Id,
+                                                       CashWithdrawalCategory = (int)cashWithdrawalCategory,
+                                                       PaymentVoucherId = transactionModel.PaymentVoucher.Id,
+                                                       ChequeBookId = transactionModel.PaymentVoucher.ChequeBookId,
+                                                       TotalValue = transactionModel.TotalValue,
+                                                       Reference = transactionModel.Reference,
+                                                       PaymentVoucherWriteDate = transactionModel.PaymentVoucher.WriteDate,
+                                                       PaymentVoucherPayee = transactionModel.PaymentVoucher.Payee
 
-                                                            paymentVoucherDTO.ChequeBookId = transactionModel.PaymentVoucher.ChequeBookId;
-
-                                                            paymentVoucherDTO.ValidateAll();
-
-                                                            if (paymentVoucherDTO.HasErrors)
-                                                            {
-                                                                MessageBox.Show(
-                                                                    string.Join(Environment.NewLine, paymentVoucherDTO.ErrorMessages),
-                                                                    "CashWithdrawal Request",
-                                                                    MessageBoxButtons.OK,
-                                                                    MessageBoxIcon.Exclamation,
-                                                                     MessageBoxDefaultButton.Button1,
-                                                                     MessageBoxOptions.ServiceNotification
-                                                                );
-
-                                                                //ResetView();
-                                                                return false;
-                                                            }
-                                                            else
-                                                            {
-
-
-                                                                bool paymentSuccess = await _channelService.PayCashWithdrawalRequestAsync(targetCashWithdrawalRequest, paymentVoucherDTO, GetServiceHeader());
-
-                                                                if (paymentSuccess)
-                                                                {
-
-                                                                    var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
-
-                                                                    MessageBox.Show(
-                                                                      "The authorized cash withdrawal request succesfully be marked as paid!",
-                                                                      "Cashwithdrawal Request",
-                                                                      MessageBoxButtons.OK,
-                                                                      MessageBoxIcon.Information,
-                                                                       MessageBoxDefaultButton.Button1,
-                                                                     MessageBoxOptions.ServiceNotification
-                                                                  );
-
-                                                                    string cashWithdrawalTextTemplate = "Payment voucher of KES {0} {4}, {5} {2}.";
-                                                                    await SendTextNotificationAsync(cashWithdrawalTextTemplate, SelectedCustomer, SelectedCustomerAccount, transactionModel.TotalValue, transactionModel.Reference, transactionModel.PrimaryDescription);
-                                                                    PrintReceipt(authorizedJournal);
-                                                                    return true;
-                                                                }
-                                                                else
-                                                                {
-                                                                    MessageBox.Show(
-                                                                        "Sorry, but the authorized cash withdrawal request could not be marked as paid!",
-                                                                        "Cashwithdrawal Request",
-                                                                        MessageBoxButtons.OK,
-                                                                        MessageBoxIcon.Exclamation,
-                                                                         MessageBoxDefaultButton.Button1,
-                                                                       MessageBoxOptions.ServiceNotification
-                                                                    );
-
-                                                                    //ResetView();
-                                                                    return false;
-                                                                }
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            if (SelectedCustomer.BiometricFingerprintTemplateBuffer != null && SelectedBranch.CompanyEnforceBiometricsForCashWithdrawal)
-                                                            {
-                                                                //SendCustomerDetailsToAwaitVerification();
-
-                                                                //if (!(await WaitCustomerVerification())) return;
-                                                            }
-
-                                                            // Placeholder for the payment processing logic without payment voucher
-
-                                                            bool paymentSuccess = await _channelService.PayCashWithdrawalRequestAsync(targetCashWithdrawalRequest, null);
-
-                                                            if (paymentSuccess)
-                                                            {
-
-
-                                                                var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
-
-
-                                                                string cashWithdrawalTextTemplate = "Dear customer, your account has been debited with KES {0} at {1} Branch {2}.";
-                                                                await SendTextNotificationAsync(cashWithdrawalTextTemplate, SelectedCustomer, SelectedCustomerAccount, transactionModel.TotalValue, transactionModel.Reference, transactionModel.PrimaryDescription);
-
-
-                                                                PrintReceipt(authorizedJournal);
-                                                                return true;
-                                                            }
-                                                            else
-                                                            {
-                                                                MessageBox.Show(
-                                                                    "Sorry, but the authorized cash withdrawal request could not be marked as paid!",
-                                                                    "Cashwithdrawal Request",
-                                                                    MessageBoxButtons.OK,
-                                                                    MessageBoxIcon.Exclamation,
-                                                                     MessageBoxDefaultButton.Button1,
-                                                                     MessageBoxOptions.ServiceNotification
-                                                                );
-
-                                                                //ResetView();
-                                                                return false;
-                                                            }
-                                                        }
                                                     }
-                                                    else
-                                                    {
-                                                        IsBusy = false;
-                                                    }
+                                                };
 
-                                                    #endregion
-                                                }
-                                                else
-                                                {
-                                                    IsBusy = false;
-                                                }
                                             }
 
                                             else createNewCashWithdrawalRequest = true;
@@ -985,123 +728,28 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                     if (createNewCashWithdrawalRequest)
                                     {
-                                        var result = MessageBox.Show(
-                                            string.Format("{0}.\nDo you want to proceed and place a cash withdrawal authorization request?",
-                                            EnumHelper.GetDescription(cashWithdrawalCategory)),
-                                            "CashWithdrawal Request",
-                                            MessageBoxButtons.YesNo,
-                                            MessageBoxIcon.Question,
-                                            MessageBoxDefaultButton.Button1,
-                                            MessageBoxOptions.ServiceNotification
-                                        );
+                                       
 
-                                        if (result == DialogResult.Yes && !proceedCashWithdrawalAuthorizationRequest)
+
+                                        string message = string.Format(
+                 "{0}.\nDo you want to proceed and place a cash withdrawal authorization request?",
+                 EnumHelper.GetDescription(cashWithdrawalCategory)
+             ) ;
+
+
+                                        return new OperationResult
                                         {
-                                            proceedCashWithdrawalAuthorizationRequest = true;
-
-                                            #region Proceed to Place Cash Withdrawal Authorization Request?
-
-                                            var totalValueOfUnclearedCheques = 0m;
-
-                                            // Placeholder for finding uncleared external cheques by customer account ID
-
-                                            var unclearedExternalCheques = await _channelService.FindUnClearedExternalChequesByCustomerAccountIdAsync(SelectedCustomerAccount.Id, GetServiceHeader());
-
-
-                                            if (unclearedExternalCheques != null && unclearedExternalCheques.Any())
+                                            Success = false,
+                                            Dialog = true,
+                                            Message = message,
+                                            TransactionData = new CustomerTransactionModel
                                             {
-                                                totalValueOfUnclearedCheques = unclearedExternalCheques.Sum(x => x.Amount);
+                                                DebitCustomerAccountId = SelectedCustomerAccount.Id,
+                                                TotalValue = transactionModel.TotalValue,
+                                                Reference = transactionModel.Reference
                                             }
-
-                                            if ((SelectedCustomerAccount.BookBalance - totalValueOfUnclearedCheques) < 0m)
-                                            {
-                                                MessageBox.Show(
-                                                    "Sorry, but the customer's total value unucleared cheques exceed book balance!",
-                                                    "CashWithdrawal Request",
-                                                    MessageBoxButtons.OK,
-                                                    MessageBoxIcon.Exclamation,
-                                                     MessageBoxDefaultButton.Button1,
-                                                    MessageBoxOptions.ServiceNotification
-                                                );
-
-                                                //ResetView();
-                                                return false;
-                                            }
-                                            else
-                                            {
-                                                var customerTransactionAuthRequest = new CashWithdrawalRequestDTO
-                                                {
-                                                    BranchId = SelectedBranch.Id,
-                                                    CustomerAccountId = SelectedCustomerAccount.Id,
-                                                    CustomerAccountCustomerAccountTypeTargetProductId = SelectedCustomerAccount.CustomerAccountTypeTargetProductId,
-                                                    CustomerAccountCustomerAccountTypeProductCode = SelectedCustomerAccount.CustomerAccountTypeProductCode,
-                                                    CustomerAccountCustomerAccountTypeTargetProductCode = SelectedCustomerAccount.CustomerAccountTypeTargetProductCode,
-                                                    Type = (int)CashWithdrawalRequestType.ImmediateNotice,
-                                                    Category = (int)cashWithdrawalCategory,
-                                                    Amount = transactionModel.TotalValue,
-                                                    Remarks = transactionModel.Reference,
-                                                    PaymentVoucherId = transactionModel.PaymentVoucher.Id,
-                                                    PaymentVoucherPayee = transactionModel.PaymentVoucher.Payee
-                                                };
-
-                                                // Placeholder for adding a cash withdrawal request
-
-                                                var addRequestResult = await _channelService.AddCashWithdrawalRequestAsync(customerTransactionAuthRequest, GetServiceHeader());
-                                              
-
-                                                if (addRequestResult != null)
-                                                {
-                                                    transactionModel = null;
-                                                    SelectedCustomerAccount = null;
-                                                    SelectedCustomer = null;
-                                                    //WithDrawalAmount = 0m;
-                                                    //DepositAmount = 0m;
-                                                    tariffs = null;
-
-                                                    // Placeholder for notifying users in permission type
-                                                    // await NotifyUsersInPermissionTypeAsync(
-                                                    //(int)SystemPermissionType.CashWithdrawalRequestAuthorization,
-                                                    //string.Format("{0} Request!", EnumHelper.GetDescription(cashWithdrawalCategory))
-                                                    //);
-
-                                                    MessageBox.Show(
-                                                        "Operation completed successfully.",
-                                                        "CashWithdrawal Request",
-                                                        MessageBoxButtons.OK,
-                                                        MessageBoxIcon.Information,
-                                                        MessageBoxDefaultButton.Button1,
-                                                        MessageBoxOptions.ServiceNotification
-                                                    );
-
-                                                    //var updateTargetPaymentVoucherDetails?
-
-                                                    return true;
-                                                }
-                                                else
-                                                {
-                                                    MessageBox.Show(
-                                                        "Operation failed!",
-                                                        "CashWithdrawal Request",
-                                                        MessageBoxButtons.OK,
-                                                        MessageBoxIcon.Exclamation,
-                                                        MessageBoxDefaultButton.Button1,
-                                                        MessageBoxOptions.ServiceNotification
-                                                    );
-
-                                                    //ResetView();
-                                                    return false;
-                                                }
-                                            }
-
-                                            #endregion
-                                        }
-                                        else
-                                        {
-                                            IsBusy = false;
-                                        }
+                                        };
                                     }
-
-
                                     break;
 
                                 case CashWithdrawalCategory.WithinLimits:
@@ -1116,32 +764,34 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                     var withinLimitsJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
 
-                                    MessageBox.Show(
-                                                       "Operation success",
-                                                       "CashWithdrawal Request",
-                                                       MessageBoxButtons.OK,
-                                                       MessageBoxIcon.Information,
-                                                       MessageBoxDefaultButton.Button1,
-                                                       MessageBoxOptions.ServiceNotification
-                                                   );
+                     
 
                                     string cashWithdrawalTextTemplate1 = "Dear customer, your account has been debited with KES {0} at {1} Branch {2}.";
                                     await SendTextNotificationAsync(cashWithdrawalTextTemplate1, SelectedCustomer, SelectedCustomerAccount, transactionModel.TotalValue, transactionModel.Reference, transactionModel.PrimaryDescription);
 
                                     PrintReceipt(withinLimitsJournal);
-                                    return true;
+
+                                    return new OperationResult
+                                    {
+
+                                        Success = true,
+                                        Message = "Operation success"
+                                    };
 
                                 //break;
 
                                 case CashWithdrawalCategory.Overdraw:
 
-                                    MessageBox.Show("Sorry, but the customer's account will be overdrawn!", "CashWithdrawal Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1,
-                                              MessageBoxOptions.ServiceNotification);
 
 
                                     //ResetView();
 
-                                    return false;
+                                    return new OperationResult
+                                    {
+                                        Success = false,
+                                        Message = "Sorry, but the customer's account will be overdrawn!"
+                                    };
+
 
                                 //break;
 
@@ -1169,8 +819,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             MessageBox.Show(message, "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             //_messageService.ShowExclamation(string.Join(Environment.NewLine, NewExternalCheque.ErrorMessages), this.DisplayName);
 
+                            return new OperationResult
+                            {
+                                Success = false,
+                                Message = message
+                            };
                             //ResetView();
-                            return false;
+                   
                         }
                         else
                         {
@@ -1212,8 +867,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                             if (chequeDepositJournal != null && !chequeDepositJournal.HasErrors)
                             {
-                                MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
+                         
+                           
                                 #region Send Text Notification
 
                                 if (!string.IsNullOrWhiteSpace(SelectedCustomer.AddressMobileLine) &&
@@ -1254,13 +909,23 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
                                 PrintReceipt(chequeDepositJournal);
-                                return true;
+                                return new OperationResult
+                                {
+                                    Success = true,
+                                    Message = "Operation Success"
+                                };
                             }
 
                             else
                             {
-                                MessageBox.Show("Operation failed", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                                return false;
+
+                                return new OperationResult
+                                {
+
+                                    Success = false,
+                                    Message = "Operation failed"
+                                };
+            
                             }
                         }
                     //break;
@@ -1268,17 +933,38 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         //throw new InvalidOperationException("Unsupported transaction type.");
                         MessageBox.Show("You may have entered the wrong transaction type", "CashWithdrawal Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1,
                                              MessageBoxOptions.ServiceNotification);
-                        return false;
+
+                        return new OperationResult
+                        {
+
+                            Success = false,
+                            Message = "Operation failed"
+                        };
+                     
                 }
             }
             catch (Exception ex)
             {
                 // Log or handle the exception as needed
                 Console.WriteLine($"An error occurred: {ex.Message}");
-                return false;
+
+                return new OperationResult
+                {
+
+                    Success = false,
+                    Message = $"An error occurred: {ex.Message}"
+                };
+              
             }
 
-            return false;
+            return new OperationResult
+            {
+
+                Success = false,
+                Message = "Operation failed. Please try again"
+            };
+
+         
         }
 
 
@@ -1310,68 +996,58 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (SelectedCustomerAccount == null) {
 
-                MessageBox.Show("Please select a customer account",
-               "Cash Transaction",
-               MessageBoxButtons.OK,
-               MessageBoxIcon.Information,
-               MessageBoxDefaultButton.Button1,
-               MessageBoxOptions.ServiceNotification
-   );
+                var response = new
+                {
 
-                return Json(new { success = false, message = "Opration failed" });
+                    success = false,
+                    message = "Please select a customer account",
+
+                };
+
+                return Json(response);
 
             }
 
             if ((RecordStatus)SelectedCustomerAccount.RecordStatus != RecordStatus.Approved)
             {
 
-                MessageBox.Show("Sorry, account is not approved yet",
-           "Cash Transaction",
-           MessageBoxButtons.OK,
-           MessageBoxIcon.Information,
-           MessageBoxDefaultButton.Button1,
-           MessageBoxOptions.ServiceNotification
-           );
+                var response = new
+                {
 
-                return Json(new { success = false, message = "Opration failed" });
+                    success = false,
+                    message = "Sorry, account is not approved yet",
+
+                };
+
+                return Json(response);
 
 
             }
-
-
-
-
 
             SelectedBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
 
             if (_selectedTeller == null)
-            {
+            {     
+                var response = new
+                {
 
-                MessageBox.Show("Teller is Missing",
-                "Cash Transaction",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Exclamation,
-                MessageBoxDefaultButton.Button1,
-                MessageBoxOptions.ServiceNotification
+                    success = false,
+                    message = "Teller is missing",
 
-                );
+                };
 
-                //return View(SelectedCustomerAccount);
-
-                return Json(new { success = false, message = "Operation Failed" });
+                return Json(response);
 
 
             }
 
             var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
             transactionModel.PostingPeriodId = postingPeriod.Id;
-            //transactionModel.DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
             transactionModel.PrimaryDescription = "ok";
             transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount);
             transactionModel.Reference = string.Format("{0}", SelectedCustomerAccount.CustomerReference1);
             transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
-
 
             transactionModel.Teller = SelectedTeller;
 
@@ -1391,11 +1067,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 transactionModel.TotalValue = transactionModel.PaymentVoucher.Amount;
                 transactionModel.Reference = transactionModel.PaymentVoucher.Reference;
             }
-
-
-
-
-
 
             switch ((FrontOfficeTransactionType)transactionModel.CustomerAccount.Type)
             {
@@ -1424,31 +1095,27 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     if (SelectedTeller.BookBalance - transactionModel.TotalValue < SelectedCustomerAccount.CustomerAccountTypeTargetProductMinimumBalance)
                     {
 
-                        MessageBox.Show("Sorry, this transaction will exceed the allowed minimum balance",
-                   "Cash Transaction",
-                   MessageBoxButtons.OK,
-                   MessageBoxIcon.Information,
-                   MessageBoxDefaultButton.Button1,
-                   MessageBoxOptions.ServiceNotification
-                   );
+                        var response = new
+                        {
 
-                        return Json(new { success = false, message = "Operation failed" });
+                            success = false,
+                            message = "Sorry, this transaction will exceed the allowed minimum balance",
 
+                        };
+
+                        return Json(response);
 
                     }
 
                     if (SelectedTeller.BookBalance - transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
                     {
-                        MessageBox.Show(
-                            "Sorry, the transaction will reduce teller's balance below limit",
-                            "Cash Transaction",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
+                        var response = new
+                        {
+                            success = false,
+                            message = "Sorry, the transaction will reduce teller's balance below limit",
+                        };
 
-                        return Json(new { success = false, message = "Operation failed" });
+                        return Json(response);
                     }
 
                     if (SelectedCustomerAccount != null)
@@ -1473,38 +1140,29 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     .Select(error => error)
                     .ToList();
 
-                // Combine all error messages into a single string
                 string combinedErrorMessage = string.Join("; ", errorMessages);
-
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
 
-                // Show detailed error in a message box
-                MessageBox.Show($"Transaction Error: {combinedErrorMessage}",
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Exclamation,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
 
-                // Return JSON response with detailed error message
-                return Json(new
+                var responseLast = new
                 {
                     success = false,
-                    message = $"Operation Failed: {combinedErrorMessage}"
-                });
+                    message = $"Transaction Error: {combinedErrorMessage}"             
+                };
+
+                return Json(responseLast);
             }
 
 
             try
             {
                 // Call the asynchronous method and check its result
-                bool isTransactionSuccessful = await ProcessCustomerTransactionAsync(transactionModel);
+                var result = await ProcessCustomerTransactionAsync(transactionModel);
 
-                if (isTransactionSuccessful)
+                if (result.Success)
                 {
    
-                    SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, false, true, false, false, GetServiceHeader());
+                    SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, true, true, false, false, GetServiceHeader());
                     SelectedCustomer = await _channelService.FindCustomerAsync(SelectedCustomerAccount.CustomerId);
 
                     ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
@@ -1515,26 +1173,62 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     {
                         success = true,
                         message = "Operation Success",
-                        TellerBookBalance = Teller.BookBalance
+                        TellerBookBalance = Teller.BookBalance,
+                        CustomerAvailableBalance = SelectedCustomerAccount.AvailableBalance,
+                        journalId = result.TransactionJournal.Id,
+                        journalSequentialId = result.TransactionJournal.SequentialId,
+                        journalBranchDescription = result.TransactionJournal.BranchDescription,
+                        journalPrimaryDescription = result.TransactionJournal.PrimaryDescription,
+                        journalSecondaryDescription = result.TransactionJournal.SecondaryDescription,
+                        journalPostingPeriodDescription = result.TransactionJournal.PostingPeriodDescription,
+                        journalApplicationUserName = result.TransactionJournal.ApplicationUserName,
+                        journalCreatedDate = result.TransactionJournal.CreatedDate,
+                        journalTotalValue = result.TransactionJournal.TotalValue,
+                        journalReference = result.TransactionJournal.Reference
+
                     };
 
-                    // Return success response
                     return Json(response);
                 }
-                else
+                else if (!result.Success && result.Dialog)
                 {
-                    // Transaction failed, return failure response
                     ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
 
-                    // Show error message to the user
-                    MessageBox.Show("Transaction Failed",
-                        "Cash Transaction",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification);
+                    var response = new
+                    {
 
-                    return Json(new { success = false, message = "Operation Failed" });
+                        success = false,
+                        dialog = true,
+                        message = result.Message,
+                        selectedCustomerAccountId = result.TransactionData.CreditCustomerAccountId,
+                        transactionTotalValue = result.TransactionData.TotalValue,
+                        transactionReference = result.TransactionData.Reference,
+                        cashDepositRequestId = result.TransactionData.CashDepositRequestId
+                        //transactionCategory = result.TransactionData.CashDepositCategory
+                    };
+
+                    return Json(response);
+                }
+
+                else
+                {
+
+                    ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
+
+                    var response = new
+                    {
+
+                        success = false,
+                        message = result.Message,
+                        selectedCustomerAccountId = result.TransactionData.CreditCustomerAccountId,
+                        transactionTotalValue = result.TransactionData.TotalValue,
+                        transactionReference = result.TransactionData.Reference
+
+                    };
+
+                    return Json(response);
+
+
                 }
             }
             catch (Exception ex)
@@ -1543,12 +1237,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 ViewBag.TransactionTypeSelectList = SelectedCustomerAccount != null
                     ? GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString())
-                    : Enumerable.Empty<SelectListItem>(); // Handle null case safely
+                    : Enumerable.Empty<SelectListItem>();
 
-                // Log the exception if needed
-                // LogError(ex);
-
-                // Show error message to the user
                 MessageBox.Show($"An unexpected error occurred: {ex.Message}",
                     "Cash Transaction",
                     MessageBoxButtons.OK,
@@ -1556,11 +1246,519 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     MessageBoxDefaultButton.Button1,
                     MessageBoxOptions.ServiceNotification);
 
-                // Return error response
-                return Json(new { success = false, message = "An unexpected error occurred" });
+
+                var response = new
+                {
+
+                    success = false,
+                    message = ex.Message
+
+                };
+
+                return Json(response);
             }
 
         }
+
+
+        public async Task<OperationResult> PlaceCashWithdrawalAuthorizationRequestAsync(Boolean dialogResult, string selectedCustomerAccountId, int totalValue, string reference, int cashWithdrawalCategory, string paymentVoucherId, string paymentVoucherPayee)
+        {
+
+            bool includeBalances = true;
+            bool includeProductDescription = true;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+
+            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(Guid.Parse(selectedCustomerAccountId), includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            SelectedTeller = await GetCurrentTeller();
+
+            if (dialogResult)
+            {
+                //proceedCashDepositAuthorizationRequest = true;
+
+                #region Proceed to Place Cash Withdrawal Authorization Request?
+
+                var totalValueOfUnclearedCheques = 0m;
+
+                var unclearedExternalCheques = await _channelService.FindUnClearedExternalChequesByCustomerAccountIdAsync(SelectedCustomerAccount.Id, GetServiceHeader());
+
+
+                if (unclearedExternalCheques != null && unclearedExternalCheques.Any())
+                {
+                    totalValueOfUnclearedCheques = unclearedExternalCheques.Sum(x => x.Amount);
+                }
+
+                if ((SelectedCustomerAccount.BookBalance - totalValueOfUnclearedCheques) < 0m)
+                {
+
+                    return new OperationResult
+                    {
+                        Success = false,
+                        Message = "Sorry, but the customer's total value unucleared cheques exceed book balance!"
+                    };
+
+                 }
+                else
+                {
+                    var customerTransactionAuthRequest = new CashWithdrawalRequestDTO
+                    {
+                        BranchId = SelectedBranch.Id,
+                        CustomerAccountId = SelectedCustomerAccount.Id,
+                        CustomerAccountCustomerAccountTypeTargetProductId = SelectedCustomerAccount.CustomerAccountTypeTargetProductId,
+                        CustomerAccountCustomerAccountTypeProductCode = SelectedCustomerAccount.CustomerAccountTypeProductCode,
+                        CustomerAccountCustomerAccountTypeTargetProductCode = SelectedCustomerAccount.CustomerAccountTypeTargetProductCode,
+                        Type = (int)CashWithdrawalRequestType.ImmediateNotice,
+                        Category = (int)cashWithdrawalCategory,
+                        Amount = totalValue,
+                        Remarks = reference,
+                        PaymentVoucherId = Guid.Parse(paymentVoucherId),
+                        PaymentVoucherPayee = paymentVoucherPayee
+                    };
+
+                    var addRequestResult = await _channelService.AddCashWithdrawalRequestAsync(customerTransactionAuthRequest, GetServiceHeader());
+
+
+                    if (addRequestResult != null)
+                    {
+          
+                        return new OperationResult
+                        {
+
+                            Success = true,
+                            Message = "Operation completed successfully."
+                        };
+
+                        //var updateTargetPaymentVoucherDetails?
+
+                    }
+                    else
+                    {
+
+                        return new OperationResult
+                        {
+
+                            Success = false,
+                            Message = "Operation failed!"
+                        };
+
+                    }
+                }
+
+                #endregion
+
+            }
+            else
+            {
+                IsBusy = false;
+
+                return new OperationResult
+                {
+                    Success = true,
+                    Message = "Operation Cancelled."
+                };
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PlaceCashDepositAuthorizationRequestAsync(CustomerTransactionModel customerTransactionModel)
+        {
+
+            bool includeBalances = false;
+            bool includeProductDescription = true;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+
+            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(customerTransactionModel.CreditCustomerAccountId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            SelectedTeller = await GetCurrentTeller();
+
+            if (customerTransactionModel.DialogResult)
+            {
+                //proceedCashDepositAuthorizationRequest = true;
+
+                #region Proceed to Place Cash Deposit Authorization Request
+
+                var customerTransactionAuthRequest = new CashDepositRequestDTO
+                {
+                    BranchId = SelectedTeller.EmployeeBranchId,
+                    CustomerAccountId = SelectedCustomerAccount.Id,
+                    CustomerAccountCustomerAccountTypeTargetProductId = SelectedCustomerAccount.CustomerAccountTypeTargetProductId,
+                    CustomerAccountCustomerAccountTypeProductCode = SelectedCustomerAccount.CustomerAccountTypeProductCode,
+                    CustomerAccountCustomerAccountTypeTargetProductCode = SelectedCustomerAccount.CustomerAccountTypeTargetProductCode,
+                    Amount = customerTransactionModel.TotalValue,
+                    Remarks = customerTransactionModel.Reference,
+                };
+
+                try
+                {
+                    var opResult = await _channelService.AddCashDepositRequestAsync(customerTransactionAuthRequest);
+
+                    if (opResult != null)
+                    {
+            
+                        var response = new
+                        {
+                            success = true,
+                            message = "Operation completed successfully."
+                        };
+
+                        return Json(response);
+
+
+                    }
+                    else
+                    {
+
+                        var response = new
+                        {
+                            success = false,
+                            message = "Operation failed!"
+                        };
+
+                        return Json(response);
+        
+
+
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    var response = new
+                    {
+                        success = false,
+                        message = $"An error occurred: {ex.Message}"
+                    };
+
+                    return Json(response);
+
+                }
+
+                #endregion
+            }
+            else
+            {
+                IsBusy = false;
+
+                var response = new
+                {
+                    success = true,
+                    message = "Operation Cancelled."
+                };
+
+                return Json(response);
+            }
+
+        }
+
+        public async Task<OperationResult> ProcessAuthorizedCashWithdrawalRequestAsync(
+            bool dialogResult,
+            string cashWithdrawalRequestId,
+            int cashWithdrawalCategory,
+            string paymentVoucherId,
+            string chequeBookId,
+            int totalValue,
+            string reference,
+            string writeDate,
+            string payee)
+        {
+  
+            bool includeBalances = false;
+            bool includeProductDescription = true;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+
+            var targetCashWithdrawalRequest = await _channelService.FindCashWithdrawalRequestAsync(Guid.Parse(cashWithdrawalRequestId), GetServiceHeader());
+            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(
+                (Guid)targetCashWithdrawalRequest.CustomerAccountId,
+                includeBalances,
+                includeProductDescription,
+                includeInterestBalanceForLoanAccounts,
+                considerMaturityPeriodForInvestmentAccounts,
+                GetServiceHeader()
+            );
+
+   
+            var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+
+            var customerTransactionModel = new CustomerTransactionModel
+            {
+                PostingPeriodId = postingPeriod.Id,
+                PrimaryDescription = "ok",
+                SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount),
+                Reference = SelectedCustomerAccount.CustomerReference1,
+                CreditChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty,
+                TotalValue = targetCashWithdrawalRequest.Amount,
+                DebitCustomerAccount = SelectedCustomerAccount,
+                CreditCustomerAccount = SelectedCustomerAccount,
+                DebitCustomerAccountId = SelectedCustomerAccount.Id,
+                CreditCustomerAccountId = SelectedCustomerAccount.Id,
+                DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId,
+            };
+
+            // Compute tariffs
+            var tariffs = await _channelService.ComputeTellerCashTariffsAsync(
+                SelectedCustomerAccount,
+                customerTransactionModel.TotalValue,
+                (int)FrontOfficeTransactionType.CashDeposit,
+                GetServiceHeader()
+            );
+
+            if (!dialogResult)
+            {
+                return new OperationResult
+                {
+                    Success = true,
+                    Message = "Operation Cancelled!"
+                };
+            }
+
+            if (targetCashWithdrawalRequest.Status != (int)CashWithdrawalRequestAuthStatus.Authorized)
+            {
+                return new OperationResult
+                {
+                    Success = false,
+                    Message = "Sorry, but the authorized cash withdrawal request could not be marked as posted!"
+                };
+            }
+
+            #region Payment Voucher Handling
+            if (cashWithdrawalCategory == (int)CashWithdrawalCategory.PaymentVoucher)
+            {
+                var paymentVoucherDTO = new PaymentVoucherDTO
+                {
+                    Amount = totalValue,
+                    Reference = reference,
+                    Id = Guid.Parse(paymentVoucherId),
+                    WriteDate = DateTime.Parse(writeDate),
+                    Payee = payee,
+                    ChequeBookId = Guid.Parse(chequeBookId)
+                };
+
+                paymentVoucherDTO.ValidateAll();
+
+                if (paymentVoucherDTO.HasErrors)
+                {
+                    return new OperationResult
+                    {
+                        Success = false,
+                        Message = string.Join(Environment.NewLine, paymentVoucherDTO.ErrorMessages)
+                    };
+                }
+
+                bool paymentSuccess = await _channelService.PayCashWithdrawalRequestAsync(targetCashWithdrawalRequest, paymentVoucherDTO, GetServiceHeader());
+                if (!paymentSuccess)
+                {
+                    return new OperationResult
+                    {
+                        Success = false,
+                        Message = "Sorry, but the authorized cash withdrawal request could not be marked as paid!"
+                    };
+                }
+
+                var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(customerTransactionModel, tariffs, GetServiceHeader());
+
+                string cashWithdrawalTextTemplate = "Payment voucher of KES {0} {4}, {5} {2}.";
+                await SendTextNotificationAsync(
+                    cashWithdrawalTextTemplate,
+                    SelectedCustomer,
+                    SelectedCustomerAccount,
+                    customerTransactionModel.TotalValue,
+                    customerTransactionModel.Reference,
+                    customerTransactionModel.PrimaryDescription
+                );
+
+                PrintReceipt(authorizedJournal);
+
+                return new OperationResult
+                {
+                    Success = true,
+                    Message = "The authorized cash withdrawal request was successfully marked as paid."
+                };
+            }
+            #endregion
+
+            #region Direct Payment Without Voucher
+            if (SelectedCustomer.BiometricFingerprintTemplateBuffer != null && SelectedBranch.CompanyEnforceBiometricsForCashWithdrawal)
+            {
+                // Add biometric verification logic here if needed
+            }
+
+            bool paymentWithoutVoucherSuccess = await _channelService.PayCashWithdrawalRequestAsync(targetCashWithdrawalRequest, null);
+            if (!paymentWithoutVoucherSuccess)
+            {
+                return new OperationResult
+                {
+                    Success = false,
+                    Message = "Sorry, but the authorized cash withdrawal request could not be marked as paid!"
+                };
+            }
+
+            var directAuthorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(customerTransactionModel, tariffs, GetServiceHeader());
+
+            string directCashWithdrawalTextTemplate = "Dear customer, your account has been debited with KES {0} at {1} Branch {2}.";
+            await SendTextNotificationAsync(
+                directCashWithdrawalTextTemplate,
+                SelectedCustomer,
+                SelectedCustomerAccount,
+                customerTransactionModel.TotalValue,
+                customerTransactionModel.Reference,
+                customerTransactionModel.PrimaryDescription
+            );
+
+            PrintReceipt(directAuthorizedJournal);
+
+            return new OperationResult
+            {
+                Success = true,
+                Message = "The authorized cash withdrawal request was successfully processed."
+            };
+            #endregion
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> ProcessAuthorizedCashDepositRequestAsync(CustomerTransactionModel customerTransactionModel)
+        {
+
+            bool includeBalances = true;
+            bool includeProductDescription = true;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+
+
+            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(customerTransactionModel.CreditCustomerAccountId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            SelectedCustomer = await _channelService.FindCustomerAsync(SelectedCustomerAccount.CustomerId, GetServiceHeader());
+            SelectedTeller = await GetCurrentTeller();
+            var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+            SelectedBranch = await _channelService.FindBranchAsync(SelectedTeller.EmployeeBranchId, GetServiceHeader());
+
+            if (customerTransactionModel.DialogResult)
+            {
+                //proceedAuthorizedCashDepositRequest = true;
+                #region Proceed with Authorized Transaction Request
+
+                var targetCashDepositRequest = await _channelService.FindCashDepositRequestAsync(customerTransactionModel.CashDepositRequestId, GetServiceHeader());
+
+                if (targetCashDepositRequest.Status == (int)CashDepositRequestAuthStatus.Authorized)
+                {
+                    if (await _channelService.PostCashDepositRequestAsync(targetCashDepositRequest, GetServiceHeader()))
+                    {
+                        CustomerTransactionModel model = new CustomerTransactionModel
+                        {
+
+                            PostingPeriodId = postingPeriod.Id,
+                            PrimaryDescription = "ok",
+                            SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount),
+                            Reference = string.Format("{0}", SelectedCustomerAccount.CustomerReference1),
+                            CreditChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId,
+                            CreditCustomerAccount = SelectedCustomerAccount,
+                            CreditCustomerAccountId = SelectedCustomerAccount.Id,
+                            DebitCustomerAccountId = SelectedCustomerAccount.Id,
+                            DebitCustomerAccount = SelectedCustomerAccount,
+                            DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty,
+                            TotalValue = targetCashDepositRequest.Amount,
+                            BranchId = SelectedBranch.Id,
+                            TransactionCode = (int)SystemTransactionCode.CashDeposit
+                        };
+
+                        var tariffs = await _channelService.ComputeTellerCashTariffsAsync(SelectedCustomerAccount, model.TotalValue, (int)FrontOfficeTransactionType.CashDeposit, GetServiceHeader());
+
+                        var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(model, tariffs, GetServiceHeader());
+                        //basic
+                        //transactionModel.CustomerAccount.NewAvailableBalance = transactionModel.CustomerAccount.AvailableBalance + transactionModel.TotalValue;
+                        var updateAboveLimitResult = await _channelService.UpdateCustomerAccountAsync(model.CreditCustomerAccount, GetServiceHeader());
+
+                        if (updateAboveLimitResult)
+                        {
+
+                            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(customerTransactionModel.CreditCustomerAccountId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+
+                            string successmessage = $"Customer new balance is {SelectedCustomerAccount.AvailableBalance}";
+                            string cashDepositAboveLimitTextTemplate = "Dear customer, your account has been credited with a cash deposit of KES {0} at {1} Branch {2}.";
+                            await SendTextNotificationAsync(cashDepositAboveLimitTextTemplate, SelectedCustomer, SelectedCustomerAccount, model.TotalValue, customerTransactionModel.Reference, model.PrimaryDescription);
+                            //PrintReceipt(authorizedJournal);
+                            var response = new
+                            {
+                                success = true,
+                                message = successmessage,
+                                journalId = authorizedJournal.Id,
+                                journalSequentialId = authorizedJournal.SequentialId,
+                                journalBranchDescription = authorizedJournal.BranchDescription,
+                                journalPrimaryDescription = authorizedJournal.PrimaryDescription,
+                                journalSecondaryDescription = authorizedJournal.SecondaryDescription,
+                                journalPostingPeriodDescription = authorizedJournal.PostingPeriodDescription,
+                                journalApplicationUserName = authorizedJournal.ApplicationUserName,
+                                journalCreatedDate = authorizedJournal.CreatedDate,
+                                journalTotalValue = authorizedJournal.TotalValue,
+                                journalReference = authorizedJournal.Reference
+
+                            };
+
+
+                            return Json(response);
+                        }
+
+                        else
+                        {
+
+                            var response = new
+                            {
+                                success = false,
+                                message = "Sorry,but the authorized cash deposit request could not be marked as posted!"
+                            };
+
+                            return Json(response);
+                        }
+                    }
+                    else
+                    {
+
+                        var response = new
+                        {
+
+                            success = false,
+                            message = "Sorry, but the authorized cash deposit request could not be marked as posted!"
+                        };
+
+                        return Json(response);
+
+                    }
+                }
+                else
+                {
+                    IsBusy = false;
+                    var response = new
+                    {
+
+                        success = false,
+                        message = "Sorry, the selected cash deposit request is not marked as authorized"
+                    };
+
+                    return Json(response);
+                }
+
+                #endregion
+            }
+            else
+            {
+                IsBusy = false;
+
+                
+                 var response = new
+                {
+                    Success = true,
+                    Message = "Operation Cancelled!"
+                };
+
+
+                return Json(response);
+
+            }
+
+        }
+
+        //ProcessAuthorizedCashDepositRequestAsync
 
         [HttpPost]
         public async Task<JsonResult> PayAuthorizedCashDepositRequestAsync(Guid cashDepositRequestId)
@@ -1573,7 +1771,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             _selectedTeller = await GetCurrentTeller();
 
             SelectedBranch = await _channelService.FindBranchAsync(SelectedTeller.EmployeeBranchId, GetServiceHeader());
-            ;
+            
 
             var transactionModel = new CustomerTransactionModel();
 
@@ -1613,40 +1811,46 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             try
             {
-                // Call the asynchronous method to process the customer transaction
-                bool isTransactionSuccessful = await ProcessCustomerTransactionAsync(transactionModel);
-
-                if (isTransactionSuccessful)
+                var result = await ProcessCustomerTransactionAsync(transactionModel);
+                
+                //this if block is no longer necesary 18.12.2024
+                if (result.Success)
                 {
-                    //Construct the success response
-
                     var Teller = await GetCurrentTeller();
 
                     var response = new
                     {
-                        Status = "Success",
-                        Message = "Cash deposit request authorized successfully.",
-                        Amount = transactionModel.TotalValue,
-                        AccountNumber = transactionModel.CashDepositRequest.CustomerAccountFullAccountNumber,
-                        TellerBookBalance = Teller.BookBalance, 
-                        Timestamp = DateTime.Now,
+                        sucess = true,
+                        message = "Cash deposit request authorized successfully.",
+                        amount = transactionModel.TotalValue,
+                        accountNumber = transactionModel.CashDepositRequest.CustomerAccountFullAccountNumber,
+                        tellerBookBalance = Teller.BookBalance, 
+                        timestamp = DateTime.Now,
 
                     };
 
-                    //// Show the success message
-                    //MessageBox.Show(response.Message,
-                    //    "Cash Transaction",
-                    //    MessageBoxButtons.OK,
-                    //    MessageBoxIcon.Information,
-                    //    MessageBoxDefaultButton.Button1,
-                    //    MessageBoxOptions.ServiceNotification);
-
-                    // Return the success response
                     return Json(response);
                 }
+
+                else if (!result.Success && result.Dialog)
+                {
+
+                    var response = new
+                    {
+
+                        success = false,
+                        dialog = true,
+                        message = result.Message,
+                        cashDepositRequestId = result.TransactionData.CashDepositRequestId,
+                        selectedCustomerAccountId = result.TransactionData.CreditCustomerAccountId
+                        //transactionCategory = result.TransactionData.CashDepositCategory
+                    };
+
+                    return Json(response);
+                }
+
                 else
                 {
-                    // Construct the failure response
                     var failureResponse = new
                     {
                         Status = "Error",
@@ -1701,7 +1905,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             _selectedTeller = await GetCurrentTeller();
 
             SelectedBranch = await _channelService.FindBranchAsync(SelectedTeller.EmployeeBranchId, GetServiceHeader());
-            ;
 
             var transactionModel = new CustomerTransactionModel();
 
@@ -1712,8 +1915,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount);
             transactionModel.Reference = string.Format("{0}", SelectedCustomerAccount.CustomerReference1);
             transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
-
-            
 
             transactionModel.TotalValue = cashWithdrawalRequest.Amount;
 
@@ -1791,18 +1992,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     return Json(new { success = false, message = errorMessage });
                 }
 
-                //// Proceed with successful operation
-                //var successMessage = "Operation successful.";
-                //MessageBox.Show(
-                //    successMessage,
-                //    "Cash Transaction",
-                //    MessageBoxButtons.OK,
-                //    MessageBoxIcon.Information,
-                //    MessageBoxDefaultButton.Button1,
-                //    MessageBoxOptions.ServiceNotification
-                //);
-                //return Json(new { success = true, message = successMessage });
-
 
                 // Assign data to the transaction model
 
@@ -1839,9 +2028,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             try
             {
-                bool isTransactionSuccessful = await ProcessCustomerTransactionAsync(transactionModel);
+                var result = await ProcessCustomerTransactionAsync(transactionModel);
 
-                if (isTransactionSuccessful)
+                if (result.Success)
                 {
                     var Teller = await GetCurrentTeller();
 
@@ -2071,11 +2260,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<JsonResult> FetchKnownCharges(CustomerTransactionModel model, string target)
         {
-
-
             SavingsProductDTO savingsProduct = null;
-
-            
 
             if (model != null)
             { 
@@ -2187,7 +2372,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<JsonResult> CashDepositRequestsIndex(JQueryDataTablesModel jQueryDataTablesModel)
         {
-
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -2318,50 +2502,54 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
-        private void PrintReceipt(JournalDTO journal)
+        [HttpPost]
+        public JsonResult PrintReceipt(JournalDTO journal)
         {
-            var printConfirmationResult = MessageBox.Show("Do you want to print?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            try
+            {
+                // Build the receipt content from the journal data
+                var receiptContent = BuildReceiptContent(journal);
 
-            if (printConfirmationResult == DialogResult.Yes)
+                PrintDocument printDocument = new PrintDocument();
+                printDocument.PrinterSettings = new PrinterSettings
+                {
+                    PrinterName = "EPSON L3250 Series" // Hardcoding the printer name
+                };
+
+                printDocument.PrintPage += (sender, e) =>
+                {
+                  
+                    e.Graphics.DrawString(receiptContent, new Font("Courier New", 10), Brushes.Black, new RectangleF(0, 0, e.PageBounds.Width, e.PageBounds.Height));
+                };
+
+                printDocument.Print();
+
+                // Return success response
+                var response = new
+                {
+
+                    success = true,
+                    message = "Receipt printed successfully."
+
+
+                };
+
+                return Json(response);
+            }
+            catch (Exception ex)
             {
 
-
-                try
+                var response = new
                 {
-                    // Build the receipt content from the journal data
-                    var receiptContent = BuildReceiptContent(journal);
 
-                    PrintDocument printDocument = new PrintDocument();
-                    printDocument.PrinterSettings = new PrinterSettings
-                    {
-                        PrinterName = "EPSON L3250 Series" // Hardcoding the printer name
-                    };
+                    success = false,
+                    message = $"Error printing receipt: {ex.Message}"
 
-                    printDocument.PrintPage += (sender, e) =>
-                    {
-                        // Draw the receipt content onto the print page
-                        e.Graphics.DrawString(receiptContent, new Font("Courier New", 10), Brushes.Black, new RectangleF(0, 0, e.PageBounds.Width, e.PageBounds.Height));
-                    };
-
-                    //PrintDialog printDialog = new PrintDialog
-                    //{
-                    //    Document = printDocument
-                    //};
-
-                    //if (printDialog.ShowDialog() == DialogResult.OK)
-                    //{
-                    //    printDocument.Print();
-                    //}
-
-                    printDocument.Print();
-                }
-
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error printing receipt: {ex.Message}", "Print Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }                   
+                };
+                return Json(response);
+            }
         }
+
 
         // Helper method to build the receipt content
         private string BuildReceiptContent(JournalDTO journal)
@@ -2378,13 +2566,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             builder.AppendLine($"Primary Description: {journal.PrimaryDescription}");
             builder.AppendLine($"Secondary Description: {journal.SecondaryDescription}");
             builder.AppendLine($"Reference: {journal.Reference}");
+
+            //this format cld have issue
             builder.AppendLine($"Transaction Date: {journal.CreatedDate:yyyy-MM-dd HH:mm:ss}");
 
             // Add environment details
             builder.AppendLine("\n===== Environment Details =====");
             builder.AppendLine($"User: {journal.ApplicationUserName}");
-            builder.AppendLine($"Machine Name: {journal.EnvironmentMachineName}");
-            builder.AppendLine($"IP Address: {journal.EnvironmentIPAddress}");
+            //builder.AppendLine($"Machine Name: {journal.EnvironmentMachineName}");
+            //builder.AppendLine($"IP Address: {journal.EnvironmentIPAddress}");
 
             // Add a footer
             builder.AppendLine("\n===============================");
@@ -2392,52 +2582,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return builder.ToString();
         }
-
-
-        //[HttpPost]
-        //public async Task<ActionResult> GenerateReport(string chartOfAccountId, string startDate, string endDate)
-        //{
-        //    try
-        //    {
-        //        var formattedStartDate = DateTime.Parse(startDate);
-        //        var formattedEndDate = DateTime.Parse(endDate);
-
-        //        var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
-        //        string reportUrl = "http://desktop-rstq8im/ReportServer?/Teller%20Transactions";
-
-        //        string fullReportUrl = $"{reportUrl}&ChartOfAccountID={HttpUtility.UrlEncode(chartOfAccountId)}" +
-        //                $"&StartDate={HttpUtility.UrlEncode(formattedStartDate.ToString("yyyy-MM-dd"))}" +
-        //                $"&EndDate={HttpUtility.UrlEncode(formattedEndDate.ToString("yyyy-MM-dd"))}" +
-        //                $"&PostingPeriod={HttpUtility.UrlEncode(postingPeriod.Id.ToString())}" +
-        //                $"&rs:Command=Render&rs:Format=PDF";
-
-        //        using (var client = new HttpClient())
-        //        {
-        //            var response = await client.GetAsync(fullReportUrl);
-
-        //            if (response.IsSuccessStatusCode)
-        //            {
-        //                var reportBytes = await response.Content.ReadAsByteArrayAsync();
-
-        //                // Set Content-Disposition header to "inline" directly in the response
-        //                Response.Headers.Add("Content-Disposition", "inline; filename=TellerReport.pdf");
-
-        //                return File(reportBytes, "application/pdf");
-        //            }
-        //            else
-        //            {
-        //                return Json(new { success = false, message = $"Failed to generate the report. Status Code: {response.StatusCode}" });
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
-        //    }
-        //}
-
-
 
 
         public static async Task SendTextNotificationAsync(string MessageTemplate, CustomerDTO Recipient, CustomerAccountDTO RecipientAccount, decimal Amount, string Reference, string PrimaryDescription)
@@ -2481,9 +2625,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
         }
-
-
-
     }
 }
 

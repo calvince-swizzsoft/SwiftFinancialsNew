@@ -153,8 +153,12 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 try
                 {
+                    List<AuditTrailDTO> auditTrailDTOs = new List<AuditTrailDTO>();
                     // Fetch holidays for the posting period
                     var holidays = await _channelService.FindHolidaysAsync(GetServiceHeader());
+
+
+                    await _channelService.AddAuditTrailsAsync(auditTrailDTOs,GetServiceHeader());
 
                     // Check if the leave dates overlap with any holiday
                     var holidayConflict = holidays.Any(h =>
@@ -164,62 +168,36 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                     if (holidayConflict)
                     {
-                        // Show error if the leave dates fall within a holiday
-                        MessageBox.Show(
-                            "You cannot apply for leave during a holiday. Please adjust your dates.",
-                            "Holiday Conflict",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
+                        TempData["AlertMessage"] = "You cannot apply for leave during a holiday. Please adjust your dates.";
+                        TempData["AlertType"] = "warning"; 
                         return RedirectToAction("Create");
                     }
 
-                    // Map and save leave application
                     await _channelService.AddLeaveApplicationAsync(
                         leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(),
                         GetServiceHeader()
                     );
 
-                    MessageBox.Show(
-                        "Operation Success: Leave application submitted successfully!",
-                        "Leave Management",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
-
+                    TempData["AlertMessage"] = "Operation Success: Leave application submitted successfully!";
+                    TempData["AlertType"] = "success"; 
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    MessageBox.Show(
-                        "An error occurred while submitting your leave application. Please try again.",
-                        "Application Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+                    TempData["AlertMessage"] = "An error occurred while submitting your leave application. Please try again.";
+                    TempData["AlertType"] = "error"; 
                 }
             }
             else
             {
-                MessageBox.Show(
-                    "There were validation errors. Please correct them and try again!",
-                    "Validation Errors",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["AlertMessage"] = "There were validation errors. Please correct them and try again!";
+                TempData["AlertType"] = "error"; 
             }
 
             return View(leaveApplicationBindingModel);
         }
+
 
 
 
@@ -245,10 +223,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 try
                 {
-                    // Reset the status to "Pending" when editing a leave application
                     leaveApplicationBindingModel.Status = (int)LeaveApplicationStatus.Pending;
 
-                    // Call the service to update the leave application with the new status
                     var result = await _channelService.UpdateLeaveApplicationAsync(
                         leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(),
                         GetServiceHeader()
@@ -256,56 +232,32 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                     if (result)
                     {
-                        MessageBox.Show(
-                            "Operation Success: Leave application updated successfully!",
-                            "Holiday Management",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
-
+                        TempData["AlertMessage"] = "Operation Success: Leave application updated successfully!";
+                        TempData["AlertType"] = "success"; 
                         return RedirectToAction("Index");
                     }
                     else
                     {
-                        MessageBox.Show(
-                            "The start date must not be less than today",
-                            "Validation Errors",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
+                        TempData["AlertMessage"] = "The start date must not be less than today.";
+                        TempData["AlertType"] = "error"; 
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(
-                        "The start date should not be greater than end date!",
-                        "Application Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+                    TempData["AlertMessage"] = "The start date should not be greater than the end date!";
+                    TempData["AlertType"] = "error"; 
                     Console.WriteLine(ex.Message);
                 }
             }
             else
             {
-                MessageBox.Show(
-                    "There were validation errors. Please correct them and try again!",
-                    "Validation Errors",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["AlertMessage"] = "There were validation errors. Please correct them and try again!";
+                TempData["AlertType"] = "error"; 
             }
 
-            return View("Edit");
+            return View("Edit", leaveApplicationBindingModel);
         }
+
 
 
 
@@ -329,7 +281,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 {
                     var authorizationStatus = leaveApplicationDTO.LeaveAuthOption;
 
-                    // Set the LeaveApplication status based on the selected authorization option (Approve or Reject)
                     switch (authorizationStatus)
                     {
                         case LeaveAuthOption.Approve:
@@ -342,75 +293,39 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                             break;
                     }
 
-                    // Call the service to authorize the leave application and update the status
                     var result = await _channelService.AuthorizeLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
 
                     if (result)
                     {
-                        string message = string.Empty;
+                        string message = authorizationStatus == LeaveAuthOption.Approve
+                            ? "Operation Success: Leave approved successfully!"
+                            : "Operation Success: Leave rejected successfully!";
 
-                        // Show specific message based on the approval/rejection status
-                        if (authorizationStatus == LeaveAuthOption.Approve)
-                        {
-                            message = "Operation Success: Leave approved successfully!";
-                        }
-                        else if (authorizationStatus == LeaveAuthOption.Reject)
-                        {
-                            message = "Operation Success: Leave rejected successfully!";
-                        }
-
-                        MessageBox.Show(
-                            message,
-                            "Leave Management",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
+                        TempData["AlertMessage"] = message;
+                        TempData["AlertType"] = "success"; 
 
                         return RedirectToAction("Index");
                     }
                     else
                     {
-                        // If the operation failed, show an error message
-                        MessageBox.Show(
-                            "An error occurred while updating the leave approval. Please try again.",
-                            "Application Error",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
+                        TempData["AlertMessage"] = "An error occurred while updating the leave approval. Please try again.";
+                        TempData["AlertType"] = "error";
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Exception handling: log and display the error
-                    MessageBox.Show(
-                        "An error occurred while updating the leave approval. Please try again.",
-                        "Application Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+                    TempData["AlertMessage"] = "An error occurred while updating the leave approval. Please try again.";
+                    TempData["AlertType"] = "error";
                     Console.WriteLine(ex.Message);
                 }
             }
             else
             {
-                // Validation failed
-                MessageBox.Show(
-                    "There were validation errors. Please correct them and try again.",
-                    "Error Message",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["AlertMessage"] = "There were validation errors. Please correct them and try again.";
+                TempData["AlertType"] = "error";
             }
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
 

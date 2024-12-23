@@ -114,47 +114,29 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 {
                     await _channelService.AddDepartmentAsync(departmentDTO, GetServiceHeader());
 
-                    MessageBox.Show(
-                        "Operation Success: Department created successfully!",
-                        "Customer Receipts",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
-
+                    TempData["Message"] = "Operation Success: Department created successfully!";
+                    TempData["MessageType"] = "success"; 
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
 
-                    MessageBox.Show(
-                        "An error occurred while creating the department. Please try again.",
-                        "Customer Receipts",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+                    TempData["Message"] = "An error occurred while creating the department. Please try again.";
+                    TempData["MessageType"] = "error"; 
                 }
             }
             else
             {
                 string errorMessages = string.Join(Environment.NewLine, departmentDTO.ErrorMessages);
 
-                MessageBox.Show(
-                    $"Validation Errors: {errorMessages}",
-                    "Customer Receipts",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["Message"] = $"Validation Errors: {errorMessages}";
+                TempData["MessageType"] = "warning"; 
             }
 
             return View(departmentDTO);
         }
+
 
 
 
@@ -169,22 +151,17 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, DepartmentDTO departmentBindingModel)
+        public async Task<ActionResult> Edit(Guid id, DepartmentDTO departmentDTO)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _channelService.UpdateDepartmentAsync(departmentBindingModel, GetServiceHeader());
+                    await _channelService.UpdateDepartmentAsync(departmentDTO, GetServiceHeader());
+                    TempData["Message"] = "Operation Success: Department updated successfully!";
+                    TempData["MessageType"] = "success";
 
-                    MessageBox.Show(
-                        "Operation Success: Department updated successfully!",
-                        "Customer Receipts",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+                   
 
 
                     return RedirectToAction("Index");
@@ -192,30 +169,22 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                    TempData["Message"] = "An error occurred while updating the department. Please try again!!";
+                    TempData["MessageType"] = "error";
 
-                    MessageBox.Show(
-                        "An error occurred while updating the department. Please try again.",
-                        "Update Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+                   
                 }
             }
             else
             {
-                MessageBox.Show(
-                    "Validation Errors: Please correct the errors and try again.",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                string errorMessages = string.Join(Environment.NewLine, departmentDTO.ErrorMessages);
+
+                TempData["Message"] = $"Validation Errors: {errorMessages}";
+                TempData["MessageType"] = "warning";
+               
             }
 
-            return View(departmentBindingModel);
+            return View(departmentDTO);
         }
 
 

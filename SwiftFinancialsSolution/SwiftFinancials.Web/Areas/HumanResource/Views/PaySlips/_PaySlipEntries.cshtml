@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Application.MainBoundedContext.DTO.HumanResourcesModule.PaySlipEntryDTO>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Account Number</th>
+                <th>G/L Name</th>
+                <th>G/L Name</th>
+                <th>G/L Name</th>
+                <th>G/L Name</th>
+                <th>G/L Name</th>
+                <th>G/L Name</th>
+                <th>G/L Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in Model)
+            {
+            <tr>
+                <td>@entry.Description</td>
+                <td>@entry.CustomerAccountFullAccountNumber</td>
+                <td>@entry.ChartOfAccountName</td>
+                <td>@entry.SalaryHeadCategoryDescription</td>
+                <td>@entry.ChartOfAccountName</td>
+                <td>@entry.ChartOfAccountName</td>
+                <td>@entry.ChartOfAccountName</td>
+                <td>@entry.ChartOfAccountName</td>
+                <td>@entry.ChartOfAccountName</td>
+                <td>@entry.ChartOfAccountName</td>
+
+                
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No entries available for this payslip.</p>
+}

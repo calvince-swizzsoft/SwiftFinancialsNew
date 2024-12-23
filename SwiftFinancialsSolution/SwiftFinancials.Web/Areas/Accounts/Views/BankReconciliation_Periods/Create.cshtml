@@ -60,15 +60,19 @@
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-4">
-                                    @Html.LabelFor(model => model.PostingPeriodId, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
-                                        @Html.HiddenFor(model => model.PostingPeriodId)
-                                        @Html.TextBoxFor(model => model.PostingPeriodDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Posting Period..." })
+                                    @Html.LabelFor(model => model.PostingPeriodDescription, new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
+                                    <div class="input-group">
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "PostingPeriodDescription", @readonly = "" } })
                                         <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#postingPeriodLookupModal"><span class="fa fa-search"></span></a>
+                                            <a data-toggle="modal" data-target="#PostingPeriodLookup">
+                                                <span class="fa fa-search"></span>
+                                            </a>
                                         </span>
                                     </div>
+                                    @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
                                 </div>
+
 
                                 <div class="col-lg-4 form-group">
                                     @Html.LabelFor(model => model.BankLinkageBankName, new { @class = "control-label" })
@@ -197,22 +201,34 @@
 </div>
 
 
-<div class="modal  fade" id="postingPeriodLookupModal" role="dialog" aria-hidden="true">
+<div class="modal fade" id="PostingPeriodLookup" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h3 class="font-bold">Posting Period Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                <h3 class="font-bold">
+                    PostingPeriod Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
             </div>
-            <table id="postingPeriodsGrid" class="table table-striped table-bordered table-hover" style="width:100%">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="modal-body">
+                <table id="PostingPeriodsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
 
+                            <th>Description</th>
+                            <th>IsLocked</th>
+                            <th>IsActive</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
@@ -358,54 +374,86 @@
     </script>
 
 
+   
+
     <script>
-         $(document).ready(function () {
-             $('#postingPeriodsGrid').DataTable({
-                // Ajax settings
+               $(document).ready(function () {
+                   $('#PostingPeriodsGrid').DataTable({
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "PostingPeriod", new { Area = "Accounts" }))",
+                "sAjaxSource": "@Url.Action("Index", "PostingPeriod", new { Area = "Accounts" })",
                 "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/BankReconciliation_Periods/PostingPeriod/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
                 },
-                // Display settings
                 "aoColumns": [
                     { "mDataProp": "Description", "sTitle": "Posting Period Name", "sWidth": "15%" },
                     { "mDataProp": "IsLocked", "sTitle": "Is Locked", "sWidth": "5%" },
                     { "mDataProp": "IsActive", "sTitle": "Is Active", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
                 "aaSorting": [[0, "desc"]]
             });
 
-            $("#s tbody").on("click", "tr", function () {
-                var data = postingPeriodsGrid.row(this).data();
+                   $('#PostingPeriodsGrid tbody').on('click', '.select-customer', function () {
+                       var PostingPeriodId = $(this).data('id');
 
-                $('#PostingPeriodId').val(data.Id);
-                $('input[name=PostingPeriodId]').val(data.Id);
-                $('input[name=PostingPeriodDescription]').val(data.PostingPeriodDescription);
+                $.ajax({
+                    url: '@Url.Action("PostingPeriod", "BankReconciliation_Periods", new { Area = "Accounts" })',
+                    type: 'GET',
+                    data: { PostingPeriodId: PostingPeriodId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#PostingPeriodDescription').val(response.data.PostingPeriodDescription);
+                            $('#PostingPeriodId').val(response.data.PostingPeriodId);
 
-                //$('#CustomerAccount.FullAccountNumber').val(LoanProductsMap[item].CustomerAccount.FullAccountNumber);
-                //$('#CustomerAccount.CustomerFullName').val(LoanProductsMap[item].CustomerAccount.CustomerFullName);
-                $('#CompaniesLookup').modal('hide');
+
+
+
+
+
+                            $('#PostingPeriodLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Salary Group details.');
+                    }
+                });
             });
         });
+
     </script>
+
 }
