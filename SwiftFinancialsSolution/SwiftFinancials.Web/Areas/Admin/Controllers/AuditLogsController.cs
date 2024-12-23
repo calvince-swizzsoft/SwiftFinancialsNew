@@ -1,30 +1,50 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AdministrationModule;
+using DistributedServices.MainBoundedContext.Identity;
 using Domain.MainBoundedContext.AdministrationModule.Aggregates.BankBranchAgg;
+using Infrastructure.Crosscutting.Framework.Utils;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataProtection;
 using Newtonsoft.Json;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using SwiftFinancials.Web.Identity;
+using SwiftFinancials.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Admin.Controllers
 {
-    public class BankController : MasterController
+    public class AuditLogsController : MasterController
     {
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
-
             return View();
         }
 
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
+
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            //if (user != null)
+            //{
+            //    return Json(RedirectToAction("Index"));
+
+            //}ENDDATE
+
+            DateTime start = DateTime.Now.AddDays(-2555);
+            DateTime end = DateTime.Now;
+            string text = "";
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -35,7 +55,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindBanksByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindAuditLogsByDateRangeAndFilterInPageAsync(pageIndex, jQueryDataTablesModel.iDisplayLength,start, end,text,GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -47,8 +67,76 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<BankDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<AuditLogDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+        //
+        //// GET: /Account/Login
+        //[AllowAnonymous]
+        //public ActionResult Login(string returnUrl)
+        //{
+        //    ViewBag.ReturnUrl = returnUrl;
+        //    return View();
+        //}
+
+        ////
+        //// POST: /Account/Login
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        //{
+        //    using (_applicationUserManager)
+        //    {
+        //        if (!ModelState.IsValid)
+        //            return View(model);
+
+        //        ApplicationUser user = await _applicationUserManager.FindByEmailAsync(model.Email);
+
+        //        if (user != null)
+        //        {
+        //            if (user.LastPasswordChangedDate == null)
+        //            {
+        //                TempData["ApplicationUser"] = user;
+
+        //                return RedirectToAction("ForceChangePassword", "Account");
+        //            }
+        //            else if (user.LastPasswordChangedDate.Value.AddDays(_passwordExpiryPeriod) < DateTime.Now)
+        //            {
+        //                TempData["ApplicationUser"] = user;
+
+        //                return RedirectToAction("ForceChangePassword", "Account");
+        //            }
+        //            else if (user.LockoutEnabled)
+        //            {
+        //                return View("Lockout");
+        //            }
+        //            else
+        //            {
+        //                // This doesn't count login failures towards account lockout
+        //                // To enable password failures to trigger account lockout, change to shouldLockout: true
+        //                var result = await _signInManager.PasswordSignInAsync(userName: user.UserName, password: model.Password, isPersistent: false, shouldLockout: false);
+
+        //                switch (result)
+        //                {
+        //                    case SignInStatus.Success:
+        //                        //load navigation access rights
+        //                        await LoadModuleAccessRights(user.UserName);
+        //                        return View("Index");
+        //                    case SignInStatus.LockedOut:
+        //                        return View("Lockout");
+        //                    case SignInStatus.RequiresVerification:
+        //                        return RedirectToAction("SendCode", new { model.Email, ReturnUrl = returnUrl });
+        //                    case SignInStatus.Failure:
+        //                    default:
+        //                        ModelState.AddModelError("", "Invalid login attempt.");
+        //                        return View(model);
+        //                }
+        //            }
+        //        }
+
+        //        return View(model);
+        //    }
+        //}
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -93,6 +181,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(BankDTO bank)
         {
             bank.ValidateAll();
