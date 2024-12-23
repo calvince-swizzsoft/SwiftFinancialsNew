@@ -247,7 +247,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("ChartOfAccountsIndex", "CreditType", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));

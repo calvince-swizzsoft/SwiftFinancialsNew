@@ -208,6 +208,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (Session["savingsProductId"] == null && Session["loanProductId"] == null && Session["investmentProductId"] == null)
             {
+                await ServeNavigationMenus();
+
+                ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+                ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
+
                 TempData["emptyProduct"] = "No Product has been selected!";
                 return View(debitTypeDTO);
             }
@@ -289,29 +295,40 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         public async Task<ActionResult> Edit(Guid id)
         {
-            Session["DebitTypeId"] = id;
-
             await ServeNavigationMenus();
 
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
 
             var debitTypeDTO = await _channelService.FindDebitTypeAsync(id, GetServiceHeader());
 
-            Session["Description"] = debitTypeDTO.Description;
-
-            var productCode = debitTypeDTO.CustomerAccountTypeProductCode;
-            Session["productCode"] = productCode;
-
             var applicableCharges = await _channelService.FindCommissionsByDebitTypeIdAsync(id, GetServiceHeader());
+            var commissions = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            var applicableChargeIds = new HashSet<Guid>(applicableCharges.Select(ac => ac.Id));
 
-            ViewBag.applicableChargesedit = applicableCharges;
+            ViewBag.Commissions = commissions;
+            ViewBag.ApplicableCharges = applicableCharges;
+            ViewBag.CheckedStates = commissions.ToDictionary(c => c.Id.ToString(), c => applicableChargeIds.Contains(c.Id));
 
             return View(debitTypeDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(DebitTypeDTO debitTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
+        public async Task<ActionResult> Edit(DebitTypeDTO debitTypeDTO, string SelectedIds)
         {
+            var commissions = new ObservableCollection<CommissionDTO>();
+
+            var ids = SelectedIds.Split(',').Select(Guid.Parse).ToList();
+
+            if (ids != null)
+            {
+                foreach (var commission in ids)
+                {
+                    var foundCommission = await _channelService.FindCommissionAsync(commission, GetServiceHeader());
+                    commissions.Add(foundCommission);
+                }
+            }
 
             debitTypeDTO.ValidateAll();
 
@@ -319,7 +336,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var result = await _channelService.UpdateDebitTypeAsync(debitTypeDTO, GetServiceHeader());
 
-                await _channelService.UpdateCommissionsByDebitTypeIdAsync(debitTypeDTO.Id, selectedRows, GetServiceHeader());
+                await _channelService.UpdateCommissionsByDebitTypeIdAsync(debitTypeDTO.Id, commissions, GetServiceHeader());
 
                 TempData["Edit"] = "Successfully Edited Debit Type";
 
@@ -329,7 +346,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var errorMessages = debitTypeDTO.ErrorMessages;
 
-                ViewBag.ProductCode = GetProductCodeSelectList(debitTypeDTO.CustomerAccountTypeProductCode.ToString());
+                ViewBag.ProductCode = GetProductCodeSelectList(debitTypeDTO.CustomerAccountTypeProductCodeDescription.ToString());
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(debitTypeDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
                 TempData["EditError"] = "Failed to Edit Debit Type";
 
