@@ -19,6 +19,8 @@
     var productCode = ViewBag.ProductCodeSelectList as List<SelectListItem>;
     var chargeType = ViewBag.ChargeType as List<SelectListItem>;
     var auxiliaryLoanCondition = ViewBag.AuxiliaryLoanConditions as List<SelectListItem>;
+    var knownChargeTypeDescription = ViewBag.LoanProductKnownChargeType as List<SelectListItem>;
+    var chargeBasisValueDescription = ViewBag.LoanProductChargeBasisValue as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom bg-white page-heading">
     <div class="col-lg-10">
@@ -611,6 +613,9 @@
 
                                             <ul class="flex flex-wrap space-x-2 mb-6 secondary-tabs" role="tablist">
                                                 <li>
+                                                    <a class="px-3 py-1 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600 text-sm" data-toggle="tab" href="#wellknownCharges" role="tab">Well-Known Charges</a>
+                                                </li>
+                                                <li>
                                                     <a class="px-3 py-1 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600 text-sm" data-toggle="tab" href="#indefiniteCharges" role="tab">Indefinite Charges</a>
                                                 </li>
                                                 <li>
@@ -638,8 +643,56 @@
                                             </ul>
 
                                             <div class="inner-tab-content">
+                                                <div id="wellknownCharges" class="inner-tab-pane active">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group form-group-lg">
+                                                                @Html.LabelFor(model => model.commissions[0].KnownChargeType, htmlAttributes: new { @class = "control-label" })
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                                    @Html.DropDownListFor(model => model.commissions[0].KnownChargeType, knownChargeTypeDescription, new { @class = "form-control input-md" })
+                                                                    @Html.ValidationMessageFor(model => model.commissions[0].KnownChargeType)
+                                                                </div>
+                                                            </div>
+                                                        </div>
 
-                                                <div id="indefiniteCharges" class="inner-tab-pane active">
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group form-group-lg">
+                                                                @Html.LabelFor(model => model.commissions[0].ChargeBasisValue, htmlAttributes: new { @class = "control-label" })
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                                    @Html.DropDownListFor(model => model.commissions[0].ChargeBasisValue, chargeBasisValueDescription, new { @class = "form-control input-md" })
+                                                                    @Html.ValidationMessageFor(model => model.commissions[0].ChargeBasisValue)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="wellknownCharges" class="inner-tab-pane">
+                                                        <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Well-known Charges</h3>
+                                                        <div style="text-align: left;">
+                                                            <input type="checkbox" id="wcheaderCheckbox" style="transform: scale(1); color: blue;">
+                                                            <label for="wcheaderCheckbox" style="font-weight: bold; color:#333;">Select All</label>
+                                                        </div>
+
+                                                        <div class="table-responsive">
+                                                            <table id="WellknownChargesGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td colspan="7" class="dataTables_empty">
+                                                                            Loading data from server
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div id="indefiniteCharges" class="inner-tab-pane">
                                                     <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Indefinite Charges</h3>
                                                     <div style="text-align: left;">
                                                         <input type="checkbox" id="icheaderCheckbox" style="transform: scale(1); color: blue;">
@@ -1733,6 +1786,139 @@
         });
     </script>
 
+    @*Well-KnownCharges*@
+<script>
+       $(document).ready(function () {
+    var selectedCharges = [];
+
+    // Clear the stored checkbox state on page reload
+    localStorage.removeItem('selectedCharges');
+
+    // Function to load checkbox state
+    function loadCheckboxState() {
+        var storedCharges = localStorage.getItem('selectedCharges');
+        if (storedCharges) {
+            selectedCharges = JSON.parse(storedCharges);
+
+            selectedCharges.forEach(function (charge) {
+                var checkbox = $('#wc_' + charge.Id);
+                if (checkbox.length) {
+                    checkbox.prop('checked', true);
+                }
+            });
+        }
+    }
+
+    // Function to save checkbox state
+    function saveCheckboxState() {
+        localStorage.setItem('selectedCharges', JSON.stringify(selectedCharges));
+    }
+
+    // Function to update selected charges on the server
+    function updateSelectedChargesOnServer() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("StoreSelectedWellknownCharges", "LoanProduct")',
+            contentType: 'application/json',
+            data: JSON.stringify(selectedCharges),
+            success: function (response) {
+                if (response.success) {
+                    console.log("Charges updated successfully in session.");
+                } else {
+                    console.log("Error updating charges in session.");
+                }
+            },
+            error: function (error) {
+                console.log("Error occurred while updating charges: ", error);
+            }
+        });
+    }
+
+    // Initialize the DataTable
+    var table = $('#WellknownChargesGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "Commission", new { Area = "Accounts" }))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData) {
+            var checkboxHTML = '<input type="checkbox" class="wcrowCheckbox" id="wc_' + aData.Id + '">';
+            $('td:eq(0)', nRow).html(checkboxHTML);
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.1%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[1, "asc"]],
+        "initComplete": function () {
+            loadCheckboxState();
+        }
+    });
+
+    // Event handler for individual checkbox change
+    $('#WellknownChargesGrid').on('change', '.wcrowCheckbox', function () {
+        var chargeId = $(this).attr('id').replace('wc_', '');
+        var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
+
+        // Capture dropdown values
+        var knownChargeType = $('#KnownChargeType').val();  // Assuming you're assigning the ID to your dropdowns
+        var chargeBasisValue = $('#ChargeBasisValue').val();  // Similarly for the other dropdown
+
+        var chargeData = {
+            Id: chargeId,
+            Description: chargeDescription,
+            KnownChargeType: knownChargeType,
+            ChargeBasisValue: chargeBasisValue
+        };
+
+        if ($(this).is(':checked')) {
+            selectedCharges.push(chargeData);
+        } else {
+            selectedCharges = selectedCharges.filter(charge => charge.Id !== chargeId);
+        }
+
+        saveCheckboxState();
+        updateSelectedChargesOnServer();
+    });
+
+    // Add a header checkbox to select/deselect all rows
+    $('#WellknownChargesGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="wcheaderCheckbox"> Select / Deselect All</div>');
+
+    // Event handler for the header checkbox change
+    $('#wcheaderCheckbox').on('change', function () {
+        var isChecked = $(this).prop('checked');
+        $('.wcrowCheckbox').prop('checked', isChecked).each(function () {
+            var chargeId = $(this).attr('id').replace('wc_', '');
+            var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
+
+            var knownChargeType = $('#KnownChargeType').val();
+            var chargeBasisValue = $('#ChargeBasisValue').val();
+
+            var chargeData = {
+                Id: chargeId,
+                Description: chargeDescription,
+                KnownChargeType: knownChargeType,
+                ChargeBasisValue: chargeBasisValue
+            };
+
+            if (isChecked) {
+                if (!selectedCharges.some(charge => charge.Id === chargeId)) {
+                    selectedCharges.push(chargeData);
+                }
+            } else {
+                selectedCharges = selectedCharges.filter(charge => charge.Id !== chargeId);
+            }
+        });
+
+        saveCheckboxState();
+        updateSelectedChargesOnServer();
+    });
+});
+
+</script>
+
+
 
     @*Indefinite Charges*@
     <script>
@@ -2821,20 +3007,20 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `
-                                <tr data-id="${entry.Id}">
-                                    <td>${entry.Description || ''}</td>
-                                    <td>${entry.CustomerAccountTypeTargetProductDescription || ''}</td>
-                                    <td>${entry.ChargeType || ''}</td>
-                                    <td>${entry.ChargeFixedAmount || ''}</td>
-                                    <td>${entry.ChargePercentage || ''}</td>
-                                    <td>${entry.NetOffInvestmentBalance ? 'Yes' : 'No'}</td>
-                                    <td>${entry.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">
-                                            Remove
-                                        </button>
-                                    </td>
-                                </tr>`;
+                                        <tr data-id="${entry.Id}">
+                                            <td>${entry.Description || ''}</td>
+                                            <td>${entry.CustomerAccountTypeTargetProductDescription || ''}</td>
+                                            <td>${entry.ChargeType || ''}</td>
+                                            <td>${entry.ChargeFixedAmount || ''}</td>
+                                            <td>${entry.ChargePercentage || ''}</td>
+                                            <td>${entry.NetOffInvestmentBalance ? 'Yes' : 'No'}</td>
+                                            <td>${entry.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2965,10 +3151,10 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                    <td>${entry.RangeLowerLimit}</td>
-                                                                    <td>${entry.RangeUpperLimit}</td>
-                                                                    <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
-                                                                </tr>`;
+                                                                            <td>${entry.RangeLowerLimit}</td>
+                                                                            <td>${entry.RangeUpperLimit}</td>
+                                                                            <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
+                                                                        </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -3088,12 +3274,12 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                            <td>${entry.RangeLowerLimit}</td>
-                            <td>${entry.RangeUpperLimit}</td>
-                            <td>${entry.LoaneeMultiplier}</td>
-                            <td>${entry.GuarantorMultiplier}</td>
-                            <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
-                        </tr>`;
+                                    <td>${entry.RangeLowerLimit}</td>
+                                    <td>${entry.RangeUpperLimit}</td>
+                                    <td>${entry.LoaneeMultiplier}</td>
+                                    <td>${entry.GuarantorMultiplier}</td>
+                                    <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
+                                </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -3204,13 +3390,13 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                                                               <td>${entry.TargetLoanProductDescription}</td>
-                                                                                                                                                                <td>${entry.ConditionDescription}</td>
-                                                                                                                                                                <td>${entry.MaximumEligiblePercentage}</td>
+                                                                                                                                                                       <td>${entry.TargetLoanProductDescription}</td>
+                                                                                                                                                                        <td>${entry.ConditionDescription}</td>
+                                                                                                                                                                        <td>${entry.MaximumEligiblePercentage}</td>
 
 
-                                                                                                                                                               <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
-                                                                                                                                                           </tr>`;
+                                                                                                                                                                       <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                                                                   </tr>`;
                     tableBody.append(row);
                 });
             }

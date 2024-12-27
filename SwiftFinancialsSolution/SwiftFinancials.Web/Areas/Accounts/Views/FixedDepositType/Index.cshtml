@@ -54,7 +54,7 @@
             <div class="ibox">
                 <div class="ibox-title">
                     @Html.ActionLink("Create Fixed DepositType", "Create", "FixedDepositType", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
-                    @if (TempData["SuccessMessage"] != null)
+                    @*@if (TempData["SuccessMessage"] != null)
                     {
                         <div class="alert alert-success">
                             <strong>Success !</strong> @TempData["SuccessMessage"]
@@ -65,7 +65,7 @@
                                 </span>
                             </button>
                         </div>
-                    }
+                    }*@
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -103,6 +103,21 @@
 
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const successMessage = "@TempData["SuccessMessage"]";
+        if (successMessage) {
+            Swal.fire({
+                title: 'Success!',
+                text: successMessage,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
 
@@ -128,7 +143,7 @@
                     var editUrl = '<a  href="/accounts/FixedDepositType/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/FixedDepositType/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(2)', nRow).html(dt_Created);
 
 
                     var dropdownHtml = `
@@ -137,17 +152,16 @@
                                 Actions
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/accounts/FixedDepositType/details/${aData.Id}">View</a>                              
+                                <a class="dropdown-item" href="/accounts/FixedDepositType/details/${aData.Id}">View</a>
                             </div>
                         </div>`;
 
-                    $('td:eq(4)', nRow).html(dropdownHtml);
+                    $('td:eq(3)', nRow).html(dropdownHtml);
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
                     { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-                    { "mDataProp": "Months", "sTitle": "Months", "sWidth": "10%" },
                     { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],

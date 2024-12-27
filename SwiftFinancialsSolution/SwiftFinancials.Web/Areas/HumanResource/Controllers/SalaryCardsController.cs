@@ -243,60 +243,38 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 {
                     var salaryCard = await _channelService.AddSalaryCardAsync(salaryCardDTO, GetServiceHeader());
 
-                    if (salaryCard == null) // Salary card already exists
+                    if (salaryCard == null) 
                     {
-                        // Show error message
-                        MessageBox.Show(
-                            "A salary card already exists for the selected employee.",
-                            "Salary Card",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
+                        TempData["AlertMessage"] = "A salary card already exists for the selected employee.";
+                        TempData["AlertType"] = "warning";
 
                         return View(salaryCardDTO);
                     }
 
-                    // Operation successful
-                    MessageBox.Show(
-                        "Operation Success",
-                        "Salary Card",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+                    TempData["AlertMessage"] = "Salary card created successfully!";
+                    TempData["AlertType"] = "success";
 
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    MessageBox.Show(
-                        "An unexpected error occurred while processing the request.",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+
+                    TempData["AlertMessage"] = "An unexpected error occurred while processing the request.";
+                    TempData["AlertType"] = "error";
+
+                    return View(salaryCardDTO);
                 }
             }
             else
             {
-                MessageBox.Show(
-                    "There were validation errors. Please correct them and try again!",
-                    "Validation Errors",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-            }
+                TempData["AlertMessage"] = "There were validation errors. Please correct them and try again!";
+                TempData["AlertType"] = "error";
 
-            return View(salaryCardDTO);
+                return View(salaryCardDTO);
+            }
         }
+
 
         //[HttpGet]
         //public async Task<ActionResult> GetSalaryGroupEntryDetails(Guid salaryGroupId)
@@ -383,6 +361,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (salaryCardDTO.HasErrors)
             {
                 // If there are validation errors, return the view with the error messages
+                TempData["AlertMessage"] = "There are validation errors. Please correct them and try again.";
+                TempData["AlertType"] = "error";
                 return View(salaryCardDTO);
             }
 
@@ -396,6 +376,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (salaryCardDTO.SalaryGroupId == Guid.Empty)
             {
                 ModelState.AddModelError("SalaryGroupId", "Salary Group is required.");
+                TempData["AlertMessage"] = "Salary Group is required.";
+                TempData["AlertType"] = "error";
                 return View(salaryCardDTO);
             }
 
@@ -406,27 +388,24 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 if (updateSuccess)
                 {
-                    // You can show success messages using MessageBox or any other notification
-                    MessageBox.Show(
-                        "Operation Success",
-                        "Salary Group Update",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
-
+                    TempData["AlertMessage"] = "Salary Group updated successfully!";
+                    TempData["AlertType"] = "success";
                     return RedirectToAction("Index");
                 }
                 else
                 {
                     // Handle unsuccessful update
-                    TempData["ErrorMessage"] = "There was an issue updating the Salary Group.";
+                    TempData["AlertMessage"] = "There was an issue updating the Salary Group.";
+                    TempData["AlertType"] = "error";
                     return View(salaryCardDTO);
                 }
             }
             catch (Exception ex)
             {
                 // Handle any exceptions that occur during the update
-                TempData["ErrorMessage"] = "An error occurred while updating the SalaryCard. Please try again.";
+                Console.WriteLine(ex.Message);
+                TempData["AlertMessage"] = "An error occurred while updating the SalaryCard. Please try again.";
+                TempData["AlertType"] = "error";
                 return View(salaryCardDTO);
             }
         }
@@ -434,101 +413,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
 
 
-        public async Task<ActionResult> Approval(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var leaveApplicationDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
-
-            return View(leaveApplicationDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Approval(Guid id, LeaveApplicationDTO leaveApplicationDTO)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    // Map the selected LeaveAuthOption to a status or pass it to the service as is.
-                    var authorizationStatus = leaveApplicationDTO.LeaveAuthOption;
-
-                    // Assuming the service handles the enum directly.
-                    await _channelService.AuthorizeLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
-
-                    TempData["SuccessMessage"] = "Leave approval updated successfully!";
-                    return RedirectToAction("Index");
-                }
-                catch (Exception ex)
-                {
-                    TempData["ErrorMessage"] = "An error occurred while updating the leave approval. Please try again.";
-                    Console.WriteLine(ex.Message);
-                }
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
-            }
-
-            return View("Index");
-        }
 
 
-        public async Task<ActionResult> Recall(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var leaveApplicationDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
-
-            return View(leaveApplicationDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Recall(Guid id, LeaveApplicationDTO leaveApplicationDTO)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    // Ensure that the leave application is eligible for recall
-                    // Example: You can check if the status is 'Approved' or 'Pending' before recalling
-                    var leaveApplication = await _channelService.FindLeaveApplicationAsync(id);
-
-                    if (leaveApplication == null)
-                    {
-                        TempData["ErrorMessage"] = "Leave application not found.";
-                        return RedirectToAction("Index");
-                    }
-
-                    // Call the method to recall the leave application
-                    bool isRecallSuccessful = await _channelService.RecallLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
-
-                    if (isRecallSuccessful)
-                    {
-                        TempData["SuccessMessage"] = "Leave recall processed successfully!";
-                    }
-                    else
-                    {
-                        TempData["ErrorMessage"] = "Failed to process leave recall. Please try again.";
-                    }
-
-                    return RedirectToAction("Index");
-                }
-                catch (Exception ex)
-                {
-                    TempData["ErrorMessage"] = "An error occurred while recalling the leave application. Please try again.";
-                    Console.WriteLine(ex.Message);
-                }
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "There were validation errors. Please correct them and try again.";
-            }
-
-            return View("Index");
-        }
 
         [HttpPost]
         public async Task<ActionResult> UpdateSalaryCardEntry(SalaryCardEntryDTO salaryCardEntryDTO)

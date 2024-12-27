@@ -117,7 +117,7 @@
         margin: 10px;
         font-size: 18px;
         font-weight: bold;
-        background-color: #00e0ff;
+        background-color: #e0f0ff;
     }
 
 
@@ -134,7 +134,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "BatchOrigination_VoucherController", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "BatchOrigination_Voucher", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -197,7 +197,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     <div class="main">
                         @using (Html.BeginForm("Add", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "Addform" }))
                         {
@@ -330,7 +330,7 @@
                                 <div class="row">
                                     <!-- Center the Submit button -->
                                     <div style="text-align: right; margin: 20px 20px;">
-                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                        <input type="submit" value="Add" class="btn btn-primary"  style="width: 150px; border-radius: 4px;" />
                                     </div>
 
                                 </div>

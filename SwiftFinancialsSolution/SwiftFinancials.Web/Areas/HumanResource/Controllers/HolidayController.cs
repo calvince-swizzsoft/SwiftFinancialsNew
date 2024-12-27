@@ -108,15 +108,10 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 // Save the holiday if no errors are present
                 await _channelService.AddHolidayAsync(holidayDTO, GetServiceHeader());
+                TempData["Message"] = "Operation Success: Holiday Created Successfully!";
+                TempData["MessageType"] = "Success";
 
-                MessageBox.Show(
-                    "Operation Success: Holiday has been created.",
-                    "Holiday Management",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+               
 
                 return RedirectToAction("Index");
             }
@@ -126,27 +121,16 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 if (holidayDTO.ErrorMessages.Any())
                 {
                     var errorMessages = string.Join("\n- ", holidayDTO.ErrorMessages);
+                    TempData["Message"] = "An unspecified error occurred during validation.";
+                    TempData["MessageType"] = "error";
 
-                    MessageBox.Show(
-                        $"The following errors occurred:\n- {errorMessages}",
-                        "Validation Errors",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+                   
                 }
                 else
                 {
-                    // Fallback if no specific messages are present
-                    MessageBox.Show(
-                        "An unspecified error occurred during validation.",
-                        "Validation Errors",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+                    TempData["Message"] = "Operation Success: Holiday Created Successfully!";
+                    TempData["MessageType"] = "error";
+                   
                 }
 
                 return View(holidayDTO);
@@ -171,29 +155,17 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateHolidayAsync(holidayDTO, GetServiceHeader());
-                MessageBox.Show(
-                   "Operation Success: Holiday has been updated.",
-                   "Holiday Management",
-                   MessageBoxButtons.OK,
-                   MessageBoxIcon.Information,
-                   MessageBoxDefaultButton.Button1,
-                   MessageBoxOptions.ServiceNotification
-               );
-
+                TempData["Message"] = "Operation Success: Holiday has been updated.";
+                TempData["MessageType"] = "Success";
+               
 
                 return RedirectToAction("Index");
             }
             else
             {
-                // Fallback if no specific messages are present
-                MessageBox.Show(
-                    "An unspecified error occurred during validation.",
-                    "Validation Errors",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["Message"] = "An unspecified error occurred during validation.";
+                TempData["MessageType"] = "error";
+                
             }
             return View(holidayDTO);
 

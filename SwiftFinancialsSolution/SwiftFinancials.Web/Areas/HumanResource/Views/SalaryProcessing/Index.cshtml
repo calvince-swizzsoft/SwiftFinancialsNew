@@ -16,6 +16,24 @@
         </ol>
     </div>
 </div>
+@{
+    var sweetAlertMessage = TempData["SweetAlertMessage"] as string;
+    var sweetAlertIcon = TempData["SweetAlertIcon"] as string;
+}
+
+@if (!string.IsNullOrEmpty(sweetAlertMessage))
+{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            title: 'Notification',
+            text: '@sweetAlertMessage',
+            icon: '@sweetAlertIcon',
+            confirmButtonText: 'OK'
+        });
+    </script>
+}
+
 
 <div class="col-lg-12">
     <div class="nav1">

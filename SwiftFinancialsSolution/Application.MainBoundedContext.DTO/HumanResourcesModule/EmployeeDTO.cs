@@ -495,7 +495,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
                 return Enum.IsDefined(typeof(RecordStatus), EmployeeCustomerRecordStatus) ? EnumHelper.GetDescription((RecordStatus)EmployeeCustomerRecordStatus) : string.Empty;
             }
         }
-
+    public string EmployeeDesignationDescription { get; set; }
         public string errormassage { get; set; }
 
     }

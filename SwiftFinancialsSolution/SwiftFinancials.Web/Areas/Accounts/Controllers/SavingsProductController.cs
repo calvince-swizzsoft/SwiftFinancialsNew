@@ -69,8 +69,24 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(SavingsProductDTO savingsProductDTO, string[] commisionIds)
+        public async Task<ActionResult> Create(SavingsProductDTO savingsProductDTO, string[] commisionIds, string[] ExcemptedommisionId)
         {
+            ObservableCollection<CommissionDTO> ExcemptedcommissionDTOs = new ObservableCollection<CommissionDTO>();
+
+            if (ExcemptedommisionId != null && ExcemptedommisionId.Any())
+            {
+                var selectedIds = ExcemptedommisionId.Select(Guid.Parse).ToList();
+
+                foreach (var commisionid in selectedIds)
+                {
+                    var commission = await _channelService.FindCommissionAsync(commisionid, GetServiceHeader());
+                    ExcemptedcommissionDTOs.Add(commission);
+                }
+                // Process the selected IDs as needed
+            }
+
+
+
             ObservableCollection<CommissionDTO> commissionDTOs = new ObservableCollection<CommissionDTO>();
             if (commisionIds != null && commisionIds.Any())
             {
@@ -94,6 +110,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var results=  await _channelService.AddSavingsProductAsync(savingsProductDTO, GetServiceHeader());
 
                 await _channelService.UpdateCommissionsBySavingsProductIdAsync(results.Id, commissionDTOs,savingsProductDTO.ChargeType,savingsProductDTO.ChargeBenefactor,GetServiceHeader());
+
+               //await _channelService.UpdateSavingsProductExemptionsBySavingsProductIdAsync(results.Id, ExcemptedcommissionDTOs, GetServiceHeader());
                 TempData["AlertMessage"] = "Savings Product created successfully";
 
                 return RedirectToAction("Index");

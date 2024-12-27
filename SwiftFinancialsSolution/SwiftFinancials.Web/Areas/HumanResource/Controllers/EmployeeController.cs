@@ -182,17 +182,12 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 // Return the view with the employee details
                 return View(employeeDTO);
             }
+            TempData["Message"] = "Operation Success: Employee not found!";
+            TempData["MessageType"] = "ErrorPage";
 
-            MessageBox.Show(
-                "Operation Success: Employee not found.",
-                "Employee ErrorPage",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information,
-                MessageBoxDefaultButton.Button1,
-                MessageBoxOptions.ServiceNotification
-            );
+            
 
-            return RedirectToAction("ErrorPage"); // Replace with your error page action
+            return RedirectToAction("Details"); // Replace with your error page action
         }
 
 
@@ -235,14 +230,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!employeeBindingModel.HasErrors)
             {
                 await _channelService.AddEmployeeAsync(employeeBindingModel, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                TempData["Message"] = "Operation Success: Employee Added Successful!";
+                TempData["MessageType"] = "Success";
+               
 
                 return RedirectToAction("Index");
             }
@@ -279,19 +269,15 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateEmployeeAsync(employeeBindingModel, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
+                TempData["Message"] = "Operation Success: Employee Updated Successful!";
+                TempData["MessageType"] = "Success";
+               
 
                 return RedirectToAction("Index");
             }
             else
             {
+
                 return View(employeeBindingModel);
             }
         }

@@ -1,0 +1,16 @@
+CREATE PROCEDURE sp_GetCustomerDetailsByIdentityCard
+    @IdentityCardNumber NVARCHAR(256)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT c.*, 
+           ISNULL(s.PassportPhoto, NULL) AS PassportPhoto, 
+           ISNULL(s.SignaturePhoto, NULL) AS SignaturePhoto,
+           ISNULL(s.IDCardFrontPhoto, NULL) AS IDCardFrontPhoto,
+           ISNULL(s.IDCardBackPhoto, NULL) AS IDCardBackPhoto
+    FROM swiftFin_Customers c
+    LEFT JOIN swiftFin_SpecimenCapture s
+        ON c.Id = s.CustomerId
+    WHERE c.Individual_IdentityCardNumber = @IdentityCardNumber;
+END;

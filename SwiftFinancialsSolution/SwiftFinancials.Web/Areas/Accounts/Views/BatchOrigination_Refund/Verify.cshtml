@@ -19,10 +19,10 @@
         align-items: center; /* Center content vertically */
         @*justify-content: center; /* Center content horizontally */*@
         font-size: 15px; /* Set font size to 15px */
-       @* text-align: center;*@ /* Center text within elements */
+        @* text-align: center;*@ /* Center text within elements */
         margin-top: 20px;
         font-weight: bold;
-        background-color: #00e0ff;
+        background-color: #e0f0ff;
     }
 
    @* Batch Entries table Styling*@
@@ -220,7 +220,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     @using (Html.BeginForm("Verify", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()

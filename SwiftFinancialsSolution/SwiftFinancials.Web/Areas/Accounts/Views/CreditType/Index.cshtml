@@ -4,7 +4,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Credit Types</h2>
+        <h1>Accouts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -52,19 +52,24 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Credit Types</h2>
+                    <hr />
                     @Html.ActionLink("Create Credit Type", "Create", "CreditType", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+
                     @if (TempData["SuccessMessage"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["SuccessMessage"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Completed Successfully.',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
                     }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>

@@ -3,22 +3,22 @@
     ViewBag.Title = "Departments";
 }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
+<head>
+    <!-- Add this to your head section if it's not already included -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.all.min.js"></script>
+</head>
+    @if (TempData["Message"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: '@TempData["MessageType"]', // success, error, warning
+                title: '@TempData["Message"]',
+                showConfirmButton: true
+            });
+        </script>
+    }
+
 
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -130,10 +130,10 @@
             { "mDataProp": "IsRegistry", "sTitle": "IsRegistry", "sWidth": "10%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]],  
+        "aaSorting": [[0, "desc"]],
     });
 
-    table.ajax.reload(null, false); 
+    table.ajax.reload(null, false);
 });
 
     </script>

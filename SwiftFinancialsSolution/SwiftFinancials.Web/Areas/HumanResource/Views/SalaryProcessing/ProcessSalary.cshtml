@@ -26,6 +26,7 @@
 
 
 
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
@@ -637,13 +638,13 @@
 
                                 // Append the employee data to the table
                                 employeeTableBody.append(`
-                                                <tr>
-                                                    <td hidden>${employee.EmployeeId}</td> <!-- Make EmployeeId hidden -->
-                                                    <td>${employee.EmployeeCustomerFullName}</td>
-                                                    <td>${employee.CardNumber}</td>
-                                                    <td>${employee.Remarks || "N/A"}</td>
-                                                </tr>
-                                            `);
+                                                    <tr>
+                                                        <td hidden>${employee.EmployeeId}</td> <!-- Make EmployeeId hidden -->
+                                                        <td>${employee.EmployeeCustomerFullName}</td>
+                                                        <td>${employee.CardNumber}</td>
+                                                        <td>${employee.Remarks || "N/A"}</td>
+                                                    </tr>
+                                                `);
                             });
                         } else {
                             alert(response.message || "No employees found for the selected salary group.");
@@ -696,49 +697,49 @@
     </script>
 
     @*<script>
-        $(document).on("change", ".groupSelect", function () {
-            const branchId = $(this).val(); // Get the selected SalaryGroupId
+            $(document).on("change", ".groupSelect", function () {
+                const branchId = $(this).val(); // Get the selected SalaryGroupId
 
-            if ($(this).is(":checked")) {
-                // Send the selected SalaryGroupId to the server
-                $.ajax({
-                    url: "/SalaryProcessing/CheckEmployeesByBrach",
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({ branchId }), // Send SalaryGroupId
-                    success: function (response) {
-                        if (response.success) {
-                            const employees = response.data;
-                            // Clear and populate the Employees table
-                            const employeeTableBody = $("#employeeTable tbody");
-                            employeeTableBody.empty(); // Clear previous rows
+                if ($(this).is(":checked")) {
+                    // Send the selected SalaryGroupId to the server
+                    $.ajax({
+                        url: "/SalaryProcessing/CheckEmployeesByBrach",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({ branchId }), // Send SalaryGroupId
+                        success: function (response) {
+                            if (response.success) {
+                                const employees = response.data;
+                                // Clear and populate the Employees table
+                                const employeeTableBody = $("#employeeTable tbody");
+                                employeeTableBody.empty(); // Clear previous rows
 
-                            employees.forEach(employee => {
-                                // Fix invalid date handling
-                                const createdDate = new Date(employee.CreatedDate);
-                                const formattedDate = createdDate instanceof Date && !isNaN(createdDate) ? createdDate.toLocaleDateString() : "Invalid Date";
+                                employees.forEach(employee => {
+                                    // Fix invalid date handling
+                                    const createdDate = new Date(employee.CreatedDate);
+                                    const formattedDate = createdDate instanceof Date && !isNaN(createdDate) ? createdDate.toLocaleDateString() : "Invalid Date";
 
-                                // Append the employee data to the table
-                                employeeTableBody.append(`
-                                                <tr>
-                                                    <td hidden>${employee.EmployeeId}</td> <!-- Make EmployeeId hidden -->
-                                                    <td>${employee.EmployeeCustomerFullName}</td>
-                                                    <td>${employee.CardNumber}</td>
-                                                    <td>${employee.Remarks || "N/A"}</td>
-                                                </tr>
-                                            `);
-                            });
-                        } else {
-                            alert(response.message || "No employees found for the selected salary group.");
+                                    // Append the employee data to the table
+                                    employeeTableBody.append(`
+                                                    <tr>
+                                                        <td hidden>${employee.EmployeeId}</td> <!-- Make EmployeeId hidden -->
+                                                        <td>${employee.EmployeeCustomerFullName}</td>
+                                                        <td>${employee.CardNumber}</td>
+                                                        <td>${employee.Remarks || "N/A"}</td>
+                                                    </tr>
+                                                `);
+                                });
+                            } else {
+                                alert(response.message || "No employees found for the selected salary group.");
+                            }
+                        },
+                        error: function () {
+                            alert("An error occurred while processing the request.");
                         }
-                    },
-                    error: function () {
-                        alert("An error occurred while processing the request.");
-                    }
-                });
-            }
-        });
-    </script>*@
+                    });
+                }
+            });
+        </script>*@
 
 
 

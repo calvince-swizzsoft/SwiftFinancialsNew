@@ -22,6 +22,43 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
+
+
+        public async Task<ActionResult> ChartOfAccountLookUp(Guid? id, LevyDTO insuranceCompanyDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var chartOfAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+
+
+            if (chartOfAccount != null)
+            {
+                insuranceCompanyDTO.LevySplit.ChartOfAccountId = chartOfAccount.Id;
+                insuranceCompanyDTO.LevySplit.ChartOfAccountCostCenterDescription = chartOfAccount.AccountName;
+
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        ChartOfAccountId = insuranceCompanyDTO.LevySplit.ChartOfAccountId,
+                        ChartOfAccountAccountName = insuranceCompanyDTO.LevySplit.ChartOfAccountName,
+                        chartOfAccount
+                    }
+                });
+            }
+            return Json(new { success = false, message = "Product Not Found!" });
+        }
+
+
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {

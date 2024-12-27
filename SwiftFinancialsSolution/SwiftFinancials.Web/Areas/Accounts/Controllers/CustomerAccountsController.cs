@@ -248,7 +248,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> AddInvestments(Guid? id, CustomerAccountDTO customerAccountDTO)
         {
             await ServeNavigationMenus();
-
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             investmentProductDTOs = TempData["investmentProductDTOs"] as ObservableCollection<InvestmentProductDTO>;
 
             if (investmentProductDTOs == null)
@@ -399,7 +402,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> SavingsProduct(Guid? id, CustomerAccountDTO customerAccountDTO)
         {
             await ServeNavigationMenus();
-
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))

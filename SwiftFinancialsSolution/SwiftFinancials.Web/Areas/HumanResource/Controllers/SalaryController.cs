@@ -182,19 +182,12 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(SalaryHeadDTO salaryHeadDTO)
         {
-            // Validate the input data
             salaryHeadDTO.ValidateAll();
 
             if (salaryHeadDTO.HasErrors)
             {
-                MessageBox.Show(
-                    "Validation failed. Please correct the highlighted errors.",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["AlertMessage"] = "Validation failed. Please correct the highlighted errors.";
+                TempData["AlertType"] = "error";
 
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
                 return View(salaryHeadDTO);
@@ -204,37 +197,23 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 var salaryHead = await _channelService.AddSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
 
-                // Show success message
-                MessageBox.Show(
-                    "Salary Head added successfully.",
-                    "Operation Success",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["AlertMessage"] = "Salary Head added successfully.";
+                TempData["AlertType"] = "success";
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                // _logger.LogError(ex, "Error occurred while adding salary head");
+                Console.WriteLine(ex.Message); 
 
-                // Show error message for the exception
-                MessageBox.Show(
-                    "An unexpected error occurred. Please try again.",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again.";
+                TempData["AlertType"] = "error";
 
-                // Repopulate dropdown and return the same view
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
                 return View(salaryHeadDTO);
             }
         }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -247,25 +226,19 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(salaryHeadDTO);
         }
 
-       
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, SalaryHeadDTO salaryHeadDTO)
         {
-
             salaryHeadDTO.ValidateAll();
 
             if (salaryHeadDTO.HasErrors)
             {
-                MessageBox.Show(
-                    "Validation failed. Please correct the highlighted errors.",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                // Validation failed, show error message using SweetAlert
+                TempData["AlertMessage"] = "Validation failed. Please correct the highlighted errors.";
+                TempData["AlertType"] = "error";
 
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
                 return View(salaryHeadDTO);
@@ -275,31 +248,19 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 var salaryHead = await _channelService.UpdateSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
 
-                // Show success message
-                MessageBox.Show(
-                    "Salary Head Updated successfully.",
-                    "Operation Success",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                // Show success message using SweetAlert
+                TempData["AlertMessage"] = "Salary Head Updated successfully.";
+                TempData["AlertType"] = "success";
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                // _logger.LogError(ex, "Error occurred while adding salary head");
+                // Log the error if necessary, and show error message using SweetAlert
+                Console.WriteLine(ex.Message); // Log the exception
 
-                // Show error message for the exception
-                MessageBox.Show(
-                    "An unexpected error occurred. Please try again.",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again.";
+                TempData["AlertType"] = "error";
 
                 // Repopulate dropdown and return the same view
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());

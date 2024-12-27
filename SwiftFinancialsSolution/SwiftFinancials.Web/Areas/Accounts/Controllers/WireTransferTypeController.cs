@@ -35,7 +35,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
 
                 var sortedData = pageCollectionInfo.PageCollection
-                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .OrderByDescending(w => w.CreatedDate)
                     .ToList();
 
                 totalRecordCount = sortedData.Count;
