@@ -458,6 +458,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         private async Task<OperationResult> ProcessCustomerTransactionAsync(CustomerTransactionModel transactionModel)
         {
 
+            bool includeBalances = true;
+            bool includeProductDescription = true;
+            bool includeInterestBalanceForLoanAccounts = true;
+            bool considerMaturityPeriodForInvestmentAccounts = true;
+
             SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, true, true, true, true, GetServiceHeader());
 
             _selectedCustomer = await _channelService.FindCustomerAsync(SelectedCustomerAccount.CustomerId, GetServiceHeader());
@@ -870,15 +875,16 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                             string message = string.Join(Environment.NewLine, NewExternalCheque.ErrorMessages);
                             //string message = NewExternalCheque.ErrorMessages[0];
-                            MessageBox.Show(message, "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                            //MessageBox.Show(message, "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             //_messageService.ShowExclamation(string.Join(Environment.NewLine, NewExternalCheque.ErrorMessages), this.DisplayName);
 
                             return new OperationResult
                             {
                                 Success = false,
+                                Dialog = false,
                                 Message = message
                             };
-                            //ResetView();
+                            //ResetView
                    
                         }
                         else
@@ -929,7 +935,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                            Regex.IsMatch(SelectedCustomer.AddressMobileLine, @"^\+(?:[0-9]??){6,14}[0-9]$") &&
                            SelectedCustomer.AddressMobileLine.Length >= 13)
                                 {
-                                    // Build the SMS body message
+                                  
                                     var smsBody = new StringBuilder();
                                     smsBody.AppendFormat(
                                         "Dear customer, {0} of {1} has been effected on your fosa account at {2} at Branch {3}",
@@ -961,12 +967,33 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                 #endregion
 
+                                SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(SelectedCustomerAccount.Id, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
-                                PrintReceipt(chequeDepositJournal);
+
+                                var updatedTeller = await GetCurrentTeller();
+                                string successmessage = $"Customer new balance is {SelectedCustomerAccount.AvailableBalance} and Teller's new balance is {updatedTeller.BookBalance}";
+
+
                                 return new OperationResult
                                 {
                                     Success = true,
-                                    Message = "Operation Success"
+                                    Dialog = false,
+                                    Message = successmessage,
+                                    TransactionJournal = new JournalDTO
+                                    {
+
+                                        Id = chequeDepositJournal.Id,
+                                        SequentialId = chequeDepositJournal.SequentialId,
+                                        BranchDescription = chequeDepositJournal.BranchDescription,
+                                        PrimaryDescription = chequeDepositJournal.PrimaryDescription,
+                                        SecondaryDescription = chequeDepositJournal.SecondaryDescription,
+                                        PostingPeriodDescription = chequeDepositJournal.PostingPeriodDescription,
+                                        ApplicationUserName = chequeDepositJournal.ApplicationUserName,
+                                        CreatedDate = chequeDepositJournal.CreatedDate,
+                                        TotalValue = chequeDepositJournal.TotalValue,
+                                        Reference = chequeDepositJournal.Reference
+                                    }
+
                                 };
                             }
 
@@ -977,35 +1004,33 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 {
 
                                     Success = false,
+                                    Dialog = false,
                                     Message = "Operation failed"
                                 };
             
                             }
                         }
-                    //break;
                     default:
-                        //throw new InvalidOperationException("Unsupported transaction type.");
-                        MessageBox.Show("You may have entered the wrong transaction type", "CashWithdrawal Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1,
-                                             MessageBoxOptions.ServiceNotification);
+                      
+                       
 
                         return new OperationResult
                         {
 
                             Success = false,
-                            Message = "Operation failed"
+                            Dialog = false,
+                            Message = "You may have entered the wrong transaction typ"
                         };
                      
                 }
             }
             catch (Exception ex)
             {
-                // Log or handle the exception as needed
-                Console.WriteLine($"An error occurred: {ex.Message}");
-
                 return new OperationResult
                 {
 
                     Success = false,
+                    Dialog = false,
                     Message = $"An error occurred: {ex.Message}"
                 };
               
@@ -1015,6 +1040,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
 
                 Success = false,
+                Dialog = false,
                 Message = "Operation failed. Please try again"
             };
 
@@ -1152,6 +1178,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     break;
 
                 case FrontOfficeTransactionType.ChequeDeposit:
+
+                    transactionModel.TransactionCode = (int)SystemTransactionCode.ChequeDeposit;
 
                     if (SelectedTeller.BookBalance - transactionModel.TotalValue < SelectedTeller.RangeLowerLimit)
                     {
@@ -1542,7 +1570,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> PlaceCashDepositAuthorizationRequestAsync(CustomerTransactionModel customerTransactionModel)
         {
 
-            bool includeBalances = false;
+            bool includeBalances = true;
             bool includeProductDescription = true;
             bool includeInterestBalanceForLoanAccounts = false;
             bool considerMaturityPeriodForInvestmentAccounts = false;
@@ -1632,7 +1660,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> ProcessAuthorizedCashWithdrawalRequestAsync(CustomerTransactionModel customerTransactionModelDTO)
         {
   
-            bool includeBalances = false;
+            bool includeBalances = true;
             bool includeProductDescription = true;
             bool includeInterestBalanceForLoanAccounts = false;
             bool considerMaturityPeriodForInvestmentAccounts = false;
@@ -1757,6 +1785,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(customerTransactionModel, tariffs, GetServiceHeader());
 
+
+                 var updatedTeller = await GetCurrentTeller();
+
                 string cashWithdrawalTextTemplate = "Payment voucher of KES {0} {4}, {5} {2}.";
                 await SendTextNotificationAsync(
                     cashWithdrawalTextTemplate,
@@ -1769,13 +1800,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 //PrintReceipt(authorizedJournal);
 
+                SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(
+               (Guid)targetCashWithdrawalRequest.CustomerAccountId,
+               includeBalances,
+               includeProductDescription,
+               includeInterestBalanceForLoanAccounts,
+               considerMaturityPeriodForInvestmentAccounts,
+               GetServiceHeader()
+           );
+
+                string successmessage1 = $"Customer new balance is {SelectedCustomerAccount.AvailableBalance} and Teller's new balance is {updatedTeller.BookBalance}";
+
+
 
                 var response4 = new
                 {
-
-
                     success = true,
-                    message = "The authorized cash withdrawal request was successfully marked as paid.",
+                    message = successmessage1,
+                    tellerBookBalance = updatedTeller.BookBalance,
                     journalId = authorizedJournal.Id,
                     journalSequentialId = authorizedJournal.SequentialId,
                     journalBranchDescription = authorizedJournal.BranchDescription,
@@ -1816,6 +1858,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var directAuthorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(customerTransactionModel, tariffs, GetServiceHeader());
 
+
+            
+
+
+
             string directCashWithdrawalTextTemplate = "Dear customer, your account has been debited with KES {0} at {1} Branch {2}.";
             await SendTextNotificationAsync(
                 directCashWithdrawalTextTemplate,
@@ -1828,11 +1875,25 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             //PrintReceipt(directAuthorizedJournal);
 
+            var updatedTeller1 = await GetCurrentTeller();
+
+            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(
+               (Guid)targetCashWithdrawalRequest.CustomerAccountId,
+               includeBalances,
+               includeProductDescription,
+               includeInterestBalanceForLoanAccounts,
+               considerMaturityPeriodForInvestmentAccounts,
+               GetServiceHeader()
+           );
+
+            string successmessage = $"Customer new balance is {SelectedCustomerAccount.AvailableBalance} and Teller's new balance is {updatedTeller1.BookBalance}";
+
 
             var response6 = new {
 
                 success = true,
-                message = "The authorized cash withdrawal request was successfully processed.",
+                message = successmessage,
+                tellerBookBalance = updatedTeller1.BookBalance,
                 journalId = directAuthorizedJournal.Id,
                 journalSequentialId = directAuthorizedJournal.SequentialId,
                 journalBranchDescription = directAuthorizedJournal.BranchDescription,
@@ -1908,7 +1969,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                             SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(customerTransactionModel.CreditCustomerAccountId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
-                            string successmessage = $"Customer new balance is {SelectedCustomerAccount.AvailableBalance}";
+
+                            var updatedTeller = await GetCurrentTeller();
+                            string successmessage = $"Customer new balance is {SelectedCustomerAccount.AvailableBalance} and Teller's new balance is {updatedTeller.BookBalance}";
+
                             string cashDepositAboveLimitTextTemplate = "Dear customer, your account has been credited with a cash deposit of KES {0} at {1} Branch {2}.";
                             await SendTextNotificationAsync(cashDepositAboveLimitTextTemplate, SelectedCustomer, SelectedCustomerAccount, model.TotalValue, customerTransactionModel.Reference, model.PrimaryDescription);
                             //PrintReceipt(authorizedJournal);
@@ -1916,6 +1980,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             {
                                 success = true,
                                 message = successmessage,
+                                tellerBookBalance = updatedTeller.BookBalance,
                                 journalId = authorizedJournal.Id,
                                 journalSequentialId = authorizedJournal.SequentialId,
                                 journalBranchDescription = authorizedJournal.BranchDescription,

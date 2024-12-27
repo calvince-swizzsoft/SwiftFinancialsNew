@@ -1902,6 +1902,11 @@
             $('#PostingPeriodId').val('');
 
 
+            var tellerBookBalance = $('#TellerBookBalance').val();
+
+            $('#TellerNewBookBalance').val(tellerBookBalance);
+
+
 
             // Disable submit button
             $('#submitButton').prop('disabled', true);
@@ -1958,6 +1963,7 @@
                                 $('#TellerBookBalance').val(response.TellerBookBalance);
                                 $('.payable-checkbox').prop('checked', false);
 
+                                resetAllFields();
                                 // Show success alert with option to print receipt
                                 Swal.fire({
                                     title: 'Success',
@@ -2039,7 +2045,10 @@
                                             contentType: 'application/json',
                                             data: JSON.stringify(data), // Convert `data` object to JSON string
                                             success: function (finalizeResult) {
+
                                                 if (finalizeResult.success) {
+                                                    resetAllFields();
+
                                                     Swal.fire({
                                                         title: "Success",
                                                         text: finalizeResult.message,
@@ -2076,6 +2085,7 @@
                                             data: JSON.stringify(data), // Convert `data` object to JSON string
                                             success: function (finalizeResult) {
                                                 if (finalizeResult.success) {
+                                                    resetAllFields();
                                                     Swal.fire({
                                                         title: "Success",
                                                         text: finalizeResult.message,
@@ -2093,10 +2103,10 @@
                                     }
                                 } else {
                                     Swal.fire("Cancelled", "Transaction was cancelled.", "info");
-                                }
+                                }  
                             }
 
-                            else if (!response.succes && !response.dialog) {
+                            else if (!response.success && !response.dialog) {
 
                                 Swal.fire('Information', response.message);
                             }
@@ -2109,7 +2119,7 @@
 
                             // Reload DataTable and reset fields
                             $('#tellerGlTable').DataTable().ajax.reload();
-                            resetAllFields();
+                         
                         } catch (error) {
                             console.error("Error occurred:", error);
                             Swal.fire('Error', 'An error occurred while processing the request. Please try again.', 'error');
@@ -2757,7 +2767,7 @@
 
             try {
                 const result = await $.ajax({
-                    url: '/CashDeposit/pr',
+                    url: '/CashDeposit/PayAuthorizedCashDepositRequestAsync',
                     type: 'POST',
                     data: { cashDepositRequestId }
                 });
@@ -2792,6 +2802,10 @@
                             data: JSON.stringify(data),
                             success: function (processedResult) {
                                 if (processedResult.success) {
+
+                                    $('#TellerBookBalance').val(processedResult.tellerBookBalance);
+
+                                    $('#TellerNewBookBalance').val(processedResult.tellerBookBalance);
                                     // Show success message and dialog for printing
                                     Swal.fire({
                                         title: "Success",
@@ -2827,7 +2841,7 @@
                                                     data: JSON.stringify(data),
                                                     success: function (response) {
                                                         if (response.success) {
-                                                            Swal.fire("Success", "Receipt printed successfully.", "success");
+                                                            Swal.fire("Success", "F printed successfully.", "success");
                                                         } else {
                                                             Swal.fire("Error", response.message || "Failed to print the receipt. Please try again.", "error");
                                                         }
@@ -2990,6 +3004,10 @@
                             data: JSON.stringify(data),
                             success: function (processedResult) {
                                 if (processedResult.success) {
+
+                                    $('#TellerBookBalance').val(processedResult.tellerBookBalance);
+
+                                    $('#TellerNewBookBalance').val(processedResult.tellerBookBalance);
                                     Swal.fire({
                                         title: "Success",
                                         text: `${processedResult.message} Would you like to print a transaction receipt?`,
