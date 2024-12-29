@@ -480,15 +480,33 @@
                 url: '/CashWithdrawalRequest/HandleRequest',
                 type: 'POST',
                 data: { id, requestType, isApproval, remarks },
-                success: function (result) {
+                success: function (response) {
+
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
 
                     $('#authorizationModal').modal('hide');
                     // Optionally, show a success message or update the UI
                     table.ajax.reload(null, false);
                 },
                 error: function (xhr, status, error) {
-                    // Handle error
-                    console.error(error);
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred. Please try again later.'
+                    });
                 }
             });
         }
