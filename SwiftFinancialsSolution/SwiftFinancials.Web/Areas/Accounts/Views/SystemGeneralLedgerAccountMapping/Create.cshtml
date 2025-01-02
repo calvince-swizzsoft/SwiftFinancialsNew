@@ -30,7 +30,7 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>G/L Accounts Determination</h2>
-                   
+
                     @if (TempData["CreateError"] != null)
                     {
                         <div class="alert alert-danger">
@@ -42,8 +42,8 @@
                                 </span>
                             </button>
                         </div>
-                    } 
-                    
+                    }
+
                     @if (TempData["ErrorMsg"] != null)
                     {
                         <div class="alert alert-warning">
@@ -85,10 +85,14 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.ChartOfAccountId)
-                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account Name" } })
-                                    @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.ChartOfAccountId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.ChartOfAccountId, new { @id = "ChartOfAccountId" })
+                                        @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @required = "required", @placeholder = "", @id = "ChartOfAccountAccountName" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#chartofAccountLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -99,8 +103,10 @@
                             <table class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Select</th>
                                         <th>General Ledger</th>
+                                    </tr>
+                                    <tr>
+                                        General Ledger source
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -108,15 +114,13 @@
                                     {
                                         foreach (var commission in ViewBag.Generalledger)
                                         {
-                                    <tr>
-                                        <td>
-                                        </td>
-                                        <td>@commission.ChartOfAccountAccountName</td>
-                                        <td>@commission.SystemGeneralLedgerAccountCodeDescription</td>
-                                        <td>@commission.ChartOfAccountCostCenterDescription</td>
+                                            <tr>
+                                                <td>@commission.ChartOfAccountAccountName</td>
+                                                <td>@commission.SystemGeneralLedgerAccountCodeDescription</td>
+                                                <td>@commission.ChartOfAccountCostCenterDescription</td>
 
 
-                                    </tr>
+                                            </tr>
                                         }
                                     }
                                     else
@@ -145,17 +149,138 @@
         </div>
     </div>
 </div>
+<div class="modal  fade" id="chartofAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">G/L Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+
+            <br />
+            <style>
+                #chartsofAccountGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+            <table id="chartsofAccountGrid" class="table table-hover" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script src="~/Scripts/js/navlink.js"></script>
+
+    <script>
+        $('#chartsofAccountGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCoA(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "AccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
+                    { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+                    { "mDataProp": "AccountCode", "sTitle": "Code", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+         function selectCoA(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Accounts/SystemGeneralLedgerAccountMapping/ChartOfAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response);
+                        $('#ChartOfAccountId').val(response.data.ChartOfAccountId);
+                        $('#ChartOfAccountAccountName').val(response.data.ChartOfAccountAccountName);
+
+                        $('#chartofAccountLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
 
     <script>
         $(document).ready(function () {

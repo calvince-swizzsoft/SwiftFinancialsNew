@@ -240,7 +240,7 @@
 
                             <div class="form-group row" style="margin-top: 20px;">
                                 <div class="col-sm-12 text-right">
-                                    <button id="submitButton" type="submit" class="btn btn-primary">Create</button>
+                                    <button id="submitButton" type="submit" class="btn btn-primary">Update</button>
                                 </div>
                             </div>
                         </div>
@@ -481,7 +481,15 @@
                     // Access the JSON response
                     var jsonResponse = settings.json;
 
-                    console.log(jsonResponse);
+                    if (!jsonResponse.success && jsonResponse.message != null) {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: jsonResponse.message
+                        });
+
+                    };
 
                     // Update the summary data
                     $('#AvailableBalanceBroughtForward').val(jsonResponse.summary.AvailableBalanceBroughtForward);
@@ -696,51 +704,65 @@ $("#BankssGrid tbody").on("click", ".select-btn", function() {
 
     <script>
 
+        $(document).ready(function () {
+            $('#submitButton').click(function (e) {
+                e.preventDefault();
 
-        function resetAllFields() {
-            /*            $('#CustomerAccountNewAvailableBalance').val('');*/
-            $('#TotalValue').val('');
-            $('#Reference').val('');
-            $('#TransactionType').val('');
-            $('#DestinationBranchId').val('');
-            $('#DestinationDescription').val('');
-
-
-
-        }
-
-        /* $(document).ready(function () {*/
-        $('#submitButton').click(function (e) {
-
-            e.preventDefault();
-            $.ajax({
-                url: $('#cashManagementForm').attr('action'),
-                type: 'POST',
-                data: $('#cashManagementForm').serialize(),
-                dataType: 'json',
-                success: function (response) {
-                    if (response.redirect) {
-
-                        resetAllFields();
-                        $('#treasuryGlTable').DataTable().ajax.reload();
-                    } else if (response.success) {
-
-                        //alert('Customer Receipts: Operation Success');
-                        resetAllFields();
-                        $('#treasuryGlTable').DataTable().ajax.reload();
-                        /* getTreasuryGlTable().ajax.reload(null, false);*/
-                    } else {
-                        resetAllFields();
-                        $('#treasuryGlTable').DataTable().ajax.reload();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to proceed with the transaction?",
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!',
+                    cancelButtonText: 'No, go back'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Proceed with the AJAX request if the user confirms
+                        $.ajax({
+                            url: $('#cashManagementForm').attr('action'),
+                            type: 'POST',
+                            data: $('#cashManagementForm').serialize(),
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success',
+                                        text: response.message
+                                    });
+                                    resetAllFields();
+                                    $('#treasuryGlTable').DataTable().ajax.reload();
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message
+                                    });
+                                    resetAllFields();
+                                    $('#treasuryGlTable').DataTable().ajax.reload();
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'An unexpected error occurred. Please try again later.'
+                                });
+                            }
+                        });
                     }
-                },
-                error: function (xhr, status, error) {
-                    //resetAllFields();
-                    console.error(error);
-                }
+                });
             });
         });
-      /*      });*/
+
+        // Helper function to reset all fields in the form
+        function resetAllFields() {
+            $('#cashManagementForm')[0].reset();
+            // If there are specific fields to reset outside the form, reset them here
+        }
+
+
 
     </script>
 }

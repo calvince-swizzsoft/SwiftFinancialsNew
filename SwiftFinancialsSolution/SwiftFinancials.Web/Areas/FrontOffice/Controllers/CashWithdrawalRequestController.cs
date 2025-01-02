@@ -260,19 +260,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                         if (cashWithdrawalRequest.MaturityDate != DateTime.Today)
                         {
-
-                  MessageBox.Show(
-                  "The Maturity Date must be today's date for Immediate Notice withdrawals.",
-                  "Error",
-                  MessageBoxButtons.OK,
-                  MessageBoxIcon.Error,
-                  MessageBoxDefaultButton.Button1,
-                  MessageBoxOptions.ServiceNotification
-                 
                   
-                  );
+                            var response = new
+                            {
 
-                            return RedirectToAction("Create");
+                                success = false,
+                                message = "The Maturity Date must be today's date for Immediate Notice withdrawals."
+
+
+                            };
+
+                            return Json(response);
                         }
 
                     }
@@ -349,7 +347,19 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     return HandleAuthorizationResult(transferAuthorization, isApproval);
 
                 default:
-                    return RedirectToAction("Create");
+                    //    return RedirectToAction("Create");
+
+                    var response1 = new
+                    {
+
+                        success = false,
+                        message = "A request type was not provided"
+
+
+                    };
+
+                    return Json(response1);
+
             }
         }
 
@@ -357,35 +367,18 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             if (authorization)
             {
-                MessageBox.Show(
-                    Form.ActiveForm,
-                    $"Operation completed successfully: Transaction {(isApproval ? "Authorized" : "Rejected")}.",
-                    "Success",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+           
 
-                return Json(new { success = true, message = "Operation Success" });
+                var successMessage = $"Operation completed successfully: Transaction {(isApproval ? "Authorized" : "Rejected")}.";
+
+                return Json(new { success = true, message = successMessage });
             }
             else
             {
-                MessageBox.Show(
-                    "Operation Failed, please try again",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                return Json(new { success = true, message = "Operation Failed" });
+             
+                return Json(new { success = true, message = "Transaction was not authorized, please try again" });
 
             }
-
-            //return RedirectToAction("Create");
-            //return Json(new { success = true, message = "Operation Success" });
         }
  
 
