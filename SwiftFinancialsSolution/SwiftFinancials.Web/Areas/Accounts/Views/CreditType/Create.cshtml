@@ -24,17 +24,6 @@
     </div>
 </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
-
 <style>
     .tab {
         overflow: hidden;
@@ -129,6 +118,35 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Create Credit Type</h2>
+
+                    @if (TempData["ErrorMessageResult"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["ErrorMessageResult"]',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (TempData["Fail"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["Fail"]',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>

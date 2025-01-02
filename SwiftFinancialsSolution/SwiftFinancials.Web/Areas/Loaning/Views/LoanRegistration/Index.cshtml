@@ -263,14 +263,6 @@
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     aData.ReceivedDate = dt_ReceivedDate;
 
-                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var appraiseUrl = '<a  href="/loaning/LoanRegistration/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
-                    var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
-                    var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
-
                     var dropdownHtml = `
                         <div class="dropdown">
                             <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -278,27 +270,10 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    var viewButton = `<a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
-                    var AttachGuarantor = `<a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Add Guarantors</a>`;
-
-                    switch (aData.Status) {
-                        case 48826: 
-                            dropdownHtml += viewButton + AttachGuarantor;
-                            break;
-                        default:
-                            dropdownHtml += viewButton;
-                            break;
-                    }
-
-                    dropdownHtml += `</div></div>`;
-
+                    var viewButton = `<a class="btn btn-primary" style="width: 150px;" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
+                    
                     $('td:eq(8)', nRow).html(dt_Created);
-                    $('td:eq(9)', nRow).html(dropdownHtml);
-
-                    $('.dropdown-item.disabled').on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    });
+                    $('td:eq(9)', nRow).html(viewButton);
 
                     return nRow;
                 },
@@ -313,7 +288,7 @@
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
                     { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "15%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]],
             }

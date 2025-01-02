@@ -128,7 +128,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Credit Type Details</h2>
+                    <h2>View Credit Type</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -171,8 +171,9 @@
 
                                     <div class="col-lg-1" style="margin-top: 35px;">
                                         <div class="form-group form-group-lg">
-                                            @Html.DisplayFor(model => model.IsLocked)
-                                            @Html.DisplayNameFor(model => model.IsLocked)
+                                            @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "rowCheckbox" })
+                                            @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                 </div>
@@ -190,16 +191,19 @@
 
                                 <!--Applicable Charges-->
                                 <div id="MainTab1" class="tabcontent" style="display: block;">
-                                    <input type="hidden" id="SelectedApplicableChargesIds" name="SelectedApplicableChargesIds" value="" />
                                     <div class="tab-content">
-                                        <div style="text-align: left; margin-left: 15px;">
-                                            <input type="checkbox" id="ApplicableChargesheaderCheckbox" style="transform: scale(1); color: blue;">
-                                            <label for="ApplicableChargesheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                        </div>
-
                                         <div class="list-responsive">
                                             <ul id="ApplicableChargesList" class="list-group">
-                                                <li class="list-group-item">Loading data from server...</li>
+                                                @if (ViewBag.Commissions != null)
+                                                {
+                                                    foreach (var item in ViewBag.Commissions)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedApplicableStates.ContainsKey(item.Id) && ViewBag.CheckedApplicableStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
                                             </ul>
                                         </div>
                                     </div>
@@ -207,16 +211,19 @@
 
                                 <!--Applicable Direct Debits-->
                                 <div id="MainTab2" class="tabcontent">
-                                    <input type="hidden" id="SelectedApplicableDirectDebitsIds" name="SelectedApplicableDirectDebitsIds" value="" />
                                     <div class="tab-content">
-                                        <div style="text-align: left; margin-left: 15px;">
-                                            <input type="checkbox" id="ApplicableDirectDebitsheaderCheckbox" style="transform: scale(1); color: blue;">
-                                            <label for="ApplicableDirectDebitsheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                        </div>
-
                                         <div class="list-responsive">
                                             <ul id="ApplicableDirectDebitsList" class="list-group">
-                                                <li class="list-group-item">Loading data from server...</li>
+                                                @if (ViewBag.DirectDebits != null)
+                                                {
+                                                    foreach (var item in ViewBag.DirectDebits)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedApplicableDirectDebitsStates.ContainsKey(item.Id) && ViewBag.CheckedApplicableDirectDebitsStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
                                             </ul>
                                         </div>
                                     </div>
@@ -224,16 +231,19 @@
 
                                 <!--Attached Loan Products-->
                                 <div id="MainTab3" class="tabcontent">
-                                    <input type="hidden" id="SelectedAttachedLoanProductsIds" name="SelectedAttachedLoanProductsIds" value="" />
                                     <div class="tab-content">
-                                        <div style="text-align: left; margin-left: 15px;">
-                                            <input type="checkbox" id="AttachedLoanProductsheaderCheckbox" style="transform: scale(1); color: blue;">
-                                            <label for="AttachedLoanProductsheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                        </div>
-
                                         <div class="list-responsive">
                                             <ul id="AttachedLoanProductsList" class="list-group">
-                                                <li class="list-group-item">Loading data from server...</li>
+                                                @if (ViewBag.AttachedLoanProducts != null)
+                                                {
+                                                    foreach (var item in ViewBag.AttachedLoanProducts)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedAttachedLoanProductsStates.ContainsKey(item.Id) && ViewBag.CheckedAttachedLoanProductsStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
                                             </ul>
                                         </div>
                                     </div>
@@ -241,16 +251,19 @@
 
                                 <!--Concession_Exempt Loan Products-->
                                 <div id="MainTab4" class="tabcontent">
-                                    <input type="hidden" id="SelectedCELoanProductsIds" name="SelectedCELoanProductsIds" value="" />
                                     <div class="tab-content">
-                                        <div style="text-align: left; margin-left: 15px;">
-                                            <input type="checkbox" id="CELoanProductsheaderCheckbox" style="transform: scale(1); color: blue;">
-                                            <label for="CELoanProductsheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                        </div>
-
                                         <div class="list-responsive">
                                             <ul id="CELoanProductsList" class="list-group">
-                                                <li class="list-group-item">Loading data from server...</li>
+                                                @if (ViewBag.ConcessionExemptLoanProducts != null)
+                                                {
+                                                    foreach (var item in ViewBag.ConcessionExemptLoanProducts)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedConcessionExemptLoanProductsStates.ContainsKey(item.Id) && ViewBag.CheckedConcessionExemptLoanProductsStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
                                             </ul>
                                         </div>
                                     </div>
@@ -258,16 +271,19 @@
 
                                 <!--Attached Investments Products-->
                                 <div id="MainTab5" class="tabcontent">
-                                    <input type="hidden" id="SelectedAttachedInvestmentsProductsIds" name="SelectedAttachedInvestmentsProductsIds" value="" />
                                     <div class="tab-content">
-                                        <div style="text-align: left; margin-left: 15px;">
-                                            <input type="checkbox" id="AttachedInvestmentsProductsheaderCheckbox" style="transform: scale(1); color: blue;">
-                                            <label for="AttachedInvestmentsProductsheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                        </div>
-
                                         <div class="list-responsive">
                                             <ul id="AttachedInvestmentsProductsList" class="list-group">
-                                                <li class="list-group-item">Loading data from server...</li>
+                                                @if (ViewBag.AttachedInvestmentsProducts != null)
+                                                {
+                                                    foreach (var item in ViewBag.AttachedInvestmentsProducts)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedAttachedInvestmentsProductsStates.ContainsKey(item.Id) && ViewBag.CheckedAttachedInvestmentsProductsStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
                                             </ul>
                                         </div>
                                     </div>
@@ -275,24 +291,21 @@
 
                                 <!--Attached Savings Products-->
                                 <div id="MainTab6" class="tabcontent">
-                                    <input type="hidden" id="SelectedAttachedSavingsProductsIds" name="SelectedAttachedSavingsProductsIds" value="" />
                                     <div class="tab-content">
-                                        <div style="text-align: left; margin-left: 15px;">
-                                            <input type="checkbox" id="AttachedSavingsProductsheaderCheckbox" style="transform: scale(1); color: blue;">
-                                            <label for="AttachedSavingsProductsheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                        </div>
-
                                         <div class="list-responsive">
                                             <ul id="AttachedSavingsProductsList" class="list-group">
-                                                <li class="list-group-item">Loading data from server...</li>
+                                                @if (ViewBag.AttachedSavingsProducts != null)
+                                                {
+                                                    foreach (var item in ViewBag.AttachedSavingsProducts)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedAttachedSavingsProductsStates.ContainsKey(item.Id) && ViewBag.CheckedAttachedSavingsProductsStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
                                             </ul>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mt-5">
-                                    <div class="col-lg-3">
-                                        <button type="submit" id="submit-btn" class="btn btn-primary" value="Create" style="width: 150px;">Create</button>
                                     </div>
                                 </div>
                             </fieldset>
@@ -347,6 +360,13 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    <script>
+        $(document).ready(function () {
+            $('.rowCheckbox').on('click', function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
 
     <script>
         function openTab(evt, tabName) {
