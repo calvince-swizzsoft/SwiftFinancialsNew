@@ -916,11 +916,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Add(LoanGuarantorDTO loanGuarantorDTO)
+        public async Task<ActionResult> Add(LoanCaseDTO loancaseDTO)
         {
             await ServeNavigationMenus();
 
-            if (loanGuarantorDTO.Customer[0].AmountGuaranteed <= 0)
+            if (loancaseDTO.Guarantor[0].AmountGuaranteed <= 0)
             {
                 MessageBox.Show(Form.ActiveForm, "Amount Guaranteed cannot be 0 or equal to 0.", "Loan Guarantor Attachment",
                        MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
@@ -931,7 +931,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 });
             }
 
-            Session["AmountGuaranteed"] = loanGuarantorDTO.Customer[0].AmountGuaranteed;
+            Session["AmountGuaranteed"] = loancaseDTO.Guarantor[0].AmountGuaranteed;
 
             var loanguarantorsDTOs = Session["loanguarantorsDTOs"] as ObservableCollection<LoanGuarantorDTO>;
 
@@ -942,7 +942,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var totalGuarantorsCount = loanguarantorsDTOs.Count;
 
-            foreach (var guarantorDTO in loanGuarantorDTO.Customer)
+            foreach (var guarantorDTO in loancaseDTO.Guarantor)
             {
                 var existingEntry = loanguarantorsDTOs.FirstOrDefault(e => e.GuarantorId == guarantorDTO.GuarantorId);
 
@@ -958,57 +958,57 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     });
                 }
 
-                Guid loaneeId = (Guid)Session["LoaneeId"];
-                Guid loanProductId = (Guid)Session["LoanProductIdID"];
-                Guid loancaseId = (Guid)Session["loanCaseId"];
+                //Guid loaneeId = (Guid)Session["LoaneeId"];
+                //Guid loanProductId = (Guid)Session["LoanProductIdID"];
+                //Guid loancaseId = (Guid)Session["loanCaseId"];
 
-                var isGuarantor = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loancaseId, GetServiceHeader());
-                var exists = isGuarantor.FirstOrDefault(g => g.CustomerId == guarantorDTO.GuarantorId);
+                //var isGuarantor = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loancaseId, GetServiceHeader());
+                //var exists = isGuarantor.FirstOrDefault(g => g.CustomerId == guarantorDTO.GuarantorId);
 
-                if (exists != null)
-                {
-                    MessageBox.Show(Form.ActiveForm, "The selected Customer has already guaranteed the select loanee.", "Loan Guarantor Attachment",
-                       MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                //if (exists != null)
+                //{
+                //    MessageBox.Show(Form.ActiveForm, "The selected Customer has already guaranteed the select loanee.", "Loan Guarantor Attachment",
+                //       MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-                    return Json(new
-                    {
-                        success = false
-                    });
-                }
+                //    return Json(new
+                //    {
+                //        success = false
+                //    });
+                //}
 
-                loanGuarantorDTO = Session["GuarantorDetailsAfterLookUp"] as LoanGuarantorDTO;
-                guarantorDTO.CustomerId = loanGuarantorDTO.GuarantorId;
-                guarantorDTO.LoaneeCustomerId = loaneeId;
-                guarantorDTO.LoanProductId = loanProductId;
+                //loanGuarantorDTO = Session["GuarantorDetailsAfterLookUp"] as LoanGuarantorDTO;
+                //guarantorDTO.CustomerId = loanGuarantorDTO.GuarantorId;
+                //guarantorDTO.LoaneeCustomerId = loaneeId;
+                //guarantorDTO.LoanProductId = loanProductId;
 
-                var findProductDetails = await _channelService.FindLoanProductAsync(loanProductId, GetServiceHeader());
-                var maximumGuarantees = findProductDetails.LoanRegistrationMaximumGuarantees;
+                var findProductDetails = await _channelService.FindLoanProductAsync(loancaseDTO.LoanProductId, GetServiceHeader());
+                //var maximumGuarantees = findProductDetails.LoanRegistrationMaximumGuarantees;
 
-                var validateAmountGuaranteed = (decimal)Session["AmountGuaranteed"];
+                //var validateAmountGuaranteed = (decimal)Session["AmountGuaranteed"];
 
-                if (validateAmountGuaranteed > (loanGuarantorDTO.TotalShares - loanGuarantorDTO.CommittedShares))
-                {
-                    MessageBox.Show(Form.ActiveForm, "Amount Guaranteed must be less than or equal to Total Shares minus Committed Shares and the number of Maximum Guarantees must not be exceeded.",
-                        "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    Session["AmountGuaranteed"] = null;
+                //if (validateAmountGuaranteed > (loanGuarantorDTO.TotalShares - loanGuarantorDTO.CommittedShares))
+                //{
+                //    MessageBox.Show(Form.ActiveForm, "Amount Guaranteed must be less than or equal to Total Shares minus Committed Shares and the number of Maximum Guarantees must not be exceeded.",
+                //        "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                //    Session["AmountGuaranteed"] = null;
 
-                    return Json(new { success = false, message = "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares." });
-                }
-                Session["AmountGuaranteed"] = null;
+                //    return Json(new { success = false, message = "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares." });
+                //}
+                //Session["AmountGuaranteed"] = null;
 
-                if (totalGuarantorsCount > maximumGuarantees)
-                {
-                    MessageBox.Show(Form.ActiveForm, "Maximum Guarantees must not be exceeded.",
-                        "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                //if (totalGuarantorsCount > maximumGuarantees)
+                //{
+                //    MessageBox.Show(Form.ActiveForm, "Maximum Guarantees must not be exceeded.",
+                //        "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-                    return Json(new { success = false, message = "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares." });
-                }
+                //    return Json(new { success = false, message = "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares." });
+                //}
 
                 loanguarantorsDTOs.Add(guarantorDTO);
             }
 
             Session["loanguarantorsDTOs"] = loanguarantorsDTOs;
-            Session["guarantorDTO"] = loanGuarantorDTO;
+            Session["guarantorDTO"] = loancaseDTO.Guarantor;
 
             return Json(new { success = true, entries = loanguarantorsDTOs });
         }

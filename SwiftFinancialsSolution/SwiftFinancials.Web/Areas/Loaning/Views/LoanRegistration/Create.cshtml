@@ -1484,6 +1484,18 @@
     <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const amountGuaranteedInput = document.getElementById("AmountGuaranteed");
+            const amountPledgedInput = document.getElementById("AmountPledged");
+
+            amountGuaranteedInput.addEventListener("input", function () {
+                const guaranteedValue = amountGuaranteedInput.value;
+                amountPledgedInput.value = guaranteedValue;
+            });
+        });
+    </script>
+
+    <script>
         $(document).ready(function () {
             $('#AmountGuaranteed').on('input', function () {
                 var totalShares = parseFloat($('#TotalShares').val()) || 0;
