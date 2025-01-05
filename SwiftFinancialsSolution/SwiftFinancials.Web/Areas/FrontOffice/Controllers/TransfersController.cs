@@ -70,15 +70,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
 
-                MessageBox.Show(missingMessage,
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                //return Json(new { success = false, message = "Operation error: " + missingMessage });
+                return Json(new { success = false, message = "Operation error: " + missingMessage });
             }
 
             var untransferredCheques = await _channelService.FindUnTransferredExternalChequesByTellerId(SelectedTeller.Id, "", GetServiceHeader());
@@ -124,15 +116,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
 
-                MessageBox.Show(missingMessage,
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                //return Json(new { success = false, message = "Operation error: " + missingMessage });
+                return Json(new { success = false, message = "Operation error: " + missingMessage });
             }
 
             cashTransferRequestDTO.EmployeeId = selectedTeller.EmployeeId;
@@ -146,16 +130,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (successRequest != null)
                 {
-
-                    MessageBox.Show("Cash Transfer Request sent Successfully", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                     //return View(cashTransferRequestDTO);
                     return Json(new { success = true, message = "Operation Success" });
                 }
                 else
                 {
-
-
-                    MessageBox.Show("Cah Transfer Request failed", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
                     //return View(cashTransferRequestDTO);
                     return Json(new { success = true, message = "Operation Failed" });
@@ -198,15 +177,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
 
-                MessageBox.Show(missingMessage,
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                //return Json(new { success = false, message = "Operation error: " + missingMessage });
+                return Json(new { success = false, message = "Operation error: " + missingMessage });
             }
 
             int totalRecordCount = 0;
@@ -307,15 +278,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
 
                     var message = "Sorry, but the requisite teller and / or external cheques in hand account has not been setup!";
-
-
-                    MessageBox.Show(message,
-                        "Cash Transaction",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
 
                     return Json(new { success = false, message = "Operation error: " + message });
                 }

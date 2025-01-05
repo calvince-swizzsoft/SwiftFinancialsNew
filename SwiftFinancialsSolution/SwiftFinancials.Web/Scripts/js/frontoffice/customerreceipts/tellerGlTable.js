@@ -63,7 +63,14 @@ const tellerGlTable = $('#tellerGlTableCustomerReceipts').DataTable({
     "aoColumns": [
         { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
         { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
-        { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "25%" },
+        {
+            "mDataProp": "CustomerFullName",
+            "sTitle": "Customer Name",
+            "sWidth": "25%",
+            "mRender": function (data, type, row) {
+                return data ? data : "NULL";
+            }
+        },
         { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
         { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
         { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
