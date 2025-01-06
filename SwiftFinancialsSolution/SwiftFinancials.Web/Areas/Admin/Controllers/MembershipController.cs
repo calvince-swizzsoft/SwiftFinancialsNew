@@ -52,20 +52,40 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindMembershipByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, sortedColumns, sortAscending, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindMembershipByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, sortedColumns, sortAscending, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
 
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
 
-            else return this.DataTablesJson(items: new List<UserDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            return this.DataTablesJson(
+                items: new List<UserDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
         // GET: SystemUser/Details/5
@@ -75,7 +95,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             var applicationUser = await _applicationUserManager.FindByIdAsync(id.ToString());
 
-            var CompanyDTO = new CompanyDTO();
+            var CompanyDTO = new BranchDTO();
 
             string CompanyDescription = string.Empty;
 
@@ -83,32 +103,37 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             if (applicationUser.BranchId != Guid.Empty && applicationUser.BranchId != null)
             {
-                CompanyDTO = await _channelService.FindCompanyAsync((Guid)applicationUser.BranchId, GetServiceHeader());
+                CompanyDTO = await _channelService.FindBranchAsync((Guid)applicationUser.BranchId, GetServiceHeader());
 
                 if (CompanyDTO != null)
                     CompanyDescription = CompanyDTO.Description;
             }
 
             var roles = await _applicationUserManager.GetRolesAsync(applicationUser.Id);
+            ViewBag.roles = roles;
+
+            var branch = await _channelService.FindBranchesAsync(GetServiceHeader());
+            ViewBag.branches = branch;
 
             if (roles != null)
                 roleName = roles.FirstOrDefault();
             var userDTO = new UserDTO
             {
                 Id = applicationUser.Id,
-                FirstName = applicationUser.FirstName,
-                OtherNames = applicationUser.OtherNames,
+                FirstName = applicationUser.FirstName+"  "+
+              applicationUser.OtherNames,
                 Email = applicationUser.Email,
                 PhoneNumber = applicationUser.PhoneNumber,
                 BranchId = applicationUser.BranchId,
-                BranchDescription = CompanyDescription,
+                BranchDescription = CompanyDTO.Description,
+                UserName = applicationUser.UserName,
                 RoleName = roleName,
                 TwoFactorEnabled = applicationUser.TwoFactorEnabled,
                 LockoutEnabled = applicationUser.LockoutEnabled,
                 CreatedDate = applicationUser.CreatedDate
             };
 
-            return View(userDTO);
+            return View("Details", userDTO.MapTo<UserBindingModel>());
         }
 
         // GET: SystemUser/Create
@@ -118,9 +143,18 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             // var roles = await _channelService.GetAllRolesAsync(GetServiceHeader());
             var roles = _applicationRoleManager.Roles.ToList();
 
-            ViewBag.role = roles.Select(role => new { role.Name }).ToList();
+            //
+            ViewBag.Commisions = roles.Select(role => new { role.Name }).ToList();
 
-            ViewBag.Commisions = roles.Select(role => new {role.Name }).ToList();
+            ObservableCollection<string> rol = new ObservableCollection<string>();
+            foreach (var ro in roles)
+            {
+                string role = ro.Name;
+
+                rol.Add(role);
+
+            }
+            ViewBag.roles = rol;
             Guid parseId;
             var branch = await _channelService.FindBranchesAsync(GetServiceHeader());
             ViewBag.branches = branch;
@@ -129,7 +163,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 return View();
             }
 
-          
+
             UserBindingModel userBindingModel = new UserBindingModel();
 
             //if (branch != null)
@@ -179,7 +213,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                         EmployeeCustomerIndividualPayrollNumbers = employee.CustomerIndividualPayrollNumbers,
                         EmployeeEmployeeTypeId = employee.EmployeeTypeId,
                         EmployeeEmployeeTypeChartOfAccountId = employee.EmployeeTypeChartOfAccountId,
-                        PhoneNumber= employee.CustomerAddressMobileLine,
+                        PhoneNumber = employee.CustomerAddressMobileLine,
 
                         department = dep.Description,
                     }
@@ -242,7 +276,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
         // POST: SystemUser/Create
         [HttpPost]
-        public async Task<ActionResult> Create(UserBindingModel userBindingModel, string[] commisionIds, string[] roles)
+        public async Task<ActionResult> Create(UserBindingModel userBindingModel, string[] Branchids, string[] roles)
         {
 
             var employee = await _channelService.FindEmployeeAsync(userBindingModel.EmployeeId, GetServiceHeader());
@@ -257,13 +291,24 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 await ServeNavigationMenus();
 
                 TempData["Error"] = userBindingModel.ErrorMessages;
-
-                return View();
+                // var roles = await _channelService.GetAllRolesAsync(GetServiceHeader());           
+                return RedirectToAction("Create");
             }
             List<AuditTrailDTO> auditTrailDTOs = new List<AuditTrailDTO>();
             ObservableCollection<string> role = new ObservableCollection<string>();
+            foreach (var ro in roles)
+            {
+                //string processedString = ro.Replace("{ Name =", "").Trim().TrimEnd('}').Trim();
+
+                role.Add(ro);
+
+            }
+
+
             var userDTO = await _channelService.AddNewMembershipAsync(userBindingModel.MapTo<UserDTO>(), GetServiceHeader());
-            var result = await _channelService.AddUserToRolesAsync(userDTO.UserName, role, GetServiceHeader());
+
+  //          var result = await _channelService.AddUserToRolesAsync(userDTO.UserName, role, GetServiceHeader());
+
             AuditTrailDTO auditLogDTO = new AuditTrailDTO();
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
             auditLogDTO.EnvironmentIPAddress = serviceHeader.EnvironmentIPAddress;

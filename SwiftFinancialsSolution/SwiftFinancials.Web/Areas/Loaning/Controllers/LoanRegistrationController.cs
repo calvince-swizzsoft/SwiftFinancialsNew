@@ -559,6 +559,93 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return Json(new { success = false, message = "Loaning Remark not found" });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> LoanGuarantorLookUp(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return Json(new { success = false, message = "Invalid ID" });
+            }
+
+            var guarantorLookUp = new LoanGuarantorDTO();
+
+            var loanGuarantor = await _channelService.FindCustomerAsync(id, GetServiceHeader());
+            if (loanGuarantor != null)
+            {
+                Guid LoanProductId = Guid.Empty;
+
+                if (Session["LoanProductIdID"] != null)
+                    LoanProductId = (Guid)Session["LoanProductIdID"];
+
+                var products = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(id, new[] { (int)ProductCode.Savings, (int)ProductCode.Loan, (int)ProductCode.Investment },
+                    true, true, true, true, GetServiceHeader());
+                var savingsProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Savings).ToList();
+                var loanProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Loan).ToList();
+                var investmentProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Investment).ToList();
+
+                List<decimal> sBalance = new List<decimal>();
+                List<decimal> iBalance = new List<decimal>();
+
+                foreach (var savingsBalances in savingsProducts)
+                {
+                    sBalance.Add(savingsBalances.BookBalance);
+                }
+
+                foreach (var investmentsBalances in investmentProducts)
+                {
+                    iBalance.Add(investmentsBalances.BookBalance);
+                }
+
+                guarantorLookUp.TotalShares = sBalance.Sum() + iBalance.Sum();
+
+                guarantorLookUp.GuarantorFullName = loanGuarantor.FullName;
+                guarantorLookUp.GuarantorId = loanGuarantor.Id;
+                guarantorLookUp.GuarantorEmployerDescription = loanGuarantor.StationZoneDivisionEmployerDescription;
+                guarantorLookUp.GuarantorStationDescription = loanGuarantor.StationDescription;
+                guarantorLookUp.GuarantorSerialNumber = loanGuarantor.SerialNumber;
+                guarantorLookUp.GuarantorIdentificationNumber = loanGuarantor.IdentificationNumber;
+                guarantorLookUp.GuarantorPayrollNumber = loanGuarantor.IndividualPayrollNumbers;
+
+                guarantorLookUp.AppraisalFactor = await _channelService.GetGuarantorAppraisalFactorAsync(LoanProductId, guarantorLookUp.TotalShares, GetServiceHeader());
+
+                var findAnotherGuarantee = await _channelService.FindLoanGuarantorsByCustomerIdAsync(guarantorLookUp.GuarantorId, GetServiceHeader());
+
+                var totalAmountsGuaranteed = new ObservableCollection<decimal>();
+
+                foreach (var sum in findAnotherGuarantee)
+                {
+                    totalAmountsGuaranteed.Add(sum.AmountGuaranteed);
+                }
+                decimal totalSum = totalAmountsGuaranteed.Sum();
+
+                guarantorLookUp.CommittedShares = totalSum;
+
+                Session["GuarantorDetailsAfterLookUp"] = guarantorLookUp;
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        GuarantorFullName = guarantorLookUp.GuarantorFullName,
+                        GuarantorId = guarantorLookUp.GuarantorId,
+                        GuarantorEmployerDescription = guarantorLookUp.GuarantorEmployerDescription,
+                        GuarantorStationDescription = guarantorLookUp.GuarantorStationDescription,
+                        GuarantorSerialNumber = guarantorLookUp.GuarantorSerialNumber,
+                        GuarantorIdentificationNumber = guarantorLookUp.GuarantorIdentificationNumber,
+                        GuarantorPayrollNumber = guarantorLookUp.GuarantorPayrollNumber,
+                        AppraisalFactor = guarantorLookUp.AppraisalFactor,
+                        CommittedShares = guarantorLookUp.CommittedShares,
+
+                        // Return Committed Shares after successful calculation...
+
+                        TotalShares = guarantorLookUp.TotalShares
+                    }
+                });
+            }
+
+            return Json(new { success = false, message = "Customer not found" });
+        }
 
 
         // Find Actions....
@@ -778,6 +865,174 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 totalDisplayRecords: searchRecordCount,
                 sEcho: jQueryDataTablesModel.sEcho
             );
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> GuarantorIndex(JQueryDataTablesModel jQueryDataTablesModel, int grecordStatus, string gtext, int gcustomerFilter)
+        {
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
+
+
+            var pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)RecordStatus.Approved, gtext, gcustomerFilter, 0, int.MaxValue, GetServiceHeader());
+
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(customer => customer.CreatedDate)
+                    .ToList();
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+
+            return this.DataTablesJson(
+                items: new List<CustomerDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(LoanCaseDTO loancaseDTO)
+        {
+            await ServeNavigationMenus();
+
+            if (loancaseDTO.Guarantor[0].AmountGuaranteed <= 0)
+            {
+                MessageBox.Show(Form.ActiveForm, "Amount Guaranteed cannot be 0 or equal to 0.", "Loan Guarantor Attachment",
+                       MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                return Json(new
+                {
+                    success = false
+                });
+            }
+
+            Session["AmountGuaranteed"] = loancaseDTO.Guarantor[0].AmountGuaranteed;
+
+            var loanguarantorsDTOs = Session["loanguarantorsDTOs"] as ObservableCollection<LoanGuarantorDTO>;
+
+            if (loanguarantorsDTOs == null)
+            {
+                loanguarantorsDTOs = new ObservableCollection<LoanGuarantorDTO>();
+            }
+
+            var totalGuarantorsCount = loanguarantorsDTOs.Count;
+
+            foreach (var guarantorDTO in loancaseDTO.Guarantor)
+            {
+                var existingEntry = loanguarantorsDTOs.FirstOrDefault(e => e.GuarantorId == guarantorDTO.GuarantorId);
+
+                if (existingEntry != null)
+                {
+                    MessageBox.Show(Form.ActiveForm, "The selected Customer has already been added to the guarantors list.", "Loan Guarantor Attachment",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+
+                    return Json(new
+                    {
+                        success = false
+                    });
+                }
+
+                //Guid loaneeId = (Guid)Session["LoaneeId"];
+                //Guid loanProductId = (Guid)Session["LoanProductIdID"];
+                //Guid loancaseId = (Guid)Session["loanCaseId"];
+
+                //var isGuarantor = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loancaseId, GetServiceHeader());
+                //var exists = isGuarantor.FirstOrDefault(g => g.CustomerId == guarantorDTO.GuarantorId);
+
+                //if (exists != null)
+                //{
+                //    MessageBox.Show(Form.ActiveForm, "The selected Customer has already guaranteed the select loanee.", "Loan Guarantor Attachment",
+                //       MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                //    return Json(new
+                //    {
+                //        success = false
+                //    });
+                //}
+
+                //loanGuarantorDTO = Session["GuarantorDetailsAfterLookUp"] as LoanGuarantorDTO;
+                //guarantorDTO.CustomerId = loanGuarantorDTO.GuarantorId;
+                //guarantorDTO.LoaneeCustomerId = loaneeId;
+                //guarantorDTO.LoanProductId = loanProductId;
+
+                var findProductDetails = await _channelService.FindLoanProductAsync(loancaseDTO.LoanProductId, GetServiceHeader());
+                //var maximumGuarantees = findProductDetails.LoanRegistrationMaximumGuarantees;
+
+                //var validateAmountGuaranteed = (decimal)Session["AmountGuaranteed"];
+
+                //if (validateAmountGuaranteed > (loanGuarantorDTO.TotalShares - loanGuarantorDTO.CommittedShares))
+                //{
+                //    MessageBox.Show(Form.ActiveForm, "Amount Guaranteed must be less than or equal to Total Shares minus Committed Shares and the number of Maximum Guarantees must not be exceeded.",
+                //        "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                //    Session["AmountGuaranteed"] = null;
+
+                //    return Json(new { success = false, message = "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares." });
+                //}
+                //Session["AmountGuaranteed"] = null;
+
+                //if (totalGuarantorsCount > maximumGuarantees)
+                //{
+                //    MessageBox.Show(Form.ActiveForm, "Maximum Guarantees must not be exceeded.",
+                //        "Loan Guarantor Attachment", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                //    return Json(new { success = false, message = "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares." });
+                //}
+
+                loanguarantorsDTOs.Add(guarantorDTO);
+            }
+
+            Session["loanguarantorsDTOs"] = loanguarantorsDTOs;
+            Session["guarantorDTO"] = loancaseDTO.Guarantor;
+
+            return Json(new { success = true, entries = loanguarantorsDTOs });
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanguarantorsDTOs = Session["loanguarantorsDTOs"] as ObservableCollection<LoanGuarantorDTO>;
+
+            if (loanguarantorsDTOs != null)
+            {
+                var entryToRemove = loanguarantorsDTOs.FirstOrDefault(e => e.GuarantorId == id);
+                if (entryToRemove != null)
+                {
+                    loanguarantorsDTOs.Remove(entryToRemove);
+
+                    Session["loanguarantorsDTOs"] = loanguarantorsDTOs;
+                }
+            }
+
+            return Json(new { success = true, data = loanguarantorsDTOs });
         }
 
 

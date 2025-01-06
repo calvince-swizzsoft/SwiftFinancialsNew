@@ -46,7 +46,7 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         // Using ObservableCollection for BankBranches
         private ObservableCollection<BankBranchDTO> _bankBranches;
         public BankBranchDTO BankBranches { get; set; }
-     [DataMember]
+        [DataMember]
         [Display(Name = "Bank Branches")]
         public ObservableCollection<BankBranchDTO> BankBranche
         {

@@ -1753,6 +1753,22 @@ namespace SwiftFinancials.Web.Controllers
 
 
         [NonAction]
+        protected List<SelectListItem> GetJournalfielterSelectList(string selectedValue)
+        {
+            List<SelectListItem> journalEntryFilter = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(JournalEntryFilter)).Cast<JournalEntryFilter>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            journalEntryFilter.AddRange(items);
+
+            return journalEntryFilter;
+        }
+        [NonAction]
         protected List<SelectListItem> RecoveryPrioritySelectList(string selectedValue)
         {
             List<SelectListItem> recoveryPriorities = new List<SelectListItem>();

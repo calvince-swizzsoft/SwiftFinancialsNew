@@ -13,8 +13,6 @@
     var loanProductSection = ViewBag.LoanProductSection as List<SelectListItem>;
 }
 
-
-
 <style>
     .date-input-wrapper {
         position: relative;
@@ -460,10 +458,52 @@
         font-size: 1.2rem;
         text-align: center;
     }
+
+
+    #dataTableEntries {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #dataTableEntries th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #dataTableEntries th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        #dataTableEntries tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #dataTableEntries td {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        #dataTableEntries tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
+
+        #dataTableEntries tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        #dataTableEntries tr:last-child td {
+            border-bottom: none;
+        }
 </style>
-
-
-
 
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -499,7 +539,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post, new { id = "loanForm" }))
+                    @using (Html.BeginForm("Create", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "addLoanGuarantorsform" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -604,7 +644,8 @@
                                 <button class="tablinks" onclick="openTab(event, 'MainTab4')"><i class="fa fa-table" aria-hidden="true"></i> Salary History</button>
                                 <button class="tablinks" onclick="openTab(event, 'MainTab5')"><i class="fa fa-table" aria-hidden="true"></i> Loan Applications</button>
                                 <button class="tablinks" onclick="openTab(event, 'MainTab6')"><i class="fa fa-table" aria-hidden="true"></i> Collaterals</button>
-                                <button class="tablinks" onclick="openTab(event, 'MainTab7')"><i class="fa fa-table" aria-hidden="true"></i> Specimen</button>
+                                <button class="tablinks" onclick="openTab(event, 'MainTab7')"><i class="fa fa-table" aria-hidden="true"></i> Guarantors</button>
+                                <button class="tablinks" onclick="openTab(event, 'MainTab8')"><i class="fa fa-table" aria-hidden="true"></i> Specimen</button>
                             </div>
 
 
@@ -628,7 +669,6 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.InterestCalculationModeDescription, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.InterestCalculationModeDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                                            @Html.ValidationMessageFor(model => model.InterestCalculationModeDescription, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
@@ -636,7 +676,6 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
-                                            @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
@@ -651,7 +690,6 @@
                                                     @readonly = "readonly"
                                                 }
                                             })
-                                            @Html.ValidationMessageFor(model => model.LoanProductSectionDescription, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                 </div>
@@ -782,7 +820,6 @@
                                 </div>
                             </div>
 
-
                             <!--Standing Orders-->
                             <div id="MainTab2" class="tabcontent">
                                 <div class="table-container">
@@ -807,7 +844,6 @@
                                     </table>
                                 </div>
                             </div>
-
 
                             <!--Payouts History-->
                             <div id="MainTab3" class="tabcontent">
@@ -834,7 +870,6 @@
                                     </table>
                                 </div>
                             </div>
-
 
                             <!--Salary History-->
                             <div id="MainTab4" class="tabcontent">
@@ -907,8 +942,140 @@
                                 </div>
                             </div>
 
-                            <!--Specimen-->
+                            <!--Guarantors-->
                             <div id="MainTab7" class="tabcontent">
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-md-4 form-group">
+                                            @Html.LabelFor(model => model.Guarantor[0].GuarantorFullName, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.HiddenFor(model => model.Guarantor[0].GuarantorId, new { @id = "GuarantorId" })
+                                                @Html.TextBoxFor(model => model.Guarantor[0].GuarantorFullName, new { @id = "Guarantor", @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @placeholder = "Search Guarantor..." })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#guarantorLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Guarantor[0].GuarantorEmployerDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Guarantor[0].GuarantorEmployerDescription, new { htmlAttributes = new { @id = "GuarantorEmployer", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Guarantor[0].GuarantorEmployerDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Guarantor[0].GuarantorStationDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Guarantor[0].GuarantorStationDescription, new { htmlAttributes = new { @id = "GuarantorStation", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Guarantor[0].GuarantorStationDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-4 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Guarantor[0].GuarantorSerialNumber, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Guarantor[0].GuarantorSerialNumber, new { htmlAttributes = new { @id = "GuarantorSerialNumber", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Guarantor[0].GuarantorSerialNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Guarantor[0].GuarantorIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Guarantor[0].GuarantorIdentificationNumber, new { htmlAttributes = new { @id = "GuarantorIndividualIdentityCardNumber", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Guarantor[0].GuarantorIdentificationNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Guarantor[0].GuarantorPayrollNumber, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Guarantor[0].GuarantorPayrollNumber, new { htmlAttributes = new { @id = "GuarantorPayrollNumber", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Guarantor[0].GuarantorPayrollNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-2 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Guarantor[0].TotalShares, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Guarantor[0].TotalShares, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Guarantor[0].TotalShares, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Guarantor[0].CommittedShares, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Guarantor[0].CommittedShares, new { htmlAttributes = new { @id = "CommittedShares", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Guarantor[0].CommittedShares, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Guarantor[0].AppraisalFactor, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Guarantor[0].AppraisalFactor, new { htmlAttributes = new { @id = "AppraisalFactor", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Guarantor[0].AppraisalFactor, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Guarantor[0].AmountPledged, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Guarantor[0].AmountPledged, new { htmlAttributes = new { @id = "AmountPledged", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Guarantor[0].AmountPledged, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Guarantor[0].AmountGuaranteed, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Guarantor[0].AmountGuaranteed, new { htmlAttributes = new { @id = "AmountGuaranteed", @class = "form-control required entry-field", @placeholder = "Kshs 0.00" } })
+                                                <span id="guarantee-error" class="text-danger" style="display:none;">Amount Guaranteed must be less than or equal to Total Shares minus Committed Shares!</span>
+                                                @Html.ValidationMessageFor(model => model.Guarantor[0].AmountGuaranteed, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: right;">
+                                            <input type="submit" id="addEntryBtn" style="width:150px;" class="btn btn-primary" value="Add" />
+                                        </div>
+                                    </div>
+
+                                    <br />
+
+                                    <div class="table-container">
+                                        <h3 style="font-size: 1.9rem; text-align: center;">Loan Guarantors</h3>
+                                        <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Customer</th>
+                                                    <th>Identity Card Number</th>
+                                                    <th>Appraisal Factor</th>
+                                                    <th>Total shares</th>
+                                                    <th>Committed shares</th>
+                                                    <th>Amount Guaranteed</th>
+                                                    <th>Amount Pledged</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <!--Specimen-->
+                            <div id="MainTab8" class="tabcontent">
                                 <div id="documentImages" title="Click on an image to view in full-screen">
                                     <div class="image-container" onclick="openFullscreen('passportPhoto')">
                                         <h3>Passport Photo</h3>
@@ -1041,8 +1208,6 @@
         </div>
     </div>
 </div>
-
-
 <div class="modal  fade" id="loanProductsLookupModal" role="dialog" aria-hidden="true" style="width: auto;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1107,8 +1272,6 @@
         </div>
     </div>
 </div>
-
-
 <div class="modal  fade" id="loanPurposeLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1168,7 +1331,6 @@
         </div>
     </div>
 </div>
-
 <div class="modal  fade" id="remarkLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1197,7 +1359,81 @@
         </div>
     </div>
 </div>
+<div class="modal  fade" id="guarantorLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Guarantor Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <div class="blue-section">
+                <form id="guarantorForm">
+                    <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                        <div class="col-lg-3" hidden>
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Record Status</label>
 
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.RecordStatus, recordStatus,
+                                    new { @class = "form-control input-md", @id = "grecordStatus" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Customer Filter</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.CustomerFilter, customerFilter,
+                                    new { @class = "form-control input-md", @id = "gcustomerFilter" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4" style="margin-top: 27px;">
+                            <div class="form-group spacing-form-group">
+                                <div class="input-group text-box">
+                                    @Html.TextBox("text", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "gtext" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1" style="margin-top:20px;">
+                            <div class="form-group form-group-sm">
+                                <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br />
+
+
+            <style>
+                #guarantorsGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+
+            <table id="guarantorsGrid" class="table table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -1248,6 +1484,226 @@
     <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const amountGuaranteedInput = document.getElementById("AmountGuaranteed");
+            const amountPledgedInput = document.getElementById("AmountPledged");
+
+            amountGuaranteedInput.addEventListener("input", function () {
+                const guaranteedValue = amountGuaranteedInput.value;
+                amountPledgedInput.value = guaranteedValue;
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#AmountGuaranteed').on('input', function () {
+                var totalShares = parseFloat($('#TotalShares').val()) || 0;
+                var committed = parseFloat($('#CommittedShares').val()) || 0;
+                var amountGuaranteed = parseFloat($(this).val()) || 0;
+
+                if (amountGuaranteed > (totalShares - committed)) {
+                    $('#guarantee-error').show();
+                    $(this).val('');
+                } else {
+                    $('#guarantee-error').hide();
+                }
+            });
+        });
+    </script>
+
+    <script>
+        var defaultCustomerFilter2 = $('#gcustomerFilter').val();
+        var defaultRecordStatus2 = $('#grecordStatus').val();
+        var defaulText2 = $('#gtext').val();
+
+        $('#guarantorsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("GuarantorIndex", "LoanRegistration", new { Area = "Loaning"}))",
+                "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "gcustomerFilter", "value": $('#gcustomerFilter').val() || defaultCustomerFilter2 },
+                        { "name": "grecordStatus", "value": $('#grecordStatus').val() || defaultRecordStatus2 },
+                        { "name": "gtext", "value": $('#gtext').val() || defaulText2 }
+                    );
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectGuarantor(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "5%" },
+                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "5%" },
+                    { "mDataProp": "Reference2", "sTitle": "Membership Number", "sWidth": "5%" },
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "IndividualIdentityCardNumber", "sTitle": "Identity Card Number", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+            $('#guarantorForm').on('submit', function (e) {
+                        e.preventDefault();
+                $('#guarantorsGrid').DataTable().ajax.reload();
+            });
+
+
+        function selectGuarantor(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Loaning/LoanRegistration/LoanGuarantorLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        $('#GuarantorId').val(response.data.GuarantorId);
+                        $('#Guarantor').val(response.data.GuarantorFullName);
+                        $('#GuarantorEmployer').val(response.data.GuarantorEmployerDescription);
+                        $('#GuarantorStation').val(response.data.GuarantorStationDescription);
+                        $('#GuarantorSerialNumber').val(response.data.GuarantorSerialNumber);
+                        $('#GuarantorIndividualIdentityCardNumber').val(response.data.GuarantorIdentificationNumber);
+                        $('#GuarantorPayrollNumber').val(response.data.GuarantorPayrollNumber);
+                        $('#TotalShares').val(response.data.TotalShares);
+                        $('#AppraisalFactor').val(response.data.AppraisalFactor);
+                        $('#CommittedShares').val(response.data.CommittedShares);
+
+                        $('#guarantorLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#addEntryBtn').click(function (event) {
+            event.preventDefault();
+
+            var formData = $('#addLoanGuarantorsform').serialize();
+
+        $.ajax({
+            url: '@Url.Action("Add", "LoanRegistration", new { Area = "Loaning" })',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    updateEntriesTable(response.entries);
+
+                    console.log('Swal is loaded:', typeof Swal !== 'undefined');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Guarantor added successfully.',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+
+                    $('#GuarantorId').val('');
+                    $('#Guarantor').val('');
+                    $('#GuarantorEmployer').val('');
+                    $('#GuarantorStation').val('');
+                    $('#GuarantorSerialNumber').val('');
+                    $('#GuarantorIndividualIdentityCardNumber').val('');
+                    $('#GuarantorPayrollNumber').val('');
+                    $('#TotalShares').val('');
+                    $('#CommittedShares').val('');
+                    $('#AppraisalFactor').val('');
+                    $('#AmountPledged').val('');
+                    $('#AmountGuaranteed').val('');
+
+                    console.log('Form fields cleared');
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Could not Add Guarantor to List',
+                        text: response.message,
+                        timer: 8000,
+                        showConfirmButton: true
+                    });
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    });
+});
+
+        function updateEntriesTable(entries) {
+            var tableBody = $("#dataTableEntries tbody");
+            tableBody.empty();
+
+            $.each(entries, function (index, entry) {
+                var row = `<tr data-id="${entry.GuarantorId}">
+                               <td>${entry.GuarantorFullName}</td>
+                               <td>${entry.GuarantorIdentificationNumber}</td>
+                               <td>${entry.AppraisalFactor}</td>
+                               <td style="text-align: right:">${entry.TotalShares}</td>
+                               <td style="text-align: right:">${entry.CommittedShares}</td>
+                               <td style="text-align: right:">${entry.AmountGuaranteed}</td>
+                               <td style="text-align: right:">${entry.AmountPledged}</td>
+                               <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.GuarantorId}" style="background-color: red; color: white;">Remove</button></td>
+                           </tr>`;
+                tableBody.append(row);
+            });
+        }
+
+        $(document).on("click", ".remove-entry", function (event) {
+            event.preventDefault();
+            var entryId = $(this).data("id");
+            removeEntry(entryId);
+        });
+
+
+        function removeEntry(id) {
+            $.ajax({
+                url: '@Url.Action("Remove", "LoanRegistration")',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
+                    } else {
+                        alert("An error occurred while removing the entry.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the request.");
+                }
+            });
+        }
+
+
+    </script>
+
+
+
+
+
+    <script>
         $(document).ready(function () {
             $('#ReceivedDate').inputmask('99-99-9999', {
                 'placeholder': 'dd-mm-yyyy',
@@ -1255,10 +1711,10 @@
             });
 
             $('#ReceivedDate').datepicker({
-                format: 'dd-mm-yyyy',  
-                autoclose: true,       
-                todayHighlight: true,  
-                language: navigator.language.split('-')[0], 
+                format: 'dd-mm-yyyy',
+                autoclose: true,
+                todayHighlight: true,
+                language: navigator.language.split('-')[0],
                 orientation: "bottom left"
             });
         });
@@ -1392,7 +1848,7 @@
                             document.getElementById('idbackmsg').textContent = 'Identity Card (Back) not available';
                         }
 
-                       
+
                         console.log(response);
                         console.log(response.data.Collaterals);
                         console.log(response.data.StandingOrders);

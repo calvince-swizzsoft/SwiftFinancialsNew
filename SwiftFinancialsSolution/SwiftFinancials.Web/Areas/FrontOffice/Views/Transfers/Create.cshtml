@@ -35,7 +35,7 @@
                                 <a class="nav-link active" data-toggle="tab" href="#cashTransfer">Cash Transfer</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#chequesTransfer">Check Transfer</a>
+                                <a class="nav-link" data-toggle="tab" href="#chequesTransfer">Cheque Transfer</a>
                             </li>
                         </ul>
 
@@ -299,7 +299,7 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-    <script>
+<script>
 
 
         function updateSelectAllCheckbox() {
@@ -381,54 +381,88 @@
             $('.cheque-checkbox').prop('checked', isChecked);
         });
 
-    // Event listener for the "Transfer Cheques" button
-    $('#chequesTransferButton').on('click', function () {
-        var selectedCheques = [];
+$('#chequesTransferButton').on('click', function (e) {
+
+    e.preventDefault();
+
+    var selectedCheques = [];
 
         // Gather selected cheques data
         $('.cheque-checkbox:checked').each(function () {
-            var row = $(this).closest('tr'); // Get the parent row of the checkbox
-            var chequeData = chequeTable.row(row).data(); // Get the data for the selected row
+            var row = $(this).closest('tr');
+            var chequeData = chequeTable.row(row).data();
             selectedCheques.push(chequeData);
         });
 
         // Check if any cheques are selected
         if (selectedCheques.length === 0) {
-            alert("Please select at least one cheque to transfer.");
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Cheques Selected',
+                text: "Please select at least one cheque to transfer."
+            });
             return;
         }
 
-        // AJAX request to send selected cheques data to the controller
-        $.ajax({
-            url: '@Url.Action("TransferSelectedChequesAsync", "Transfers")', // Ensure this is in a Razor view or use a hardcoded URL
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ cheques: selectedCheques }), // Send the selected cheque data
-            success: function (response) {
-                if (response && response.success) {
-                    console.log(response.data);
-                    console.log(JSON.stringify(response.data));
+        Swal.fire({
+            title: 'Confirm Transfer',
+            text: "Are you sure you want to transfer the selected cheques?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, transfer!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // AJAX request to send selected cheques data to the controller
+                $.ajax({
+                    url: '@Url.Action("TransferSelectedChequesAsync", "Transfers")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ cheques: selectedCheques }),
+                    success: function (response) {
+                        if (response && response.success) {
 
-                    $('#transfersClosingBalance').val(response.data.ClosingBalance);
-                    $('#transfersOpeningBalance').val(response.data.OpeningBalance);
-                    $('#transfersTotalCredits').val(response.data.TotalCredits);
-                    $('#transfersTotalDebits').val(response.data.TotalDebits);
-                    $('#transfersUntransferredChequesValue').val(response.data.UntransferredChequesValue);
-                    $('#transfersBookingBalance').val(response.data.BookingBalance);
+                            console.log(response);
+                            console.log("response sucess?", response.success);
 
-                    chequeTable.ajax.reload(); // Refresh the table after the transfer
-                } else {
-                    alert("Error: " + (response.message || "An unexpected error occurred."));
-                }
-            },
-            error: function () {
-                alert("An unexpected error occurred.");
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Transfer Successful',
+                                text: 'The selected cheques have been transferred successfully.'
+                            });
+
+                            $('#transfersClosingBalance').val(response.data.ClosingBalance);
+                            $('#transfersOpeningBalance').val(response.data.OpeningBalance);
+                            $('#transfersTotalCredits').val(response.data.TotalCredits);
+                            $('#transfersTotalDebits').val(response.data.TotalDebits);
+                            $('#transfersUntransferredChequesValue').val(response.data.UntransferredChequesValue);
+                            $('#transfersBookingBalance').val(response.data.BookingBalance);
+
+                            chequeTable.ajax.reload();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Transfer Failed',
+                                text: response.message || 'An unexpected error occurred.'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An unexpected error occurred while transferring the cheques. Please try again later.'
+                        });
+                    }
+                });
             }
         });
     });
-    </script>
 
-    <script>
+</script>
+
+<script>
 
         function resetAllFields() {
             /*            $('#CustomerAccountNewAvailableBalance').val('');*/
@@ -447,46 +481,75 @@
             // Disable submit button
             $('#submitButton').prop('disabled', true);
         }
-
-    // Event listener for the "Transfer Cheques" button
 $('#cashTransferButton').on('click', function (e) {
-
     e.preventDefault();
 
     console.log("cashTransfer btn clicked");
+
+    // Gather data for the transfer request
     var cashTransferRequestDTO = {
         amount: $('#transfersAmount').val(),
         reference: $('#transfersReference').val(),
         employeeId: $('#transfersEmployeeId').val()
     };
 
-    // AJAX request to send selected cheques data to the controller
-    $.ajax({
-        url: '@Url.Action("Create", "Transfers")',  // Your controller/action URL
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(cashTransferRequestDTO), // Convert DTO object to JSON string
-        success: function (response) {
-            if (response.redirect) {
-                resetAllFields();
-            } else if (response.success) {
-                console.log("transfer request success");
-                //alert('Customer Receipts: Operation Success');
-                resetAllFields();
-            } else {
-                //alert('Customer Receipts: Operation Failed\n\n' + (response.errorMessages ? response.errorMessages.join('\n') : 'Unknown error'));
-                //resetAllFields();
-            }
-        },
-        error: function (xhr, status, error) {
-            //alert("An unexpected error occurred.");
-            console.error(error);
+    Swal.fire({
+        title: 'Confirm Transfer',
+        text: "Are you sure you want to proceed with this cash transfer?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, proceed',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+         
+            $.ajax({
+                url: '@Url.Action("Create", "Transfers")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(cashTransferRequestDTO), // Convert DTO object to JSON string
+                success: function (response) {
+                    if (response.redirect) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Transfer Completed',
+                            text: 'The cash transfer has been successfully completed.'
+                        });
+                        resetAllFields();
+                    } else if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'The cash transfer request was successful.'
+                        });
+                        resetAllFields();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Operation Failed',
+                            text: response.errorMessages
+                                ? response.errorMessages.join('\n')
+                                : 'An unknown error occurred during the transfer.'
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred while processing the transfer. Please try again later.'
+                    });
+                    console.error(error);
+                }
+            });
         }
     });
 });
 
 
-    </script>
+</script>
 
     <script>
         $(document).ready(function () {

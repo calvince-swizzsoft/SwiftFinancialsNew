@@ -66,6 +66,46 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
+        public async Task<ActionResult> ChartOfAccountLookUp(Guid? id, InsuranceCompanyDTO insuranceCompanyDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var chartOfAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+
+
+            if (chartOfAccount != null)
+            {
+                insuranceCompanyDTO.ChartOfAccountId = chartOfAccount.Id;
+                insuranceCompanyDTO.ChartOfAccountAccountName = chartOfAccount.AccountName;
+
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        ChartOfAccountId = insuranceCompanyDTO.ChartOfAccountId,
+                        ChartOfAccountAccountName = insuranceCompanyDTO.ChartOfAccountAccountName
+                    }
+                });
+            }
+            return Json(new { success = false, message = "Product Not Found!" });
+        }
+
+
+
+
+
+
+
+
         [HttpPost]
         public async Task<ActionResult> Create(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO)
         {

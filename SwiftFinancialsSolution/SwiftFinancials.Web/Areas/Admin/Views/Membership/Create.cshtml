@@ -1,7 +1,7 @@
 @model  Application.MainBoundedContext.DTO.AdministrationModule.UserBindingModel
 @{
     ViewBag.Title = "Create System User";
-    var commissions = ViewBag.branches;
+    var branches = ViewBag.branches;
 
 }
 
@@ -48,19 +48,7 @@
                         <div class="row">
                             <!-- Company Linkage Section -->
                             <div class="col-lg-6">
-                                <!-- Branch Selection -->
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
-                                        @Html.HiddenFor(Model => Model.BranchId)
-                                        @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                        <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#companyLookupModal">
-                                                <span class="fa fa-search"></span>
-                                            </a>
-                                        </span>
-                                    </div>
-                                </div>
+
 
                                 <!-- Employee Selection -->
                                 <div class="form-group form-group-lg">
@@ -75,17 +63,35 @@
                                         </span>
                                     </div>
                                 </div>
-
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.EmployeeDesignationDescription, new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.EmployeeDesignationDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.EmployeeDesignationDescription, "", new { @class = "text-danger" })
+                                </div>
                                 <!-- Phone Number -->
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.PhoneNumber, new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "Phone number", @disabled = "@disabled" } })
+                                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "@disabled" } })
                                     @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
                             <!-- User Details Section -->
                             <div class="col-lg-6">
+
+                                <!-- Branch Selection -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(Model => Model.BranchId)
+                                        @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#companyLookupModal">
+                                                <span class="fa fa-search"></span>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </div>
                                 <!-- Email -->
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.Email, new { @class = "control-label" })
@@ -94,12 +100,6 @@
                                 </div>
 
                                 <!-- Designation -->
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.EmployeeDesignationDescription, new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.EmployeeDesignationDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "dep", @disabled = "disabled" } })
-                                    @Html.ValidationMessageFor(model => model.EmployeeDesignationDescription, "", new { @class = "text-danger" })
-                                </div>
-
                                 <!-- Username -->
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.UserName, new { @class = "control-label" })
@@ -134,15 +134,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (ViewBag.role != null)
+                                        @if (ViewBag.roles != null)
                                         {
-                                            foreach (var commission in ViewBag.role)
+                                            foreach (var role in ViewBag.roles)
                                             {
                                                 <tr>
                                                     <td>
-                                                        <input type="checkbox" name="commisionIds" value="@commission" />
+                                                        <input type="checkbox" name="roles" value="@role" />
                                                     </td>
-                                                    <td>@($"{commission.roleName}")</td>
+                                                    <td>@($"{role}")</td>
                                                 </tr>
                                             }
                                         }
@@ -167,15 +167,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (commissions != null)
+                                        @if (branches != null)
                                         {
-                                            foreach (var commission in commissions)
+                                            foreach (var branch in branches)
                                             {
                                                 <tr>
                                                     <td>
-                                                        <input type="checkbox" name="commisionIds" value="@commission.Id" />
+                                                        <input type="checkbox" name="Branchids" value="@branch.Id" />
                                                     </td>
-                                                    <td>@commission.Description</td>
+                                                    <td>@branch.Description</td>
                                                 </tr>
                                             }
                                         }
@@ -234,7 +234,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

@@ -41,8 +41,7 @@
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label for="Description" class="control-label">
-                            Description:
-                            <i class="fa fa-info-circle" title="Enter the bank's description"></i>
+                            <i class="fa fa-info-circle" title="Enter the bank's description"></i> Description:
                         </label>
                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter description..." } })
                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
@@ -50,7 +49,6 @@
                     <div class="col-md-6">
                         <label for="Code" class="control-label">
                             Code:
-                            <i class="fa fa-code" title="Enter a unique code for the bank"></i>
                         </label>
                         @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter code..." } })
                         @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
@@ -61,48 +59,55 @@
                 <hr />
                 <div class="form-group row">
                     <div class="col-md-6">
-                        <label for="BankBranches_0__BankCode" class="control-label">Bank Code:</label>
-                        @Html.EditorFor(model => model.BankBranches.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter bank code..." } })
+                        <label for="Code" class="control-label">
+                            Code:
+                        </label>
+                        @Html.EditorFor(model => model.BankBranche[0].Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter code..." } })
+                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
                     </div>
+                  
                     <div class="col-md-6">
-                        <label for="BankBranches_0__AddressAddressLine1" class="control-label">Address Line 1:</label>
-                        @Html.EditorFor(model => model.BankBranches.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter address line 1..." } })
+                        <label for="AddressAddressLine1" class="control-label">
+                            AddressAddressLine1:
+                        </label>
+                        @Html.EditorFor(model => model.BankBranche[0].AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter code..." } })
+                        @Html.ValidationMessageFor(model => model.BankBranche[0].AddressAddressLine1, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label for="BankBranches_0__AddressAddressLine2" class="control-label">Address Line 2:</label>
-                        @Html.EditorFor(model => model.BankBranches.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter address line 2..." } })
+                        <input id="BankBranches_0__AddressAddressLine2" class="form-control" placeholder="Enter address line 2..." />
                     </div>
                     <div class="col-md-6">
                         <label for="BankBranches_0__AddressStreet" class="control-label">Street:</label>
-                        @Html.EditorFor(model => model.BankBranches.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter street..." } })
+                        <input id="BankBranches_0__AddressStreet" class="form-control" placeholder="Enter street..." />
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label for="BankBranches_0__AddressPostalCode" class="control-label">Postal Code:</label>
-                        @Html.EditorFor(model => model.BankBranches.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter postal code..." } })
+                        <input id="BankBranches_0__AddressPostalCode" class="form-control" placeholder="Enter postal code..." />
                     </div>
                     <div class="col-md-6">
                         <label for="BankBranches_0__AddressCity" class="control-label">City:</label>
-                        @Html.EditorFor(model => model.BankBranches.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter city..." } })
+                        <input id="BankBranches_0__AddressCity" class="form-control" placeholder="Enter city..." />
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label for="BankBranches_0__AddressEmail" class="control-label">Email:</label>
-                        @Html.EditorFor(model => model.BankBranches.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter email..." } })
+                        <input id="BankBranches_0__AddressEmail" class="form-control" placeholder="Enter email..." />
                     </div>
                     <div class="col-md-6">
                         <label for="BankBranches_0__AddressLandLine" class="control-label">Land Line:</label>
-                        @Html.EditorFor(model => model.BankBranches.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter landline..." } })
+                        <input id="BankBranches_0__AddressLandLine" class="form-control" placeholder="Enter landline..." />
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label for="BankBranches_0__AddressMobileLine" class="control-label">Mobile Line:</label>
-                        @Html.EditorFor(model => model.BankBranches.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter mobile line..." } })
+                        <input id="BankBranches_0__AddressMobileLine" class="form-control" placeholder="Enter mobile line..." />
                     </div>
                 </div>
 
@@ -146,6 +151,27 @@
                 $(function () {
                     const branches = [];
 
+                    function addBranchToTable(branch) {
+                        $('#branchTable tbody').append(`
+                            <tr data-code="${branch.Code}">
+                                <td>${branch.Code}</td>
+                                <td>${branch.AddressLine1}</td>
+                                <td>${branch.AddressLine2}</td>
+                                <td>${branch.Street}</td>
+                                <td>${branch.PostalCode}</td>
+                                <td>${branch.City}</td>
+                                <td>${branch.Email}</td>
+                                <td>${branch.LandLine}</td>
+                                <td>${branch.MobileLine}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm removeBranchBtn">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    }
+
                     $('#addBranchBtn').click(function () {
                         const branchData = {
                             Code: $('#BankBranches_0__BankCode').val().trim(),
@@ -159,47 +185,10 @@
                             MobileLine: $('#BankBranches_0__AddressMobileLine').val().trim()
                         };
 
-                        if (branchData.Code) {
-                            branches.push(branchData);
-                            addBranchToTable(branchData);
-                            clearBranchInputs();
-                        } else {
-                            Swal.fire("Error", "Please enter the branch code.", "error");
-                        }
+                        branches.push(branchData);
+                        addBranchToTable(branchData);
+                        $('#form input').val(''); // Clear input fields
                     });
-
-                    function addBranchToTable(branch) {
-                        $('#branchTable tbody').append(`
-                                        <tr data-code="${branch.Code}">
-                                            <td>${branch.Code}</td>
-                                            <td>${branch.AddressLine1}</td>
-                                            <td>${branch.AddressLine2}</td>
-                                            <td>${branch.Street}</td>
-                                            <td>${branch.PostalCode}</td>
-                                            <td>${branch.City}</td>
-                                            <td>${branch.Email}</td>
-                                            <td>${branch.LandLine}</td>
-                                            <td>${branch.MobileLine}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger btn-sm removeBranchBtn">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    `);
-                    }
-
-                    function clearBranchInputs() {
-                        $('#BankBranches_0__BankCode').val('');
-                        $('#BankBranches_0__AddressAddressLine1').val('');
-                        $('#BankBranches_0__AddressAddressLine2').val('');
-                        $('#BankBranches_0__AddressStreet').val('');
-                        $('#BankBranches_0__AddressPostalCode').val('');
-                        $('#BankBranches_0__AddressCity').val('');
-                        $('#BankBranches_0__AddressEmail').val('');
-                        $('#BankBranches_0__AddressLandLine').val('');
-                        $('#BankBranches_0__AddressMobileLine').val('');
-                    }
 
                     $('#branchTable').on('click', '.removeBranchBtn', function () {
                         const $row = $(this).closest('tr');
