@@ -19,12 +19,13 @@
             <th>Mobile Number</th>
             <th>Salary Group</th>
             <th>Net Pay</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var payslip in Model)
         {
-            <tr class="clickable-row" data-payslip-id="@payslip.Id">
+            <tr>
                 <td>@payslip.PaddedSalaryCardCardNumber</td>
                 <td>@payslip.SalaryPeriodPostingPeriodDescription</td>
                 <td>@payslip.SalaryPeriodMonthDescription</td>
@@ -35,10 +36,16 @@
                 <td>@payslip.SalaryCardEmployeeCustomerAddressMobileLine</td>
                 <td>@payslip.SalaryCardSalaryGroupDescription</td>
                 <td>@payslip.NetPay.ToString("N2")</td>
+                <td>
+                    <a href="@Url.Action("ViewPayslipEntries", "Payslips", new { payslipId = payslip.Id })" class="btn btn-primary btn-sm">
+                        View
+                    </a>
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
 
 <script>
     $(".clickable-row").click(function () {
