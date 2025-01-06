@@ -275,14 +275,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 if (journal != null && journal.Exception == null)
                 {
 
-                    MessageBox.Show(
-                                                       "Operation Success",
-                                                       "Customer Receipts",
-                                                       MessageBoxButtons.OK,
-                                                       MessageBoxIcon.Information,
-                                                       MessageBoxDefaultButton.Button1,
-                                                       MessageBoxOptions.ServiceNotification
-                                                   );
+                    //MessageBox.Show(
+                    //                                   "Operation Success",
+                    //                                   "Customer Receipts",
+                    //                                   MessageBoxButtons.OK,
+                    //                                   MessageBoxIcon.Information,
+                    //                                   MessageBoxDefaultButton.Button1,
+                    //                                   MessageBoxOptions.ServiceNotification
+                    //                               );
 
                     return Json(new { success = true, message = "Operation Success" });
                 }
@@ -291,14 +291,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     string message = string.Join(Environment.NewLine, model.ErrorMessages);
 
-                    MessageBox.Show(
-                                                       message,
-                                                       "Custmer Receipts",
-                                                       MessageBoxButtons.OK,
-                                                       MessageBoxIcon.Information,
-                                                       MessageBoxDefaultButton.Button1,
-                                                       MessageBoxOptions.ServiceNotification
-                                                   );
+                    //MessageBox.Show(
+                    //                                   message,
+                    //                                   "Custmer Receipts",
+                    //                                   MessageBoxButtons.OK,
+                    //                                   MessageBoxIcon.Information,
+                    //                                   MessageBoxDefaultButton.Button1,
+                    //                                   MessageBoxOptions.ServiceNotification
+                    //                               );
 
                     return Json(new { success = false, message = "Operation Failed" });
                 }

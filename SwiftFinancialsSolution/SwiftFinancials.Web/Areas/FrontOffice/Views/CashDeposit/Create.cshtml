@@ -2165,7 +2165,18 @@
         "fnRowCallback": function (nRow, aData) {
             var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + createdDate.toLocaleTimeString();
-            $('td:eq(5)', nRow).html('<button class="btn btn-outline-info select-btn" data-id="' + aData.Id + '">Select</button>');
+      
+
+            var formatDate = function (date) {
+                return $.datepicker.formatDate('dd/mm/yy', date);
+            };
+
+            aData.CreatedDate = formatDate(createdDate);
+
+            $('td:eq(5)', nRow).html(aData.CreatedDate);
+
+            $('td:eq(6)', nRow).html('<button class="btn btn-outline-info select-btn" data-id="' + aData.Id + '">Select</button>');
+
 
             return nRow;
         },
@@ -2173,12 +2184,14 @@
                 { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "15%" },
                 { "mDataProp": "CustomerFullName", "sTitle": "Name", "sWidth": "20%" },
                 { "mDataProp": "FullAccountNumber", "sTitle": "Account No.", "sWidth": "20%" },
-                { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "15%" },
+                { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "10%" },
                 { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product", "sWidth": "15%" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%", "bSortable": false }
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }
+            
             ],
 
-        "aaSorting": [[1, "desc"]],
+        "aaSorting": [[5, "desc"]],
         "dom": 'lftip',
         "responsive": true,
         "initComplete": function (settings, json) {

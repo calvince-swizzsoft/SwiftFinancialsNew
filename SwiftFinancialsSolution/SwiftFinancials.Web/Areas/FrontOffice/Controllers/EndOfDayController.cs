@@ -143,15 +143,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
 
-                MessageBox.Show(missingMessage,
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                //return Json(new { success = false, message = "Operation error: " + missingMessage });
+                return Json(new { success = false, message = "Operation error: " + missingMessage });
             }
             var untransferredCheques = await _channelService.FindUnTransferredExternalChequesByTellerId(SelectedTeller.Id, "", GetServiceHeader());
 
@@ -204,7 +196,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     IsBusy = true;
 
                     var proceedEndOfDayTransaction = default(bool);
-                    var proceedPrintReceipt = default(bool);
+                    //var proceedPrintReceipt = default(bool);
 
                     model.TransactionCode = (int)SystemTransactionCode.TellerEndOfDay;
 
@@ -248,23 +240,28 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         IsBusy = false;
 
                         string errorMessages = string.Join(Environment.NewLine, model.ErrorMessages);
-                        MessageBox.Show(errorMessages, "Error Information", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                        //MessageBox.Show(errorMessages, "Error Information", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                        return Json(new { success = false, message = "Operation error: " + errorMessages });
                     }
                     else if (SelectedTeller.TellerTotalCheques != 0m)
                     {
                         IsBusy = false;
 
-                        MessageBox.Show("Sorry, but you need to first transfer your cheques!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                        //MessageBox.Show("Sorry, but you need to first transfer your cheques!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-                        return View(cashTransferRequestDTO);
+
+                        return Json(new { success = false, message = "Operation error: " + "Sorry, but you need to first transfer your cheques!" });
+                        //return View(cashTransferRequestDTO);
                     }
                     else if (await _channelService.EndOfDayExecutedAsync(SelectedEmployee, GetServiceHeader()))
                     {
                         IsBusy = false;
 
-                        MessageBox.Show("Sorry, but you have already closed your day!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                        //MessageBox.Show("Sorry, but you have already closed your day!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-                        return View();
+                        return Json(new { success = false, message = "Operation error: " + "Sorry, but you have already closed your day!" });
+
+                        //return View();
                     }
                     else
                     {
@@ -298,118 +295,86 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         if (NewFiscalCount.HasErrors)
                         {
                             IsBusy = false;
+                            return Json(new { success = false, message = "Operation error: " + NewFiscalCount.ErrorMessages });
 
-                            MessageBox.Show(string.Join(Environment.NewLine, NewFiscalCount.ErrorMessages), "Information", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
                         }
                         else
                         {
-                            
-                            var proceedResult = MessageBox.Show("Do you want to proceed?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                            if (proceedResult == DialogResult.Yes && !proceedEndOfDayTransaction)
-                            {
                                 proceedEndOfDayTransaction = true;
 
                                 #region proceed with End Of Day Transaction?
 
                                 var cashManagementResult = await _channelService.AddCashManagementJournalAsync(NewFiscalCount, model, GetServiceHeader());
 
-                                if (cashManagementResult != null)
+                            if (cashManagementResult != null)
+                            {
+                                var postExcessOrShortage = default(bool);
+
+                                switch ((TellerCashBalanceStatus)cashTransferRequestDTO.TellerCashBalanceStatusValue)
                                 {
-                                    var postExcessOrShortage = default(bool);
+                                    case TellerCashBalanceStatus.Balanced:
+                                        break;
+                                    case TellerCashBalanceStatus.Shortage:
+                                        model.TotalValue = Math.Abs(cashTransferRequestDTO.Amount);
+                                        model.CreditChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
+                                        model.DebitChartOfAccountId = SelectedTeller.ShortageChartOfAccountId ?? Guid.Empty;
 
-                                    switch ((TellerCashBalanceStatus)cashTransferRequestDTO.TellerCashBalanceStatusValue)
-                                    {
-                                        case TellerCashBalanceStatus.Balanced:
-                                            break;
-                                        case TellerCashBalanceStatus.Shortage:
-                                            model.TotalValue = Math.Abs(cashTransferRequestDTO.Amount);
-                                            model.CreditChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
-                                            model.DebitChartOfAccountId = SelectedTeller.ShortageChartOfAccountId ?? Guid.Empty;
+                                        postExcessOrShortage = true;
 
-                                            postExcessOrShortage = true;
+                                        break;
+                                    case TellerCashBalanceStatus.Excess:
+                                        model.TotalValue = Math.Abs(cashTransferRequestDTO.Amount);
+                                        model.CreditChartOfAccountId = SelectedTeller.ExcessChartOfAccountId ?? Guid.Empty;
+                                        model.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
 
-                                            break;
-                                        case TellerCashBalanceStatus.Excess:
-                                            model.TotalValue = Math.Abs(cashTransferRequestDTO.Amount);
-                                            model.CreditChartOfAccountId = SelectedTeller.ExcessChartOfAccountId ?? Guid.Empty;
-                                            model.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
+                                        postExcessOrShortage = true;
 
-                                            postExcessOrShortage = true;
-
-                                            break;
-                                        default:
-                                            break;
-                                    }
-
-                                    if (postExcessOrShortage)
-                                    {
-                                        model.PrimaryDescription = string.Format("{0}-{1}", "Transaction", EnumHelper.GetDescription((TellerCashBalanceStatus)cashTransferRequestDTO.TellerCashBalanceStatusValue));
-
-
-
-                                        await _channelService.AddJournalAsync(model, null, GetServiceHeader());
-                                    }
-
-                                    // Replace the _messageService.Show method
-                                    MessageBox.Show("Operation completed successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                                    // Replace the second _messageService.ShowQuestion method
-                                    var printConfirmationResult = MessageBox.Show("Do you want to print?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                                    if (printConfirmationResult == DialogResult.Yes)
-                                    {
-                                        #region compose receipt data
-
-                                        var nfi = new NumberFormatInfo();
-                                        nfi.CurrencySymbol = string.Empty;
-
-                                        var receiptDataSB = new StringBuilder();
-                                        var topIndent = new StringBuilder();
-                                        var leftIndent = new StringBuilder();
-                                        var footer = string.Empty;
-
-                                        if (SelectedBranch != null)
-                                        {
-                                            for (int i = 0; i < SelectedBranch.CompanyTransactionReceiptTopIndentation; i++)
-                                                topIndent.Append("\n");
-
-                                            for (int i = 0; i < SelectedBranch.CompanyTransactionReceiptLeftIndentation; i++)
-                                                leftIndent.Append("\t");
-
-                                            footer = SelectedBranch.CompanyTransactionReceiptFooter;
-                                        }
-
-                                        // Additional receipt data processing can go here...
-
-                                        // Compose the receipt content
-                                        receiptDataSB.Append(topIndent);
-                                        receiptDataSB.Append(leftIndent);
-                                        receiptDataSB.AppendLine("End of Day Transaction Receipt");
-                                        receiptDataSB.Append(leftIndent);
-                                        receiptDataSB.AppendLine("-------------------------");
-                                        receiptDataSB.Append(leftIndent);
-                                        receiptDataSB.AppendLine("Date: " + DateTime.Now.ToString("g", CultureInfo.InvariantCulture));
-                                        receiptDataSB.Append(leftIndent);
-                                        receiptDataSB.AppendLine("Amount: " + string.Format(nfi, "{0:C}", model.TotalValue)); // Example amount
-                                        receiptDataSB.Append(leftIndent);
-                                        receiptDataSB.AppendLine("-------------------------");
-                                        receiptDataSB.Append(leftIndent);
-                                        receiptDataSB.AppendLine(footer);
-
-                                        receiptContent = receiptDataSB.ToString();
-
-                                        #endregion
-
-                                        // Print the receipt
-                                        PrintReceipt(receiptContent);
-
-                                        #endregion
-                                    }
+                                        break;
+                                    default:
+                                        break;
                                 }
-                                
+
+                                if (postExcessOrShortage)
+                                {
+                                    model.PrimaryDescription = string.Format("{0}-{1}", "Transaction", EnumHelper.GetDescription((TellerCashBalanceStatus)cashTransferRequestDTO.TellerCashBalanceStatusValue));
+
+
+
+                                    var resultJournal = await _channelService.AddJournalAsync(model, null, GetServiceHeader());
+
+
+                                    #endregion
+                                    var response = new
+                                    {
+
+                                        success = true,
+
+
+                                        message = "Operation Success:" + "End of Day Operation Completed Successfully",
+
+                                        journalId = resultJournal.Id,
+                                        journalSequentialId = resultJournal.SequentialId,
+                                        journalBranchDescription = resultJournal.BranchDescription,
+                                        journalPrimaryDescription = resultJournal.PrimaryDescription,
+                                        journalSecondaryDescription = resultJournal.SecondaryDescription,
+                                        journalPostingPeriodDescription = resultJournal.PostingPeriodDescription,
+                                        journalApplicationUserName = resultJournal.ApplicationUserName,
+                                        journalCreatedDate = resultJournal.CreatedDate,
+                                        journalTotalValue = resultJournal.TotalValue,
+                                        journalReference = resultJournal.Reference
+                                    };
+
+
+
+
+                                    return Json(response);
+
+                                }
+
                             }
+      
 
 
                         }
@@ -418,22 +383,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 catch (Exception ex)
                 {
-                    MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                  
+                    return Json(new { success = false, message = "Operation error: " + ex.Message });
+
                 }
             }
         
             else
             {
                 var errorMessages = cashTransferRequestDTO.ErrorMessages;
-
-                // Join the error messages into a single string if there are multiple messages
-                var combinedErrorMessages = string.Join(Environment.NewLine, errorMessages);
-
-                // Display the error messages in a MessageBox
-                MessageBox.Show(combinedErrorMessages, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-
-                return View(cashTransferRequestDTO);
+                var combinedErrorMessages = string.Join(Environment.NewLine, errorMessages);         
+                return Json(new { success = false, message = "Operation error: " + combinedErrorMessages });
             }
 
 
@@ -460,38 +420,86 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
-        private void PrintReceipt(string receiptContent)
+        [HttpPost]
+        public JsonResult PrintReceipt(JournalDTO journal)
         {
             try
             {
+                // Build the receipt content from the journal data
+                var receiptContent = BuildReceiptContent(journal);
+
                 PrintDocument printDocument = new PrintDocument();
                 printDocument.PrinterSettings = new PrinterSettings
                 {
-                    PrinterName = new PrinterSettings().PrinterName // Gets the default printer
+                    PrinterName = "EPSON L3250 Series" // Hardcoding the printer name
                 };
+
                 printDocument.PrintPage += (sender, e) =>
                 {
-                    // Draw the receipt content onto the print page
+
                     e.Graphics.DrawString(receiptContent, new Font("Courier New", 10), Brushes.Black, new RectangleF(0, 0, e.PageBounds.Width, e.PageBounds.Height));
                 };
 
-                PrintDialog printDialog = new PrintDialog
+                printDocument.Print();
+
+                // Return success response
+                var response = new
                 {
-                    Document = printDocument
+
+                    success = true,
+                    message = "Receipt printed successfully."
+
+
                 };
 
-                if (printDialog.ShowDialog() == DialogResult.OK)
-                {
-                    printDocument.Print();
-                }
+                return Json(response);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error printing receipt: {ex.Message}", "Print Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                var response = new
+                {
+
+                    success = false,
+                    message = $"Error printing receipt: {ex.Message}"
+
+                };
+                return Json(response);
             }
         }
 
 
+        // Helper method to build the receipt content
+        private string BuildReceiptContent(JournalDTO journal)
+        {
+            var builder = new StringBuilder();
+
+            // Add headers
+            builder.AppendLine("===== Transaction Receipt =====");
+            builder.AppendLine($"Transaction ID: {journal.Id}");
+            builder.AppendLine($"Sequential ID: {journal.SequentialId}");
+            builder.AppendLine($"Branch: {journal.BranchDescription}");
+            builder.AppendLine($"Posting Period: {journal.PostingPeriodDescription}");
+            builder.AppendLine($"Total Value: {journal.TotalValue:C}"); // Format as currency
+            builder.AppendLine($"Primary Description: {journal.PrimaryDescription}");
+            builder.AppendLine($"Secondary Description: {journal.SecondaryDescription}");
+            builder.AppendLine($"Reference: {journal.Reference}");
+
+            //this format cld have issue
+            builder.AppendLine($"Transaction Date: {journal.CreatedDate:yyyy-MM-dd HH:mm:ss}");
+
+            // Add environment details
+            builder.AppendLine("\n===== Environment Details =====");
+            builder.AppendLine($"User: {journal.ApplicationUserName}");
+            //builder.AppendLine($"Machine Name: {journal.EnvironmentMachineName}");
+            //builder.AppendLine($"IP Address: {journal.EnvironmentIPAddress}");
+
+            // Add a footer
+            builder.AppendLine("\n===============================");
+            builder.AppendLine("Thank you for using our services!");
+
+            return builder.ToString();
+        }
 
     }
 

@@ -155,6 +155,9 @@
 
                     var viewButton = `<a class="dropdown-item" href="/HumanResource/SalaryPeriods/details/${aData.Id}">View</a>`;
                     var editButton = `<a class="dropdown-item" href="/HumanResource/SalaryPeriods/edit/${aData.Id}">Edit</a>`;
+                    var viewPayrollButton = `<a class="dropdown-item" href="/HumanResource/SalaryPeriods/viewPayroll/${aData.Id}">Payroll</a>`;
+
+                    
 
 
 
@@ -163,10 +166,10 @@
 
                     switch (aData.Status) {
                         case 1: // Pending
-                            dropdownHtml += viewButton + editButton;
+                            dropdownHtml += viewButton + editButton + viewPayrollButton;
                             break;
                         default:
-                            dropdownHtml += viewButton + editButton;
+                            dropdownHtml += viewButton + editButton + viewPayrollButton;
                             break;
                     }
 

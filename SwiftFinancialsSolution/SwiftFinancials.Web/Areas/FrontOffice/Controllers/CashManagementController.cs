@@ -162,8 +162,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-                  pageIndex,
-                  jQueryDataTablesModel.iDisplayLength,
+                  0,
+                  int.MaxValue,
                   (Guid)ActiveTreasury.ChartOfAccountId,
                   startDate,
                   endDate,
@@ -186,7 +186,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
 
 
-                //var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+                var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
 
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
@@ -197,7 +197,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     draw = jQueryDataTablesModel.sEcho,
                     recordsTotal = totalRecordCount,
                     recordsFiltered = searchRecordCount,
-                    data = pageCollectionInfo.PageCollection,
+                    data = paginatedData,
                     summary = new
                     {
                         AvailableBalanceBroughtForward = availableBalanceBroughtForward,

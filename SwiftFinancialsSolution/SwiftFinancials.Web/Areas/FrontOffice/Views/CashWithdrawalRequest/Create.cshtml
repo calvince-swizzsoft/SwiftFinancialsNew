@@ -513,16 +513,17 @@ $(document).ready(function () {
                     Select
                 </button>
             `;
-            $('td:eq(6)', nRow).html(dropDownHtml);
+            $('td:eq(3)', nRow).html(dropDownHtml);
             return nRow;
         },
         "aoColumns": [
             { "mDataProp": "EmployeeCustomerFullName", "sTitle": "Employee Name", "sWidth": "15%" },
             { "mDataProp": "StatusDescription", "sTitle": "Authorization Status", "sWidth": "15%" },
-            { "mDataProp": "Amount", "sTitle": "Amounts", "sWidth": "10%" },
-            { "mDataProp": "TellerCashBalanceStatus", "sTitle": "Teller C/Balance Status", "sWidth": "15%" },
-            { "mDataProp": "TellerCashBalanceStatusValue", "sTitle": "Teller C/Balance", "sWidth": "10%" },
-            { "mDataProp": "CreatedBy", "sTitle": "Created By", "sWidth": "10%" },
+            { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
+        /*    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "10%" },*/
+            //{ "mDataProp": "TellerCashBalanceStatus", "sTitle": "Teller C/Balance Status", "sWidth": "15%" },
+            //{ "mDataProp": "TellerCashBalanceStatusValue", "sTitle": "Teller C/Balance", "sWidth": "10%" },
+       /*     { "mDataProp": "CreatedBy", "sTitle": "Created By", "sWidth": "10%" },*/
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%", "bSortable": false }
         ],
         "aaSorting": [[1, "desc"]],

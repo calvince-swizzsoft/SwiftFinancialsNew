@@ -70,15 +70,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
 
-                MessageBox.Show(missingMessage,
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                //return Json(new { success = false, message = "Operation error: " + missingMessage });
+                return Json(new { success = false, message = "Operation error: " + missingMessage });
             }
 
             var untransferredCheques = await _channelService.FindUnTransferredExternalChequesByTellerId(SelectedTeller.Id, "", GetServiceHeader());
@@ -124,15 +116,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
 
-                MessageBox.Show(missingMessage,
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                //return Json(new { success = false, message = "Operation error: " + missingMessage });
+                return Json(new { success = false, message = "Operation error: " + missingMessage });
             }
 
             cashTransferRequestDTO.EmployeeId = selectedTeller.EmployeeId;
@@ -146,16 +130,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (successRequest != null)
                 {
-
-                    MessageBox.Show("Cash Transfer Request sent Successfully", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                     //return View(cashTransferRequestDTO);
                     return Json(new { success = true, message = "Operation Success" });
                 }
                 else
                 {
-
-
-                    MessageBox.Show("Cah Transfer Request failed", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
                     //return View(cashTransferRequestDTO);
                     return Json(new { success = true, message = "Operation Failed" });
@@ -198,15 +177,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var missingMessage = $"Some features may not work, you are missing {string.Join(", ", missingParameters)}";
 
-                MessageBox.Show(missingMessage,
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                //return Json(new { success = false, message = "Operation error: " + missingMessage });
+                return Json(new { success = false, message = "Operation error: " + missingMessage });
             }
 
             int totalRecordCount = 0;
@@ -219,18 +190,26 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
 
-            var pageCollectionInfo = await _channelService.FindUnTransferredExternalChequesByTellerIdAndFilterInPageAsync(selectedTeller.Id, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindUnTransferredExternalChequesByTellerIdAndFilterInPageAsync(selectedTeller.Id, jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
            
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
+
+
+                var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.CreatedDate).ToList();
+
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+                //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
+
+
+                var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
@@ -299,15 +278,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
 
                     var message = "Sorry, but the requisite teller and / or external cheques in hand account has not been setup!";
-
-
-                    MessageBox.Show(message,
-                        "Cash Transaction",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
 
                     return Json(new { success = false, message = "Operation error: " + message });
                 }
