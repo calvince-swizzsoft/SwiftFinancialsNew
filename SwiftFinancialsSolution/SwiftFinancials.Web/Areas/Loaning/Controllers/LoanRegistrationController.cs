@@ -126,91 +126,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             );
         }
 
-        [HttpPost]
-        public async Task<ActionResult> ExportToExcel(JQueryDataTablesModel jQueryDataTablesModel)
-        {
-            if (jQueryDataTablesModel.sEcho <= 0)
-            {
-                throw new InvalidOperationException("Expected the request to have a sEcho value greater than 0");
-            }
-
-            // Retrieve the data using the same service call as in the Index action
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(
-                jQueryDataTablesModel.sSearch,
-                10,
-                jQueryDataTablesModel.iDisplayStart,
-                jQueryDataTablesModel.iDisplayLength,
-                true,
-                GetServiceHeader()
-            );
-
-            var page = pageCollectionInfo.PageCollection;
-
-            // Generate the Excel file from the pageCollection
-            byte[] fileContent = GenerateExcelFile(page);
-
-            // Return the Excel file as a downloadable file
-            return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "LoanCases.xlsx");
-        }
-
-        private byte[] GenerateExcelFile(IEnumerable<LoanCaseDTO> loanCases)
-        {
-            using (var package = new ExcelPackage())
-            {
-                var worksheet = package.Workbook.Worksheets.Add("Registered Loans");
-
-                // Load the logo image
-                var logoPath = Server.MapPath("~/Images/MIA.JPG");
-                var logo = Image.FromFile(logoPath);
-
-                // Adjust the height of the first row to create space for the logo
-                worksheet.Row(1).Height = 150; // Adjust the row height to fit the logo size
-
-                // Insert the logo into the worksheet
-                var picture = worksheet.Drawings.AddPicture("Flow Finance", logo);
-                picture.SetPosition(0, 0, 0, 0); // Position the image in the top-left corner (row 1, column 1)
-
-                // Start the headers after the logo
-                int headerRowStart = 5; // Adjust this if the logo is larger or smaller
-
-
-                var headers = new[] { "CASE NUMBER", "CUSTOMER NAME", "AMOUNT APPLIED", "BRANCH", "PAYMENT PER PERIOD", "RECEIVED DATE", "CREATED DATE" };
-                for (int i = 0; i < headers.Length; i++)
-                {
-                    var cell = worksheet.Cells[headerRowStart, i + 1];
-                    cell.Value = headers[i];
-
-                    cell.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                    cell.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Blue);
-                    cell.Style.Font.Color.SetColor(System.Drawing.Color.White);
-
-                    cell.Style.Font.Bold = true;
-                }
-
-                int row = headerRowStart + 1;
-                foreach (var loanCase in loanCases)
-                {
-                    worksheet.Cells[row, 1].Value = loanCase.CaseNumber;
-                    worksheet.Cells[row, 2].Value = loanCase.CustomerName;
-                    worksheet.Cells[row, 3].Value = loanCase.AmountApplied;
-                    worksheet.Cells[row, 4].Value = loanCase.BranchDescription;
-                    worksheet.Cells[row, 5].Value = loanCase.PaymentPerPeriod;
-                    worksheet.Cells[row, 6].Value = loanCase.ReceivedDate.ToString("yyyy-MM-dd");
-                    worksheet.Cells[row, 7].Value = loanCase.CreatedDate.ToString("yyyy-MM-dd");
-                    // Add more fields as needed
-
-                    row++;
-                }
-
-                // Auto-fit columns
-                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
-
-                return package.GetAsByteArray();
-            }
-        }
-
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -313,7 +228,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
                     if (standingOrders != null && standingOrders.Any())
                     {
-                        allStandingOrders.AddRange(standingOrders); // Add standing orders to the collection
+                        allStandingOrders.AddRange(standingOrders); 
                     }
                 }
 
@@ -330,13 +245,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 //// Collaterals...
                 var collaterals = await _channelService.FindCustomerDocumentsByCustomerIdAndTypeAsync(parseId, (int)CustomerDocumentType.Collateral, GetServiceHeader());
-                for (int i = 0; i < collaterals.Count; i++)
-                {
-                    collaterals[i].CreatedDate = Convert.ToDateTime(collaterals[i].CreatedDate);
-                    collaterals[i].ModifiedDate = Convert.ToDateTime(collaterals[i].ModifiedDate);
-                }
-
-
+                var releasedCollaterals = collaterals.Where(rC => rC.CollateralStatus == (int)CollateralStatus.Released);
                 return Json(new
                 {
                     success = true,
@@ -354,7 +263,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         StandingOrders = allStandingOrders,
                         Payouts = payouts,
                         LoanApplications = loanApplications,
-                        Collaterals = collaterals,
+                        Collaterals = releasedCollaterals,
                         PassportPhoto = loanCaseDTO.PassportPhoto != null ? Convert.ToBase64String(loanCaseDTO.PassportPhoto) : null,
                         SignaturePhoto = loanCaseDTO.SignaturePhoto != null ? Convert.ToBase64String(loanCaseDTO.SignaturePhoto) : null,
                         IDFront = loanCaseDTO.IDCardFrontPhoto != null ? Convert.ToBase64String(loanCaseDTO.IDCardFrontPhoto) : null,
@@ -999,7 +908,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 if (existingEntry != null)
                 {
                     TempData["GuarantorExists"] = "The selected Customer has already been added to the guarantors list!";
-                    Session["loanguarantorsDTOs"] = null;
                     return Json(new
                     {
                         success = false
@@ -1011,6 +919,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 if (guarantorDTO.Id == loancaseDTO.CustomerId && !isSelfGuarantee)
                 {
                     TempData["notSelfGuarantee"] = "The selected Loan Product does not allow self Guarantee!";
+                    Session["loanguarantorsDTOs"] = null;
                     return Json(new
                     {
                         success = false
@@ -1024,7 +933,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     TempData["AmountGuaranteedGreater"] = $"Amount Guaranteed must be less than or equal to Total Shares minus Committed Shares" +
                         $" ({loancaseDTO.Guarantor[0].TotalShares} - {loancaseDTO.Guarantor[0].CommittedShares} = " +
                         $"{loancaseDTO.Guarantor[0].TotalShares - loancaseDTO.Guarantor[0].CommittedShares}) and the number of Maximum Guarantees must not be exceeded!";
-
+                    Session["loanguarantorsDTOs"] = null;
                     return Json(new { success = false, message = "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares." });
                 }
 
@@ -1104,6 +1013,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 guarantors[0].CustomerId = guarantors[0].GuarantorId;
             }
 
+            decimal totalAmountGuaranteed = guarantors.Sum(t => t.AmountGuaranteed);
+            if (totalAmountGuaranteed < loanCaseDTO.AmountApplied)
+            {
+                await ServeNavigationMenus();
+
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+
+
+                ViewBag.recordStatus = GetRecordStatusSelectList(loanCaseDTO.RecordStatusDescription.ToString());
+                ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
+
+
+                TempData["totalAmountGuaranteed<AmountApplied"] = "The Total Amount Guaranteed does not fully secure the Applied Amount!";
+                Session["loanguarantorsDTOs"] = null;
+                return View("Create");
+            }
+
             var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             if (userDTO.BranchId != null)
             {
@@ -1168,7 +1097,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 if (!loanCaseDTO.HasErrors)
                 {
-                    // Check member's period to validate if qualify to apply for the product
                     var membershipPeriod = loanCaseDTO.LoanRegistrationMinimumMembershipPeriod;
                     var fullCustomerDetails = await _channelService.FindCustomerAsync(loanCaseDTO.CustomerId, GetServiceHeader());
                     var customerRegistrationDate = fullCustomerDetails.CreatedDate;
@@ -1192,7 +1120,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                         TempData["lessMinimumMembershipPeriod"] = "The selected Member's Registration Period is less than the minimum required to apply for the selected Loan Product.";
                         Session["loanguarantorsDTOs"] = null;
-                        return View(loanCaseDTO);
+                        return View("Create");
                     }
 
 
@@ -1213,7 +1141,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                         TempData["ErrorMessageResult"] = loanCase.ErrorMessageResult;
                         Session["loanguarantorsDTOs"] = null;
-                        return View();
+                        return View("Create");
                     }
 
                     if (collateralIds != null || collateralIds != "" || collateralIds != string.Empty)
@@ -1244,7 +1172,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                     TempData["ErrorMessage"] = $"Operation Unsuccessful: {errorMessage}";
                     Session["loanguarantorsDTOs"] = null;
-                    return View(loanCaseDTO);
+                    return View("Create");
                 }
 
             }
@@ -1259,7 +1187,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
                 ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
                 Session["loanguarantorsDTOs"] = null;
-                return View(loanCaseDTO);
+                return View("Create");
             }
         }
     }
