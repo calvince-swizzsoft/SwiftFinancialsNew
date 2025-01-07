@@ -20,6 +20,9 @@
     var LoanProductRequired = TempData["LoanProductRequired"] as string;
     var notSelfGuarantee = TempData["notSelfGuarantee"] as string;
     var lessMinimumMembershipPeriod = TempData["lessMinimumMembershipPeriod"] as string;
+    var totalAmountGuaranteedLessAmountApplied = TempData["totalAmountGuaranteed<AmountApplied"] as string;
+
+    var AmountGuaranteedLessThan0 = TempData["AmountGuaranteedLessThan0"] as string;
 }
 
 <style>
@@ -597,6 +600,22 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Register Loan</h2>
+                    <script>
+                            $(document).ready(function () {
+                                @if (!string.IsNullOrEmpty(AmountGuaranteedLessThan0))
+                                {
+                                    <text>
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error!',
+                                            text: '@AmountGuaranteedLessThan0',
+                                            confirmButtonColor: '#007bff',
+                                        });
+                                    </text>
+                                }
+                            });
+                    </script>
+
 
                     @if (LoaneeRequired != null)
                     {
@@ -696,14 +715,31 @@
                         </script>
                     }
 
-                    @if (lessMinimumMembershipPeriod != null)
+                    <script>
+                            $(document).ready(function () {
+                                @if (!string.IsNullOrEmpty(lessMinimumMembershipPeriod))
+                                {
+                                    <text>
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error!',
+                                            text: '@lessMinimumMembershipPeriod',
+                                            confirmButtonColor: '#007bff',
+                                        });
+                                    </text>
+                                }
+                            });
+                    </script>
+
+
+                    @if (totalAmountGuaranteedLessAmountApplied != null)
                     {
                         <script>
                             document.addEventListener("DOMContentLoaded", function () {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Error!',
-                                    text: 'Membership period for the selected Loanee is less than the minimum required membership period to apply for the selected Loan Product!',
+                                    text: '@totalAmountGuaranteedLessAmountApplied',
                                     confirmButtonColor: '#007bff',
                                 });
                             });
@@ -1916,6 +1952,7 @@
             });
         });
     </script>
+
 
     <script>
         document.getElementById('createButton').addEventListener('click', function () {

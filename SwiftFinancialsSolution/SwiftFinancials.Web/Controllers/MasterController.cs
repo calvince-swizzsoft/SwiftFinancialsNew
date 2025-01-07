@@ -2306,5 +2306,23 @@ namespace SwiftFinancials.Web.Controllers
 
             return KnownChargeType;
         }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetLoanGuarantorStatusTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> LoanGuarantorStatus = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanGuarantorStatus)).Cast<LoanGuarantorStatus>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            LoanGuarantorStatus.AddRange(items);
+
+            return LoanGuarantorStatus;
+        }
     }
 }
