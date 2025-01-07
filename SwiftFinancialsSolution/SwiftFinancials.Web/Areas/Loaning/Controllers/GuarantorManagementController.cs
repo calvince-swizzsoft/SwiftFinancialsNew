@@ -100,13 +100,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        public async Task<ActionResult> LoaneeLookUp(Guid id)
+        [HttpPost]
+        public async Task<JsonResult> LoaneeLookUp(Guid id)
         {
             if (id == Guid.Empty)
             {
                 return Json(new { success = false, message = "Invalid ID" });
             }
-
 
             var loaneeLookUp = new LoanGuarantorDTO();
 
@@ -116,7 +116,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 if (loanee.CustomerAccountTypeProductCode != (int)ProductCode.Loan)
                 {
                     TempData["!Loan"] = "Please select a Loan Account!";
-                    return View();
+                    return Json(new { success = false, message = "Please select a Loan Account!" });
                 }
 
                 Session["LoanProductId"] = loanee.CustomerAccountTypeTargetProductId;
@@ -126,7 +126,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loaneeLookUp.CustomerAccountAccountRemarks = loanee.Remarks;
                 loaneeLookUp.BookBalance = loanee.BookBalance;
                 loaneeLookUp.CustomerFullName = loanee.CustomerFullName;
-                loaneeLookUp.CustomerAccounntCustomerTypeDescription = loanee.TypeDescription;
+                loaneeLookUp.CustomerAccounntCustomerTypeDescription = loanee.CustomerTypeDescription;
                 loaneeLookUp.LoaneeCustomerIndividualPayrollNumbers = loanee.CustomerIndividualPayrollNumbers;
                 loaneeLookUp.CustomerPersonalIdentificationNumber = loanee.CustomerPersonalIdentificationNumber;
                 loaneeLookUp.CustomerReference1 = loanee.CustomerReference1;
@@ -245,13 +245,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return Json(new { success = false, message = "Customer not found" });
         }
 
-
-
         [HttpPost]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
         {
 
-
+            Session["LoanProductId"] = null;
             return View();
         }
     }
