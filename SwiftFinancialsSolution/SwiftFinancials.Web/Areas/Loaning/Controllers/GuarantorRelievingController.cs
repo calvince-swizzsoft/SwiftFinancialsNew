@@ -23,11 +23,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.LoanGuarantorStatus = GetLoanGuarantorStatusTypeSelectList(string.Empty);
+
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate, int loanGuarantorStatus, string filterValue)
         {
             int totalRecordCount = 0;
 
@@ -37,23 +39,24 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanGuarantorAttachmentHistoryByStatusAndFilterInPageAsync((int)LoanGuarantorAttachmentHistoryStatus.Attached, DateTime.Now, DateTime.Now, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanGuarantorAttachmentHistoryByStatusAndFilterInPageAsync(loanGuarantorStatus, startDate, endDate,
+                filterValue, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(LoanCase => LoanCase.CreatedDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(x => x.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<LoanGuarantorDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<LoanGuarantorAttachmentHistoryDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
-        public async Task<ActionResult> Create(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        public async Task<ActionResult> Create(Guid? id, LoanGuarantorAttachmentHistoryDTO loanGuarantorAttachmentHistoryDTO)
         {
             await ServeNavigationMenus();
 

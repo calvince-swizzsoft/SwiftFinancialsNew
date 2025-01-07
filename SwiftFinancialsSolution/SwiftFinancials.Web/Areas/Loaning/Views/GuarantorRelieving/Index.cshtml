@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "Guarantor Relieving";
+
+    var LoanGuarantorStatus = ViewBag.LoanGuarantorStatus as List<SelectListItem>;
 }
 
 
@@ -9,16 +11,16 @@
     #tabs-container {
         background-color: #f5f5f5;
         border-bottom: 1px solid #ddd;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
-        overflow-x: auto; /* Allow horizontal scrolling if necessary */
+        overflow-x: auto;
     }
 
     .nav-tabs {
-        padding: 10px 0; /* Adjusted padding */
+        padding: 10px 0;
         list-style: none;
         margin: 0;
-        white-space: nowrap; /* Prevent line breaks */
+        white-space: nowrap;
     }
 
         .nav-tabs li {
@@ -30,7 +32,7 @@
             text-decoration: none;
             font-size: 14px;
             color: #333;
-            font-weight: bold; /* Set font weight to bold */
+            font-weight: bold;
             padding: 10px 15px;
             border-bottom: 2px solid transparent;
             transition: border-bottom-color 0.3s ease-in-out;
@@ -44,7 +46,7 @@
 
 
     .navbar {
-        background-color: rgba(255, 255, 255, 0.9); /* White with transparency */
+        background-color: rgba(255, 255, 255, 0.9);
         padding: 15px 20px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
@@ -66,18 +68,18 @@
 
     .nav-link {
         text-decoration: none;
-        color: #333; /* Dark gray for text */
+        color: #333;
         padding: 10px 15px;
         border-radius: 5px;
         font-weight: bold;
         transition: all 0.3s ease;
-        background-color: transparent; /* Clear background for default state */
+        background-color: transparent;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
         .nav-link:hover {
-            background-color: rgba(0, 123, 255, 0.2); /* Light blue on hover */
-            color: #007bff; /* Blue for active link */
+            background-color: rgba(0, 123, 255, 0.2);
+            color: #007bff;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
@@ -86,6 +88,14 @@
             transform: translateY(0);
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
+
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
 </style>
 
 
@@ -124,34 +134,57 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Cases</h2>
+                    <h2>Guarantor Relieving</h2>
                     <hr />
 
-                    <div class="row">
-                        <div class="col-lg-2">
-                            <select>
-                                <option>Attached</option>
-                                <option>Released</option>
-                            </select>
-                        </div>
+                    <div class="blue-section">
+                        <form id="filterForm">
+                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        <label for="filterType">Status</label>
 
-                        <div class="col-lg-2">
-                            <div class="form-group">
-                                @Html.LabelFor(m => m.StartDate, "")
-                                @Html.TextBoxFor(m => m.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @id = "datepicker" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Status, LoanGuarantorStatus,
+                                            new { @class = "form-control input-md", @id = "loanGuarantorStatus" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <div class="form-group spacing-form-group">
+                                        <label for="filterType">Start Date</label>
+                                        <div class="input-group text-box">
+                                            @Html.TextBox("startDate", DateTime.Now.AddMonths(-10).ToString("yyyy-MM-dd"), new { @class = "form-control", @type = "date", @id = "startDate" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <div class="form-group spacing-form-group">
+                                        <label for="filterType">End Date</label>
+                                        <div class="input-group text-box">
+                                            @Html.TextBox("endDate", DateTime.Now.ToString("yyyy-MM-dd"), new { @class = "form-control", @type = "date", @id = "endDate" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3" style="margin-top: 27px;">
+                                    <div class="form-group spacing-form-group">
+                                        <div class="input-group text-box">
+                                            @Html.TextBox("filterValue", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "filterValue" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1" style="margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="col-lg-2">
-                            <div class="form-group">
-                                @Html.LabelFor(m => m.EndDate, "Select Date:")
-                                @Html.TextBoxFor(m => m.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @id = "datepicker" })
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4"></div>
-
-                        <div class="col-lg-2"></div>
+                        </form>
                     </div>
 
                     <div class="ibox-tools">
@@ -169,11 +202,11 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="guarantorsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="LoanGuarantorAttachmentHisoryGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
-                                        Loading data from server
+                                        Enter Status, Start Date, End Date and preferred Filter Value...
                                     </td>
                                 </tr>
                             </tbody>
@@ -185,11 +218,6 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
-
-
 @section Styles {
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
 }
@@ -197,89 +225,54 @@
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
 
-    <script type="text/javascript">
+<script type="text/javascript">
         $(document).ready(function () {
-            $('#guarantorsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "GuarantorRelieving", new { Area = "Loaning"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+    $('#LoanGuarantorAttachmentHisoryGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "GuarantorRelieving", new { Area = "Loaning" }))",
+        "sServerMethod": "POST",
+        "fnServerParams": function (aoData) {
+            aoData.push({ "name": "loanGuarantorStatus", "value": $('#loanGuarantorStatus').val() });
+            aoData.push({ "name": "startDate", "value": $('#startDate').val() });
+            aoData.push({ "name": "endDate", "value": $('#endDate').val() });
+            aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
+        },
+        "error": function (xhr, error, code) {
+            console.error("DataTable Error:", error, code, xhr.responseText);
+        },
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+            var viewButton = `<a class="btn btn-primary" style="width: 150px;" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
 
-                    var receivedDate = new Date(parseInt(aData.ReceivedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + receivedDate.getHours()).slice(-2);
-                    var m = ("0" + receivedDate.getMinutes()).slice(-2);
-                    var s = ("0" + receivedDate.getSeconds()).slice(-2);
+            $('td:eq(6)', nRow).html(dt_Created); 
+            $('td:eq(7)', nRow).html(viewButton);
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "2%" },
+            { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "10%" },
+            { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "20%" },
+            { "mDataProp": "SourceCustomerAccountCustomerReference3", "sTitle": "Personal File Number", "sWidth": "10%" },
+            { "mDataProp": "PrincipalBalance", "sTitle": "Principal Balance", "sWidth": "5%" },
+            { "mDataProp": "InterestBalance", "sTitle": "Interest Balance", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
 
-                    var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
-                    aData.ReceivedDate = dt_ReceivedDate;
-
-                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var appraiseUrl = '<a  href="/loaning/LoanRegistration/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
-                    var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
-                    var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
-
-
-                    var dropdownHtml = `
-                        <div class="dropdown">
-                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
-                                <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
-                            </div>
-                        </div>`;
-
-
-                    $('td:eq(8)', nRow).html(dt_Created);
-                    $('td:eq(9)', nRow).html(dropdownHtml);
-
-                    return nRow;
-                },
-
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "2%" },
-                    { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "Full Account Number", "sWidth": "2%" },
-                    { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "20%" },
-                    { "mDataProp": "CustomerReference3", "sTitle": "Personal File Number", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]],
-            }
-            );
-        });
-
-        $(document).ajaxStart(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
-        $(document).ajaxStop(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
-
-
-
-
-
-        $(function () {
-            $("#datepicker").datepicker({
-                dateFormat: "yy-mm-dd" // Format the date as yyyy-MM-dd
-            });
-            });
-    </script>
+    $('#filterForm').on('submit', function (e) {
+        e.preventDefault();
+        $('#LoanGuarantorAttachmentHisoryGrid').DataTable().ajax.reload();
+    });
+});
+</script>
 }

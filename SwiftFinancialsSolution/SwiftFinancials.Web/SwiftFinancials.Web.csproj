@@ -1541,7 +1541,6 @@
     <Content Include="Areas\Admin\Views\AuditLogs\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslipEntries.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\ViewPayroll.cshtml" />
-    <Content Include="Areas\Loaning\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
