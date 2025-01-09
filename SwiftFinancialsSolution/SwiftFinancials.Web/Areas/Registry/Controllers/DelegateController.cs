@@ -145,7 +145,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 await _channelService.AddDelegateAsync(delegateDTO, GetServiceHeader());
 
-                TempData["SuccessMessage"] = "Delegate created successfully!";
+                TempData["SuccessMessage"] = "Delegate " + delegateDTO.CustomerFullName + " created successfully.";
 
                 return RedirectToAction("Index");
             }

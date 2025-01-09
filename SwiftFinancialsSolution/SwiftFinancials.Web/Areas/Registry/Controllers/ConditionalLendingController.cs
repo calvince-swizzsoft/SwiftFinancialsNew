@@ -218,14 +218,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (!conditionalLendingDTO.HasErrors)
             {
                 var result = await _channelService.AddConditionalLendingAsync(conditionalLendingDTO, GetServiceHeader());
-                System.Windows.Forms.MessageBox.Show(
-                         "Conditional Lending for Loan product " + conditionalLendingDTO.LoanProductDescription + "successfully.",
-                         "Success",
-                         System.Windows.Forms.MessageBoxButtons.OK,
-                         System.Windows.Forms.MessageBoxIcon.Information,
-                         System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                         System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                     );
+                TempData["SuccessMessage"] = "conditionalLendingDTO created successfully.";
+
                 if (result.ErrorMessageResult != null)
                 {
                     System.Windows.Forms.MessageBox.Show(

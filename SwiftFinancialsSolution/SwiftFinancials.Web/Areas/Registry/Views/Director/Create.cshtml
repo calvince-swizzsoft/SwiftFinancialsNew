@@ -86,7 +86,7 @@
                                         @Html.LabelFor(model => model.DivisionDescription, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.DivisionId)
 
-                                        @Html.EditorFor(model => model.DivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", @required = "readonly" } })
+                                        @Html.EditorFor(model => model.DivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", @required = "readonly",@disabled="disabled" } })
                                         @Html.ValidationMessageFor(model => model.DivisionDescription, "", new { @class = "text-danger" })
                                     </div>
 

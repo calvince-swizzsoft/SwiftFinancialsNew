@@ -174,7 +174,9 @@ namespace DistributedServices.MainBoundedContext
                 BranchId = userDTO.BranchId,
                 LockoutEnabled = userDTO.LockoutEnabled,
                 CreatedDate = DateTime.Now,
-                CustomerId = userDTO.CustomerId
+                CustomerId = userDTO.CustomerId,
+                EmployeeId = userDTO.EmployeeId
+
             };
 
             var companyDTO = _companyAppService.FindCompany((Guid)userDTO.BranchId, serviceHeader);
@@ -312,14 +314,14 @@ namespace DistributedServices.MainBoundedContext
 
             List<UserDTO> userDTOs = new List<UserDTO>();
 
-            foreach(var applicationUser in applicationUsers)
+            foreach (var applicationUser in applicationUsers)
             {
                 var userDTO = new UserDTO()
                 {
                     FirstName = applicationUser.FirstName,
                     OtherNames = applicationUser.OtherNames,
                     Email = applicationUser.Email,
-                    UserName= applicationUser.UserName,
+                    UserName = applicationUser.UserName,
                     PhoneNumber = applicationUser.PhoneNumber,
                     BranchId = applicationUser.BranchId,
                     LockoutEnabled = applicationUser.LockoutEnabled,
@@ -329,7 +331,7 @@ namespace DistributedServices.MainBoundedContext
 
                 userDTOs.Add(userDTO);
             }
-           return userDTOs;
+            return userDTOs;
         }
 
         public async Task<bool> ResetMembershipPasswordAsync(UserDTO userDTO)
