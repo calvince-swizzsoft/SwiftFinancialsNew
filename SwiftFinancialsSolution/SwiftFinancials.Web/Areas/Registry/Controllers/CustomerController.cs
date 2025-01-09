@@ -609,15 +609,16 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     if (result.ErrorMessages == null)
                     {
                         // TempData["SuccessMessage"] = "Teller created successfully.";
+                        TempData["SuccessMessage"] = "Customer "+result.FullName+ " created successfully.";
 
-                        System.Windows.Forms.MessageBox.Show(
-                            "Customer " + result.FullName + " created successfully.",
-                            "Success",
-                            System.Windows.Forms.MessageBoxButtons.OK,
-                            System.Windows.Forms.MessageBoxIcon.Information,
-                            System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                            System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                        );
+                        //System.Windows.Forms.MessageBox.Show(
+                        //    "Customer " + result.FullName + " created successfully.",
+                        //    "Success",
+                        //    System.Windows.Forms.MessageBoxButtons.OK,
+                        //    System.Windows.Forms.MessageBoxIcon.Information,
+                        //    System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                        //    System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                        //);
                         ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
                         ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
                         ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
@@ -663,7 +664,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
 
 
-                    TempData["SuccessMessage"] = "Customer created successfully.";
 
                     if (result == null || !string.IsNullOrEmpty(result.ErrorMessageResult))
                     {

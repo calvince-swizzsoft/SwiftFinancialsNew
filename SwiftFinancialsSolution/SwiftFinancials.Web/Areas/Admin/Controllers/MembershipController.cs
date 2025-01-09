@@ -120,7 +120,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             var userDTO = new UserDTO
             {
                 Id = applicationUser.Id,
-                FirstName = applicationUser.FirstName+"  "+
+                FirstName = applicationUser.FirstName + "  " +
               applicationUser.OtherNames,
                 Email = applicationUser.Email,
                 PhoneNumber = applicationUser.PhoneNumber,
@@ -283,6 +283,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             userBindingModel.FirstName = employee.CustomerIndividualFirstName;
             userBindingModel.OtherNames = employee.CustomerIndividualLastName;
             userBindingModel.PhoneNumber = employee.CustomerAddressMobileLine;
+            //userBindingModel.EmployeeId = employee.Id;
 
             userBindingModel.ValidateAll();
 
@@ -307,7 +308,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             var userDTO = await _channelService.AddNewMembershipAsync(userBindingModel.MapTo<UserDTO>(), GetServiceHeader());
 
-  //          var result = await _channelService.AddUserToRolesAsync(userDTO.UserName, role, GetServiceHeader());
+            //          var result = await _channelService.AddUserToRolesAsync(userDTO.UserName, role, GetServiceHeader());
 
             AuditTrailDTO auditLogDTO = new AuditTrailDTO();
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

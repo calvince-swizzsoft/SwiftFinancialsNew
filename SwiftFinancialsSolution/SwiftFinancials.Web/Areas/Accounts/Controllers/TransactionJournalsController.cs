@@ -20,14 +20,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(DateTime? startDate, DateTime? endDate, string reference, int? filter)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel ,DateTime? startDate, DateTime? endDate, string reference, int? filter)
         {
             int totalRecordCount = 0;
 
-            //bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
-            //var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            //// Validate date range
+          
             DateTime start = startDate ?? DateTime.Now.AddDays(-30);
             DateTime end = endDate ?? DateTime.Now;
             if (filter == 2)

@@ -70,15 +70,22 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         public JsonResult Add(BankDTO bank, string branchdetails)
         {
             // Add bank branch to the bankBranches list (assuming bank.BankBranches is the correct object to add)
-            bankBranches.Add(bank.BankBranches);
+            //foreach(var k in bank.Bankbranch)
+            //{
+            //    bankBranches.Add(k);
 
+            //}
+            BankBranchDTO j = new BankBranchDTO();
+            ObservableCollection<BankBranchDTO> branch = new ObservableCollection<BankBranchDTO>();
+            j = bank.BankBranches;
+            branch.Add(j);
+            
             // Return JSON response with success flag and a redirect URL
             return Json(new
             {
                 success = true,
-                data = bankBranches,
-                redirectUrl = Url.Action("Create", "Bank") // Generate URL to redirect
-            });
+                redirectUrl = RedirectToAction("Create", "Bank", new { area = "Admin" })
+        });
         }
 
         public async Task<ActionResult> Create()

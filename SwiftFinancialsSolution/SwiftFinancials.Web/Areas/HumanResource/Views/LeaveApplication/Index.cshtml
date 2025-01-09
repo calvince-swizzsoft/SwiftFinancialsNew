@@ -21,63 +21,17 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const alertMessage = '@TempData["AlertMessage"]';
-        const alertType = '@TempData["AlertType"]';
-        const showConfirmation = '@TempData["ShowConfirmation"]' === 'True';
-        const recallId = '@TempData["RecallId"]';
 
-        if (alertMessage && !showConfirmation) {
-            Swal.fire({
-                title: alertType.charAt(0).toUpperCase() + alertType.slice(1),
-                text: alertMessage,
-                icon: alertType,
-                confirmButtonText: 'OK'
-            });
-        }
-
-        if (showConfirmation) {
-            Swal.fire({
-                title: 'Emergency Recall Confirmation',
-                text: alertMessage,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, recall',
-                cancelButtonText: 'No, cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Trigger recall action for the given leave application ID
-                    const token = $('input[name="__RequestVerificationToken"]').val(); // Anti-forgery token
-                    $.post('/LeaveApplication/Recall', { id: recallId, __RequestVerificationToken: token })
-                        .done(() => {
-                            Swal.fire(
-                                'Operation Success',
-                                'Leave recall processed successfully!',
-                                'success'
-                            ).then(() => {
-                                window.location.href = '/LeaveApplication/Index'; // Redirect to Index after success
-                            });
-                        })
-                        .fail(() => {
-                            Swal.fire(
-                                'Error',
-                                'Failed to process leave recall. Please try again.',
-                                'error'
-                            );
-                        });
-                } else {
-                    Swal.fire(
-                        'Leave Recall Canceled',
-                        'You can only recall this leave after its end date or in case of an emergency.',
-                        'info'
-                    );
-                }
-            });
-
-        }
-    });
-</script>
+@if (TempData["AlertMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            title: "Notification",
+            text: "@TempData["AlertMessage"]",
+            icon: "@TempData["AlertType"]"
+        });
+    </script>
+}
 
 
 
@@ -130,13 +84,11 @@
 
         $(document).ready(function () {
             $('#LeaveApplicationsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "LeaveApplication", new { Area = "HumanResource"}))",
                 "sServerMethod": "POST",
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -180,17 +132,17 @@
 
 
                     switch (aData.Status) {
-                        case 1: // Pending
+                        case 1: 
                             dropdownHtml += viewButton + editButton  + approveButton;
                             break;
-                        case 2: // Approved
-                            dropdownHtml += viewButton + recallButton; // No edit or recall allowed
+                        case 2: 
+                            dropdownHtml += viewButton + recallButton; 
                             break;
-                        case 3: // Another specific status (e.g., Rejected)
-                            dropdownHtml += viewButton + approveButton; // Example of actions allowed
+                        case 3: 
+                            dropdownHtml += viewButton + approveButton; 
                             break;
-                        default: // Other cases (e.g., Completed, Canceled)
-                            dropdownHtml += viewButton; // Only the view button
+                        default: 
+                            dropdownHtml += viewButton; 
                             break;
                     }
 
@@ -206,7 +158,6 @@
 
                     return nRow;
                 },
-                // Display settings
                 "aoColumns": [
                     { "mDataProp": "LeaveTypeDescription", "sTitle": "Type", "sWidth": "15%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
