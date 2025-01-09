@@ -1,10 +1,12 @@
 ﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 
 @{
-    ViewBag.Title = "Loan Restructuring";
+    ViewBag.Title = "Guarantor Management";
 
     var LoanCaseFilter = ViewBag.LoanCaseFilterSelectList as List<SelectListItem>;
     var LoanCaseStatus = ViewBag.LoanCaseStatusSelectList as List<SelectListItem>;
+
+    var successMessage = TempData["Success"] as string;
 }
 
 
@@ -123,7 +125,6 @@
 </div>
 
 
-
 <br />
 <nav class="navbar">
     <ul class="nav-menu">
@@ -135,15 +136,26 @@
     </ul>
 </nav>
 
-
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Restructuring</h2>
-                    <hr />
-                    @Html.ActionLink("Restructure Loan", "Create", "LoanRestructuring", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
+                    <h2>Guarantor Management</h2>
+                    @if (successMessage != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Completed Successfully.',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -160,11 +172,22 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
 
-
                     <div class="blue-section">
                         <form id="filterForm">
                             <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
-                                <div class="col-lg-5">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        <label for="filterType">Loan Status</label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Status, LoanCaseStatus,
+                                            new { @class = "form-control input-md", @id = "loanCaseStatus" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         <label for="filterType">Loan Filter</label>
 
@@ -194,8 +217,6 @@
                     </div>
 
                     <br />
-
-
                     <div class="table-responsive">
                         <table id="LoanRegistrationsGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
@@ -229,10 +250,11 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "LoanRestructuring", new { Area = "Loaning"}))",
+                "sAjaxSource": "@(Url.Action("Index", "LoanRegistration", new { Area = "Loaning"}))",
                 "sServerMethod": "POST",
 
                 "fnServerParams": function (aoData) {
+                    aoData.push({ "name": "loanCaseStatus", "value": $('#loanCaseStatus').val() });
                     aoData.push({ "name": "filterType", "value": $('#filterType').val() });
                     aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
                 },
@@ -255,9 +277,17 @@
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     aData.ReceivedDate = dt_ReceivedDate;
 
-                    var verifyUrl = '<a  href="/loaning/LoanVerification/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+
+                    var manageButton = `<a class="btn btn-primary" style="width: 150px;" href="/loaning/guarantormanagement/create/${aData.Id}">Manage</a>`;
 
                     $('td:eq(8)', nRow).html(dt_Created);
+                    $('td:eq(9)', nRow).html(manageButton);
 
                     return nRow;
                 },
@@ -272,7 +302,8 @@
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
                     { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "15%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]],
             }
             );
@@ -290,5 +321,4 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
 }

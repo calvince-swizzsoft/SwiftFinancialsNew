@@ -75,190 +75,189 @@
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        @using (Html.BeginForm("Create", "MicroCreditGroups", new { Area = "MicroCredit" }, FormMethod.Post))
-                         {
-                            @Html.AntiForgeryToken()
+                <div class="ibox-content bg-white">
 
-                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerSalutationDescription, new { id = "MicroCreditOfficerEmployeeCustomerSalutationDescription" })
-                            @Html.HiddenFor(model => model.MicroCreditOfficerId, new { id = "MicroCreditOfficerId" })
-                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerIndividualLastName, new { id = "MicroCreditOfficerEmployeeCustomerIndividualLastName" })
-                            @Html.HiddenFor(model => model.CustomerNonIndividualRegistrationNumber, new { id = "CustomerNonIndividualRegistrationNumber" })
-                            @Html.HiddenFor(model => model.CustomerStationId, new { id = "CustomerStationId" })
-                            @Html.HiddenFor(model => model.CustomerNonIndividualDateEstablished, new { id = "CustomerNonIndividualDateEstablished" })
-                            @Html.HiddenFor(model => model.CustomerRegistrationDate, new { id = "CustomerRegistrationDate" })
-                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerSalutationDescription, new { id = "MicroCreditOfficerEmployeeCustomerSalutationDescription" })
-                            @Html.HiddenFor(model => model.CustomerAccountCustomerReference1, new { id = "CustomerAccountCustomerReference1" })
-                            @Html.HiddenFor(model => model.CustomerAccountCustomerReference2, new { id = "CustomerAccountCustomerReference2" })
-                            @Html.HiddenFor(model => model.CustomerAccountCustomerReference3, new { id = "CustomerAccountCustomerReference3" })
-                            @Html.HiddenFor(model => model.AccountStatus, new { id = "AccountStatus" })
-                            @Html.HiddenFor(model => model.CustomerAccountFullAccountNumber, new { id = "CustomerAccountFullAccountNumber" })
+                    @using (Html.BeginForm("Create", "MicroCreditGroups", new { Area = "MicroCredit" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
 
-                            
-                            <!-- Expense Payables -->
-                            <fieldset>
-                                <div class="card mb-4">
-                                    <div class="card-body text-dark">
-                                        <div class="row">
+                        @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerSalutationDescription, new { id = "MicroCreditOfficerEmployeeCustomerSalutationDescription" })
+                        @Html.HiddenFor(model => model.MicroCreditOfficerId, new { id = "MicroCreditOfficerId" })
+                        @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerIndividualLastName, new { id = "MicroCreditOfficerEmployeeCustomerIndividualLastName" })
+                        @Html.HiddenFor(model => model.CustomerNonIndividualRegistrationNumber, new { id = "CustomerNonIndividualRegistrationNumber" })
+                        @Html.HiddenFor(model => model.CustomerStationId, new { id = "CustomerStationId" })
+                        @Html.HiddenFor(model => model.CustomerNonIndividualDateEstablished, new { id = "CustomerNonIndividualDateEstablished" })
+                        @Html.HiddenFor(model => model.CustomerRegistrationDate, new { id = "CustomerRegistrationDate" })
+                        @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerSalutationDescription, new { id = "MicroCreditOfficerEmployeeCustomerSalutationDescription" })
+                        @Html.HiddenFor(model => model.CustomerAccountCustomerReference1, new { id = "CustomerAccountCustomerReference1" })
+                        @Html.HiddenFor(model => model.CustomerAccountCustomerReference2, new { id = "CustomerAccountCustomerReference2" })
+                        @Html.HiddenFor(model => model.CustomerAccountCustomerReference3, new { id = "CustomerAccountCustomerReference3" })
+                        @Html.HiddenFor(model => model.AccountStatus, new { id = "AccountStatus" })
+                        @Html.HiddenFor(model => model.CustomerAccountFullAccountNumber, new { id = "CustomerAccountFullAccountNumber" })
 
-                                            <!-- Customer Account Fields -->
-                                            <div class="col-lg-4 customer-fields">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CustomerNonIndividualDescription, new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
-                                                    <div class="input-group">
-                                                        @Html.EditorFor(model => model.CustomerNonIndividualDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "CustomerNonIndividualDescription", @readonly = "" } })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#customerLookup">
-                                                                <span class="fa fa-search"></span>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                    @Html.ValidationMessageFor(model => model.CustomerNonIndividualDescription, "", new { @class = "text-danger" })
+
+                        <!-- Expense Payables -->
+                        <fieldset>
+                            <div class="card mb-4">
+                                <div class="card-body text-dark">
+                                    <div class="row">
+
+                                        <!-- Customer Account Fields -->
+                                        <div class="col-lg-4 customer-fields">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.CustomerNonIndividualDescription, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
+                                                <div class="input-group">
+                                                    @Html.EditorFor(model => model.CustomerNonIndividualDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "CustomerNonIndividualDescription", @readonly = "" } })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#customerLookup">
+                                                            <span class="fa fa-search"></span>
+                                                        </a>
+                                                    </span>
                                                 </div>
-                                            </div>
-
-                                            <div class="col-lg-4 customer-fields">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
-                                                    <div class="input-group">
-                                                        @Html.EditorFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "MicroCreditOfficerEmployeeCustomerFullName", @readonly = "" } })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#creditOfficerLookup">
-                                                                <span class="fa fa-search"></span>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                    @Html.ValidationMessageFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-4 customer-fields">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.ParentMicroCreditDescription, new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.ParentId, new { id = "ParentId" })
-
-                                                    <div class="input-group">
-                                                        @Html.EditorFor(model => model.ParentMicroCreditDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "MicroCreditOfficerEmployeeCustomerIndividualFirstName", @readonly = "" } })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#microCreditGroupLookup">
-                                                                <span class="fa fa-search"></span>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                    @Html.ValidationMessageFor(model => model.ParentMicroCreditDescription, "", new { @class = "text-danger" })
-                                                </div>
+                                                @Html.ValidationMessageFor(model => model.CustomerNonIndividualDescription, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
-                                        <div class="row">
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.Type, typeDescription, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.Type)
-                                                    </div>
+                                        <div class="col-lg-4 customer-fields">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
+                                                <div class="input-group">
+                                                    @Html.EditorFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "MicroCreditOfficerEmployeeCustomerFullName", @readonly = "" } })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#creditOfficerLookup">
+                                                            <span class="fa fa-search"></span>
+                                                        </a>
+                                                    </span>
                                                 </div>
-                                            </div>
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Purpose, new { @class = "control-label" })
-                                                    @Html.TextAreaFor(model => model.Purpose, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
-                                                    @Html.ValidationMessageFor(model => model.Purpose, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Activities, new { @class = "control-label" })
-                                                    @Html.TextAreaFor(model => model.Activities, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
-                                                    @Html.ValidationMessageFor(model => model.Activities, "", new { @class = "text-danger" })
-                                                </div>
+                                                @Html.ValidationMessageFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MeetingFrequency, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.MeetingFrequency, meetingFrequencyDescription, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.MeetingFrequency)
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="col-lg-4 customer-fields">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.ParentMicroCreditDescription, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.ParentId, new { id = "ParentId" })
 
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MeetingDayOfWeek, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.MeetingDayOfWeek, meetingDayOfWeekDescription, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.MeetingDayOfWeek)
-                                                    </div>
+                                                <div class="input-group">
+                                                    @Html.EditorFor(model => model.ParentMicroCreditDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "MicroCreditOfficerEmployeeCustomerIndividualFirstName", @readonly = "" } })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#microCreditGroupLookup">
+                                                            <span class="fa fa-search"></span>
+                                                        </a>
+                                                    </span>
                                                 </div>
-                                            </div>
-
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MeetingPlace, new { @class = "control-label" })
-                                                    @Html.TextAreaFor(model => model.MeetingPlace, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
-                                                    @Html.ValidationMessageFor(model => model.MeetingPlace, "", new { @class = "text-danger" })
-                                                </div>
+                                                @Html.ValidationMessageFor(model => model.ParentMicroCreditDescription, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-
-                                        <div class="row">
-
-                                            <div class="col-lg-4 group-fields">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MinimumMembers, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.MinimumMembers, new { @class = "form-control", type = "number", id = "MinimumMembers", min = "0", value = "1" })
-                                                    @Html.ValidationMessageFor(model => model.MinimumMembers, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-4 group-fields">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MaximumMembers, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.MaximumMembers, new { @class = "form-control", type = "number", id = "MaximumMembers", min = "0", value = "1" })
-                                                    @Html.ValidationMessageFor(model => model.MaximumMembers, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
-                                                    @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
-                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
                                     </div>
 
+                                    <div class="row">
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label" })
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.Type, typeDescription, new { @class = "form-control input-md" })
+                                                    @Html.ValidationMessageFor(model => model.Type)
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Purpose, new { @class = "control-label" })
+                                                @Html.TextAreaFor(model => model.Purpose, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                @Html.ValidationMessageFor(model => model.Purpose, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Activities, new { @class = "control-label" })
+                                                @Html.TextAreaFor(model => model.Activities, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                @Html.ValidationMessageFor(model => model.Activities, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.MeetingFrequency, htmlAttributes: new { @class = "control-label" })
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.MeetingFrequency, meetingFrequencyDescription, new { @class = "form-control input-md" })
+                                                    @Html.ValidationMessageFor(model => model.MeetingFrequency)
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.MeetingDayOfWeek, htmlAttributes: new { @class = "control-label" })
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.MeetingDayOfWeek, meetingDayOfWeekDescription, new { @class = "form-control input-md" })
+                                                    @Html.ValidationMessageFor(model => model.MeetingDayOfWeek)
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.MeetingPlace, new { @class = "control-label" })
+                                                @Html.TextAreaFor(model => model.MeetingPlace, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                @Html.ValidationMessageFor(model => model.MeetingPlace, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-lg-4 group-fields">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.MinimumMembers, new { @class = "control-label" })
+                                                @Html.TextBoxFor(model => model.MinimumMembers, new { @class = "form-control", type = "number", id = "MinimumMembers", min = "0", value = "1" })
+                                                @Html.ValidationMessageFor(model => model.MinimumMembers, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 group-fields">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.MaximumMembers, new { @class = "control-label" })
+                                                @Html.TextBoxFor(model => model.MaximumMembers, new { @class = "form-control", type = "number", id = "MaximumMembers", min = "0", value = "1" })
+                                                @Html.ValidationMessageFor(model => model.MaximumMembers, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
+                                                @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
                                 </div>
-                            </fieldset>
 
-                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
-
-                                <input type="submit" value="Create" class="btn btn-primary btn-update" />
                             </div>
+                        </fieldset>
+
+                        <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+
+                            <input type="submit" value="Create" class="btn btn-primary" />
+                        </div>
 
 
 
-                        }
-                    </div>
+                    }
                 </div>
+
 
                 <style>
                     .card {
@@ -610,7 +609,7 @@
                             $('#AccountStatus').val(response.data.AccountStatus);
                             $('#CustomerAccountFullAccountNumber').val(response.data.CustomerAccountFullAccountNumber);
 
-                            
+
 
 
 
@@ -905,18 +904,18 @@
 
             // Append a new row to the table
             var newRow = `
-        <tr>
-            <td>${fullName}</td>
-            <td>${employer}</td>
-            <td>${stationDescription}</td>
-            <td>${reference1}</td>
-            <td>${reference2}</td>
-            <td>${reference3}</td>
-            <td>${designation}</td>
-            <td>${loanCycle}</td>
-            <td>${remarks}</td>
-        </tr>
-    `;
+            <tr>
+                <td>${fullName}</td>
+                <td>${employer}</td>
+                <td>${stationDescription}</td>
+                <td>${reference1}</td>
+                <td>${reference2}</td>
+                <td>${reference3}</td>
+                <td>${designation}</td>
+                <td>${loanCycle}</td>
+                <td>${remarks}</td>
+            </tr>
+        `;
             $('#groupMembersTable tbody').append(newRow);
 
             // Optionally, clear the input fields after adding
@@ -941,39 +940,39 @@
 
 
 
-    <script>
-        $.ajax({
-            url: '/MicroCredit/Create',
-            type: 'POST',
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.message,
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then(() => {
-                    });
-                } else {
+    @*<script>
+            $.ajax({
+                url: '/MicroCredit/Create',
+                type: 'POST',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: response.message
+                        title: 'Error',
+                        text: 'An unexpected error occurred.'
                     });
                 }
-            },
-            error: function (xhr, status, error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An unexpected error occurred.'
-                });
-            }
-        });
+            });
 
 
-    </script>
+        </script>*@
 
 
 

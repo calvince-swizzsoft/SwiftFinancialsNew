@@ -453,6 +453,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(MicroCreditGroupDTO microCreditGroupDTO)
         {
             if (microCreditGroupDTO == null)
