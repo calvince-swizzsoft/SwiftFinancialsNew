@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<Application.MainBoundedContext.DTO.HumanResourcesModule.PaySlipDTO>
 
 @{
-    ViewBag.Title = "Salary Payslips";
+    ViewBag.Title = "Salary PayRoll";
 }
 
-<h2>Salary Payslips</h2>
+<h2>Salary PayRoll</h2>
 
 <table class="table table-striped table-hover">
     <thead>
@@ -19,12 +19,13 @@
             <th>Mobile Number</th>
             <th>Salary Group</th>
             <th>Net Pay</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var payslip in Model)
         {
-            <tr class="clickable-row" data-payslip-id="@payslip.Id">
+            <tr>
                 <td>@payslip.PaddedSalaryCardCardNumber</td>
                 <td>@payslip.SalaryPeriodPostingPeriodDescription</td>
                 <td>@payslip.SalaryPeriodMonthDescription</td>
@@ -35,25 +36,28 @@
                 <td>@payslip.SalaryCardEmployeeCustomerAddressMobileLine</td>
                 <td>@payslip.SalaryCardSalaryGroupDescription</td>
                 <td>@payslip.NetPay.ToString("N2")</td>
+                <td>
+                    <a href="@Url.Action("ViewPayslipEntries", "Payslips", new { payslipId = payslip.Id })" class="btn btn-primary btn-sm">
+                        View
+                    </a>
+                </td>
             </tr>
         }
     </tbody>
 </table>
 
+
 <script>
     $(".clickable-row").click(function () {
         var payslipId = $(this).data("payslip-id");
-        // Load pay slip entries for the selected payslip
         loadPaySlipEntries(payslipId);
     });
 
     function loadPaySlipEntries(payslipId) {
-        // Make an AJAX request to the controller to fetch the pay slip entries
         $.ajax({
             url: "@Url.Action("GetPaySlipEntries", "Payslips")",
             data: { payslipId: payslipId },
             success: function (data) {
-                // Update the pay slip entries section of the view with the returned data
                 $("#pay-slip-entries").html(data);
             }
         });

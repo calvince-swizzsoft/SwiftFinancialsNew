@@ -97,34 +97,25 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             var paySlipDTO = await _channelService.FindPaySlipsBySalaryPeriodIdAsync(id, GetServiceHeader());
 
+            if (paySlipDTO == null || !paySlipDTO.Any())
+            {
+                TempData["NoPayslipMessage"] = "No payslip details available for the selected period.";
+                return RedirectToAction("Index"); 
+            }
+
             return View(paySlipDTO);
         }
 
-        public async Task<JsonResult> ViewPaySlip(Guid? paySlipId)
+
+        public async Task<ActionResult> ViewPayslipEntries(Guid payslipId)
         {
-            if (!paySlipId.HasValue)
-            {
-                return Json(new { error = "Payslip ID is required." }, JsonRequestBehavior.AllowGet);
-            }
+            await ServeNavigationMenus();
 
-            try
-            {
-                var serviceHeader = GetServiceHeader();
-                var paySlipEntries = await _channelService.FindPaySlipEntriesByPaySlipIdAsync(paySlipId.Value, serviceHeader);
+            var entries = await _channelService.FindPaySlipEntriesByPaySlipIdAsync(payslipId, GetServiceHeader());
 
-                if (paySlipEntries == null || !paySlipEntries.Any())
-                {
-                    return Json(new { error = "Payslip not found." }, JsonRequestBehavior.AllowGet);
-                }
-
-                return Json(new { data = paySlipEntries }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                // Log exception
-                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
-            }
+            return View(entries);
         }
+
 
 
 

@@ -116,9 +116,11 @@
 <br />
 <nav class="navbar">
     <ul class="nav-menu">
-        <li>@Html.ActionLink("Loan Restructuring", "Create", "LoanRestructuring", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Loan Restructuring", "Index", "LoanRestructuring", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Guarantor Attachment", "Create", "GuarantorAttachment", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Guarantor Substitution", "Create", "GuarantorSubstitution", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Relieving", "Index", "GuarantorRelieving", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Management", "Create", "GuarantorManagement", new { area = "Loaning" }, new { @class = "nav-link" })</li>
     </ul>
 </nav>
 

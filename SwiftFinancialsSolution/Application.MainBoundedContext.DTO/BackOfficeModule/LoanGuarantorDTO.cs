@@ -651,8 +651,25 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         }
 
 
+        [DataMember]
+        public ObservableCollection<LoanGuarantorDTO> Guarantor { get; set; }
 
         public List<Guarantor> Guarantors { get; set; } = new List<Guarantor>();
+
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public int CustomerAccountTypeProductCode { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public string CustomerAccountTypeProductCodeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(ProductCode), CustomerAccountTypeProductCode) ? EnumHelper.GetDescription((ProductCode)CustomerAccountTypeProductCode) : string.Empty;
+            }
+        }
     }
 
 

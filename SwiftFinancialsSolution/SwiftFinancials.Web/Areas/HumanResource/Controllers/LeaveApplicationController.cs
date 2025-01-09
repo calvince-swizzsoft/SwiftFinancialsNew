@@ -158,7 +158,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                     var holidays = await _channelService.FindHolidaysAsync(GetServiceHeader());
 
 
-                    await _channelService.AddAuditTrailsAsync(auditTrailDTOs,GetServiceHeader());
+                    await _channelService.AddAuditTrailsAsync(auditTrailDTOs, GetServiceHeader());
 
                     // Check if the leave dates overlap with any holiday
                     var holidayConflict = holidays.Any(h =>
@@ -169,7 +169,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                     if (holidayConflict)
                     {
                         TempData["AlertMessage"] = "You cannot apply for leave during a holiday. Please adjust your dates.";
-                        TempData["AlertType"] = "warning"; 
+                        TempData["AlertType"] = "warning";
                         return RedirectToAction("Create");
                     }
 
@@ -179,20 +179,20 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                     );
 
                     TempData["AlertMessage"] = "Operation Success: Leave application submitted successfully!";
-                    TempData["AlertType"] = "success"; 
+                    TempData["AlertType"] = "success";
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                     TempData["AlertMessage"] = "An error occurred while submitting your leave application. Please try again.";
-                    TempData["AlertType"] = "error"; 
+                    TempData["AlertType"] = "error";
                 }
             }
             else
             {
                 TempData["AlertMessage"] = "There were validation errors. Please correct them and try again!";
-                TempData["AlertType"] = "error"; 
+                TempData["AlertType"] = "error";
             }
 
             return View(leaveApplicationBindingModel);
@@ -342,111 +342,81 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Recall(Guid id, LeaveApplicationDTO leaveApplicationDTO)
+        public async Task<ActionResult> Recall(Guid id, LeaveApplicationDTO leaveApplicationDTO, bool? confirmed = false)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Fetch the leave application from the service
                     var leaveApplication = await _channelService.FindLeaveApplicationAsync(id);
 
-                    // If the leave application is not found, show a message and redirect
                     if (leaveApplication == null)
                     {
-                        MessageBox.Show(
-                            "Leave application not found!",
-                            "Leave Management",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
-                        return RedirectToAction("Index");
+                        return Json(new
+                        {
+                            success = false,
+                            message = "Leave application not found!",
+                            icon = "info"
+                        });
                     }
 
-                    // If the current date is before the leave's end date, ask for emergency recall confirmation
                     var currentDate = DateTime.Now;
-                    if (currentDate < leaveApplication.DurationEndDate)
+                    if (currentDate < leaveApplication.DurationEndDate == !confirmed)
                     {
-                        var dialogResult = MessageBox.Show(
-                            "The leave period has not yet ended. Is this an emergency?",
-                            "Emergency Recall Confirmation",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Warning,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
-
-                        if (dialogResult == DialogResult.No)
+                        return Json(new
                         {
-                            MessageBox.Show(
-                                "Leave recall canceled. You can only recall this leave after its end date or in case of an emergency.",
-                                "Leave Recall Canceled",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information,
-                                MessageBoxDefaultButton.Button1,
-                                MessageBoxOptions.ServiceNotification
-                            );
-                            return RedirectToAction("Index");
-                        }
+                            success = false,
+                            requireConfirmation = true,
+                            title = "Emergency Recall Confirmation",
+                            message = "The leave period has not yet ended. Is this an emergency?",
+                            icon = "warning"
+                        });
                     }
 
                     leaveApplicationDTO.Status = (int)LeaveApplicationStatus.Recalled;
-
                     bool isRecallSuccessful = await _channelService.RecallLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
 
                     if (isRecallSuccessful)
                     {
-                        MessageBox.Show(
-                            "Operation Success: Leave recall processed successfully!",
-                            "Leave Management",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
+                        return Json(new
+                        {
+                            success = true,
+                            title = "Leave Management",
+                            message = "Operation Success: Leave recall processed successfully!",
+                            icon = "success"
+                        });
                     }
                     else
                     {
-                        MessageBox.Show(
-                            "Failed to process leave recall. Please try again.",
-                            "Error Message",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.ServiceNotification
-                        );
+                        return Json(new
+                        {
+                            success = false,
+                            title = "Error Message",
+                            message = "Failed to process leave recall. Please try again.",
+                            icon = "error"
+                        });
                     }
-
-                    return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(
-                        "An error occurred while recalling the leave application. Please try again.",
-                        "Application Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
                     Console.WriteLine(ex.Message);
+                    return Json(new
+                    {
+                        success = false,
+                        title = "Application Error",
+                        message = "An error occurred while recalling the leave application. Please try again.",
+                        icon = "error"
+                    });
                 }
             }
-            else
-            {
-                MessageBox.Show(
-                    "There were validation errors. Please correct them and try again.",
-                    "Validation Errors",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-            }
 
-            return RedirectToAction("Index");
+            return Json(new
+            {
+                success = false,
+                title = "Validation Errors",
+                message = "There were validation errors. Please correct them and try again.",
+                icon = "warning"
+            });
         }
 
 

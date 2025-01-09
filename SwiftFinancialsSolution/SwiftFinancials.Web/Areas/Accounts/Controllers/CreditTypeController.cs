@@ -65,7 +65,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             );
         }
 
-
         [HttpPost]
         public async Task<JsonResult> ChartOfAccountsIndex(JQueryDataTablesModel jQueryDataTablesModel)
         {
@@ -112,7 +111,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             );
         }
 
-
         public async Task<ActionResult> GetApplicableCharges()
         {
             var applicableCharges = await _channelService.FindCommissionsAsync(GetServiceHeader());
@@ -149,7 +147,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return Json(savingsProducts);
         }
 
-
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -157,20 +154,63 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var creditTypeDTO = await _channelService.FindCreditTypeAsync(id, GetServiceHeader());
 
             var ApplicableCharges = await _channelService.FindCommissionsByCreditTypeIdAsync(id, GetServiceHeader());
-            var ApplicableDirectDebits = await _channelService.FindDirectDebitsByCreditTypeIdAsync(id, GetServiceHeader());
-            var findAttachedProducts = await _channelService.FindAttachedProductsByCreditTypeIdAsync(id, GetServiceHeader());
+            var applicableChargeIds = new HashSet<Guid>(ApplicableCharges.Select(ac => ac.Id));
+            var commissions = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            ViewBag.CheckedApplicableStates = commissions.ToDictionary(
+                c => c.Id,
+                c => applicableChargeIds.Contains(c.Id)
+            );
+            ViewBag.Commissions = commissions;
 
+            var ApplicableDirectDebits = await _channelService.FindDirectDebitsByCreditTypeIdAsync(id, GetServiceHeader());
+            var DirectDebits = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
+            var applicableDirectDebitsIds = new HashSet<Guid>(ApplicableDirectDebits.Select(ac => ac.Id));
+            ViewBag.CheckedApplicableDirectDebitsStates = DirectDebits.ToDictionary(
+                c => c.Id,
+                c => applicableDirectDebitsIds.Contains(c.Id)
+            );
+            ViewBag.DirectDebits = DirectDebits;
+
+            var findAttachedProducts = await _channelService.FindAttachedProductsByCreditTypeIdAsync(id, GetServiceHeader());
+            var LoanProducts = await _channelService.FindLoanProductsAsync(GetServiceHeader());
+            var SavingsProducts = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            var InvestmentsProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
             var findConcessionExemptProducts = await _channelService.FindConcessionExemptProductsByCreditTypeIdAsync(id, GetServiceHeader());
 
             var AttachedLoanProducts = findAttachedProducts.LoanProductCollection;
+            var attachedtLoanProductsIds = new HashSet<Guid>(AttachedLoanProducts.Select(ac => ac.Id));
+            ViewBag.CheckedAttachedLoanProductsStates = LoanProducts.ToDictionary(
+                c => c.Id,
+                c => attachedtLoanProductsIds.Contains(c.Id)
+            );
+            ViewBag.AttachedLoanProducts = LoanProducts;
+
             var AttachedSavingsProducts = findAttachedProducts.SavingsProductCollection;
+            var attachedtSavingsProductsIds = new HashSet<Guid>(AttachedSavingsProducts.Select(ac => ac.Id));
+            ViewBag.CheckedAttachedSavingsProductsStates = SavingsProducts.ToDictionary(
+                c => c.Id,
+                c => attachedtSavingsProductsIds.Contains(c.Id)
+            );
+            ViewBag.AttachedSavingsProducts = SavingsProducts;
+
             var AttachedInvestmentsProducts = findAttachedProducts.InvestmentProductCollection;
+            var attachedtInvestmentsProductsIds = new HashSet<Guid>(AttachedInvestmentsProducts.Select(ac => ac.Id));
+            ViewBag.CheckedAttachedInvestmentsProductsStates = InvestmentsProducts.ToDictionary(
+                c => c.Id,
+                c => attachedtInvestmentsProductsIds.Contains(c.Id)
+            );
+            ViewBag.AttachedInvestmentsProducts = InvestmentsProducts;
 
             var ConcessionExemptLoanProducts = findConcessionExemptProducts.LoanProductCollection;
+            var concessionExemptLoanProductsIds = new HashSet<Guid>(ConcessionExemptLoanProducts.Select(ac => ac.Id));
+            ViewBag.CheckedConcessionExemptLoanProductsStates = LoanProducts.ToDictionary(
+                c => c.Id,
+                c => concessionExemptLoanProductsIds.Contains(c.Id)
+            );
+            ViewBag.ConcessionExemptLoanProducts = LoanProducts;
 
             return View(creditTypeDTO);
         }
-
 
         public async Task<ActionResult> Create()
         {
@@ -178,7 +218,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(string.Empty);
             return View();
         }
-
 
         public async Task<ActionResult> ChartOfAccountLookUp(Guid? id, CreditTypeDTO creditTypeDTO)
         {
@@ -235,7 +274,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var AttachedInvestmentsProducts = new List<InvestmentProductDTO>();
             var AttachedSavingsProducts = new List<SavingsProductDTO>();
 
-            // Applicable Charges
             if (SelectedApplicableChargesIds != string.Empty || SelectedApplicableChargesIds != "")
             {
                 applicableChargesIds = SelectedApplicableChargesIds.Split(',').Select(Guid.Parse).ToList();
@@ -246,7 +284,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 }
             }
 
-            // Applicable Direct Debits
             if (SelectedApplicableDirectDebitsIds != string.Empty || SelectedApplicableDirectDebitsIds != "")
             {
                 applicableDirectDebitIds = SelectedApplicableDirectDebitsIds.Split(',').Select(Guid.Parse).ToList();
@@ -257,7 +294,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 }
             }
 
-            // Attached Loan Products
             if (SelectedAttachedLoanProductsIds != string.Empty || SelectedAttachedLoanProductsIds != "")
             {
                 attachedLoanProducts = SelectedAttachedLoanProductsIds.Split(',').Select(Guid.Parse).ToList();
@@ -269,7 +305,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 }
             }
 
-            // Concession-Exempt Loan Products
             if (SelectedCELoanProductsIds != string.Empty || SelectedCELoanProductsIds != "")
             {
                 cELoanProducts = SelectedCELoanProductsIds.Split(',').Select(Guid.Parse).ToList();
@@ -281,7 +316,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 }
             }
 
-            // Attached Investments Products
             if (SelectedAttachedInvestmentsProductsIds != string.Empty || SelectedAttachedInvestmentsProductsIds != "")
             {
                 attachedInvestmentsProducts = SelectedAttachedInvestmentsProductsIds.Split(',').Select(Guid.Parse).ToList();
@@ -293,7 +327,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 }
             }
 
-            // Attached Savings Products
             if (SelectedAttachedSavingsProductsIds != string.Empty || SelectedAttachedSavingsProductsIds != "")
             {
                 attachedSavingsProducts = SelectedAttachedSavingsProductsIds.Split(',').Select(Guid.Parse).ToList();
@@ -347,14 +380,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await ServeNavigationMenus();
                 var errorMessages = creditTypeDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
+                TempData["Fail"] = "An Error Occured:\n" + errorMessage;
+
                 ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(creditTypeDTO.TransactionOwnershipDescription.ToString());
                 return View(creditTypeDTO);
             }
         }
-
-
-
-
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -364,36 +397,211 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var creditTypeDTO = await _channelService.FindCreditTypeAsync(id, GetServiceHeader());
 
+            var ApplicableCharges = await _channelService.FindCommissionsByCreditTypeIdAsync(id, GetServiceHeader());
+            var applicableChargeIds = new HashSet<Guid>(ApplicableCharges.Select(ac => ac.Id));
+            var commissions = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            ViewBag.CheckedApplicableStatesEdit = commissions.ToDictionary(
+                c => c.Id,
+                c => applicableChargeIds.Contains(c.Id)
+            );
+            ViewBag.CommissionsEdit = commissions;
+
+            var ApplicableDirectDebits = await _channelService.FindDirectDebitsByCreditTypeIdAsync(id, GetServiceHeader());
+            var DirectDebits = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
+            var applicableDirectDebitsIds = new HashSet<Guid>(ApplicableDirectDebits.Select(ac => ac.Id));
+            ViewBag.CheckedApplicableDirectDebitsStatesEdit = DirectDebits.ToDictionary(
+                c => c.Id,
+                c => applicableDirectDebitsIds.Contains(c.Id)
+            );
+            ViewBag.DirectDebitsEdit = DirectDebits;
+
+            var findAttachedProducts = await _channelService.FindAttachedProductsByCreditTypeIdAsync(id, GetServiceHeader());
+            var LoanProducts = await _channelService.FindLoanProductsAsync(GetServiceHeader());
+            var SavingsProducts = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            var InvestmentsProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var findConcessionExemptProducts = await _channelService.FindConcessionExemptProductsByCreditTypeIdAsync(id, GetServiceHeader());
+
+            var AttachedLoanProducts = findAttachedProducts.LoanProductCollection;
+            var attachedtLoanProductsIds = new HashSet<Guid>(AttachedLoanProducts.Select(ac => ac.Id));
+            ViewBag.CheckedAttachedLoanProductsStatesEdit = LoanProducts.ToDictionary(
+                c => c.Id,
+                c => attachedtLoanProductsIds.Contains(c.Id)
+            );
+            ViewBag.AttachedLoanProductsEdit = LoanProducts;
+
+            var AttachedSavingsProducts = findAttachedProducts.SavingsProductCollection;
+            var attachedtSavingsProductsIds = new HashSet<Guid>(AttachedSavingsProducts.Select(ac => ac.Id));
+            ViewBag.CheckedAttachedSavingsProductsStatesEdit = SavingsProducts.ToDictionary(
+                c => c.Id,
+                c => attachedtSavingsProductsIds.Contains(c.Id)
+            );
+            ViewBag.AttachedSavingsProductsEdit = SavingsProducts;
+
+            var AttachedInvestmentsProducts = findAttachedProducts.InvestmentProductCollection;
+            var attachedtInvestmentsProductsIds = new HashSet<Guid>(AttachedInvestmentsProducts.Select(ac => ac.Id));
+            ViewBag.CheckedAttachedInvestmentsProductsStatesEdit = InvestmentsProducts.ToDictionary(
+                c => c.Id,
+                c => attachedtInvestmentsProductsIds.Contains(c.Id)
+            );
+            ViewBag.AttachedInvestmentsProductsEdit = InvestmentsProducts;
+
+            var ConcessionExemptLoanProducts = findConcessionExemptProducts.LoanProductCollection;
+            var concessionExemptLoanProductsIds = new HashSet<Guid>(ConcessionExemptLoanProducts.Select(ac => ac.Id));
+            ViewBag.CheckedConcessionExemptLoanProductsStatesEdit = LoanProducts.ToDictionary(
+                c => c.Id,
+                c => concessionExemptLoanProductsIds.Contains(c.Id)
+            );
+            ViewBag.ConcessionExemptLoanProductsEdit = LoanProducts;
+
             return View(creditTypeDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(CreditTypeDTO creditTypeDTOBindingModel)
+        public async Task<ActionResult> Edit(CreditTypeDTO creditTypeDTO, string SelectedApplicableChargesIds, string SelectedApplicableDirectDebitsIds,
+            string SelectedAttachedLoanProductsIds, string SelectedCELoanProductsIds, string SelectedAttachedInvestmentsProductsIds, string SelectedAttachedSavingsProductsIds)
         {
+            await ServeNavigationMenus();
 
-            creditTypeDTOBindingModel.ValidateAll();
+            var applicableChargesIds = new List<Guid>();
+            var applicableDirectDebitIds = new List<Guid>();
+            var attachedLoanProducts = new List<Guid>();
+            var cELoanProducts = new List<Guid>();
+            var attachedInvestmentsProducts = new List<Guid>();
+            var attachedSavingsProducts = new List<Guid>();
 
-            if (!creditTypeDTOBindingModel.HasErrors)
+            var ApplicableCharges = new ObservableCollection<CommissionDTO>();
+            var ApplicableDirectDebits = new ObservableCollection<DirectDebitDTO>();
+
+            var AttachedLoanProducts = new List<LoanProductDTO>();
+            var ConcessionExemptLoanProducts = new List<LoanProductDTO>();
+            var AttachedInvestmentsProducts = new List<InvestmentProductDTO>();
+            var AttachedSavingsProducts = new List<SavingsProductDTO>();
+
+            if (SelectedApplicableChargesIds != string.Empty || SelectedApplicableChargesIds != "")
             {
-                await _channelService.UpdateCreditTypeAsync(creditTypeDTOBindingModel, GetServiceHeader());
+                applicableChargesIds = SelectedApplicableChargesIds.Split(',').Select(Guid.Parse).ToList();
 
-                ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(creditTypeDTOBindingModel.TransactionOwnershipDescription.ToString());
+                foreach (var id in applicableChargesIds)
+                {
+                    ApplicableCharges.Add(new CommissionDTO { Id = id });
+                }
+            }
+
+            if (SelectedApplicableDirectDebitsIds != string.Empty || SelectedApplicableDirectDebitsIds != "")
+            {
+                applicableDirectDebitIds = SelectedApplicableDirectDebitsIds.Split(',').Select(Guid.Parse).ToList();
+
+                foreach (var id in applicableDirectDebitIds)
+                {
+                    ApplicableDirectDebits.Add(new DirectDebitDTO { Id = id });
+                }
+            }
+
+            if (SelectedAttachedLoanProductsIds != string.Empty || SelectedAttachedLoanProductsIds != "")
+            {
+                attachedLoanProducts = SelectedAttachedLoanProductsIds.Split(',').Select(Guid.Parse).ToList();
+
+                foreach (var productId in attachedLoanProducts)
+                {
+                    var AttachedLoanProduct = await _channelService.FindLoanProductAsync(productId, GetServiceHeader());
+                    AttachedLoanProducts.Add(AttachedLoanProduct);
+                }
+            }
+
+            if (SelectedCELoanProductsIds != string.Empty || SelectedCELoanProductsIds != "")
+            {
+                cELoanProducts = SelectedCELoanProductsIds.Split(',').Select(Guid.Parse).ToList();
+
+                foreach (var productId in cELoanProducts)
+                {
+                    var ConcessionExemptLoanProduct = await _channelService.FindLoanProductAsync(productId, GetServiceHeader());
+                    ConcessionExemptLoanProducts.Add(ConcessionExemptLoanProduct);
+                }
+            }
+
+            if (SelectedAttachedInvestmentsProductsIds != string.Empty || SelectedAttachedInvestmentsProductsIds != "")
+            {
+                attachedInvestmentsProducts = SelectedAttachedInvestmentsProductsIds.Split(',').Select(Guid.Parse).ToList();
+
+                foreach (var productId in attachedInvestmentsProducts)
+                {
+                    var attachedInvestmentProduct = await _channelService.FindInvestmentProductAsync(productId, GetServiceHeader());
+                    AttachedInvestmentsProducts.Add(attachedInvestmentProduct);
+                }
+            }
+
+            if (SelectedAttachedSavingsProductsIds != string.Empty || SelectedAttachedSavingsProductsIds != "")
+            {
+                attachedSavingsProducts = SelectedAttachedSavingsProductsIds.Split(',').Select(Guid.Parse).ToList();
+
+                foreach (var productId in attachedSavingsProducts)
+                {
+                    var attachedSavingsProduct = await _channelService.FindSavingsProductAsync(productId, GetServiceHeader());
+                    AttachedSavingsProducts.Add(attachedSavingsProduct);
+                }
+            }
+
+            creditTypeDTO.ValidateAll();
+
+            if (!creditTypeDTO.HasErrors)
+            {
+                var productCollectionInfo = new ProductCollectionInfo
+                {
+                    InvestmentProductCollection = AttachedInvestmentsProducts,
+                    SavingsProductCollection = AttachedSavingsProducts,
+                    LoanProductCollection = AttachedLoanProducts
+                };
+                var concessionExemptLoanProductCollectionInfo = new ProductCollectionInfo
+                {
+                    LoanProductCollection = ConcessionExemptLoanProducts
+                };
+
+                if (creditTypeDTO.ChartOfAccountId == Guid.Empty || creditTypeDTO.ChartOfAccountId == null || creditTypeDTO.Description == string.Empty || creditTypeDTO.Description == "")
+                {
+                    await ServeNavigationMenus();
+                    ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(creditTypeDTO.TransactionOwnershipDescription.ToString());
+                    TempData["EmptySubmit"] = "Error! Could not Update Credit Type.\nMake sure all required details are filled.";
+                    return View(creditTypeDTO);
+                }
+
+                var submit = await _channelService.UpdateCreditTypeAsync(creditTypeDTO, GetServiceHeader());
+
+                if (!submit)
+                {
+                    await ServeNavigationMenus();
+
+                    ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(creditTypeDTO.TransactionOwnershipDescription.ToString());
+                    TempData["ErrorMessageResult"] = "Failed to Create Credit Type";
+                    return View(creditTypeDTO);
+                }
+
+                if (ApplicableCharges != null)
+                    await _channelService.UpdateCommissionsByCreditTypeIdAsync(creditTypeDTO.Id, ApplicableCharges, GetServiceHeader());
+                if (ApplicableDirectDebits != null)
+                    await _channelService.UpdateDirectDebitsByCreditTypeIdAsync(creditTypeDTO.Id, ApplicableDirectDebits, GetServiceHeader());
+                if (productCollectionInfo != null)
+                    await _channelService.UpdateAttachedProductsByCreditTypeIdAsync(creditTypeDTO.Id, productCollectionInfo, GetServiceHeader());
+                if (ConcessionExemptLoanProducts != null)
+                    await _channelService.UpdateConcessionExemptProductsByCreditTypeIdAsync(creditTypeDTO.Id, concessionExemptLoanProductCollectionInfo, GetServiceHeader());
+
+                TempData["Edit"] = "Done";
+
+                ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(creditTypeDTO.TransactionOwnershipDescription.ToString());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(creditTypeDTOBindingModel);
+                await ServeNavigationMenus();
+                var errorMessages = creditTypeDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
+                TempData["Fail"] = "An Error Occured:\n" + errorMessage;
+
+                ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(creditTypeDTO.TransactionOwnershipDescription.ToString());
+                return View(creditTypeDTO);
             }
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetCreditTypesAsync()
-        {
-            var creditTypeDTOs = await _channelService.FindCreditTypesAsync(GetServiceHeader());
-
-            return Json(creditTypeDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 

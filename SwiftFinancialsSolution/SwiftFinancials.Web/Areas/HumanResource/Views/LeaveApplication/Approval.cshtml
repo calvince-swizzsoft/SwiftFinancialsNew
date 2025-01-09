@@ -28,6 +28,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
+
 <script>
     $(document).ready(function () {
         $('.nav-tabs li:first-child a').addClass('active');
@@ -166,7 +167,7 @@
                                 <input type="submit" value="Update" class="btn btn-primary" />
 
                             </div>
-                          
+
 
                         }
 
@@ -409,38 +410,38 @@
 
 
     @*<script>
-        $.ajax({
-            url: '/HumanResource/Approval',
-            type: 'POST',
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.message,
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then(() => {
-                    });
-                } else {
+            $.ajax({
+                url: '/HumanResource/Approval',
+                type: 'POST',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: response.message
+                        title: 'Error',
+                        text: 'An unexpected error occurred.'
                     });
                 }
-            },
-            error: function (xhr, status, error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An unexpected error occurred.'
-                });
-            }
-        });
+            });
 
 
-    </script>*@
+        </script>*@
 
 
 

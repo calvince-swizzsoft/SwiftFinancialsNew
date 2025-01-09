@@ -122,7 +122,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
         [HttpPost]
-      
         public async Task<JsonResult> FetchTreasuryTransactions(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
@@ -141,7 +140,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var activeUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             ActiveTreasury = await _channelService.FindTreasuryByBranchIdAsync((Guid)activeUser.BranchId, true, GetServiceHeader());
 
-            // Collect missing parameters
             var missingParameters = new List<string>();
 
             if (activeUser == null)
@@ -154,18 +152,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 missingParameters.Add("Treasury");
             }
 
-            // Check if any parameter is missing
             if (missingParameters.Any())
             {
                 var missingMessage = $"Some features may not work due to lack of: {string.Join(", ", missingParameters)}";
-
-                MessageBox.Show(missingMessage,
-                    "Cash Transaction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
 
                 return Json(new { success = false, message = "Operation error: " + missingMessage });
             }
@@ -173,14 +162,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-                  pageIndex,
-                  jQueryDataTablesModel.iDisplayLength,
+                  0,
+                  int.MaxValue,
                   (Guid)ActiveTreasury.ChartOfAccountId,
                   startDate,
                   endDate,
                   jQueryDataTablesModel.sSearch,
-                  20,
-                  1,
+                  16,
+                  2,
                   true,
                   GetServiceHeader()
               );
@@ -197,7 +186,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
 
 
-                //var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+                var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
 
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
@@ -208,7 +197,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     draw = jQueryDataTablesModel.sEcho,
                     recordsTotal = totalRecordCount,
                     recordsFiltered = searchRecordCount,
-                    data = pageCollectionInfo.PageCollection,
+                    data = paginatedData,
                     summary = new
                     {
                         AvailableBalanceBroughtForward = availableBalanceBroughtForward,
@@ -324,7 +313,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 int treasuryTransactionType = fiscalCountDTO.TransactionType;
                 TransactionModel transactionModel = new TransactionModel();
 
-                // Fetch necessary data
+
                 CurrentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
                 var userId = User.Identity.GetUserId();
                 var activeUser = string.IsNullOrEmpty(userId) ? null : await _applicationUserManager.FindByIdAsync(userId);
@@ -332,7 +321,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     ? await _channelService.FindTreasuryByBranchIdAsync(activeUser.BranchId.Value, true, GetServiceHeader())
                     : null;
 
-                // Collect missing parameters
+
                 var missingParameters = new List<string>();
 
                 if (CurrentPostingPeriod == null)
@@ -359,27 +348,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     fiscalCountDTO.BranchId = ActiveTreasury.BranchId;
                 }
 
-                // Handle missing parameters
                 if (missingParameters.Any())
                 {
                     var missingMessage = $"The transaction won't proceed. Unable to retrieve {string.Join(", ", missingParameters)}.";
 
-                    MessageBox.Show(
-                        missingMessage,
-                        "Cash Transaction",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
-
-                    // Return failure response
                     return Json(new { success = false, message = "Operation error: " + missingMessage });
                 }
 
 
                 transactionModel.TotalValue = fiscalCountDTO.TotalValue;
-                //transactionModel.TransactionCode = fiscalCountDTO.TransactionCode;
                 transactionModel.PostingPeriodId = CurrentPostingPeriod.Id;
                 transactionModel.PrimaryDescription = fiscalCountDTO.TransactionTypeDescription;
                 transactionModel.ValueDate = DateTime.Today;
@@ -397,8 +374,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             var sendingBank = await _channelService.FindBankAsync(fiscalCountDTO.Id, GetServiceHeader());
                             if (sendingBank == null)
                             {
-                                MessageBox.Show("Sending bank not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-               
+                             
                                 return Json(new { success = false, message = "Operation Failed: Sending bank not found" });
                             }
 
@@ -406,8 +382,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             var matchingBankLinkage = bankLinkages.FirstOrDefault(li => li.BankName == sendingBank.Description);
                             if (matchingBankLinkage == null)
                             {
-                                MessageBox.Show("No matching bank linkage found for selected bank account.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                                
                                 return Json(new { success = false, message = "Operation Failed: No matching bank linkage found for selected bank account" });
                             }
 
@@ -421,8 +395,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             var teller = await _channelService.FindTellerAsync(fiscalCountDTO.Id, false, GetServiceHeader());
                             if (teller == null)
                             {
-                                MessageBox.Show("Teller not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                         
+                            
                                 return Json(new { success = false, message = "Operation Failed: Teller Not Found" });
                             }
                             transactionModel.CreditChartOfAccountId = (Guid)teller.ChartOfAccountId;
@@ -434,16 +407,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             var receivingBank = await _channelService.FindBankAsync(fiscalCountDTO.Id, GetServiceHeader());
                             if (receivingBank == null)
                             {
-                                MessageBox.Show("Receiving bank not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                          
+                               
                                 return Json(new { success = false, message = "Operation Failed: Receiving bank not found"});
                             }
                             var linkages = await _channelService.FindBankLinkagesAsync(GetServiceHeader());
                             var linkage = linkages.FirstOrDefault(l => l.BankName == receivingBank.Description);
                             if (linkage == null)
                             {
-                                MessageBox.Show("No matching bank linkage found for selected bank account.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-    
+                               
                                 return Json(new { success = false, message = "Operation Failed: No matching bank linkage found for selected bank account." });
 
                             }
@@ -457,9 +428,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             var treasury = await _channelService.FindTreasuryAsync(fiscalCountDTO.Id, true, GetServiceHeader());
                             if (treasury == null)
                             {
-                                MessageBox.Show("Receiving treasury not found. Receiving treasury not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                           
-                                return Json(new { success = false, message = "Operation Failed: " });
+                                
+                                return Json(new { success = false, message = "Operation Failed: Receiving treasury not found" });
                             }
                             transactionModel.CreditChartOfAccountId = treasury.ChartOfAccountId;
                             transactionModel.TransactionCode = (int)SystemTransactionCode.TreasuryToTreasury;
@@ -487,14 +457,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                 string message = $"Operation success";
 
-                                MessageBox.Show(
-                                                  message,
-                                                  "Bank To Treasury",
-                                                  MessageBoxButtons.OK,
-                                                  MessageBoxIcon.Information,
-                                                  MessageBoxDefaultButton.Button1,
-                                                  MessageBoxOptions.ServiceNotification
-                                              );
+                                return Json(new { success = true, message = message });
                             
                             }
 
@@ -504,15 +467,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                             if (ActiveTreasury.BookBalance < transactionModel.fiscalCountDTO.TotalValue)
                             {
-                          
-                                System.Windows.Forms.MessageBox.Show(
-                                    "Insufficient balance. The transaction cannot proceed.",
-                                    "Error",
-                                    System.Windows.Forms.MessageBoxButtons.OK,
-                                    System.Windows.Forms.MessageBoxIcon.Error,
-                                    System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                                    System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                                    );
+                
 
                                 return Json(new { success = false, message = "Operation Failed: Insufficient Balance" });
                             }
@@ -527,18 +482,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                 string message = $"Operation success";
 
-                                MessageBox.Show(
-                                                  message,
-                                                  "Treasury to Teller",
-                                                  MessageBoxButtons.OK,
-                                                  MessageBoxIcon.Information,
-                                                  MessageBoxDefaultButton.Button1,
-                                                  MessageBoxOptions.ServiceNotification
-                                              );
-
-
-
-                                return Json(new { success = false, message = "Operation Failed: There are errors in the form" });
+                                return Json(new { success = true, message = message });
 
                             }
 
@@ -551,14 +495,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             if (ActiveTreasury.BookBalance < transactionModel.fiscalCountDTO.TotalValue)
                             {
                        
-                                System.Windows.Forms.MessageBox.Show(
-                                    "Insufficient balance. The transaction cannot proceed.",
-                                    "Error",
-                                    System.Windows.Forms.MessageBoxButtons.OK,
-                                    System.Windows.Forms.MessageBoxIcon.Error,
-                                    System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                                    System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                                    );
+   
 
                                 return Json(new { success = false, message = "Operation Failed: Insufficient Balance" });
                             }
@@ -574,16 +511,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             {
 
                                 string message = $"Operation success";
-
-                                MessageBox.Show(
-                                                  message,
-                                                  "Treasury to Bank",
-                                                  MessageBoxButtons.OK,
-                                                  MessageBoxIcon.Information,
-                                                  MessageBoxDefaultButton.Button1,
-                                                  MessageBoxOptions.ServiceNotification
-                                              );
-
                              
                              return Json(new { success = true, message = message });
 
@@ -599,14 +526,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             if (ActiveTreasury.BookBalance < transactionModel.fiscalCountDTO.TotalValue)
                             {
                           
-                                System.Windows.Forms.MessageBox.Show(
-                                    "Insufficient balance. The transaction cannot proceed.",
-                                    "Error",
-                                    System.Windows.Forms.MessageBoxButtons.OK,
-                                    System.Windows.Forms.MessageBoxIcon.Error,
-                                    System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                                    System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                                    );
 
                                 return Json(new { success = false, message = "Operation Failed: Insufficient Balance" });
                             }
@@ -623,16 +542,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                 string message = $"Operation success";
 
-                                MessageBox.Show(
-                                                  message,
-                                                  "Treasury to Treasury",
-                                                  MessageBoxButtons.OK,
-                                                  MessageBoxIcon.Information,
-                                                  MessageBoxDefaultButton.Button1,
-                                                  MessageBoxOptions.ServiceNotification
-                                              );
-
-
                                 return Json(new { success = true, message = message });
                             }
 
@@ -646,15 +555,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Application Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                 
+    
                     return Json(new { success = false, message = "Operation Failed: " + ex.Message });
                 }
             }
             else
             {
-                MessageBox.Show("There are errors in the form. Please correct them.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-             
+     
                 return Json(new { success = false, message = "Operation Failed: There are errors in the form" });
             }
         }

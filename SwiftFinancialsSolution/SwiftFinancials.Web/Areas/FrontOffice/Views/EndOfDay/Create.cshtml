@@ -123,7 +123,7 @@
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-12 text-right">
-                                        <button type="submit" id="cashTransferButton" class="btn btn-primary">Update</button>
+                                        <button type="submit" id="submitEndOfDayButton" class="btn btn-primary">Update</button>
                                     </div>
                                 </div>
                             </div>
@@ -259,9 +259,11 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script>
+<script>
 
-$('#cashTransferButton').on('click', function () {
+    $('#submitEndOfDayButton').on('click', function (e) {
+
+        e.preventDefault();
 
     var cashTransferRequestDTO = {
         amount: $('#amount').val(),
@@ -270,30 +272,100 @@ $('#cashTransferButton').on('click', function () {
         tellerCashBalanceStatus: $('#closingBalanceStatus').val(),
         tellerCashBalanceStatusValue: $('#cashBalanceStatusValue').val(),
         untransferredChequesValue: $('#untransferredChequesValue').val()
+    };
 
-    }
+    Swal.fire({
+        title: 'Submit End of Day?',
+        text: "Are you sure you want to proceed with the end-of-day process?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, submit',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '@Url.Action("Create", "EndOfDay")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(cashTransferRequestDTO),
+                success: function (response) {
+                    if (response && response.success) {
+                        // Update balances and reset fields
+                        $('#TellerBookBalance').val(response.TellerBookBalance);
+                        $('.payable-checkbox').prop('checked', false);
+                        resetAllFields();
 
+                        // Show success alert with option to print receipt
+                        Swal.fire({
+                            title: 'Success',
+                            text: `Transaction success! Would you like to print the transaction receipt?`,
+                            icon: 'success',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, print receipt',
+                            cancelButtonText: 'No, thanks'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Prepare data for printing the receipt
+                                const printData = {
+                                    Id: response.journalId,
+                                    SequentialId: response.journalSequentialId,
+                                    BranchDescription: response.journalBranchDescription,
+                                    PrimaryDescription: response.journalPrimaryDescription,
+                                    SecondaryDescription: response.journalSecondaryDescription,
+                                    PostingPeriodDescription: response.journalPostingPeriodDescription,
+                                    ApplicationUserName: response.journalApplicationUserName,
+                                    CreatedDate: response.journalCreatedDate,
+                                    TotalValue: response.journalTotalValue,
+                                    Reference: response.journalReference
+                                };
 
-    $.ajax({
-        url: '@Url.Action("Create", "EndOfDay")',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(cashTransferRequestDTO),
-        success: function (response) {
-            if (response && response.success) {
-                alert(response.message);
-            } else {
-                alert("Error: " + (response.message || "An unexpected error occurred."));
-            }
-        },
-        error: function () {
-            alert("An unexpected error occurred.");
+                                // AJAX call to print receipt
+                                $.ajax({
+                                    url: '/FrontOffice/EndOfDay/PrintReceipt',
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(printData),
+                                    success: function (printResponse) {
+                                        if (printResponse.success) {
+                                            Swal.fire('Success', 'Receipt printed successfully.', 'success');
+                                        } else {
+                                            Swal.fire('Error', printResponse.message || 'Failed to print the receipt. Please try again.', 'error');
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error while printing the receipt:', status, error);
+                                        Swal.fire('Error', 'An unexpected error occurred while printing the receipt.', 'error');
+                                    }
+                                });
+                            } else {
+                                Swal.fire('Info', "You chose not to print the receipt.", 'info');
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Submission Failed',
+                            text: response.message || 'An unexpected error occurred during submission.'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred while processing the end-of-day submission. Please try again later.'
+                    });
+                }
+            });
         }
     });
 });
 
 
-    </script>
+
+</script>
 
     <script>
         $(document).ready(function () {

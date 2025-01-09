@@ -86,6 +86,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             return View(employeeDocumentDTO);
         }
+        
+
 
         //public async Task<ActionResult> Details(Guid id)
         //{
