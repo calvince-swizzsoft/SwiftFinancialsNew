@@ -1,4 +1,5 @@
-﻿using Application.MainBoundedContext.DTO;
+﻿
+using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -22,28 +23,45 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
-            int totalRecordCount = 0;
 
+            int totalRecordCount = 0;
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var pageCollectionInfo = await _channelService.FindBranchesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var pageCollectionInfo = await _channelService.FindBranchesByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(B => B.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<BranchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<BranchDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -72,7 +90,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 var companyDTO = await _channelService.FindCompanyAsync(branchDTO.CompanyId, GetServiceHeader());
                 branchDTO.companyDTO = companyDTO;
                 var h = await _channelService.AddBranchAsync(branchDTO, GetServiceHeader());
-                TempData["SuccessMessage"] = "Branch " + h.Description + " Created successfully";
+                TempData["SuccessMessage"] = "Branch " + h.Description + " created successfully";
                 return RedirectToAction("Index");
             }
             else
@@ -82,6 +100,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 return View(branchDTO);
             }
         }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -100,15 +119,16 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (!branchBindingModel.HasErrors)
             {
                 await _channelService.UpdateBranchAsync(branchBindingModel, GetServiceHeader());
-                TempData["SuccessMessage"] = "Branch " + branchBindingModel.Description + " Edited successfully";
+                TempData["SuccessMessage"] = "Branch " + branchBindingModel.Description + " edited successfully";
                 await ServeNavigationMenus();
-                return View("Index");
+                return RedirectToAction("Index"); // Redirect to avoid reposting on refresh
             }
             else
             {
                 return View(branchBindingModel);
             }
         }
+
 
         [HttpGet]
         public async Task<JsonResult> GetBranchesAsync()
