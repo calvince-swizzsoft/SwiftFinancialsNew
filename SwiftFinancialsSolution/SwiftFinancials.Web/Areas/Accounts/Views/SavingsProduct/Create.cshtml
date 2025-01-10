@@ -7,6 +7,7 @@
     var queuePriorities = ViewBag.SystemTransactionType as List<SelectListItem>;
     var Charge = ViewBag.ChargeBenefactor as List<SelectListItem>;
     var Alternate = ViewBag.AlternateChannelType as List<SelectListItem>;
+    var priority = ViewBag.RecoveryPriority as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -35,22 +36,34 @@
 
                     @if (TempData["Error"] != null)
                     {
-                        <div class="alert alert-danger">
-                            <strong>Failed!</strong> @TempData["Error"]
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>&times;</span>
-                            </button>
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Failed!',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
                     }
 
                     @if (TempData["BackEnd"] != null)
                     {
-                        <p>The following errors occurred:</p>
-                        <div>@TempData["BackEnd"]</div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Successful.',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
                     }
                 </div>
 
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("Create", "SavingsProduct", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
@@ -130,27 +143,31 @@
                             </div>
 
                             <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Priority, new { htmlAttributes = new { @class = "form-control", @placeholder = "Priority", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
-                                </div>
+                     
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Priority, priority, "-- Select Recovery Priority --", new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.Priority)
+                                        </div>
+                                    </div>            
                                 <div class="form-group form-group-lg">
                                     @Html.CheckBoxFor(model => model.AutomateLedgerFeeCalculation, htmlAttributes: new { @class = "" })
-                                    @Html.LabelFor(model => model.AutomateLedgerFeeCalculation, new { htmlAttributes = new { @class = "form-control", @placeholder = "Automate Ledger Fee Calculation?" } })
+                                    @Html.LabelFor(model => model.AutomateLedgerFeeCalculation,"Automate Ledger Fee Calculation", new { htmlAttributes = new { @class = "form-control", @placeholder = "Automate Ledger Fee Calculation?" } })
                                     @Html.ValidationMessageFor(model => model.AutomateLedgerFeeCalculation, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group form-group-lg">
                                     @Html.CheckBoxFor(model => model.ThrottleOverTheCounterWithdrawals, htmlAttributes: new { @class = "" })
-                                    @Html.LabelFor(model => model.ThrottleOverTheCounterWithdrawals, new { htmlAttributes = new { @class = "form-control", @placeholder = "Throttle Over The Counter Withdrawals?" } })
+                                    @Html.LabelFor(model => model.ThrottleOverTheCounterWithdrawals,"Throttle Over The Counter Withdrawals", new { htmlAttributes = new { @class = "form-control", @placeholder = "Throttle Over The Counter Withdrawals?" } })
                                     @Html.ValidationMessageFor(model => model.ThrottleOverTheCounterWithdrawals, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group form-group-lg">
                                     @Html.CheckBoxFor(model => model.IsDefault, htmlAttributes: new { @class = "" })
                                     @Html.LabelFor(model => model.IsDefault, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Default?" } })
                                     @Html.ValidationMessageFor(model => model.IsDefault, "", new { @class = "text-danger" })
-                                </div>                               
-                                
+                                </div>
+
                             </div>
                         </div>
 

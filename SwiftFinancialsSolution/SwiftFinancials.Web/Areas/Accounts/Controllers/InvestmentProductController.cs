@@ -1,5 +1,6 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
@@ -23,26 +24,42 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var pageCollectionInfo = await _channelService.FindInvestmentProductsByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindInvestmentProductsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(i => i.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<InvestmentProductDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<InvestmentProductDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -51,11 +68,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var investmentProductDTO = await _channelService.FindInvestmentProductAsync(id, GetServiceHeader());
 
+            var findParentProduct = await _channelService.FindInvestmentProductAsync((Guid)investmentProductDTO.ParentId, GetServiceHeader());
+            investmentProductDTO.ParentChartOfAccountNameDescription = findParentProduct.Description;
+
             return View(investmentProductDTO);
         }
 
 
-        public  async Task<ActionResult>Parent(InvestmentProductDTO investmentProductDTO, Guid? id)
+        public async Task<ActionResult> Parent(InvestmentProductDTO investmentProductDTO, Guid? id)
         {
             await ServeNavigationMenus();
 
@@ -69,7 +89,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var parentGL = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
 
-            if(parentGL!=null)
+            if (parentGL != null)
             {
                 investmentProductDTO.ParentId = parentGL.ParentId;
                 investmentProductDTO.ParentChartOfAccountNameDescription = parentGL.ParentAccountName;
@@ -77,6 +97,119 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
             return View("Create", investmentProductDTO);
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> ParentChartOfAccountsIndex(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+
+            var pageCollectionInfo = await _channelService.
+                FindChartOfAccountsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                var filteredData = pageCollectionInfo.PageCollection
+                    .Where(c => c.AccountCategory != (int)ChartOfAccountCategory.HeaderAccount)
+                    .ToList();
+
+                var sortedData = filteredData
+                    .OrderByDescending(c => c.CreatedDate)
+                    .ToList();
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
+
+            return this.DataTablesJson(
+                items: new List<ChartOfAccountDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
+        }
+
+        public async Task<ActionResult> ChartOfAccountLookUp(Guid? id, InvestmentProductDTO investmentProductDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var chartOfAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+
+
+            if (chartOfAccount != null)
+            {
+                investmentProductDTO.ChartOfAccountId = chartOfAccount.Id;
+                investmentProductDTO.ChartOfAccountAccountName = chartOfAccount.AccountName;
+
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        ChartOfAccountId = investmentProductDTO.ChartOfAccountId,
+                        ChartOfAccountAccountName = investmentProductDTO.ChartOfAccountAccountName
+                    }
+                });
+            }
+            return Json(new { success = false, message = "Product Not Found!" });
+        }
+
+
+        public async Task<ActionResult> ParentProductLookUp(Guid? id, InvestmentProductDTO investmentProductDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var parentProduct = await _channelService.FindInvestmentProductAsync(parseId, GetServiceHeader());
+
+
+            if (parentProduct != null)
+            {
+                investmentProductDTO.ParentId = parentProduct.Id;
+                investmentProductDTO.ParentChartOfAccountNameDescription = parentProduct.Description;
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        ParentId = investmentProductDTO.ParentId,
+                        ParentChartOfAccountNameDescription = investmentProductDTO.ParentChartOfAccountNameDescription
+                    }
+                });
+            }
+            return Json(new { success = false, message = "Product Not Found!" });
         }
 
 
@@ -99,14 +232,37 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 investmentProductDTO.ChartOfAccountAccountName = parentGL.ParentAccountName;
             }
 
-            ViewBag.RecoveryPrioritySelectList = GetRecoveryPrioritySelectList(string.Empty);
+            ViewBag.RecoveryPriority = GetRecoveryPrioritySelectList(string.Empty);
 
             return View(investmentProductDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(InvestmentProductDTO investmentProductDTO)
+        public async Task<ActionResult> Create(InvestmentProductDTO investmentProductDTO, string selectedItem)
         {
+            if (string.IsNullOrEmpty(selectedItem))
+            {
+                TempData["SelectRecoveryPriority"] = "Recovery Priority Required!";
+                return View(investmentProductDTO);
+            }
+
+            if (selectedItem == "0")
+            {
+                investmentProductDTO.Priority = 0;
+            }
+            else if (selectedItem == "1")
+            {
+                investmentProductDTO.Priority = 1;
+            }
+            else if (selectedItem == "2")
+            {
+                investmentProductDTO.Priority = 2;
+            }
+            else if (selectedItem == "3")
+            {
+                investmentProductDTO.Priority = 3;
+            }
+
             investmentProductDTO.ValidateAll();
 
             if (!investmentProductDTO.HasErrors)

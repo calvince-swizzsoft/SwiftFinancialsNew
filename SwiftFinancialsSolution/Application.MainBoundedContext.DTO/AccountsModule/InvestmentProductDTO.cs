@@ -4,6 +4,7 @@ using Application.Seedwork;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Infrastructure.Crosscutting.Framework.Utils;
 
 namespace Application.MainBoundedContext.DTO.AccountsModule
 {
@@ -60,6 +61,16 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Recovery Priority")]
         public int Priority { get; set; }
+
+        [DataMember]
+        [Display(Name = "Recovery Priority")]
+        public string PriorityDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(RecoveryPriority), Priority) ? EnumHelper.GetDescription((RecoveryPriority)Priority) : string.Empty;
+            }
+        }
 
         [DataMember]
         [Display(Name = "Maturity Period (Days)")]
