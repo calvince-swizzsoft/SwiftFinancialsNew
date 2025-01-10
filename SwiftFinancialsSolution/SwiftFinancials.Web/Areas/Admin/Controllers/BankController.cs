@@ -26,29 +26,45 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            List<string> sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var pageCollectionInfo = await _channelService.FindBanksByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindBanksByFilterInPageAsync
+                (jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(b => b.CreatedDate)
+                    .ToList();
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(bank => bank.CreatedDate).ToList();
+                totalRecordCount = sortedData.Count;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<BankDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<BankDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
+
+
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -60,42 +76,11 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return View(BankDTO);
         }
 
-        //public async Task<ActionResult> Create()
-        //{
-        //    await ServeNavigationMenus();
-
-        //    return View();
-        //}
-        [HttpPost]
-        public JsonResult Add(BankDTO bank, string branchdetails)
-        {
-            // Add bank branch to the bankBranches list (assuming bank.BankBranches is the correct object to add)
-            //foreach(var k in bank.Bankbranch)
-            //{
-            //    bankBranches.Add(k);
-
-            //}
-            BankBranchDTO j = new BankBranchDTO();
-            ObservableCollection<BankBranchDTO> branch = new ObservableCollection<BankBranchDTO>();
-            j = bank.BankBranches;
-            branch.Add(j);
-            
-            // Return JSON response with success flag and a redirect URL
-            return Json(new
-            {
-                success = true,
-                redirectUrl = RedirectToAction("Create", "Bank", new { area = "Admin" })
-        });
-        }
 
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-            var bankDto = new BankDTO
-            {
-                BankBranche = new ObservableCollection<BankBranchDTO>()
-            };
-            return View(bankDto);
+            return View();
         }
 
 
@@ -117,6 +102,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return View(bank);
         }
 
+
+
         [HttpPost]
         public JsonResult Remove(Guid id, BankDTO bank)
         {
@@ -128,6 +115,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return Json(new { success = true, data = JournalVoucherEntryDTOs });
 
         }
+
+
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
@@ -136,6 +125,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             return View(BankDTO);
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -154,13 +145,5 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 return View(BankBindingModel);
             }
         }
-
-        /* [HttpGet]
-         public async Task<JsonResult> GetBanksAsync()
-         {
-             var banksDTOs = await _channelService.FindBanksAsync(GetServiceHeader());
-
-             return Json(banksDTOs, JsonRequestBehavior.AllowGet);
-         }*/
     }
 }

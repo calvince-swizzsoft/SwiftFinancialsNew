@@ -3,9 +3,10 @@
 @{
     ViewBag.Title = "Create Bank";
 }
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Create Bank</h2>
+        <h1>Administration</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -20,220 +21,44 @@
     </div>
 </div>
 
-<div class="wrapper wrapper-content animated fadeIn white-bg">
-    <div class="ibox">
-        <div class="ibox-title">
-            <h5><i class="fa fa-university"></i> Create Bank</h5>
-            <div class="ibox-tools">
-                <a class="collapse-link">
-                    <i class="fa fa-chevron-up"></i>
-                </a>
-                <a class="close-link">
-                    <i class="fa fa-times"></i>
-                </a>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Create Bank</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Add", "Bank", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "addLoanGuarantorsform" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @*@Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @style = "border-radius: 5px;" } })
+                                        @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })*@
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </fieldset>
+                    }
+                </div>
             </div>
-        </div>
-        <div class="ibox-content">
-            @using (Html.BeginForm("Add", "Bank", new { Area = "Admin" }, FormMethod.Post, new { @class = "form-horizontal", @id = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <label for="Description" class="control-label">
-                            <i class="fa fa-info-circle" title="Enter the bank's description"></i> Description:
-                        </label>
-                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter description..." } })
-                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-6">
-                        <label for="Code" class="control-label">
-                            Code:
-                        </label>
-                        @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter code..." } })
-                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            }
-            @using (Html.BeginForm("Add", "Bank", new { Area = "Admin" }, FormMethod.Post, new { @class = "form-horizontal", @id = "form" }))
-            {
-
-                <h4 class="text-primary"><i class="fa fa-building"></i> Branch Details</h4>
-                <hr />
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <label for="Code" class="control-label">
-                            Code:
-                        </label>
-                        @Html.EditorFor(model => model.BankBranches.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter code..." } })
-                        @Html.ValidationMessageFor(model => model.BankBranches.Code, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="AddressAddressLine1" class="control-label">
-                            Address Line 1:
-                        </label>
-                        @Html.EditorFor(model => model.BankBranches.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter address line 1..." } })
-                        @Html.ValidationMessageFor(model => model.BankBranches.AddressAddressLine1, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <label for="AddressAddressLine2" class="control-label">
-                            Address Line 2:
-                        </label>
-                        @Html.EditorFor(model => model.BankBranches.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter address line 2..." } })
-                        @Html.ValidationMessageFor(model => model.BankBranches.AddressAddressLine2, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-6">
-                        <label for="AddressStreet" class="control-label">
-                            Street:
-                        </label>
-                        @Html.EditorFor(model => model.BankBranches.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter street..." } })
-                        @Html.ValidationMessageFor(model => model.BankBranches.AddressStreet, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <label for="AddressPostalCode" class="control-label">
-                            Postal Code:
-                        </label>
-                        @Html.EditorFor(model => model.BankBranches.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter postal code..." } })
-                        @Html.ValidationMessageFor(model => model.BankBranches.AddressPostalCode, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-6">
-                        <label for="AddressCity" class="control-label">
-                            City:
-                        </label>
-                        @Html.EditorFor(model => model.BankBranches.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter city..." } })
-                        @Html.ValidationMessageFor(model => model.BankBranches.AddressCity, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <label for="AddressEmail" class="control-label">
-                            Email:
-                        </label>
-                        @Html.EditorFor(model => model.BankBranches.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter email..." } })
-                        @Html.ValidationMessageFor(model => model.BankBranches.AddressEmail, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-6">
-                        <label for="AddressLandLine" class="control-label">
-                            Landline:
-                        </label>
-                        @Html.EditorFor(model => model.BankBranches.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter landline..." } })
-                        @Html.ValidationMessageFor(model => model.BankBranches.AddressLandLine, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <label for="AddressMobileLine" class="control-label">
-                            Mobile:
-                        </label>
-                        @Html.EditorFor(model => model.BankBranches.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter mobile line..." } })
-                        @Html.ValidationMessageFor(model => model.BankBranches.AddressMobileLine, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" id="addBranchBtn" class="btn btn-primary btn-sm">
-                        <i class="fa fa-plus"></i> Add Branch
-                    </button>
-                </div>
-
-                <div class="form-group">
-                    <table id="branchTable" class="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>Code</th>
-                                <th>Address Line 1</th>
-                                <th>Address Line 2</th>
-                                <th>Street</th>
-                                <th>Postal Code</th>
-                                <th>City</th>
-                                <th>Email</th>
-                                <th>Land Line</th>
-                                <th>Mobile Line</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Dynamic rows will be inserted here -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="form-group">
-                    @*<button type="button" id="submitFormBtn" class="btn btn-success btn-sm">
-                            <i class="fa fa-check"></i> Submit Bank
-                        </button>*@
-                    <input type="submit" value="Create" />
-                </div>
-
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            }
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const addButton = document.getElementById('addButton'); // Button to trigger the action
-
-        addButton.addEventListener('click', function () {
-            const bankData = {
-                BankBranches: [
-                    {
-                        BranchName: 'Example Branch',
-                        BranchCode: '123',
-                        Address: 'Example Address',
-                        City: 'Example City'
-                    }
-                ]
-            };
-
-            const branchDetails = "Branch details here"; // Replace with your actual branch details string
-
-            // Make AJAX POST request
-            fetch('/Bank/Add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    bank: bankData,
-                    branchdetails: branchDetails
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Handle the redirect URL from the response
-                        console.log('Bank added successfully');
-                        console.log('Redirect to:', data.redirectUrl);
-
-                        // Option 1: Navigate to the redirect URL
-                        window.location.href = data.redirectUrl;
-
-                        // Option 2: Use the redirect URL for further processing
-                        // Example: Load the content dynamically using AJAX
-                        // loadContent(data.redirectUrl);
-                    } else {
-                        // Handle failure
-                        console.error('Failed to add bank');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
-
-        // Example function to load content dynamically (if needed)
-        function loadContent(url) {
-            fetch(url)
-                .then(response => response.text())
-                .then(htmlContent => {
-                    document.getElementById('content').innerHTML = htmlContent; // Assuming a div with id 'content'
-                })
-                .catch(error => console.error('Error loading content:', error));
-        }
-    });
-</script>
