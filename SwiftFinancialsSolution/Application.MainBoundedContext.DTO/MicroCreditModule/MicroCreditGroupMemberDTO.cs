@@ -327,5 +327,9 @@ namespace Application.MainBoundedContext.DTO.MicroCreditModule
         [DataMember]
         [Display(Name = "Full Account Number")]
         public string CustomerAccountFullAccountNumber { get; set; }
+
+
+        [DataMember]
+        public string errorMsg { get; set; }
     }
 }

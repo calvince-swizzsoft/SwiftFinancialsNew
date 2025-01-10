@@ -10,8 +10,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Application.MainBoundedContext.DTO.RegistryModule;
-using Application.MainBoundedContext.DTO.AccountsModule;
-using System.Collections.ObjectModel;
+
 
 namespace Application.MainBoundedContext.DTO.MicroCreditModule
 {
@@ -29,10 +28,6 @@ namespace Application.MainBoundedContext.DTO.MicroCreditModule
         [DataMember]
         [Display(Name = "Parent")]
         public Guid? ParentId { get; set; }
-
-        [DataMember]
-        [Display(Name = "Parent Group")]
-        public string ParentMicroCreditDescription { get; set; }
 
         [DataMember]
         [Display(Name = "Customer")]
@@ -181,86 +176,32 @@ namespace Application.MainBoundedContext.DTO.MicroCreditModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
         //Added Properties
+        [Display(Name = "Designation")]
+        public string Designation { get; set; }
 
-        [DataMember]
-        [Display(Name = "Designation")]
-        public int Designation { get; set; }
-        [DataMember]
-        [Display(Name = "Designation")]
-        public string DesignationDescription
-        {
-            get
-            {
-                return Enum.IsDefined(typeof(MicroCreditGroupMemberDesignation), Designation) ? EnumHelper.GetDescription((MicroCreditGroupMemberDesignation)Designation) : string.Empty;
-            }
-        }
-        [DataMember]
-        [Display (Name = "Employer")]
+        [Display(Name = "Employer")]
         public string Employer { get; set; }
-        [DataMember]
-        [Display(Name ="Account Number")]
+
+        [Display(Name = "Account Number")]
         public string CustomerAccountCustomerReference1 { get; set; }
-        [DataMember]
-        [Display(Name ="MemberShip Number")]
+
+        [Display(Name = "MemberShip Number")]
         public string CustomerAccountCustomerReference2 { get; set; }
-        [DataMember]
-        [Display(Name ="Personal File Number")]
+
+        [Display(Name = "Personal File Number")]
         public string CustomerAccountCustomerReference3 { get; set; }
-        [DataMember]
-        [Display(Name ="Loan Cycle")]
+
+        [Display(Name = "Loan Cycle")]
         public int LoanCycle { get; set; }
-        [DataMember]
+
         [Display(Name = "Customer FullName")]
         public string CustomerFullName { get; set; }
 
-        [DataMember]
-        [Display(Name = "Account Status")]
-        public int AccountStatus { get; set; }
+        public CustomerDTO customer { get; set; }
 
-        [DataMember]
-        [Display(Name = "Status")]
-        public string AccountStatusDescription { get; set; }
+        [Display(Name = "Parent Group")]
+        public string ParentGroup { get; set; }
 
-
-        [DataMember]
-        [Display(Name = "Available Balance")]
-        public decimal AvailableBalance { get; set; }
-
-        [DataMember]
-        [Display(Name = "Book Balance")]
-        public decimal BookBalance { get; set; }
-
-
-        [DataMember]
-        [Display(Name = "Account Number")]
-        public String AccountNumber { get; set; }
-
-        [DataMember]
-        [Display(Name = "Customer Type")]
-        public byte CustomerType { get; set; }
-
-        [DataMember]
-        [Display(Name = "Customer Type")]
-        public string CustomerTypeDescription { get; set; }
-
-        [DataMember]
-        [Display(Name = "Customer Payroll Numbers")]
-        public string CustomerIndividualPayrollNumbers { get; set; }
-
-        [DataMember]
-        [Display(Name = "Personal Id Number")]
-        public string CustomerPersonalIdentificationNumber { get; set; }
-
-        [DataMember]
-        [Display(Name = "Full Account Number")]
-        public string CustomerAccountFullAccountNumber { get; set; }
-
-        // Property for batch import parsing information
-        public BatchImportParseInfo BatchImportParseInfo { get; set; }
-        public ObservableCollection<MicroCreditGroupMemberDTO> GroupMembers { get; set; }
-
-
-        public string errorMessages { get; set; }
-
+        public List<MicroCreditGroupMemberDTO> GroupMember { get; set; }
     }
 }

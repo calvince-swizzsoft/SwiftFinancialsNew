@@ -41,40 +41,44 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByFilterInPageAsync(
                 jQueryDataTablesModel.sSearch,
                 0,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 false,
                 GetServiceHeader()
             );
 
-            if (pageCollectionInfo != null)
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-
 
                 var sortedData = pageCollectionInfo.PageCollection
-                    .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
+                    .OrderByDescending(accountClosureRequestDTO => accountClosureRequestDTO.CreatedDate)
                     .ToList();
 
+                totalRecordCount = sortedData.Count;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: sortedData,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<AccountClosureRequestDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<AccountClosureRequestDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
 
@@ -269,16 +273,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             if (accountClosureRequestDTO == null)
             {
-                MessageBox.Show(
-                    "An unexpected error occurred. Please try again.",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                return View("Error");
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again.";
+                return RedirectToAction("Error");
             }
 
             var branchId = accountClosureRequestDTO.BranchId;
@@ -290,15 +287,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 await _channelService.AddAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
 
-                MessageBox.Show(
-                    "Account closure request created successfully.",
-                    "Operation Success",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
+                TempData["AlertType"] = "success";
+                TempData["AlertMessage"] = "Account closure request created successfully.";
                 return RedirectToAction("Index");
             }
             else
@@ -308,18 +298,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     Debug.WriteLine($"- {error}");
                 }
 
-                MessageBox.Show(
-                    "There were validation errors. Please review the form and try again.",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
+                TempData["AlertType"] = "warning";
+                TempData["AlertMessage"] = "There were validation errors. Please review the form and try again.";
                 return View("Index");
             }
         }
+
 
 
         public async Task<ActionResult> Edit(Guid id)
@@ -402,7 +386,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Return the populated DTO to the view for editing
             return View(accountClosureRequestDTO);
         }
 
@@ -429,7 +412,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (customer != null)
                 {
-                    // Populate AccountClosureRequestDTO properties here...
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
                     accountClosureRequestDTO.CustomerAccountRemarks = customer.Remarks;
@@ -513,45 +495,26 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (updateSuccess)
                 {
-                    MessageBox.Show(
-                        "Account closure request updated successfully.",
-                        "Operation Success",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
-
+                    TempData["AlertType"] = "success";
+                    TempData["AlertMessage"] = "Account closure request updated successfully.";
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    MessageBox.Show(
-                        "Failed to update the account closure request.",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
+                    TempData["AlertType"] = "error";
+                    TempData["AlertMessage"] = "Failed to update the account closure request.";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"An error occurred: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = $"An error occurred: {ex.Message}";
                 return RedirectToAction("Index");
             }
 
             return View("Index");
         }
+
 
 
 
@@ -644,7 +607,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Return the populated DTO to the view for editing
             return View(accountClosureRequestDTO);
         }
 
@@ -652,7 +614,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Approve(Guid id, AccountClosureRequestDTO accountClosureRequestDTO, string closureApproveAction)
         {
-            // Check the value of closureApproveAction to set the accountClosureApprovalOption
             int accountClosureApprovalOption = closureApproveAction == "Approve"
                 ? (int)AccountClosureApprovalOption.Approve
                 : (int)AccountClosureApprovalOption.Defer;
@@ -663,39 +624,30 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     await _channelService.ApproveAccountClosureRequestAsync(accountClosureRequestDTO, accountClosureApprovalOption, GetServiceHeader());
 
-                    MessageBox.Show(
-                             closureApproveAction == "Approve"
-                                 ? "Account closure request approved successfully."
-                                 : "Account closure request deferred successfully.",
-                             "Success",
-                             MessageBoxButtons.OK,
-                             MessageBoxIcon.Information
-                         );
+                    TempData["AlertType"] = "success";
+                    TempData["AlertMessage"] = closureApproveAction == "Approve"
+                        ? "Account closure request approved successfully."
+                        : "Account closure request deferred successfully.";
+
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Error processing account closure request: {ex.Message}");
-                    MessageBox.Show(
-                        "An error occurred while processing the account closure request. Please try again.",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
+
+                    TempData["AlertType"] = "error";
+                    TempData["AlertMessage"] = "An error occurred while processing the account closure request. Please try again.";
                 }
             }
             else
             {
-                MessageBox.Show(
-                           "Failed to process the account closure request. Please try again.",
-                           "Error",
-                           MessageBoxButtons.OK,
-                           MessageBoxIcon.Error
-                       );
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = "Failed to process the account closure request. Please try again.";
             }
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
+
 
 
 
@@ -797,7 +749,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Verify(Guid id, AccountClosureRequestDTO accountClosureRequestDTO, string closureVerifyAction)
         {
-            // Determine the action based on the value of closureVerifyAction
             int auditAccountClosureRequestOption = closureVerifyAction == "Verify"
                 ? (int)AccountClosureAuditOption.Audit
                 : (int)AccountClosureAuditOption.Defer;
@@ -810,49 +761,36 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                     if (result)
                     {
-                        MessageBox.Show(
-                             closureVerifyAction == "Verify"
-                                 ? "Account closure request verified successfully."
-                                 : "Account closure request deferred successfully.",
-                             "Success",
-                             MessageBoxButtons.OK,
-                             MessageBoxIcon.Information
-                         );
+                        TempData["AlertType"] = "success";
+                        TempData["AlertMessage"] = closureVerifyAction == "Verify"
+                            ? "Account closure request verified successfully."
+                            : "Account closure request deferred successfully.";
+
                         return RedirectToAction("Index");
                     }
                     else
                     {
-                        MessageBox.Show(
-                           "Failed to process the account closure request. Please try again.",
-                           "Error",
-                           MessageBoxButtons.OK,
-                           MessageBoxIcon.Error
-                       );
+                        TempData["AlertType"] = "error";
+                        TempData["AlertMessage"] = "Failed to process the account closure request. Please try again.";
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Error processing account closure request: {ex.Message}");
-                    MessageBox.Show(
-                        "An error occurred while processing the account closure request. Please try again.",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
+
+                    TempData["AlertType"] = "error";
+                    TempData["AlertMessage"] = "An error occurred while processing the account closure request. Please try again.";
                 }
             }
             else
             {
-                MessageBox.Show(
-                    "There were validation errors. Please review the form and try again.",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
+                TempData["AlertType"] = "warning";
+                TempData["AlertMessage"] = "There were validation errors. Please review the form and try again.";
             }
 
             return View(accountClosureRequestDTO);
         }
+
 
         public async Task<ActionResult> Settle(Guid id)
         {
@@ -941,7 +879,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Settle(Guid id, AccountClosureRequestDTO accountClosureRequestDTO, string closureSettleAction)
         {
-            // Determine the action based on the value of closureVerifyAction
+            // Determine the action based on the value of closureSettleAction
             int accountClosureSettlementOption = closureSettleAction == "Settle"
                 ? (int)AccountClosureSettlementOption.Settle
                 : (int)AccountClosureSettlementOption.Defer;
@@ -954,52 +892,37 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                     if (result)
                     {
-                        MessageBox.Show(
-                            closureSettleAction == "Settle"
-                                ? "Account closure request Settled successfully."
-                                : "Account closure request deferred successfully.",
-                            "Success",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information
-                        );
+                        TempData["AlertType"] = "success";
+                        TempData["AlertMessage"] = closureSettleAction == "Settle"
+                            ? "Account closure request settled successfully."
+                            : "Account closure request deferred successfully.";
 
                         return RedirectToAction("Index");
                     }
                     else
                     {
-                        MessageBox.Show(
-                            "Failed to process the account closure request. Please try again.",
-                            "Error",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error
-                        );
+                        TempData["AlertType"] = "error";
+                        TempData["AlertMessage"] = "Failed to process the account closure request. Please try again.";
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Error processing account closure request: {ex.Message}");
-                    MessageBox.Show(
-                        "An error occurred while processing the account closure request. Please try again.",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
+                    TempData["AlertType"] = "error";
+                    TempData["AlertMessage"] = "An error occurred while processing the account closure request. Please try again.";
                 }
             }
             else
             {
-                MessageBox.Show(
-                    "There were validation errors. Please review the form and try again.",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
+                TempData["AlertType"] = "warning";
+                TempData["AlertMessage"] = "There were validation errors. Please review the form and try again.";
             }
 
             return View(accountClosureRequestDTO);
         }
 
-        
+
+
 
 
 

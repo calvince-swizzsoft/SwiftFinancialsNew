@@ -74,33 +74,43 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 startDate,
                 endDate,
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
             );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(externalChequeDTO => externalChequeDTO.CreatedDate)
+                    .ToList();
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: pageCollectionInfo.PageCollection,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<ExternalChequeDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<ExternalChequeDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
 
@@ -230,7 +240,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return Json(new { success = false, message = "No cheques selected." });
             }
 
-            if (bankLinkageDTO == null || bankLinkageDTO.Id == Guid.Empty) // Assuming `BankAccountId` is a mandatory field
+            if (bankLinkageDTO == null || bankLinkageDTO.Id == Guid.Empty) 
             {
                 return Json(new
                 {
