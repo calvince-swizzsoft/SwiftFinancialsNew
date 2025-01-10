@@ -39,6 +39,8 @@
     </div>
 </div>
 
+<br>
+
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -291,16 +293,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="ibox ">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </div>
-                </div>
+                
 
                 <div class="ibox-content bg-white text-dark">
                     <div class="main">
@@ -2418,79 +2411,64 @@
 
 
     <script>
-$(document).ready(function () {
+        $(document).ready(function () {
     var selectedLoans = [];
 
-    // Save the state of a checkbox (for Select All)
-    function saveCheckboxState(key, state) {
-        localStorage.setItem(key, JSON.stringify(state));
-    }
-
-    // Load the state of a checkbox from localStorage
-    function loadCheckboxState(key) {
-        return JSON.parse(localStorage.getItem(key)) || false;
-    }
-
-    // Update the selected loans array and send data to the server
+    // Save the state of selected loans to send to the server
     function updateSelectedLoans() {
         selectedLoans = [];
         $('.lrowCheckbox:checked').each(function () {
             var loanId = $(this).data('id');
-            var loanDescription = $(this).closest('tr').find('td:eq(1)').text(); // Get description from the second column
+            var loanDescription = $(this).closest('tr').find('td:eq(1)').text();
             selectedLoans.push({
                 Id: loanId,
                 Description: loanDescription
             });
         });
 
-       $.ajax({
-    url: '@Url.Action("ProcessSelectedLoans", "LoanProduct", new { Area = "Accounts" })',
-    type: 'POST',
-    data: JSON.stringify({
-        EligibileIncomeDeductionLoanProductCollection: selectedLoans
-    }),  // Send as JSON object with the correct structure
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    success: function (response) {
-        console.log('Selected loans updated successfully.');
-        // Optionally, display a success message to the user
-    },
-    error: function (error) {
-        console.error('An error occurred while updating selected loans.');
-        // Optionally, display an error message to the user
+        $.ajax({
+            url: '@Url.Action("ProcessSelectedLoans", "LoanProduct", new { Area = "Accounts" })',
+            type: 'POST',
+            data: JSON.stringify({
+                EligibileIncomeDeductionLoanProductCollection: selectedLoans
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function () {
+                console.log('Selected loans updated successfully.');
+            },
+            error: function () {
+                console.error('An error occurred while updating selected loans.');
+            }
+        });
     }
-});
 
+    // Update the "Select All" checkbox state based on individual checkbox states
+    function updateSelectAllCheckbox() {
+        var totalRows = $('.lrowCheckbox').length;
+        var checkedRows = $('.lrowCheckbox:checked').length;
+
+        $('#lheaderCheckbox').prop('checked', totalRows > 0 && totalRows === checkedRows);
     }
 
     // Initialize the DataTable
     var table = $('#LoanProductsGrid').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
-        "sServerMethod": "POST",
-
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            // Add checkbox for each row
-            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '"';
-
-            if (selectedLoans.some(item => item.Id === aData.Id)) {
-                checkboxHTML += ' checked';
-            }
-
-            checkboxHTML += '>';
+        sPaginationType: "full_numbers",
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
+        sServerMethod: "POST",
+        fnRowCallback: function (nRow, aData) {
+            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '">';
             $('td:eq(0)', nRow).html(checkboxHTML);
             return nRow;
         },
-
-        "aoColumns": [
-            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "10%" },
-            { "mDataProp": "Description", "sTitle": "Loan Product", "sWidth": "90%" }
+        aoColumns: [
+            { mDataProp: "Id", sTitle: "Select", sWidth: "10%" },
+            { mDataProp: "Description", sTitle: "Loan Product", sWidth: "90%" }
         ],
-        "aaSorting": [[1, "asc"]],
-
-        "fnDrawCallback": function () {
+        aaSorting: [[1, "asc"]],
+        fnDrawCallback: function () {
             updateSelectAllCheckbox();
         }
     });
@@ -2519,7 +2497,6 @@ $(document).ready(function () {
         }
 
         updateSelectedLoans();
-        saveCheckboxState('lheaderCheckbox', isChecked);
     });
 
     // Handle individual checkbox changes
@@ -2527,11 +2504,8 @@ $(document).ready(function () {
         updateSelectedLoans();
         updateSelectAllCheckbox();
     });
-
-    // Restore the state of the "Select All" checkbox
-    $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
-
 });
+
     </script>
 
 
