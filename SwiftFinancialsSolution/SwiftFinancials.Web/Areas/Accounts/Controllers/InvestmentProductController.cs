@@ -68,11 +68,20 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var investmentProductDTO = await _channelService.FindInvestmentProductAsync(id, GetServiceHeader());
 
-            var findParentProduct = await _channelService.FindInvestmentProductAsync((Guid)investmentProductDTO.ParentId, GetServiceHeader());
-            investmentProductDTO.ParentChartOfAccountNameDescription = findParentProduct.Description;
+            // Check if ParentId has a value
+            if (investmentProductDTO.ParentId.HasValue)
+            {
+                var findParentProduct = await _channelService.FindInvestmentProductAsync(investmentProductDTO.ParentId.Value, GetServiceHeader());
+                investmentProductDTO.ParentChartOfAccountNameDescription = findParentProduct.Description;
+            }
+            else
+            {
+                investmentProductDTO.ParentChartOfAccountNameDescription = "No Parent Product";
+            }
 
             return View(investmentProductDTO);
         }
+
 
 
         public async Task<ActionResult> Parent(InvestmentProductDTO investmentProductDTO, Guid? id)
@@ -287,16 +296,52 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-            ViewBag.RecoveryPrioritySelectList = GetRecoveryPrioritySelectList(string.Empty);
+
             var investmentProductDTO = await _channelService.FindInvestmentProductAsync(id, GetServiceHeader());
+
+            // Check if ParentId has a value
+            if (investmentProductDTO.ParentId.HasValue)
+            {
+                var findParentProduct = await _channelService.FindInvestmentProductAsync(investmentProductDTO.ParentId.Value, GetServiceHeader());
+                investmentProductDTO.ParentChartOfAccountNameDescription = findParentProduct.Description;
+            }
+            else
+            {
+                investmentProductDTO.ParentChartOfAccountNameDescription = "No Parent Product";
+            }
 
             return View(investmentProductDTO);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, InvestmentProductDTO investmentProductBindingModel)
+        public async Task<ActionResult> Edit(Guid id, InvestmentProductDTO investmentProductBindingModel, string selectedItem)
         {
+            if (string.IsNullOrEmpty(selectedItem))
+            {
+                TempData["SelectRecoveryPriority"] = "Recovery Priority Required!";
+                return View(investmentProductBindingModel);
+            }
+
+            if (selectedItem == "0")
+            {
+                investmentProductBindingModel.Priority = 0;
+            }
+            else if (selectedItem == "1")
+            {
+                investmentProductBindingModel.Priority = 1;
+            }
+            else if (selectedItem == "2")
+            {
+                investmentProductBindingModel.Priority = 2;
+            }
+            else if (selectedItem == "3")
+            {
+                investmentProductBindingModel.Priority = 3;
+            }
+            investmentProductBindingModel.ValidateAll();
+
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateInvestmentProductAsync(investmentProductBindingModel, GetServiceHeader());
