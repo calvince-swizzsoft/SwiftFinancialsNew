@@ -57,7 +57,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info" style="padding: 20px;">
+                <div class="ibox-content bg-white " style="padding: 20px;">
                     @using (Html.BeginForm("Details", "Company", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
