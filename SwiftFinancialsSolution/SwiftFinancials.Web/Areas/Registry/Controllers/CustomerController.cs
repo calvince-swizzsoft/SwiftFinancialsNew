@@ -193,6 +193,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
             var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
             var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+
+            var nextofkin = await _channelService.FindNextOfKinCollectionByCustomerIdAsync(customerDTO.Id, GetServiceHeader());
+            ViewBag.nextofkin = nextofkin;
             ViewBag.type = customerDTO.Type;
 
             ViewBag.investment = investment;
@@ -609,7 +612,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     if (result.ErrorMessages == null)
                     {
                         // TempData["SuccessMessage"] = "Teller created successfully.";
-                        TempData["SuccessMessage"] = "Customer "+result.FullName+ " created successfully.";
+                        TempData["SuccessMessage"] = "Customer " + result.FullName + " created successfully.";
 
                         //System.Windows.Forms.MessageBox.Show(
                         //    "Customer " + result.FullName + " created successfully.",
