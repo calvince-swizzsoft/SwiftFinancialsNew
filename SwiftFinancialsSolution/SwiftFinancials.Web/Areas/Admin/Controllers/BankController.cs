@@ -1,6 +1,7 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using Domain.MainBoundedContext.AdministrationModule.Aggregates.BankBranchAgg;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -71,7 +72,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             await ServeNavigationMenus();
 
             var BankDTO = await _channelService.FindBankAsync(id, GetServiceHeader());
-            await _channelService.FindBankBranchesByBankIdAsync(BankDTO.Id, GetServiceHeader());
+            var BankBranches = await _channelService.FindBankBranchesByBankIdAsync(BankDTO.Id, GetServiceHeader());
+            ViewBag.BankBranches = BankBranches;
 
             return View(BankDTO);
         }
@@ -85,35 +87,89 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
 
         [HttpPost]
+        public async Task<JsonResult> Add(BankDTO bankDTO)
+        {
+            await ServeNavigationMenus();
+
+            var branches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+            if (branches == null)
+            {
+                branches = new ObservableCollection<BankBranchDTO>();
+            }
+
+            foreach (var branch in bankDTO.BankBranchesDTO)
+            {
+                var existingEntry = branches.FirstOrDefault(e => e.Description == branch.Description);
+
+                if (existingEntry != null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "The Selected Branch has already been added to the Branches List."
+                    });
+                }
+
+                branches.Add(branch);
+            }
+
+            Session["bankBranches"] = branches;
+
+            return Json(new { success = true, entries = branches });
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var branches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+            if (branches != null)
+            {
+                var entryToRemove = branches.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    branches.Remove(entryToRemove);
+
+                    Session["bankBranches"] = branches;
+                }
+            }
+
+            return Json(new { success = true, data = branches });
+        }
+
+
+        [HttpPost]
         public async Task<ActionResult> Create(BankDTO bank)
         {
+            if(Session["bankBranches"] == null)
+            {
+                await ServeNavigationMenus();
+                TempData["EBB"] = "Empty Bank Branches";
+                return View(bank);
+            }
+
             bank.ValidateAll();
 
             if (!bank.HasErrors)
             {
                 var bankDTO = await _channelService.AddBankAsync(bank, GetServiceHeader());
-                BankBranchDTO j = new BankBranchDTO();
-                j.Description = bank.Description;
-                bankBranches.Add(j);
-                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, bankBranches, GetServiceHeader());
+
+                var bankBranches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+                if (bankBranches != null)
+                    await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, bankBranches, GetServiceHeader());
+
+                TempData["Success"] = "Ok";
 
                 return RedirectToAction("Index");
             }
+
+            TempData["Failed"] = "Fail!";
             return View(bank);
-        }
-
-
-
-        [HttpPost]
-        public JsonResult Remove(Guid id, BankDTO bank)
-        {
-            foreach (var branch in bank.BankBranche)
-            {
-                bank.Description = branch.Description;
-
-            }
-            return Json(new { success = true, data = JournalVoucherEntryDTOs });
-
         }
 
 
@@ -125,7 +181,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             return View(BankDTO);
         }
-
 
 
         [HttpPost]
