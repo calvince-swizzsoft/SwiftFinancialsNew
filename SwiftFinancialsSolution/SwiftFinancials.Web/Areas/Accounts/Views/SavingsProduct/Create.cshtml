@@ -36,18 +36,30 @@
 
                     @if (TempData["Error"] != null)
                     {
-                        <div class="alert alert-danger">
-                            <strong>Failed!</strong> @TempData["Error"]
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>&times;</span>
-                            </button>
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Failed!',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
                     }
 
                     @if (TempData["BackEnd"] != null)
                     {
-                        <p>The following errors occurred:</p>
-                        <div>@TempData["BackEnd"]</div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Successful.',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
                     }
                 </div>
 

@@ -29,32 +29,31 @@
 
                     @if (TempData["AlertMessage"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AlertMessage"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Successful.',
+                                    confirmButtonColor: '#90EE90',
+                                });
+                            });
+                        </script>
                     }
 
                     @if (TempData["Edit"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Edit"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Successful.',
+                                    confirmButtonColor: '#90EE90',
+                                });
+                            });
+                        </script>
                     }
-
-
-
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
