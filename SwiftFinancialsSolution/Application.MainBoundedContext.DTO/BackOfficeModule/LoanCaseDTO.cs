@@ -68,7 +68,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Customer")]
         public Guid CustomerId { get; set; }
 
-
         [DataMember]
         [Display(Name = "Customer Type")]
         public int CustomerType { get; set; }
@@ -161,16 +160,13 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
             }
         }
 
-
         [DataMember]
         [Display(Name = "Customer")]
         public string CustomerName { get; set; }
 
-
         [DataMember]
         [Display(Name = "Loanee")]
         public string CustomerLoaneeFullName { get; set; }
-
 
         [DataMember]
         [Display(Name = "Identity Card Number")]
@@ -882,11 +878,8 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [CustomValidation(typeof(LoanCaseDTO), "ValidateLoanSecurity", ErrorMessage = "Security is required for the selected loan product and following conditions must be met:-\n\n-If guarantor security mode is income, the total number of guarantors must not be less than the minimum required\n-If guarantor security mode is investments, the total amount guaranteed must not be less than the amount applied")]
         public decimal TotalAmountGuaranteed { get; set; }
 
-
         [Display(Name = "Amount Pledged")]
         public decimal TotalAmountPledged { get; set; }
-
-
 
         [Display(Name = "Total Collateral")]
         public decimal TotalCollateralAmount { get; set; }
@@ -1088,7 +1081,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Employer")]
         public string GuarantorEmployerDescription { get; set; }
 
-
         [DataMember]
         [Display(Name = "Identification Number")]
         public string GuarantorIdentificationNumber { get; set; }
@@ -1121,14 +1113,9 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Amount Guaranteed")]
         public decimal GuarantorAmountGuaranteed { get; set; }
 
-
-
-
-
         [DataMember]
         [Display(Name = "Interest Calculation Mode")]
         public string InterestCalculationModeDescription { get; set; }
-
 
         [DataMember]
         [Display(Name = "Section")]

@@ -22,54 +22,37 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
     public class GuarantorManagementController : MasterController
     {
-        string connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
-        private bool IsBusy { get; set; }
-
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
 
-            return View();
-        }
-
-        public async Task<ActionResult> Create(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.CustomerFilter = GetCustomerFilterSelectList(string.Empty);
-
-            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
-            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
-
-            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
-            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
-
-            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
-
-            ViewBag.ProductCode2 = GetProductCodeSelectList(string.Empty);
-            ViewBag.RecordStatus2 = GetRecordStatusSelectList(string.Empty);
+            ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
+            ViewBag.LoanCaseStatusSelectList = GetLoanCaseStatusSelectList(string.Empty);
 
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> CustomerIndex(JQueryDataTablesModel jQueryDataTablesModel, int recordStatus, string text, int customerFilter)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int loanCaseStatus, string filterValue, int filterType)
         {
             int totalRecordCount = 0;
             int searchRecordCount = 0;
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-
-            var pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)RecordStatus.Approved, text, customerFilter, 0, int.MaxValue, GetServiceHeader());
-
+            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(
+                loanCaseStatus,
+                filterValue,
+                filterType,
+                0,
+                int.MaxValue,
+                includeBatchStatus: true,
+                GetServiceHeader()
+            );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
 
                 var sortedData = pageCollectionInfo.PageCollection
-                    .OrderByDescending(customer => customer.CreatedDate)
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
                     .ToList();
 
                 totalRecordCount = sortedData.Count;
@@ -92,7 +75,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
             return this.DataTablesJson(
-                items: new List<CustomerDTO>(),
+                items: new List<LoanCaseDTO>(),
                 totalRecords: totalRecordCount,
                 totalDisplayRecords: searchRecordCount,
                 sEcho: jQueryDataTablesModel.sEcho
@@ -100,63 +83,82 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<JsonResult> LoaneeLookUp(Guid id)
+        public async Task<ActionResult> Create(Guid? id)
         {
-            if (id == Guid.Empty)
+            await ServeNavigationMenus();
+
+            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-                return Json(new { success = false, message = "Invalid ID" });
+                return View("create");
             }
 
-            var loaneeLookUp = new LoanGuarantorDTO();
+            var details = new LoanCaseDTO();
 
-            var loanee = await _channelService.FindCustomerAccountAsync(id, true, true, true, true, GetServiceHeader());
-            if (loanee != null)
+            var loanCaseDetails = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
+            if (loanCaseDetails != null)
             {
-                if (loanee.CustomerAccountTypeProductCode != (int)ProductCode.Loan)
+                details.CaseNumber = loanCaseDetails.CaseNumber;
+                details.Id = loanCaseDetails.Id;
+                details.CustomerId = loanCaseDetails.CustomerId;
+                details.CustomerIndividualFirstName = loanCaseDetails.CustomerFullName;
+                details.CustomerReference1 = loanCaseDetails.CustomerReference1;
+                details.CustomerReference2 = loanCaseDetails.CustomerReference2;
+                details.CustomerReference3 = loanCaseDetails.CustomerReference3;
+                details.LoanProductDescription = loanCaseDetails.LoanProductDescription;
+                details.LoanProductId = loanCaseDetails.LoanProductId;
+                details.LoanPurposeDescription = loanCaseDetails.LoanPurposeDescription;
+                details.LoanPurposeId = loanCaseDetails.LoanPurposeId;
+                details.ReceivedDate = Convert.ToDateTime(loanCaseDetails.ReceivedDate).Date;
+                details.Reference = loanCaseDetails.Reference;
+                details.MaximumAmountPercentage = loanCaseDetails.MaximumAmountPercentage;
+                details.AmountApplied = loanCaseDetails.AmountApplied;
+                details.LoanRegistrationTermInMonths = loanCaseDetails.LoanRegistrationTermInMonths;
+                Session["LoanProductId"] = details.LoanProductId;
+                string stringValue = "N/A";
+                details.AppraisedAmount = loanCaseDetails.AppraisedAmount;
+                details.ApprovedAmount = loanCaseDetails.ApprovedAmount;
+
+                if (loanCaseDetails.AppraisalRemarks == "" || loanCaseDetails.AppraisalRemarks == string.Empty || loanCaseDetails.AppraisalRemarks == null)
+                    details.AppraisalRemarks = stringValue;
+                else
+                    details.AppraisalRemarks = loanCaseDetails.AppraisalRemarks;
+
+                if (loanCaseDetails.ApprovalRemarks == "" || loanCaseDetails.ApprovalRemarks == string.Empty || loanCaseDetails.ApprovalRemarks == null)
+                    details.ApprovalRemarks = stringValue;
+                else
+                    details.ApprovalRemarks = loanCaseDetails.ApprovalRemarks;
+
+                details.BatchNumber = loanCaseDetails.BatchNumber;
+                details.DisbursedAmount = loanCaseDetails.DisbursedAmount;
+
+                if (loanCaseDetails.DisbursementRemarks == "" || loanCaseDetails.DisbursementRemarks == string.Empty || loanCaseDetails.DisbursementRemarks == null)
+                    details.DisbursementRemarks = stringValue;
+                else
+                    details.DisbursementRemarks = loanCaseDetails.DisbursementRemarks;
+
+                if (loanCaseDetails.StatusDescription == "" || loanCaseDetails.StatusDescription == string.Empty || loanCaseDetails.StatusDescription == null)
+                    details.LoanStatus = stringValue;
+                else
+                    details.LoanStatus = loanCaseDetails.StatusDescription;
+
+                var loanProductDetails = await _channelService.FindLoanProductAsync(details.LoanProductId, GetServiceHeader());
+                if (loanProductDetails != null)
                 {
-                    TempData["!Loan"] = "Please select a Loan Account!";
-                    return Json(new { success = false, message = "Please select a Loan Account!" });
+                    details.LoanRegistrationMaximumAmount = loanProductDetails.LoanRegistrationMaximumAmount;
                 }
 
-                Session["LoanProductId"] = loanee.CustomerAccountTypeTargetProductId;
-                loaneeLookUp.LoaneeCustomerId = loanee.CustomerId;
-                loaneeLookUp.CustomerAccountFullAccountNumber = loanee.FullAccountNumber;
-                loaneeLookUp.CustomerAccountAccountStatusDescription = loanee.StatusDescription;
-                loaneeLookUp.CustomerAccountAccountRemarks = loanee.Remarks;
-                loaneeLookUp.BookBalance = loanee.BookBalance;
-                loaneeLookUp.CustomerFullName = loanee.CustomerFullName;
-                loaneeLookUp.CustomerAccounntCustomerTypeDescription = loanee.CustomerTypeDescription;
-                loaneeLookUp.LoaneeCustomerIndividualPayrollNumbers = loanee.CustomerIndividualPayrollNumbers;
-                loaneeLookUp.CustomerPersonalIdentificationNumber = loanee.CustomerPersonalIdentificationNumber;
-                loaneeLookUp.CustomerReference1 = loanee.CustomerReference1;
-                loaneeLookUp.CustomerReference2 = loanee.CustomerReference2;
-                loaneeLookUp.CustomerReference3 = loanee.CustomerReference3;
-
-                return Json(new
-                {
-                    success = true,
-                    data = new
-                    {
-                        LoaneeCustomerId = loaneeLookUp.LoaneeCustomerId,
-                        CustomerAccountFullAccountNumber = loaneeLookUp.CustomerAccountFullAccountNumber,
-                        CustomerAccountAccountStatusDescription = loaneeLookUp.CustomerAccountAccountStatusDescription,
-                        CustomerAccountAccountRemarks = loaneeLookUp.CustomerAccountAccountRemarks,
-                        BookBalance = loaneeLookUp.BookBalance,
-                        CustomerFullName = loaneeLookUp.CustomerFullName,
-                        CustomerAccounntCustomerTypeDescription = loaneeLookUp.CustomerAccounntCustomerTypeDescription,
-                        LoaneeCustomerIndividualPayrollNumbers = loaneeLookUp.LoaneeCustomerIndividualPayrollNumbers,
-                        CustomerPersonalIdentificationNumber = loaneeLookUp.CustomerPersonalIdentificationNumber,
-                        CustomerReference1 = loaneeLookUp.CustomerReference1,
-                        CustomerReference2 = loaneeLookUp.CustomerReference2,
-                        CustomerReference3 = loaneeLookUp.CustomerReference3,
-                    }
-                });
+                var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(parseId, GetServiceHeader());
+                if (loanGuarantors != null)
+                    ViewBag.LoanGuarantors = loanGuarantors;
             }
 
-            return Json(new { success = false, message = "Customer Account not found" });
+            return View(details);
         }
-
 
 
         [HttpPost]
@@ -245,8 +247,99 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return Json(new { success = false, message = "Customer not found" });
         }
 
+
+
+
+
         [HttpPost]
-        public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
+        public async Task<ActionResult> Add(LoanCaseDTO loancaseDTO)
+        {
+            await ServeNavigationMenus();
+
+            if (loancaseDTO.LoanProductId == Guid.Empty || loancaseDTO.LoanProductDescription == string.Empty || loancaseDTO.loanProductSection == "")
+            {
+                TempData["EmptyLoanProduct"] = "Loan Product required to proceed to add Guarantors!";
+
+                return Json(new
+                {
+                    success = false
+                });
+            }
+
+            if (loancaseDTO.Guarantor[0].AmountGuaranteed <= 0)
+            {
+                TempData["AmountGuaranteedLessThan0"] = "Amount Guaranteed cannot be 0 or equal to 0!";
+
+                return Json(new
+                {
+                    success = false
+                });
+            }
+
+            var loanguarantorsDTOs = Session["loanguarantorsDTOs"] as ObservableCollection<LoanGuarantorDTO>;
+
+            if (loanguarantorsDTOs == null)
+            {
+                loanguarantorsDTOs = new ObservableCollection<LoanGuarantorDTO>();
+            }
+
+            var totalGuarantorsCount = loanguarantorsDTOs.Count;
+
+            foreach (var guarantorDTO in loancaseDTO.Guarantor)
+            {
+                var existingEntry = loanguarantorsDTOs.FirstOrDefault(e => e.GuarantorId == guarantorDTO.GuarantorId);
+
+                if (existingEntry != null)
+                {
+                    TempData["GuarantorExists"] = "The selected Customer has already been added to the guarantors list!";
+                    return Json(new
+                    {
+                        success = false
+                    });
+                }
+
+                var loanProductDetails = await _channelService.FindLoanProductAsync(loancaseDTO.LoanProductId, GetServiceHeader());
+                var isSelfGuarantee = loanProductDetails.LoanRegistrationAllowSelfGuarantee;
+                if (guarantorDTO.Id == loancaseDTO.CustomerId && !isSelfGuarantee)
+                {
+                    TempData["notSelfGuarantee"] = "The selected Loan Product does not allow self Guarantee!";
+                    Session["loanguarantorsDTOs"] = null;
+                    return Json(new
+                    {
+                        success = false
+                    });
+                }
+
+                var maximumGuarantees = loanProductDetails.LoanRegistrationMaximumGuarantees;
+
+                if (loancaseDTO.Guarantor[0].AmountGuaranteed > (loancaseDTO.Guarantor[0].TotalShares - loancaseDTO.Guarantor[0].CommittedShares))
+                {
+                    TempData["AmountGuaranteedGreater"] = $"Amount Guaranteed must be less than or equal to Total Shares minus Committed Shares" +
+                        $" ({loancaseDTO.Guarantor[0].TotalShares} - {loancaseDTO.Guarantor[0].CommittedShares} = " +
+                        $"{loancaseDTO.Guarantor[0].TotalShares - loancaseDTO.Guarantor[0].CommittedShares}) and the number of Maximum Guarantees must not be exceeded!";
+                    Session["loanguarantorsDTOs"] = null;
+                    return Json(new { success = false, message = "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares." });
+                }
+
+                if (totalGuarantorsCount > maximumGuarantees)
+                {
+                    TempData["MaximumGuaranteedExceeded"] = "Maximum Guarantees must not be exceeded!";
+
+                    return Json(new { success = false, message = "Failed to add Loan Guarantor. Amount Guaranteed exceeded Total Shares." });
+                }
+
+                loanguarantorsDTOs.Add(guarantorDTO);
+            }
+
+            Session["loanguarantorsDTOs"] = loanguarantorsDTOs;
+            Session["guarantorDTO"] = loancaseDTO.Guarantor;
+
+            return Json(new { success = true, entries = loanguarantorsDTOs });
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO)
         {
 
             Session["LoanProductId"] = null;

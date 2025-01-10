@@ -125,6 +125,24 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $(document).ready(function () {
+        @if (TempData["SweetAlertMessage"] != null)
+        {
+            <text>
+            Swal.fire({
+                title: 'Notification',
+                text: '@TempData["SweetAlertMessage"]',
+                icon: '@TempData["SweetAlertType"]', // 'success', 'error', 'warning', 'info'
+                confirmButtonText: 'OK',
+                timer: 5000 // Optional: Auto-close after 5 seconds
+            });
+            </text>
+        }
+    });
+    </script>
+
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -162,7 +180,7 @@
 
                     switch (aData.Status) {
                         case 8:
-                            dropdownHtml += verifyButton + terminateButton + liquidationButton;
+                            dropdownHtml += verifyButton;
                             break;
 
                         case 1:
@@ -248,51 +266,7 @@
     </script>
     <style>
 
-    .nav {
-        display: flex;
-        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
-        padding: 0;
-        margin: 5px;
-        margin-bottom:0;
-        border: 2px solid Black;
-        border-radius:8px;
-        margin-top:20px;
-        gap: 10px; /* Space between links */
-        text-align: center; /* Centers the text inside links */
-
-        padding:10px;
-    }
-
-    .nav-link {
-        display: flex;
-
-
-        text-decoration: none;
-        color: #007bff; /* Default text color */
-        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
-
-        border-radius: 4px; /* Rounded corners */
-        font-size: 14px; /* Adjust font size for better fit */
-        white-space: nowrap; /* Prevents text from wrapping inside the link */
-
-       @* border: 1px solid #007bff;*@ /* Border color and style */
-    }
-
-        .nav-link:hover {
-            color: #fff; /* Text color on hover */
-            background-color: #0056b3; /* Background color on hover */
-        }
-
-        .nav-link i {
-            margin-right: 8px; /* Space between icon and text */
-            font-size: 16px; /* Adjust icon size */
-        }
-
-        .nav-link.disabled {
-            pointer-events: none;
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+    
 
     .col-lg-2 {
         display: flex;
