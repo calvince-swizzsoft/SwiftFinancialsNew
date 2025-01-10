@@ -73,7 +73,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             // Retrieve all available debit, investment, and savings products
             var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
             var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
-            var allInvestmentProducts = await _channelService.FindInvestmentProductsAsync( GetServiceHeader());
+            var allInvestmentProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
             var allSavingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
 
             // Retrieve company and its linked products
@@ -263,14 +263,24 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
 
                 TempData["Success"] = "Company Registered Successfully";
-
+                var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+                var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+                var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+                ViewBag.investment = investment;
+                ViewBag.savings = savingsProductDTOs;
+                ViewBag.debit = debitypes;
                 return View("Index");
 
             }
             else
             {
                 var errorMessages = companyBindingModel.ErrorMessages;
-
+                var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+                var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+                var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+                ViewBag.investment = investment;
+                ViewBag.savings = savingsProductDTOs;
+                ViewBag.debit = debitypes;
                 return View(companyBindingModel);
             }
         }
@@ -287,19 +297,38 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             // Retrieve company and its linked products
             var CompanyDTO = await _channelService.FindCompanyAsync(id, GetServiceHeader());
-            var debitTypeDTOs = await _channelService.FindDebitTypesByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
-            var linkedProducts = await _channelService.FindAttachedProductsByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
+            if (CompanyDTO != null)
+            {
+                var debitTypeDTOs = await _channelService.FindDebitTypesByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
+                var linkedProducts = await _channelService.FindAttachedProductsByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
 
-            // Pass the full list and linked items to ViewBag
-            ViewBag.SelectedDebitTypes = debitTypeDTOs.Select(d => d.Id).ToList();
-            ViewBag.SelectedInvestmentProducts = linkedProducts.InvestmentProductCollection.Select(i => i.Id).ToList();
-            ViewBag.SelectedSavingsProducts = linkedProducts.SavingsProductCollection.Select(s => s.Id).ToList();
+                // Pass the full list and linked items to ViewBag
+                ViewBag.SelectedDebitTypes = debitTypeDTOs.Select(d => d.Id).ToList();
+                ViewBag.SelectedInvestmentProducts = linkedProducts.InvestmentProductCollection.Select(i => i.Id).ToList();
+                ViewBag.SelectedSavingsProducts = linkedProducts.SavingsProductCollection.Select(s => s.Id).ToList();
 
-            // Pass all products to the view
-            ViewBag.allInvestments = allInvestmentProducts;
-            ViewBag.allSavings = allSavingsProducts;
-            ViewBag.debit = debitTypes;
+                // Pass all products to the view
+                ViewBag.allInvestments = allInvestmentProducts;
+                ViewBag.allSavings = allSavingsProducts;
+                ViewBag.debit = debitTypes;
+            }
+            else
+            {
+                var debitType = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+                var creditType = await _channelService.FindCreditTypesAsync(GetServiceHeader());
+                var allInvestmentProduct = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+                var allSavingsProduct = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+                // Pass the full list and linked items to ViewBag
+                ViewBag.SelectedDebitTypes = debitType;
+                ViewBag.SelectedInvestmentProducts = allInvestmentProduct;
+                ViewBag.SelectedSavingsProducts = allSavingsProduct;
 
+                // Pass all products to the view
+                ViewBag.allInvestments = allInvestmentProducts;
+                ViewBag.allSavings = allSavingsProducts;
+                ViewBag.debit = debitTypes;
+
+            }
             return View(CompanyDTO.MapTo<CompanyBindingModel>());
         }
 
