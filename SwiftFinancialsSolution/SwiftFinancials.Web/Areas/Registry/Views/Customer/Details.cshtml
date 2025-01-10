@@ -173,8 +173,7 @@
 {
 <script type="text/javascript">
         alert('@TempData["SuccessMessage"]');
-</script>
-}
+</script>}
 
 
 <div class="wrapper wrapper-content">
@@ -212,20 +211,20 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                         @Html.DropDownListFor(
-                                                                                                                                                                                     model => model.TypeDescription,
-                                                                                                                                                                                     new SelectList(
-                                                                                                                                                                                         new[]
-                                                                                                                                                                                         {
+                                                                                                                                                                                                         model => model.TypeDescription,
+                                                                                                                                                                                                         new SelectList(
+                                                                                                                                                                                                             new[]
+                                                                                                                                                                                                             {
                     new { Text = "Select Type", Value = "" },
                     new { Text = "Individual-Particulars", Value = "IndividualParticulars" },
                     new { Text = "Partnership-Particulars", Value = "Partnership" },
                     new { Text = "Corporation-Particulars", Value = "Corporation" },
                     new { Text = "Micro-credit-Particulars", Value = "MicroCredit" }
 },
-                                                                                                                                                                                         "Value", "Text"
-                                                                                                                                                                                     ),
-                                                                                                                                                                                     new { @class = "form-control input-md", @id = "customerTypeDropdown" }
-                                                                                                                                                                                 )
+                                                                                                                                                                                                             "Value", "Text"
+                                                                                                                                                                                                         ),
+                                                                                                                                                                                                         new { @class = "form-control input-md", @id = "customerTypeDropdown" }
+                                                                                                                                                                                                     )
                                         @Html.ValidationMessageFor(model => model.TypeDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -242,9 +241,9 @@
                                 </div>
 
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference1, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Reference1, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Reference1, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.Reference2, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Reference2, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Reference2, "", new { @class = "text-danger" })
                                 </div>
 
                                 @*<div class="form-group form-group-lg">
@@ -297,11 +296,6 @@
                                 </div>
 
 
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference2, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Reference2, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Reference2, "", new { @class = "text-danger" })
-                                </div>
 
                             </div>
 
@@ -456,17 +450,9 @@
                                                                         <thead style="background-color: #4682b4; color: #fff;">
                                                                             <tr>
                                                                                 <th data-toggle="true">Fullname</th>
-                                                                            </tr>
-                                                                            <tr>
                                                                                 <th data-toggle="true">IdentityCardNumber</th>
-                                                                            </tr>
-                                                                            <tr>
                                                                                 <th data-toggle="true">AddressEmail</th>
-                                                                            </tr>
-                                                                            <tr>
                                                                                 <th data-toggle="true">AddressMobileLine</th>
-                                                                            </tr>
-                                                                            <tr>
                                                                                 <th data-toggle="true">NominatedPercentage</th>
                                                                             </tr>
                                                                         </thead>
@@ -476,24 +462,13 @@
                                                                                 foreach (var nextofkin in ViewBag.nextofkin)
                                                                                 {
                                                             <tr style="background-color: #f5f5f5;">
-                                                                <td>
-                                                                    @nextofkin.FullName
-                                                                </td>
-                                                                <td>
-                                                                    @nextofkin.IdentityCardNumber
-                                                                </td>
-                                                                <td>
-                                                                    @nextofkin.AddressEmail
-                                                                </td>
-                                                                <td>
-                                                                    @nextofkin.AddressMobileLine
-                                                                </td>
-                                                                <td>
-                                                                    @nextofkin.NominatedPercentage
-                                                                </td>
-                                                            </tr>
-}
-                                                    }
+                                                                <td>@nextofkin.FullName</td>
+                                                                <td>@nextofkin.IdentityCardNumber</td>
+                                                                <td>@nextofkin.AddressEmail</td>
+                                                                <td>@nextofkin.AddressMobileLine</td>
+                                                                <td>@nextofkin.NominatedPercentage</td>
+                                                            </tr>}
+                                                                            }
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -1463,7 +1438,7 @@ $(document).ready(function () {
 
                 // Append a new row to the table
                 $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            `);
 
                 // Clear the form fields after adding
                 clearMemberForm();

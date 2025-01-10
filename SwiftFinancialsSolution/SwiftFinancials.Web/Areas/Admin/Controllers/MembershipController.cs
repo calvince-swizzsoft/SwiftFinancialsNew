@@ -341,25 +341,27 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
+            var roles = _applicationRoleManager.Roles.ToList();
 
-            string CompanyDescription = string.Empty;
-            Guid parseId;
+            //
+            ViewBag.Commisions = roles.Select(role => new { role.Name }).ToList();
 
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            ObservableCollection<string> rol = new ObservableCollection<string>();
+            foreach (var ro in roles)
             {
-                return View();
-            }
+                string role = ro.Name;
 
-            var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+                rol.Add(role);
+
+            }
+            ViewBag.roles = rol;
+            var branch = await _channelService.FindBranchesAsync(GetServiceHeader());
+            ViewBag.branches = branch;
+            string CompanyDescription = string.Empty;
 
             UserBindingModel userBindingModel4 = new UserBindingModel();
 
-            if (branch != null)
-            {
-                userBindingModel4.BranchId = branch.Id;
-                userBindingModel4.BranchDescription = branch.Description;
 
-            }
             string roleName = string.Empty;
 
             var user = await _applicationUserManager.FindByIdAsync(id.ToString());
@@ -373,11 +375,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                     if (branchDTO != null)
                         CompanyDescription = branchDTO.Description;
                 }
-
-                var roles = await _applicationUserManager.GetRolesAsync(user.Id);
-
-                if (roles != null)
-                    roleName = roles.FirstOrDefault();
 
                 var userBindingModel = user.MapTo<UserBindingModel>();
 
