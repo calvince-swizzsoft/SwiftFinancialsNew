@@ -6,9 +6,16 @@
 
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '@TempData["SuccessMessage"]',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
 }
 
 
@@ -66,6 +73,7 @@
 
 @section Styles {
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
 }
 
 @section scripts {

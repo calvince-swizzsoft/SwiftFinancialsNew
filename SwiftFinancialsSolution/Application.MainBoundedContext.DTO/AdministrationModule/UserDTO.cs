@@ -49,6 +49,8 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
 
         [Display(Name = "Customer")]
         public Guid? CustomerId { get; set; }
+        [Display(Name = "Employee")]
+        public Guid EmployeeId { get; set; }
 
         [Display(Name = "Password")]
         public string Password { get; set; }

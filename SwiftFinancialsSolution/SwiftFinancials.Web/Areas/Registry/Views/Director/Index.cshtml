@@ -4,13 +4,24 @@
     ViewBag.Title = "Directors";
 }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
 }
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '@TempData["SuccessMessage"]',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -64,12 +75,9 @@
     </div>
 </div>
 
-@section Styles {
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-}
-
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -133,8 +141,4 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
 }
-
-
-

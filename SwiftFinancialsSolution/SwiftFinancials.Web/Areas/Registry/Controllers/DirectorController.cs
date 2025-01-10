@@ -143,14 +143,14 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (!directorDTO.HasErrors)
             {
                 await _channelService.AddDirectorAsync(directorDTO, GetServiceHeader());
-                System.Windows.Forms.MessageBox.Show(
-                         "Director " + directorDTO.CustomerFullName + " Added successfully.",
-                         "Success",
-                         System.Windows.Forms.MessageBoxButtons.OK,
-                         System.Windows.Forms.MessageBoxIcon.Information,
-                         System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                         System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                     );
+                //System.Windows.Forms.MessageBox.Show(
+                //         "Director " + directorDTO.CustomerFullName + " Added successfully.",
+                //         "Success",
+                //         System.Windows.Forms.MessageBoxButtons.OK,
+                //         System.Windows.Forms.MessageBoxIcon.Information,
+                //         System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                //         System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                //     );
                 TempData["SuccessMessage"] = "Director created successfully!";
 
                 return RedirectToAction("Index");

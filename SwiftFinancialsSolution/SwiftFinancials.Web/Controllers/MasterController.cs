@@ -41,7 +41,9 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<GraduatedScaleDTO> graduatedScaleDTOS;
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
         public ObservableCollection<BankBranchDTO> bankBranches;
+        public ObservableCollection<NextOfKinDTO> NextOfKinDTOs;
 
+        
 
         public ObservableCollection<OverDeductionBatchEntryDTO> OverDeductionBatchEntryDTOs;
 

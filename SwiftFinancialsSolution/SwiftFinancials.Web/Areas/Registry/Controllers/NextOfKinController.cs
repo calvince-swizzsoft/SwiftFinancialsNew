@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using ServiceStack;
 using SwiftFinancials.Presentation.Infrastructure.Services;
@@ -62,7 +63,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             try
             {
                 var customer = await _channelService.FindCustomerAsync(customerId, GetServiceHeader());
-
+                Session["customer"] = customer;
                 if (customer == null)
                 {
                     return Json(new { success = false, message = "Customer not found." }, JsonRequestBehavior.AllowGet);
@@ -102,33 +103,32 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
 
-        //public async Task<ActionResult> postnextofkin(NextOfKinDTO nextOfKinDTO)
-        //{
-        //    // Assuming you want to store the customer Id in Session
-        //    await ServeNavigationMenus();
-        //    nextOfKinDTO = new
-        //    {
-        //        IndividualFirstName = customer.IndividualFirstName,
-        //        customerId = customer.Id,
-        //        IndividualLastName = customer.IndividualLastName,
-        //        FullName = customer.FullName,
-        //        StationZoneDivisionEmployerId = customer.StationZoneDivisionEmployerId,
-        //        StationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription,
-        //        IndividualIdentityCardNumber = customer.IndividualIdentityCardNumber,
-        //        IndividualPayrollNumbers = customer.IndividualPayrollNumbers,
-        //        Reference1 = customer.Reference1,
-        //        Reference2 = customer.Reference2,
-        //        Reference3 = customer.Reference3,
-        //        StationId = customer.StationId,
-        //        StationDescription = customer.StationDescription,
-        //        SerialNumber = customer.SerialNumber,
-        //        Remarks = customer.Remarks,
-        //    }
-        //    , JsonRequestBehavior.AllowGet);
-        //}
 
 
+        [HttpPost]
+        public async Task<ActionResult> SaveNextOfKin(NextOfKinDTO nextOfKinDTO)
+        {
 
+            await ServeNavigationMenus();
+            var k = Session["customer"] as CustomerDTO;
+            NextOfKinDTOs = TempData["NextOfKinDTOs"] as ObservableCollection<NextOfKinDTO>;
+            if (NextOfKinDTOs == null)
+                NextOfKinDTOs = new ObservableCollection<NextOfKinDTO>();
+
+            NextOfKinDTOs.Add(nextOfKinDTO);
+            TempData["NextOfKinDTOs"] = NextOfKinDTOs as ObservableCollection<NextOfKinDTO>;
+
+            // For simplicity, let's return the data back as a JSON response
+            return Json(new
+            {
+                success = true,
+                data = new
+                {                  
+                  k
+                }
+            }, JsonRequestBehavior.AllowGet);
+
+        }
 
 
         public async Task<ActionResult> Create()
