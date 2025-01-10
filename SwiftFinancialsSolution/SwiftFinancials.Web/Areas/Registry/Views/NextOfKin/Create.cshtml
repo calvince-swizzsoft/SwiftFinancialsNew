@@ -81,8 +81,8 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="CustomerDTO_Reference1">Account Number</label>
-                                        <input type="text" id="CustomerDTO_Reference1" class="form-control" readonly />
+                                        <label for="CustomerDTO_Reference3">File Number</label>
+                                        <input type="text" id="CustomerDTO_Reference3" class="form-control" readonly />
                                     </div>
 
                                     <div class="form-group">
@@ -121,10 +121,7 @@
                                         <input type="text" id="CustomerDTO_IndividualPayrollNumbers" class="form-control" readonly />
                                     </div>
 
-                                    <div class="form-group">
-                                        <label for="CustomerDTO_Reference3">File Number</label>
-                                        <input type="text" id="CustomerDTO_Reference3" class="form-control" readonly />
-                                    </div>
+                                   
                                 </div>
                             </div>
 
@@ -304,29 +301,29 @@
                                     data: formData,
                                     success: function () {
                                         $("#nextOfKinTable tbody").append(`
-                                                                                                                                                                                                                                <tr>
-                                                                                                                                                                                                                                    <td>${formData.FirstName}</td>
-                                                                                                                                                                                                                                    <td>${formData.LastName}</td>
-                                                                                                                                                                                                                                    <td>${formData.IdentityCardNumber}</td>
-                                                                                                                                                                                                                                    <td>${formData.AddressStreet}</td>
-                                                                                                                                                                                                                                    <td>${formData.AddressCity}</td>
-                                                                                                                                                                                                                                    <td>${formData.AddressPostalCode}</td>
-                                                                                                                                                                                                                                    <td>${formData.AddressEmail}</td>
-                                                                                                                                                                                                                                    <td>${formData.AddressMobileLine}</td>
-                                                                                                                                                                                                                                    <td>${formData.Remarks}</td>
-                                                                                                                                                                                                                                    <td>${formData.NominatedPercentage}</td>
-                                                                                                                                                                                                                                </tr>
-                                                                                                                                                                                                                            `);
+                                                                                                                                                                                                                                                                                                                <tr>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.FirstName}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.LastName}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.IdentityCardNumber}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressStreet}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressCity}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressPostalCode}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressEmail}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressMobileLine}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.Remarks}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.NominatedPercentage}</td>
+                                                                                                                                                                                                                                                                                                                </tr>
+                                                                                                                                                                                                                                                                                                            `);
                                         $('form')[0].reset();
                                     },
                                     error: function () {
-                                        alert('Failed to add details.');
                                     }
                                 });
                             });
                         });
                     </script>
 
+                    <button type="submit" id="create" class="btn btn-primary">Create</button>
 
                 </div>
             </div>
@@ -414,6 +411,34 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+    <script>
+        $(document).ready(function () {
+            // Attach click event to the button
+            $("#create").on("click", function (e) {
+                e.preventDefault(); // Prevent default button behavior
+
+                // Serialize the form data
+                const formData = $("#nextOfKinForm").serialize();
+
+                // AJAX request
+                $.ajax({
+                    url: "/Registry/NextOfKin/Create", // Endpoint to hit
+                    type: "POST", // HTTP method
+                    data: formData, // Form data to send
+                    success: function (response) {
+                        // Handle success
+                        console.log("Success:", response);
+                        window.location.href = '/Registry/Customer/Index'; // Adjust path as needed
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.error("Error:", error);
+                        alert("An error occurred while creating Next of Kin.");
+                    }
+                });
+            });
+        });
+    </script>
 
     <script>
         $(document).ready(function () {

@@ -99,7 +99,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             // Identify unlinked commissions
             var unlinkedTransactionTypes = commissionDTOs.Where(c => !linkedTransactionTypes.Any(l => l.Id == c.Id)).ToList();
-
+            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
+            ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
+            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
             return Json(new
             {
                 linkedTransactionTypes = linkedTransactionTypes.Select(c => new { c.Id, c.Description, c.MaximumCharge, c.IsLocked, c.CreatedDate }),
@@ -138,8 +140,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         Type = systemTransactionTypeInCommissionDTO.ComplementType
                     },
                     GetServiceHeader()
-                );
+                ); ;
+               
                 await ServeNavigationMenus();
+                TempData["successfully"] = "Well Known Charge created successfully!";
+                ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
+                ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
+                ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
+                TempData["successfully"] = "Well Known Charge created successfully!";
+
                 return View("Create");
             }
             else
