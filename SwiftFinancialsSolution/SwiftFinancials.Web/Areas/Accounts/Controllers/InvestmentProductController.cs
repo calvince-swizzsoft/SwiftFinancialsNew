@@ -99,7 +99,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 investmentProductDTO.ChartOfAccountAccountName = parentGL.ParentAccountName;
             }
 
-            ViewBag.RecoveryPrioritySelectList = GetRecoveryPrioritySelectList(string.Empty);
+            ViewBag.RecoveryPriority = GetRecoveryPrioritySelectList(string.Empty);
 
             return View(investmentProductDTO);
         }

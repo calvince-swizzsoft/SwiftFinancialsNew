@@ -54,6 +54,39 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var savingsProductDTO = await _channelService.FindSavingsProductAsync(id, GetServiceHeader());
 
+            var rPriority = savingsProductDTO.Priority;
+
+            string savings = "Savings", loans = "Loans", investments = "Investments", directDebits = "Direct Debits";
+
+            var mapping = new Dictionary<string, int>
+            {
+                { "Loans", 0 },
+                { "Investments", 1 },
+                { "Savings", 2 },
+                { "Direct Debits", 3 }
+            };
+
+            if (rPriority == 0)
+            {
+                savingsProductDTO.PriorityDescription = "Loans";
+            }
+
+            if (rPriority == 1)
+            {
+                savingsProductDTO.PriorityDescription = "Investments";
+            }
+
+            if (rPriority == 2)
+            {
+                savingsProductDTO.PriorityDescription = "Savings";
+            }
+
+            if (rPriority == 3)
+            {
+                savingsProductDTO.PriorityDescription = "Direct Debits";
+            }
+
+
             return View(savingsProductDTO);
         }
         public async Task<ActionResult> Create()
@@ -65,6 +98,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
             ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
+            ViewBag.RecoveryPriority = GetRecoveryPrioritySelectList(string.Empty);
             return View();
         }
 
@@ -91,7 +125,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (commisionIds != null && commisionIds.Any())
             {
                 var selectedIds = commisionIds.Select(Guid.Parse).ToList();
-              
+
                 foreach (var commisionid in selectedIds)
                 {
                     var commission = await _channelService.FindCommissionAsync(commisionid, GetServiceHeader());
@@ -107,11 +141,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!savingsProductDTO.HasErrors)
             {
-            var results=  await _channelService.AddSavingsProductAsync(savingsProductDTO, GetServiceHeader());
+                var results = await _channelService.AddSavingsProductAsync(savingsProductDTO, GetServiceHeader());
 
-                await _channelService.UpdateCommissionsBySavingsProductIdAsync(results.Id, commissionDTOs,savingsProductDTO.ChargeType,savingsProductDTO.ChargeBenefactor,GetServiceHeader());
+                await _channelService.UpdateCommissionsBySavingsProductIdAsync(results.Id, commissionDTOs, savingsProductDTO.ChargeType, savingsProductDTO.ChargeBenefactor, GetServiceHeader());
 
-               //await _channelService.UpdateSavingsProductExemptionsBySavingsProductIdAsync(results.Id, ExcemptedcommissionDTOs, GetServiceHeader());
+                //await _channelService.UpdateSavingsProductExemptionsBySavingsProductIdAsync(results.Id, ExcemptedcommissionDTOs, GetServiceHeader());
                 TempData["AlertMessage"] = "Savings Product created successfully";
 
                 return RedirectToAction("Index");
