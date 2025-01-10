@@ -1,17 +1,70 @@
 ﻿
 @model  Application.MainBoundedContext.DTO.AdministrationModule.BankDTO
 @{
-    ViewBag.Title = "Detail";
+    ViewBag.Title = "Bank Detail";
 }
+
+<style>
+    #branchesTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #branchesTable, th, td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    #branchesTable, th {
+        background: linear-gradient(to bottom, #4a90e2, #003366);
+        color: white;
+        text-transform: uppercase;
+        font-size: 1.1em;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #branchesTable, tr:hover td {
+        background: rgba(74, 144, 226, 0.2);
+        transform: translateY(-2px);
+    }
+
+    #branchesTable, td {
+        background: #f9f9f9;
+        color: #333;
+    }
+
+    #branchesTable, tr:nth-child(even) td {
+        background: #f2f2f2;
+    }
+
+    #branchesTable, tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    #branchesTable, tr:last-child td {
+        border-bottom: none;
+    }
+
+    #email{
+        text-transform: lowercase;
+    }
+</style>
+
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>View Bank Details</h2>
+        <h1>Administration</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Code", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Description", new { Area = "Admin" }, null)
+                @Html.ActionLink("Home", "Index", "Bank", new { Area = "Admin" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>View</strong>
@@ -25,6 +78,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Bank Details</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -36,40 +90,113 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-
-
-                        <div class="col-lg-4">
+                        <div class="col-lg-6">
                             <div class="form-group form-group-lg">
                                 @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Name",disabled="disabled" } })
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Name", disabled = "disabled" } })
                                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                             </div>
                         </div>
-                        <div class="col-lg-4">
+
+                        <div class="col-lg-6">
                             <div class="form-group form-group-lg">
                                 @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "" })
                                 @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Name", disabled = "disabled" } })
                                 @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
                             </div>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Name", disabled = "disabled" } })
-                                @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <p>
-                                    @Html.ActionLink("Edit", "Edit", "Bank", new { id = Model.Id, Area = "Admin" }, new { @class = "btn btn-success" })
-                                    @Html.ActionLink("Back to List", "Index", "Bank", new { Area = "Admin" }, new { @class = "btn btn-success" })
-                                </p>
-                            </div>
-                        </div>
                     </div>
+
+                    <br />
+                    <div class="table-container">
+                        <h3 style="font-size: 1.9rem; text-align: center;">Branches</h3>
+                        <table id="branchesTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Address Line 1</th>
+                                    <th>Address Line 2</th>
+                                    <th>Street</th>
+                                    <th>Postal Code</th>
+                                    <th>City</th>
+                                    <th>Email</th>
+                                    <th>Land Line</th>
+                                    <th>Mobile Line</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.BankBranches != null)
+                                {
+                                    foreach (var branches in ViewBag.BankBranches)
+                                    {
+                                        <tr>
+                                            <td>@branches.Code</td>
+                                            <td>@branches.Description</td>
+                                            <td>@branches.AddressAddressLine1</td>
+                                            <td>@branches.AddressAddressLine2</td>
+                                            <td>@branches.AddressStreet</td>
+                                            <td>@branches.AddressPostalCode</td>
+                                            <td>@branches.AddressCity</td>
+                                            <td id="email">@branches.AddressEmail</td>
+                                            <td>@branches.AddressLandLine</td>
+                                            <td>@branches.AddressMobileLine</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
+}
