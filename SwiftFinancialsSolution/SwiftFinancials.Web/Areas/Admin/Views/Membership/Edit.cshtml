@@ -1,6 +1,6 @@
 ﻿@model  Application.MainBoundedContext.DTO.AdministrationModule.UserBindingModel
 @{
-    ViewBag.Title = "Create System User";
+    ViewBag.Title = " System User";
     var branches = ViewBag.branches;
 
 }
@@ -24,6 +24,35 @@
 
     </div>
 </div>
+@if (TempData["Error"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'Error',
+                title: 'Error',
+                text: '@TempData["ErrorMssage"]',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '@TempData["SuccessMessage"]',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -191,7 +220,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     }
                 </div>
 
@@ -263,6 +292,8 @@
         </div>
     </div>
 </div>
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -280,6 +311,7 @@
     }
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
     //roles typehead starts here
             $('.rolesLookup').typeahead({
