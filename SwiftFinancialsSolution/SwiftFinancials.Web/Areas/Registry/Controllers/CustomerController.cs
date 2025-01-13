@@ -370,15 +370,21 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.savings = savingsProductDTOs; // Original savings products
             ViewBag.debit = debitypes; // Original debit types
             ViewBag.creditTypes = creditTypes; // Original credit types
-
-            // Separate ViewBag properties for mandatory items
-            ViewBag.mandatoryInvestment = attached.InvestmentProductCollection.Select(m => m.Id).ToList();
-            ViewBag.mandatorySavings = attached.SavingsProductCollection.Select(m => m.Id).ToList();
-            ViewBag.mandatoryDebit = mandatorydebitTypes.Select(m => m.Id).ToList();
-            ViewBag.mandatoryCreditTypes = mandatorydebitTypes.Select(m => m.Id).ToList();
-
-
-
+            if (attached != null)
+            {
+                // Separate ViewBag properties for mandatory items
+                ViewBag.mandatoryInvestment = attached.InvestmentProductCollection.Select(m => m.Id).ToList();
+                ViewBag.mandatorySavings = attached.SavingsProductCollection.Select(m => m.Id).ToList();
+                ViewBag.mandatoryDebit = mandatorydebitTypes.Select(m => m.Id).ToList();
+                ViewBag.mandatoryCreditTypes = mandatorydebitTypes.Select(m => m.Id).ToList();
+            }
+            else if (attached == null)
+            {
+                ViewBag.mandatoryInvestment = mandatoryinvestmentProducts;
+                ViewBag.mandatorySavings = mandatorysavingsProducts;
+                ViewBag.mandatoryDebit = mandatorydebitTypes;
+                //ViewBag.mandatoryCreditTypes = mandatorydebitTypes.Select(m => m.Id).ToList();
+            }
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
