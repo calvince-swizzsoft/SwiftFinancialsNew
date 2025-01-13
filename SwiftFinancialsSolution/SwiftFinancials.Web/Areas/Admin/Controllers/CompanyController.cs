@@ -235,29 +235,32 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             var mandatoryProducts = new ProductCollectionInfo();
 
             SavingsProductDTO j = new SavingsProductDTO();
-            foreach (var k in savingsproducts)
+            if (savingsproducts != null && investmentproducts != null && debittypes != null)
             {
-                j.Id = Guid.Parse(k);
-                mandatorySavingsProducts.Add(j);
-            }
-            mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
+                foreach (var k in savingsproducts)
+                {
+                    j.Id = Guid.Parse(k);
+                    mandatorySavingsProducts.Add(j);
+                }
+                mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
 
 
 
-            InvestmentProductDTO investmentProductDTO = new InvestmentProductDTO();
-            foreach (var invest in investmentproducts)
-            {
-                investmentProductDTO.Id = Guid.Parse(invest);
-                mandatoryInvestmentProducts.Add(investmentProductDTO);
-            }
-            mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
+                InvestmentProductDTO investmentProductDTO = new InvestmentProductDTO();
+                foreach (var invest in investmentproducts)
+                {
+                    investmentProductDTO.Id = Guid.Parse(invest);
+                    mandatoryInvestmentProducts.Add(investmentProductDTO);
+                }
+                mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
 
 
-            DebitTypeDTO debitTypeDTO = new DebitTypeDTO();
-            foreach (var debit in debittypes)
-            {
-                debitTypeDTO.Id = Guid.Parse(debit);
-                mandatoryDebitTypes.Add(debitTypeDTO);
+                DebitTypeDTO debitTypeDTO = new DebitTypeDTO();
+                foreach (var debit in debittypes)
+                {
+                    debitTypeDTO.Id = Guid.Parse(debit);
+                    mandatoryDebitTypes.Add(debitTypeDTO);
+                }
             }
 
 
@@ -268,9 +271,11 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 await ServeNavigationMenus();
 
                 var companies = await _channelService.AddCompanyAsync(companyBindingModel.MapTo<CompanyDTO>(), GetServiceHeader());
-                await _channelService.UpdateAttachedProductsByCompanyIdAsync(companies.Id, mandatoryProducts, GetServiceHeader());
+                if (mandatoryProducts != null)
+                    await _channelService.UpdateAttachedProductsByCompanyIdAsync(companies.Id, mandatoryProducts, GetServiceHeader());
 
-                await _channelService.UpdateDebitTypesByCompanyIdAsync(companies.Id, mandatoryDebitTypes, GetServiceHeader());
+                if (mandatoryDebitTypes != null)
+                    await _channelService.UpdateDebitTypesByCompanyIdAsync(companies.Id, mandatoryDebitTypes, GetServiceHeader());
 
 
                 TempData["Successmasssage"] = "Company Registered Successfully";
@@ -312,7 +317,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             var linkedProducts = await _channelService.FindAttachedProductsByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
             if (linkedProducts != null)
             {
-         
+
 
                 // Pass the full list and linked items to ViewBag
                 ViewBag.SelectedDebitTypes = debitTypeDTOs.Select(d => d.Id).ToList();
@@ -334,7 +339,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 ViewBag.SelectedDebitTypes = debitTypes;
                 ViewBag.SelectedInvestmentProducts = allInvestmentProducts;
                 ViewBag.SelectedSavingsProducts = allSavingsProducts;
-                
+
                 // Pass all products to the view
                 ViewBag.allInvestments = allInvestmentProducts;
                 ViewBag.allSavings = allSavingsProducts;

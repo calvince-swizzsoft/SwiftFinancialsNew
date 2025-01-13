@@ -394,7 +394,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(string.Empty);
-
             var creditTypeDTO = await _channelService.FindCreditTypeAsync(id, GetServiceHeader());
 
             var ApplicableCharges = await _channelService.FindCommissionsByCreditTypeIdAsync(id, GetServiceHeader());

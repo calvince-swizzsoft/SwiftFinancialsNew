@@ -124,6 +124,37 @@
                     </script>
                 }
 
+
+                @if (TempData["NoAttachedProducts"] != null)
+                {
+                    <script type="text/javascript">
+                        document.addEventListener('DOMContentLoaded', function () {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: '@TempData["NoAttachedProducts"]',
+                                showCancelButton: true,
+                                confirmButtonText: 'Setup Mandatory Products',
+                                cancelButtonText: 'Cancel',
+                                reverseButtons: true,
+                                customClass: {
+                                    cancelButton: 'swal-cancel-button' 
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '/Admin/Company/Index';
+                                }
+                            });
+                        });
+                    </script>
+                    <style>
+                        .swal-cancel-button {
+                            color: red !important;
+                        }
+                    </style>
+                }
+
+
                 <form id="modalFilterForm" style="background-color: #E0f0ff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
                     <div class="form-row" style="display: flex; justify-content: space-between; align-items: center; gap: 30px;">
                         <!-- Status Filter -->

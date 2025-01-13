@@ -205,12 +205,12 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             // Define a mapping dictionary
             var typeMapping = new Dictionary<string, string>
-{
-    { "0", "Individual" },
-    { "1", "Partnership" },
-    { "2", "Corporation" },
-    { "3", "MicroCredit" }
-};
+            {
+                { "0", "Individual" },
+                { "1", "Partnership" },
+                { "2", "Corporation" },
+                { "3", "MicroCredit" }
+            };
 
             // Map ViewBag.type if it exists in the dictionary
             if (typeMapping.ContainsKey(ViewBag.type?.ToString()))
@@ -313,7 +313,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             await ServeNavigationMenus();
 
-
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
             ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
@@ -323,16 +322,14 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
             ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
-
             ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
 
             var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
             var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
-            var investmentProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
-            var savingsProducts = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
             var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
             var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
             var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+
             CustomerDTO customerDTO = new CustomerDTO();
             var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             if (userDTO.BranchId != null)
@@ -341,68 +338,37 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
             var companies = await _channelService.FindBranchAsync(customerDTO.BranchId, GetServiceHeader());
             var j = await _channelService.FindCompanyAsync(companies.CompanyId, GetServiceHeader());
-
             var attached = await _channelService.FindAttachedProductsByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
-
             var mandatorydebitTypes = await _channelService.FindDebitTypesByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
 
-            var mandatorycreditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
-            var mandatoryinvestmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
-            var mandatorysavingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
-
-            CustomerBindingModel customerBindingModel = new CustomerBindingModel();
-
-
-            //ViewBag.investment = investment;
-            //ViewBag.savings = savingsProductDTOs;
-            //ViewBag.debit = debitypes;
-            //ViewBag.creditTypes = creditTypes;
-
-
-            //ViewBag.investment = mandatoryinvestmentProducts;
-            //ViewBag.savings = mandatorysavingsProducts;
-            //ViewBag.debit = mandatorydebitTypes;
-            //ViewBag.creditTypes = mandatorycreditTypes;
-
-
-
-            ViewBag.investment = investment; // Original investment products
-            ViewBag.savings = savingsProductDTOs; // Original savings products
-            ViewBag.debit = debitypes; // Original debit types
-            ViewBag.creditTypes = creditTypes; // Original credit types
-            if (attached != null)
+            if (attached == null || mandatorydebitTypes == null)
             {
-                // Separate ViewBag properties for mandatory items
-                ViewBag.mandatoryInvestment = attached.InvestmentProductCollection.Select(m => m.Id).ToList();
-                ViewBag.mandatorySavings = attached.SavingsProductCollection.Select(m => m.Id).ToList();
-                ViewBag.mandatoryDebit = mandatorydebitTypes.Select(m => m.Id).ToList();
-                ViewBag.mandatoryCreditTypes = mandatorydebitTypes.Select(m => m.Id).ToList();
+                TempData["NoAttachedProducts"] = "Company does not contain Mandatory Products. Setup to proceed!";
+                return RedirectToAction("Index");
             }
-            else if (attached == null)
-            {
-                ViewBag.mandatoryInvestment = mandatoryinvestmentProducts;
-                ViewBag.mandatorySavings = mandatorysavingsProducts;
-                ViewBag.mandatoryDebit = mandatorydebitTypes;
-                //ViewBag.mandatoryCreditTypes = mandatorydebitTypes.Select(m => m.Id).ToList();
-            }
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
 
-                // Query to get the next reference by incrementing the current max
-                var getNextReferenceQuery = string.Format("SELECT ISNULL(MAX(Reference1), 0) + 1 AS NextReference FROM {0}Customers", DefaultSettings.Instance.TablePrefix);
 
-                int newReference;
+            var mandatoryinvestmentProducts = attached.InvestmentProductCollection;
+            var mandatorysavingsProducts = attached.SavingsProductCollection;
+            ViewBag.investment = investment;
+            ViewBag.savings = savingsProductDTOs;
+            ViewBag.debit = debitypes;
+            ViewBag.creditTypes = creditTypes;
 
-                using (var getCommand = new SqlCommand(getNextReferenceQuery, connection))
-                {
-                    //var result = await getCommand.ExecuteScalarAsync();
-                    // newReference = (result != DBNull.Value) ? Convert.ToInt32(result) : 1; // Start at 1 if there are no rows
-                }
+            var investmentsProductsIds = new HashSet<Guid>(mandatoryinvestmentProducts.Select(ac => ac.Id));
+            ViewBag.CheckedInvestmentsStates = investment.ToDictionary(
+                c => c.Id,
+                c => investmentsProductsIds.Contains(c.Id)
+            );
+            ViewBag.InvestmentsProducts = investment;
 
-            }
+
+
+           
             return View();
         }
+
+
 
         public async Task<JsonResult> add(CustomerBindingModel customerBindingModel)
         {
