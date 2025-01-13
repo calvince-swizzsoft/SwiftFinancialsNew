@@ -98,7 +98,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             Session["loanCaseId"] = parseId;
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-           
+
             var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
 
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
@@ -415,17 +415,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO, ObservableCollection<LoanAppraisalFactorDTO> incomeAdjustments)
         {
-            //var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
-
-            //loanDTO.AppraisedAmount = loanCaseDTO.AppraisedAmount;
-            //loanDTO.SystemAppraisalRemarks = loanCaseDTO.SystemAppraisalRemarks;
-            //loanDTO.AppraisalRemarks = loanCaseDTO.AppraisalRemarks;
-            //loanDTO.AppraisedAmountRemarks = loanCaseDTO.AppraisedAmountRemarks;
-
-            //loanCaseDTO = Session["Model"] as LoanCaseDTO;
-
-            //loanCaseDTO.AppraisalRemarks = loanCaseDTO.AppraisalRemarks;
-
             var findLoanCaseDetails = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
             loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
@@ -438,16 +427,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanCaseDTO.HasErrors)
             {
+                var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
 
-                string message = string.Format(
-                                   "Do you want to proceed with loan appraisal for: \n{0}?",
-                                       findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " +
-                                       findLoanCaseDetails.CustomerIndividualLastName.ToUpper()
-                               );
+                await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
 
-                // Show the message box with Yes/No options
-                DialogResult result = MessageBox.Show(
-                    message,
+                TempData["Success"] = "Operation Completed Successfully.";
+
+                string message2 = string.Format(
+                              "Would you like to print?"
+                          );
+
+                DialogResult result2 = MessageBox.Show(
+                    message2,
                     "Loan Appraisal",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question,
@@ -455,47 +446,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     MessageBoxOptions.ServiceNotification
                 );
 
-                if (result == DialogResult.Yes)
+                if (result2 == DialogResult.Yes)
                 {
-                    var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
-
-                    await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
-
-                    MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Appraisal", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                    //TempData["approve"] = "Loan Appraisal Successful";
-
-                    string message2 = string.Format(
-                                  "Would you like to print?"
-                              );
-
-                    // Show the message box with Yes/No options
-                    DialogResult result2 = MessageBox.Show(
-                        message2,
-                        "Loan Appraisal",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
-
-                    if (result2 == DialogResult.Yes)
-                    {
-                        return RedirectToAction("Print");
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index");
-                    }
+                    return RedirectToAction("Print");
                 }
                 else
                 {
-                    await ServeNavigationMenus();
-
-                    ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
-
-                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Appraisal", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View(loanCaseDTO);
+                    return RedirectToAction("Index");
                 }
             }
             else
@@ -508,12 +465,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
 
-                //TempData["approveError"] = "Loan Appraisal Unsuccessful";
-                MessageBox.Show(Form.ActiveForm, "Operation Unsuccessful.", "Loan Appraisal", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
+                TempData["Fail"] = "Operation Failed!";
                 return View(loanCaseDTO);
             }
         }
+
+
+
+
+
 
 
 

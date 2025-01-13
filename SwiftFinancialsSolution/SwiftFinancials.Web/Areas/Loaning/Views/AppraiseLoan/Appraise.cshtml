@@ -179,7 +179,7 @@
                 @Html.ActionLink("Dashboard", "Appraise", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Appraise", "AppraiseLoan", new { Area = "Loaning" }, null)
+                @Html.ActionLink("Home", "Index", "AppraiseLoan", new { Area = "Loaning" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Appraise</strong>
@@ -195,18 +195,18 @@
                 <div class="ibox-title">
                     <h2>Appraise Loan</h2>
 
-                    @if (TempData["approveError"] != null)
+                    @if (TempData["Fail"] != null)
                     {
-                        <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["approveError"]
-                        </div>
-                    }
-
-                    @if (TempData["AppraisedAmount"] != null)
-                    {
-                        <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["AppraisedAmount"]
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Failed!',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
                     }
 
                     <div class="ibox-tools">
@@ -757,7 +757,7 @@
                                 </fieldset>
 
 
-                                <br />
+                                @*<br />
 
                                 <fieldset class="incomeAdjustment-section">
                                     <h2>Income Adjustment Details</h2>
@@ -797,9 +797,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                </fieldset>
+                                </fieldset>*@
 
-                                <br />
+                                <!--<br />
 
                                 <fieldset>
                                     <div class="table-container">
@@ -813,12 +813,12 @@
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <!-- Dynamic data will be inserted here -->
-                                            </tbody>
+                                            <tbody>-->
+                                <!-- Dynamic data will be inserted here -->
+                                <!--</tbody>
                                         </table>
                                     </div>
-                                </fieldset>
+                                </fieldset>-->
                             </div>
 
                             <div id="LoanAppraisal" class="tab-pane" style="margin-left: 20px;">
@@ -1322,12 +1322,12 @@
 
                 var tableBody = $("#incomeAdjustmentsdataTable tbody");
                 var newRow = `
-                                                        <tr data-id="${incomeAdjustmentId}">
-                                                            <td>${description}</td>
-                                                            <td>${typeDescription}</td>
-                                                            <td style="text-align: right;">${amount}</td>
-                                                            <td><button type="button" class="btn btn-danger remove-entry" data-id="${incomeAdjustmentId}">Remove</button></td>
-                                                        </tr>`;
+                                                            <tr data-id="${incomeAdjustmentId}">
+                                                                <td>${description}</td>
+                                                                <td>${typeDescription}</td>
+                                                                <td style="text-align: right;">${amount}</td>
+                                                                <td><button type="button" class="btn btn-danger remove-entry" data-id="${incomeAdjustmentId}">Remove</button></td>
+                                                            </tr>`;
                 tableBody.append(newRow);
 
                 // Clear the input fields after adding to the table
