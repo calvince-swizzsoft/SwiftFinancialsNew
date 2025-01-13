@@ -84,10 +84,8 @@
 }
 
 @section Scripts {
-    @Scripts.Render("~/plugins/jsTree")
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js?v=1"></script>
 
     <script type="text/javascript">
         var NavigationItemId = "";
@@ -249,7 +247,7 @@
                     type: "GET",
                     url: '/Admin/Module/GetModuleNavigationNodes',
                     success: function (data) {
-                        console.log(data); // Check the JSON structure
+                        console.log(data);
                         $('#moduleNavigationTree').jstree({
                             'core': {
                                 'data': data
@@ -263,77 +261,70 @@
 
 
             $('#moduleNavigationTree').on('activate_node.jstree', function (e, data) {
-                if (data == undefined || data.node == undefined || data.node.icon == undefined || data.node.id == undefined)
-                    return;
-                alert('clicked node: ' + data.node.icon);
-                NavigationItemId = data.node.icon;
+    if (data == undefined || data.node == undefined || data.node.icon == undefined || data.node.id == undefined)
+        return;
 
-                NavigationItemCode = parseInt(data.node.id);
+    // Removed the alert message
+    // alert('clicked node: ' + data.node.icon);
 
-                $.ajax({
-                type: "GET",
-                url: '@Url.Content("~/Admin/Module/GetRoles/")',
-                contentType: 'application/json; charset=utf8',
-                dataType: 'json',
-                error: function () {
-                    console.log("Error Occured");
-                },
-                success: function (data) {
+    NavigationItemId = data.node.icon;
+    NavigationItemCode = parseInt(data.node.id);
 
-                    //empty roles table <tbody> before appending.
-                    $("#rolesTableBody").empty();
+    $.ajax({
+        type: "GET",
+        url: '@Url.Content("~/Admin/Module/GetRoles/")',
+        contentType: 'application/json; charset=utf8',
+        dataType: 'json',
+        error: function () {
+            console.log("Error Occured");
+        },
+        success: function (data) {
+            //empty roles table <tbody> before appending.
+            $("#rolesTableBody").empty();
 
-                    //1. First loop the json returned which is Roles, (interested in rolename here!!).
-                    //2. Get 'rolename' from each role, add the selected code 'item_code' from treeview.
-                    //3. Search db - if module_navigation_item_in_role exists tick checkbox else leave unmarked.
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        $("#rolesTableBody").each(function () {
-                            var roleId = val.Id;
-                            var roleName = val.Name;
+            $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
+                $("#rolesTableBody").each(function () {
+                    var roleId = val.Id;
+                    var roleName = val.Name;
 
-                            QueryString2 = '@Url.Content("~/Admin/Module/MarkRoleCheckbox/")?NavigationItemCode=' + NavigationItemCode + '&roleName=' + roleName;
-                            $.ajax({
-                                type: "GET",
-                                url: QueryString2,
-                                contentType: 'application/json; charset=utf8',
-                                dataType: 'json',
-                                error: function () {
-                                    console.log("Error Occured");
-                                },
-                                success: function (data) {
-                                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                                        //loop data, change check box
-                                        if (data == 1) {
-                                            $('<tr class="role"><td id="roleId" style="display: none">'
-                                                + roleId +
-                                                '</td><td>'
-                                                + roleName +
-                                                '</td><td>'
-                                                + '<input type="checkbox" id="allowed" onclick="chkClick(this);" checked/>'
-                                                + '</td></tr>').appendTo('#rolesTableBody');
-                                        }
-                                        else if (data == 2) {
-                                            //uncheck check box
-                                            $('<tr class="role"><td id="roleId" style="display: none">'
-                                                + roleId +
-                                                '</td><td>'
-                                                + roleName +
-                                                '</td><td>'
-                                                + '<input type="checkbox" id="allowed" onclick="chkClick(this);"/>'
-                                                + '</td></tr>').appendTo('#rolesTableBody');
-                                        }
-                                        else
-                                        {
-                                            //do nothing here!! error probably occured on server.
-                                        }
-                                    });
+                    QueryString2 = '@Url.Content("~/Admin/Module/MarkRoleCheckbox/")?NavigationItemCode=' + NavigationItemCode + '&roleName=' + roleName;
+                    $.ajax({
+                        type: "GET",
+                        url: QueryString2,
+                        contentType: 'application/json; charset=utf8',
+                        dataType: 'json',
+                        error: function () {
+                            console.log("Error Occured");
+                        },
+                        success: function (data) {
+                            $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
+                                if (data == 1) {
+                                    $('<tr class="role"><td id="roleId" style="display: none">'
+                                        + roleId +
+                                        '</td><td>'
+                                        + roleName +
+                                        '</td><td>'
+                                        + '<input type="checkbox" id="allowed" onclick="chkClick(this);" checked/>'
+                                        + '</td></tr>').appendTo('#rolesTableBody');
+                                }
+                                else if (data == 2) {
+                                    $('<tr class="role"><td id="roleId" style="display: none">'
+                                        + roleId +
+                                        '</td><td>'
+                                        + roleName +
+                                        '</td><td>'
+                                        + '<input type="checkbox" id="allowed" onclick="chkClick(this);"/>'
+                                        + '</td></tr>').appendTo('#rolesTableBody');
                                 }
                             });
-                        });//end second table loop(marking checkboxes)
-                    });//end first json loop (looping roles)
-                }
+                        }
+                    });
                 });
             });
+        }
+    });
+});
+
         });
 
         $(document).ajaxStart(function () {
