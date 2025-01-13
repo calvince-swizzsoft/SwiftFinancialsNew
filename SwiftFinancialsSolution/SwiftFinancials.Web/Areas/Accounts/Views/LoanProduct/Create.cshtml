@@ -39,8 +39,6 @@
     </div>
 </div>
 
-<br>
-
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -287,13 +285,23 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<br />
 
 
 <div class="wrapper wrapper-content white-bg">
     <div class="row">
         <div class="col-md-12">
             <div class="ibox ">
-                
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
 
                 <div class="ibox-content bg-white text-dark">
                     <div class="main">
@@ -609,7 +617,7 @@
                                                     <a class="px-3 py-1 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600 text-sm" data-toggle="tab" href="#wellknownCharges" role="tab">Well-Known Charges</a>
                                                 </li>
                                                 <li>
-                                                    <a class="px-3 py-1 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600 text-sm" data-toggle="tab" href="#indefiniteCharges" role="tab">Indefinite Charges</a>
+                                                    <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#indefiniteCharges" role="tab">Indefinite Charges</a>
                                                 </li>
                                                 <li>
                                                     <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#loansProduct" role="tab">Attached Loans Product</a>
@@ -685,7 +693,7 @@
 
                                                 </div>
 
-                                                <div id="indefiniteCharges" class="inner-tab-pane">
+                                                <div id="indefiniteCharges" class="inner-tab-pane su">
                                                     <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Indefinite Charges</h3>
                                                     <div style="text-align: left;">
                                                         <input type="checkbox" id="icheaderCheckbox" style="transform: scale(1); color: blue;">
@@ -1780,7 +1788,7 @@
     </script>
 
     @*Well-KnownCharges*@
-<script>
+    <script>
        $(document).ready(function () {
     var selectedCharges = [];
 
@@ -1909,7 +1917,7 @@
     });
 });
 
-</script>
+    </script>
 
 
 
@@ -1970,7 +1978,7 @@
             "sServerMethod": "POST",
             "fnRowCallback": function (nRow, aData) {
                 var checkboxHTML = '<input type="checkbox" class="icrowCheckbox" id="ic_' + aData.Id + '"';
-                checkboxHTML += '>';  // By default, the checkboxes will not be checked
+                checkboxHTML += '>';  
                 $('td:eq(0)', nRow).html(checkboxHTML);
                 return nRow;
             },
@@ -1980,11 +1988,9 @@
             ],
             "aaSorting": [[1, "asc"]],
             "initComplete": function () {
-                // Do not call loadCheckboxState() if you want checkboxes to be unmarked on page load
             }
         });
 
-        // Event handler for individual checkbox change
         $('#IndefiniteChargesGrid').on('change', '.icrowCheckbox', function () {
             var chargeId = $(this).attr('id').replace('ic_', '');
             var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
@@ -2002,10 +2008,8 @@
             updateSelectedChargesOnServer();
         });
 
-        // Add a header checkbox to select/deselect all rows
         $('#IndefiniteChargesGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="icheaderCheckbox"> Select / Deselect All</div>');
 
-        // Event handler for the header checkbox change
         $('#icheaderCheckbox').on('change', function () {
             var isChecked = $(this).prop('checked');
             $('.icrowCheckbox').prop('checked', isChecked).each(function () {
@@ -2509,7 +2513,6 @@
     </script>
 
 
-
     <script>
 
 
@@ -2981,20 +2984,20 @@
 
                 $.each(entries, function (index, entry) {
                     var row = `
-                                        <tr data-id="${entry.Id}">
-                                            <td>${entry.Description || ''}</td>
-                                            <td>${entry.CustomerAccountTypeTargetProductDescription || ''}</td>
-                                            <td>${entry.ChargeType || ''}</td>
-                                            <td>${entry.ChargeFixedAmount || ''}</td>
-                                            <td>${entry.ChargePercentage || ''}</td>
-                                            <td>${entry.NetOffInvestmentBalance ? 'Yes' : 'No'}</td>
-                                            <td>${entry.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">
-                                                    Remove
-                                                </button>
-                                            </td>
-                                        </tr>`;
+                                            <tr data-id="${entry.Id}">
+                                                <td>${entry.Description || ''}</td>
+                                                <td>${entry.CustomerAccountTypeTargetProductDescription || ''}</td>
+                                                <td>${entry.ChargeType || ''}</td>
+                                                <td>${entry.ChargeFixedAmount || ''}</td>
+                                                <td>${entry.ChargePercentage || ''}</td>
+                                                <td>${entry.NetOffInvestmentBalance ? 'Yes' : 'No'}</td>
+                                                <td>${entry.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                            </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -3125,10 +3128,10 @@
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                            <td>${entry.RangeLowerLimit}</td>
-                                                                            <td>${entry.RangeUpperLimit}</td>
-                                                                            <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
-                                                                        </tr>`;
+                                                                                <td>${entry.RangeLowerLimit}</td>
+                                                                                <td>${entry.RangeUpperLimit}</td>
+                                                                                <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
+                                                                            </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -3248,12 +3251,12 @@
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                    <td>${entry.RangeLowerLimit}</td>
-                                    <td>${entry.RangeUpperLimit}</td>
-                                    <td>${entry.LoaneeMultiplier}</td>
-                                    <td>${entry.GuarantorMultiplier}</td>
-                                    <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
-                                </tr>`;
+                                        <td>${entry.RangeLowerLimit}</td>
+                                        <td>${entry.RangeUpperLimit}</td>
+                                        <td>${entry.LoaneeMultiplier}</td>
+                                        <td>${entry.GuarantorMultiplier}</td>
+                                        <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
+                                    </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -3364,13 +3367,13 @@
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                                                                       <td>${entry.TargetLoanProductDescription}</td>
-                                                                                                                                                                        <td>${entry.ConditionDescription}</td>
-                                                                                                                                                                        <td>${entry.MaximumEligiblePercentage}</td>
+                                                                                                                                                                           <td>${entry.TargetLoanProductDescription}</td>
+                                                                                                                                                                            <td>${entry.ConditionDescription}</td>
+                                                                                                                                                                            <td>${entry.MaximumEligiblePercentage}</td>
 
 
-                                                                                                                                                                       <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
-                                                                                                                                                                   </tr>`;
+                                                                                                                                                                           <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                                                                       </tr>`;
                     tableBody.append(row);
                 });
             }
