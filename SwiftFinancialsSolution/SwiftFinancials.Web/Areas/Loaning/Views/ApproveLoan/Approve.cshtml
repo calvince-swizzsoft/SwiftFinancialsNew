@@ -144,19 +144,20 @@
                 <div class="ibox-title">
                     <h2>Loan Approval</h2>
 
-                    @if (TempData["approveError"] != null)
+                    @if (TempData["Fail"] != null)
                     {
-                        <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["approveError"]
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Failed!s',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
                     }
 
-                    @if (TempData["ApprovalCheck"] != null)
-                    {
-                        <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["ApprovalCheck"]
-                        </div>
-                    }
 
                     <div class="ibox-tools">
                         <a class="collapse-link">

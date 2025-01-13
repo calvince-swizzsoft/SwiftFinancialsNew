@@ -86,6 +86,9 @@
 @section Scripts {
     @Scripts.Render("~/plugins/jsTree")
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+
     <script type="text/javascript">
         var NavigationItemId = "";
 
@@ -242,22 +245,27 @@
 
         //js tree
         $(function () {
-
-            $('#moduleNavigationTree').jstree({
-                'core': {
-                    'data': {
-                        'url': '@Url.Action("GetModuleNavigationNodes", "Module", new { Area = "Admin"})',
-                        'data': function (node) {
-                            return { 'id': node.id };
-                        }
+                $.ajax({
+                    type: "GET",
+                    url: '/Admin/Module/GetModuleNavigationNodes',
+                    success: function (data) {
+                        console.log(data); // Check the JSON structure
+                        $('#moduleNavigationTree').jstree({
+                            'core': {
+                                'data': data
+                            }
+                        });
+                    },
+                    error: function () {
+                        console.error("Failed to load data for jstree.");
                     }
-                }
-            });
+                });
+
 
             $('#moduleNavigationTree').on('activate_node.jstree', function (e, data) {
                 if (data == undefined || data.node == undefined || data.node.icon == undefined || data.node.id == undefined)
                     return;
-                //alert('clicked node: ' + data.node.icon);
+                alert('clicked node: ' + data.node.icon);
                 NavigationItemId = data.node.icon;
 
                 NavigationItemCode = parseInt(data.node.id);

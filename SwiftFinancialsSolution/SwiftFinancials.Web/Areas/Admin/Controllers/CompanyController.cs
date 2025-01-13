@@ -87,6 +87,15 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 ViewBag.SelectedInvestmentProducts = linkedProducts.InvestmentProductCollection.Select(i => i.Id).ToList();
                 ViewBag.SelectedSavingsProducts = linkedProducts.SavingsProductCollection.Select(s => s.Id).ToList();
             }
+            var debitType = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+            var creditType = await _channelService.FindCreditTypesAsync(GetServiceHeader());
+            var allInvestmentProduct = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var allSavingsProduct = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            // Pass the full list and linked items to ViewBag
+            ViewBag.SelectedDebitTypes = debitTypes;
+            ViewBag.SelectedInvestmentProducts = allInvestmentProducts;
+            ViewBag.SelectedSavingsProducts = allSavingsProducts;
+
             // Pass all products to the view
             ViewBag.allInvestments = allInvestmentProducts;
             ViewBag.allSavings = allSavingsProducts;
@@ -256,13 +265,15 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             companyBindingModel.RecoveryPriority = "DirectDebits";
             if (!companyBindingModel.HasErrors)
             {
+                await ServeNavigationMenus();
+
                 var companies = await _channelService.AddCompanyAsync(companyBindingModel.MapTo<CompanyDTO>(), GetServiceHeader());
                 await _channelService.UpdateAttachedProductsByCompanyIdAsync(companies.Id, mandatoryProducts, GetServiceHeader());
 
                 await _channelService.UpdateDebitTypesByCompanyIdAsync(companies.Id, mandatoryDebitTypes, GetServiceHeader());
 
 
-                TempData["Success"] = "Company Registered Successfully";
+                TempData["Successmasssage"] = "Company Registered Successfully";
                 var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
                 var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
                 var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
@@ -297,10 +308,11 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             // Retrieve company and its linked products
             var CompanyDTO = await _channelService.FindCompanyAsync(id, GetServiceHeader());
-            if (CompanyDTO != null)
+            var debitTypeDTOs = await _channelService.FindDebitTypesByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
+            var linkedProducts = await _channelService.FindAttachedProductsByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
+            if (linkedProducts != null)
             {
-                var debitTypeDTOs = await _channelService.FindDebitTypesByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
-                var linkedProducts = await _channelService.FindAttachedProductsByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
+         
 
                 // Pass the full list and linked items to ViewBag
                 ViewBag.SelectedDebitTypes = debitTypeDTOs.Select(d => d.Id).ToList();
@@ -319,10 +331,10 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 var allInvestmentProduct = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
                 var allSavingsProduct = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
                 // Pass the full list and linked items to ViewBag
-                ViewBag.SelectedDebitTypes = debitType;
-                ViewBag.SelectedInvestmentProducts = allInvestmentProduct;
-                ViewBag.SelectedSavingsProducts = allSavingsProduct;
-
+                ViewBag.SelectedDebitTypes = debitTypes;
+                ViewBag.SelectedInvestmentProducts = allInvestmentProducts;
+                ViewBag.SelectedSavingsProducts = allSavingsProducts;
+                
                 // Pass all products to the view
                 ViewBag.allInvestments = allInvestmentProducts;
                 ViewBag.allSavings = allSavingsProducts;
