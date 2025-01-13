@@ -388,7 +388,22 @@ namespace SwiftFinancials.Web.Controllers
             return systemTransactionType;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetsavingsProductKnownChargeTypeList(string selectedValue)
+        {
+            List<SelectListItem> savingsProductKnownChargeType = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SavingsProductKnownChargeType)).Cast<SavingsProductKnownChargeType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            savingsProductKnownChargeType.AddRange(items);
+
+            return savingsProductKnownChargeType;
+        }
 
 
         [NonAction]

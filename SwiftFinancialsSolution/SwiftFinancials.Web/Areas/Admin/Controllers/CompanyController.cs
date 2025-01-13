@@ -271,7 +271,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 await _channelService.UpdateDebitTypesByCompanyIdAsync(companies.Id, mandatoryDebitTypes, GetServiceHeader());
 
 
-                TempData["Success"] = "Company Registered Successfully";
+                TempData["Successmasssage"] = "Company Registered Successfully";
                 var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
                 var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
                 var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());

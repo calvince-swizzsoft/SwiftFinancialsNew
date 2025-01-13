@@ -1,5 +1,6 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Microsoft.AspNet.Identity;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
@@ -109,10 +110,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
             var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
             ViewBag.Commisions = commissionDTOs;
+            var EXCEMPTIONS = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            ViewBag.EXCEMPTIONS = EXCEMPTIONS;
+
             ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(string.Empty);
             ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
-            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
+            ViewBag.SystemTransactionType = GetsavingsProductKnownChargeTypeList(string.Empty);
             ViewBag.RecoveryPriority = GetRecoveryPrioritySelectList(string.Empty);
             return View();
         }
@@ -120,16 +124,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(SavingsProductDTO savingsProductDTO, string[] commisionIds, string[] ExcemptedommisionId)
         {
-            ObservableCollection<CommissionDTO> ExcemptedcommissionDTOs = new ObservableCollection<CommissionDTO>();
-
+            ObservableCollection<SavingsProductExemptionDTO> ExcemptedcommissionDTOs = new ObservableCollection<SavingsProductExemptionDTO>();
+            SavingsProductExemptionDTO savingsProductExemptionDTO = new SavingsProductExemptionDTO();
             if (ExcemptedommisionId != null && ExcemptedommisionId.Any())
             {
                 var selectedIds = ExcemptedommisionId.Select(Guid.Parse).ToList();
 
-                foreach (var commisionid in selectedIds)
+                foreach (var Excemptionsavingsproductid in selectedIds)
                 {
-                    var commission = await _channelService.FindCommissionAsync(commisionid, GetServiceHeader());
-                    ExcemptedcommissionDTOs.Add(commission);
+                    var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+                    if (userDTO.BranchId != null)
+                    {
+                        savingsProductExemptionDTO.BranchId = (Guid)userDTO.BranchId;
+                    }
+                    savingsProductExemptionDTO.Id = Excemptionsavingsproductid;
+                    ExcemptedcommissionDTOs.Add(savingsProductExemptionDTO);
                 }
                 // Process the selected IDs as needed
             }
@@ -141,10 +150,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var selectedIds = commisionIds.Select(Guid.Parse).ToList();
 
-                foreach (var commisionid in selectedIds)
+                foreach (var savingsproductid in selectedIds)
                 {
-                    var commission = await _channelService.FindCommissionAsync(commisionid, GetServiceHeader());
-                    commissionDTOs.Add(commission);
+                  
+                    var savingsproduct = await _channelService.FindCommissionAsync(savingsproductid, GetServiceHeader());
+                    commissionDTOs.Add(savingsproduct);
                 }
                 // Process the selected IDs as needed
             }
@@ -160,7 +170,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 await _channelService.UpdateCommissionsBySavingsProductIdAsync(results.Id, commissionDTOs, savingsProductDTO.ChargeType, savingsProductDTO.ChargeBenefactor, GetServiceHeader());
 
-                //await _channelService.UpdateSavingsProductExemptionsBySavingsProductIdAsync(results.Id, ExcemptedcommissionDTOs, GetServiceHeader());
+                await _channelService.UpdateSavingsProductExemptionsBySavingsProductIdAsync(results.Id, ExcemptedcommissionDTOs, GetServiceHeader());
                 TempData["AlertMessage"] = "Savings Product created successfully";
 
                 return RedirectToAction("Index");
