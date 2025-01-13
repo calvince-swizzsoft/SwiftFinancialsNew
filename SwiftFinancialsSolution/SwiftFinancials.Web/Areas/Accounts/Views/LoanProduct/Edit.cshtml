@@ -1736,28 +1736,60 @@
     </script>
 
 
-    @*Indefinite Charges*@
     <script>
     $(document).ready(function () {
-        var selectedCharges = [];
+        var selectedCharges = @Html.Raw(Json.Serialize(ViewBag.SelectedCharges)); // Pass the selected charges to JavaScript
 
-        // Clear the stored checkbox state on page reload
-        localStorage.removeItem('selectedCharges');
-
-        // Function to load checkbox state (we don't need it now if we want to reset on reload)
+        // Function to load checkbox state
         function loadCheckboxState() {
-            var storedCharges = localStorage.getItem('selectedCharges');
-            if (storedCharges) {
-                selectedCharges = JSON.parse(storedCharges);
-
-                selectedCharges.forEach(function (charge) {
-                    var checkbox = $('#ic_' + charge.Id);
-                    if (checkbox.length) {
-                        checkbox.prop('checked', true);
-                    }
-                });
-            }
+            selectedCharges.forEach(function (charge) {
+                var checkbox = $('#ic_' + charge.Id);
+                if (checkbox.length) {
+                    checkbox.prop('checked', true); // Mark the checkbox as checked
+                }
+            });
         }
+
+        // Initialize the DataTable
+        var table = $('#IndefiniteChargesGrid').DataTable({
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "IndefiniteCharges", new { Area = "Accounts" }))",
+            "sServerMethod": "POST",
+            "fnRowCallback": function (nRow, aData) {
+                var checkboxHTML = '<input type="checkbox" class="icrowCheckbox" id="ic_' + aData.Id + '"';
+                checkboxHTML += '>';  // By default, the checkboxes will not be checked
+                $('td:eq(0)', nRow).html(checkboxHTML);
+                return nRow;
+            },
+            "aoColumns": [
+                { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.1%" },
+                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+            ],
+            "aaSorting": [[1, "asc"]],
+            "initComplete": function () {
+                loadCheckboxState();  // Load the state of checkboxes when the DataTable is initialized
+            }
+        });
+
+        // Event handler for individual checkbox change
+        $('#IndefiniteChargesGrid').on('change', '.icrowCheckbox', function () {
+            var chargeId = $(this).attr('id').replace('ic_', '');
+            var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
+
+            if ($(this).is(':checked')) {
+                selectedCharges.push({
+                    Id: chargeId,
+                    Description: chargeDescription
+                });
+            } else {
+                selectedCharges = selectedCharges.filter(charge => charge.Id !== chargeId);
+            }
+
+            saveCheckboxState();
+            updateSelectedChargesOnServer();
+        });
 
         // Function to save checkbox state
         function saveCheckboxState() {
@@ -1783,73 +1815,6 @@
                 }
             });
         }
-
-        // Initialize the DataTable
-        var table = $('#IndefiniteChargesGrid').DataTable({
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "@(Url.Action("Index", "IndefiniteCharges", new { Area = "Accounts" }))",
-            "sServerMethod": "POST",
-            "fnRowCallback": function (nRow, aData) {
-                var checkboxHTML = '<input type="checkbox" class="icrowCheckbox" id="ic_' + aData.Id + '"';
-                checkboxHTML += '>';  // By default, the checkboxes will not be checked
-                $('td:eq(0)', nRow).html(checkboxHTML);
-                return nRow;
-            },
-            "aoColumns": [
-                { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.1%" },
-                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
-            ],
-            "aaSorting": [[1, "asc"]],
-            "initComplete": function () {
-                // Do not call loadCheckboxState() if you want checkboxes to be unmarked on page load
-            }
-        });
-
-        // Event handler for individual checkbox change
-        $('#IndefiniteChargesGrid').on('change', '.icrowCheckbox', function () {
-            var chargeId = $(this).attr('id').replace('ic_', '');
-            var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
-
-            if ($(this).is(':checked')) {
-                selectedCharges.push({
-                    Id: chargeId,
-                    Description: chargeDescription
-                });
-            } else {
-                selectedCharges = selectedCharges.filter(charge => charge.Id !== chargeId);
-            }
-
-            saveCheckboxState();
-            updateSelectedChargesOnServer();
-        });
-
-        // Add a header checkbox to select/deselect all rows
-        $('#IndefiniteChargesGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="icheaderCheckbox"> Select / Deselect All</div>');
-
-        // Event handler for the header checkbox change
-        $('#icheaderCheckbox').on('change', function () {
-            var isChecked = $(this).prop('checked');
-            $('.icrowCheckbox').prop('checked', isChecked).each(function () {
-                var chargeId = $(this).attr('id').replace('ic_', '');
-                var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
-
-                if (isChecked) {
-                    if (!selectedCharges.some(charge => charge.Id === chargeId)) {
-                        selectedCharges.push({
-                            Id: chargeId,
-                            Description: chargeDescription
-                        });
-                    }
-                } else {
-                    selectedCharges = selectedCharges.filter(charge => charge.Id !== chargeId);
-                }
-            });
-
-            saveCheckboxState();
-            updateSelectedChargesOnServer();
-        });
     });
     </script>
 
@@ -2234,79 +2199,64 @@
 
 
     <script>
-$(document).ready(function () {
+        $(document).ready(function () {
     var selectedLoans = [];
 
-    // Save the state of a checkbox (for Select All)
-    function saveCheckboxState(key, state) {
-        localStorage.setItem(key, JSON.stringify(state));
-    }
-
-    // Load the state of a checkbox from localStorage
-    function loadCheckboxState(key) {
-        return JSON.parse(localStorage.getItem(key)) || false;
-    }
-
-    // Update the selected loans array and send data to the server
+    // Save the state of selected loans to send to the server
     function updateSelectedLoans() {
         selectedLoans = [];
         $('.lrowCheckbox:checked').each(function () {
             var loanId = $(this).data('id');
-            var loanDescription = $(this).closest('tr').find('td:eq(1)').text(); // Get description from the second column
+            var loanDescription = $(this).closest('tr').find('td:eq(1)').text();
             selectedLoans.push({
                 Id: loanId,
                 Description: loanDescription
             });
         });
 
-       $.ajax({
-    url: '@Url.Action("ProcessSelectedLoans", "LoanProduct", new { Area = "Accounts" })',
-    type: 'POST',
-    data: JSON.stringify({
-        EligibileIncomeDeductionLoanProductCollection: selectedLoans
-    }),  // Send as JSON object with the correct structure
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    success: function (response) {
-        console.log('Selected loans updated successfully.');
-        // Optionally, display a success message to the user
-    },
-    error: function (error) {
-        console.error('An error occurred while updating selected loans.');
-        // Optionally, display an error message to the user
+        $.ajax({
+            url: '@Url.Action("ProcessSelectedLoans", "LoanProduct", new { Area = "Accounts" })',
+            type: 'POST',
+            data: JSON.stringify({
+                EligibileIncomeDeductionLoanProductCollection: selectedLoans
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function () {
+                console.log('Selected loans updated successfully.');
+            },
+            error: function () {
+                console.error('An error occurred while updating selected loans.');
+            }
+        });
     }
-});
 
+    // Update the "Select All" checkbox state based on individual checkbox states
+    function updateSelectAllCheckbox() {
+        var totalRows = $('.lrowCheckbox').length;
+        var checkedRows = $('.lrowCheckbox:checked').length;
+
+        $('#lheaderCheckbox').prop('checked', totalRows > 0 && totalRows === checkedRows);
     }
 
     // Initialize the DataTable
     var table = $('#LoanProductsGrid').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
-        "sServerMethod": "POST",
-
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            // Add checkbox for each row
-            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '"';
-
-            if (selectedLoans.some(item => item.Id === aData.Id)) {
-                checkboxHTML += ' checked';
-            }
-
-            checkboxHTML += '>';
+        sPaginationType: "full_numbers",
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
+        sServerMethod: "POST",
+        fnRowCallback: function (nRow, aData) {
+            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '">';
             $('td:eq(0)', nRow).html(checkboxHTML);
             return nRow;
         },
-
-        "aoColumns": [
-            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "10%" },
-            { "mDataProp": "Description", "sTitle": "Loan Product", "sWidth": "90%" }
+        aoColumns: [
+            { mDataProp: "Id", sTitle: "Select", sWidth: "10%" },
+            { mDataProp: "Description", sTitle: "Loan Product", sWidth: "90%" }
         ],
-        "aaSorting": [[1, "asc"]],
-
-        "fnDrawCallback": function () {
+        aaSorting: [[1, "asc"]],
+        fnDrawCallback: function () {
             updateSelectAllCheckbox();
         }
     });
@@ -2335,7 +2285,6 @@ $(document).ready(function () {
         }
 
         updateSelectedLoans();
-        saveCheckboxState('lheaderCheckbox', isChecked);
     });
 
     // Handle individual checkbox changes
@@ -2343,11 +2292,8 @@ $(document).ready(function () {
         updateSelectedLoans();
         updateSelectAllCheckbox();
     });
-
-    // Restore the state of the "Select All" checkbox
-    $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
-
 });
+
     </script>
 
 
@@ -2823,20 +2769,20 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `
-                                    <tr data-id="${entry.Id}">
-                                        <td>${entry.Description || ''}</td>
-                                        <td>${entry.CustomerAccountTypeTargetProductDescription || ''}</td>
-                                        <td>${entry.ChargeType || ''}</td>
-                                        <td>${entry.ChargeFixedAmount || ''}</td>
-                                        <td>${entry.ChargePercentage || ''}</td>
-                                        <td>${entry.NetOffInvestmentBalance ? 'Yes' : 'No'}</td>
-                                        <td>${entry.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">
-                                                Remove
-                                            </button>
-                                        </td>
-                                    </tr>`;
+                                        <tr data-id="${entry.Id}">
+                                            <td>${entry.Description || ''}</td>
+                                            <td>${entry.CustomerAccountTypeTargetProductDescription || ''}</td>
+                                            <td>${entry.ChargeType || ''}</td>
+                                            <td>${entry.ChargeFixedAmount || ''}</td>
+                                            <td>${entry.ChargePercentage || ''}</td>
+                                            <td>${entry.NetOffInvestmentBalance ? 'Yes' : 'No'}</td>
+                                            <td>${entry.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2967,10 +2913,10 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                        <td>${entry.RangeLowerLimit}</td>
-                                                                        <td>${entry.RangeUpperLimit}</td>
-                                                                        <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
-                                                                    </tr>`;
+                                                                            <td>${entry.RangeLowerLimit}</td>
+                                                                            <td>${entry.RangeUpperLimit}</td>
+                                                                            <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
+                                                                        </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -3090,12 +3036,12 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                <td>${entry.RangeLowerLimit}</td>
-                                <td>${entry.RangeUpperLimit}</td>
-                                <td>${entry.LoaneeMultiplier}</td>
-                                <td>${entry.GuarantorMultiplier}</td>
-                                <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
-                            </tr>`;
+                                    <td>${entry.RangeLowerLimit}</td>
+                                    <td>${entry.RangeUpperLimit}</td>
+                                    <td>${entry.LoaneeMultiplier}</td>
+                                    <td>${entry.GuarantorMultiplier}</td>
+                                    <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
+                                </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -3206,13 +3152,13 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                                                                   <td>${entry.TargetLoanProductDescription}</td>
-                                                                                                                                                                    <td>${entry.ConditionDescription}</td>
-                                                                                                                                                                    <td>${entry.MaximumEligiblePercentage}</td>
+                                                                                                                                                                       <td>${entry.TargetLoanProductDescription}</td>
+                                                                                                                                                                        <td>${entry.ConditionDescription}</td>
+                                                                                                                                                                        <td>${entry.MaximumEligiblePercentage}</td>
 
 
-                                                                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
-                                                                                                                                                               </tr>`;
+                                                                                                                                                                       <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                                                                   </tr>`;
                     tableBody.append(row);
                 });
             }
