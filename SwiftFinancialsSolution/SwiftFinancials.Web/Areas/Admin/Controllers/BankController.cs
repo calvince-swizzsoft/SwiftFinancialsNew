@@ -8,6 +8,8 @@ using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -16,6 +18,39 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 {
     public class BankController : MasterController
     {
+        string connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteBank(Guid id)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+                    var query = "DELETE FROM swiftFin_BankBranches WHERE Id = @Id";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Id", id);
+                        int rowsAffected = await cmd.ExecuteNonQueryAsync();
+
+                        if (rowsAffected > 0)
+                        {
+                            return new HttpStatusCodeResult(200);
+                        }
+                        else
+                        {
+                            return new HttpStatusCodeResult(404, "Bank Branch not Found!");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(500, "Internal server error: " + ex.Message);
+            }
+        }
+
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -65,8 +100,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             );
         }
 
-
-
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -77,7 +110,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             return View(BankDTO);
         }
-
 
         public async Task<ActionResult> Create()
         {
@@ -145,7 +177,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(BankDTO bank)
         {
-            if(Session["bankBranches"] == null)
+            if (Session["bankBranches"] == null)
             {
                 await ServeNavigationMenus();
                 TempData["EBB"] = "Empty Bank Branches";
@@ -178,8 +210,56 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             await ServeNavigationMenus();
 
             var BankDTO = await _channelService.FindBankAsync(id, GetServiceHeader());
+            var BankBranches = await _channelService.FindBankBranchesByBankIdAsync(BankDTO.Id, GetServiceHeader());
+            ViewBag.BankBranchesEdit = BankBranches;
+            Session["bankBranchesEdit"] = BankBranches;
 
             return View(BankDTO);
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> AddEdit(BankDTO bankDTO)
+        {
+            await ServeNavigationMenus();
+
+            var branches = ViewBag.BankBranchesEdit as ObservableCollection<BankBranchDTO>;
+
+            if (branches == null)
+            {
+                branches = new ObservableCollection<BankBranchDTO>();
+            }
+
+            foreach (var branch in bankDTO.BankBranchesDTO)
+            {
+                var existingEntry = branches.FirstOrDefault(e => e.Description == branch.Description);
+
+                if (existingEntry != null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "The Selected Branch has already been added to the Branches List."
+                    });
+                }
+
+                branches.Add(branch);
+                ViewBag.BankBranchesEdit = branches;
+            }
+
+            Session["bankBranchesEdit"] = branches;
+
+            return Json(new { success = true, entries = branches });
+        }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> RemoveEdit(Guid id)
+        {
+            await ServeNavigationMenus();
+            await DeleteBank(id);
+            return View();
         }
 
 

@@ -268,6 +268,25 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @if (ViewBag.BankBranchesEdit != null)
+                                            {
+                                                foreach (var branches in ViewBag.BankBranchesEdit)
+                                                {
+                                                    <tr>
+                                                        <td>@branches.Code</td>
+                                                        <td>@branches.Description</td>
+                                                        <td>@branches.AddressAddressLine1</td>
+                                                        <td>@branches.AddressAddressLine2</td>
+                                                        <td>@branches.AddressStreet</td>
+                                                        <td>@branches.AddressPostalCode</td>
+                                                        <td>@branches.AddressCity</td>
+                                                        <td id="email">@branches.AddressEmail</td>
+                                                        <td>@branches.AddressLandLine</td>
+                                                        <td>@branches.AddressMobileLine</td>
+                                                        <td><button type="button" class="btn btn-danger remove-entry" data-id="@branches.Id" style="background-color: red; color: white;">Remove</button></td>
+                                                    </tr>
+                                                }
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -275,7 +294,7 @@
 
                             <div class="row mt-5">
                                 <div class="col-md-12">
-                                    <input type="submit" style="width:150px;" class="btn btn-primary" value="Create" />
+                                    <input type="submit" style="width:150px;" class="btn btn-primary" value="Update" />
                                 </div>
                             </div>
                         </fieldset>
@@ -340,7 +359,7 @@
             var formData = $('#addLoanGuarantorsform').serialize();
 
         $.ajax({
-            url: '@Url.Action("Add", "Bank", new { Area = "Admin" })',
+            url: '@Url.Action("AddEdit", "Bank", new { Area = "Admin" })',
             type: 'POST',
             data: formData,
             success: function (response) {
@@ -418,7 +437,7 @@
 
         function removeEntry(id) {
             $.ajax({
-                url: '@Url.Action("Remove", "Bank")',
+                url: '@Url.Action("RemoveEdit", "Bank")',
                 type: 'POST',
                 data: { id: id },
                 success: function (response) {

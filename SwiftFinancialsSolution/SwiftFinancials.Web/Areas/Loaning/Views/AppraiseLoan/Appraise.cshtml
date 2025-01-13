@@ -757,7 +757,7 @@
                                 </fieldset>
 
 
-                                @*<br />
+                                <br />
 
                                 <fieldset class="incomeAdjustment-section">
                                     <h2>Income Adjustment Details</h2>
@@ -767,7 +767,7 @@
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.incomeAdjustmentDTO[0].Description, new { @class = "control-label" })
                                                     <div class="input-group" data-autoclose="true">
-                                                        @Html.HiddenFor(model => model.incomeAdjustmentDTO[0].Id)
+                                                        @Html.HiddenFor(model => model.incomeAdjustmentDTO[0].Id, new { @Id = "IncomeAdjustmetId" })
                                                         @Html.TextBoxFor(model => model.incomeAdjustmentDTO[0].Description, new { @id = "Description", @class = "form-control input-md alpha alphaspace required", @placeholder = "Link Income Adjustment...", @disabled = "disabled" })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#incomeAdjustmentsLookupModal"><span class="fa fa-search"></span></a>
@@ -779,27 +779,26 @@
                                             <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.incomeAdjustmentDTO[0].Type, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.incomeAdjustmentDTO[0].Type)
-                                                    @Html.EditorFor(model => model.incomeAdjustmentDTO[0].typeTypeDescription, new { htmlAttributes = new { @id = "TypeDescription", @class = "form-control required", @disabled = "disabled" } })
+                                                    @Html.HiddenFor(model => model.incomeAdjustmentDTO[0].Type, new { @Id = "Type" })
+                                                    @Html.EditorFor(model => model.incomeAdjustmentDTO[0].typeTypeDescription, new { htmlAttributes = new { @id = "typeTypeDescription", @class = "form-control required", @disabled = "disabled" } })
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.incomeAdjustmentDTO[0].Amount, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.incomeAdjustmentDTO[0].Amount)
                                                     @Html.EditorFor(model => model.incomeAdjustmentDTO[0].Amount, new { htmlAttributes = new { @id = "Amount", @class = "form-control required", @placeholder = "Kshs.0.00", Type = "Number" } })
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-2" style="margin-top: 20px;">
-                                                <input type="button" class="btn btn-primary" id="addEntryBtn" value="Add" style="width: 150px;" />
+                                            <div class="col-md-2" style="text-align: right;">
+                                                <input type="submit" id="addEntryBtn" style="width:150px; margin-top: 20px;" class="btn btn-primary" value="Add" />
                                             </div>
                                         </div>
                                     </div>
-                                </fieldset>*@
+                                </fieldset>
 
-                                <!--<br />
+                                <br />
 
                                 <fieldset>
                                     <div class="table-container">
@@ -813,12 +812,12 @@
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>-->
-                                <!-- Dynamic data will be inserted here -->
-                                <!--</tbody>
+                                            <tbody>
+                                                <!--Dynamic data will be inserted here -->
+                                            </tbody>
                                         </table>
                                     </div>
-                                </fieldset>-->
+                                </fieldset>
                             </div>
 
                             <div id="LoanAppraisal" class="tab-pane" style="margin-left: 20px;">
@@ -955,8 +954,8 @@
                                     </div>
 
                                     <div class="tab">
-                                        <button class="tablinks active" onclick="openTab(event, 'Tab8')"><i class="fa fa-table" aria-hidden="true"></i> Attached Loans</button>
-                                        <button class="tablinks" onclick="openTab(event, 'Tab9')"><i class="fa fa-table" aria-hidden="true"></i> Repayment Schedule</button>
+                                        <button class="tablinks active" onclick="openTab(event, 'Tab1')"><i class="fa fa-table" aria-hidden="true"></i> Attached Loans</button>
+                                        <button class="tablinks" onclick="openTab(event, 'Tab2')"><i class="fa fa-table" aria-hidden="true"></i> Repayment Schedule</button>
                                     </div>
 
                                     <div id="Tab8" class="tabcontent" style="display: block;">
@@ -1026,15 +1025,6 @@
                                         </div>
                                     </div>
                                 </fieldset>
-
-                                @*@using (Html.BeginForm("Create", "AppraiseLoan", new { Area = "Accounts" }, FormMethod.Post, new { @id = "submitForm" }))
-                                    {
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <input type="submit" id="submitFormData" class="btn btn-primary" style="width: 150px;" name="name" value="Update" />
-                                            </div>
-                                        </div>
-                                    }*@
                             </div>
                         </div>
                     }
@@ -1166,8 +1156,6 @@
         document.getElementById("SubSubTab1-1-1").style.display = "block";
     </script>
 
-
-
     <script>
         function openTab(evt, tabName) {
             evt.preventDefault();
@@ -1219,18 +1207,13 @@
         document.getElementById("SubSubTab1-1-1").style.display = "block";
     </script>
 
-
-
-
     <script>
        $('#incomeAdjustmentsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "IncomeAdjustments", new { Area = "Loaning" }))",
                 "sServerMethod": "POST",
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -1248,8 +1231,6 @@
 
                     return nRow;
                 },
-                // Display settings
-                // Display settings
                 "aoColumns": [
                     { "mDataProp": "Description", "sTitle": "Name", "sWidth": "20%" },
                     { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "7%" },
@@ -1260,8 +1241,6 @@
                 "aaSorting": [[0, "desc"]]
             });
 
-
-
         function selectIncomeAdjustment(id) {
             $.ajax({
                 url: '/Loaning/AppraiseLoan/IncomeAdjustmentsLookUp',
@@ -1269,12 +1248,11 @@
                 data: { Id: id },
                 success: function (response) {
                     if (response.success) {
-                        // Populate fields with the returned data
                         $('#Description').val(response.data.IncomeAdjustment);
-                        $('#TypeDescription').val(response.data.TypeDescription);
-                        $('#IncomeAdjustmentId').val(response.data.Id); // Hidden field for the ID
+                        $('#typeTypeDescription').val(response.data.TypeDescription);
+                        $('#Type').val(response.data.Type);
+                        $('#IncomeAdjustmetId').val(response.data.Id);
 
-                        // Close the modal
                         $('#incomeAdjustmentsLookupModal').modal('hide');
                     } else {
                         alert(response.message);
@@ -1288,103 +1266,92 @@
     </script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
+    $(document).ready(function () {
+        $('#addEntryBtn').click(function (event) {
+            event.preventDefault();
 
-            var addedIncomeAdjustments = [];
+            var formData = $('#LoanAppraisalForm').serialize();
 
-            $('#addEntryBtn').click(function (event) {
-                event.preventDefault();
+        $.ajax({
+            url: '@Url.Action("Add", "AppraiseLoan", new { Area = "Loaning" })',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    updateEntriesTable(response.entries);
 
-                // Retrieve the entered values
-                var description = $('#Description').val();
-                var typeDescription = $('#TypeDescription').val();
-                var amount = $('#Amount').val(); // Assuming you have an input field with ID "Amount" for the user to enter the amount
-                var incomeAdjustmentId = $('#IncomeAdjustmentId').val(); // Hidden field for the selected Income Adjustment ID
+                    console.log('Swal is loaded:', typeof Swal !== 'undefined');
 
-                // Validation: ensure amount is entered
-                if (!amount) {
-                    alert('Please enter an amount.');
-                    return;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Income Adjustment added successfully.',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+
+                    $('#Description').val('');
+                    $('#typeTypeDescription').val('');
+                    $('#Amount').val('');
+                   
+                    console.log('Form fields cleared');
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Could not Add Income Adjustment to List!',
+                        text: response.message,
+                        timer: 8000,
+                        showConfirmButton: true
+                    });
                 }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    });
+});
 
-                // Check if the Income Adjustment Id is already in the list
-                var existingEntry = addedIncomeAdjustments.find(function (entry) {
-                    return entry.id === incomeAdjustmentId;
-                });
+        function updateEntriesTable(entries) {
+            var tableBody = $("#incomeAdjustmentsdataTable tbody");
+            tableBody.empty();
 
-                if (existingEntry) {
-                    alert('Income Adjustment has already been added.');
-                    return;
+            $.each(entries, function (index, entry) {
+                var row = `<tr data-id="${entry.Id}">
+                               <td>${entry.Description}</td>
+                               <td>${entry.TypeDescription}</td>
+                               <td>${entry.Amount}</td>
+                               <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}" style="background-color: red; color: white;">Remove</button></td>
+                           </tr>`;
+                tableBody.append(row);
+            });
+        }
+
+        $(document).on("click", ".remove-entry", function (event) {
+            event.preventDefault();
+            var entryId = $(this).data("id");
+            removeEntry(entryId);
+        });
+
+
+        function removeEntry(id) {
+            $.ajax({
+                url: '@Url.Action("Remove", "AppraiseLoan")',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
+                    } else {
+                        alert("An error occurred while removing the entry.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the request.");
                 }
-
-                // If not already added, add the Id and amount to the list
-                addedIncomeAdjustments.push({ id: incomeAdjustmentId, amount: amount });
-
-                var tableBody = $("#incomeAdjustmentsdataTable tbody");
-                var newRow = `
-                                                            <tr data-id="${incomeAdjustmentId}">
-                                                                <td>${description}</td>
-                                                                <td>${typeDescription}</td>
-                                                                <td style="text-align: right;">${amount}</td>
-                                                                <td><button type="button" class="btn btn-danger remove-entry" data-id="${incomeAdjustmentId}">Remove</button></td>
-                                                            </tr>`;
-                tableBody.append(newRow);
-
-                // Clear the input fields after adding to the table
-                $('#Description').val('');
-                $('#TypeDescription').val('');
-                $('#Amount').val('');
-                $('#IncomeAdjustmentId').val('');
             });
-
-
-        });
-
-
-        $(document).on('click', '.remove-entry', function () {
-            var incomeAdjustmentId = $(this).data('id');
-
-            $(this).closest('tr').remove();
-
-            // Remove the corresponding entry from the addedIncomeAdjustments array
-            addedIncomeAdjustments = addedIncomeAdjustments.filter(function (entry) {
-                return entry.id !== incomeAdjustmentId;
-            });
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            // Function to calculate total income
-            function calculateTotalIncome() {
-                let netIncome = parseFloat($("#NetIncome").val()) || 0;
-                let totalAllowance = parseFloat($("#TotalAllowance").val()) || 0;
-                let totalIncome = netIncome + totalAllowance;
-                $("#TotalIncome").val(totalIncome.toFixed(2));
-            }
-
-            // Function to calculate take-home value
-            function calculateTakeHomeValue() {
-                let netIncome = parseFloat($("#NetIncome").val()) || 0;
-                let totalDeduction = parseFloat($("#TotalDeduction").val()) || 0;
-                let takeHome = netIncome - totalDeduction;
-                $("#TakeHomeValue").val(takeHome.toFixed(2));
-            }
-
-            // Function to calculate ability to pay
-            function calculateAbilityToPay() {
-                let takeHome = parseFloat($("#TakeHomeValue").val()) || 0;
-                let abilityToPay = takeHome * 0.4;  // Assuming 40% ability to pay rule
-                $("#AbilityToPay").val(abilityToPay.toFixed(2));
-            }
-
-            // Calculate total income and other fields when net income or allowance changes
-            $("#NetIncome, #TotalAllowance, #TotalDeduction").on("input", function () {
-                calculateTotalIncome();
-                calculateTakeHomeValue();
-                calculateAbilityToPay();
-            });
-        });
+        }
     </script>
 
     <script>
@@ -1394,7 +1361,6 @@
         var AmountApplied = @amountApplied;
         var TermInMonths = @termInMonths;
 
-        // Convert APR to monthly interest rate
         var monthlyInterestRate = APR / 12 / 100;
 
         var remainingBalance = AmountApplied;
@@ -1443,7 +1409,6 @@
                     return;
             }
 
-            // Create the schedule entry
             var entry = {
                 Period: i,
                 DueDate: new Date(new Date().setMonth(new Date().getMonth() + i)).toLocaleDateString(),
@@ -1454,14 +1419,11 @@
                 EndingBalance: (remainingBalance - principalPayment).toFixed(2)
             };
 
-            // Push the entry to the schedule array
             schedule.push(entry);
 
-            // Update the remaining balance
             remainingBalance -= principalPayment;
         }
 
-        // Render the table rows dynamically
         var tableBody = document.querySelector("#repaymentScheduledataTable tbody");
         schedule.forEach(function(item) {
             var row = `
