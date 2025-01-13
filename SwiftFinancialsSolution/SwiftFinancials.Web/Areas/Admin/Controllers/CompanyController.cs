@@ -265,6 +265,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             companyBindingModel.RecoveryPriority = "DirectDebits";
             if (!companyBindingModel.HasErrors)
             {
+                await ServeNavigationMenus();
+
                 var companies = await _channelService.AddCompanyAsync(companyBindingModel.MapTo<CompanyDTO>(), GetServiceHeader());
                 await _channelService.UpdateAttachedProductsByCompanyIdAsync(companies.Id, mandatoryProducts, GetServiceHeader());
 
