@@ -336,7 +336,6 @@
                                cancelButtonColor: '#d33'
                            }).then((result) => {
                                if (result.isConfirmed) {
-                                   // Resubmit with confirmation
                                    submitForm(formData, true);
                                } else {
                                    Swal.fire({
@@ -375,7 +374,7 @@
 
     <style>
         .highlight {
-            background-color: #f0c14b; /* Light yellow color for highlighting */
+            background-color: #f0c14b; 
         }
     </style>
 
