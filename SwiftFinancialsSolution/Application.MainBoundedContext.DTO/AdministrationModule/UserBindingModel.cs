@@ -79,27 +79,29 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [DataMember]
         [Display(Name = "Customer")]
         public Guid? CustomerId { get; set; }
-       
+
         [DataMember]
         [Display(Name = "Employee")]
         public Guid EmployeeId { get; set; }
-        
+
         [Display(Name = "Password")]
         public string Password { get; set; }
-        
+
         [Display(Name = "CallbackUrl")]
         public string CallbackUrl { get; set; }
 
         [Display(Name = "FullName")]
         public string EmployeeCustomerFullName { get; set; }
-        
+
 
         [Display(Name = "Token")]
         public string Token { get; set; }
 
         [Display(Name = "Provider")]
         public int Provider { get; set; }
-       public string EmployeeDesignationDescription { get; set; }
+
+        [Display(Name = "Designation")]
+        public string EmployeeDesignationDescription { get; set; }
         public string Actions { get; set; }
     }
 }

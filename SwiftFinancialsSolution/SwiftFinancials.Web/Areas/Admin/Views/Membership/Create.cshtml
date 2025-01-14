@@ -1,5 +1,7 @@
 @model  Application.MainBoundedContext.DTO.AdministrationModule.UserBindingModel
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
     ViewBag.Title = "Create System User";
     var branches = ViewBag.branches;
 
@@ -46,10 +48,7 @@
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                         <div class="row">
-                            <!-- Company Linkage Section -->
-                            <div class="col-lg-6">
-
-
+                            <div class="col-lg-4">
                                 <!-- Employee Selection -->
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
@@ -57,54 +56,48 @@
                                         @Html.HiddenFor(Model => Model.EmployeeId)
                                         @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                         <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#customerLookup">
+                                            <a data-toggle="modal" data-target="#employeeLookUpModal">
                                                 <span class="fa fa-search"></span>
                                             </a>
                                         </span>
                                     </div>
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.EmployeeDesignationDescription, new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.EmployeeDesignationDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "disabled" } })
-                                    @Html.ValidationMessageFor(model => model.EmployeeDesignationDescription, "", new { @class = "text-danger" })
-                                </div>
-                                <!-- Phone Number -->
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PhoneNumber, new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "@disabled" } })
-                                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
-                            <!-- User Details Section -->
-                            <div class="col-lg-6">
-
-                                <!-- Branch Selection -->
+                            <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
-                                        @Html.HiddenFor(Model => Model.BranchId)
-                                        @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                        <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#companyLookupModal">
-                                                <span class="fa fa-search"></span>
-                                            </a>
-                                        </span>
-                                    </div>
+                                    @Html.LabelFor(model => model.EmployeeDesignationDescription, "Department", new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.EmployeeDesignationDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.EmployeeDesignationDescription, "", new { @class = "text-danger" })
                                 </div>
-                                <!-- Email -->
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Email, new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control required", placeholder = "Email address" } })
-                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-                                </div>
+                            </div>
 
-                                <!-- Designation -->
-                                <!-- Username -->
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
+                                    @Html.HiddenFor(Model => Model.BranchId)
+                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "@disabled" } })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.UserName, new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Username" } })
+                                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Username MUST be Lowercase...", oninput = "validateUsername(this)" } })
+                                    <span id="username-warning" class="text-danger" style="display: none;">Username must be lowercase</span>
                                     @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Email, new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control required", @Type = "Email" } })
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                         </div>
@@ -113,19 +106,20 @@
                         <input type="hidden" name="SelectedRoles" id="SelectedRoles" />
                         <input type="hidden" name="SelectedBranches" id="SelectedBranches" />
 
+                        <br />
                         <!-- Tabs -->
-                        <ul class="nav nav-tabs" id="roleBranchTabs" role="tablist">
+                        <ul class="nav nav-tabs" style="margin-bottom: 20px; font-size: large; margin-top: 40px;">
                             <li class="nav-item">
-                                <a class="nav-link active" id="roles-tab" data-toggle="tab" href="#roles" role="tab">Roles</a>
+                                <a class="nav-link active" href="#roles"><i class="fa fa-table" aria-hidden="true"></i> Authorized Roles</a>
                             </li>
+
                             <li class="nav-item">
-                                <a class="nav-link" id="branches-tab" data-toggle="tab" href="#branches" role="tab">Branches</a>
+                                <a class="nav-link" href="#branches"><i class="fa fa-table" aria-hidden="true"></i> Authorized Branches</a>
                             </li>
                         </ul>
 
                         <div class="tab-content">
-                            <!-- Roles Tab -->
-                            <div class="tab-pane fade show active" id="roles" role="tabpanel">
+                            <div id="roles" class="tab-pane active">
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
@@ -158,7 +152,7 @@
                             </div>
 
                             <!-- Branches Tab -->
-                            <div class="tab-pane fade" id="branches" role="tabpanel">
+                            <div id="branches" class="tab-pane">
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
@@ -190,8 +184,9 @@
                             </div>
                         </div>
 
+                        <br />
                         <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="submit" class="btn btn-primary" style="width: 150px;">Create</button>
                     }
                 </div>
 
@@ -202,52 +197,21 @@
 
 
 
-
-
-<div class="modal fade" id="customerLookup" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="employeeLookUpModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h3 class="font-bold">
-                    Employee Lookup
-                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
-                </h3>
+                <h3 class="font-bold">G/L Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <div class="modal-body">
-                <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Branch Name</th>
-                            <th>Department Description</th>
-                            <th>Nationality</th>
-                            <th>Gender</th>
-                            <th>Created Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="dataTables_empty">Loading data from server</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
-
-<div class="modal  fade" id="companyLookupModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h3 class="font-bold">Companies Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-            </div>
-            <table id="companiesGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+            <br />
+            <style>
+                #employeesGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+            <table id="employeesGrid" class="table table-hover" style="width:100%">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -263,549 +227,128 @@
         </div>
     </div>
 </div>
+
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
-    @Scripts.Render("~/plugins/dataTables")
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
 
-    @{
-        Layout = "~/Views/Shared/_Layout.cshtml";
-    }
+    <script src="~/Scripts/js/navlink.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    //roles typehead starts here
-            $('.rolesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetRoles", "Role", new { Area = "Admin" })',
-                        { query: query },
-                        function (roles) {
-                            var newRolesData = [];
-                            rolesMap = {};
-                            $.each(roles, function (i,role) {
-                                newRolesData.push(role.Name);
-                                rolesMap[role.Name] = role;
-                            });
-                            process(newRolesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var roleId = "";
-                    roleId = rolesMap[item].Id;
-                    $('#RoleId').val(roleId);
-                    //console.log(roleId)
-                    return item;
-                }
-            });</script>
-    <script>
-        // Initialize companies grid
-        $('#companiesGrid').DataTable({
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "/Admin/Branch/Index", // Updated file path
-            "sServerMethod": "POST",
-            "fnRowCallback": function (nRow, aData) {
-                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                var formattedDate = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + createdDate.toTimeString().split(' ')[0];
-                $('td:eq(4)', nRow).html(formattedDate);
-                $('td:eq(5)', nRow).html('<a href="#" class="btn btn-outline-info select-branch" data-id="' + aData.Id + '" data-description="' + aData.Description + '">Select</a>');
-                return nRow;
-            },
-            "aoColumns": [
-                { "mDataProp": "Description", "sTitle": "Name" },
-                { "mDataProp": "AddressAddressLine1", "sTitle": "Address 1" },
-                { "mDataProp": "AddressMobileLine", "sTitle": "Mobile No." },
-                { "mDataProp": "AddressEmail", "sTitle": "Email" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date" },
-                { "mDataProp": null, "sTitle": "", "bSortable": false }
-            ],
-            "aaSorting": [[0, "desc"]]
-        });
+        $('#employeesGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Employee", new { Area = "HumanResource"}))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-        // Handle row selection asynchronously
-        $('#companiesGrid tbody').on('click', '.select-branch', function (e) {
-            e.preventDefault();
-            var branchId = $(this).data('id');
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
 
-            $.ajax({
-                url: '/Admin/Membership/GetBranchesDetails', // Endpoint for fetching branch details
-                type: 'GET',
-                data: { branchId: branchId },
-                success: function (response) {
-                    if (response.success) {
-                        // Populate fields based on the JSON response
-                        Object.keys(response.data).forEach(function (key) {
-                            $('#' + key).val(response.data[key]);
-                        });
-                        $('#companyLookupModal').modal('hide');
-                    } else {
-                        alert(response.message);
-                    }
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCoA(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
                 },
-                error: function () {
-                    alert('An error occurred while fetching the Branch details.');
-                }
+                "aoColumns": [
+                    { "mDataProp": "Customer.FullName", "sTitle": "Employee Name", "sWidth": "10%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+                    { "mDataProp": "DepartmentDescription", "sTitle": "Department", "sWidth": "5%" },
+                    { "mDataProp": "CustomerIndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "5%" },
+                    { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
             });
-        });
-    </script>
-    @*<script>
-        // Initialize companies grid
-        $('#companiesGrid').DataTable({
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "/Admin/Branch/Index",
-            "sServerMethod": "POST",
-            "fnRowCallback": function (nRow, aData) {
-                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                var formattedDate = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + createdDate.toTimeString().split(' ')[0];
-                $('td:eq(4)', nRow).html(formattedDate);
-                $('td:eq(5)', nRow).html('<a href="#" class="btn btn-outline-info select-branch" data-id="' + aData.Id + '" data-description="' + aData.Description + '">Select</a>');
-                return nRow;
-            },
-            "aoColumns": [
-                { "mDataProp": "Description", "sTitle": "Name" },
-                { "mDataProp": "AddressAddressLine1", "sTitle": "Address 1" },
-                { "mDataProp": "AddressMobileLine", "sTitle": "Mobile No." },
-                { "mDataProp": "AddressEmail", "sTitle": "Email" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date" },
-                { "mDataProp": null, "sTitle": "", "bSortable": false }
-            ],
-            "aaSorting": [[0, "desc"]]
-        });
 
-        // Handle row selection asynchronously
-        $('#companiesGrid tbody').on('click', '.select-branch', function (e) {
-            e.preventDefault();
-            var branchId = $(this).data('id');
-            var branchDescription = $(this).data('description');
-
-            // Update textboxes without page reload
-            $('#BranchId').val(branchId);
-            $('input[name=BranchId]').val(branchId);
-            $('input[name=CompanyDescription]').val(branchDescription);
-
-            // Close modal if necessary
-            $('#companyLookupModal').modal('hide');
-        });
-
-        // Submit form with JSON response handling
-        $('#submitForm').on('click', function (e) {
-            e.preventDefault(); // Prevent default form submission
-
-            var formData = $('#formId').serialize(); // Serialize form data
-
+         function selectCoA(id) {
+            console.log("Selected ID:", id);
             $.ajax({
-                url: '@Url.Action("GetBranchesDetails", "Membership", new { Area = "Admin" })', // Replace with your actual endpoint
+                url: '/Admin/Membership/GetEmployeeDetails',
                 type: 'POST',
-                data: formData,
-                success: function (response) {
-                    // Handle success response
-                    if (response.success) {
-                        alert('Form submitted successfully!');
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    // Handle error
-                    console.error('Error:', error);
-                    alert('An error occurred while submitting the form.');
-                }
-            });
-        });
-            </script>*@
-
-    <script type="text/javascript">
-    $(document).ready(function () {
-        // Initialize customers grid
-        $('#customersGrid').DataTable({
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "@Url.Action("Index", "Employee", new { Area = "HumanResource" })",
-            "sServerMethod": "POST",
-            "fnServerData": function (sSource, aoData, fnCallback) {
-                $.ajax({
-                    dataType: 'json',
-                    type: 'POST',
-                    url: sSource,
-                    data: aoData,
-                    success: fnCallback,
-                    error: function () {
-                        alert('Error retrieving data from the server.');
-                    }
-                });
-            },
-            "aoColumns": [
-                { "mDataProp": "Customer.FullName", "sTitle": "Name", "sWidth": "15%" },
-                { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
-                { "mDataProp": "DepartmentDescription", "sTitle": "Department Description", "sWidth": "15%" },
-                { "mDataProp": "CustomerIndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },
-                { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "15%" },
-                {
-                    "mDataProp": "CreatedDate",
-                    "sTitle": "Created Date",
-                    "sWidth": "15%",
-                    "mRender": function (data) {
-                        var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
-                        return $.datepicker.formatDate('dd/mm/yy', createdDate);
-                    }
-                },
-                {
-                    "mDataProp": null,
-                    "sTitle": "Action",
-                    "sWidth": "15%",
-                    "bSortable": false,
-                    "mRender": function (data, type, row) {
-                        return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
-                    }
-                }
-            ],
-            "aaSorting": [[0, "desc"]]
-        });
-
-        // Handle customer selection
-        $('#customersGrid tbody').on('click', '.select-customer', function () {
-            var employeeId = $(this).data('id');
-            $.ajax({
-                url: '@Url.Action("GetEmployeeDetails", "Membership", new { Area = "Admin" })',
-                type: 'GET',
-                data: { employeeId: employeeId },
+                data: { Id: id },
                 success: function (response) {
                     if (response.success) {
-                        Object.keys(response.data).forEach(function (key) {
-                            $('#' + key).val(response.data[key]);
-                        });
-                        $('#customerLookup').modal('hide');
+                        console.log(response);
+                        $('#EmployeeCustomerFullName').val(response.data.EmployeeCustomerFullName);
+                        $('#EmployeeId').val(response.data.EmployeeId);
+                        $('#EmployeeDesignationDescription').val(response.data.department);
+                        $('#BranchDescription').val(response.data.Branch);
+                        $('#BranchId').val(response.data.BranchId);
+
+                        $('#employeeLookUpModal').modal('hide');
                     } else {
                         alert(response.message);
                     }
                 },
                 error: function () {
-                    alert('An error occurred while fetching the Customer details.');
+                    alert('An error occurred while processing your request.');
                 }
             });
-        });
-
-        @*// Initialize companies grid
-        $('#companiesGrid').DataTable({
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "@Url.Action("Index", "Branch", new { Area = "Admin" })",
-            "sServerMethod": "POST",
-            "fnRowCallback": function (nRow, aData) {
-                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                var formattedDate = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + createdDate.toTimeString().split(' ')[0];
-                $('td:eq(4)', nRow).html(formattedDate);
-                $('td:eq(5)', nRow).html('<a href="/admin/membership/GetBranchesDetails/' + aData.Id + '" class="btn btn-outline-info">Select</a>');
-                return nRow;
-            },
-            "aoColumns": [
-                { "mDataProp": "Description", "sTitle": "Name" },
-                { "mDataProp": "AddressAddressLine1", "sTitle": "Address 1" },
-                { "mDataProp": "AddressMobileLine", "sTitle": "Mobile No." },
-                { "mDataProp": "AddressEmail", "sTitle": "Email" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date" },
-                { "mDataProp": "CreatedDate", "sTitle": "", "bSortable": false }
-            ],
-            "aaSorting": [[0, "desc"]]
-        });
-
-        $('#companiesGrid tbody').on('click', 'tr', function () {
-            var data = $('#companiesGrid').DataTable().row(this).data();
-            $('#BranchId').val(data.Id);
-            $('input[name=BranchId]').val(data.Id);
-            $('input[name=CompanyDescription]').val(data.Description);
-            $('#companyLookupModal').modal('hide');
-        });*@
-
-        @*// Initialize typeahead for roles
-        $('.rolesLookup').typeahead({
-            source: function (query, process) {
-                return $.getJSON('@Url.Action("GetRoles", "Role", new { Area = "Admin" })', { query: query }, function (roles) {
-                    var rolesData = [];
-                    var rolesMap = {};
-                    roles.forEach(function (role) {
-                        rolesData.push(role.Name);
-                        rolesMap[role.Name] = role;
-                    });
-                    process(rolesData);
-                });
-            },
-            updater: function (item) {
-                $('#RoleId').val(rolesMap[item].Id);
-                return item;
-            }
-        });*@
-
-        // Initialize typeahead for companies
-        $('.CompaniesLookup').typeahead({
-            source: function (query, process) {
-                return $.getJSON('@Url.Action("GetCompaniesAsync", "Company", new { Area = "Admin" })', { query: query }, function (companies) {
-                    var companiesData = [];
-                    var companiesMap = {};
-                    companies.forEach(function (company) {
-                        companiesData.push(company.Description);
-                        companiesMap[company.Description] = company;
-                    });
-                    process(companiesData);
-                });
-            },
-            updater: function (item) {
-                $('#CompanyId').val(companiesMap[item].Id);
-                return item;
-            }
-        });
-    });
+        }
     </script>
 
-    @*<script>
-                    $(document).ready(function () {
-                 $('#customersGrid').DataTable({
-                     "sPaginationType": "full_numbers",
-                     "bProcessing": true,
-                     "bServerSide": true,
-                     "sAjaxSource": "@Url.Action("Index", "Employee", new { Area = "HumanResource" })",
-                     "sServerMethod": "POST",
-                     "fnServerData": function (sSource, aoData, fnCallback) {
-                         $.ajax({
-                             dataType: 'json',
-                             type: 'POST',
-                             url: sSource,
-                             data: aoData,
-                             success: function (response) {
-                                 fnCallback(response);
-                             },
-                             error: function () {
-                                 alert('Error retrieving data from the server.');
-                             }
-                         });
-                     },
-                     "aoColumns": [
-                         { "mDataProp": "Customer.FullName", "sTitle": "Name", "sWidth": "15%" },
-                         { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
-                         { "mDataProp": "DepartmentDescription", "sTitle": "Department Description", "sWidth": "15%" },
-                         { "mDataProp": "CustomerIndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },
-                         { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "15%" },
-                         {
-                             "mDataProp": "CreatedDate",
-                             "sTitle": "Created Date",
-                             "sWidth": "15%",
-                             "mRender": function (data) {
-                                 var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
-                                 return $.datepicker.formatDate('dd/mm/yy', createdDate);
-                             }
-                         },
-                         {
-                             "mDataProp": null,
-                             "sTitle": "Action",
-                             "sWidth": "15%",
-                             "bSortable": false,
-                             "mRender": function (data, type, row) {
-                                 return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
-                             }
-                         }
-                     ],
-                     "aaSorting": [[0, "desc"]]
-                 });
+    <script>
+        function validateUsername(input) {
+            input.value = input.value.toLowerCase();
 
-                        $('#customersGrid tbody').on('click', '.select-customer', function () {
-                            var employeeId = $(this).data('id');
+            const hasUppercase = /[A-Z]/.test(input.value);
 
-                     $.ajax({
-                         url: '@Url.Action("GetEmployeeDetails", "Membership", new { Area = "Admin" })',
-                         type: 'GET',
-                         data: { employeeId: employeeId },
-                         success: function (response) {
-                             if (response.success) {
-                                 $('#EmployeeCustomerFullName').val(response.data.EmployeeCustomerFullName);
-                                 $('#EmployeeCustomerId').val(response.data.EmployeeCustomerId);
-                                 $('#EmployeeId').val(response.data.EmployeeId);
-                                 $('#EmployeeBloodGroupDescription').val(response.data.EmployeeBloodGroupDescription);
-                                 $('#EmployeeNationalHospitalInsuranceFundNumber').val(response.data.EmployeeNationalHospitalInsuranceFundNumber);
-                                 $('#EmployeeNationalSocialSecurityFundNumber').val(response.data.EmployeeNationalSocialSecurityFundNumber);
-                                 $('#EmployeeCustomerPersonalIdentificationNumber').val(response.data.EmployeeCustomerPersonalIdentificationNumber);
-                                 $('#EmployeeEmployeeTypeCategoryDescription').val(response.data.EmployeeEmployeeTypeCategoryDescription);
-                                 $('#EmployeeEmployeeTypeDescription').val(response.data.EmployeeEmployeeTypeDescription);
-                                 $('#EmployeeDepartmentDescription').val(response.data.EmployeeDepartmentDescription);
-                                 $('#EmployeeDepartmentId').val(response.data.EmployeeDepartmentId);
-                                 $('#EmployeeDesignationDescription').val(response.data.EmployeeDesignationDescription);
-                                 $('#EmployeeEmployeeTypeCategoryDescription').val(response.data.EmployeeEmployeeTypeCategoryDescription);
-                                 $('#EmployeeEmployeeTypeDescription').val(response.data.EmployeeEmployeeTypeDescription);
-                                 $('#EmployeeDesignationId').val(response.data.EmployeeDesignationId);
-                                 $('#EmployeeBranchDescription').val(response.data.EmployeeBranchDescription);
-                                 $('#EmployeeBranchId').val(response.data.EmployeeBranchId);
-                                 $('#EmployeeCustomerIndividualGenderDescription').val(response.data.EmployeeCustomerIndividualGenderDescription);
-                                 $('#EmployeeCustomerIndividualPayrollNumbers').val(response.data.EmployeeCustomerIndividualPayrollNumbers);
-                                 $('#EmployeeEmployeeTypeId').val(response.data.EmployeeEmployeeTypeId);
-                                 $('#EmployeeEmployeeTypeChartOfAccountId').val(response.data.EmployeeEmployeeTypeChartOfAccountId);
-
-
-
-
-
-                                 $('#customerLookup').modal('hide');
-                             } else {
-                                 alert(response.message);
-                             }
-                         },
-                         error: function () {
-                             alert('An error occurred while fetching the Customer details.');
-                         }
-                     });
-                 });
-             });
-
-         </script>
-
-         <script>
-        $('#companiesGrid').DataTable({
-         // Ajax settings
-         "sPaginationType": "full_numbers",
-         "bProcessing": true,
-         "bServerSide": true,
-         "sAjaxSource": "@(Url.Action("Index", "Branch", new { Area = "Admin"}))",
-         "sServerMethod": "POST",
-         // Callback settings
-         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-         var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-         var h = ("0" + createdDate.getHours()).slice(-2);
-         var m = ("0" + createdDate.getMinutes()).slice(-2);
-         var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-         var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-         aData.CreatedDate = dt_Created;
-
-         var selectUrl = '<a href="/admin/membership/create/' + aData.Id + '" class="btn btn-outline-info" ">' + 'Select</a>';
-
-                         $('td:eq(4)', nRow).html(dt_Created);
-                         $('td:eq(5)', nRow).html(selectUrl);
-
-                         return nRow;
-                     },
-                     // Display settings
-                     " aoColumns": [
-                             { "mDataProp" : "Description" , "sTitle" : "Name" },
-                             { "mDataProp" : "AddressAddressLine1" , "sTitle" : "Address 1" },
-                             { "mDataProp" : "AddressMobileLine" , "sTitle" : "Mobile No." },
-                             { "mDataProp" : "AddressEmail" , "sTitle" : "Email" },
-                             { "mDataProp" : "CreatedDate" , "sTitle" : "Created Date" },
-                             { "mDataProp" : "CreatedDate" , "sTitle" : "" , "bSortable" : false }],
-                             "aaSorting" : [[0, "desc" ]]
-                             });
-                             $("#s tbody").on("click", "tr" , function () {
-                             var data=companiesGrid.row(this).data();
-                             $('#BranchId').val(data.Id);
-                             $('input[name=BranchId]').val(data.Id);
-                             $('input[name=CompanyDescription]').val(data.Description);
-                             //$('input[name =ChartOfAccountAccountCode]').val(data.AccountCode);
-                             $('#companyLookupModal').modal('hide');
-                             });
-         </script>
-         <script>
-             $(document).ready(function () {
-
-                 $("#wizard").steps();
-
-
-
-                             //roles typehead starts here
-                             $('.rolesLookup').typeahead({
-                             source: function (query, process) {
-                             return $.getJSON(
-                             '@Url.Action("GetRoles", "Role", new { Area = "Admin" })' ,
-                             { query: query },
-                             function (roles) {
-                             var newRolesData=[];
-                             rolesMap={};
-                             $.each(roles, function (i,role) {
-                             newRolesData.push(role.Name);
-                             rolesMap[role.Name]=role;
-                             });
-                             process(newRolesData); return;
-                             });
-                             },
-                             matcher: function (item) {
-                             if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) !=-1) {
-                             return true;
-                             }
-                             },
-                             sorter: function (items) {
-                             return items.sort();
-                             },
-                             highlighter: function (item) {
-                             var regex=new RegExp('(' + this.query + ')' , 'gi' );
-                             return item.replace(regex, "<strong>$1</strong>" );
-                             },
-                             updater: function (item) {
-                             var roleId="" ;
-                             roleId=rolesMap[item].Id;
-                             $('#RoleId').val(roleId);
-                             //console.log(roleId)
-                             return item;
-                             }
-                             });
-                             //Company typehead starts here
-                             $('.CompaniesLookup').typeahead({
-                             source: function (query, process) {
-                             return $.getJSON(
-                             '@Url.Action("GetCompaniesAsync", "Company", new { Area = "Admin" })' ,
-                             { query: query },
-                             function (Companies) {
-                             var newCompaniesData=[];
-                             CompaniesMap={};
-                             $.each(Companies, function (i, Company) {
-                             newCompaniesData.push(Company.Description);
-                             CompaniesMap[Company.Description]=Company;
-                             });
-                             process(newCompaniesData); return;
-                             });
-                             },
-                             matcher: function (item) {
-                             if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) !=-1) {
-                             return true;
-                             }
-                             },
-                             sorter: function (items) {
-                             return items.sort();
-                             },
-                             highlighter: function (item) {
-                             var regex=new RegExp('(' + this.query + ')' , 'gi' );
-                             return item.replace(regex, "<strong>$1</strong>" );
-                             },
-                             updater: function (item) {
-                             var CompanyId="" ;
-                             CompanyId=CompaniesMap[item].Id;
-                             $('#CompanyId').val(CompanyId);
-                             //console.log(CompanyId)
-                             return item;
-                             }
-                             });
-                             } );
-
-         </script>*@
+            const warningMessage = document.getElementById("username-warning");
+            if (hasUppercase) {
+                warningMessage.style.display = "block";
+            } else {
+                warningMessage.style.display = "none";
+            }
+        }
+    </script>
 }
