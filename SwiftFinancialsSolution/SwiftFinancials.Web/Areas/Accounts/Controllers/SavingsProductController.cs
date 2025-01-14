@@ -69,6 +69,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var savingsProductDTO = await _channelService.FindSavingsProductAsync(id, GetServiceHeader());
+            var commissionDTOs = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProductDTO.Id,savingsProductDTO.ChargeType,GetServiceHeader());
+            ViewBag.Commisions = commissionDTOs;
+            var excemptions = await _channelService.FindSavingsProductExemptionsBySavingsProductIdAsync(savingsProductDTO.Id,GetServiceHeader());
+            ViewBag.excemptions = excemptions;
 
             var rPriority = savingsProductDTO.Priority;
 
@@ -154,6 +158,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 {
                   
                     var savingsproduct = await _channelService.FindCommissionAsync(savingsproductid, GetServiceHeader());
+
                     commissionDTOs.Add(savingsproduct);
                 }
                 // Process the selected IDs as needed
