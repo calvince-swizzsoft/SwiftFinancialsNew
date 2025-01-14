@@ -211,19 +211,17 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             var BankDTO = await _channelService.FindBankAsync(id, GetServiceHeader());
             var BankBranches = await _channelService.FindBankBranchesByBankIdAsync(BankDTO.Id, GetServiceHeader());
-            ViewBag.BankBranchesEdit = BankBranches;
-            Session["bankBranchesEdit"] = BankBranches;
+            ViewBag.BankBranches = BankBranches;
+            Session["bankBranches"] = BankBranches;
 
             return View(BankDTO);
         }
-
-
         [HttpPost]
         public async Task<JsonResult> AddEdit(BankDTO bankDTO)
         {
             await ServeNavigationMenus();
 
-            var branches = ViewBag.BankBranchesEdit as ObservableCollection<BankBranchDTO>;
+            var branches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
 
             if (branches == null)
             {
@@ -244,10 +242,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 }
 
                 branches.Add(branch);
-                ViewBag.BankBranchesEdit = branches;
             }
 
-            Session["bankBranchesEdit"] = branches;
+            Session["bankBranches"] = branches;
 
             return Json(new { success = true, entries = branches });
         }
@@ -255,30 +252,61 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> RemoveEdit(Guid id)
+        public async Task<JsonResult> RemoveEdit(Guid id)
         {
             await ServeNavigationMenus();
-            await DeleteBank(id);
-            return View();
+
+            var branches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+            if (branches != null)
+            {
+                var entryToRemove = branches.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    branches.Remove(entryToRemove);
+
+                    Session["bankBranches"] = branches;
+                }
+            }
+
+            return Json(new { success = true, data = branches });
         }
+
+
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, BankDTO BankBindingModel)
         {
+            if (Session["bankBranches"] == null)
+            {
+                await ServeNavigationMenus();
+                TempData["EBB"] = "Empty Bank Branches";
+                return View(BankBindingModel);
+            }
+
             BankBindingModel.ValidateAll();
 
             if (!BankBindingModel.HasErrors)
             {
-                await _channelService.UpdateBankAsync(BankBindingModel, GetServiceHeader());
-                TempData["SuccessMessage"] = "Bank Edited successfully";
+                var bankDTO = await _channelService.UpdateBankAsync(BankBindingModel, GetServiceHeader());
+
+
+                var bankBranches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+                if (bankBranches != null)
+                    await _channelService.UpdateBankBranchesByBankIdAsync(BankBindingModel.Id, bankBranches, GetServiceHeader());
+
+                TempData["Success"] = "Ok";
+
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View(BankBindingModel);
-            }
+
+            TempData["Failed"] = "Fail!";
+            return View(BankBindingModel);
+
+           
         }
     }
 }

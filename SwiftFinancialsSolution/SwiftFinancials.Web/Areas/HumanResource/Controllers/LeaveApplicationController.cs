@@ -154,13 +154,11 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 try
                 {
                     List<AuditTrailDTO> auditTrailDTOs = new List<AuditTrailDTO>();
-                    // Fetch holidays for the posting period
                     var holidays = await _channelService.FindHolidaysAsync(GetServiceHeader());
 
 
                     await _channelService.AddAuditTrailsAsync(auditTrailDTOs, GetServiceHeader());
 
-                    // Check if the leave dates overlap with any holiday
                     var holidayConflict = holidays.Any(h =>
                         leaveApplicationBindingModel.DurationStartDate <= h.DurationEndDate &&
                         leaveApplicationBindingModel.DurationEndDate >= h.DurationStartDate
