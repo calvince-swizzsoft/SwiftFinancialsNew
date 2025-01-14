@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    @using (Html.BeginForm("Edit", "Membership", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Create", "Membership", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -84,7 +84,7 @@
                                     @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(Model => Model.EmployeeId)
-                                        @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#customerLookup">
                                                 <span class="fa fa-search"></span>
@@ -220,7 +220,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
                     }
                 </div>
 
