@@ -319,14 +319,27 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             var commissions = new ObservableCollection<CommissionDTO>();
 
-            var ids = SelectedIds.Split(',').Select(Guid.Parse).ToList();
+            var existingCharges = await _channelService.FindCommissionsByDebitTypeIdAsync(debitTypeDTO.Id, GetServiceHeader());
+
+            foreach (var charge in existingCharges)
+            {
+                commissions.Add(charge);
+            }
+
+            var ids = SelectedIds?.Split(',').Select(Guid.Parse).ToList();
 
             if (ids != null)
             {
-                foreach (var commission in ids)
+                foreach (var commissionId in ids)
                 {
-                    var foundCommission = await _channelService.FindCommissionAsync(commission, GetServiceHeader());
-                    commissions.Add(foundCommission);
+                    if (!commissions.Any(c => c.Id == commissionId))
+                    {
+                        var foundCommission = await _channelService.FindCommissionAsync(commissionId, GetServiceHeader());
+                        if (foundCommission != null)
+                        {
+                            commissions.Add(foundCommission);
+                        }
+                    }
                 }
             }
 
@@ -339,7 +352,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 await _channelService.UpdateCommissionsByDebitTypeIdAsync(debitTypeDTO.Id, commissions, GetServiceHeader());
 
                 TempData["Edit"] = "Successfully Edited Debit Type";
-
                 return RedirectToAction("Index");
             }
             else
@@ -350,10 +362,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(debitTypeDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
                 TempData["EditError"] = "Failed to Edit Debit Type";
-
                 return View(debitTypeDTO);
             }
         }
+
     }
 
 }

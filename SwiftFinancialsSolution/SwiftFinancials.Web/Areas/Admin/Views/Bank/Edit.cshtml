@@ -82,7 +82,7 @@
                 @Html.ActionLink("Banks", "Index", "Bank", new { Area = "Admin" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Create</strong>
+                <strong>Edit</strong>
             </li>
         </ol>
     </div>
@@ -94,7 +94,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Create Bank</h2>
+                    <h2>Edit Bank</h2>
 
                     @if (TempData["Failed"] != null)
                     {
@@ -268,9 +268,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.BankBranchesEdit != null)
+                                            @if (ViewBag.BankBranches != null)
                                             {
-                                                foreach (var branches in ViewBag.BankBranchesEdit)
+                                                foreach (var branches in ViewBag.BankBranches)
                                                 {
                                                     <tr>
                                                         <td>@branches.Code</td>
@@ -350,6 +350,45 @@
     @Scripts.Render("~/plugins/duallist")
 
     <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
+    <script>
+        async function loadCountryCodes() {
+            const countryCodeDropdown = document.getElementById("CountryCode");
+
+            try {
+                const response = await fetch("https://restcountries.com/v3.1/all");
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+                const countries = await response.json();
+                countryCodeDropdown.innerHTML = ""; // Clear dropdown
+                countries.forEach(country => {
+                    if (country.idd?.root && country.idd?.suffixes) {
+                        const dialCode = country.idd.root + country.idd.suffixes[0];
+                        const option = document.createElement("option");
+                        option.value = dialCode;
+                        option.textContent = `${dialCode} (${country.name.common})`;
+                        countryCodeDropdown.appendChild(option);
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching country codes:", error);
+                // Fallback to local data
+                const fallbackData = [
+                    { name: "Kenya", dialCode: "+254" },
+                    { name: "United States", dialCode: "+1" },
+                    { name: "United Kingdom", dialCode: "+44" },
+                    { name: "India", dialCode: "+91" }
+                ];
+                countryCodeDropdown.innerHTML = ""; // Clear dropdown
+                fallbackData.forEach(country => {
+                    const option = document.createElement("option");
+                    option.value = country.dialCode;
+                    option.textContent = `${country.dialCode} (${country.name})`;
+                    countryCodeDropdown.appendChild(option);
+                });
+            }
+        }
+
+    </script>
 
     <script type="text/javascript">
     $(document).ready(function () {
