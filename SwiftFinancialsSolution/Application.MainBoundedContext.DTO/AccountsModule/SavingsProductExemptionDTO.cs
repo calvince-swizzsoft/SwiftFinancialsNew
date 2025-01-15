@@ -61,11 +61,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Withdrawal Notice Period (Days)")]
-        public short WithdrawalNoticePeriod { get; set; }
+        public int WithdrawalNoticePeriod { get; set; }
 
         [DataMember]
         [Display(Name = "Withdrawal Interval (Days)")]
-        public short WithdrawalInterval { get; set; }
+        public int WithdrawalInterval { get; set; }
 
         [DataMember]
         [Display(Name = "Annual Percentage Yield")]
