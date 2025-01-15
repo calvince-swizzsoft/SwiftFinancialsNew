@@ -234,8 +234,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             userBindingModel.FirstName = employee.CustomerIndividualFirstName;
             userBindingModel.OtherNames = employee.CustomerIndividualLastName;
             userBindingModel.PhoneNumber = employee.CustomerAddressMobileLine;
-            //userBindingModel.EmployeeId = employee.Id;
-
+            
             userBindingModel.ValidateAll();
 
             if (userBindingModel.HasErrors)

@@ -134,14 +134,41 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
-            //var AttachedLoans = await FindAttachedLoans(parseId);
-
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
-
 
             if (loaneeCustomer != null)
             {
                 loanCaseDTO = loaneeCustomer;
+
+                var loanProductDetails = await _channelService.FindLoanProductAsync(loanCaseDTO.LoanProductId, GetServiceHeader());
+
+                var products = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(loanCaseDTO.CustomerId, new[] { (int)ProductCode.Savings, (int)ProductCode.Loan, (int)ProductCode.Investment },
+                   true, true, true, true, GetServiceHeader());
+                var investmentProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Investment).ToList();
+                List<decimal> iBalance = new List<decimal>();
+                foreach (var investmentsBalances in investmentProducts)
+                {
+                    iBalance.Add(investmentsBalances.BookBalance);
+                }
+                var investmentsBalance = iBalance.Sum();
+                loanCaseDTO.LoanProductInvestmentsBalance = investmentsBalance;
+                loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loanProductDetails.LoanRegistrationInvestmentsMultiplier;
+                decimal investBal = Convert.ToDecimal(investmentsBalance);
+                decimal investMultiplier = Convert.ToDecimal(loanCaseDTO.LoanRegistrationInvestmentsMultiplier);
+
+                loanCaseDTO.LoanRegistrationMaximumLoan = (investBal * investMultiplier);
+
+                loanCaseDTO.LoanProductSectionDescription = loanProductDetails.LoanRegistrationLoanProductSectionDescription;
+                loanCaseDTO.TakeHomeFixedAmount = loanProductDetails.TakeHomeFixedAmount;
+                var getCustomerAccountLoanProductBalances = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(loanCaseDTO.CustomerId,
+                   loanCaseDTO.LoanProductId, true, true, true, true, GetServiceHeader());
+                var LoanBalanceBookBalance = getCustomerAccountLoanProductBalances.Sum(x => x.BookBalance);
+                var LoanBalanceCarryForwardBalance = getCustomerAccountLoanProductBalances.Sum(x => x.CarryForwardsBalance);
+                loanCaseDTO.LoanRegistrationOutstandingLoansBalance = (LoanBalanceBookBalance + LoanBalanceCarryForwardBalance);
+                loanCaseDTO.LoanRegistrationMaximumEntitled = (loanCaseDTO.LoanRegistrationMaximumLoan - loanCaseDTO.LoanRegistrationOutstandingLoansBalance);
+                loanCaseDTO.LoanRegistrationLoanPart = loanCaseDTO.AmountApplied;
+                loanCaseDTO.LoanRegistrationInterestPart = loanCaseDTO.LoanRegistrationLoanPart * Convert.ToDecimal(((decimal)loanCaseDTO.LoanInterestAnnualPercentageRate / 100) * (loanCaseDTO.LoanRegistrationTermInMonths / 12));
+                loanCaseDTO.LoanRegistrationLoanPlusInterest = loanCaseDTO.LoanRegistrationLoanPart + loanCaseDTO.LoanRegistrationInterestPart;
 
                 //// Standing Orders
                 ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
@@ -235,12 +262,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
-            loanCaseDTO.LoanRegistrationOutstandingLoansBalance = await GetOutstandingLoansBalanceAsync();
-            loanCaseDTO.LoanRegistrationTotalIncome = await CalculateTotalIncomeAdditionsAsync();
-            loanCaseDTO.LoanRegistrationMaximumEntitled = await GetMaximumEntitledAsync();
-            loanCaseDTO.LoanRegistrationAbilityToPay = await CalculateMonthlyAbilityAsync();
-            loanCaseDTO.LoanRegistrationAbilityToPayOverLoanTerm = await CalculateAbilityOverLoanPeriodAsync();
-            loanCaseDTO.TakeHomeFixedAmount = await CalculateTwoThirdsToRepayLoanAsync();
+            //loanCaseDTO.LoanRegistrationOutstandingLoansBalance = await GetOutstandingLoansBalanceAsync(Id);
+            //loanCaseDTO.LoanRegistrationTotalIncome = await CalculateTotalIncomeAdditionsAsync(Id);
+            //loanCaseDTO.LoanRegistrationMaximumEntitled = await GetMaximumEntitledAsync(Id);
+            //loanCaseDTO.LoanRegistrationAbilityToPay = await CalculateMonthlyAbilityAsync(Id);
+            //loanCaseDTO.LoanRegistrationAbilityToPayOverLoanTerm = await CalculateAbilityOverLoanPeriodAsync(Id);
+            //loanCaseDTO.TakeHomeFixedAmount = await CalculateTwoThirdsToRepayLoanAsync(Id);
+            //loanCaseDTO.TotalLoansBalance = await CalculateTotalLoanAsync(Id);
 
             Session["Model"] = loaneeCustomer;
 
@@ -449,7 +477,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
-        
+
         SelectionList<AttachedLoanDTO> _attachedLoans;
         public SelectionList<AttachedLoanDTO> AttachedLoans
         {
@@ -468,12 +496,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-        
-        public async Task<decimal> GetOutstandingLoansBalanceAsync()
+
+        public async Task<decimal> GetOutstandingLoansBalanceAsync(Guid Id)
         {
             var result = 0m;
 
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase != null)
             {
@@ -525,15 +553,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        public async Task<decimal> GetMaximumEntitledAsync()
+        public async Task<decimal> GetMaximumEntitledAsync(Guid Id)
         {
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             decimal maximumEntitled = MaximumLoan;
 
             if (selectedLoanCase != null && !selectedLoanCase.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement)
             {
-                var outstandingBalance = await GetOutstandingLoansBalanceAsync();
+                var outstandingBalance = await GetOutstandingLoansBalanceAsync(Id);
                 maximumEntitled += outstandingBalance;
             }
 
@@ -553,12 +581,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-        
+
         private decimal _totalIncomeAdditions;
 
-        public async Task<decimal> CalculateTotalIncomeAdditionsAsync()
+        public async Task<decimal> CalculateTotalIncomeAdditionsAsync(Guid Id)
         {
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase != null)
             {
@@ -627,18 +655,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
         private decimal _monthlyAbility;
 
-        public async Task<decimal> CalculateMonthlyAbilityAsync()
+        public async Task<decimal> CalculateMonthlyAbilityAsync(Guid Id)
         {
             var result = 0m;
 
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase != null)
             {
                 switch ((LoanProductSection)selectedLoanCase.LoanRegistrationLoanProductSection)
                 {
                     case LoanProductSection.BOSA:
-                        result = NetIncome + (await CalculateTotalIncomeAdditionsAsync()) - (await CalculateTotalIncomeDeductionsAsync());
+                        result = NetIncome + (await CalculateTotalIncomeAdditionsAsync(Id)) - (await CalculateTotalIncomeDeductionsAsync());
                         break;
                     case LoanProductSection.FOSA:
                         result = NetIncome;
@@ -682,11 +710,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
         private decimal _twoThirdsToRepayLoan;
 
-        public async Task<decimal> CalculateTwoThirdsToRepayLoanAsync()
+        public async Task<decimal> CalculateTwoThirdsToRepayLoanAsync(Guid Id)
         {
             var result = 0m;
 
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase != null)
             {
@@ -696,13 +724,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         result = Math.Round(
                             Convert.ToDecimal(((100d - selectedLoanCase.TakeHomePercentage) * Convert.ToDouble(NetIncome)) / 100),
                             4)
-                            + await CalculateTotalIncomeAdditionsAsync()
+                            + await CalculateTotalIncomeAdditionsAsync(Id)
                             - await CalculateTotalIncomeDeductionsAsync();
                         break;
 
                     case ChargeType.FixedAmount:
                         result = (NetIncome - selectedLoanCase.TakeHomeFixedAmount)
-                            + await CalculateTotalIncomeAdditionsAsync()
+                            + await CalculateTotalIncomeAdditionsAsync(Id)
                             - await CalculateTotalIncomeDeductionsAsync();
                         break;
 
@@ -718,15 +746,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
         private decimal _abilityOverLoanPeriod;
 
-        public async Task<decimal> CalculateAbilityOverLoanPeriodAsync()
+        public async Task<decimal> CalculateAbilityOverLoanPeriodAsync(Guid Id)
         {
             var result = 0m;
 
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase != null)
             {
-                var twoThirdsToRepayLoan = await CalculateTwoThirdsToRepayLoanAsync();
+                var twoThirdsToRepayLoan = await CalculateTwoThirdsToRepayLoanAsync(Id);
                 result = twoThirdsToRepayLoan * selectedLoanCase.LoanRegistrationTermInMonths;
             }
 
@@ -775,9 +803,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         // Total Loan
-        public async Task<decimal> CalculateTotalLoanAsync()
+        public async Task<decimal> CalculateTotalLoanAsync(Guid Id)
         {
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase == null)
             {
@@ -786,14 +814,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
             // Calculate AbilityOverLoanPeriod (this needs to be defined earlier in your code)
-            TotalLoan = (await CalculateAbilityOverLoanPeriodAsync());
+            TotalLoan = (await CalculateAbilityOverLoanPeriodAsync(Id));
 
             // Calculate LoanPrincipal using the asynchronous service call
             _loanPrincipal = (decimal)await _channelService.PVAsync(
                 selectedLoanCase.LoanRegistrationTermInMonths,
                 selectedLoanCase.LoanRegistrationPaymentFrequencyPerYear,
                 selectedLoanCase.LoanInterestAnnualPercentageRate,
-                -(double)await CalculateTwoThirdsToRepayLoanAsync(),
+                -(double)await CalculateTwoThirdsToRepayLoanAsync(Id),
                 0d,
                 selectedLoanCase.LoanRegistrationPaymentDueDate
             );
