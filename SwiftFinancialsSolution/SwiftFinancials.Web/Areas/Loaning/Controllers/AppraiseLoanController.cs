@@ -293,6 +293,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 if (existingEntry != null)
                 {
+                    loanAppraisalFactors.Remove(existingEntry);
                     return Json(new
                     {
                         success = false,
@@ -329,6 +330,47 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<ActionResult> Confirmation(LoanCaseDTO loanCaseDTO)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
+
+            TempData["print"] = "Do you want to print?";
+            Session["Form"] = loanCaseDTO;
+            return View("Appraise", loanCaseDTO);
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO)
+        {
+            loanCaseDTO = Session["Form"] as LoanCaseDTO;
+            var incomeAdjustments = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
+
+            try
+            {
+                loanCaseDTO.AppraisedDate = DateTime.Now;
+                var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
+                Session["loanCaseId"] = loanCaseDTO.Id;
+                Session["printCustomerId"] = loanCaseDTO.CustomerId;
+                //await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
+
+                TempData["Success"] = "Operation Successful";
+                return RedirectToAction("Print");
+            }
+            catch (Exception ex)
+            {
+                await ServeNavigationMenus();
+
+                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
+
+                TempData["Error"] = $"Operation Failed!\n{ex.ToString()}";
+                return View(loanCaseDTO);
+            }
+        }
+
         public async Task<ActionResult> Print()
         {
             await ServeNavigationMenus();
@@ -362,10 +404,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 {
                     allStandingOrders.AddRange(standingOrders); // Add standing orders to the collection
                 }
-                else
-                {
-                    TempData["EmptystandingOrders"] = "Selected Customer has no Standing Orders.";
-                }
             }
             ViewBag.StandingOrders = allStandingOrders;
 
@@ -377,8 +415,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 ViewBag.LoanApplications = loanApplications;
             }
-
-
 
             // repayment schedule
             var APR = loanCase.LoanInterestAnnualPercentageRate;
@@ -402,10 +438,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.PrintCustomerAccounts = LoanAccounts;
             }
 
-
-
-
-
             ViewBag.FormData = loanCaseDTO;
 
             ViewBag.APR = APR;
@@ -417,59 +449,27 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO, ObservableCollection<LoanAppraisalFactorDTO> incomeAdjustments)
+        public async Task<ActionResult> AppraiseNoPrint(LoanCaseDTO loanCaseDTO)
         {
-            var findLoanCaseDetails = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
+            loanCaseDTO = Session["Form"] as LoanCaseDTO;
+            var incomeAdjustments = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
 
-            loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
-            loanCaseDTO.LoanPurposeId = findLoanCaseDetails.LoanPurposeId;
-            loanCaseDTO.SavingsProductId = findLoanCaseDetails.SavingsProductId;
-            loanCaseDTO.AppraisedDate = DateTime.Now;
-
-            loanCaseDTO.ValidateAll();
-
-
-            if (!loanCaseDTO.HasErrors)
+            try
             {
                 var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
 
-                await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
+                //await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
 
-                TempData["Success"] = "Operation Completed Successfully.";
-
-                string message2 = string.Format(
-                              "Would you like to print?"
-                          );
-
-                DialogResult result2 = MessageBox.Show(
-                    message2,
-                    "Loan Appraisal",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                if (result2 == DialogResult.Yes)
-                {
-                    return RedirectToAction("Print");
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                TempData["Success"] = "Operation Successful";
+                return RedirectToAction("Index");
             }
-            else
+            catch (Exception ex)
             {
                 await ServeNavigationMenus();
 
-                var errorMessages = loanCaseDTO.ErrorMessages.ToString();
-
-                TempData["BugdetBalance"] = errorMessages;
-
                 ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
 
-                TempData["Fail"] = "Operation Failed!";
+                TempData["Error"] = $"Operation Failed!\n{ex.ToString()}";
                 return View(loanCaseDTO);
             }
         }
@@ -478,6 +478,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
+
+
+
+
+        // Vanguard Financials
         SelectionList<AttachedLoanDTO> _attachedLoans;
         public SelectionList<AttachedLoanDTO> AttachedLoans
         {

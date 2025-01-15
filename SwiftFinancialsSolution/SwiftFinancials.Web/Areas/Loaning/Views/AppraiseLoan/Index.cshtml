@@ -6,7 +6,7 @@
     var LoanCaseFilter = ViewBag.LoanCaseFilterSelectList as List<SelectListItem>;
     var LoanCaseStatus = ViewBag.LoanCaseStatusSelectList as List<SelectListItem>;
 }
-}
+
 
 <link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
 
@@ -131,14 +131,14 @@
 
                     @if (TempData["Success"] != null)
                     {
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function () {
+                        <script type="text/javascript">
+                            document.addEventListener('DOMContentLoaded', function () {
                                 Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success',
-                                    text: 'Operation Completed Successfully.',
-                                    confirmButtonColor: '#007bff',
-                                });
+                                    icon: 'error',
+                                    text: '@TempData["Success"]',
+                                    text: 'Operation Failed!',
+                                    confirmButtonColor: '#FF0000',
+                                })
                             });
                         </script>
                     }
