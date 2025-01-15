@@ -263,7 +263,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             ViewBag.CustomerFilter = GetCustomerFilterSelectList(string.Empty);
             ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
-
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
 
@@ -312,20 +311,34 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanGuarantorDTO.HasErrors)
             {
+                await ServeNavigationMenus();
+
+                ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
+
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
+
+                ViewBag.CustomerFilter = GetCustomerFilterSelectList(string.Empty);
+                ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+                ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+                ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+
                 var loanguarantorAttachmentHistory = await _channelService.AttachLoanGuarantorsAsync(loanGuarantorDTO.CustomerAccountAccountId, loanGuarantorDTO.AttachToId, LoanGuarantorDetails, 1234, GetServiceHeader());
                 TempData["Success"] = "Operation Completed Successfully.";
-                TempData["SweetAlertType"] = "success";
-                return RedirectToAction("Index");
+                return RedirectToAction("Create");
             }
             else
             {
-                var errorMessages = loanGuarantorDTO.ErrorMessages.ToString();
+                await ServeNavigationMenus();
+
+                var errorMessages = loanGuarantorDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
                 ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanGuarantorDTO.LoanRegistrationLoanProductSectionDescription.ToString());
                 ViewBag.customerFilter = GetCustomerFilterSelectList(loanGuarantorDTO.CustomerFilterDescription.ToString());
 
-                await ServeNavigationMenus();
+                TempData["Failed"] = $"Operation Failed!\n{errorMessage}";
 
-                return View();
+                return View(loanGuarantorDTO);
             }
         }
     }

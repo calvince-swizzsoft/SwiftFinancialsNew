@@ -165,6 +165,65 @@
         #incomeAdjustmentsdataTable tr:last-child td {
             border-bottom: none;
         }
+
+
+    /* Modal Styles */
+    #myModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    #modalContent {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        width: 300px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+        #modalContent p {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+    #modalButtons {
+        display: flex;
+        justify-content: space-between;
+    }
+
+        #modalButtons button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    .proceed-btn {
+        background-color: #28a745;
+        color: white;
+    }
+
+        .proceed-btn:hover {
+            background-color: #218838;
+        }
+
+    .cancel-btn {
+        background-color: #dc3545;
+        color: white;
+    }
+
+        .cancel-btn:hover {
+            background-color: #c82333;
+        }
 </style>
 
 <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
@@ -195,6 +254,41 @@
                 <div class="ibox-title">
                     <h2>Appraise Loan</h2>
 
+                    @if (TempData["print"] != null)
+                    {
+                        <script type="text/javascript">
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        Swal.fire({
+                                            icon: 'info',
+                                            title: '@TempData["print"]',
+                                            showCancelButton: true,
+                                            confirmButtonText: 'Yes',
+                                            cancelButtonText: 'No',
+                                            reverseButtons: false,
+                                            customClass: {
+                                                confirmButton: 'swal-confirm-button'
+                                            }
+                                        }).then((result) => {
+                                            var form = document.getElementById('LoanAppraisalForm');
+                                            if (result.isConfirmed) {
+                                                form.action = '/Loaning/AppraiseLoan/Appraise';
+                                                form.submit();
+                                            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                                form.action = '/Loaning/AppraiseLoan/AppraiseNoPrint';
+                                                form.submit();
+                                            }
+                                        });
+                                    });
+                        </script>
+                        <style>
+                            .swal-confirm-button {
+                                color: white;
+                                background-color: green !important;
+                            }
+                        </style>
+                    }
+
+
                     @if (TempData["Fail"] != null)
                     {
                         <script>
@@ -219,7 +313,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post, new { id = "LoanAppraisalForm" }))
+                    @using (Html.BeginForm("Confirmation", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post, new { id = "LoanAppraisalForm" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -243,6 +337,7 @@
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.CaseNumber, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.Id)
                                                 @Html.ValidationMessageFor(model => model.CaseNumber, "", new { @class = "text-danger" })
                                                 @Html.EditorFor(model => model.CaseNumber, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                             </div>
@@ -276,7 +371,6 @@
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.CustomerReference3)
                                                 @Html.EditorFor(model => model.CustomerReference3, new
                                                 {
                                                     htmlAttributes = new
@@ -296,6 +390,7 @@
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanProductDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.LoanProductId)
                                                 @Html.EditorFor(model => model.LoanProductDescription, new
                                            {
                                                htmlAttributes = new
@@ -373,7 +468,7 @@
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new { htmlAttributes = new { @Id = "LoanRegistrationTermInMonths", @class = "form-control", @readonly = "readonly" } })
                                                 @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -607,9 +702,6 @@
                                             </table>
                                         </div>
                                     </div>
-
-                                    <div id="MainTab8" class="tabcontent">
-                                    </div>
                                 </fieldset>
                             </div>
 
@@ -645,7 +737,6 @@
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanProductSectionDescription, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.LoanProductSectionDescription)
                                                 @Html.EditorFor(model => model.LoanProductSectionDescription, new { htmlAttributes = new { @id = "LoanProductSectionDescription", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
@@ -653,7 +744,6 @@
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationOutstandingLoansBalance, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.LoanRegistrationOutstandingLoansBalance)
                                                 @Html.EditorFor(model => model.LoanRegistrationOutstandingLoansBalance, new { htmlAttributes = new { @id = "LoanRegistrationOutstandingLoansBalance", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
@@ -661,7 +751,6 @@
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationMaximumEntitled, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.LoanRegistrationMaximumEntitled)
                                                 @Html.EditorFor(model => model.LoanRegistrationMaximumEntitled, new { htmlAttributes = new { @id = "LoanRegistrationMaximumEntitled", @class = "form-control required", @disabled = "disabled" } })
                                             </div>
                                         </div>
@@ -1020,15 +1109,25 @@
                                             </div>
 
                                             <div class="col-lg-6" style="margin-top: 20px;">
-                                                <input type="submit" id="submitFormData" class="btn btn-primary" style="width: 150px;" name="name" value="Update" />
+                                                <button id="openModalButton" type="button" class="btn btn-primary" style="width: 150px;">Update</button>
                                             </div>
                                         </div>
                                     </div>
                                 </fieldset>
                             </div>
                         </div>
-                    }
 
+
+                        <div class="modal" id="myModal">
+                            <div class="modal-content" id="modalContent">
+                                <p>Do you want to proceed?</p>
+                                <div class="modal-buttons" id="modalButtons">
+                                    <button class="proceed-btn" type="submit" id="submitFormData">Proceed</button>
+                                    <button class="cancel-btn" type="button" id="cancelButton">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -1102,6 +1201,58 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const netIncomeField = document.getElementById("NetIncome");
+            const totalDeductionsField = document.getElementById("TotalDeductions");
+            const totalAllowancesField = document.getElementById("TotalAllowances");
+            const loanTermField = document.getElementById("LoanRegistrationTermInMonths");
+
+            const abilityToPayField = document.getElementById("AbilityToPay");
+            const totalIncomeField = document.getElementById("TotalIncome");
+            const abilityToPayOverLoanTermField = document.getElementById("AbilityToPayOverLoanTerm");
+            const takeHomeFixedAmountField = document.getElementById("TakeHomeValue");
+
+            netIncomeField.addEventListener("input", function () {
+                const netIncome = parseFloat(netIncomeField.value) || 0;
+                const totalDeductions = parseFloat(totalDeductionsField?.value) || 0;
+                const totalAllowances = parseFloat(totalAllowancesField?.value) || 0;
+                const loanTerm = parseFloat(loanTermField?.value) || 1;
+
+                const abilityToPay = netIncome - totalDeductions;
+                const totalIncome = netIncome + totalAllowances;
+                const abilityToPayOverLoanTerm = abilityToPay * loanTerm;
+                const takeHomeFixedAmount = netIncome - totalDeductions;
+
+                abilityToPayField.value = abilityToPay.toFixed(2);
+                totalIncomeField.value = totalIncome.toFixed(2);
+                abilityToPayOverLoanTermField.value = abilityToPayOverLoanTerm.toFixed(2);
+                takeHomeFixedAmountField.value = takeHomeFixedAmount.toFixed(2);
+            });
+        });
+    </script>
+
+    <script>
+        const openModalButton = document.getElementById('openModalButton');
+        const modal = document.getElementById('myModal');
+        const cancelButton = document.getElementById('cancelButton');
+
+        openModalButton.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+
+        cancelButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+
 
     <script src="~/Scripts/js/navlink.js"></script>
 
@@ -1293,7 +1444,7 @@
                     $('#Description').val('');
                     $('#typeTypeDescription').val('');
                     $('#Amount').val('');
-                   
+
                     console.log('Form fields cleared');
 
                 } else {
