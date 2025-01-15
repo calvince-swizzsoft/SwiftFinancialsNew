@@ -1385,15 +1385,17 @@
             <div class="modal-body">
                 <!-- Table for Account Closure Requests -->
                 @*<div class="table-responsive" style="overflow-x: auto;">*@
-                <table id="CustomerAccountsGrid" class="customDatatableStyles footable table table-striped toggle-arrow-tiny grey-table">
-                    <tbody>
-                        <tr>
-                            <td class="dataTables_empty">Loading data from server</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="overflow-x: auto;">
+                    <table id="CustomerAccountsGrid" class="customDatatableStyles footable table table-striped toggle-arrow-tiny grey-table">
+                        <tbody>
+                            <tr>
+                                <td class="dataTables_empty">Loading data from server</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 @*</div>*@
-
+            
                 <!-- Filter Form -->
                 <div class="blue-section mt-1">
                     <form id="CustomerAccountModalFilterForm">
@@ -1601,7 +1603,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-
+<link href="~/Scripts/css/customersGrid.css" rel="stylesheet" />
     <!-- Include SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

@@ -1549,6 +1549,7 @@
     <Content Include="Scripts\css\ActionDropDown.css" />
     <Content Include="Scripts\css\BackOfficeNavigationMenu.css" />
     <Content Include="Scripts\css\CaptureSpecimenForm.css" />
+    <Content Include="Scripts\css\customersGrid.css" />
     <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\MainTabs.css" />
     <Content Include="Scripts\css\Marquee.css" />
