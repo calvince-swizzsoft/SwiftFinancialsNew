@@ -4,7 +4,7 @@
 
 <style>
 
-   
+
 
     .col-lg-2 {
         display: flex;
@@ -15,6 +15,22 @@
         @*border: 1px solid black;*@ /* Border color and style */
     }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const alertType = '@TempData["AlertType"]';
+        const alertMessage = '@TempData["AlertMessage"]';
+
+        if (alertType && alertMessage) {
+            Swal.fire({
+                icon: alertType,
+                title: alertType === 'error' ? 'Error' : (alertType === 'warning' ? 'Warning' : 'Success'),
+                text: alertMessage,
+            });
+        }
+    });
+</script>
+
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -40,30 +56,7 @@
                 <div class="ibox-title">
                     @Html.ActionLink("Create", "Create", "AccountClosure", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
 
-                    @if (TempData["SuccessMessage"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["SuccessMessage"]
 
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
-                    }
-                    @if (TempData["verifySuccess"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Success"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
-                    }
 
                     <div class="ibox-tools">
                         <a class="collapse-link">

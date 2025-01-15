@@ -31,7 +31,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindDelegatesByFilterInPageAsync(jQueryDataTablesModel.sSearch,0,int.MaxValue, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindDelegatesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -75,7 +75,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             try
             {
                 var customer = await _channelService.FindCustomerAsync(customerId, GetServiceHeader());
-                if (customer == null) 
+                if (customer == null)
                 {
                     return Json(new { success = false, message = "Customer not found." }, JsonRequestBehavior.AllowGet);
                 }
@@ -91,7 +91,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                         CustomerSerialNumber = customer.SerialNumber,
                         ZoneId = customer.StationZoneId,
                         ZoneDescription = customer.StationZoneDescription,
-
+                        FullName = customer.FullName
                     }
                 }, JsonRequestBehavior.AllowGet);
             }
@@ -137,16 +137,42 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
 
         [HttpPost]
+        public async Task<ActionResult> IsDirector(DelegateDTO delegateDTO)
+        {
+            var directors = await _channelService.FindDirectorsAsync(GetServiceHeader());
+            var customerId = delegateDTO.CustomerId;
+
+            Session["Form"] = delegateDTO;
+
+            foreach (var checkId in directors)
+            {
+                var result = checkId.CustomerId.Equals(customerId);
+                if (result)
+                    TempData["Exists"] = "Sorry the selected Customer is already a Director";
+                else
+                {
+                    await _channelService.AddDelegateAsync(delegateDTO, GetServiceHeader());
+                    TempData["SuccessMessage"] = "Delegate " + delegateDTO.CustomerFullName + " created successfully.";
+
+                    return View("Index");
+                }
+            }
+            return View("Create", delegateDTO);
+        }
+
+        [HttpPost]
         public async Task<ActionResult> Create(DelegateDTO delegateDTO)
         {
-            delegateDTO.ValidateAll();
+            if (Session["Form"] != null)
+                delegateDTO = Session["Form"] as DelegateDTO;
 
+            delegateDTO.ValidateAll();
             if (!delegateDTO.HasErrors)
             {
                 await _channelService.AddDelegateAsync(delegateDTO, GetServiceHeader());
 
-                TempData["SuccessMessage"] = "Delegate created successfully!";
-
+                TempData["SuccessMessage"] = "Delegate " + delegateDTO.CustomerFullName + " created successfully.";
+                Session["Form"] = null;
                 return RedirectToAction("Index");
             }
             else
@@ -185,7 +211,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
         }
 
-       
+
         [HttpGet]
         public async Task<JsonResult> GetDepartmentsAsync(Guid id)
         {

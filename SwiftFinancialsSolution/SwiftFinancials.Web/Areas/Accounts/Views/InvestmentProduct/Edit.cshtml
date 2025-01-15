@@ -50,97 +50,148 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Edit", "InvestmentProduct", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Edit", "InvestmentProduct", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-                        <div class="form-horizontal">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name" } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.MinimumBalance, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.MinimumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Minimum Balance" } })
-                                        @Html.ValidationMessageFor(model => model.MinimumBalance, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.MaximumBalance, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.MaximumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "MaximumBalance" } })
-                                        @Html.ValidationMessageFor(model => model.MaximumBalance, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Priority, recoveryPriorities, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.Priority)
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsPooled, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.IsPooled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
-                                        @Html.ValidationMessageFor(model => model.IsPooled, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-sm">
-                                        <div class="col-md-offset-2">
-                                            <input type="submit" value="Edit" class="btn btn-primary" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.MaturityPeriod, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.MaturityPeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maturity Period (Days)" } })
-                                        @Html.ValidationMessageFor(model => model.MaturityPeriod, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ParentId, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.ParentId)
-                                        @Html.EditorFor(model => model.ParentId, new { htmlAttributes = new { @class = "InvestmentProductsLookup form-control required", @placeholder = "Parent" } })
-                                        @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AnnualPercentageYield, htmlAttributes: new { @class = "" });
-                                        @Html.EditorFor(model => model.AnnualPercentageYield, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Yield" } })
-                                        @Html.ValidationMessageFor(model => model.AnnualPercentageYield, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsRefundable, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.IsRefundable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Refundable?" } })
-                                        @Html.ValidationMessageFor(model => model.IsRefundable, "", new { @class = "text-danger" })
-                                    </div>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.TrackArrears, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.TrackArrears, new { htmlAttributes = new { @class = "form-control", @placeholder = "Track Arrears?" } })
-                                        @Html.ValidationMessageFor(model => model.TrackArrears, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsMandatory, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.IsMandatory, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Mandatory?" } })
-                                        @Html.ValidationMessageFor(model => model.IsMandatory, "", new { @class = "text-danger" })
-                                    </div>
-
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text..." } })
                                 </div>
                             </div>
 
+                            <div class="col-md-6 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ChartOfAccountId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.ChartOfAccountId, new { @id = "ChartOfAccountId" })
+                                        @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @Id = "ChartOfAccountAccountName", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @required = "required", @placeholder = "Search Chart Of Account..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#chartofAccountLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ParentChartOfAccountNameDescription, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.ParentId, new { @id = "ParentId" })
+                                        @Html.TextBoxFor(model => model.ParentChartOfAccountNameDescription, new { @Id = "ParentChartOfAccountNameDescription", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @required = "required", @placeholder = "Search Parent Investment Product..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#parentProductsLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    <label for="selectedItem">Recovery Priority</label>
+                                    <select id="selectedItem" name="selectedItem" class="form-control" required>
+                                        <option value="0">Loans</option>
+                                        <option value="1">Investments</option>
+                                        <option value="2">Savings</option>
+                                        <option value="3">Direct Debits</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.MaturityPeriod, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.MaturityPeriod, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.MaturityPeriod, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.MaximumBalance, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.MaximumBalance, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.MaximumBalance, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.MinimumBalance, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.MinimumBalance, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.MinimumBalance, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AnnualPercentageYield, htmlAttributes: new { @class = "" });
+                                    @Html.EditorFor(model => model.AnnualPercentageYield, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AnnualPercentageYield, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsRefundable, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsRefundable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Refundable?" } })
+                                    @Html.ValidationMessageFor(model => model.IsRefundable, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.TrackArrears, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.TrackArrears, new { htmlAttributes = new { @class = "form-control", @placeholder = "Track Arrears?" } })
+                                    @Html.ValidationMessageFor(model => model.TrackArrears, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsPooled, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsPooled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
+                                    @Html.ValidationMessageFor(model => model.IsPooled, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.TransferBalanceToParentOnMembershipTermination, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.TransferBalanceToParentOnMembershipTermination, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
+                                    @Html.ValidationMessageFor(model => model.TransferBalanceToParentOnMembershipTermination, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <div class="form-group form-group-sm">
+                                    <input type="submit" style="width:200px;" value="Update" class="btn btn-primary" />
+                                </div>
+                            </div>
                         </div>
                     }
                 </div>
@@ -149,125 +200,235 @@
     </div>
 </div>
 
+<div class="modal  fade" id="chartofAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">G/L Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+
+            <br />
+            <style>
+                #chartsofAccountGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+            <table id="chartsofAccountGrid" class="table table-hover" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal  fade" id="parentProductsLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Parent Investment Product Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+
+            <br />
+            <style>
+                #parentProductsGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+            <table id="parentProductsGrid" class="table table-hover" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
 
     <script>
-               //ChartOfAccount typehead starts here
-            $('.ChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
+        $('#chartsofAccountGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("ChartOfAccountsIndex", "CreditType", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCoA(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
                 },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var chartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#ChartOfAccountId').val(ChartOfAccountId);
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-            });
-             //CostCenter typehead starts here
-            $('.CostCentersLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetCostCentersAsync", "CostCenter", new { Area = "Accounts" })',
-                        { query: query },
-                        function (CostCenters) {
-                            var newCostCentersData = [];
-                            CostCentersMap = {};
-                            $.each(CostCenters, function (i, CostCenter) {
-                                newCostCentersData.push(CostCenter.Description);
-                                CostCentersMap[CostCenter.Description] = CostCenter;
-                            });
-                            process(newCostCentersData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var costCenterId = "";
-                    CostCenterId = CostCentersMap[item].Id;
-                    $('#CostCenterId').val(CostCenterId);
-                    //console.log(CostCenterId)
-                    return item;
-                }
+                "aoColumns": [
+                    { "mDataProp": "AccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
+                    { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+                    { "mDataProp": "AccountCode", "sTitle": "Code", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
             });
 
-            //InvestmentProduct typehead starts here
-            $('.InvestmentProductsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetInvestmentProductsAsync", "InvestmentProduct", new { Area = "Accounts" })',
-                        { query: query },
-                        function (InvestmentProducts) {
-                            var newInvestmentProductsData = [];
-                            InvestmentProductsMap = {};
-                            $.each(InvestmentProducts, function (i, InvestmentProduct) {
-                                newInvestmentProductsData.push(InvestmentProduct.Description);
-                                InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
-                            });
-                            process(newInvestmentProductsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
+         function selectCoA(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Accounts/InvestmentProduct/ChartOfAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response);
+                        $('#ChartOfAccountId').val(response.data.ChartOfAccountId);
+                        $('#ChartOfAccountAccountName').val(response.data.ChartOfAccountAccountName);
+
+                        $('#chartofAccountLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
                     }
                 },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var InvestmentProductId = "";
-                    InvestmentProductId = InvestmentProductsMap[item].Id;
-                    $('#InvestmentProductId').val(InvestmentProductId);
-                    //console.log(InvestmentProductId)
-                    return item;
+                error: function () {
+                    alert('An error occurred while processing your request.');
                 }
             });
-          </script>
+        }
+    </script>
+
+
+
+    <script>
+        $('#parentProductsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "InvestmentProduct", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectParentProduct(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "Code", "sTitle": "Code", "sWidth": "10%" },
+                    { "mDataProp": "Description", "sTitle": "Product Name", "sWidth": "10%" },
+                    { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "5%" },
+                    { "mDataProp": "MaximumBalance", "sTitle": "Maximum Balance", "sWidth": "5%" },
+                    { "mDataProp": "PoolAmount", "sTitle": "Pool Amount", "sWidth": "5%" },
+                    { "mDataProp": "PriorityDescription", "sTitle": "Recovery Priority", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+        function selectParentProduct(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Accounts/InvestmentProduct/ParentProductLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response);
+                        $('#ParentId').val(response.data.ParentId);
+                        $('#ParentChartOfAccountNameDescription').val(response.data.ParentChartOfAccountNameDescription);
+
+                        $('#parentProductsLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
 }

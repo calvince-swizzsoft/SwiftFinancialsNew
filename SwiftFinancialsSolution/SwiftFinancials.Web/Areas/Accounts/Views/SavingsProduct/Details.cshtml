@@ -79,7 +79,7 @@
 
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.Priority)</strong><br>
-                                @Html.EditorFor(model => model.Priority, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                @Html.EditorFor(model => model.PriorityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
                             </p>
                         </div>
 
@@ -102,6 +102,96 @@
                                 <strong>@Html.DisplayNameFor(model => model.AnnualPercentageYield)</strong><br>
                                 @Html.EditorFor(model => model.AnnualPercentageYield, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
                             </p>
+                        </div>
+                    </div>
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#tab-product">Charges</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-charges">Exemptions</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-product" class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p>
+                                            <strong>@Html.DisplayNameFor(model => model.ChargeTypeDescription)</strong><br>
+                                            @Html.EditorFor(model => model.ChargeTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                        </p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p>
+                                            <strong>@Html.DisplayNameFor(model => model.ChargeBenefactorDescription)</strong><br>
+                                            @Html.EditorFor(model => model.ChargeBenefactorDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                        </p>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Commission Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.Commisions != null)
+                                        {
+                                            foreach (var commission in ViewBag.Commisions)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="commisionIds" value="@commission.Id" />
+                                                    </td>
+                                                    <td>@commission.Description</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div id="tab-charges" class="tab-pane">
+                                <h3>Charges</h3>
+
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Commission Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.EXCEMPTIONS != null)
+                                        {
+                                            foreach (var commission in ViewBag.EXCEMPTIONS)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="ExcemptedommisionId" value="@commission.Id" />
+                                                    </td>
+                                                    <td>@commission.Description</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 

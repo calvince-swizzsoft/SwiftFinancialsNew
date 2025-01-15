@@ -40,41 +40,43 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
 
             var pageCollectionInfo = await _channelService.FindMicroCreditOfficersByFilterInPageAsync(
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
             );
 
-            if (pageCollectionInfo != null)
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                var sortedData = sortAscending
-                    ? pageCollectionInfo.PageCollection
-                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList()
-                    : pageCollectionInfo.PageCollection
-                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(microCreditOfficerDTO => microCreditOfficerDTO.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: sortedData,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<MicroCreditOfficerDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
+
+            return this.DataTablesJson(
+                items: new List<MicroCreditOfficerDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
                 );
-            }
         }
 
 
@@ -159,18 +161,18 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(microCreditOfficerDTO);
+                TempData["ErrorMessage"] = "Validation failed. Please check the input values.";
+                return RedirectToAction("Create");
             }
 
             try
             {
-                var existingOfficers = await _channelService.FindMicroCreditOfficerAsync(microCreditOfficerDTO.EmployeeId); // Assuming the service provides this method
+                var existingOfficers = await _channelService.FindMicroCreditOfficerAsync(microCreditOfficerDTO.EmployeeId);
 
                 if (existingOfficers != null)
                 {
-                    ViewBag.Message = "Sorry, but the selected employee already exists as a microcredit officer!";
-                    ViewBag.IsSuccess = false;
-                    return View(microCreditOfficerDTO);
+                    TempData["ErrorMessage"] = "Sorry, but the selected employee already exists as a microcredit officer!";
+                    return RedirectToAction("Create");
                 }
 
                 var serviceHeader = GetServiceHeader();
@@ -179,21 +181,21 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                 if (createdOfficer != null)
                 {
                     TempData["SuccessMessage"] = "Micro Credit Officer created successfully!";
-                    return View("Index");
+                    return RedirectToAction("Index");
                 }
                 else
                 {
                     TempData["ErrorMessage"] = "Failed to create the Micro Credit Officer. Please try again.";
-                    return View("Index");
+                    return RedirectToAction("Create");
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.Message = "An error occurred: " + ex.Message;
-                ViewBag.IsSuccess = false;
-                return View("Index");
+                TempData["ErrorMessage"] = "An error occurred: " + ex.Message;
+                return RedirectToAction("Create");
             }
         }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -215,22 +217,21 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                 if (updateSuccess)
                 {
                     TempData["SuccessMessage"] = "Micro-credit Officer updated successfully.";
-                    return View("Index"); 
+                    return RedirectToAction("Index"); 
                 }
                 else
                 {
                     TempData["ErrorMessage"] = "Failed to update the Micro-credit Officer.";
-                    return View("Index");
+                    return RedirectToAction("Edit");
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.Message = "An error occurred: " + ex.Message;
-                ViewBag.IsSuccess = false;
-                return View("Index");
+                TempData["ErrorMessage"] = "An error occurred: " + ex.Message;
+                return RedirectToAction("Edit");
             }
 
-            
+
         }
 
 

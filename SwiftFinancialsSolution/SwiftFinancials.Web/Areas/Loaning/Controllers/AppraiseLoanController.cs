@@ -19,7 +19,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
     public class AppraiseLoanController : MasterController
     {
-
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -78,11 +77,45 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             );
         }
 
+        public async Task<ActionResult> IncomeAdjustmentsLookUp(Guid? id, IncomeAdjustmentDTO model)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View("create");
+            }
+
+            var incomeAdjustment = await _channelService.FindIncomeAdjustmentAsync(parseId, GetServiceHeader());
+            if (incomeAdjustment != null)
+            {
+                model.Id = incomeAdjustment.Id;
+                model.Description = incomeAdjustment.Description;
+                model.Type = incomeAdjustment.Type;
+                model.typeTypeDescription = incomeAdjustment.TypeDescription;
+
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        IncomeAdjustment = model.Description,
+                        Id = model.Id,
+                        Type = model.Type,
+                        TypeDescription = model.typeTypeDescription
+                    }
+                });
+            }
+
+            return Json(new { success = false, message = "Income Adjustment not found" });
+        }
 
         public async Task<ActionResult> Appraise(Guid Id, Guid? id)
         {
             await ServeNavigationMenus();
-            int caseNumber = 0;
 
             ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
 
@@ -95,43 +128,47 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var attachedLoans = await _channelService.FindAttachedLoansByLoanCaseIdAsync(parseId, GetServiceHeader());
 
-            Session["loanCaseId"] = parseId;
-
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-           
+
             var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
 
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
-            //var AttachedLoans = await FindAttachedLoans(parseId);
-
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
-
 
             if (loaneeCustomer != null)
             {
-                //loanCaseDTO.CaseNumber = loaneeCustomer.CaseNumber;
-                //loanCaseDTO.CustomerId = loaneeCustomer.CustomerId;
-                //loanCaseDTO.CustomerIndividualFirstName = loaneeCustomer.CustomerIndividualSalutationDescription + " " + loaneeCustomer.CustomerIndividualFirstName + " " + loaneeCustomer.CustomerIndividualLastName;
-                //loanCaseDTO.CustomerReference2 = loaneeCustomer.CustomerReference2;
-                //loanCaseDTO.CustomerReference1 = loaneeCustomer.CustomerReference1;
-                //loanCaseDTO.LoanProductDescription = loaneeCustomer.LoanProductDescription;
-                //loanCaseDTO.CustomerReference3 = loaneeCustomer.CustomerReference3;
-                //loanCaseDTO.LoanPurposeDescription = loaneeCustomer.LoanPurposeDescription;
-                //loanCaseDTO.LoanRegistrationMaximumAmount = loaneeCustomer.LoanRegistrationMaximumAmount;
-                //loanCaseDTO.MaximumAmountPercentage = loaneeCustomer.MaximumAmountPercentage;
-                //loanCaseDTO.AmountApplied = loaneeCustomer.AmountApplied;
-                //loanCaseDTO.LoanRegistrationTermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
-                //loanCaseDTO.BranchDescription = loaneeCustomer.BranchDescription;
-                //loanCaseDTO.Reference = loaneeCustomer.Reference;
-                //loanCaseDTO.LoanProductSectionDescription = loaneeCustomer.LoanRegistrationLoanProductSectionDescription;
-                //loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loaneeCustomer.LoanRegistrationInvestmentsMultiplier;
-
                 loanCaseDTO = loaneeCustomer;
 
+                var loanProductDetails = await _channelService.FindLoanProductAsync(loanCaseDTO.LoanProductId, GetServiceHeader());
 
+                var products = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(loanCaseDTO.CustomerId, new[] { (int)ProductCode.Savings, (int)ProductCode.Loan, (int)ProductCode.Investment },
+                   true, true, true, true, GetServiceHeader());
+                var investmentProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Investment).ToList();
+                List<decimal> iBalance = new List<decimal>();
+                foreach (var investmentsBalances in investmentProducts)
+                {
+                    iBalance.Add(investmentsBalances.BookBalance);
+                }
+                var investmentsBalance = iBalance.Sum();
+                loanCaseDTO.LoanProductInvestmentsBalance = investmentsBalance;
+                loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loanProductDetails.LoanRegistrationInvestmentsMultiplier;
+                decimal investBal = Convert.ToDecimal(investmentsBalance);
+                decimal investMultiplier = Convert.ToDecimal(loanCaseDTO.LoanRegistrationInvestmentsMultiplier);
 
-                Session["selectedLoanCase"] = loaneeCustomer;
+                loanCaseDTO.LoanRegistrationMaximumLoan = (investBal * investMultiplier);
+
+                loanCaseDTO.LoanProductSectionDescription = loanProductDetails.LoanRegistrationLoanProductSectionDescription;
+                loanCaseDTO.TakeHomeFixedAmount = loanProductDetails.TakeHomeFixedAmount;
+                var getCustomerAccountLoanProductBalances = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(loanCaseDTO.CustomerId,
+                   loanCaseDTO.LoanProductId, true, true, true, true, GetServiceHeader());
+                var LoanBalanceBookBalance = getCustomerAccountLoanProductBalances.Sum(x => x.BookBalance);
+                var LoanBalanceCarryForwardBalance = getCustomerAccountLoanProductBalances.Sum(x => x.CarryForwardsBalance);
+                loanCaseDTO.LoanRegistrationOutstandingLoansBalance = (LoanBalanceBookBalance + LoanBalanceCarryForwardBalance);
+                loanCaseDTO.LoanRegistrationMaximumEntitled = (loanCaseDTO.LoanRegistrationMaximumLoan - loanCaseDTO.LoanRegistrationOutstandingLoansBalance);
+                loanCaseDTO.LoanRegistrationLoanPart = loanCaseDTO.AmountApplied;
+                loanCaseDTO.LoanRegistrationInterestPart = loanCaseDTO.LoanRegistrationLoanPart * Convert.ToDecimal(((decimal)loanCaseDTO.LoanInterestAnnualPercentageRate / 100) * (loanCaseDTO.LoanRegistrationTermInMonths / 12));
+                loanCaseDTO.LoanRegistrationLoanPlusInterest = loanCaseDTO.LoanRegistrationLoanPart + loanCaseDTO.LoanRegistrationInterestPart;
 
                 //// Standing Orders
                 ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
@@ -184,8 +221,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 //// Collaterals...
                 // No method fetching by customerId
 
-
-
                 // Guarantors
                 var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(parseId, GetServiceHeader());
                 if (loanGuarantors != null)
@@ -227,99 +262,70 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
-
-
-
-            loanCaseDTO.LoanRegistrationOutstandingLoansBalance = await GetOutstandingLoansBalanceAsync();
-            loanCaseDTO.LoanRegistrationTotalIncome = await CalculateTotalIncomeAdditionsAsync();
-            loanCaseDTO.LoanRegistrationMaximumEntitled = await GetMaximumEntitledAsync();
-            loanCaseDTO.LoanRegistrationAbilityToPay = await CalculateMonthlyAbilityAsync();
-            loanCaseDTO.LoanRegistrationAbilityToPayOverLoanTerm = await CalculateAbilityOverLoanPeriodAsync();
-            loanCaseDTO.TakeHomeFixedAmount = await CalculateTwoThirdsToRepayLoanAsync();
+            //loanCaseDTO.LoanRegistrationOutstandingLoansBalance = await GetOutstandingLoansBalanceAsync(Id);
+            //loanCaseDTO.LoanRegistrationTotalIncome = await CalculateTotalIncomeAdditionsAsync(Id);
+            //loanCaseDTO.LoanRegistrationMaximumEntitled = await GetMaximumEntitledAsync(Id);
+            //loanCaseDTO.LoanRegistrationAbilityToPay = await CalculateMonthlyAbilityAsync(Id);
+            //loanCaseDTO.LoanRegistrationAbilityToPayOverLoanTerm = await CalculateAbilityOverLoanPeriodAsync(Id);
+            //loanCaseDTO.TakeHomeFixedAmount = await CalculateTwoThirdsToRepayLoanAsync(Id);
+            //loanCaseDTO.TotalLoansBalance = await CalculateTotalLoanAsync(Id);
 
             Session["Model"] = loaneeCustomer;
 
             return View(loanCaseDTO);
         }
 
-
-        public async Task<ActionResult> IncomeAdjustmentsLookUp(Guid? id, IncomeAdjustmentDTO model)
+        [HttpPost]
+        public async Task<JsonResult> Add(LoanCaseDTO loanCaseDTO)
         {
             await ServeNavigationMenus();
 
-            Guid parseId;
+            var loanAppraisalFactors = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
 
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            if (loanAppraisalFactors == null)
             {
-                return View("create");
+                loanAppraisalFactors = new ObservableCollection<IncomeAdjustmentDTO>();
             }
 
-            var incomeAdjustment = await _channelService.FindIncomeAdjustmentAsync(parseId, GetServiceHeader());
-            if (incomeAdjustment != null)
+            foreach (var incomeadjustment in loanCaseDTO.incomeAdjustmentDTO)
             {
-                model.Id = incomeAdjustment.Id;
-                model.Description = incomeAdjustment.Description;
-                model.Type = incomeAdjustment.Type;
-                model.typeTypeDescription = incomeAdjustment.TypeDescription;
+                var existingEntry = loanAppraisalFactors.FirstOrDefault(e => e.Id == incomeadjustment.Id);
 
-
-                return Json(new
+                if (existingEntry != null)
                 {
-                    success = true,
-                    data = new
+                    return Json(new
                     {
-                        IncomeAdjustment = model.Description,
-                        Id = model.Id,
-                        Type = model.Type,
-                        TypeDescription = model.typeTypeDescription
-                    }
-                });
+                        success = false,
+                        message = "The Selected Income Adjustment has already been added to the Income Adjustments List."
+                    });
+                }
+
+                loanAppraisalFactors.Add(incomeadjustment);
             }
 
-            return Json(new { success = false, message = "Income Adjustment not found" });
+            Session["loanAppraisalFactors"] = loanAppraisalFactors;
+
+            return Json(new { success = true, entries = loanAppraisalFactors });
         }
 
-
-
         [HttpPost]
-        public async Task<ActionResult> Add(Guid? id, LoanCaseDTO mainModel)
+        public async Task<JsonResult> Remove(Guid id)
         {
             await ServeNavigationMenus();
 
-            IncomeAdjustmentsDTOs = TempData["IncomeAdjustmentsDTOs"] as ObservableCollection<IncomeAdjustmentDTO>;
+            var loanAppraisalFactors = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
 
-            if (IncomeAdjustmentsDTOs == null)
-                IncomeAdjustmentsDTOs = new ObservableCollection<IncomeAdjustmentDTO>();
-
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            if (loanAppraisalFactors != null)
             {
-                await ServeNavigationMenus();
-
-                return Json(new
+                var entryToRemove = loanAppraisalFactors.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
                 {
-                    success = false,
-                    message = $"Could not find attached Income Adjustment."
-                });
+                    loanAppraisalFactors.Remove(entryToRemove);
+                    Session["loanAppraisalFactors"] = loanAppraisalFactors;
+                }
             }
 
-
-            foreach (var incomeAdjustmentDTO in mainModel.incomeAdjustmentDTO)
-            {
-                incomeAdjustmentDTO.Id = parseId;
-                incomeAdjustmentDTO.Description = incomeAdjustmentDTO.Description;
-                incomeAdjustmentDTO.typeTypeDescription = incomeAdjustmentDTO.typeTypeDescription;
-                incomeAdjustmentDTO.Amount = incomeAdjustmentDTO.Amount;
-                incomeAdjustmentDTO.Type = incomeAdjustmentDTO.Type;
-
-                IncomeAdjustmentsDTOs.Add(incomeAdjustmentDTO);
-
-                Session["IncomeAdjustment"] = mainModel.incomeAdjustmentDTO;
-            };
-
-            return Json(new { success = true, entries = IncomeAdjustmentsDTOs });
+            return Json(new { success = true, data = loanAppraisalFactors });
         }
 
 
@@ -410,22 +416,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
-
-
         [HttpPost]
         public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO, ObservableCollection<LoanAppraisalFactorDTO> incomeAdjustments)
         {
-            //var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
-
-            //loanDTO.AppraisedAmount = loanCaseDTO.AppraisedAmount;
-            //loanDTO.SystemAppraisalRemarks = loanCaseDTO.SystemAppraisalRemarks;
-            //loanDTO.AppraisalRemarks = loanCaseDTO.AppraisalRemarks;
-            //loanDTO.AppraisedAmountRemarks = loanCaseDTO.AppraisedAmountRemarks;
-
-            //loanCaseDTO = Session["Model"] as LoanCaseDTO;
-
-            //loanCaseDTO.AppraisalRemarks = loanCaseDTO.AppraisalRemarks;
-
             var findLoanCaseDetails = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
             loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
@@ -438,16 +431,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanCaseDTO.HasErrors)
             {
+                var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
 
-                string message = string.Format(
-                                   "Do you want to proceed with loan appraisal for: \n{0}?",
-                                       findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " +
-                                       findLoanCaseDetails.CustomerIndividualLastName.ToUpper()
-                               );
+                await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
 
-                // Show the message box with Yes/No options
-                DialogResult result = MessageBox.Show(
-                    message,
+                TempData["Success"] = "Operation Completed Successfully.";
+
+                string message2 = string.Format(
+                              "Would you like to print?"
+                          );
+
+                DialogResult result2 = MessageBox.Show(
+                    message2,
                     "Loan Appraisal",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question,
@@ -455,47 +450,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     MessageBoxOptions.ServiceNotification
                 );
 
-                if (result == DialogResult.Yes)
+                if (result2 == DialogResult.Yes)
                 {
-                    var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
-
-                    await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
-
-                    MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Appraisal", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                    //TempData["approve"] = "Loan Appraisal Successful";
-
-                    string message2 = string.Format(
-                                  "Would you like to print?"
-                              );
-
-                    // Show the message box with Yes/No options
-                    DialogResult result2 = MessageBox.Show(
-                        message2,
-                        "Loan Appraisal",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
-
-                    if (result2 == DialogResult.Yes)
-                    {
-                        return RedirectToAction("Print");
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index");
-                    }
+                    return RedirectToAction("Print");
                 }
                 else
                 {
-                    await ServeNavigationMenus();
-
-                    ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
-
-                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Appraisal", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View(loanCaseDTO);
+                    return RedirectToAction("Index");
                 }
             }
             else
@@ -508,16 +469,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
 
-                //TempData["approveError"] = "Loan Appraisal Unsuccessful";
-                MessageBox.Show(Form.ActiveForm, "Operation Unsuccessful.", "Loan Appraisal", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
+                TempData["Fail"] = "Operation Failed!";
                 return View(loanCaseDTO);
             }
         }
 
 
 
-        // Attached Loans
+
+
         SelectionList<AttachedLoanDTO> _attachedLoans;
         public SelectionList<AttachedLoanDTO> AttachedLoans
         {
@@ -532,18 +492,16 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 if (_attachedLoans != value)
                 {
                     _attachedLoans = value;
-                    //RaisePropertyChanged(() => AttachedLoans);
                 }
             }
         }
 
 
-        // Outstanding Loan Balance
-        public async Task<decimal> GetOutstandingLoansBalanceAsync()
+        public async Task<decimal> GetOutstandingLoansBalanceAsync(Guid Id)
         {
             var result = 0m;
 
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase != null)
             {
@@ -551,7 +509,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 if (attachedLoanDTOs != null && attachedLoanDTOs.Any())
                 {
-                    // Clear previous attached loans and add new ones
                     AttachedLoans.Clear();
 
                     foreach (var item in attachedLoanDTOs)
@@ -567,7 +524,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                                    + selectionItem.Item.InterestBalance
                                    + selectionItem.Item.CarryForwardsBalance;
 
-                    // Check if the loan belongs to the selected loan product
                     if (selectionItem.Item.CustomerAccountCustomerAccountTypeTargetProductId == selectedLoanCase.LoanProductId)
                     {
                         if (!selectionItem.IsSelected)
@@ -585,8 +541,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return result < 0m ? 0m : result;
         }
 
-
-
         public decimal MaximumLoan
         {
             get
@@ -599,24 +553,20 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-
-        // Maximum Entitled
-        public async Task<decimal> GetMaximumEntitledAsync()
+        public async Task<decimal> GetMaximumEntitledAsync(Guid Id)
         {
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
-            // Calculate the maximum entitled amount
             decimal maximumEntitled = MaximumLoan;
 
             if (selectedLoanCase != null && !selectedLoanCase.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement)
             {
-                var outstandingBalance = await GetOutstandingLoansBalanceAsync();
+                var outstandingBalance = await GetOutstandingLoansBalanceAsync(Id);
                 maximumEntitled += outstandingBalance;
             }
 
             return maximumEntitled;
         }
-
 
         decimal _netIncome;
         public decimal NetIncome
@@ -632,12 +582,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        // Monthly Additions
         private decimal _totalIncomeAdditions;
 
-        public async Task<decimal> CalculateTotalIncomeAdditionsAsync()
+        public async Task<decimal> CalculateTotalIncomeAdditionsAsync(Guid Id)
         {
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase != null)
             {
@@ -663,9 +612,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-
-
-        // Monthly Deductions
         private decimal _totalIncomeDeductions;
 
         public async Task<decimal> CalculateTotalIncomeDeductionsAsync()
@@ -707,23 +653,20 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-
-
-        // Monthly Ability
         private decimal _monthlyAbility;
 
-        public async Task<decimal> CalculateMonthlyAbilityAsync()
+        public async Task<decimal> CalculateMonthlyAbilityAsync(Guid Id)
         {
             var result = 0m;
 
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase != null)
             {
                 switch ((LoanProductSection)selectedLoanCase.LoanRegistrationLoanProductSection)
                 {
                     case LoanProductSection.BOSA:
-                        result = NetIncome + (await CalculateTotalIncomeAdditionsAsync()) - (await CalculateTotalIncomeDeductionsAsync());
+                        result = NetIncome + (await CalculateTotalIncomeAdditionsAsync(Id)) - (await CalculateTotalIncomeDeductionsAsync());
                         break;
                     case LoanProductSection.FOSA:
                         result = NetIncome;
@@ -736,12 +679,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             _monthlyAbility = result;
 
             return _monthlyAbility;
-            // Notify that the MonthlyAbility property has changed
         }
 
-
-
-        // Take Home Retention
         public decimal TakeHomeRetention
         {
             get
@@ -769,16 +708,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             set { }
         }
 
-
-
-        // Two Thirds To Repay
         private decimal _twoThirdsToRepayLoan;
 
-        public async Task<decimal> CalculateTwoThirdsToRepayLoanAsync()
+        public async Task<decimal> CalculateTwoThirdsToRepayLoanAsync(Guid Id)
         {
             var result = 0m;
 
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase != null)
             {
@@ -788,13 +724,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         result = Math.Round(
                             Convert.ToDecimal(((100d - selectedLoanCase.TakeHomePercentage) * Convert.ToDouble(NetIncome)) / 100),
                             4)
-                            + await CalculateTotalIncomeAdditionsAsync()
+                            + await CalculateTotalIncomeAdditionsAsync(Id)
                             - await CalculateTotalIncomeDeductionsAsync();
                         break;
 
                     case ChargeType.FixedAmount:
                         result = (NetIncome - selectedLoanCase.TakeHomeFixedAmount)
-                            + await CalculateTotalIncomeAdditionsAsync()
+                            + await CalculateTotalIncomeAdditionsAsync(Id)
                             - await CalculateTotalIncomeDeductionsAsync();
                         break;
 
@@ -806,34 +742,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             _twoThirdsToRepayLoan = result;
 
             return _twoThirdsToRepayLoan;
-            // Notify that the TwoThirdsToRepayLoan property has changed
         }
 
-
-
-        // Ability Over Loan Period
         private decimal _abilityOverLoanPeriod;
 
-        public async Task<decimal> CalculateAbilityOverLoanPeriodAsync()
+        public async Task<decimal> CalculateAbilityOverLoanPeriodAsync(Guid Id)
         {
             var result = 0m;
 
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase != null)
             {
-                var twoThirdsToRepayLoan = await CalculateTwoThirdsToRepayLoanAsync();
+                var twoThirdsToRepayLoan = await CalculateTwoThirdsToRepayLoanAsync(Id);
                 result = twoThirdsToRepayLoan * selectedLoanCase.LoanRegistrationTermInMonths;
             }
 
             _abilityOverLoanPeriod = result;
 
             return _abilityOverLoanPeriod;
-            // Notify that the AbilityOverLoanPeriod property has changed
         }
-
-
-
 
         decimal _loanPrincipal;
         public decimal LoanPrincipal
@@ -848,8 +776,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-
-
         decimal _loanInterest;
         public decimal LoanInterest
         {
@@ -862,8 +788,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 }
             }
         }
-
-
 
         decimal _totalLoan;
         public decimal TotalLoan
@@ -878,11 +802,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-
         // Total Loan
-        public async Task<decimal> CalculateTotalLoanAsync()
+        public async Task<decimal> CalculateTotalLoanAsync(Guid Id)
         {
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
             if (selectedLoanCase == null)
             {
@@ -891,14 +814,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
             // Calculate AbilityOverLoanPeriod (this needs to be defined earlier in your code)
-            TotalLoan = (await CalculateAbilityOverLoanPeriodAsync());
+            TotalLoan = (await CalculateAbilityOverLoanPeriodAsync(Id));
 
             // Calculate LoanPrincipal using the asynchronous service call
             _loanPrincipal = (decimal)await _channelService.PVAsync(
                 selectedLoanCase.LoanRegistrationTermInMonths,
                 selectedLoanCase.LoanRegistrationPaymentFrequencyPerYear,
                 selectedLoanCase.LoanInterestAnnualPercentageRate,
-                -(double)await CalculateTwoThirdsToRepayLoanAsync(),
+                -(double)await CalculateTwoThirdsToRepayLoanAsync(Id),
                 0d,
                 selectedLoanCase.LoanRegistrationPaymentDueDate
             );
@@ -908,8 +831,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             return TotalLoan;
         }
-
-
 
         // Total Loan Case Security
         private decimal _totalLoanCaseSecurity;

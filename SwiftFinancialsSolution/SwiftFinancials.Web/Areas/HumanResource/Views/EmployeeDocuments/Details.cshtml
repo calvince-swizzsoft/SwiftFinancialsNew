@@ -26,7 +26,6 @@
 
 
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -94,7 +93,7 @@
 
 
 
-                            <!-- Expense Payables -->
+                            <!-- Employe Documents -->
                             <fieldset>
                                 <div class="card mb-4">
                                     <div class="card-body text-dark">
@@ -106,28 +105,7 @@
                                                 @Html.ValidationMessageFor(model => model.FileName, "", new { @class = "text-danger" })
                                             </div>
 
-                                            @*<div>
-                                                <h4>File Details</h4>
-                                                <p><strong>File Name:</strong> @Model.FileName</p>
-                                                <p><strong>File Type:</strong> @Model.FileMIMEType</p>
-
-                                                @if (!string.IsNullOrEmpty(ViewBag.FileDownloadUrl))
-                                                {
-                                                    <p>
-                                                        <a href="@ViewBag.FileDownloadUrl" class="btn btn-primary">Download File</a>
-                                                    </p>}
-
-                                                @if (Model.FileMIMEType != null && Model.FileMIMEType.StartsWith("image/"))
-                                                {
-                                                    <p>
-                                                        <img src="@Url.Action("Download", "EmployeeDocument", new { id = Model.Id })" alt="File Preview" style="max-width: 100%; height: auto;" />
-                                                    </p> }
-                                                else if (Model.FileMIMEType != null && Model.FileMIMEType == "application/pdf")
-                                                {
-                                                    <p>
-                                                        <iframe src="@Url.Action("Download", "EmployeeDocument", new { id = Model.Id })" width="100%" height="600px"></iframe>
-                                                    </p>}
-                                            </div>*@
+                                            
 
                                             <div class="col-lg-6">
                                                 @Html.LabelFor(model => model.EmployeeCustomerFullName, new { @class = "control-label" })
@@ -141,23 +119,55 @@
                                         <div class="row">
 
                                             <div class="col-lg-6">
-                                                    @Html.LabelFor(model => model.FileTitle, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.FileTitle, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @readonly = "" } })
-                                                    @Html.ValidationMessageFor(model => model.FileTitle, "", new { @class = "text-danger" })
-                                               
+                                                @Html.LabelFor(model => model.FileTitle, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.FileTitle, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text....", @readonly = "" } })
+                                                @Html.ValidationMessageFor(model => model.FileTitle, "", new { @class = "text-danger" })
+
                                             </div>
 
                                             <div class="col-lg-6">
-                                                    @Html.LabelFor(model => model.FileDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.TextAreaFor(model => model.FileDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text.....", @readonly = "" })
-                                                    @Html.ValidationMessageFor(model => model.FileDescription, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(model => model.FileDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.TextAreaFor(model => model.FileDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text.....", @readonly = "" })
+                                                @Html.ValidationMessageFor(model => model.FileDescription, "", new { @class = "text-danger" })
 
-                                                
+
                                             </div>
 
 
 
                                         </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.FileName, new { @class = "control-label" })
+                                                <p><strong>File Name:</strong> @Model.FileName</p>
+
+                                                @* Display the document based on its MIME type (PDF or image) *@
+                                                @if (Model.FileBuffer != null)
+                                                {
+                                                    if (Model.FileMIMEType != null && Model.FileMIMEType.StartsWith("image/"))
+                                                    {
+                                                        <p>
+                                                            <img src="data:@Model.FileMIMEType;base64,@Convert.ToBase64String(Model.FileBuffer)" alt="Employee Document" style="max-width: 100%; height: auto;" />
+                                                        </p>
+                                                    }
+                                                    else if (Model.FileMIMEType != null && Model.FileMIMEType == "application/pdf")
+                                                    {
+                                                        <p>
+                                                            <iframe src="data:@Model.FileMIMEType;base64,@Convert.ToBase64String(Model.FileBuffer)" width="100%" height="600px"></iframe>
+                                                        </p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>No valid document found.</p>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <p>No document available.</p>
+                                                }
+                                            </div>
+                                        </div>
+
 
                                     </div>
                                 </div>
@@ -409,39 +419,7 @@
     </script>
 
 
-    <script>
-        $.ajax({
-            url: '/HumanResource/Create',
-            type: 'POST',
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.message,
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then(() => {
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: response.message
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An unexpected error occurred.'
-                });
-            }
-        });
-
-
-    </script>
+    
 
 
 
@@ -542,15 +520,7 @@
                 border-color: #bd2130;
             }
 
-        /* Ensure no border between tabs and tab content */
-        .nav-tabs {
-            border-bottom: none; /* Remove bottom border from tab navigation */
-        }
-
-            .nav-tabs .nav-link {
-                border: none; /* Remove borders from tab links */
-                border-radius: 0; /* Remove border radius for a cleaner look */
-            }
+       
 
         .tab-content {
             border-top: 1px solid #ddd; /* Add a subtle border if needed */

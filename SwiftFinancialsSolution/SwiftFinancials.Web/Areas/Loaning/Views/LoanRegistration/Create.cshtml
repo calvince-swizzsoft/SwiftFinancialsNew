@@ -11,6 +11,18 @@
     var recordStatus = ViewBag.recordStatus as List<SelectListItem>;
     var customerFilter = ViewBag.customerFilter as List<SelectListItem>;
     var loanProductSection = ViewBag.LoanProductSection as List<SelectListItem>;
+
+    var LoaneeRequired = TempData["LoaneeRequired"] as string;
+    var EmptyLoanProduct = TempData["EmptyLoanProduct"] as string;
+    var GuarantorExists = TempData["GuarantorExists"] as string;
+    var AmountGuaranteedGreater = TempData["AmountGuaranteedGreater"] as string;
+    var MaximumGuaranteedExceeded = TempData["MaximumGuaranteedExceeded"] as string;
+    var LoanProductRequired = TempData["LoanProductRequired"] as string;
+    var notSelfGuarantee = TempData["notSelfGuarantee"] as string;
+    var lessMinimumMembershipPeriod = TempData["lessMinimumMembershipPeriod"] as string;
+    var totalAmountGuaranteedLessAmountApplied = TempData["totalAmountGuaranteed<AmountApplied"] as string;
+
+    var AmountGuaranteedLessThan0 = TempData["AmountGuaranteedLessThan0"] as string;
 }
 
 <style>
@@ -503,6 +515,65 @@
         #dataTableEntries tr:last-child td {
             border-bottom: none;
         }
+
+
+    /* Modal Styles */
+    #myModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    #modalContent {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        width: 300px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+        #modalContent p {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+    #modalButtons {
+        display: flex;
+        justify-content: space-between;
+    }
+
+        #modalButtons button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    .proceed-btn {
+        background-color: #28a745;
+        color: white;
+    }
+
+        .proceed-btn:hover {
+            background-color: #218838;
+        }
+
+    .cancel-btn {
+        background-color: #dc3545;
+        color: white;
+    }
+
+        .cancel-btn:hover {
+            background-color: #c82333;
+        }
 </style>
 
 
@@ -529,6 +600,152 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Register Loan</h2>
+                    <script>
+                            $(document).ready(function () {
+                                @if (!string.IsNullOrEmpty(AmountGuaranteedLessThan0))
+                                {
+                                    <text>
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error!',
+                                            text: '@AmountGuaranteedLessThan0',
+                                            confirmButtonColor: '#007bff',
+                                        });
+                                    </text>
+                                }
+                            });
+                    </script>
+
+
+                    @if (LoaneeRequired != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Loanee Required!',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (EmptyLoanProduct != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Loan Product Required!',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (GuarantorExists != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'The selected Customer has already been added to the Loan Guarantors List!',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (AmountGuaranteedGreater != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Amount Guaranteed must be less than or equal to Total Shares minus Committed Shares!',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (MaximumGuaranteedExceeded != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Maximum Guarantees must not be exceeded!',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (LoanProductRequired != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Loan Product Required!',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (notSelfGuarantee != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'The selected Loan Product does not allow Self Guarantee!',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
+                    <script>
+                            $(document).ready(function () {
+                                @if (!string.IsNullOrEmpty(lessMinimumMembershipPeriod))
+                                {
+                                    <text>
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error!',
+                                            text: '@lessMinimumMembershipPeriod',
+                                            confirmButtonColor: '#007bff',
+                                        });
+                                    </text>
+                                }
+                            });
+                    </script>
+
+
+                    @if (totalAmountGuaranteedLessAmountApplied != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@totalAmountGuaranteedLessAmountApplied',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -947,7 +1164,7 @@
                                 <fieldset>
                                     <div class="row">
                                         <div class="col-md-4 form-group">
-                                            @Html.LabelFor(model => model.Guarantor[0].GuarantorFullName, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.Guarantor[0].GuarantorFullName, "Guarantor", new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
                                                 @Html.HiddenFor(model => model.Guarantor[0].GuarantorId, new { @id = "GuarantorId" })
                                                 @Html.TextBoxFor(model => model.Guarantor[0].GuarantorFullName, new { @id = "Guarantor", @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @placeholder = "Search Guarantor..." })
@@ -961,7 +1178,6 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].GuarantorEmployerDescription, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Guarantor[0].GuarantorEmployerDescription, new { htmlAttributes = new { @id = "GuarantorEmployer", @class = "form-control required entry-field", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.Guarantor[0].GuarantorEmployerDescription, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
@@ -969,7 +1185,6 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].GuarantorStationDescription, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Guarantor[0].GuarantorStationDescription, new { htmlAttributes = new { @id = "GuarantorStation", @class = "form-control required entry-field", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.Guarantor[0].GuarantorStationDescription, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -980,7 +1195,6 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].GuarantorSerialNumber, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Guarantor[0].GuarantorSerialNumber, new { htmlAttributes = new { @id = "GuarantorSerialNumber", @class = "form-control required entry-field", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.Guarantor[0].GuarantorSerialNumber, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
@@ -988,7 +1202,6 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].GuarantorIdentificationNumber, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Guarantor[0].GuarantorIdentificationNumber, new { htmlAttributes = new { @id = "GuarantorIndividualIdentityCardNumber", @class = "form-control required entry-field", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.Guarantor[0].GuarantorIdentificationNumber, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
@@ -996,7 +1209,6 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].GuarantorPayrollNumber, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Guarantor[0].GuarantorPayrollNumber, new { htmlAttributes = new { @id = "GuarantorPayrollNumber", @class = "form-control required entry-field", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.Guarantor[0].GuarantorPayrollNumber, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -1006,7 +1218,6 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].TotalShares, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Guarantor[0].TotalShares, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required entry-field", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.Guarantor[0].TotalShares, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
@@ -1014,7 +1225,6 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].CommittedShares, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Guarantor[0].CommittedShares, new { htmlAttributes = new { @id = "CommittedShares", @class = "form-control required entry-field", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.Guarantor[0].CommittedShares, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
@@ -1022,7 +1232,6 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].AppraisalFactor, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Guarantor[0].AppraisalFactor, new { htmlAttributes = new { @id = "AppraisalFactor", @class = "form-control required entry-field", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.Guarantor[0].AppraisalFactor, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
@@ -1030,7 +1239,6 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].AmountPledged, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Guarantor[0].AmountPledged, new { htmlAttributes = new { @id = "AmountPledged", @class = "form-control required entry-field", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.Guarantor[0].AmountPledged, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
@@ -1039,7 +1247,6 @@
                                                 @Html.LabelFor(model => model.Guarantor[0].AmountGuaranteed, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.Guarantor[0].AmountGuaranteed, new { htmlAttributes = new { @id = "AmountGuaranteed", @class = "form-control required entry-field", @placeholder = "Kshs 0.00" } })
                                                 <span id="guarantee-error" class="text-danger" style="display:none;">Amount Guaranteed must be less than or equal to Total Shares minus Committed Shares!</span>
-                                                @Html.ValidationMessageFor(model => model.Guarantor[0].AmountGuaranteed, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -1121,17 +1328,28 @@
 
                             <div class="row">
                                 <div class="col-lg-4">
-                                    <input type="submit" id="createButton" class="btn btn-primary" value="Create" style="width: 150px;" />
+                                    <button id="openModalButton" type="button" class="btn btn-primary" style="width: 150px;">Create</button>
                                 </div>
                             </div>
                         </fieldset>
+
+
+
+                        <div class="modal" id="myModal">
+                            <div class="modal-content" id="modalContent">
+                                <p>Do you want to proceed?</p>
+                                <div class="modal-buttons" id="modalButtons">
+                                    <button class="proceed-btn" type="submit" id="createButton">Proceed</button>
+                                    <button class="cancel-btn" type="button" id="cancelButton">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
                     }
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 
 <div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -1478,10 +1696,28 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.7-beta.31/inputmask.min.js"></script>*@
-
     <script src="~/Scripts/js/navlink.js"></script>
     <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
+
+    <script>
+        const openModalButton = document.getElementById('openModalButton');
+        const modal = document.getElementById('myModal');
+        const cancelButton = document.getElementById('cancelButton');
+
+        openModalButton.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+
+        cancelButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -1585,7 +1821,7 @@
 
                         $('#guarantorLookupModal').modal('hide');
                     } else {
-                        alert(response.message);
+                        //alert(response.message);
                     }
                 },
                 error: function () {
@@ -1638,7 +1874,7 @@
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Could not Add Guarantor to List',
+                        title: 'Could not Add Guarantor to List!',
                         text: response.message,
                         timer: 8000,
                         showConfirmButton: true
@@ -1699,10 +1935,6 @@
 
     </script>
 
-
-
-
-
     <script>
         $(document).ready(function () {
             $('#ReceivedDate').inputmask('99-99-9999', {
@@ -1719,6 +1951,7 @@
             });
         });
     </script>
+
 
     <script>
         document.getElementById('createButton').addEventListener('click', function () {
@@ -1806,6 +2039,7 @@
                 data: { Id: id },
                 success: function (response) {
                     if (response.success) {
+
                         $('#CustomerId').val(response.data.CustomerId);
                         $('#CustomerIndividualFirstName').val(response.data.CustomerIndividualFirstName);
                         $('#CustomerStationZoneDivisionEmployerDescription').val(response.data.CustomerStationZoneDivisionEmployerDescription);
@@ -2074,7 +2308,7 @@
 
                         $('#loanProductsLookupModal').modal('hide');
                     } else {
-                        alert(response.message);
+                        /*alert(response.message);*/
                     }
                 },
                 error: function () {

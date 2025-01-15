@@ -18,6 +18,8 @@ namespace Domain.MainBoundedContext.HumanResourcesModule.Aggregates.EmployeeDocu
         public string FileDescription { get; set; }
 
         public string FileMIMEType { get; set; }
+        public byte[] FileBuffer { get; set; }
+
 
         public virtual File File { get; set; }
     }

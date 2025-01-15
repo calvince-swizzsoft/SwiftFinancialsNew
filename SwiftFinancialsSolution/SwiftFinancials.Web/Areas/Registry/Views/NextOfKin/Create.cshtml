@@ -52,7 +52,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white tex">
                     @using (Html.BeginForm("Create", "NextOfKin", new { Area = "Registry" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -81,8 +81,8 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="CustomerDTO_Reference1">Account Number</label>
-                                        <input type="text" id="CustomerDTO_Reference1" class="form-control" readonly />
+                                        <label for="CustomerDTO_Reference3">File Number</label>
+                                        <input type="text" id="CustomerDTO_Reference3" class="form-control" readonly />
                                     </div>
 
                                     <div class="form-group">
@@ -121,349 +121,444 @@
                                         <input type="text" id="CustomerDTO_IndividualPayrollNumbers" class="form-control" readonly />
                                     </div>
 
-                                    <div class="form-group">
-                                        <label for="CustomerDTO_Reference3">File Number</label>
-                                        <input type="text" id="CustomerDTO_Reference3" class="form-control" readonly />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <h1>NextOfKin Details</h1>
-
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.SalutationDescription)
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.SalutationDescription, salutations, new { @class = "form-control input-md", id = "SalutationDescription" })
-                                            @Html.ValidationMessageFor(model => model.SalutationDescription)
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.FirstName)
-                                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = " ",  id = "FirstName" } })
-                                        @Html.ValidationMessageFor(model => model.FirstName)
-                                    </div>
-
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.IdentityCardType)
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.IdentityCardType, identityCardTypes, new { @class = "form-control input-md", id = "IdentityCardType" })
-                                            @Html.ValidationMessageFor(model => model.IdentityCardType)
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.AddressStreet)
-                                        @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = " ",  id = "AddressStreet" } })
-                                        @Html.ValidationMessageFor(model => model.AddressStreet)
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.AddressLandLine)
-                                        @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", id = "AddressLandLine" } })
-                                        @Html.ValidationMessageFor(model => model.AddressLandLine)
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.GenderDescription)
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.GenderDescription, genders, new { @class = "form-control input-md", id = "GenderDescription" })
-                                            @Html.ValidationMessageFor(model => model.GenderDescription)
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.LastName)
-                                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", id = "LastName" } })
-                                        @Html.ValidationMessageFor(model => model.LastName)
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.IdentityCardNumber)
-                                        @Html.EditorFor(model => model.IdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", id = "IdentityCardNumber" } })
-                                        @Html.ValidationMessageFor(model => model.IdentityCardNumber)
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.AddressCity)
-                                        @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", id = "AddressCity" } })
-                                        @Html.ValidationMessageFor(model => model.AddressCity)
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.AddressMobileLine)
-                                        @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", id = "AddressMobileLine" } })
-                                        @Html.ValidationMessageFor(model => model.AddressMobileLine)
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.RelationshipDescription)
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.RelationshipDescription, Relationships, new { @class = "form-control input-md", id = "RelationshipDescription" })
-                                            @Html.ValidationMessageFor(model => model.RelationshipDescription)
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.NominatedPercentage)
-                                        @Html.EditorFor(model => model.NominatedPercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", id = "NominatedPercentage" } })
-                                        @Html.ValidationMessageFor(model => model.NominatedPercentage)
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.AddressPostalCode)
-                                        @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", id = "AddressPostalCode" } })
-                                        @Html.ValidationMessageFor(model => model.AddressPostalCode)
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.AddressEmail)
-                                        @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", id = "AddressEmail" } })
-                                        @Html.ValidationMessageFor(model => model.AddressEmail)
-                                    </div>
-
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.Remarks)
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", id = "Remarks" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks)
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Add to Table Button -->
-                            <button type="button" id="addEntryButton" class="btn btn-primary">Add to Table</button>
-
-                            <!-- Table Section -->
-                            <table id="entryTable" class="table table-bordered mt-12">
-                                <thead>
-                                    <tr>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Street</th>
-                                        <th>Identity Card Number</th>
-                                        <th>Mobile Line</th>
-                                        <th>City</th>
-                                        <th>Land Line</th>
-                                        <th>Nominated Percentage</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Dynamic Rows Will Be Added Here -->
-                                </tbody>
-                            </table>
-
-                            <div id="errorPercentage" class="text-danger" style="display: none;">Total Nominated Percentage must be exactly 100%.</div>
-
-                            <div class="form-group form-group-sm">
-                                <div class="col-md-offset-2 col-md-10">
-                                    <button id="submitData" class="btn btn-primary">Submit Data</button>
+                                   
                                 </div>
                             </div>
 
                         </div>
                     }
-                </div>
-            </div>
-        </div>
 
+                    <h3>Next Of Kin Details</h3>
 
-        <div class="modal fade" id="customerLookup" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary">
-                        <h3 class="font-bold">
-                            Customers Lookup
-                            <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
-                        </h3>
-                    </div>
-                    <div class="modal-body">
-                        <table id="CustomersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    @using (Html.BeginForm("SaveNextOfKin", "Nextofkin", new { Area = "Registry" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <!-- First Column -->
+                            <div class="col-lg-4">
+                                <!-- Salutation -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.SalutationDescription)
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.SalutationDescription, salutations, new { @class = "form-control input-md", id = "SalutationDescription" })
+                                        @Html.ValidationMessageFor(model => model.SalutationDescription)
+                                    </div>
+                                </div>
+                                <!-- First Name -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.FirstName)
+                                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", id = "FirstName" } })
+                                    @Html.ValidationMessageFor(model => model.FirstName)
+                                </div>
+                                <!-- Identity Card Type -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.IdentityCardType)
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.IdentityCardType, identityCardTypes, new { @class = "form-control input-md", id = "IdentityCardType" })
+                                        @Html.ValidationMessageFor(model => model.IdentityCardType)
+                                    </div>
+                                </div>
+                                <!-- Address Street -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressStreet)
+                                    @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", id = "AddressStreet" } })
+                                    @Html.ValidationMessageFor(model => model.AddressStreet)
+                                </div>
+                                <!-- Address Landline -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressLandLine)
+                                    @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", id = "AddressLandLine" } })
+                                    @Html.ValidationMessageFor(model => model.AddressLandLine)
+                                </div>
+                            </div>
+                            <!-- Second Column -->
+                            <div class="col-lg-4">
+                                <!-- Gender -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.GenderDescription)
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.GenderDescription, genders, new { @class = "form-control input-md", id = "GenderDescription" })
+                                        @Html.ValidationMessageFor(model => model.GenderDescription)
+                                    </div>
+                                </div>
+                                <!-- Last Name -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.LastName)
+                                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", id = "LastName" } })
+                                    @Html.ValidationMessageFor(model => model.LastName)
+                                </div>
+                                <!-- Identity Card Number -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.IdentityCardNumber)
+                                    @Html.EditorFor(model => model.IdentityCardNumber, new { htmlAttributes = new { @class = "form-control", id = "IdentityCardNumber" } })
+                                    @Html.ValidationMessageFor(model => model.IdentityCardNumber)
+                                </div>
+                                <!-- Address City -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressCity)
+                                    @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", id = "AddressCity" } })
+                                    @Html.ValidationMessageFor(model => model.AddressCity)
+                                </div>
+                                <!-- Address Mobile Line -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressMobileLine)
+                                    @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", id = "AddressMobileLine" } })
+                                    @Html.ValidationMessageFor(model => model.AddressMobileLine)
+                                </div>
+                            </div>
+                            <!-- Third Column -->
+                            <div class="col-lg-4">
+                                <!-- Relationship -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.RelationshipDescription)
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.RelationshipDescription, Relationships, new { @class = "form-control input-md", id = "RelationshipDescription" })
+                                        @Html.ValidationMessageFor(model => model.RelationshipDescription)
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.NominatedPercentage)
+                                    @Html.EditorFor(model => model.NominatedPercentage, new { htmlAttributes = new { @class = "form-control", id = "NominatedPercentage", maxlength = "3" } })
+                                    @Html.ValidationMessageFor(model => model.NominatedPercentage)
+                                </div>
+
+                                <!-- Address Postal Code -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressPostalCode)
+                                    @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", id = "AddressPostalCode" } })
+                                    @Html.ValidationMessageFor(model => model.AddressPostalCode)
+                                </div>
+                                <!-- Address Email -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressEmail)
+                                    @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", id = "AddressEmail" } })
+                                    @Html.ValidationMessageFor(model => model.AddressEmail)
+                                </div>
+                                <!-- Remarks -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.Remarks)
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", id = "Remarks" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks)
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="addDetailsButton" class="btn btn-secondary">Add Details</button>
+
+                        <!-- Data Table for Next of Kin Details -->
+                        <table class="table table-bordered" id="nextOfKinTable">
                             <thead>
                                 <tr>
-                                    <th>Customer FullName</th>
-                                    <th>Nationality</th>
-                                    <th>Identity CardNumber</th>
-                                    <th>Gender</th>
-                                    <th>Marital Status</th>
-                                    <th>Created Date</th>
-                                    <th>Action</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+
+                                    <th>Identity Card Number</th>
+                                    <th>Address</th>
+                                    <th>City</th>
+                                    <th>Postal Code</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Remarks</th>
+                                    <th>Nominated Percentage</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="dataTables_empty">Loading data from server</td>
-                                </tr>
+                                <!-- Rows will be appended dynamically here -->
                             </tbody>
                         </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    </div>
+
+                    }
+
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
+                        $(document).ready(function () {
+                            $("#addDetailsButton").click(function () {
+                                const formData = {
+                                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                                    SalutationDescription: $("#SalutationDescription").val(),
+                                    FirstName: $("#FirstName").val(),
+                                    LastName: $("#LastName").val(),
+                                    GenderDescription: $("#GenderDescription").val(),
+                                    RelationshipDescription: $("#RelationshipDescription").val(),
+                                    IdentityCardType: $("#IdentityCardType").val(),
+                                    IdentityCardNumber: $("#IdentityCardNumber").val(),
+                                    AddressStreet: $("#AddressStreet").val(),
+                                    AddressCity: $("#AddressCity").val(),
+                                    AddressPostalCode: $("#AddressPostalCode").val(),
+                                    AddressEmail: $("#AddressEmail").val(),
+                                    AddressMobileLine: $("#AddressMobileLine").val(),
+                                    Remarks: $("#Remarks").val(),
+                                    NominatedPercentage: $("#NominatedPercentage").val()
+                                };
+
+                                $.ajax({
+                                    url: '/Registry/Nextofkin/SaveNextOfKin',
+                                    type: 'POST',
+                                    data: formData,
+                                    success: function () {
+                                        $("#nextOfKinTable tbody").append(`
+                                                                                                                                                                                                                                                                                                                <tr>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.FirstName}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.LastName}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.IdentityCardNumber}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressStreet}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressCity}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressPostalCode}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressEmail}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressMobileLine}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.Remarks}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.NominatedPercentage}</td>
+                                                                                                                                                                                                                                                                                                                </tr>
+                                                                                                                                                                                                                                                                                                            `);
+                                        $('form')[0].reset();
+                                    },
+                                    error: function () {
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+
+                    <button type="submit" id="create" class="btn btn-primary">Create</button>
+
                 </div>
             </div>
+
         </div>
+    </div>
+</div>
+
+<div class="modal fade" id="customerLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Customers Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="CustomersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Customer FullName</th>
+                            <th>Nationality</th>
+                            <th>Identity CardNumber</th>
+                            <th>Gender</th>
+                            <th>Marital Status</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-        @section Styles{
-            @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-            @Styles.Render("~/plugins/wizardStepsStyles")
-            @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-            @Styles.Render("~/plugins/awesomeCheckboxStyles")
-            @Styles.Render("~/plugins/clockpickerStyles")
-            @Styles.Render("~/plugins/dateRangeStyles")
-            @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-            @Styles.Render("~/plugins/switcheryStyles")
-            @Styles.Render("~/plugins/jasnyBootstrapStyles")
-            @Styles.Render("~/plugins/nouiSliderStyles")
-            @Styles.Render("~/plugins/dataPickerStyles")
-            @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-            @Styles.Render("~/plugins/imagecropperStyles")
-            @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-            @Styles.Render("~/plugins/select2Styles")
-            @Styles.Render("~/plugins/touchSpinStyles")
-            @Styles.Render("~/plugins/tagInputsStyles")
-            @Styles.Render("~/plugins/duallistStyles")
-        }
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
 
-        @section Scripts{
-            @Scripts.Render("~/plugins/wizardSteps")
-            @Scripts.Render("~/plugins/validate")
-            @Scripts.Render("~/plugins/typehead")
-            @Scripts.Render("~/plugins/dataTables")
-            @Scripts.Render("~/plugins/iCheck")
-            @Scripts.Render("~/plugins/dataPicker")
-            @Scripts.Render("~/plugins/ionRange")
-            @Scripts.Render("~/plugins/nouiSlider")
-            @Scripts.Render("~/plugins/jasnyBootstrap")
-            @Scripts.Render("~/plugins/switchery")
-            @Scripts.Render("~/plugins/chosen")
-            @Scripts.Render("~/plugins/knob")
-            @Scripts.Render("~/plugins/imagecropper")
-            @Scripts.Render("~/plugins/colorpicker")
-            @Scripts.Render("~/plugins/clockpicker")
-            @Scripts.Render("~/plugins/dateRange")
-            @Scripts.Render("~/plugins/select2")
-            @Scripts.Render("~/plugins/touchSpin")
-            @Scripts.Render("~/plugins/tagInputs")
-            @Scripts.Render("~/plugins/duallist")
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+    <script>
+        $(document).ready(function () {
+            // Attach click event to the button
+            $("#create").on("click", function (e) {
+                e.preventDefault(); // Prevent default button behavior
+
+                // Serialize the form data
+                const formData = $("#nextOfKinForm").serialize();
+
+                // AJAX request
+                $.ajax({
+                    url: "/Registry/NextOfKin/Create", // Endpoint to hit
+                    type: "POST", // HTTP method
+                    data: formData, // Form data to send
+                    success: function (response) {
+                        // Handle success
+                        console.log("Success:", response);
+                        window.location.href = '/Registry/Customer/Index'; // Adjust path as needed
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.error("Error:", error);
+                        alert("An error occurred while creating Next of Kin.");
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#NominatedPercentage").on("input", function () {
+                let value = $(this).val();
+                // Remove non-numeric characters
+                value = value.replace(/\D/g, "");
+                // Trim to 3 digits
+                if (value.length > 3) {
+                    value = value.substring(0, 3);
+                }
+                $(this).val(value);
+            });
+        });
+    </script>
 
 
+    <script>
+        $(document).ready(function () {
+            $("#submitData").click(function () {
+                // Collect customer data
+                const customerData = {
+                    CustomerId: $("#CustomerDTO_Id").val(),
+                    FullName: $("#CustomerDTO_FullName").val(),
+                    Reference1: $("#CustomerDTO_Reference1").val(),
+                    IndividualIdentityCardNumber: $("#CustomerDTO_IndividualIdentityCardNumber").val(),
+                    StationZoneDivisionEmployerDescription: $("#CustomerDTO_StationZoneDivisionEmployerDescription").val(),
+                    Reference2: $("#CustomerDTO_Reference2").val(),
+                    SerialNumber: $("#CustomerDTO_SerialNumber").val(),
+                    StationDescription: $("#CustomerDTO_StationDescription").val(),
+                    IndividualPayrollNumbers: $("#CustomerDTO_IndividualPayrollNumbers").val(),
+                    Reference3: $("#CustomerDTO_Reference3").val()
+                };
 
-            <script>
-                $(document).ready(function () {
-                    $("#submitData").click(function () {
-                        // Collect customer data
-                        const customerData = {
-                            CustomerId: $("#CustomerDTO_Id").val(),
-                            FullName: $("#CustomerDTO_FullName").val(),
-                            Reference1: $("#CustomerDTO_Reference1").val(),
-                            IndividualIdentityCardNumber: $("#CustomerDTO_IndividualIdentityCardNumber").val(),
-                            StationZoneDivisionEmployerDescription: $("#CustomerDTO_StationZoneDivisionEmployerDescription").val(),
-                            Reference2: $("#CustomerDTO_Reference2").val(),
-                            SerialNumber: $("#CustomerDTO_SerialNumber").val(),
-                            StationDescription: $("#CustomerDTO_StationDescription").val(),
-                            IndividualPayrollNumbers: $("#CustomerDTO_IndividualPayrollNumbers").val(),
-                            Reference3: $("#CustomerDTO_Reference3").val()
-                        };
-
-                        // Collect table data
-                        let nextOfKinDetails = [];
-                        $("#detailsTable tbody tr").each(function () {
-                            const row = $(this);
-                            const rowData = {
-                                FirstName: row.find("td:nth-child(1)").text(),
-                                LastName: row.find("td:nth-child(2)").text(),
-                                AddressEmail: row.find("td:nth-child(3)").text(),
-                                AddressStreet: row.find("td:nth-child(4)").text(),
-                                IdentityCardNumber: row.find("td:nth-child(5)").text(),
-                                AddressMobileLine: row.find("td:nth-child(6)").text(),
-                                AddressCity: row.find("td:nth-child(7)").text(),
-                                AddressLandLine: row.find("td:nth-child(8)").text(),
-                                NominatedPercentage: row.find("td:nth-child(9)").text()
-                            };
-                            nextOfKinDetails.push(rowData);
-                        });
-
-                        // Combine customer and next of kin data
-                        const payload = {
-                            Customer: customerData,
-                            NextOfKinCollection: nextOfKinDetails
-                        };
-
-                        // Send data to the controller via AJAX
-                        $.ajax({
-                            url: '/NextOfKin/SaveCustomerAndNextOfKin', // Replace with your controller action URL
-                            method: 'POST',
-                            contentType: 'application/json',
-                            data: JSON.stringify(payload),
-                            success: function (response) {
-                                alert("Data saved successfully!");
-                            },
-                            error: function (xhr, status, error) {
-                                alert("An error occurred: " + error);
-                            }
-                        });
-                    });
+                // Collect table data
+                let nextOfKinDetails = [];
+                $("#detailsTable tbody tr").each(function () {
+                    const row = $(this);
+                    const rowData = {
+                        FirstName: row.find("td:nth-child(1)").text(),
+                        LastName: row.find("td:nth-child(2)").text(),
+                        AddressEmail: row.find("td:nth-child(3)").text(),
+                        AddressStreet: row.find("td:nth-child(4)").text(),
+                        IdentityCardNumber: row.find("td:nth-child(5)").text(),
+                        AddressMobileLine: row.find("td:nth-child(6)").text(),
+                        AddressCity: row.find("td:nth-child(7)").text(),
+                        AddressLandLine: row.find("td:nth-child(8)").text(),
+                        NominatedPercentage: row.find("td:nth-child(9)").text()
+                    };
+                    nextOfKinDetails.push(rowData);
                 });
 
-            </script>
+                // Combine customer and next of kin data
+                const payload = {
+                    Customer: customerData,
+                    NextOfKinCollection: nextOfKinDetails
+                };
 
-            <script>
-                document.getElementById('addToTable').addEventListener('click', function () {
-                    var salutaiondescription = document.getElementById('SalutationDescription').value;
-                    var firstname = document.getElementById('FirstName').value;
-                    var idcardtype = document.getElementById('IdentityCardType').value;
-                    var addressstreet = document.getElementById('AddressStreet').value;
-                    var addresslandline = document.getElementById('AddressLandLine').value;
-                    var gender = document.getElementById('GenderDescription').value;
-                    var lastname = document.getElementById('LastName').value;
-                    var idnumber = document.getElementById('IdentityCardNumber').value;
-                    var adresscity = document.getElementById('AddressCity').value;
-                    var addressmobile = document.getElementById('AddressMobileLine').value;
-                    var relationship = document.getElementById('RelationshipDescription').value;
-                    var nominated = document.getElementById('NominatedPercentage').value;
-                    var postalcode = document.getElementById('AddressPostalCode').value;
-                    var email = document.getElementById('AddressEmail').value;
-                    var remarks = document.getElementById('Remarks').value;
-
-                    if (entries.some())
-
-                        var NewEntry = {
-                            SalutationDescription: salutaiondescription,
-                            FirstName: firstname,
-                            IdentityCardType: idcardtype,
-                            AddressStreet: addressstreet,
-                            AddressLandLine: addresslandline,
-                            GenderDescription: gender,
-                            LastName: lastname,
-                            IdentityCardNumber: idnumber,
-                            AddressCity: adresscity,
-                            AddressMobileLine: addressmobile,
-                            RelationshipDescription: relationship,
-                            NominatedPercentage: nominated,
-                            AddressPostalCode: postalcode,
-                            AddressEmail: email,
-                            Remarks: remarks,
-                        };
-
+                // Send data to the controller via AJAX
+                $.ajax({
+                    url: '/NextOfKin/SaveCustomerAndNextOfKin', // Replace with your controller action URL
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(payload),
+                    success: function (response) {
+                        alert("Data saved successfully!");
+                    },
+                    error: function (xhr, status, error) {
+                        alert("An error occurred: " + error);
+                    }
                 });
+            });
+        });
+
+    </script>
+
+    <script>
+        document.getElementById('addToTable').addEventListener('click', function () {
+            var salutaiondescription = document.getElementById('SalutationDescription').value;
+            var firstname = document.getElementById('FirstName').value;
+            var idcardtype = document.getElementById('IdentityCardType').value;
+            var addressstreet = document.getElementById('AddressStreet').value;
+            var addresslandline = document.getElementById('AddressLandLine').value;
+            var gender = document.getElementById('GenderDescription').value;
+            var lastname = document.getElementById('LastName').value;
+            var idnumber = document.getElementById('IdentityCardNumber').value;
+            var adresscity = document.getElementById('AddressCity').value;
+            var addressmobile = document.getElementById('AddressMobileLine').value;
+            var relationship = document.getElementById('RelationshipDescription').value;
+            var nominated = document.getElementById('NominatedPercentage').value;
+            var postalcode = document.getElementById('AddressPostalCode').value;
+            var email = document.getElementById('AddressEmail').value;
+            var remarks = document.getElementById('Remarks').value;
+
+            if (entries.some())
+
+                var NewEntry = {
+                    SalutationDescription: salutaiondescription,
+                    FirstName: firstname,
+                    IdentityCardType: idcardtype,
+                    AddressStreet: addressstreet,
+                    AddressLandLine: addresslandline,
+                    GenderDescription: gender,
+                    LastName: lastname,
+                    IdentityCardNumber: idnumber,
+                    AddressCity: adresscity,
+                    AddressMobileLine: addressmobile,
+                    RelationshipDescription: relationship,
+                    NominatedPercentage: nominated,
+                    AddressPostalCode: postalcode,
+                    AddressEmail: email,
+                    Remarks: remarks,
+                };
+
+        });
 
 
-            </script>
+    </script>
 
-            <script>
+    <script>
 document.addEventListener('DOMContentLoaded', function () {
 
     var addEntryButton = document.getElementById('addEntryButton');
@@ -595,9 +690,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 });
-            </script>
+    </script>
 
-            <script>
+    <script>
     $(document).ready(function () {
         $('#CustomersGrid').DataTable({
             "sPaginationType": "full_numbers",
@@ -687,10 +782,10 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
-            </script>
+    </script>
 
 
 
-        }
+}
 
 

@@ -27,6 +27,8 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <script>
     $(document).ready(function () {
@@ -74,9 +76,11 @@
 
 
 
-                        @using (Html.BeginForm("Recall", "LeaveApplication", new { Area = "HumanResource" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        @using (Html.BeginForm("Recall", "LeaveApplication", new { Area = "HumanResource" }, FormMethod.Post, new { enctype = "multipart/form-data", id = "recallForm" }))
                         {
                             @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.Id)
+
                             @Html.HiddenFor(model => model.EmployeeBloodGroupDescription, new { id = "EmployeeBloodGroupDescription" })
                             @Html.HiddenFor(model => model.EmployeeId, new { id = "EmployeeId" })
                             @Html.HiddenFor(model => model.EmployeeNationalHospitalInsuranceFundNumber, new { id = "EmployeeNationalHospitalInsuranceFundNumber" })
@@ -154,11 +158,7 @@
                                     @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                 </div>
 
-                               
-
-
                                 <input type="submit" value="Update" class="btn btn-primary" />
-
                             </div>
 
 
@@ -295,10 +295,86 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+   <script>
+       $(document).ready(function () {
+           $('#recallForm').on('submit', function (e) {
+               e.preventDefault();
+
+               var form = $(this);
+               if (!form.valid()) {
+                   return false;
+               }
+
+               var formData = new FormData(this);
+
+               submitForm(formData, false);
+           });
+
+           function submitForm(formData, isConfirmed) {
+               if (isConfirmed) {
+                   formData.append('confirmed', 'true');
+               }
+
+               $.ajax({
+                   url: $('#recallForm').attr('action'),
+                   type: 'POST',
+                   data: formData,
+                   processData: false,
+                   contentType: false,
+                   success: function (response) {
+                       if (response.requireConfirmation) {
+                           Swal.fire({
+                               title: response.title,
+                               text: response.message,
+                               icon: response.icon,
+                               showCancelButton: true,
+                               confirmButtonText: 'Yes, it\'s an emergency',
+                               cancelButtonText: 'No',
+                               confirmButtonColor: '#3085d6',
+                               cancelButtonColor: '#d33'
+                           }).then((result) => {
+                               if (result.isConfirmed) {
+                                   submitForm(formData, true);
+                               } else {
+                                   Swal.fire({
+                                       title: 'Leave Recall Canceled',
+                                       text: 'You can only recall this leave after its end date or in case of an emergency.',
+                                       icon: 'info'
+                                   }).then(() => {
+                                       window.location.href = '/HumanResource/LeaveApplication/Index';
+                                   });
+                               }
+                           });
+                       } else {
+                           Swal.fire({
+                               title: response.title,
+                               text: response.message,
+                               icon: response.icon
+                           }).then(() => {
+                               if (response.success) {
+                                   window.location.href = '/HumanResource/LeaveApplication/Index';
+                               }
+                           });
+                       }
+                   },
+                   error: function () {
+                       Swal.fire({
+                           title: 'Error',
+                           text: 'An unexpected error occurred. Please try again.',
+                           icon: 'error'
+                       });
+                   }
+               });
+           }
+       });
+    </script>
+
 
     <style>
         .highlight {
-            background-color: #f0c14b; /* Light yellow color for highlighting */
+            background-color: #f0c14b; 
         }
     </style>
 
@@ -402,39 +478,9 @@
     </script>
 
 
-    @*<script>
-        $.ajax({
-            url: '/HumanResource/Approval',
-            type: 'POST',
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.message,
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then(() => {
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: response.message
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An unexpected error occurred.'
-                });
-            }
-        });
 
 
-    </script>*@
+
 
 
 

@@ -105,11 +105,26 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             await ServeNavigationMenus();
 
             var salaryPeriodDTO = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
-            //var chartOfAccount = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
             ViewBag.MonthTypeSelectList = GetMonthsAsync(string.Empty);
             ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(string.Empty);
 
             return View(salaryPeriodDTO);
+        }
+
+        public async Task<ActionResult> ViewPayroll(Guid id)
+        {
+            
+
+            await ServeNavigationMenus();
+            var salaryProcessingDTO = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
+
+            if (salaryProcessingDTO == null)
+            {
+                TempData["ErrorMessage"] = "Salary period not found.";
+                return RedirectToAction("Index");
+            }
+
+            return View(salaryProcessingDTO);
         }
 
         [HttpGet]
@@ -277,16 +292,12 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
         public async Task<ActionResult> ProcessSalary(Guid? id)
         {
-            // Load navigation menus
             await ServeNavigationMenus();
 
-            // Populate ViewBag with customer type select list
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
 
-            // Initialize SalaryProcessingDTO
             var salaryProcessingDTO = new SalaryProcessingDTO();
 
-            // Check if ID is valid
             if (id.HasValue && id != Guid.Empty)
             {
                 try
@@ -299,27 +310,23 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                     if (salaryPeriod != null)
                     {
-                        // Map retrieved data to DTO
                         salaryProcessingDTO.PostingPeriodDescription = salaryPeriod.PostingPeriodDescription;
                         salaryProcessingDTO.PostingPeriodId = salaryPeriod.PostingPeriodId;
                         salaryProcessingDTO.Remarks = salaryPeriod.Remarks;
                     }
                     else
                     {
-                        // Handle case where no salary period was found
                         TempData["ErrorMessage"] = "Customer account details could not be found.";
                         return RedirectToAction("Index");
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Log exception (if a logging system exists)
                     TempData["ErrorMessage"] = $"An error occurred while processing salary: {ex.Message}";
                     return RedirectToAction("Index");
                 }
             }
 
-            // Return the view with the prepared DTO
             return View(salaryProcessingDTO);
         }
 
@@ -384,7 +391,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 var salaryPeriods = await _channelService.FindSalaryPeriodsAsync(GetServiceHeader());
 
-                // Transform data for DataTable
                 var result = salaryPeriods.Select(sp => new
                 {
                     sp.PostingPeriodId,

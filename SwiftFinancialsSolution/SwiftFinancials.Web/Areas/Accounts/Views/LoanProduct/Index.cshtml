@@ -1,11 +1,23 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.LoanProductDTO
+
 @{
     ViewBag.Title = "Loan Products";
+
+    var loanProductSection = ViewBag.LoanProductSection as List<SelectListItem>;
 }
+
+<style>
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Loan Products</h2>
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -38,6 +50,41 @@
                         <div class="sk-double-bounce1"></div>
                         <div class="sk-double-bounce2"></div>
                     </div>
+
+                    <div class="blue-section">
+                        <form id="loanProductfilterForm">
+                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        <label for="filterType">Section</label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.LoanRegistrationLoanProductSection, loanProductSection,
+                                            new { @class = "form-control input-md", @id = "section" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-7" style="margin-top: 27px;">
+                                    <div class="form-group spacing-form-group">
+                                        <div class="input-group text-box">
+                                            @Html.TextBox("sectionValue", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "sectionValue" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1" style="margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Refresh" id="loanProductapplyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <br />
+
                     <div class="table-responsive">
                         <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
@@ -63,26 +110,29 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-    $(document).ready(function () {
-        $('#LoanProductsGrid').DataTable({
-            // Ajax settings
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts"}))",
-            "sServerMethod": "POST",
-            // Callback settings
-            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                var h = ("0" + createdDate.getHours()).slice(-2);
-                var m = ("0" + createdDate.getMinutes()).slice(-2);
-                var s = ("0" + createdDate.getSeconds()).slice(-2);
+        $(document).ready(function () {
+            $('#LoanProductsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("LoanProductIndex", "LoanProduct", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
 
-                var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                aData.CreatedDate = dt_Created;
+                "fnServerParams": function (aoData) {
+                    aoData.push({ "name": "section", "value": $('#section').val() });
+                    aoData.push({ "name": "sectionValue", "value": $('#sectionValue').val() });
+                },
 
-                // Create dropdown HTML for actions
-                var dropdownHtml = `
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var dropdownHtml = `
                     <div class="dropdown">
                         <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton${aData.Id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Action
@@ -93,32 +143,40 @@
                         </div>
                     </div>`;
 
-                // Insert the formatted dates and dropdown into the row
-                $('td:eq(3)', nRow).html(dt_Created);
-                $('td:eq(4)', nRow).html(dropdownHtml);
+                    $('td:eq(10)', nRow).html(dt_Created);
+                    $('td:eq(11)', nRow).html(dropdownHtml);
 
-                return nRow;
-            },
-            // Display settings
-            "aoColumns": [
-                { "mDataProp": "Description", "sTitle": "Loan Product Name", "sWidth": "15%" },
-                { "mDataProp": "LoanRegistrationLoanProductSectionDescription", "sTitle": "Loan Product Section", "sWidth": "15%" },
-                { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term in Months", "sWidth": "15%" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
-            ],
-            "aaSorting": [[0, "desc"]]
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "Code", "sTitle": "Code", "sWidth": "2%" },
+                    { "mDataProp": "LoanRegistrationLoanProductCategoryDescription", "sTitle": "Category", "sWidth": "5%" },
+                    { "mDataProp": "Description", "sTitle": "Loan Product Name", "sWidth": "15%" },
+                    { "mDataProp": "LoanRegistrationLoanProductSectionDescription", "sTitle": "Section", "sWidth": "2%" },
+                    { "mDataProp": "LoanInterestAnnualPercentageRate", "sTitle": "Annual Percentage Rate", "sWidth": "2%" },
+                    { "mDataProp": "LoanInterestChargeModeDescription", "sTitle": "Interest Charge Mode", "sWidth": "5%" },
+                    { "mDataProp": "LoanRegistrationMinimumAmount", "sTitle": "Minimum Principal Amount", "sWidth": "10%" },
+                    { "mDataProp": "LoanRegistrationMaximumAmount", "sTitle": "Maximum Principal Amount", "sWidth": "10%" },
+                    { "mDataProp": "LoanRegistrationInvestmentsMultiplier", "sTitle": "Investments Multiplier", "sWidth": "2%" },
+                    { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term in Months", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
+                ],
+                "aaSorting": [[0, "desc"]]
+            }
+            );
+
+            $('#loanProductfilterForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#LoanProductsGrid').DataTable().ajax.reload();
+            });
         });
-    });
 
-    $(document).ajaxStart(function () {
-        $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-    });
-
-    $(document).ajaxStop(function () {
-        $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-    });
+        $(document).ajaxStart(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+        $(document).ajaxStop(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
     </script>
-
-
 }

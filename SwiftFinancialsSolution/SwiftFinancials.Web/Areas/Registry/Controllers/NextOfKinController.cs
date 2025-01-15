@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using ServiceStack;
 using SwiftFinancials.Presentation.Infrastructure.Services;
@@ -62,7 +63,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             try
             {
                 var customer = await _channelService.FindCustomerAsync(customerId, GetServiceHeader());
-
+                Session["customer"] = customer;
                 if (customer == null)
                 {
                     return Json(new { success = false, message = "Customer not found." }, JsonRequestBehavior.AllowGet);
@@ -102,33 +103,32 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
 
-        //public async Task<ActionResult> postnextofkin(NextOfKinDTO nextOfKinDTO)
-        //{
-        //    // Assuming you want to store the customer Id in Session
-        //    await ServeNavigationMenus();
-        //    nextOfKinDTO = new
-        //    {
-        //        IndividualFirstName = customer.IndividualFirstName,
-        //        customerId = customer.Id,
-        //        IndividualLastName = customer.IndividualLastName,
-        //        FullName = customer.FullName,
-        //        StationZoneDivisionEmployerId = customer.StationZoneDivisionEmployerId,
-        //        StationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription,
-        //        IndividualIdentityCardNumber = customer.IndividualIdentityCardNumber,
-        //        IndividualPayrollNumbers = customer.IndividualPayrollNumbers,
-        //        Reference1 = customer.Reference1,
-        //        Reference2 = customer.Reference2,
-        //        Reference3 = customer.Reference3,
-        //        StationId = customer.StationId,
-        //        StationDescription = customer.StationDescription,
-        //        SerialNumber = customer.SerialNumber,
-        //        Remarks = customer.Remarks,
-        //    }
-        //    , JsonRequestBehavior.AllowGet);
-        //}
 
 
+        [HttpPost]
+        public async Task<ActionResult> SaveNextOfKin(NextOfKinDTO nextOfKinDTO)
+        {
 
+            await ServeNavigationMenus();
+            var k = Session["customer"] as CustomerDTO;
+            NextOfKinDTOs = TempData["NextOfKinDTOs"] as ObservableCollection<NextOfKinDTO>;
+            if (NextOfKinDTOs == null)
+                NextOfKinDTOs = new ObservableCollection<NextOfKinDTO>();
+
+            NextOfKinDTOs.Add(nextOfKinDTO);
+            TempData["NextOfKinDTOs"] = NextOfKinDTOs as ObservableCollection<NextOfKinDTO>;
+
+            // For simplicity, let's return the data back as a JSON response
+            return Json(new
+            {
+                success = true,
+                data = new
+                {                  
+                  k
+                }
+            }, JsonRequestBehavior.AllowGet);
+
+        }
 
 
         public async Task<ActionResult> Create()
@@ -147,39 +147,30 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(NextOfKinDTO nextOfKinDTO, ObservableCollection<NextOfKinDTO> nextOfKinCollection)
         {
-            if (Session["id"] != null)
+            
+            var customerDTO = Session["customer"] as CustomerDTO;
+            var customer = await _channelService.FindCustomerAsync(customerDTO.Id, GetServiceHeader());
+
+            NextOfKinDTOs = TempData["NextOfKinDTOs"] as ObservableCollection<NextOfKinDTO>;
+
+            if (!customer.HasErrors)
             {
-                nextOfKinDTO.CustomerId = (Guid)Session["id"];
-            }
+                var result1 = await _channelService.UpdateNextOfKinCollectionAsync(customer, NextOfKinDTOs, GetServiceHeader());
 
-            ObservableCollection<NextOfKinDTO> nextOfKinCollection1 = new ObservableCollection<NextOfKinDTO>();
-            nextOfKinCollection1.Add(nextOfKinDTO);
 
-            CustomerDTO customerDTO = new CustomerDTO();
-
-            var customer = await _channelService.FindCustomerAsync(nextOfKinDTO.CustomerId, GetServiceHeader());
-            var result1 = await _channelService.UpdateNextOfKinCollectionAsync(customer, nextOfKinCollection1, GetServiceHeader());
-
-            if (!nextOfKinDTO.HasErrors && nextOfKinCollection.All(n => !n.HasErrors))
-            {
-                var result = await _channelService.UpdateNextOfKinCollectionAsync(customerDTO, nextOfKinCollection, GetServiceHeader());
-                System.Windows.Forms.MessageBox.Show(
-                           "Next Of kin for  " + customer.FullName + " Added successfully.",
-                           "Success",
-                           System.Windows.Forms.MessageBoxButtons.OK,
-                           System.Windows.Forms.MessageBoxIcon.Information,
-                           System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                           System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                       );
-                if (result)
+                if (result1==true)
                 {
+                    TempData["NextOfKinDTOs"] = "";
+                    Session["customer"] = "";
                     TempData["SuccessMessage"] = "Next of kin created successfully!";
-                    return RedirectToAction("Index");
+                    return View("Index", "Customer", new { Area = "Registry" });
                 }
                 else
                 {
                     ModelState.AddModelError("", "An error occurred while creating the next of kin.");
                 }
+
+                return RedirectToAction("Index", "Customer", new { Area = "Registry" });
             }
             else
             {

@@ -41,7 +41,9 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<GraduatedScaleDTO> graduatedScaleDTOS;
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
         public ObservableCollection<BankBranchDTO> bankBranches;
+        public ObservableCollection<NextOfKinDTO> NextOfKinDTOs;
 
+        
 
         public ObservableCollection<OverDeductionBatchEntryDTO> OverDeductionBatchEntryDTOs;
 
@@ -386,7 +388,22 @@ namespace SwiftFinancials.Web.Controllers
             return systemTransactionType;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetsavingsProductKnownChargeTypeList(string selectedValue)
+        {
+            List<SelectListItem> savingsProductKnownChargeType = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SavingsProductKnownChargeType)).Cast<SavingsProductKnownChargeType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            savingsProductKnownChargeType.AddRange(items);
+
+            return savingsProductKnownChargeType;
+        }
 
 
         [NonAction]
@@ -2137,7 +2154,7 @@ namespace SwiftFinancials.Web.Controllers
         [NonAction]
         protected List<SelectListItem> GetMicroCreditGroupTypeSelectList(string selectedValue)
         {
-            List<SelectListItem> microCreditGroupCategories = new List<SelectListItem>();
+            List<SelectListItem> microCreditGroupTypeSelectList = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(MicroCreditGroupType)).Cast<MicroCreditGroupType>().Select(v => new SelectListItem
             {
@@ -2146,16 +2163,16 @@ namespace SwiftFinancials.Web.Controllers
                 Selected = ((int)v).ToString() == selectedValue,
             }).ToList();
 
-            microCreditGroupCategories.AddRange(items);
+            microCreditGroupTypeSelectList.AddRange(items);
 
-            return microCreditGroupCategories;
+            return microCreditGroupTypeSelectList;
         }
 
 
         [NonAction]
         protected List<SelectListItem> GetMicroCreditGroupMeetingFrequencySelectList(string selectedValue)
         {
-            List<SelectListItem> microCreditGroupMeetingFrequencyCategories = new List<SelectListItem>();
+            List<SelectListItem> microCreditGroupMeetingFrequencySelectList = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(MicroCreditGroupMeetingFrequency)).Cast<MicroCreditGroupMeetingFrequency>().Select(v => new SelectListItem
             {
@@ -2164,15 +2181,15 @@ namespace SwiftFinancials.Web.Controllers
                 Selected = ((int)v).ToString() == selectedValue,
             }).ToList();
 
-            microCreditGroupMeetingFrequencyCategories.AddRange(items);
+            microCreditGroupMeetingFrequencySelectList.AddRange(items);
 
-            return microCreditGroupMeetingFrequencyCategories;
+            return microCreditGroupMeetingFrequencySelectList;
         }
 
         [NonAction]
         protected List<SelectListItem> GetMicroCreditGroupMeetingDayOfWeekSelectList(string selectedValue)
         {
-            List<SelectListItem> microCreditGroupMeetingDayOfWeekCategories = new List<SelectListItem>();
+            List<SelectListItem> microCreditGroupMeetingDayOfWeekSelectList = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(MicroCreditGroupMeetingDayOfWeek)).Cast<MicroCreditGroupMeetingDayOfWeek>().Select(v => new SelectListItem
             {
@@ -2181,15 +2198,15 @@ namespace SwiftFinancials.Web.Controllers
                 Selected = ((int)v).ToString() == selectedValue,
             }).ToList();
 
-            microCreditGroupMeetingDayOfWeekCategories.AddRange(items);
+            microCreditGroupMeetingDayOfWeekSelectList.AddRange(items);
 
-            return microCreditGroupMeetingDayOfWeekCategories;
+            return microCreditGroupMeetingDayOfWeekSelectList;
         }
 
         [NonAction]
         protected List<SelectListItem> GetMicroCreditGroupMemberDesignationSelectList(string selectedValue)
         {
-            List<SelectListItem> microCreditGroupMemberDesignationCategories = new List<SelectListItem>();
+            List<SelectListItem> microCreditGroupMemberDesignationSelectList = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(MicroCreditGroupMemberDesignation)).Cast<MicroCreditGroupMemberDesignation>().Select(v => new SelectListItem
             {
@@ -2198,9 +2215,9 @@ namespace SwiftFinancials.Web.Controllers
                 Selected = ((int)v).ToString() == selectedValue,
             }).ToList();
 
-            microCreditGroupMemberDesignationCategories.AddRange(items);
+            microCreditGroupMemberDesignationSelectList.AddRange(items);
 
-            return microCreditGroupMemberDesignationCategories;
+            return microCreditGroupMemberDesignationSelectList;
         }
         
         
@@ -2305,6 +2322,24 @@ namespace SwiftFinancials.Web.Controllers
             KnownChargeType.AddRange(items);
 
             return KnownChargeType;
+        }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetLoanGuarantorStatusTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> LoanGuarantorStatus = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanGuarantorStatus)).Cast<LoanGuarantorStatus>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            LoanGuarantorStatus.AddRange(items);
+
+            return LoanGuarantorStatus;
         }
     }
 }

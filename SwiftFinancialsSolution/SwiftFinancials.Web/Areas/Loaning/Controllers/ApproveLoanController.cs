@@ -273,38 +273,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 if (!loanCaseDTO.HasErrors)
                 {
-                    string message = string.Format(
-                        "Do you want to proceed with loan approval for: \n{0}?",
-                        $"{findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper()} " +
-                        $"{findLoanCaseDetails.CustomerIndividualFirstName.ToUpper()} " +
-                        $"{findLoanCaseDetails.CustomerIndividualLastName.ToUpper()}"
-                    );
+                    await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
 
-                    DialogResult result = MessageBox.Show(
-                        message,
-                        "Loan Approval",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.ServiceNotification
-                    );
-
-                    if (result == DialogResult.Yes)
-                    {
-                        await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
-
-                        MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        await ServeNavigationMenus();
-                        ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanApprovalOption.ToString());
-
-                        MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                        return View(loanCaseDTO);
-                    }
+                    TempData["Success"] = "Operation Completed Successfully";
+                    return RedirectToAction("Index");
                 }
                 else
                 {
@@ -315,7 +287,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                     ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
 
-                    MessageBox.Show(Form.ActiveForm, $"Operation Unsuccessful: {errorMessage}", "Loan Approval", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    TempData["Fail"] = "Operation Failed";
 
                     return View(loanCaseDTO);
                 }

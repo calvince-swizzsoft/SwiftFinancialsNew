@@ -165,5 +165,44 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        //Dataset.
+
+        [DataMember]
+        [Display(Name = "First Name")]
+        public string SalaryCardEmployeeCustomerIndividualFirstName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Other Names")]
+        public string SalaryCardEmployeeCustomerIndividualLastName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Employee")]
+        public string SalaryCardEmployeeCustomerFullName
+        {
+            get
+            {
+                return string.Format("{0} {1} {2}", SalaryCardEmployeeCustomerIndividualSalutationDescription, SalaryCardEmployeeCustomerIndividualFirstName, SalaryCardEmployeeCustomerIndividualLastName);
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Salutation")]
+        public int SalaryCardEmployeeCustomerIndividualSalutation { get; set; }
+
+        [DataMember]
+        [Display(Name = "Salutation")]
+        public string SalaryCardEmployeeCustomerIndividualSalutationDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(Salutation), SalaryCardEmployeeCustomerIndividualSalutation) ? EnumHelper.GetDescription((Salutation)SalaryCardEmployeeCustomerIndividualSalutation) : string.Empty;
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Posting Period")]
+        public string SalaryPeriodPostingPeriodDescription { get; set; }
     }
 }

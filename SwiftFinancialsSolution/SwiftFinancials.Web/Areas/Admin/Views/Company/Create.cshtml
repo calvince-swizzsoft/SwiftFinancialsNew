@@ -62,39 +62,35 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info" style="padding: 20px;"> 
-                    @using (Html.BeginForm("Create", "Company", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" ,enctype = "multipart/form-data" ,method = "post" }))
+                <div class="ibox-content bg-white" style="padding: 20px;">
+                    @using (Html.BeginForm("Create", "Company", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form", enctype = "multipart/form-data", method = "post" }))
                     {
                         @Html.AntiForgeryToken()
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
                                 </div>
+                            </div>
+
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.LabelFor(model => model.MembershipTerminationNoticePeriod,"Termination Notice Period", htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.MembershipTerminationNoticePeriod, "", new { @class = "text-danger" })
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="font-bold">Logo</label>
-                                <div class="image-box" style="border: 1px solid #ddd; border-radius: 8px; padding: 5px; text-align: center; width: 200px; height: 200px; overflow: hidden;">
-                                    <img id="logoPreview" src="https://via.placeholder.com/150" alt="Logo Preview" style="width: 100%; height: 100%; object-fit: cover;" />
-                                </div>
-                                <input type="file" class="form-control-file mt-2" name="Companylogo" id="logoInput" style="border-radius: 5px;" accept="image/*" />
                             </div>
                         </div>
                         <script>
@@ -134,23 +130,53 @@
                                     });
                             });
                         </script>
+
                         <!-- Vision, Mission, and Motto Section -->
+                        <br />
                         <h>Vision, Mission, and Motto</h>
-                        <div class="form-group mb-4">
-                            @Html.LabelFor(model => model.Vision, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Vision, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Vision.", @required = "", @style = "border-radius: 5px;" } })
-                            @Html.ValidationMessageFor(model => model.Vision, "", new { @class = "text-danger" })
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group mb-4">
+                                    @Html.LabelFor(model => model.Vision, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.Vision, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.Vision, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group mb-4">
+                                    @Html.LabelFor(model => model.Mission, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.Mission, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.Mission, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group mb-4">
-                            @Html.LabelFor(model => model.Mission, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Mission, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Mission.", @required = "", @style = "border-radius: 5px;" } })
-                            @Html.ValidationMessageFor(model => model.Mission, "", new { @class = "text-danger" })
+
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group mb-4">
+                                    @Html.LabelFor(model => model.Motto, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.Motto, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.Motto, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.RecoveryPriority, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.DropDownListFor(model => model.RecoveryPriority, new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "DirectDebits", Value = "DirectDebits" },
+                                        new SelectListItem { Text = "Investments", Value = "Investments" },
+                                        new SelectListItem { Text = "Loans", Value = "Loans" },
+                                        new SelectListItem { Text = "Savings", Value = "Savings" }
+                                    }, new { @class = "form-control", @style = "border-radius: 5px;" })
+                                    @Html.ValidationMessageFor(model => model.RecoveryPriority, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group mb-4">
-                            @Html.LabelFor(model => model.Motto, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Motto, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Motto.", @required = "", @style = "border-radius: 5px;" } })
-                            @Html.ValidationMessageFor(model => model.Motto, "", new { @class = "text-danger" })
-                        </div>
+
 
                         <script>
                             document.getElementById('logoInput').addEventListener('change', function (event) {
@@ -167,29 +193,20 @@
                             });
                         </script>
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.RecoveryPriority, htmlAttributes: new { @class = "font-bold" })
-                            @Html.DropDownListFor(model => model.RecoveryPriority, new List<SelectListItem>
-                            {
-                                new SelectListItem { Text = "DirectDebits", Value = "DirectDebits" },
-                                new SelectListItem { Text = "Investments", Value = "Investments" },
-                                new SelectListItem { Text = "Loans", Value = "Loans" },
-                                new SelectListItem { Text = "Savings", Value = "Savings" }
-                            }, new { @class = "form-control", @style = "border-radius: 5px;" })
-                            @Html.ValidationMessageFor(model => model.RecoveryPriority, "", new { @class = "text-danger" })
-                        </div>
+                        <br />
+
                         <ul class="nav nav-tabs d-flex flex-nowrap animated-tabs" style="margin-bottom: 20px;">
                             <li class="nav-item">
                                 <a class="nav-link active" href="#address">Address</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#mandatoryDebitTypes">Debit Types</a>
+                                <a class="nav-link" href="#mandatoryDebitTypes">Mandatory Debit Types</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#mandatoryInvestmentProducts">Investment Products</a>
+                                <a class="nav-link" href="#mandatoryInvestmentProducts">Mandatory Investment Products</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#mandatorySavingsProducts">Savings Products</a>
+                                <a class="nav-link" href="#mandatorySavingsProducts">Mandatory Savings Products</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#flags">Flags</a>
@@ -202,21 +219,21 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1", @style = "border-radius: 5px;" } })
+                                            @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @style = "border-radius: 5px;" } })
                                             @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2", @style = "border-radius: 5px;" } })
+                                            @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @style = "border-radius: 5px;" } })
                                             @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street", @style = "border-radius: 5px;" } })
+                                            @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @style = "border-radius: 5px;" } })
                                             @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -225,21 +242,21 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "City", @style = "border-radius: 5px;" } })
+                                            @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @style = "border-radius: 5px;" } })
                                             @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code", @style = "border-radius: 5px;" } })
+                                            @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @style = "border-radius: 5px;" } })
                                             @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "", @style = "border-radius: 5px;" } })
+                                            @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
                                             @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -248,14 +265,14 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Land line", @style = "border-radius: 5px;" } })
+                                            @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @style = "border-radius: 5px;" } })
                                             @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "font-bold" })
-                                            @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line", @required = "", @style = "border-radius: 5px;" } })
+                                            @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
                                             @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -456,8 +473,8 @@
                         </div>
 
                         <!-- Button -->
-                        <div style="text-align: right; margin-top: 20px;">
-                            <button type="submit" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="openModal()">Create</button>
+                        <div style="margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary" style="width: 150px;" onclick="openModal()">Create</button>
                         </div>
 
                         <!-- Modal Structure -->
@@ -471,21 +488,21 @@
                         </div>
 
                         @*<script>
-                            function openModal() {
-                                document.getElementById('confirmationModal').style.display = 'flex';
-                            }
+                                function openModal() {
+                                    document.getElementById('confirmationModal').style.display = 'flex';
+                                }
 
-                            function closeModal() {
-                                document.getElementById('confirmationModal').style.display = 'none';
-                            }
+                                function closeModal() {
+                                    document.getElementById('confirmationModal').style.display = 'none';
+                                }
 
-                            function proceed() {
-                                // Close the modal
-                                closeModal();
-                                // Submit the form
-                                document.querySelector('form').submit();
-                            }
-                        </script>*@
+                                function proceed() {
+                                    // Close the modal
+                                    closeModal();
+                                    // Submit the form
+                                    document.querySelector('form').submit();
+                                }
+                            </script>*@
 
 
                     }

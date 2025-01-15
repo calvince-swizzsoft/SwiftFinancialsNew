@@ -2525,13 +2525,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> FetchKnownCharges(CustomerTransactionModel model, string target)
+        public async Task<JsonResult> FetchKnownCharges(Guid? targetProductId, string target)
         {
             SavingsProductDTO savingsProduct = null;
 
-            if (model != null)
+            if (targetProductId != Guid.Empty)
             { 
-              savingsProduct  = await _channelService.FindSavingsProductAsync(model.CustomerAccount.CustomerAccountTypeTargetProductId, GetServiceHeader());
+              savingsProduct  = await _channelService.FindSavingsProductAsync((Guid)targetProductId, GetServiceHeader());
             }
             ObservableCollection<CommissionDTO> commissions = null;
 
@@ -2551,24 +2551,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 case "#cashdeposit":
 
-                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.CashDeposit, GetServiceHeader());
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync((Guid)targetProductId, (int)SavingsProductKnownChargeType.CashDeposit, GetServiceHeader());
                     break;
 
                 case "#cashwithdrawal":
-                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.CashWithdrawal, GetServiceHeader());
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync((Guid)targetProductId, (int)SavingsProductKnownChargeType.CashWithdrawal, GetServiceHeader());
                     break;
 
                 case "#chequedeposit":
-                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.ChequeBookCharges, GetServiceHeader());
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync((Guid)targetProductId, (int)SavingsProductKnownChargeType.ChequeBookCharges, GetServiceHeader());
                     break;
 
                 case "#paymentvoucher":
-                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.CashWithdrawalPaymentVoucher, GetServiceHeader());
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync((Guid)targetProductId, (int)SavingsProductKnownChargeType.CashWithdrawalPaymentVoucher, GetServiceHeader());
                     break;
 
                 default:
                     //return Json(new { success = false, message = "Unknown transaction type." });
-                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.CashDeposit, GetServiceHeader());
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync((Guid)targetProductId, (int)SavingsProductKnownChargeType.CashDeposit, GetServiceHeader());
                     break;
             }
 

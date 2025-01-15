@@ -5,7 +5,7 @@ namespace Domain.MainBoundedContext.HumanResourcesModule.Aggregates.EmployeeDocu
 {
     public static class EmployeeDocumentFactory
     {
-        public static EmployeeDocument CreateEmployeeDocument(Guid employeeId, string fileName, string fileTitle, string fileDescription, string fileMIMEType)
+        public static EmployeeDocument CreateEmployeeDocument(Guid employeeId, string fileName, string fileTitle, string fileDescription, string fileMIMEType, byte[] fileBuffer)
         {
             var employeeDocument = new EmployeeDocument();
 
@@ -20,6 +20,8 @@ namespace Domain.MainBoundedContext.HumanResourcesModule.Aggregates.EmployeeDocu
             employeeDocument.FileDescription = fileDescription;
 
             employeeDocument.FileMIMEType = fileMIMEType;
+
+            employeeDocument.FileBuffer = fileBuffer;
 
             employeeDocument.CreatedDate = DateTime.Now;
 

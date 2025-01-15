@@ -64,6 +64,7 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
             }
         }
 
-        // Other properties and methods...
+        [DataMember]
+        public ObservableCollection<BankBranchDTO> BankBranchesDTO { get; set; }
     }
 }

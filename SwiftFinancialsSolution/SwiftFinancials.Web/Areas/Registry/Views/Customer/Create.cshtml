@@ -1,4 +1,6 @@
 ﻿@model Application.MainBoundedContext.DTO.RegistryModule.CustomerBindingModel
+@using System.Linq;
+
 @{ ViewBag.Title = "Customer";
     var customerTypes = ViewBag.CustomerTypeSelectList as List<SelectListItem>;
     var individualTypes = ViewBag.IndividualTypeSelectList as List<SelectListItem>;
@@ -87,6 +89,7 @@
                             <div class="alert alert-danger">
                                 <strong>Attempt Failed !</strong> @TempData["Error2"]
                             </div>}*@
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -231,18 +234,15 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.savings != null)
+                                            @if (ViewBag.SavingsProducts != null)
                                             {
-                                                foreach (var save in ViewBag.savings)
+                                                foreach (var item in ViewBag.SavingsProducts)
                                                 {
-                                                    <tr style="background-color: #f5f5f5;">
-                                                        <td>
-                                                            <input type="checkbox"
-                                                                   class="savings-checkbox"
-                                                                   name="savingsproductIds"
-                                                                   value="@save.Id"
-                                                                   @(ViewBag.mandatorySavings != null && ViewBag.mandatorySavings.Contains(save.Id) ? "checked" : "") />
-                                                            @save.Description
+                                                    <tr>
+                                                        <td class="list-group-item">
+                                                            <input type="checkbox" name="savingsproductIds" class="rowCheckbox"
+                                                                   data-id="@item.Id" @(ViewBag.CheckedsavingssStates.ContainsKey(item.Id) && ViewBag.CheckedsavingssStates[item.Id] ? "checked" : "") style="font-weight: bold;" value="@item.Id" />
+                                                            <span>@item.Description</span>
                                                         </td>
                                                     </tr>
                                                 }
@@ -263,16 +263,13 @@
                                         <tbody>
                                             @if (ViewBag.debit != null)
                                             {
-                                                foreach (var debitType in ViewBag.debit)
+                                                foreach (var item in ViewBag.debit)
                                                 {
-                                                    <tr style="background-color: #f5f5f5;">
-                                                        <td>
-                                                            <input type="checkbox"
-                                                                   class="debit-checkbox"
-                                                                   name="DebitTypes"
-                                                                   value="@debitType.Id"
-                                                                   @(ViewBag.mandatoryDebit != null && ViewBag.mandatoryDebit.Contains(debitType.Id) ? "checked" : "") />
-                                                            @debitType.Description
+                                                    <tr>
+                                                        <td class="list-group-item">
+                                                            <input type="checkbox" name="debittypes" class="rowCheckbox"
+                                                                   data-id="@item.Id" @(ViewBag.CheckeddebittypesStates.ContainsKey(item.Id) && ViewBag.CheckeddebittypesStates[item.Id] ? "checked" : "") style="font-weight: bold;" value="@item.Id" />
+                                                            <span>@item.Description</span>
                                                         </td>
                                                     </tr>
                                                 }
@@ -322,22 +319,36 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.investment != null)
+                                            @if (ViewBag.InvestmentsProducts != null)
                                             {
-                                                foreach (var invest in ViewBag.investment)
+                                                foreach (var item in ViewBag.InvestmentsProducts)
                                                 {
-                                                    <tr style="background-color: #f5f5f5;">
-                                                        <td>
-                                                            <input type="checkbox"
-                                                                   class="investment-checkbox"
-                                                                   name="investmentproductIds"
-                                                                   value="@invest.Id"
-                                                                   @(ViewBag.mandatoryInvestment != null && ViewBag.mandatoryInvestment.Contains(invest.Id) ? "checked" : "") />
-                                                            @invest.Description
+                                                    <tr>
+                                                        <td class="list-group-item">
+                                                            <input type="checkbox" name="investmentproductIds" class="AttachedLoanProductsrowCheckbox rowCheckbox"
+                                                                   data-id="@item.Id" @(ViewBag.CheckedInvestmentsStates.ContainsKey(item.Id) && ViewBag.CheckedInvestmentsStates[item.Id] ? "checked" : "") style="font-weight: bold;" value="@item.Id" />
+                                                            <span>@item.Description</span>
                                                         </td>
                                                     </tr>
                                                 }
                                             }
+
+                                            @*@if (ViewBag.investment != null)
+                                                {
+                                                    foreach (var invest in ViewBag.investment)
+                                                    {
+                                                        <tr style="background-color: #f5f5f5;">
+                                                            <td>
+                                                                <input type="checkbox"
+                                                                       class="investment-checkbox"
+                                                                       name="investmentproductIds"
+                                                                       value="@invest.Id"
+                                                                       @(ViewBag.mandatoryInvestment != null && ViewBag.mandatoryInvestment.Contains(invest.Id) ? "checked" : "") />
+                                                                @invest.Description
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }*@
                                         </tbody>
                                     </table>
                                 </div>
@@ -1067,15 +1078,13 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Select all relevant checkboxes
-            document.querySelectorAll('.investment-checkbox, .debit-checkbox, .savings-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('click', (e) => e.preventDefault());
+
+        $(document).ready(function () {
+            $('.rowCheckbox').on('click', function (e) {
+                e.preventDefault();
             });
         });
     </script>
-
-
     <script>
         function submitForm() {
             document.getElementById("form").submit();
@@ -1114,7 +1123,7 @@
 
                 // Append a new row to the table
                 $('#memberCollectionTable tbody').append(`                                                                                                                                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `);
 
                 // Clear the form fields after adding
                 clearMemberForm();

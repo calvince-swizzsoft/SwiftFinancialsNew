@@ -74,6 +74,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Recovery Priority")]
         public int Priority { get; set; }
 
+        // Added DTO
+        [DataMember]
+        [Display(Name = "Recovery Priority")]
+        public string PriorityDescription { get; set; }
+
+
         [DataMember]
         [Display(Name = "Is Locked?")]
         public bool IsLocked { get; set; }

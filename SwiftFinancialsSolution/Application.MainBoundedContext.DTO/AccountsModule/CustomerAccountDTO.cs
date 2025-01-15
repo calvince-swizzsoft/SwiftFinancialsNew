@@ -548,12 +548,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
-
-        //[DataMember]
-        //[Display(Name = "Full Account Number")]
-        //public string FullAcctNumber { get; set; }
-
-
         [DataMember]
         [Display(Name = "Scored Loan Disbursement Product Code")]
         public int ScoredLoanDisbursementProductCode { get; set; }

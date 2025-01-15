@@ -28,7 +28,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             }
         }
 
-        // GET: SystemUsers
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -36,7 +35,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return View();
         }
 
-        // POST: SystemUsers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
@@ -85,10 +83,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 totalRecords: totalRecordCount,
                 totalDisplayRecords: searchRecordCount,
                 sEcho: jQueryDataTablesModel.sEcho
-        );
+            );
         }
 
-        // GET: SystemUser/Details/5
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -109,18 +106,19 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                     CompanyDescription = CompanyDTO.Description;
             }
 
-            var roles = await _applicationUserManager.GetRolesAsync(applicationUser.Id);
-            ViewBag.roles = roles;
+            var userRoles = await _applicationUserManager.GetRolesAsync(applicationUser.Id);
+            ViewBag.UserRoles = userRoles;
 
-            var branch = await _channelService.FindBranchesAsync(GetServiceHeader());
-            ViewBag.branches = branch;
+            var branches = await _channelService.FindBranchesAsync(GetServiceHeader());
+            var userBranches = branches.Where(x => x.Id == applicationUser.BranchId);
+            ViewBag.UserBranches = userBranches;
 
-            if (roles != null)
-                roleName = roles.FirstOrDefault();
+            if (userRoles != null)
+                roleName = userRoles.FirstOrDefault();
             var userDTO = new UserDTO
             {
                 Id = applicationUser.Id,
-                FirstName = applicationUser.FirstName+"  "+
+                FirstName = applicationUser.FirstName + "  " +
               applicationUser.OtherNames,
                 Email = applicationUser.Email,
                 PhoneNumber = applicationUser.PhoneNumber,
@@ -136,7 +134,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return View("Details", userDTO.MapTo<UserBindingModel>());
         }
 
-        // GET: SystemUser/Create
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
@@ -176,19 +173,24 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return View(userBindingModel);
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetEmployeeDetails(Guid employeeId)
+     
+        public async Task<ActionResult> GetEmployeeDetails(Guid? id)
         {
-            try
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-                var employee = await _channelService.FindEmployeeAsync(employeeId, GetServiceHeader());
-                var dep = await _channelService.FindEmployeeTypeAsync(employee.EmployeeTypeId, GetServiceHeader());
+                return View();
+            }
 
-                if (employee == null)
-                {
-                    return Json(new { success = false, message = "Employee not found." }, JsonRequestBehavior.AllowGet);
-                }
+            var employee = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
+            var dep = await _channelService.FindEmployeeTypeAsync(employee.EmployeeTypeId, GetServiceHeader());
+            var Department = employee.DepartmentDescription;
 
+            if (employee != null)
+            {
                 return Json(new
                 {
                     success = true,
@@ -214,67 +216,16 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                         EmployeeEmployeeTypeId = employee.EmployeeTypeId,
                         EmployeeEmployeeTypeChartOfAccountId = employee.EmployeeTypeChartOfAccountId,
                         PhoneNumber = employee.CustomerAddressMobileLine,
-
-                        department = dep.Description,
+                        BranchId = employee.BranchId,
+                        Branch = employee.BranchDescription,
+                        department = Department,
                     }
-                }, JsonRequestBehavior.AllowGet);
+                });
             }
-            catch (Exception)
-            {
-                return Json(new { success = false, message = "An error occurred while fetching the Employee details." }, JsonRequestBehavior.AllowGet);
-            }
+            return Json(new { success = false, message = "Employee Not Found!" });
         }
 
 
-
-        [HttpGet]
-        public async Task<ActionResult> GetBranchesDetails(Guid? branchId)
-        {
-            try
-            {
-
-                Guid parseId;
-
-                if (branchId == Guid.Empty || !Guid.TryParse(branchId.ToString(), out parseId))
-                {
-                    return View();
-                }
-
-                var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
-
-
-                //if (branch != null)
-                //{
-                //    userBindingModel.BranchId = branch.Id,
-                //    userBindingModel.BranchDescription = branch.Description,
-                //}
-                if (branch == null)
-                {
-                    return Json(new { success = false, message = "Employee not found." }, JsonRequestBehavior.AllowGet);
-                }
-                UserBindingModel userBindingModel = new UserBindingModel();
-
-                return Json(new
-                {
-                    success = true,
-                    data = new
-                    {
-
-                        BranchId = branch.Id,
-                        BranchDescription = branch.Description,
-                    }
-                },
-                    JsonRequestBehavior.AllowGet);
-            }
-
-
-            catch (Exception)
-            {
-                return Json(new { success = false, message = "An error occurred while fetching the Employee details." }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        // POST: SystemUser/Create
         [HttpPost]
         public async Task<ActionResult> Create(UserBindingModel userBindingModel, string[] Branchids, string[] roles)
         {
@@ -283,7 +234,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             userBindingModel.FirstName = employee.CustomerIndividualFirstName;
             userBindingModel.OtherNames = employee.CustomerIndividualLastName;
             userBindingModel.PhoneNumber = employee.CustomerAddressMobileLine;
-
+            
             userBindingModel.ValidateAll();
 
             if (userBindingModel.HasErrors)
@@ -307,7 +258,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             var userDTO = await _channelService.AddNewMembershipAsync(userBindingModel.MapTo<UserDTO>(), GetServiceHeader());
 
-  //          var result = await _channelService.AddUserToRolesAsync(userDTO.UserName, role, GetServiceHeader());
+            //          var result = await _channelService.AddUserToRolesAsync(userDTO.UserName, role, GetServiceHeader());
 
             AuditTrailDTO auditLogDTO = new AuditTrailDTO();
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
@@ -341,54 +292,54 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         {
             await ServeNavigationMenus();
 
+            var applicationUser = await _applicationUserManager.FindByIdAsync(id.ToString());
+
+            var employeeDetails = await _channelService.FindEmployeeAsync((Guid)applicationUser.EmployeeId, GetServiceHeader());
+
+            var CompanyDTO = new BranchDTO();
+
             string CompanyDescription = string.Empty;
-            Guid parseId;
 
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
-
-            UserBindingModel userBindingModel4 = new UserBindingModel();
-
-            if (branch != null)
-            {
-                userBindingModel4.BranchId = branch.Id;
-                userBindingModel4.BranchDescription = branch.Description;
-
-            }
             string roleName = string.Empty;
 
-            var user = await _applicationUserManager.FindByIdAsync(id.ToString());
-
-            if (user != null)
+            if (applicationUser.BranchId != Guid.Empty && applicationUser.BranchId != null)
             {
-                if (user.BranchId != Guid.Empty && user.BranchId != null)
-                {
-                    var branchDTO = await _channelService.FindBranchAsync((Guid)user.BranchId, GetServiceHeader());
+                CompanyDTO = await _channelService.FindBranchAsync((Guid)applicationUser.BranchId, GetServiceHeader());
 
-                    if (branchDTO != null)
-                        CompanyDescription = branchDTO.Description;
-                }
-
-                var roles = await _applicationUserManager.GetRolesAsync(user.Id);
-
-                if (roles != null)
-                    roleName = roles.FirstOrDefault();
-
-                var userBindingModel = user.MapTo<UserBindingModel>();
-
-                userBindingModel.BranchDescription = CompanyDescription;
-
-                userBindingModel.RoleName = roleName;
-
-                return View(userBindingModel);
+                if (CompanyDTO != null)
+                    CompanyDescription = CompanyDTO.Description;
             }
 
-            return View();
+            var userRoles = await _applicationUserManager.GetRolesAsync(applicationUser.Id);
+            ViewBag.UserRoles = userRoles;
+
+            var branches = await _channelService.FindBranchesAsync(GetServiceHeader());
+            var userBranches = branches.Where(x => x.Id == applicationUser.BranchId);
+            ViewBag.UserBranches = userBranches;
+
+            if (userRoles != null)
+                roleName = userRoles.FirstOrDefault();
+            var userDTO = new UserDTO
+            {
+                Id = applicationUser.Id,
+                FirstName = applicationUser.FirstName + "  " + applicationUser.OtherNames,
+                Email = applicationUser.Email,
+                PhoneNumber = applicationUser.PhoneNumber,
+                BranchId = applicationUser.BranchId,
+                BranchDescription = CompanyDTO.Description,
+                UserName = applicationUser.UserName,
+                RoleName = roleName,
+                TwoFactorEnabled = applicationUser.TwoFactorEnabled,
+                LockoutEnabled = applicationUser.LockoutEnabled,
+                CreatedDate = applicationUser.CreatedDate,
+                EmployeeId = (Guid)applicationUser.EmployeeId,
+            };
+
+            return View("Edit", userDTO.MapTo<UserBindingModel>());
         }
+
+
+
 
         // POST: SystemUser/Edit/5
         [HttpPost]
@@ -417,12 +368,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             TempData["Error"] = "Update Membership Failed!";
 
             return View();
-        }
-
-        [HttpGet]
-        public ActionResult LoadCompanies()
-        {
-            return PartialView("_Companies");
         }
     }
 }

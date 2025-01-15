@@ -2175,9 +2175,9 @@
 
             aData.CreatedDate = formatDate(createdDate);
 
-            $('td:eq(5)', nRow).html(aData.CreatedDate);
+       /*     $('td:eq(5)', nRow).html(aData.CreatedDate);*/
 
-            $('td:eq(6)', nRow).html('<button class="btn btn-outline-info select-btn" data-id="' + aData.Id + '">Select</button>');
+            $('td:eq(5)', nRow).html('<button class="btn btn-outline-info select-btn" data-id="' + aData.Id + '">Select</button>');
 
 
             return nRow;
@@ -2188,7 +2188,7 @@
                 { "mDataProp": "FullAccountNumber", "sTitle": "Account No.", "sWidth": "20%" },
                 { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "10%" },
                 { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product", "sWidth": "15%" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
+/*                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },*/
                 { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }
             
             ],
@@ -2503,14 +2503,16 @@
                     // Derive transaction type from target ID
                     var transactionType = getTransactionType(target);
 
-                    var formData = $('#savingsReceiptsPaymentsForm').serialize();
+                    //var formData = $('#savingsReceiptsPaymentsForm').serialize();
+                    var targetProductId = $('#CustomerAccountTypeTargetProductId').val();
 
+                    console.log('product id is', targetProductId);
                     // Call the FetchKnownCharges method via AJAX
                     $.ajax({
                         url: '/CashDeposit/FetchKnownCharges',
                         type: 'POST',
                         data: {
-                            model: formData,
+                            targetProductId: targetProductId,
                             target: target
                         },
                         success: function (response) {
