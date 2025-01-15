@@ -34,7 +34,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindConditionalLendingsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0,int.MaxValue, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindConditionalLendingsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -222,14 +222,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                 if (result.ErrorMessageResult != null)
                 {
-                    System.Windows.Forms.MessageBox.Show(
-                          "FAILED" + result.ErrorMessageResult,
-                          "Success",
-                          System.Windows.Forms.MessageBoxButtons.OK,
-                          System.Windows.Forms.MessageBoxIcon.Information,
-                          System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                          System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                      );
+
                     ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
                     ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
                     ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
