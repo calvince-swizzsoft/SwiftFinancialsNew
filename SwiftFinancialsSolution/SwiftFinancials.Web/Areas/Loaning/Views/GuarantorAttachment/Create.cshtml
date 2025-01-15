@@ -132,19 +132,31 @@
                 <div class="ibox-title">
                     <h2>Guarantor Attachment</h2>
 
-                    @if (TempData["AccountStatus"] != null)
+                    @if (TempData["Success"] != null)
                     {
-                        <div class="alert alert-danger">
-                            <strong>Attempt Failed !</strong> @TempData["AccountStatus"]
-                        </div>
+                        <script type="text/javascript">
+                            document.addEventListener('DOMContentLoaded', function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    text: '@TempData["Success"]',
+                                    confirmButtonColor: '#006400',
+                                })
+                            });
+                        </script>
                     }
 
 
-                    @if (TempData["AccountProductCode"] != null)
+                    @if (TempData["Failed"] != null)
                     {
-                        <div class="alert alert-danger">
-                            <strong>Attempt Failed !</strong> @TempData["AccountProductCode"]
-                        </div>
+                        <script type="text/javascript">
+                            document.addEventListener('DOMContentLoaded', function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    text: '@TempData["Failed"]',
+                                    confirmButtonColor: '#FF0000',
+                                })
+                            });
+                        </script>
                     }
 
                     <div class="ibox-tools">
