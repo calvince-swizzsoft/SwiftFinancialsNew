@@ -1118,7 +1118,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         ViewBag.customerFilter = GetCustomerFilterSelectList(loanCaseDTO.CustomerFilterDescription.ToString());
                         ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(loanCaseDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
-                        TempData["lessMinimumMembershipPeriod"] = "The selected Member's Registration Period is less than the minimum required to apply for the selected Loan Product.";
+                        TempData["lessMinimumMembershipPeriod"] = "The selected Member Registration Period is less than the minimum required to apply for the selected Loan Product.";
                         Session["loanguarantorsDTOs"] = null;
                         return View("Create");
                     }
