@@ -997,7 +997,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     var result = await _channelService.UpdateCustomerAsync(customerDTO,
                         GetServiceHeader()
                     );
-                    TempData["SuccessMessage"] = "customer created successfully";
+                    TempData["SuccessMessage"] = "Customer "+customerDTO.FullName +" Edit Successfully";
 
                     if (result == true)
                     {
