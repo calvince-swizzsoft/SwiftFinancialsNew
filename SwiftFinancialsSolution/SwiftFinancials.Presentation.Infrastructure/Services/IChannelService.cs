@@ -1232,9 +1232,12 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<DelegateDTO> FindDelegateAsync(Guid delegateId, ServiceHeader serviceHeader = null);
 
+        Task<List<DelegateDTO>> FindDelegatesAsync(ServiceHeader serviceHeader = null);
+
         #endregion
 
         #region DirectorDTO
+        Task<List<DirectorDTO>> FindDirectorsAsync(ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<DirectorDTO>> FindDirectorsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
