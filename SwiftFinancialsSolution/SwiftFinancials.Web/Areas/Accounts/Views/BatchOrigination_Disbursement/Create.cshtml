@@ -132,11 +132,11 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.PriorityDescription, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.PriorityDescription, priority, new { @class = "form-control input-md custom-border-radius" })
-                                                @Html.ValidationMessageFor(model => model.PriorityDescription)
+                                                @Html.DropDownListFor(model => model.Priority, priority, new { @class = "form-control input-md custom-border-radius" })
+                                                @Html.ValidationMessageFor(model => model.Priority)
                                             </div>
                                         </div>
                                     </div>

@@ -485,8 +485,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var endDate = Request["birthdate"];
 
             // Parse and set dates
-            customerBindingModel.IndividualBirthDate = new DateTime(1990, DateTime.Today.Month, DateTime.Today.Day);
-            customerBindingModel.RegistrationDate = DateTime.Parse(endDate).Date;
+            //customerBindingModel.IndividualBirthDate = new DateTime(1990, DateTime.Today.Month, DateTime.Today.Day);
+            customerBindingModel.RegistrationDate = DateTime.Parse(startDate).Date;
+            customerBindingModel.IndividualBirthDate = DateTime.Parse(endDate).Date;
 
             // Set customer type based on description
             switch (typedescription)
