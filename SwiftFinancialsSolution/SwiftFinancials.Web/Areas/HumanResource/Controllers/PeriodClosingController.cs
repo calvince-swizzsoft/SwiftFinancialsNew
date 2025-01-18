@@ -20,7 +20,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
     public class PeriodClosingController : MasterController
     {
 
-
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -100,96 +99,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
 
 
-        public async Task<ActionResult> Details(Guid id)
-        {
-            await ServeNavigationMenus();
 
-            var salaryPeriodDTO = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
-            //var chartOfAccount = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
-            ViewBag.MonthTypeSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(string.Empty);
-
-            return View(salaryPeriodDTO);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> GetpostingPerioddDetails(Guid postingPeriodId)
-        {
-            try
-            {
-                var salaryPeriod = await _channelService.FindPostingPeriodAsync(postingPeriodId, GetServiceHeader());
-
-                if (salaryPeriod == null)
-                {
-                    return Json(new { success = false, message = "SalaryPeriod not found." }, JsonRequestBehavior.AllowGet);
-                }
-
-                return Json(new
-                {
-                    success = true,
-                    data = new
-                    {
-                        PostingPeriodDescription = salaryPeriod.Description,
-                        PostingPeriodId = salaryPeriod.Id,
-
-
-
-
-
-
-
-
-                    }
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception)
-            {
-                return Json(new { success = false, message = "An error occurred while fetching the salaryPeriods details." }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        public async Task<ActionResult> Create()
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.MonthTypeSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(string.Empty);
-
-
-
-            return View("Create");
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Create(SalaryProcessingDTO salaryPeriodDTO, Guid? id)
-        {
-            salaryPeriodDTO.ValidateAll();
-
-            if (!salaryPeriodDTO.HasErrors)
-            {
-                var salaryPeriod = await _channelService.AddSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
-                MessageBox.Show(
-                                                             "Operation Success",
-                                                             "Customer Receipts",
-                                                             MessageBoxButtons.OK,
-                                                             MessageBoxIcon.Information,
-                                                             MessageBoxDefaultButton.Button1,
-                                                             MessageBoxOptions.ServiceNotification
-                                                         );
-
-                ViewBag.MonthTypeSelectList = GetMonthsAsync(salaryPeriodDTO.Month.ToString());
-                ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(salaryPeriodDTO.EmployeeCategoryDescription.ToString());
-                //ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryCardDTO.Type.ToString());
-
-                //await GetChartOfAccountsAsync(id);
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = salaryPeriodDTO.ErrorMessages;
-                return View(salaryPeriodDTO);
-            }
-        }
 
         public async Task<ActionResult> Close(Guid id)
         {
@@ -202,194 +112,83 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(salaryPeriod);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Close(Guid id, SalaryProcessingDTO salaryPeriodDTO)
+
+        public async Task<ActionResult> View(Guid id)
         {
-            salaryPeriodDTO.ValidateAll();
-
-            if (!salaryPeriodDTO.HasErrors)
-            {
-                await _channelService.UpdateSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
-                TempData["AlertMessage"] = "SalaryPeriod Closed successfully!";
-                TempData["AlertType"] = "success";
-               
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(salaryPeriodDTO);
-            }
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> GetsalaryPeriodDetails(Guid salaryPeriodId)
-        {
-            try
-            {
-                var salaryPeriod = await _channelService.FindSalaryPeriodAsync(salaryPeriodId, GetServiceHeader());
-
-                if (salaryPeriod == null)
-                {
-                    return Json(new { success = false, message = "SalaryPeriod not found." }, JsonRequestBehavior.AllowGet);
-                }
-
-                return Json(new
-                {
-                    success = true,
-                    data = new
-                    {
-                        PostingPeriodDescription = salaryPeriod.PostingPeriodDescription,
-                        PostingPeriodId = salaryPeriod.PostingPeriodId,
-                        TaxReliefAmount = salaryPeriod.TaxReliefAmount,
-                        MaximumProvidentFundReliefAmount = salaryPeriod.MaximumProvidentFundReliefAmount,
-                        MaximumInsuranceReliefAmount = salaryPeriod.MaximumInsuranceReliefAmount,
-                        Remarks = salaryPeriod.Remarks,
-                        EmployeeCategoryDescription = salaryPeriod.EmployeeCategoryDescription,
-
-
-
-
-
-
-
-                    }
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception)
-            {
-                return Json(new { success = false, message = "An error occurred while fetching the salaryPeriods details." }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        public async Task<ActionResult> ProcessSalary(Guid? id)
-        {
-            // Load navigation menus
             await ServeNavigationMenus();
 
-            // Populate ViewBag with customer type select list
-            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
-
-            // Initialize SalaryProcessingDTO
-            var salaryProcessingDTO = new SalaryProcessingDTO();
-
-            // Check if ID is valid
-            if (id.HasValue && id != Guid.Empty)
+            //Guid parseId;
+            //if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            //{
+            //    return Json(new { success = false, message = "Invalid ID" }, JsonRequestBehavior.AllowGet);
+            //}
+            Session["period"] = id;
+            var salaryPeriod = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
+            if (salaryPeriod == null)
             {
-                try
-                {
-                    var salaryPeriod = await _channelService.FindSalaryPeriodAsync(
-                        id.Value,
-
-                        GetServiceHeader()
-                    );
-
-                    if (salaryPeriod != null)
-                    {
-                        // Map retrieved data to DTO
-                        salaryProcessingDTO.PostingPeriodDescription = salaryPeriod.PostingPeriodDescription;
-                        salaryProcessingDTO.PostingPeriodId = salaryPeriod.PostingPeriodId;
-                        salaryProcessingDTO.Remarks = salaryPeriod.Remarks;
-                    }
-                    else
-                    {
-                        // Handle case where no salary period was found
-                        TempData["ErrorMessage"] = "Customer account details could not be found.";
-                        return RedirectToAction("Index");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Log exception (if a logging system exists)
-                    TempData["ErrorMessage"] = $"An error occurred while processing salary: {ex.Message}";
-                    return RedirectToAction("Index");
-                }
+                return Json(new { success = false, message = "No data found" }, JsonRequestBehavior.AllowGet);
             }
 
-            // Return the view with the prepared DTO
-            return View(salaryProcessingDTO);
+            return Json(new { success = true, data = salaryPeriod }, JsonRequestBehavior.AllowGet);
         }
 
 
 
         [HttpPost]
-        public async Task<ActionResult> ProcessSalary(SalaryProcessingDTO salaryPeriodDTO, List<Guid> employeeIds)
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Close()
         {
-            salaryPeriodDTO.ValidateAll();
+            Guid id = Guid.Empty;
 
-            if (!salaryPeriodDTO.HasErrors)
+            if (Session["period"] != null)
+                id = (Guid)Session["period"];
+
+            try
             {
-                var employees = new ObservableCollection<EmployeeDTO>();
-
-                foreach (var employeeId in employeeIds)
+                if (id == Guid.Empty)
                 {
-                    var employee = await _channelService.FindEmployeeAsync(employeeId, GetServiceHeader());
-                    if (employee != null)
-                    {
-                        employees.Add(employee);
-                    }
+                    TempData["Message"] = "Invalid ID.";
+                    TempData["MessageType"] = "error";
+                    return RedirectToAction("Index", "PeriodClosing", new { Area = "HumanResource" });
                 }
 
-                if (employees.Any())
-                {
-                    var isProcessed = await _channelService.ProcessSalaryPeriodAsync(
-                        salaryPeriodDTO,
-                        employees,
-                        GetServiceHeader()
-                    );
+                var salaryPeriodDTO = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
+                salaryPeriodDTO.ValidateAll();
 
-                    if (isProcessed)
-                    {
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, "Failed to process the salary period. Please try again.");
-                    }
+                if (salaryPeriodDTO.HasErrors)
+                {
+                    TempData["Message"] = "Failed to close salary period due to validation errors.";
+                    TempData["MessageType"] = "error";
+                    return RedirectToAction("Index", "PeriodClosing", new { Area = "HumanResource" });
+                }
+
+                bool result = await _channelService.CloseSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
+
+                if (result)
+                {
+                    TempData["Message"] = "Salary period closed successfully!";
+                    TempData["MessageType"] = "success";
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "No valid employees found for the provided IDs.");
+                    TempData["Message"] = "Failed to close salary period. Please try again.";
+                    TempData["MessageType"] = "error";
                 }
 
-                ViewBag.MonthTypeSelectList = GetMonthsAsync(salaryPeriodDTO.Month.ToString());
-                ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(salaryPeriodDTO.EmployeeCategoryDescription.ToString());
-            }
-            else
-            {
-                var errorMessages = salaryPeriodDTO.ErrorMessages;
-                ModelState.AddModelError(string.Empty, string.Join(", ", errorMessages));
-            }
-
-            return View(salaryPeriodDTO);
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> GetSalaryPeriodsAsync()
-        {
-            try
-            {
-                var salaryPeriods = await _channelService.FindSalaryPeriodsAsync(GetServiceHeader());
-
-                // Transform data for DataTable
-                var result = salaryPeriods.Select(sp => new
-                {
-                    sp.PostingPeriodId,
-                    sp.PostingPeriodDescription,
-                    sp.StatusDescription,
-                    sp.EmployeeCategoryDescription,
-                    CreatedDate = sp.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
-                }).ToList();
-
-                return Json(new { aaData = result });
+                return RedirectToAction("Index", "PeriodClosing", new { Area = "HumanResource" });
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error fetching salary periods: {ex.Message}");
-                return Json(new { error = "Failed to load salary periods." });
+                // Log the exception
+                TempData["Message"] = "An unexpected error occurred: " + ex.Message;
+                TempData["MessageType"] = "error";
+                return RedirectToAction("Index", "PeriodClosing", new { Area = "HumanResource" });
             }
         }
+
+
+
+
 
 
     }
