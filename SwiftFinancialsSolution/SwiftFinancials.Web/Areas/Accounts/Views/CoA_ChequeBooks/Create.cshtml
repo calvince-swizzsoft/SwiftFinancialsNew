@@ -3,7 +3,7 @@
 @{
     /**/
 
-    ViewBag.Title = "Manage Customer Accounts";
+    ViewBag.Title = "Customer Accounts Cheque Books";
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
     var productCode = ViewBag.ProductCode as List<SelectListItem>;
     var GetChequeType = ViewBag.GetChequeType as List<SelectListItem>;
@@ -15,7 +15,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>CustomerAccount</h2>
+        <h2>Custome rAccounts</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -24,24 +24,20 @@
                 @Html.ActionLink("Home", "Index", "CoA_ChequeBooks", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Cheque books</strong>
+                <strong>Create</strong>
             </li>
         </ol>
     </div>
 </div>
 
-
-
-@if (TempData["SuccessMessage"] != null)
+@if (TempData["Error"] != null)
 {
-    <div class="alert alert-success">
-        <strong>Success !</strong> @TempData["SuccessMessage"]
-
-        <button type="button" class="close" data-dismiss="alert">
-            <span>
-                &times;
-            </span>
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
         </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
     </div>
 }
 
@@ -50,7 +46,6 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -60,161 +55,134 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "CoA_ChequeBooks", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Create", "CoA_ChequeBooks", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+                        <div class="row">
+                            <div class="col-lg-4">
 
-                        <div class="form-horizontal">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                            <h1>customer details</h1>
-                            <fieldset>
-                                <div class="row">
-                                    <div class="col-lg-4">
-
-                                        <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.CustomerAccountId, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.CustomerAccountId)
-                                                @Html.TextBoxFor(model => model.CustomerAccountCustomerReference1, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
-                                        </div>
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
-                                        </div>
-
-
-
-
-
-
+                                <div class="col-md-13 form-group">
+                                    @Html.LabelFor(model => model.FullAccountNumber, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.CustomerAccountId)
+                                        @Html.TextBoxFor(model => model.CustomerAccountCustomerIndividualLastName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
                                     </div>
-
-
-                                    <div class="col-lg-4">
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                        </div>
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "remarks", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                        </div>
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
-                                        </div>
-
-
-                                    </div>
-
-
-
-
-
-
-                                    <div class="col-lg-4">
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerSerialNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerSerialNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                        </div>
-
-
-                                    </div>
-
-
-
-
-
-                                </div>
-                            </fieldset>
-                            <h1>cheque book details</h1>
-
-                            <div class="row">
-
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Type, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Type, GetChequeType, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.Type)
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InitialVoucherNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.InitialVoucherNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Voucher Number " } })
-                                        @Html.ValidationMessageFor(model => model.InitialVoucherNumber, "", new { @class = "text-danger" })
-                                    </div>
-
-
-
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.NumberOfVouchers, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.NumberOfVouchers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Number of vouchers" } })
-                                        @Html.ValidationMessageFor(model => model.NumberOfVouchers, "", new { @class = "text-danger" })
-                                    </div>
-
                                 </div>
 
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @disabled = "Disabled" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
+                                </div>
 
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "reference" } })
-                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                    </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @disabled = "Disabled" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
 
+                            <div class="col-lg-4">
 
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "remarks", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerAccountCustomerFullName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualFirstName, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-4">
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerAccountCustomerSerialNumber, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAccountCustomerSerialNumber, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
 
                         </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.Type, GetChequeType, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.Type)
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.InitialVoucherNumber, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.InitialVoucherNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Voucher Number " } })
+                                    @Html.ValidationMessageFor(model => model.InitialVoucherNumber, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.NumberOfVouchers, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.NumberOfVouchers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Number of vouchers" } })
+                                    @Html.ValidationMessageFor(model => model.NumberOfVouchers, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "reference" } })
+                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
+
                     }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
 <div class="modal fade" id="customerLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -290,52 +258,52 @@
                     </form>
                 </div>
 
-                <style>
-                    .blue-section {
-                        background-color: #e6f3ff;
-                        padding: 15px;
-                        border-radius: 5px;
-                    }
-
-                    .row.align-items-end {
-                        display: flex;
-                        align-items: flex-end;
-                    }
-
-                        .row.align-items-end > div {
-                            display: flex;
-                            flex-direction: column;
+                @*<style>
+                        .blue-section {
+                            background-color: #e6f3ff;
+                            padding: 15px;
+                            border-radius: 5px;
                         }
 
-                    #searchField {
-                        width: 100%;
-                    }
+                        .row.align-items-end {
+                            display: flex;
+                            align-items: flex-end;
+                        }
 
-                        #searchField .dataTables_filter {
-                            margin-bottom: 0;
+                            .row.align-items-end > div {
+                                display: flex;
+                                flex-direction: column;
+                            }
+
+                        #searchField {
                             width: 100%;
                         }
 
-                            #searchField .dataTables_filter label {
-                                width: 100%;
+                            #searchField .dataTables_filter {
                                 margin-bottom: 0;
-                                display: flex;
+                                width: 100%;
                             }
 
-                            #searchField .dataTables_filter input {
-                                width: 100% !important;
-                                margin-left: 0 !important;
-                                height: calc(1.5em + .75rem + 2px); /* Match Bootstrap's form-control height */
-                            }
+                                #searchField .dataTables_filter label {
+                                    width: 100%;
+                                    margin-bottom: 0;
+                                    display: flex;
+                                }
 
-                    #items-dropdown .dataTables_length {
-                        margin-bottom: 0;
-                    }
+                                #searchField .dataTables_filter input {
+                                    width: 100% !important;
+                                    margin-left: 0 !important;
+                                    height: calc(1.5em + .75rem + 2px); /* Match Bootstrap's form-control height */
+                                }
 
-                    #page-control .dataTables_paginate {
-                        float: right;
-                    }
-                </style>
+                        #items-dropdown .dataTables_length {
+                            margin-bottom: 0;
+                        }
+
+                        #page-control .dataTables_paginate {
+                            float: right;
+                        }
+                    </style>*@
             </div>
 
             <div class="modal-footer">
@@ -656,48 +624,41 @@
         });
     </script>
 
-
-
-
-
-
-
-
-    <style>
-        .tab {
-            overflow: hidden;
-            border-bottom: 1px solid #ccc;
-        }
-
-            /* Style the buttons inside the tab */
-            .tab button {
-                background-color: inherit;
-                float: left;
-                border: none;
-                outline: none;
-                cursor: pointer;
-                padding: 14px 16px;
-                transition: 0.3s;
-                font-size: 17px;
+    @*<style>
+            .tab {
+                overflow: hidden;
+                border-bottom: 1px solid #ccc;
             }
 
-                /* Change background color of buttons on hover */
-                .tab button:hover {
-                    background-color: #ddd;
+                /* Style the buttons inside the tab */
+                .tab button {
+                    background-color: inherit;
+                    float: left;
+                    border: none;
+                    outline: none;
+                    cursor: pointer;
+                    padding: 14px 16px;
+                    transition: 0.3s;
+                    font-size: 17px;
                 }
 
-                /* Create an active/current tablink class */
-                .tab button.active {
-                    background-color: #ccc;
-                }
+                    /* Change background color of buttons on hover */
+                    .tab button:hover {
+                        background-color: #ddd;
+                    }
 
-        /* Style the tab content */
-        .tabcontent {
-            display: none;
-            padding: 6px 12px;
-            border-top: none;
-        }
-    </style>
+                    /* Create an active/current tablink class */
+                    .tab button.active {
+                        background-color: #ccc;
+                    }
+
+            /* Style the tab content */
+            .tabcontent {
+                display: none;
+                padding: 6px 12px;
+                border-top: none;
+            }
+        </style>*@
 
 
 

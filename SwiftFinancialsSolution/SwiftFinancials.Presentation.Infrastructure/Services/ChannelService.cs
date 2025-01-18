@@ -16974,6 +16974,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region DelegateDTO
 
+        public Task<List<DelegateDTO>> FindDelegatesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<DelegateDTO>>();
+
+            IDelegateService service = GetService<IDelegateService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<DelegateDTO> response = ((IDelegateService)result.AsyncState).EndFindDelegates(result);
+
+                    tcs.TrySetResult(new List<DelegateDTO>(response ?? new List<DelegateDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDelegates(asyncCallback, service);
+
+            return tcs.Task;
+        }
         public Task<PageCollectionInfo<DelegateDTO>> FindDelegatesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<DelegateDTO>>();
@@ -17137,7 +17168,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #endregion
 
         #region DirectorDTO
+        public Task<List<DirectorDTO>> FindDirectorsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<DirectorDTO>>();
 
+            IDirectorService service = GetService<IDirectorService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<DirectorDTO> response = ((IDirectorService)result.AsyncState).EndFindDirectors(result);
+
+                    tcs.TrySetResult(new List<DirectorDTO>(response ?? new List<DirectorDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDirectors(asyncCallback, service);
+
+            return tcs.Task;
+        }
         public Task<PageCollectionInfo<DirectorDTO>> FindDirectorsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<DirectorDTO>>();
@@ -19862,7 +19923,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
 
-     
+
 
         public Task<PageCollectionInfo<CustomerAccountDTO>> FindCustomerAccountsByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, bool includeBalances, bool includeProductDescription, bool includeInterestBalanceForLoanAccounts, bool considerMaturityPeriodForInvestmentAccounts, ServiceHeader serviceHeader)
         {
@@ -35336,7 +35397,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
                 }
             });
 
-           
+
             service.BeginUpdateExpensePayableEntriesByExpensePayableId(expensePayableId, expensePayableEntries.ExtendedToList(), asyncCallback, service);
 
             return tcs.Task;
@@ -38011,7 +38072,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
         public Task<PageCollectionInfo<AccountClosureRequestDTO>> FindAccountClosureRequestsByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, bool includeProductDescription, ServiceHeader serviceHeader)
-       {
+        {
             var tcs = new TaskCompletionSource<PageCollectionInfo<AccountClosureRequestDTO>>();
 
             IAccountClosureRequestService service = GetService<IAccountClosureRequestService>(serviceHeader);

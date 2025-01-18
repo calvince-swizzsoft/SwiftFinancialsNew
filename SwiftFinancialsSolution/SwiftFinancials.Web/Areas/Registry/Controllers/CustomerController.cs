@@ -49,7 +49,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int? recordStatus, int? customerFilter, int? customerType)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int? recordStatus, int? customerFilter, int? customerType, string filterValue)
         {
             int totalRecordCount = 0;
 
@@ -65,18 +65,18 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             if (recordStatus != null && customerFilter != null)
             {
-                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, jQueryDataTablesModel.sSearch, (int)customerFilter, 0, int.MaxValue, GetServiceHeader());
+                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, filterValue, (int)customerFilter, 0, int.MaxValue, GetServiceHeader());
             }
             else if (recordStatus == null && customerFilter != null)
             {
-                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)customerFilter, 0, int.MaxValue, GetServiceHeader());
+                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(filterValue, (int)customerFilter, 0, int.MaxValue, GetServiceHeader());
             }
             else if (customerType != null && customerFilter == null)
             {
 
                 if (customerType == 0)
                 {
-                    pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, 0, int.MaxValue, GetServiceHeader());
+                    pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, filterValue, (int)CustomerFilter.FirstName, 0, int.MaxValue, GetServiceHeader());
                 }
 
                 if (customerType == 1)
@@ -133,8 +133,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     sEcho: jQueryDataTablesModel.sEcho
             );
             }
-
-
+            if (filterValue != null)
+            {
+                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(filterValue, (int)CustomerFilter.IdentityCardNumber, 0, int.MaxValue, GetServiceHeader());
+            }
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
 
@@ -350,10 +352,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var mandatoryinvestmentProducts = attached.InvestmentProductCollection;
             var mandatorysavingsProducts = attached.SavingsProductCollection;
-            ViewBag.investment = investment;
-            ViewBag.savings = savingsProductDTOs;
-            ViewBag.debit = debitypes;
-            ViewBag.creditTypes = creditTypes;
+
 
             var investmentsProductsIds = new HashSet<Guid>(mandatoryinvestmentProducts.Select(ac => ac.Id));
             ViewBag.CheckedInvestmentsStates = investment.ToDictionary(
@@ -363,8 +362,23 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.InvestmentsProducts = investment;
 
 
+            var savingssProductsIds = new HashSet<Guid>(mandatorysavingsProducts.Select(ac => ac.Id));
+            ViewBag.CheckedsavingssStates = savingsProductDTOs.ToDictionary(
+                c => c.Id,
+                c => savingssProductsIds.Contains(c.Id)
+            );
+            ViewBag.SavingsProducts = savingsProductDTOs;
 
-           
+
+
+
+            var debittypesIds = new HashSet<Guid>(mandatorydebitTypes.Select(ac => ac.Id));
+            ViewBag.CheckeddebittypesStates = mandatorydebitTypes.ToDictionary(
+                c => c.Id,
+                c => debittypesIds.Contains(c.Id)
+            );
+            ViewBag.debit = debitypes;
+
             return View();
         }
 
@@ -471,8 +485,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var endDate = Request["birthdate"];
 
             // Parse and set dates
-            customerBindingModel.IndividualBirthDate = new DateTime(1990, DateTime.Today.Month, DateTime.Today.Day);
-            customerBindingModel.RegistrationDate = DateTime.Parse(endDate).Date;
+            //customerBindingModel.IndividualBirthDate = new DateTime(1990, DateTime.Today.Month, DateTime.Today.Day);
+            customerBindingModel.RegistrationDate = DateTime.Parse(startDate).Date;
+            customerBindingModel.IndividualBirthDate = DateTime.Parse(endDate).Date;
 
             // Set customer type based on description
             switch (typedescription)
@@ -529,10 +544,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
 
             var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            //if (userDTO.BranchId != null)
-            //{
-            //    customerBindingModel.BranchId = (Guid)userDTO.BranchId;
-            //}
+            if (userDTO.BranchId != null)
+            {
+                customerBindingModel.BranchId = (Guid)userDTO.BranchId;
+            }
             //var companies = await _channelService.FindBranchAsync(customerBindingModel.BranchId, GetServiceHeader());
             //var j = await _channelService.FindCompanyAsync(companies.CompanyId, GetServiceHeader());
             //var mandatorydebitTypes = await _channelService.FindDebitTypesByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
@@ -581,19 +596,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
  );
                     await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
 
-                    if (result.ErrorMessages == null)
+                    if (result.ErrorMessages == null || result == null)
                     {
-                        // TempData["SuccessMessage"] = "Teller created successfully.";
                         TempData["SuccessMessage"] = "Customer " + result.FullName + " created successfully.";
-
-                        //System.Windows.Forms.MessageBox.Show(
-                        //    "Customer " + result.FullName + " created successfully.",
-                        //    "Success",
-                        //    System.Windows.Forms.MessageBoxButtons.OK,
-                        //    System.Windows.Forms.MessageBoxIcon.Information,
-                        //    System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                        //    System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                        //);
                         ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
                         ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
                         ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
@@ -601,44 +606,12 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                         return RedirectToAction("Index", customerBindingModel);
                     }
 
-                    else
+                    else if (result == null || !string.IsNullOrEmpty(result.ErrorMessageResult))
                     {
-                        //TempData["Error"] = "Sorry, teller creation failed.";
-
-                        System.Windows.Forms.MessageBox.Show(
-                                     "Sorry, Teller creation failed.",
-                                     "Error",
-                                     System.Windows.Forms.MessageBoxButtons.OK,
-                                     System.Windows.Forms.MessageBoxIcon.Error,
-                                     System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                                     System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                                     );
-
 
                         return Json(new { success = false, message = "Operation Failed" });
 
                     }
-                    // Document document = new Document();
-
-                    //// Convert Base64 strings to byte arrays with error handling
-                    //document.SignaturePhoto = SafeConvertFromBase64String(signaturePhoto);
-                    //document.IDCardBackPhoto = SafeConvertFromBase64String(idCardBackPhoto);
-                    //document.IDCardFrontPhoto = SafeConvertFromBase64String(idCardFrontPhoto);
-                    //byte[] ka = SafeConvertFromBase64String(passportPhotoDataUrl);
-                    //string p = Convert.ToString(passportPhotoDataUrl);
-
-                    //// Convert byte arrays to HttpPostedFileBase if not null
-                    //HttpPostedFileBase signatureFile = document.SignaturePhoto != null ? ConvertToHttpPostedFileBase(document.SignaturePhoto, "signaturePhoto.jpg") : null;
-                    //HttpPostedFileBase idCardBackFile = document.IDCardBackPhoto != null ? ConvertToHttpPostedFileBase(document.IDCardBackPhoto, "idCardBackPhoto.jpg") : null;
-                    //HttpPostedFileBase idCardFrontFile = document.IDCardFrontPhoto != null ? ConvertToHttpPostedFileBase(document.IDCardFrontPhoto, "idCardFrontPhoto.jpg") : null;
-                    //HttpPostedFileBase passportFile = document.PassportPhoto != null ? ConvertToHttpPostedFileBase(document.PassportPhoto, "passportPhoto.jpg") : null;
-
-                    // Proceed with your document upload process
-                    //string j= document.PassportPhoto != null ? Convert.ToString(document.PassportPhoto) : null;
-                    // await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, j));
-
-
-
 
                     if (result == null || !string.IsNullOrEmpty(result.ErrorMessageResult))
                     {
@@ -1025,20 +998,12 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     var result = await _channelService.UpdateCustomerAsync(customerDTO,
                         GetServiceHeader()
                     );
-                    TempData["SuccessMessage"] = "customer created successfully";
+                    TempData["SuccessMessage"] = "Customer "+customerDTO.FullName +" Edit Successfully";
 
                     if (result == true)
                     {
                         // TempData["SuccessMessage"] = "Teller created successfully.";
 
-                        System.Windows.Forms.MessageBox.Show(
-                            "Customer " + customerDTO.FullName + " Edited successfully.",
-                            "Success",
-                            System.Windows.Forms.MessageBoxButtons.OK,
-                            System.Windows.Forms.MessageBoxIcon.Information,
-                            System.Windows.Forms.MessageBoxDefaultButton.Button1,
-                            System.Windows.Forms.MessageBoxOptions.ServiceNotification
-                        );
                         ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
                         ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
                         ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
@@ -1049,39 +1014,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     {
                         await SaveDocumentAsync(ProcessDocumentUpload(customerDTO.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
                     }
-
-                    // customerBindingModel.Type = 3;
-                    //// Process based on customer type
-                    //switch ((CustomerType)customerBindingModel.Type)
-                    //{
-                    //    case CustomerType.Individual:
-                    //        TempData["SuccessMessage"] = !string.IsNullOrEmpty(customerBindingModel.FullName)
-                    //            ? $"Successfully Created Customer {customerBindingModel.FullName}"
-                    //            : "Successfully created customer, but invalid data provided.";
-                    //        return RedirectToAction("index", customerBindingModel);
-
-                    //    case CustomerType.Partnership:
-                    //        await _channelService.UpdatePartnershipMemberCollectionByPartnershipIdAsync(result.Id, customerBindingModel.partnershipMemberCollection, GetServiceHeader());
-                    //        TempData["SuccessMessage"] = $"Partnership customer '{customerBindingModel.FullName}' created successfully.";
-                    //        return RedirectToAction("index", customerBindingModel);
-
-                    //    case CustomerType.Corporation:
-                    //        await _channelService.UpdateCorporationMemberCollectionByCorporationIdAsync(result.Id, customerBindingModel.corporationMemberDTO, GetServiceHeader());
-                    //        TempData["SuccessMessage"] = $"Corporation customer '{customerBindingModel.FullName}' created successfully.";
-                    //        return RedirectToAction("index", customerBindingModel);
-                    //    case CustomerType.MicroCredit:
-                    //        await _channelService.AddMicroCreditGroupMemberAsync(customerBindingModel.microCreditGroupMemberDTOs[0], GetServiceHeader());
-                    //        TempData["SuccessMessage"] = $"Corporation customer '{customerBindingModel.FullName}' created successfully.";
-                    //        return RedirectToAction("index", customerBindingModel);
-                    //    default:
-                    //        TempData["DefaultError"] = "Unknown customer type.";
-                    //        return RedirectToAction("index", customerBindingModel);
-                    //}
-                    // Handle Document Upload to DB
-                    //await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
-
-                    //// Refresh ViewBag Select Lists
-                    //InitializeViewBagSelectLists(customerBindingModel);
 
                     return RedirectToAction("Index");
                 }

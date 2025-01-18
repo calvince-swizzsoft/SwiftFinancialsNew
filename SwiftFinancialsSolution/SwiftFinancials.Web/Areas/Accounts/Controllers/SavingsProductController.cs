@@ -64,11 +64,50 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             );
         }
 
+
+        public async Task<ActionResult> ChartOfAccountLookUp(Guid? id, SavingsProductDTO savingsProductDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var chartOfAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+
+
+            if (chartOfAccount != null)
+            {
+                savingsProductDTO.ChartOfAccountId = chartOfAccount.Id;
+                savingsProductDTO.ChartOfAccountAccountName = chartOfAccount.AccountName;
+
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        ChartOfAccountId = savingsProductDTO.ChartOfAccountId,
+                        ChartOfAccountAccountName = savingsProductDTO.ChartOfAccountAccountName
+                    }
+                });
+            }
+            return Json(new { success = false, message = "Product Not Found!" });
+        }
+
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
             var savingsProductDTO = await _channelService.FindSavingsProductAsync(id, GetServiceHeader());
+            var commissionDTOs = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProductDTO.Id, savingsProductDTO.ChargeType, GetServiceHeader());
+            ViewBag.Commisions = commissionDTOs;
+            var excemptions = await _channelService.FindSavingsProductExemptionsBySavingsProductIdAsync(savingsProductDTO.Id, GetServiceHeader());
+            ViewBag.excemptions = excemptions;
 
             var rPriority = savingsProductDTO.Priority;
 
@@ -137,7 +176,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     {
                         savingsProductExemptionDTO.BranchId = (Guid)userDTO.BranchId;
                     }
-                    savingsProductExemptionDTO.Id = Excemptionsavingsproductid;
+                    var savingsProduct = await _channelService.FindSavingsProductAsync(Excemptionsavingsproductid, GetServiceHeader());
+                    savingsProductExemptionDTO.SavingsProductId = savingsProduct.Id;
+                    savingsProductExemptionDTO.MinimumBalance = savingsProduct.MinimumBalance;
+                    savingsProductExemptionDTO.MaximumAllowedDeposit = savingsProduct.MaximumAllowedDeposit;
+                    savingsProductExemptionDTO.MaximumAllowedWithdrawal = savingsProduct.MaximumAllowedWithdrawal;
+                    savingsProductExemptionDTO.OperatingBalance = savingsProduct.OperatingBalance;
+                    savingsProductExemptionDTO.AnnualPercentageYield = savingsProduct.AnnualPercentageYield;
+                    savingsProductExemptionDTO.WithdrawalNoticePeriod = savingsProduct.WithdrawalNoticePeriod;
+                    savingsProductExemptionDTO.WithdrawalInterval = savingsProduct.WithdrawalInterval;
+
                     ExcemptedcommissionDTOs.Add(savingsProductExemptionDTO);
                 }
                 // Process the selected IDs as needed
@@ -152,8 +200,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 foreach (var savingsproductid in selectedIds)
                 {
-                  
+
                     var savingsproduct = await _channelService.FindCommissionAsync(savingsproductid, GetServiceHeader());
+
                     commissionDTOs.Add(savingsproduct);
                 }
                 // Process the selected IDs as needed

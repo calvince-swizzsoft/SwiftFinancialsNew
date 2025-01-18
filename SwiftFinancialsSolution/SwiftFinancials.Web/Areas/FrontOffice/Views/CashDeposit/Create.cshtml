@@ -83,42 +83,7 @@
             border-bottom: none;
         }
 
-        .image-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 400px;
-            background: linear-gradient(145deg, #ffffff, #dcdce1);
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2), -8px -8px 20px rgba(255, 255, 255, 0.5);
-            transform-style: preserve-3d;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-
-
-            .image-container h3 {
-                font-size: 1rem;
-                color: #333;
-                margin-bottom: 10px;
-                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-            }
-
-
-            .image-container img {
-                width: 100%;
-                height: 280px;
-                border-radius: 8px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-                transition: transform 0.3s ease;
-            }
-
-
-            .image-container:hover {
-                transform: scale(1.05) rotateY(10deg);
-                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), -8px -8px 20px rgba(255, 255, 255, 0.4);
-                cursor: pointer;
-            }
+    
 
 
         .custom-modal-styles {
@@ -267,6 +232,53 @@
             font-size: 16px;
             font-weight: bold;
         }
+
+        #documentImages {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #f5f5fa;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            perspective: 1200px;
+            width: 100%;
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 400px;
+            background: linear-gradient(145deg, #ffffff, #dcdce1);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2), -8px -8px 20px rgba(255, 255, 255, 0.5);
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+            .image-container h3 {
+                font-size: 1rem;
+                color: #333;
+                margin-bottom: 10px;
+                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            }
+
+            .image-container img {
+                width: 100%;
+                height: 280px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                transition: transform 0.3s ease;
+            }
+
+            .image-container:hover {
+                transform: scale(1.05) rotateY(10deg);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), -8px -8px 20px rgba(255, 255, 255, 0.4);
+                cursor: pointer;
+            }
     </style>
 </head>
 
@@ -551,7 +563,7 @@
                                                     @Html.ValidationMessageFor(model => model.CashWithdrawal.Remarks, "", new { @class = "text-danger" })
                                                 </div>
 
-                                                <div class="upload-container">
+                                                @*<div class="upload-container">
                                                     <div class="upload-box">
                                                         <label for="passport">Passport</label>
                                                         <div id="passport" class="upload-area">
@@ -579,7 +591,7 @@
                                                             <img src="~/Images/idDemo_Front.jpg" style="width: 100%; height: 60%;" />
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div>*@
                                             </div>
 
                                             <!-- Cheque Deposit Tab -->
@@ -1246,12 +1258,10 @@
 
                                             @*</fieldset>*@
                                         </div>
-                                        <!-- Specimen Tab -->
+                                
                                         <div id="specimen" class="inner-tab-pane">
-                                            <div id="documentImages" title="Click on an image to view in full-screen">
-
-                                                <!-- Passport Photo -->
-                                                <div class="image-container" onclick="openFullscreen('passportPhoto')">
+                                            <div id="documentImages">
+                                                <div class="image-container">
                                                     <h3>Passport Photo</h3>
                                                     @if (passportPhoto != null)
                                                     {
@@ -1261,11 +1271,9 @@
                                                     {
                                                         <p>No passport photo available.</p>
                                                     }
-                                                    <div id="ppmsg" style="color: red; text-align: center; vertical-align: central;"></div>
                                                 </div>
 
-                                                <!-- Signature Photo -->
-                                                <div class="image-container" onclick="openFullscreen('signaturePhoto')">
+                                                <div class="image-container">
                                                     <h3>Signature Photo</h3>
                                                     @if (signaturePhoto != null)
                                                     {
@@ -1275,37 +1283,31 @@
                                                     {
                                                         <p>No signature photo available.</p>
                                                     }
-                                                    <div id="smsg" style="color: red; text-align: center; vertical-align: central;"></div>
                                                 </div>
 
-                                                <!-- ID Card Front Photo -->
-                                                <div class="image-container" onclick="openFullscreen('idCardFront')">
-                                                    <h3>ID Card Front</h3>
+                                                <div class="image-container">
+                                                    <h3>ID Card Front Photo</h3>
                                                     @if (idCardFront != null)
                                                     {
-                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(idCardFront)" alt="ID Card Front" />
+                                                        <img src="data:image/png;base64,@Convert.ToBase64String(idCardFront)" alt="ID Card Front" />
                                                     }
                                                     else
                                                     {
                                                         <p>No ID Card Front photo available.</p>
                                                     }
-                                                    <div id="idfrontmsg" style="color: red; text-align: center; vertical-align: central;"></div>
                                                 </div>
 
-                                                <!-- ID Card Back Photo -->
-                                                <div class="image-container" onclick="openFullscreen('idCardBack')">
-                                                    <h3>ID Card Back</h3>
+                                                <div class="image-container">
+                                                    <h3>ID Card Back Photo</h3>
                                                     @if (idCardBack != null)
                                                     {
-                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(idCardBack)" alt="ID Card Back" />
+                                                        <img src="data:image/png;base64,@Convert.ToBase64String(idCardBack)" alt="ID Card Back" />
                                                     }
                                                     else
                                                     {
                                                         <p>No ID Card Back photo available.</p>
                                                     }
-                                                    <div id="idbackmsg" style="color: red; text-align: center; vertical-align: central;"></div>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
@@ -1385,15 +1387,17 @@
             <div class="modal-body">
                 <!-- Table for Account Closure Requests -->
                 @*<div class="table-responsive" style="overflow-x: auto;">*@
-                <table id="CustomerAccountsGrid" class="customDatatableStyles footable table table-striped toggle-arrow-tiny grey-table">
-                    <tbody>
-                        <tr>
-                            <td class="dataTables_empty">Loading data from server</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="overflow-x: auto;">
+                    <table id="CustomerAccountsGrid" class="customDatatableStyles footable table table-striped toggle-arrow-tiny grey-table">
+                        <tbody>
+                            <tr>
+                                <td class="dataTables_empty">Loading data from server</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 @*</div>*@
-
+            
                 <!-- Filter Form -->
                 <div class="blue-section mt-1">
                     <form id="CustomerAccountModalFilterForm">
@@ -1601,7 +1605,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-
+<link href="~/Scripts/css/customersGrid.css" rel="stylesheet" />
     <!-- Include SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

@@ -247,41 +247,11 @@ namespace SwiftFinancials.Web.Areas.Loaning
             if (!loanCaseDTO.HasErrors)
             {
 
-                string message = string.Format(
-                                  "Do you want to proceed with loan verification for: \n{0}?",
-                                   findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " +
-                                   findLoanCaseDetails.CustomerIndividualLastName.ToUpper()
-                              );
+                await _channelService.AuditLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAuditOption, GetServiceHeader());
 
-                // Show the message box with Yes/No options
-                DialogResult result = MessageBox.Show(
-                    message,
-                    "Loan Verification",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["Success"] = "Operation Completed Successfully";
 
-                if (result == DialogResult.Yes)
-                {
-                    await _channelService.AuditLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAuditOption, GetServiceHeader());
-
-                    //TempData["verify"] = "Loan Verification Successful";
-
-                    MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Verification", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    await ServeNavigationMenus();
-
-                    ViewBag.LoanAuditOptionSelectList = GetLoanAuditOptionSelectList(loanCaseDTO.LoanAuditOption.ToString());
-
-                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Verification", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View(loanCaseDTO);
-                }
+                return RedirectToAction("Index");
             }
             else
             {
@@ -290,9 +260,7 @@ namespace SwiftFinancials.Web.Areas.Loaning
                 var errorMessages = loanCaseDTO.ErrorMessages;
                 ViewBag.LoanAuditOptionSelectList = GetLoanAuditOptionSelectList(loanCaseDTO.LoanAuditOption.ToString());
 
-                //TempData["verifyError"] = "Loan Verification Unsuccessful";
-
-                MessageBox.Show(Form.ActiveForm, "Operation Unsuccessful.", "Loan Verification", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                TempData["Fail"] = "Operation Failed!";
 
                 return View(loanCaseDTO);
             }

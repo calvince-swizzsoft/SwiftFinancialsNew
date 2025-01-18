@@ -128,11 +128,17 @@
                 <div class="ibox-title">
                     <h2>Loan Verification</h2>
 
-                    @if (TempData["verify"] != null)
+                    @if (TempData["Success"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["verify"]
-                        </div>
+                        <script type="text/javascript">
+                            document.addEventListener('DOMContentLoaded', function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    text: '@TempData["Success"]',
+                                    confirmButtonColor: '#006400',
+                                })
+                            });
+                        </script>
                     }
 
                     <div class="ibox-tools">
