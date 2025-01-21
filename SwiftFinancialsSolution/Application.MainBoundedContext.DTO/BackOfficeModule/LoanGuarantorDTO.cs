@@ -670,6 +670,10 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 return Enum.IsDefined(typeof(ProductCode), CustomerAccountTypeProductCode) ? EnumHelper.GetDescription((ProductCode)CustomerAccountTypeProductCode) : string.Empty;
             }
         }
+
+        [DataMember]
+        [Display(Name = "Amount Applied")]
+        public decimal AmountApplied2 { get; set; }
     }
 
 

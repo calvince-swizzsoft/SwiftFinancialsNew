@@ -1351,6 +1351,10 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Payment Frequency Per Year")]
         public string loanProductPaymentFrequencyPerYear { get; set; }
 
+        [DataMember]
+        [Display(Name = "Product Category")]
+        public string LoanProductCategory { get; set; }
+
 
         [DataMember]
         public ObservableCollection<LoanGuarantorDTO> Guarantor { get; set; }
