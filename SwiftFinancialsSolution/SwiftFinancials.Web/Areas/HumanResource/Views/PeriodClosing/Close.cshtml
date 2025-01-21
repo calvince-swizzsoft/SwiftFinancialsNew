@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Edit", "PeriodClosings", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Close", "PeriodClosing", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
 
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -130,7 +130,7 @@
                             </div>
                         </fieldset>
                         <div class="ibox-content m-b-sm border-bottom">
-                            @using (Html.BeginForm("Edit", "PeriodClosings", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                            @using (Html.BeginForm("Close", "PeriodClosing", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                             {
                                 @Html.AntiForgeryToken()
                                 @Html.HiddenFor(model => model.Id)

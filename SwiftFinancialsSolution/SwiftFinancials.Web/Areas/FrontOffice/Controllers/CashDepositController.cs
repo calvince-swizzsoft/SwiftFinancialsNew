@@ -240,10 +240,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
-            //var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            //var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
             var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(productCode, jQueryDataTablesModel.sSearch, customerFilter, 0, int.MaxValue, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
      
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
@@ -352,7 +348,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 transactionModel.TellerStatements = TellerStatements;
                 transactionModel.Teller.ChartOfAccountId = SelectedTeller.ChartOfAccountId;
                 transactionModel.PostingPeriodId = _currentPostingPeriod.Id;
-
             }
 
 
@@ -376,11 +371,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 }
 
             }
-
+          
 
             if (id == null || id == Guid.Empty || !Guid.TryParse(id.ToString(), out Guid parseId))
             {
-
                 return View(transactionModel);
             }
 
@@ -754,8 +748,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                     if (createNewCashWithdrawalRequest)
                                     {
                                        
-
-
                                         string message = string.Format(
                  "{0}.\nDo you want to proceed and place a cash withdrawal authorization request?",
                  EnumHelper.GetDescription(cashWithdrawalCategory)
@@ -770,7 +762,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                             TransactionData = new CustomerTransactionModel
                                             {
                                                 DebitCustomerAccountId = SelectedCustomerAccount.Id,
-                                                TotalValue = transactionModel.PaymentVoucher.Amount,
+                                                TotalValue = (cashWithdrawalCategory == CashWithdrawalCategory.PaymentVoucher)? transactionModel.PaymentVoucher.Amount : transactionModel.TotalValue,
                                                 Reference = transactionModel.PaymentVoucher.Reference,
                                                 PaymentVoucherId = transactionModel.PaymentVoucher.Id, 
                                                 PaymentVoucherPayee = transactionModel.PaymentVoucher.Payee,
@@ -1457,7 +1449,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         public async Task<ActionResult> PlaceCashWithdrawalAuthorizationRequestAsync(CustomerTransactionModel customerTransactionModel)
         {
-
             bool includeBalances = true;
             bool includeProductDescription = true;
             bool includeInterestBalanceForLoanAccounts = false;

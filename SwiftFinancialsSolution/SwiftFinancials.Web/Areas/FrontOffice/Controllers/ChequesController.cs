@@ -409,13 +409,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             else
                             {
                                 isSuccess = false;
-                                errorMessage += $"Failed to mark cheque with ID {cheque.Id} as cleared. ";
+                                errorMessage += $"Failed to mark cheque with ID {cheque.ChequeTypeDescription} as cleared. ";
                             }
                         }
                         else
                         {
                             isSuccess = false;
-                            errorMessage += $"Failed to clear cheque with ID {cheque.Id}. ";
+                            errorMessage += $"Failed to clear cheque with ID {cheque.ChequeTypeDescription}. ";
                         }
                     }
                     else if (actionType.ToLower() == "unpay")
@@ -443,19 +443,18 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             else
                             {
                                 isSuccess = false;
-                                errorMessage += $"Failed to mark cheque with ID {cheque.Id} as cleared. ";
+                                errorMessage += $"Failed to mark cheque with ID {cheque.ChequeTypeDescription} as cleared. ";
                             }
                         }
                         else
                         {
                             isSuccess = false;
-                            errorMessage += $"Failed to unpay cheque with ID {cheque.Id}. ";
+                            errorMessage += $"Failed to unpay cheque with ID {cheque.ChequeTypeDescription}. ";
                         }
                     }
 
                     if (chequeProcessed)
                     {
-                        // Optionally log successful processing
                     }
                 }
             }
