@@ -68,6 +68,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
         #endregion
 
+        #region Index
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -127,38 +128,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 sEcho: jQueryDataTablesModel.sEcho
             );
         }
-
-        public async Task<ActionResult> Details(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
-
-            var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
-            var loanCollaterals = await _channelService.FindLoanCollateralsByLoanCaseIdAsync(id, GetServiceHeader());
-
-            ViewBag.LoanGuarantors = loanGuarantors;
-            ViewBag.Collaterals = loanCollaterals;
-
-            return View(loanCaseDTO);
-        }
-
-        public async Task<ActionResult> Create()
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.CustomerFilter = GetCustomerFilterSelectList(string.Empty);
-
-            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
-            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
-
-            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
-            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
-
-            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
-            return View();
-        }
+        #endregion
 
         #region Lookups
         public async Task<ActionResult> LoaneeLookup(Guid? id, LoanCaseDTO loanCaseDTO)
@@ -940,7 +910,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
         #endregion
 
-
         [HttpPost]
         public async Task<ActionResult> Add(LoanCaseDTO loancaseDTO)
         {
@@ -1014,7 +983,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return Json(new { success = true, entries = loanguarantorsDTOs });
         }
 
-
         [HttpPost]
         public async Task<JsonResult> Remove(Guid id)
         {
@@ -1036,6 +1004,38 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return Json(new { success = true, data = loanguarantorsDTOs });
         }
 
+        public async Task<ActionResult> Details(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
+            var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
+            var loanCollaterals = await _channelService.FindLoanCollateralsByLoanCaseIdAsync(id, GetServiceHeader());
+
+            ViewBag.LoanGuarantors = loanGuarantors;
+            ViewBag.Collaterals = loanCollaterals;
+
+            return View(loanCaseDTO);
+        }
+
+        #region Create
+        public async Task<ActionResult> Create()
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.CustomerFilter = GetCustomerFilterSelectList(string.Empty);
+
+            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+
+            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+
+            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
+            return View();
+        }
 
         [HttpPost]
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO, string collateralIds)
@@ -1345,5 +1345,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View(loanCaseDTO);
             }
         }
+        #endregion
     }
 }

@@ -451,9 +451,9 @@
 
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.MaximumAmountPercentage, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.MaximumAmountPercentage, new { htmlAttributes = new { @id = "GuarantorCustomerSerialNumber", @class = "form-control", @placeholder = "Serial Number", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.MaximumAmountPercentage, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @id = "LoanInterestAnnualPercentageRate", @class = "form-control", @placeholder = "Serial Number", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
@@ -655,6 +655,33 @@
                                     </div>
 
                                     <div id="MainTab6" class="tabcontent">
+                                        <div class="table-container">
+                                            <h3 style="font-size: 1.9rem; text-align: center;">Collaterals</h3>
+                                            <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Status</th>
+                                                        <th>Document Title</th>
+                                                        <th>Value</th>
+                                                        <th>Date Attached</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.Collaterals != null)
+                                                    {
+                                                        foreach (var collaterals in ViewBag.Collaterals)
+                                                        {
+                                                            <tr>
+                                                                <td>@collaterals.CustomerDocumentCollateralStatusDescription</td>
+                                                                <td>@collaterals.CustomerDocumentFileTitle</td>
+                                                                <td style="text-align: right;">@collaterals.Value</td>
+                                                                <td>@collaterals.CreatedDate</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
 
                                     <div id="MainTab7" class="tabcontent">
@@ -771,7 +798,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationTotalAllowance, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationTotalAllowance)
-                                                @Html.EditorFor(model => model.LoanRegistrationTotalAllowance, new { htmlAttributes = new { @id = "TotalAllowance", @class = "form-control required", @disabled = "disabled" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationTotalAllowance, new { htmlAttributes = new { @id = "TotalAllowance", @class = "form-control required" } })
                                             </div>
                                         </div>
 
@@ -779,7 +806,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationTotalDeduction, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationTotalDeduction)
-                                                @Html.EditorFor(model => model.LoanRegistrationTotalDeduction, new { htmlAttributes = new { @id = "TotalDeduction", @class = "form-control required", @placeholder = "Kshs.0.00", @disabled = "disabled" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationTotalDeduction, new { htmlAttributes = new { @id = "TotalDeduction", @class = "form-control required", @placeholder = "Kshs.0.00" } })
                                             </div>
                                         </div>
 
@@ -880,7 +907,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-2" style="text-align: right;">
+                                            <div class="col-md-2">
                                                 <input type="submit" id="addEntryBtn" style="width:150px; margin-top: 20px;" class="btn btn-primary" value="Add" />
                                             </div>
                                         </div>
@@ -1047,7 +1074,7 @@
                                         <button class="tablinks" onclick="openTab(event, 'Tab2')"><i class="fa fa-table" aria-hidden="true"></i> Repayment Schedule</button>
                                     </div>
 
-                                    <div id="Tab8" class="tabcontent" style="display: block;">
+                                    <div id="Tab1" class="tabcontent" style="display: block;">
                                         <div class="tab-content">
                                             <div class="table-container">
                                                 <h3 style="font-size: 1.9rem; text-align: center;">Attached Loans</h3>
@@ -1070,7 +1097,7 @@
                                     </div>
 
 
-                                    <div id="Tab9" class="tabcontent">
+                                    <div id="Tab2" class="tabcontent">
                                         <div class="tab-content">
                                             <div class="table-container">
                                                 <h3 style="font-size: 1.9rem; text-align: center;">Repayment Schedule</h3>
@@ -1202,33 +1229,49 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    <script src="~/Scripts/js/navlink.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const netIncomeField = document.getElementById("NetIncome");
-            const totalDeductionsField = document.getElementById("TotalDeductions");
-            const totalAllowancesField = document.getElementById("TotalAllowances");
+            const totalDeductionsField = document.getElementById("TotalDeduction");
+            const totalAllowancesField = document.getElementById("TotalAllowance");
             const loanTermField = document.getElementById("LoanRegistrationTermInMonths");
 
             const abilityToPayField = document.getElementById("AbilityToPay");
             const totalIncomeField = document.getElementById("TotalIncome");
             const abilityToPayOverLoanTermField = document.getElementById("AbilityToPayOverLoanTerm");
             const takeHomeFixedAmountField = document.getElementById("TakeHomeValue");
+            const interestPartField = document.getElementById("LoanRegistrationInterestPart");
+            const loanPartField = document.getElementById("LoanRegistrationLoanPart");
+            const loanInterestRateField = document.getElementById("LoanInterestAnnualPercentageRate");
 
-            netIncomeField.addEventListener("input", function () {
+            function calculateValues() {
                 const netIncome = parseFloat(netIncomeField.value) || 0;
-                const totalDeductions = parseFloat(totalDeductionsField?.value) || 0;
-                const totalAllowances = parseFloat(totalAllowancesField?.value) || 0;
-                const loanTerm = parseFloat(loanTermField?.value) || 1;
+                const totalDeductions = parseFloat(totalDeductionsField.value) || 0;
+                const totalAllowances = parseFloat(totalAllowancesField.value) || 0;
+                const loanTerm = parseFloat(loanTermField.value) || 1;
+                const loanPart = parseFloat(loanPartField.value) || 0;
+                const loanInterestRate = parseFloat(loanInterestRateField?.value) || 0;
 
-                const abilityToPay = netIncome - totalDeductions;
                 const totalIncome = netIncome + totalAllowances;
+                const abilityToPay = netIncome - totalDeductions;
                 const abilityToPayOverLoanTerm = abilityToPay * loanTerm;
                 const takeHomeFixedAmount = netIncome - totalDeductions;
 
-                abilityToPayField.value = abilityToPay.toFixed(2);
+                const monthlyInterestRate = loanInterestRate / (12 * 100);
+
+                const interestPart = loanPart * monthlyInterestRate * loanTerm;
+
                 totalIncomeField.value = totalIncome.toFixed(2);
+                abilityToPayField.value = abilityToPay.toFixed(2);
                 abilityToPayOverLoanTermField.value = abilityToPayOverLoanTerm.toFixed(2);
                 takeHomeFixedAmountField.value = takeHomeFixedAmount.toFixed(2);
+                interestPartField.value = interestPart.toFixed(2);
+            }
+
+            [netIncomeField, totalDeductionsField, totalAllowancesField].forEach((field) => {
+                field.addEventListener("input", calculateValues);
             });
         });
     </script>
@@ -1252,9 +1295,6 @@
             }
         });
     </script>
-
-
-    <script src="~/Scripts/js/navlink.js"></script>
 
     <script>
         function openTab(evt, tabName) {

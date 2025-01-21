@@ -159,7 +159,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanRegistrationMaximumLoan = (investBal * investMultiplier);
 
                 loanCaseDTO.LoanProductSectionDescription = loanProductDetails.LoanRegistrationLoanProductSectionDescription;
-                loanCaseDTO.TakeHomeFixedAmount = loanProductDetails.TakeHomeFixedAmount;
                 var getCustomerAccountLoanProductBalances = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(loanCaseDTO.CustomerId,
                    loanCaseDTO.LoanProductId, true, true, true, true, GetServiceHeader());
                 var LoanBalanceBookBalance = getCustomerAccountLoanProductBalances.Sum(x => x.BookBalance);
@@ -169,8 +168,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanRegistrationLoanPart = loanCaseDTO.AmountApplied;
                 loanCaseDTO.LoanRegistrationInterestPart = loanCaseDTO.LoanRegistrationLoanPart * Convert.ToDecimal(((decimal)loanCaseDTO.LoanInterestAnnualPercentageRate / 100) * (loanCaseDTO.LoanRegistrationTermInMonths / 12));
                 loanCaseDTO.LoanRegistrationLoanPlusInterest = loanCaseDTO.LoanRegistrationLoanPart + loanCaseDTO.LoanRegistrationInterestPart;
+                loanCaseDTO.LoanQualificationLoanAmount = (double)loanCaseDTO.AmountApplied;
 
-                //// Standing Orders
+                var monthlyInterestRate = loanCaseDTO.LoanInterestAnnualPercentageRate / (12 * 100);
+                var totalNumberOfPeriods = loanCaseDTO.LoanRegistrationTermInMonths;
+                loanCaseDTO.PaymentPerPeriod = Math.Round((double)loanCaseDTO.AmountApplied * (monthlyInterestRate * Math.Pow(1 + monthlyInterestRate, totalNumberOfPeriods)) /
+                (Math.Pow(1 + monthlyInterestRate, totalNumberOfPeriods) - 1), 2);
+
                 ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
                 var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
 
@@ -180,8 +184,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 }
 
                 List<StandingOrderDTO> allStandingOrders = new List<StandingOrderDTO>();
-
-                // Iterate through each account ID and collect standing orders
                 foreach (var Ids in customerAccountId)
                 {
                     var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
@@ -196,40 +198,30 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 }
                 ViewBag.StandingOrders = allStandingOrders;
 
-
-                //// Income History
-                //// Payouts
                 var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchStatus.Posted, loaneeCustomer.CustomerId, GetServiceHeader());
                 if (payouts != null)
                 {
                     ViewBag.Payouts = payouts;
                 }
 
-
-                ////Salary
-                // No method fetching by customerId
+                ////Salary...
 
 
-
-                //// Loan Applications
                 var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(loaneeCustomer.CustomerId, GetServiceHeader());
                 if (loanApplications != null)
                 {
                     ViewBag.LoanApplications = loanApplications;
                 }
 
-                //// Collaterals...
-                // No method fetching by customerId
+                var loanCollaterals = await _channelService.FindLoanCollateralsByLoanCaseIdAsync(Id, GetServiceHeader());
+                ViewBag.Collaterals = loanCollaterals;
 
-                // Guarantors
                 var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(parseId, GetServiceHeader());
                 if (loanGuarantors != null)
                 {
                     ViewBag.LoanGuarantors = loanGuarantors;
                 }
 
-
-                // Loan Accounts
                 var findloanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
                 var LoanAccounts = findloanAccounts.Where(L => L.CustomerAccountTypeProductCode == (int)ProductCode.Loan);
                 if (LoanAccounts != null)
@@ -245,8 +237,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.AmountApplied = loaneeCustomer.AmountApplied;
                 ViewBag.TermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
 
-
-                // Print Data
                 Session["formData"] = loanCaseDTO;
                 Session["standingOrders"] = allStandingOrders;
                 Session["payouts"] = payouts;
@@ -259,19 +249,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 Session["AmountApplied"] = loanCaseDTO.AmountApplied;
                 Session["TermInMonths"] = loanCaseDTO.LoanRegistrationTermInMonths;
             }
-
-
-
-            //loanCaseDTO.LoanRegistrationOutstandingLoansBalance = await GetOutstandingLoansBalanceAsync(Id);
-            //loanCaseDTO.LoanRegistrationTotalIncome = await CalculateTotalIncomeAdditionsAsync(Id);
-            //loanCaseDTO.LoanRegistrationMaximumEntitled = await GetMaximumEntitledAsync(Id);
-            //loanCaseDTO.LoanRegistrationAbilityToPay = await CalculateMonthlyAbilityAsync(Id);
-            //loanCaseDTO.LoanRegistrationAbilityToPayOverLoanTerm = await CalculateAbilityOverLoanPeriodAsync(Id);
-            //loanCaseDTO.TakeHomeFixedAmount = await CalculateTwoThirdsToRepayLoanAsync(Id);
-            //loanCaseDTO.TotalLoansBalance = await CalculateTotalLoanAsync(Id);
-
             Session["Model"] = loaneeCustomer;
-
             return View(loanCaseDTO);
         }
 

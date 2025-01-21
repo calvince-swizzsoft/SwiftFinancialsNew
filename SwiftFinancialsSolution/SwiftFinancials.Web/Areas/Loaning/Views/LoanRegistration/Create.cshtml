@@ -1294,14 +1294,14 @@
                                         <div class="col-md-2 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].TotalShares, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.Guarantor[0].TotalShares, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.Guarantor[0].TotalShares, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required entry-field", @readonly = "readonly", @style = "text-align: right;" } })
                                             </div>
                                         </div>
 
                                         <div class="col-md-2 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].CommittedShares, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.Guarantor[0].CommittedShares, new { htmlAttributes = new { @id = "CommittedShares", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.Guarantor[0].CommittedShares, new { htmlAttributes = new { @id = "CommittedShares", @class = "form-control required entry-field", @readonly = "readonly", @style = "text-align: right;" } })
                                             </div>
                                         </div>
 
@@ -1315,7 +1315,7 @@
                                         <div class="col-md-2 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Guarantor[0].AmountApplied2, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.Guarantor[0].AmountApplied2, new { htmlAttributes = new { @id = "AmountApplied2", @class = "form-control required entry-field", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.Guarantor[0].AmountApplied2, new { htmlAttributes = new { @id = "AmountApplied2", @class = "form-control required entry-field", @readonly = "readonly", @style = "text-align: right;" } })
                                             </div>
                                         </div>
 
@@ -1325,7 +1325,7 @@
                                                 @Html.EditorFor(model => model.Guarantor[0].AmountGuaranteed, new
                                                 {
                                                     htmlAttributes = new
-                                                    { @id = "AmountGuaranteed", @class = "form-control required entry-field", @placeholder = "Kshs 0.00", @required = "" }
+                                                    { @id = "AmountGuaranteed", @class = "form-control required entry-field", @placeholder = "Kshs 0.00", @style = "text-align: right;" }
                                                 })
                                                 <span id="guarantee-error" class="text-danger" style="display:none;">Amount Guaranteed must be less than or equal to Total Shares minus Committed Shares!</span>
                                             </div>
