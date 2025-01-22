@@ -326,15 +326,15 @@
 
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.LoanProductInvestmentsBalance, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                    @Html.LabelFor(model => model.LoanRegistrationLoanProductCategoryDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LoanRegistrationLoanProductCategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                 </div>
                             </div>
 
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.LoanProductLoanBalance, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.LoanProductLoanBalance, new
+                                    @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new
                                {
                                    htmlAttributes = new
                                    {
@@ -348,8 +348,8 @@
 
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
+                                    @Html.LabelFor(model => model.LoanRegistrationMinimumGuarantors, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LoanRegistrationMinimumGuarantors, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
                                 </div>
                             </div>
                         </div>
@@ -357,15 +357,15 @@
                         <div class="row">
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.MaximumAmountPercentage, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.MaximumAmountPercentage, new { htmlAttributes = new { @class = "form-control required", @placeholder = "00.0000%", @readonly = "readonly" } })
+                                    @Html.LabelFor(model => model.LoanRegistrationMaximumGuarantees, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LoanRegistrationMaximumGuarantees, new { htmlAttributes = new { @class = "form-control required", @placeholder = "00.0000%", @readonly = "readonly" } })
                                 </div>
                             </div>
 
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.LoanProductLatestIncome, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.LoanProductLatestIncome, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                    @Html.LabelFor(model => model.LoanRegistrationInvestmentsMultiplier, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LoanRegistrationInvestmentsMultiplier, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                 </div>
                             </div>
 

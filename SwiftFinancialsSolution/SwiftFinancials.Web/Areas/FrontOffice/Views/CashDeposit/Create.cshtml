@@ -84,42 +84,7 @@
             border-bottom: none;
         }
 
-        .image-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 400px;
-            background: linear-gradient(145deg, #ffffff, #dcdce1);
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2), -8px -8px 20px rgba(255, 255, 255, 0.5);
-            transform-style: preserve-3d;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-
-
-            .image-container h3 {
-                font-size: 1rem;
-                color: #333;
-                margin-bottom: 10px;
-                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-            }
-
-
-            .image-container img {
-                width: 100%;
-                height: 280px;
-                border-radius: 8px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-                transition: transform 0.3s ease;
-            }
-
-
-            .image-container:hover {
-                transform: scale(1.05) rotateY(10deg);
-                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), -8px -8px 20px rgba(255, 255, 255, 0.4);
-                cursor: pointer;
-            }
+    
 
 
         .custom-modal-styles {
@@ -268,6 +233,53 @@
             font-size: 16px;
             font-weight: bold;
         }
+
+        #documentImages {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #f5f5fa;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            perspective: 1200px;
+            width: 100%;
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 400px;
+            background: linear-gradient(145deg, #ffffff, #dcdce1);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2), -8px -8px 20px rgba(255, 255, 255, 0.5);
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+            .image-container h3 {
+                font-size: 1rem;
+                color: #333;
+                margin-bottom: 10px;
+                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            }
+
+            .image-container img {
+                width: 100%;
+                height: 280px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                transition: transform 0.3s ease;
+            }
+
+            .image-container:hover {
+                transform: scale(1.05) rotateY(10deg);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), -8px -8px 20px rgba(255, 255, 255, 0.4);
+                cursor: pointer;
+            }
     </style>
 </head>
 
@@ -1273,7 +1285,7 @@
 
                                             @*</fieldset>*@
                                         </div>
-                                        <!-- Specimen Tab -->
+                                
                                         <div id="specimen" class="inner-tab-pane">
                                             <div class="row" style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
                                                 <div class="upload-container" style="flex-grow: 1;">
