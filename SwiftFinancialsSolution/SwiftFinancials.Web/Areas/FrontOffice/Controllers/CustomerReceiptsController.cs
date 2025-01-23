@@ -22,8 +22,6 @@ using System.Configuration;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
-
-
     public class CustomerReceiptsController : MasterController
     {
         private readonly string _connectionString;
@@ -183,11 +181,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var _miniStatement = miniStatementOrdersCollection.ToList();
             model.CustomerAccountMiniStatement = _miniStatement;
 
-           
-
             return View(model);
         }
-
 
         public async Task<JsonResult> GetCustomerDetailsJson(Guid? id)
         {
@@ -262,8 +257,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return Json(customerAccount, JsonRequestBehavior.AllowGet);
         }
-
-
 
         [HttpPost]
         public async Task<ActionResult> Create(TransactionModel model)
@@ -375,7 +368,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
-
 
         private async Task<TellerDTO> GetCurrentTeller()
         {

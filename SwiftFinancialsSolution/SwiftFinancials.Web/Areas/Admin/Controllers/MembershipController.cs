@@ -228,7 +228,14 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(UserBindingModel userBindingModel, string[] Branchids, string[] roles)
         {
+            var Branches = Branchids.Select(Guid.Parse).ToList();
+            ObservableCollection<BranchDTO> branchDTOs = new ObservableCollection<BranchDTO>();
+            foreach(var Branch in Branches)
+            {
+                var branchDTO = await _channelService.FindBranchAsync(Branch,GetServiceHeader());
 
+                branchDTOs.Add(branchDTO);
+            }
             var employee = await _channelService.FindEmployeeAsync(userBindingModel.EmployeeId, GetServiceHeader());
             userBindingModel.FirstName = employee.CustomerIndividualFirstName;
             userBindingModel.OtherNames = employee.CustomerIndividualLastName;
@@ -308,7 +315,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             }
 
             var userRoles = await _applicationUserManager.GetRolesAsync(applicationUser.Id);
-            ViewBag.UserRoles = userRoles;  
+            ViewBag.UserRoles = userRoles;
 
             var branches = await _channelService.FindBranchesAsync(GetServiceHeader());
             var userBranches = branches.Where(x => x.Id == applicationUser.BranchId);

@@ -1,69 +1,73 @@
-INSERT INTO [SwiftFinancialsDB_Live].[dbo].[swiftFin_AlternateChannelLogs] ([Id]
- ,[AlternateChannelType]
-      ,[ISO8583_MessageTypeIdentification]
-      ,[ISO8583_PrimaryAccountNumber]
-      ,[ISO8583_SystemTraceAuditNumber]
-      ,[ISO8583_RetrievalReferenceNumber]
-      ,[ISO8583_Message]
-      ,[ISO8583_Amount]
-      ,[SPARROW_MessageType]
-      ,[SPARROW_SRCIMD]
-      ,[SPARROW_DeviceId]
-      ,[SPARROW_Date]
-      ,[SPARROW_Time]
-      ,[SPARROW_CardNumber]
-      ,[SPARROW_Message]
-      ,[SPARROW_Amount]
-      ,[WALLET_MessageTypeIdentification]
-      ,[WALLET_PrimaryAccountNumber]
-      ,[WALLET_SystemTraceAuditNumber]
-      ,[WALLET_RetrievalReferenceNumber]
-      ,[WALLET_Message]
-      ,[WALLET_CallbackPayload]
-      ,[WALLET_Amount]
-      ,[Response]
-      ,[IsReversed]
-      ,[IsReconciled]
-      ,[ReconciledBy]
-      ,[SequentialId]
-      ,[CreatedBy]
-      ,[CreatedDate]
-      ,[WALLET_RequestIdentifier]
-      ,[SystemTraceAuditNumber])
-
-
-
-
-SELECT TOP (1000) [Id]
-      ,[AlternateChannelType]
-      ,[ISO8583_MessageTypeIdentification]
-      ,[ISO8583_PrimaryAccountNumber]
-      ,[ISO8583_SystemTraceAuditNumber]
-      ,[ISO8583_RetrievalReferenceNumber]
-      ,[ISO8583_Message]
-      ,[ISO8583_Amount]
-      ,[SPARROW_MessageType]
-      ,[SPARROW_SRCIMD]
-      ,[SPARROW_DeviceId]
-      ,[SPARROW_Date]
-      ,[SPARROW_Time]
-      ,[SPARROW_CardNumber]
-      ,[SPARROW_Message]
-      ,[SPARROW_Amount]
-      ,[WALLET_MessageTypeIdentification]
-      ,[WALLET_PrimaryAccountNumber]
-      ,[WALLET_SystemTraceAuditNumber]
-      ,[WALLET_RetrievalReferenceNumber]
-      ,[WALLET_Message]
-      ,[WALLET_CallbackPayload]
-      ,[WALLET_Amount]
-      ,[Response]
-      ,[IsReversed]
-      ,[IsReconciled]
-      ,[ReconciledBy]
-      ,[SequentialId]
-      ,[CreatedBy]
-      ,[CreatedDate]
-      ,[WALLET_RequestIdentifier]
-      ,[SystemTraceAuditNumber]
-  FROM [SwiftFinancialsDB_Test].[dbo].[vfin_AlternateChannelLogs]
+INSERT INTO [SwiftFinancialsDB_Live].[dbo].[swiftFin_AlternateChannelLogs] (
+    [Id],
+    [AlternateChannelType],
+    [ISO8583_MessageTypeIdentification],
+    [ISO8583_PrimaryAccountNumber],
+    [ISO8583_SystemTraceAuditNumber],
+    [ISO8583_RetrievalReferenceNumber],
+    [ISO8583_Message],
+    [ISO8583_Amount],
+    [SPARROW_MessageType],
+    [SPARROW_SRCIMD],
+    [SPARROW_DeviceId],
+    [SPARROW_Date],
+    [SPARROW_Time],
+    [SPARROW_CardNumber],
+    [SPARROW_Message],
+    [SPARROW_Amount],
+    [WALLET_MessageTypeIdentification],
+    [WALLET_PrimaryAccountNumber],
+    [WALLET_SystemTraceAuditNumber],
+    [WALLET_RetrievalReferenceNumber],
+    [WALLET_Message],
+    [WALLET_CallbackPayload],
+    [WALLET_Amount],
+    [Response],
+    [IsReversed],
+    [IsReconciled],
+    [ReconciledBy],
+    [SequentialId],
+    [CreatedBy],
+    [CreatedDate],
+    [WALLET_RequestIdentifier],
+    [SystemTraceAuditNumber]
+)
+SELECT 
+    [Id],
+    [AlternateChannelType],
+    [ISO8583_MessageTypeIdentification],
+    [ISO8583_PrimaryAccountNumber],
+    [ISO8583_SystemTraceAuditNumber],
+    [ISO8583_RetrievalReferenceNumber],
+    [ISO8583_Message],
+    [ISO8583_Amount],
+    [SPARROW_MessageType],
+    [SPARROW_SRCIMD],
+    [SPARROW_DeviceId],
+    [SPARROW_Date],
+    [SPARROW_Time],
+    [SPARROW_CardNumber],
+    [SPARROW_Message],
+    [SPARROW_Amount],
+    [WALLET_MessageTypeIdentification],
+    [WALLET_PrimaryAccountNumber],
+    [WALLET_SystemTraceAuditNumber],
+    [WALLET_RetrievalReferenceNumber],
+    [WALLET_Message],
+    [WALLET_CallbackPayload],
+    [WALLET_Amount],
+    [Response],
+    [IsReversed],
+    [IsReconciled],
+    [ReconciledBy],
+    [SequentialId],
+    [CreatedBy],
+    [CreatedDate],
+    [WALLET_RequestIdentifier],
+    [SystemTraceAuditNumber]
+FROM [SwiftFinancialsDB_Test].[dbo].[vfin_AlternateChannelLogs] AS src
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM [SwiftFinancialsDB_Live].[dbo].[swiftFin_AlternateChannelLogs] AS dest
+    WHERE src.[SequentialId] = dest.[SequentialId]
+);
