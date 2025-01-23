@@ -230,6 +230,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     Session["printCustomerId"] = loaneeCustomer.CustomerId;
                 }
 
+                var findAppraisalAttachedLoans = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
+                var appraisalAttachedLoans = findAppraisalAttachedLoans.Where(x => x.CustomerAccountTypeProductCode == (int)ProductCode.Loan);
+                ViewBag.AttachedLoans = appraisalAttachedLoans;
 
                 // Repayment Schedule .....................................
                 ViewBag.APR = loaneeCustomer.LoanInterestAnnualPercentageRate;
@@ -307,7 +310,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return Json(new { success = true, data = loanAppraisalFactors });
         }
 
-
         [HttpPost]
         public async Task<ActionResult> Confirmation(LoanCaseDTO loanCaseDTO)
         {
@@ -319,7 +321,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             Session["Form"] = loanCaseDTO;
             return View("Appraise", loanCaseDTO);
         }
-
 
         [HttpPost]
         public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO)
@@ -452,395 +453,389 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-
-
-
-
-
-
-
-
-        // Vanguard Financials
-        SelectionList<AttachedLoanDTO> _attachedLoans;
-        public SelectionList<AttachedLoanDTO> AttachedLoans
-        {
-            get
-            {
-                if (_attachedLoans == null)
-                    _attachedLoans = new SelectionList<AttachedLoanDTO>(new List<AttachedLoanDTO> { });
-                return _attachedLoans;
-            }
-            set
-            {
-                if (_attachedLoans != value)
-                {
-                    _attachedLoans = value;
-                }
-            }
-        }
-
-
-        public async Task<decimal> GetOutstandingLoansBalanceAsync(Guid Id)
-        {
-            var result = 0m;
-
-            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
-
-            if (selectedLoanCase != null)
-            {
-                var attachedLoanDTOs = await _channelService.FindAttachedLoansByLoanCaseIdAsync(selectedLoanCase.Id);
-
-                if (attachedLoanDTOs != null && attachedLoanDTOs.Any())
-                {
-                    AttachedLoans.Clear();
-
-                    foreach (var item in attachedLoanDTOs)
-                    {
-                        var selectionItem = new SelectionItem<AttachedLoanDTO>(true, item);
-                        AttachedLoans.Add(selectionItem);
-                    }
-                }
-
-                foreach (var selectionItem in AttachedLoans)
-                {
-                    var totalValue = selectionItem.Item.PrincipalBalance
-                                   + selectionItem.Item.InterestBalance
-                                   + selectionItem.Item.CarryForwardsBalance;
-
-                    if (selectionItem.Item.CustomerAccountCustomerAccountTypeTargetProductId == selectedLoanCase.LoanProductId)
-                    {
-                        if (!selectionItem.IsSelected)
-                        {
-                            result += totalValue;
-                        }
-                    }
-                    else if (selectionItem.Item.CustomerAccountTypeTargetProductProductSection == selectedLoanCase.LoanRegistrationLoanProductSection)
-                    {
-                        result += selectionItem.IsSelected ? -totalValue : totalValue;
-                    }
-                }
-            }
-
-            return result < 0m ? 0m : result;
-        }
-
-        public decimal MaximumLoan
-        {
-            get
-            {
-                var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
-
-                return (selectedLoanCase != null) ? selectedLoanCase.LoanProductInvestmentsBalance * Convert.ToDecimal(selectedLoanCase.LoanRegistrationInvestmentsMultiplier) : 0m;
-            }
-            set { }
-        }
-
-
-        public async Task<decimal> GetMaximumEntitledAsync(Guid Id)
-        {
-            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
-
-            decimal maximumEntitled = MaximumLoan;
-
-            if (selectedLoanCase != null && !selectedLoanCase.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement)
-            {
-                var outstandingBalance = await GetOutstandingLoansBalanceAsync(Id);
-                maximumEntitled += outstandingBalance;
-            }
-
-            return maximumEntitled;
-        }
-
-        decimal _netIncome;
-        public decimal NetIncome
-        {
-            get { return _netIncome; }
-            set
-            {
-                if (_netIncome != value)
-                {
-                    _netIncome = Math.Abs(value);
-                }
-            }
-        }
-
-
-        private decimal _totalIncomeAdditions;
-
-        public async Task<decimal> CalculateTotalIncomeAdditionsAsync(Guid Id)
-        {
-            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
-
-            if (selectedLoanCase != null)
-            {
-                var loanAppraisalFactors = await _channelService.FindLoanAppraisalFactorsByLoanCaseIdAsync(selectedLoanCase.Id, GetServiceHeader());
-
-                if (loanAppraisalFactors != null)
-                {
-                    _totalIncomeAdditions = loanAppraisalFactors
-                        .Where(x => x.Type == (int)IncomeAdjustmentType.Allowance && x.IsEnabled)
-                        .Sum(x => x.Amount);
-                }
-                else
-                {
-                    _totalIncomeAdditions = 0m;
-                }
-            }
-            else
-            {
-                _totalIncomeAdditions = 0m;
-            }
-
-            return _totalIncomeAdditions;
-        }
-
-
-        private decimal _totalIncomeDeductions;
-
-        public async Task<decimal> CalculateTotalIncomeDeductionsAsync()
-        {
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
-
-            if (selectedLoanCase != null)
-            {
-                var loanAppraisalFactors = await _channelService.FindLoanAppraisalFactorsByLoanCaseIdAsync(selectedLoanCase.Id, GetServiceHeader());
-
-                if (loanAppraisalFactors != null)
-                {
-                    _totalIncomeDeductions = loanAppraisalFactors
-                        .Where(x => x.Type == (int)IncomeAdjustmentType.Deduction && x.IsEnabled)
-                        .Sum(x => x.Amount);
-                }
-                else
-                {
-                    _totalIncomeDeductions = 0m;
-                }
-            }
-            else
-            {
-                _totalIncomeDeductions = 0m;
-            }
-
-            return _totalIncomeDeductions;
-        }
-
-        public decimal TotalIncomeDeductions
-        {
-            get => _totalIncomeDeductions;
-            set
-            {
-                if (_totalIncomeDeductions != value)
-                {
-                    _totalIncomeDeductions = value;
-                }
-            }
-        }
-
-        private decimal _monthlyAbility;
-
-        public async Task<decimal> CalculateMonthlyAbilityAsync(Guid Id)
-        {
-            var result = 0m;
-
-            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
-
-            if (selectedLoanCase != null)
-            {
-                switch ((LoanProductSection)selectedLoanCase.LoanRegistrationLoanProductSection)
-                {
-                    case LoanProductSection.BOSA:
-                        result = NetIncome + (await CalculateTotalIncomeAdditionsAsync(Id)) - (await CalculateTotalIncomeDeductionsAsync());
-                        break;
-                    case LoanProductSection.FOSA:
-                        result = NetIncome;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            _monthlyAbility = result;
-
-            return _monthlyAbility;
-        }
-
-        public decimal TakeHomeRetention
-        {
-            get
-            {
-                var result = 0m;
-
-                var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
-
-                if (selectedLoanCase == null) return result;
-
-                switch ((ChargeType)selectedLoanCase.TakeHomeType)
-                {
-                    case ChargeType.Percentage:
-                        result = Math.Round(Convert.ToDecimal((selectedLoanCase.TakeHomePercentage * Convert.ToDouble(NetIncome)) / 100), 4);
-                        break;
-                    case ChargeType.FixedAmount:
-                        result = selectedLoanCase.TakeHomeFixedAmount;
-                        break;
-                    default:
-                        break;
-                }
-
-                return result;
-            }
-            set { }
-        }
-
-        private decimal _twoThirdsToRepayLoan;
-
-        public async Task<decimal> CalculateTwoThirdsToRepayLoanAsync(Guid Id)
-        {
-            var result = 0m;
-
-            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
-
-            if (selectedLoanCase != null)
-            {
-                switch ((ChargeType)selectedLoanCase.TakeHomeType)
-                {
-                    case ChargeType.Percentage:
-                        result = Math.Round(
-                            Convert.ToDecimal(((100d - selectedLoanCase.TakeHomePercentage) * Convert.ToDouble(NetIncome)) / 100),
-                            4)
-                            + await CalculateTotalIncomeAdditionsAsync(Id)
-                            - await CalculateTotalIncomeDeductionsAsync();
-                        break;
-
-                    case ChargeType.FixedAmount:
-                        result = (NetIncome - selectedLoanCase.TakeHomeFixedAmount)
-                            + await CalculateTotalIncomeAdditionsAsync(Id)
-                            - await CalculateTotalIncomeDeductionsAsync();
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            _twoThirdsToRepayLoan = result;
-
-            return _twoThirdsToRepayLoan;
-        }
-
-        private decimal _abilityOverLoanPeriod;
-
-        public async Task<decimal> CalculateAbilityOverLoanPeriodAsync(Guid Id)
-        {
-            var result = 0m;
-
-            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
-
-            if (selectedLoanCase != null)
-            {
-                var twoThirdsToRepayLoan = await CalculateTwoThirdsToRepayLoanAsync(Id);
-                result = twoThirdsToRepayLoan * selectedLoanCase.LoanRegistrationTermInMonths;
-            }
-
-            _abilityOverLoanPeriod = result;
-
-            return _abilityOverLoanPeriod;
-        }
-
-        decimal _loanPrincipal;
-        public decimal LoanPrincipal
-        {
-            get { return _loanPrincipal; }
-            set
-            {
-                if (_loanPrincipal != value)
-                {
-                    _loanPrincipal = value;
-                }
-            }
-        }
-
-        decimal _loanInterest;
-        public decimal LoanInterest
-        {
-            get { return _loanInterest; }
-            set
-            {
-                if (_loanInterest != value)
-                {
-                    _loanInterest = value;
-                }
-            }
-        }
-
-        decimal _totalLoan;
-        public decimal TotalLoan
-        {
-            get => _totalLoan;
-            set
-            {
-                if (_totalLoan != value)
-                {
-                    _totalLoan = value;
-                }
-            }
-        }
-
-        // Total Loan
-        public async Task<decimal> CalculateTotalLoanAsync(Guid Id)
-        {
-            var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
-
-            if (selectedLoanCase == null)
-            {
-                TotalLoan = 0m;
-                return TotalLoan;
-            }
-
-            // Calculate AbilityOverLoanPeriod (this needs to be defined earlier in your code)
-            TotalLoan = (await CalculateAbilityOverLoanPeriodAsync(Id));
-
-            // Calculate LoanPrincipal using the asynchronous service call
-            _loanPrincipal = (decimal)await _channelService.PVAsync(
-                selectedLoanCase.LoanRegistrationTermInMonths,
-                selectedLoanCase.LoanRegistrationPaymentFrequencyPerYear,
-                selectedLoanCase.LoanInterestAnnualPercentageRate,
-                -(double)await CalculateTwoThirdsToRepayLoanAsync(Id),
-                0d,
-                selectedLoanCase.LoanRegistrationPaymentDueDate
-            );
-
-            // Calculate LoanInterest
-            _loanInterest = TotalLoan - _loanPrincipal;
-
-            return TotalLoan;
-        }
-
-        // Total Loan Case Security
-        private decimal _totalLoanCaseSecurity;
-
-        public async Task CalculateTotalLoanCaseSecurityAsync()
-        {
-            var result = 0m;
-
-            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
-
-            if (selectedLoanCase != null)
-            {
-                var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(selectedLoanCase.Id, GetServiceHeader());
-
-                if (loanGuarantors != null)
-                {
-                    result += loanGuarantors.Sum(x => x.AmountGuaranteed) + loanGuarantors.Sum(x => x.AmountPledged);
-                }
-
-                var loanCollaterals = await _channelService.FindLoanCollateralsByLoanCaseIdAsync(selectedLoanCase.Id, GetServiceHeader());
-                if (loanCollaterals != null)
-                {
-                    result += loanCollaterals.Sum(x => x.Value);
-                }
-            }
-
-            _totalLoanCaseSecurity = result;
-        }
+        #region Vanguard Financials
+        //    SelectionList<AttachedLoanDTO> _attachedLoans;
+        //    public SelectionList<AttachedLoanDTO> AttachedLoans
+        //    {
+        //        get
+        //        {
+        //            if (_attachedLoans == null)
+        //                _attachedLoans = new SelectionList<AttachedLoanDTO>(new List<AttachedLoanDTO> { });
+        //            return _attachedLoans;
+        //        }
+        //        set
+        //        {
+        //            if (_attachedLoans != value)
+        //            {
+        //                _attachedLoans = value;
+        //            }
+        //        }
+        //    }
+
+
+        //    public async Task<decimal> GetOutstandingLoansBalanceAsync(Guid Id)
+        //    {
+        //        var result = 0m;
+
+        //        var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
+
+        //        if (selectedLoanCase != null)
+        //        {
+        //            var attachedLoanDTOs = await _channelService.FindAttachedLoansByLoanCaseIdAsync(selectedLoanCase.Id);
+
+        //            if (attachedLoanDTOs != null && attachedLoanDTOs.Any())
+        //            {
+        //                AttachedLoans.Clear();
+
+        //                foreach (var item in attachedLoanDTOs)
+        //                {
+        //                    var selectionItem = new SelectionItem<AttachedLoanDTO>(true, item);
+        //                    AttachedLoans.Add(selectionItem);
+        //                }
+        //            }
+
+        //            foreach (var selectionItem in AttachedLoans)
+        //            {
+        //                var totalValue = selectionItem.Item.PrincipalBalance
+        //                               + selectionItem.Item.InterestBalance
+        //                               + selectionItem.Item.CarryForwardsBalance;
+
+        //                if (selectionItem.Item.CustomerAccountCustomerAccountTypeTargetProductId == selectedLoanCase.LoanProductId)
+        //                {
+        //                    if (!selectionItem.IsSelected)
+        //                    {
+        //                        result += totalValue;
+        //                    }
+        //                }
+        //                else if (selectionItem.Item.CustomerAccountTypeTargetProductProductSection == selectedLoanCase.LoanRegistrationLoanProductSection)
+        //                {
+        //                    result += selectionItem.IsSelected ? -totalValue : totalValue;
+        //                }
+        //            }
+        //        }
+
+        //        return result < 0m ? 0m : result;
+        //    }
+
+        //    public decimal MaximumLoan
+        //    {
+        //        get
+        //        {
+        //            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+
+        //            return (selectedLoanCase != null) ? selectedLoanCase.LoanProductInvestmentsBalance * Convert.ToDecimal(selectedLoanCase.LoanRegistrationInvestmentsMultiplier) : 0m;
+        //        }
+        //        set { }
+        //    }
+
+
+        //    public async Task<decimal> GetMaximumEntitledAsync(Guid Id)
+        //    {
+        //        var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
+
+        //        decimal maximumEntitled = MaximumLoan;
+
+        //        if (selectedLoanCase != null && !selectedLoanCase.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement)
+        //        {
+        //            var outstandingBalance = await GetOutstandingLoansBalanceAsync(Id);
+        //            maximumEntitled += outstandingBalance;
+        //        }
+
+        //        return maximumEntitled;
+        //    }
+
+        //    decimal _netIncome;
+        //    public decimal NetIncome
+        //    {
+        //        get { return _netIncome; }
+        //        set
+        //        {
+        //            if (_netIncome != value)
+        //            {
+        //                _netIncome = Math.Abs(value);
+        //            }
+        //        }
+        //    }
+
+
+        //    private decimal _totalIncomeAdditions;
+
+        //    public async Task<decimal> CalculateTotalIncomeAdditionsAsync(Guid Id)
+        //    {
+        //        var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
+
+        //        if (selectedLoanCase != null)
+        //        {
+        //            var loanAppraisalFactors = await _channelService.FindLoanAppraisalFactorsByLoanCaseIdAsync(selectedLoanCase.Id, GetServiceHeader());
+
+        //            if (loanAppraisalFactors != null)
+        //            {
+        //                _totalIncomeAdditions = loanAppraisalFactors
+        //                    .Where(x => x.Type == (int)IncomeAdjustmentType.Allowance && x.IsEnabled)
+        //                    .Sum(x => x.Amount);
+        //            }
+        //            else
+        //            {
+        //                _totalIncomeAdditions = 0m;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            _totalIncomeAdditions = 0m;
+        //        }
+
+        //        return _totalIncomeAdditions;
+        //    }
+
+
+        //    private decimal _totalIncomeDeductions;
+
+        //    public async Task<decimal> CalculateTotalIncomeDeductionsAsync()
+        //    {
+        //        var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+
+        //        if (selectedLoanCase != null)
+        //        {
+        //            var loanAppraisalFactors = await _channelService.FindLoanAppraisalFactorsByLoanCaseIdAsync(selectedLoanCase.Id, GetServiceHeader());
+
+        //            if (loanAppraisalFactors != null)
+        //            {
+        //                _totalIncomeDeductions = loanAppraisalFactors
+        //                    .Where(x => x.Type == (int)IncomeAdjustmentType.Deduction && x.IsEnabled)
+        //                    .Sum(x => x.Amount);
+        //            }
+        //            else
+        //            {
+        //                _totalIncomeDeductions = 0m;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            _totalIncomeDeductions = 0m;
+        //        }
+
+        //        return _totalIncomeDeductions;
+        //    }
+
+        //    public decimal TotalIncomeDeductions
+        //    {
+        //        get => _totalIncomeDeductions;
+        //        set
+        //        {
+        //            if (_totalIncomeDeductions != value)
+        //            {
+        //                _totalIncomeDeductions = value;
+        //            }
+        //        }
+        //    }
+
+        //    private decimal _monthlyAbility;
+
+        //    public async Task<decimal> CalculateMonthlyAbilityAsync(Guid Id)
+        //    {
+        //        var result = 0m;
+
+        //        var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
+
+        //        if (selectedLoanCase != null)
+        //        {
+        //            switch ((LoanProductSection)selectedLoanCase.LoanRegistrationLoanProductSection)
+        //            {
+        //                case LoanProductSection.BOSA:
+        //                    result = NetIncome + (await CalculateTotalIncomeAdditionsAsync(Id)) - (await CalculateTotalIncomeDeductionsAsync());
+        //                    break;
+        //                case LoanProductSection.FOSA:
+        //                    result = NetIncome;
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //        }
+
+        //        _monthlyAbility = result;
+
+        //        return _monthlyAbility;
+        //    }
+
+        //    public decimal TakeHomeRetention
+        //    {
+        //        get
+        //        {
+        //            var result = 0m;
+
+        //            var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+
+        //            if (selectedLoanCase == null) return result;
+
+        //            switch ((ChargeType)selectedLoanCase.TakeHomeType)
+        //            {
+        //                case ChargeType.Percentage:
+        //                    result = Math.Round(Convert.ToDecimal((selectedLoanCase.TakeHomePercentage * Convert.ToDouble(NetIncome)) / 100), 4);
+        //                    break;
+        //                case ChargeType.FixedAmount:
+        //                    result = selectedLoanCase.TakeHomeFixedAmount;
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+
+        //            return result;
+        //        }
+        //        set { }
+        //    }
+
+        //    private decimal _twoThirdsToRepayLoan;
+
+        //    public async Task<decimal> CalculateTwoThirdsToRepayLoanAsync(Guid Id)
+        //    {
+        //        var result = 0m;
+
+        //        var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
+
+        //        if (selectedLoanCase != null)
+        //        {
+        //            switch ((ChargeType)selectedLoanCase.TakeHomeType)
+        //            {
+        //                case ChargeType.Percentage:
+        //                    result = Math.Round(
+        //                        Convert.ToDecimal(((100d - selectedLoanCase.TakeHomePercentage) * Convert.ToDouble(NetIncome)) / 100),
+        //                        4)
+        //                        + await CalculateTotalIncomeAdditionsAsync(Id)
+        //                        - await CalculateTotalIncomeDeductionsAsync();
+        //                    break;
+
+        //                case ChargeType.FixedAmount:
+        //                    result = (NetIncome - selectedLoanCase.TakeHomeFixedAmount)
+        //                        + await CalculateTotalIncomeAdditionsAsync(Id)
+        //                        - await CalculateTotalIncomeDeductionsAsync();
+        //                    break;
+
+        //                default:
+        //                    break;
+        //            }
+        //        }
+
+        //        _twoThirdsToRepayLoan = result;
+
+        //        return _twoThirdsToRepayLoan;
+        //    }
+
+        //    private decimal _abilityOverLoanPeriod;
+
+        //    public async Task<decimal> CalculateAbilityOverLoanPeriodAsync(Guid Id)
+        //    {
+        //        var result = 0m;
+
+        //        var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
+
+        //        if (selectedLoanCase != null)
+        //        {
+        //            var twoThirdsToRepayLoan = await CalculateTwoThirdsToRepayLoanAsync(Id);
+        //            result = twoThirdsToRepayLoan * selectedLoanCase.LoanRegistrationTermInMonths;
+        //        }
+
+        //        _abilityOverLoanPeriod = result;
+
+        //        return _abilityOverLoanPeriod;
+        //    }
+
+        //    decimal _loanPrincipal;
+        //    public decimal LoanPrincipal
+        //    {
+        //        get { return _loanPrincipal; }
+        //        set
+        //        {
+        //            if (_loanPrincipal != value)
+        //            {
+        //                _loanPrincipal = value;
+        //            }
+        //        }
+        //    }
+
+        //    decimal _loanInterest;
+        //    public decimal LoanInterest
+        //    {
+        //        get { return _loanInterest; }
+        //        set
+        //        {
+        //            if (_loanInterest != value)
+        //            {
+        //                _loanInterest = value;
+        //            }
+        //        }
+        //    }
+
+        //    decimal _totalLoan;
+        //    public decimal TotalLoan
+        //    {
+        //        get => _totalLoan;
+        //        set
+        //        {
+        //            if (_totalLoan != value)
+        //            {
+        //                _totalLoan = value;
+        //            }
+        //        }
+        //    }
+
+        //    // Total Loan
+        //    public async Task<decimal> CalculateTotalLoanAsync(Guid Id)
+        //    {
+        //        var selectedLoanCase = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
+
+        //        if (selectedLoanCase == null)
+        //        {
+        //            TotalLoan = 0m;
+        //            return TotalLoan;
+        //        }
+
+        //        // Calculate AbilityOverLoanPeriod (this needs to be defined earlier in your code)
+        //        TotalLoan = (await CalculateAbilityOverLoanPeriodAsync(Id));
+
+        //        // Calculate LoanPrincipal using the asynchronous service call
+        //        _loanPrincipal = (decimal)await _channelService.PVAsync(
+        //            selectedLoanCase.LoanRegistrationTermInMonths,
+        //            selectedLoanCase.LoanRegistrationPaymentFrequencyPerYear,
+        //            selectedLoanCase.LoanInterestAnnualPercentageRate,
+        //            -(double)await CalculateTwoThirdsToRepayLoanAsync(Id),
+        //            0d,
+        //            selectedLoanCase.LoanRegistrationPaymentDueDate
+        //        );
+
+        //        // Calculate LoanInterest
+        //        _loanInterest = TotalLoan - _loanPrincipal;
+
+        //        return TotalLoan;
+        //    }
+
+        //    // Total Loan Case Security
+        //    private decimal _totalLoanCaseSecurity;
+
+        //    public async Task CalculateTotalLoanCaseSecurityAsync()
+        //    {
+        //        var result = 0m;
+
+        //        var selectedLoanCase = Session["selectedLoanCase"] as LoanCaseDTO;
+
+        //        if (selectedLoanCase != null)
+        //        {
+        //            var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(selectedLoanCase.Id, GetServiceHeader());
+
+        //            if (loanGuarantors != null)
+        //            {
+        //                result += loanGuarantors.Sum(x => x.AmountGuaranteed) + loanGuarantors.Sum(x => x.AmountPledged);
+        //            }
+
+        //            var loanCollaterals = await _channelService.FindLoanCollateralsByLoanCaseIdAsync(selectedLoanCase.Id, GetServiceHeader());
+        //            if (loanCollaterals != null)
+        //            {
+        //                result += loanCollaterals.Sum(x => x.Value);
+        //            }
+        //        }
+
+        //        _totalLoanCaseSecurity = result;
+        //    }
+        //}
+        #endregion
     }
 }

@@ -11,8 +11,6 @@
     var termInMonths = ViewBag.TermInMonths;
 }
 
-
-
 <style>
 
     .tab {
@@ -227,8 +225,6 @@
 </style>
 
 <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
-
-
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -1086,10 +1082,24 @@
                                                             <th>Product Name</th>
                                                             <th>Principal Balance</th>
                                                             <th>Interest Balance</th>
+                                                            <th>Carry Forwards Balance</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <!--Look back later-->
+                                                        @if (ViewBag.AttachedLoans != null)
+                                                        {
+                                                            foreach (var attachedLoans in ViewBag.AttachedLoans)
+                                                            {
+                                                                <tr>
+                                                                    <td><input type="checkbox" value="@attachedLoans.Id" /></td>
+                                                                    <td>@attachedLoans.FullAccountNumber</td>
+                                                                    <td>@attachedLoans.CustomerAccountTypeTargetProductDescription</td>
+                                                                    <td><input type="number" value="@attachedLoans.PrincipalBalance"/></td>
+                                                                    <td><input type="number" value="@attachedLoans.InterestBalance"/></td>
+                                                                    <td>@attachedLoans.CarryForwardsBalance</td>
+                                                                </tr>
+                                                            }
+                                                        }
                                                     </tbody>
                                                 </table>
                                             </div>
