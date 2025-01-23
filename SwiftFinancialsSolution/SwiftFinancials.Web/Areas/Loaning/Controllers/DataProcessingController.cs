@@ -62,7 +62,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return documents;
         }
 
-        
+      
+
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();

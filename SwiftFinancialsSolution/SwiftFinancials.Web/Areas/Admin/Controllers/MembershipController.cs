@@ -309,7 +309,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             }
 
             var userRoles = await _applicationUserManager.GetRolesAsync(applicationUser.Id);
-            ViewBag.UserRoles = userRoles;
+            ViewBag.UserRoles = userRoles;  
 
             var branches = await _channelService.FindBranchesAsync(GetServiceHeader());
             var userBranches = branches.Where(x => x.Id == applicationUser.BranchId);
