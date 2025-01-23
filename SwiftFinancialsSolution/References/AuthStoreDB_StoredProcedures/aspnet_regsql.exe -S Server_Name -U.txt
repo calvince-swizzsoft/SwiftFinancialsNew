@@ -1,0 +1,1 @@
+aspnet_regsql.exe -S Server_Name -U sa -P pass123 -d SwiftFinancialsDB_AuthStore -A all

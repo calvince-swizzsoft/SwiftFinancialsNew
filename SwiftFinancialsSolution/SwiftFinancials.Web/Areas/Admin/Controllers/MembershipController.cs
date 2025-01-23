@@ -173,7 +173,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             return View(userBindingModel);
         }
 
-     
+
         public async Task<ActionResult> GetEmployeeDetails(Guid? id)
         {
             await ServeNavigationMenus();
@@ -234,46 +234,44 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             userBindingModel.FirstName = employee.CustomerIndividualFirstName;
             userBindingModel.OtherNames = employee.CustomerIndividualLastName;
             userBindingModel.PhoneNumber = employee.CustomerAddressMobileLine;
-            
+
             userBindingModel.ValidateAll();
 
             if (userBindingModel.HasErrors)
             {
                 await ServeNavigationMenus();
-
                 TempData["Error"] = userBindingModel.ErrorMessages;
-                // var roles = await _channelService.GetAllRolesAsync(GetServiceHeader());           
                 return RedirectToAction("Create");
             }
-            List<AuditTrailDTO> auditTrailDTOs = new List<AuditTrailDTO>();
-            ObservableCollection<string> role = new ObservableCollection<string>();
-            foreach (var ro in roles)
-            {
-                //string processedString = ro.Replace("{ Name =", "").Trim().TrimEnd('}').Trim();
-
-                role.Add(ro);
-
-            }
-
 
             var userDTO = await _channelService.AddNewMembershipAsync(userBindingModel.MapTo<UserDTO>(), GetServiceHeader());
+            var rolesRoles = roles.Select(role => role.ToString()).ToList();
+            ObservableCollection<string> assignedroles = new ObservableCollection<string>(rolesRoles);
 
-            //          var result = await _channelService.AddUserToRolesAsync(userDTO.UserName, role, GetServiceHeader());
+            #region Commented Section
+            //var roleDTO = await _applicationRoleManager.FindByNameAsync(assignedRoles);
+            //assignedRoles.Add(roleDTO);
+            #endregion
 
-            AuditTrailDTO auditLogDTO = new AuditTrailDTO();
-            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
-            auditLogDTO.EnvironmentIPAddress = serviceHeader.EnvironmentIPAddress;
-            auditLogDTO.EnvironmentMACAddress = serviceHeader.EnvironmentMACAddress;
-            auditLogDTO.EnvironmentMachineName = serviceHeader.EnvironmentMachineName;
-            auditLogDTO.ApplicationUserName = serviceHeader.ApplicationUserName;
-            auditLogDTO.EnvironmentMotherboardSerialNumber = serviceHeader.EnvironmentMotherboardSerialNumber;
-            auditLogDTO.EnvironmentProcessorId = serviceHeader.EnvironmentProcessorId;
-            auditLogDTO.EnvironmentDomainName = serviceHeader.EnvironmentDomainName;
-            auditLogDTO.EnvironmentOSVersion = serviceHeader.EnvironmentOSVersion;
-            auditTrailDTOs.Add(auditLogDTO);
+            if (assignedroles.Any())
+            {
+                foreach (var role in assignedroles)
+                {
+                    await _applicationUserManager.AddToRoleAsync(userDTO.Id, role);
 
-            var k = await _channelService.AddAuditTrailsAsync(auditTrailDTOs, GetServiceHeader());
+                }
+            }
 
+            var branches = Branchids.Select(Guid.Parse).ToList();
+            ObservableCollection<BranchDTO> assignedBranches = new ObservableCollection<BranchDTO>();
+            foreach (var branch in branches)
+            {
+                var branchDTO = await _channelService.FindBranchAsync(branch, GetServiceHeader());
+                assignedBranches.Add(branchDTO);
+            }
+
+            if (assignedBranches.Any())
+                await _channelService.MapEmployeeToBranchesAsync(userDTO.EmployeeId, assignedBranches, GetServiceHeader());
 
             if (userDTO != null)
             {
