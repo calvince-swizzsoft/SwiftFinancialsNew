@@ -262,10 +262,13 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 if (result && batchAuthOption == (int)BatchAuthOption.Post)
                 {
                     var query = _loanDisbursementBatchRepository.DatabaseSqlQuery<Guid>(string.Format(
-                          @"SELECT Id
-                            FROM  {0}LoanDisbursementBatchEntries
-                            WHERE(LoanDisbursementBatchId = @LoanDisbursementBatchId)", DefaultSettings.Instance.TablePrefix), serviceHeader,
-                            new SqlParameter("LoanDisbursementBatchId", loanDisbursementBatchDTO.Id));
+                  @"SELECT Id
+                    FROM  {0}LoanDisbursementBatchEntries
+                    WHERE(LoanDisbursementBatchId = @LoanDisbursementBatchId)", DefaultSettings.Instance.TablePrefix),
+                  serviceHeader,
+                  new SqlParameter("LoanDisbursementBatchId", loanDisbursementBatchDTO.Id))
+                  .ToList(); // Executes the query
+
 
                     if (query != null)
                     {

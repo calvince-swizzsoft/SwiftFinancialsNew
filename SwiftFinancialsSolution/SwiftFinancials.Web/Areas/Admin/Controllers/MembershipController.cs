@@ -186,7 +186,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             }
 
             var employee = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
-            var dep = await _channelService.FindEmployeeTypeAsync(employee.EmployeeTypeId, GetServiceHeader());
             var Department = employee.DepartmentDescription;
 
             if (employee != null)
