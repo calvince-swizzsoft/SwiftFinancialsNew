@@ -1,10 +1,15 @@
 ﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CreditTypeDTO
+
 @{
-    ViewBag.Title = "Credit Type Details";
+    /**/
+
+    ViewBag.Title = "Create Credit Type";
+    var transactionOwnerships = ViewBag.TransactionOwnershipSelectList as List<SelectListItem>;
 }
+
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Credit Type</h2>
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -13,17 +18,117 @@
                 @Html.ActionLink("Home", "Index", "CreditType", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>View</strong>
+                <strong>Create</strong>
             </li>
         </ol>
     </div>
 </div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<style>
+    .tab {
+        overflow: hidden;
+        background-color: whitesmoke;
+        border-radius: 8px;
+        margin: 20px;
+    }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            color: black;
+            font-size: 16px;
+            border-radius: 8px 8px 0 0;
+            margin-right: 2px;
+        }
+
+            .tab button:hover {
+                background-color: lightgray;
+            }
+
+            .tab button.active {
+                background-color: lightgray;
+            }
+
+
+    .tabcontent {
+        display: none;
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-radius: 0 8px 8px 8px;
+        background-color: white;
+        margin: 0 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: auto;
+    }
+
+        .tabcontent h3 {
+            margin-top: 0;
+        }
+
+
+
+    .compact-table {
+        border-collapse: collapse;
+    }
+
+        .compact-table td,
+        .compact-table th {
+            padding: 5px;
+            margin: 0;
+        }
+
+        .compact-table tbody tr {
+            line-height: 1;
+        }
+
+            .compact-table tbody tr:hover {
+                background-color: #f5f5f5;
+            }
+
+        .compact-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+
+
+
+    .tabcontent {
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+    }
+</style>
+
+
+
 
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>View Credit Type</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -33,52 +138,284 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)</strong>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Create", "CreditType", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
 
-                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @readonly = "readonly" })
-                            </p>
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @disabled = "" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @disabled = "" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.TransactionOwnershipDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TransactionOwnershipDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @disabled = "" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-1" style="margin-top: 35px;">
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "rowCheckbox" })
+                                            @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
 
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.TransactionOwnershipDescription)</strong>
 
-                                @Html.TextBoxFor(model => model.TransactionOwnershipDescription, new { @class = "form-control", @readonly = "readonly" })
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong><br>
+                                <div class="tab">
+                                    <button class="tablinks active" onclick="openTab(event, 'MainTab1')"><i class="fa fa-table" aria-hidden="true"></i> Applicable Charges</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab2')"><i class="fa fa-table" aria-hidden="true"></i> Applicable Direct Debits</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab3')"><i class="fa fa-table" aria-hidden="true"></i> Attached Loan Products</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab4')"><i class="fa fa-table" aria-hidden="true"></i> Concession-Exempt Loan Products</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab5')"><i class="fa fa-table" aria-hidden="true"></i> Attached Investments Products</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab6')"><i class="fa fa-table" aria-hidden="true"></i> Attached Savings Products</button>
+                                </div>
 
-                                @Html.CheckBoxFor(model => model.IsLocked)<br>
-                            </p>
+                                <!--Applicable Charges-->
+                                <div id="MainTab1" class="tabcontent" style="display: block;">
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="ApplicableChargesList" class="list-group">
+                                                @if (ViewBag.Commissions != null)
+                                                {
+                                                    foreach (var item in ViewBag.Commissions)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedApplicableStates.ContainsKey(item.Id) && ViewBag.CheckedApplicableStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Applicable Direct Debits-->
+                                <div id="MainTab2" class="tabcontent">
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="ApplicableDirectDebitsList" class="list-group">
+                                                @if (ViewBag.DirectDebits != null)
+                                                {
+                                                    foreach (var item in ViewBag.DirectDebits)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedApplicableDirectDebitsStates.ContainsKey(item.Id) && ViewBag.CheckedApplicableDirectDebitsStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Attached Loan Products-->
+                                <div id="MainTab3" class="tabcontent">
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="AttachedLoanProductsList" class="list-group">
+                                                @if (ViewBag.AttachedLoanProducts != null)
+                                                {
+                                                    foreach (var item in ViewBag.AttachedLoanProducts)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedAttachedLoanProductsStates.ContainsKey(item.Id) && ViewBag.CheckedAttachedLoanProductsStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Concession_Exempt Loan Products-->
+                                <div id="MainTab4" class="tabcontent">
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="CELoanProductsList" class="list-group">
+                                                @if (ViewBag.ConcessionExemptLoanProducts != null)
+                                                {
+                                                    foreach (var item in ViewBag.ConcessionExemptLoanProducts)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedConcessionExemptLoanProductsStates.ContainsKey(item.Id) && ViewBag.CheckedConcessionExemptLoanProductsStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Attached Investments Products-->
+                                <div id="MainTab5" class="tabcontent">
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="AttachedInvestmentsProductsList" class="list-group">
+                                                @if (ViewBag.AttachedInvestmentsProducts != null)
+                                                {
+                                                    foreach (var item in ViewBag.AttachedInvestmentsProducts)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedAttachedInvestmentsProductsStates.ContainsKey(item.Id) && ViewBag.CheckedAttachedInvestmentsProductsStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Attached Savings Products-->
+                                <div id="MainTab6" class="tabcontent">
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="AttachedSavingsProductsList" class="list-group">
+                                                @if (ViewBag.AttachedSavingsProducts != null)
+                                                {
+                                                    foreach (var item in ViewBag.AttachedSavingsProducts)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedAttachedSavingsProductsStates.ContainsKey(item.Id) && ViewBag.CheckedAttachedSavingsProductsStates[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
                         </div>
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.ChartOfAccountAccountName)</strong>
-
-                                @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @class = "form-control", @readonly = "readonly" })
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)</strong>
-
-                                @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @readonly = "readonly" })
-                            </p>
-
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "CreditType", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "CreditType", new { Area = "Accounts" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        $(document).ready(function () {
+            $('.rowCheckbox').on('click', function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+
+    <script>
+        function openTab(evt, tabName) {
+            evt.preventDefault();
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubTab(evt, subTabName) {
+            evt.preventDefault();
+            var i, subtabcontent, subtablinks;
+            subtabcontent = document.getElementsByClassName("subtabcontent");
+            for (i = 0; i < subtabcontent.length; i++) {
+                subtabcontent[i].style.display = "none";
+            }
+            subtablinks = document.getElementsByClassName("subtablinks");
+            for (i = 0; i < subtablinks.length; i++) {
+                subtablinks[i].className = subtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubSubTab(evt, subSubTabName) {
+            evt.preventDefault();
+            var i, subsubtabcontent, subsubtablinks;
+            subsubtabcontent = document.getElementsByClassName("subsubtabcontent");
+            for (i = 0; i < subsubtabcontent.length; i++) {
+                subsubtabcontent[i].style.display = "none";
+            }
+            subsubtablinks = document.getElementsByClassName("subsubtablinks");
+            for (i = 0; i < subsubtablinks.length; i++) {
+                subsubtablinks[i].className = subsubtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subSubTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        document.getElementById("MainTab1").style.display = "block";
+        document.getElementById("SubTab1-1").style.display = "block";
+        document.getElementById("SubSubTab1-1-1").style.display = "block";
+    </script>
+}

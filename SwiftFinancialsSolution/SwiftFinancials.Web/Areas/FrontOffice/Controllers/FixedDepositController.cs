@@ -91,36 +91,44 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var pageCollectionInfo = await _channelService.FindFixedDepositsByStatusAndFilterInPageAsync(
                 status,
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 includeProductDescription,
                 GetServiceHeader()
             );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(fixedDepositDTO => fixedDepositDTO.CreatedDate)
+                    .ToList();
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
-                    ? pageCollectionInfo.PageCollection.Count
+                    ? sortedData.Count
                     : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: pageCollectionInfo.PageCollection,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<FixedDepositDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<FixedDepositDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -139,13 +147,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
-            // Populate ViewBag with Customer Type Select List
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.FixedDepositCategorySelectList = GetFixedDepositCategorySelectList(string.Empty);
+            ViewBag.FixedDepositMaturityActionSelectList = GetFixedDepositMaturityActionSelectList(string.Empty);
+            ViewBag.FixedDepositMaturityActionSelectList = GetFixedDepositMaturityActionSelectList(string.Empty);
 
-            // Initialize a new FixedDepositDTO
             FixedDepositDTO fixedDepositDTO = new FixedDepositDTO();
 
-            // If ID is provided, perform the lookup for the FixedDepositType
             if (id.HasValue && id != Guid.Empty)
             {
                 var parseId = id.Value;
@@ -154,7 +162,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (fixedDepositType != null)
                 {
-                    // Populate the DTO with FixedDepositType details
                     fixedDepositDTO.FixedDepositTypeId = fixedDepositType.Id;
                     fixedDepositDTO.FixedDepositTypeDescription = fixedDepositType.Description;
                    
@@ -173,119 +180,123 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
-
-        public async Task<ActionResult> Search(Guid? id)
+        [HttpGet]
+        public async Task<ActionResult> GetCustomerAccountDetails(Guid customerAccountId)
         {
-            await ServeNavigationMenus();
-
-            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
-            var fixedDepositDTO = new FixedDepositDTO();
-
-            if (id.HasValue && id != Guid.Empty)
+            try
             {
-                try
+                var customerAccount = await _channelService.FindCustomerAccountAsync(
+                    customerAccountId,
+                    includeBalances: true,
+                    includeProductDescription: true,
+                    includeInterestBalanceForLoanAccounts: true,
+                    considerMaturityPeriodForInvestmentAccounts: true,
+                    GetServiceHeader()
+                );
+
+                if (customerAccount == null)
                 {
-                    var customer = await _channelService.FindCustomerAccountAsync(
-                        id.Value,
-                        includeBalances: true,
-                        includeProductDescription: true,
-                        includeInterestBalanceForLoanAccounts: true,
-                        considerMaturityPeriodForInvestmentAccounts: true,
-                        GetServiceHeader()
-                    );
-
-                    if (customer != null)
-                    {
-                        // Populate DTO
-                        PopulateFixedDepositDTO(fixedDepositDTO, customer);
-
-                        var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
-                            customer.CustomerId,
-                            customer.CustomerAccountTypeTargetProductId,
-                            includeBalances: true,
-                            includeProductDescription: true,
-                            includeInterestBalanceForLoanAccounts: true,
-                            considerMaturityPeriodForInvestmentAccounts: true,
-                            serviceHeader: GetServiceHeader()
-                        );
-
-
-                        TempData["FixedDepositDTO"] = fixedDepositDTO;
-                    }
-                    else
-                    {
-                        TempData["ErrorMessage"] = "Customer account details could not be found.";
-                        return RedirectToAction("Index");
-                    }
+                    return Json(new { success = false, message = "Customer account not found." }, JsonRequestBehavior.AllowGet);
                 }
-                catch (Exception ex)
+
+                return Json(new
                 {
-                    // Log the exception
-                    TempData["ErrorMessage"] = "An error occurred while retrieving customer details.";
-                    return RedirectToAction("Index");
-                }
+                    success = true,
+                    data = new
+                    {
+                        CustomerAccountFullAccountNumber = customerAccount.FullAccountNumber,
+                        CustomerAccountStatusDescription = customerAccount.StatusDescription,
+                        AvailableBalance = customerAccount.AvailableBalance,
+                        CustomerAccountId = customerAccount.Id,
+                        CustomerAccountCustomerId = customerAccount.CustomerId,
+                        CustomerAccountCustomerFullName = customerAccount.CustomerFullName,
+                        CustomerAccountCustomerIndividualPayrollNumbers = customerAccount.CustomerIndividualPayrollNumbers,
+                        CustomerAccountCustomerIndividualIdentityCardNumber = customerAccount.CustomerIndividualIdentityCardNumber,
+                        CustomerAccountCustomerReference1 = customerAccount.CustomerReference1,
+                        CustomerAccountCustomerReference2 = customerAccount.CustomerReference2,
+                        CustomerAccountCustomerReference3 = customerAccount.CustomerReference3,
+                        CustomerAccountBranchId = customerAccount.BranchId,
+                        BranchDescription = customerAccount.BranchDescription,
+                        BranchId = customerAccount.BranchId,
+                        ProductChartOfAccountId = customerAccount.CustomerAccountTypeTargetProductChartOfAccountId,
+                        CustomerAccountCustomerAccountTypeTargetProductId = customerAccount.CustomerAccountTypeTargetProductId,
+                        CustomerAccountBranchCode = customerAccount.BranchCode,
+                        CustomerAccountCustomerAccountTypeProductCode = customerAccount.CustomerAccountTypeProductCode,
+                        CustomerAccountCustomerAccountTypeTargetProductCode = customerAccount.CustomerAccountTypeTargetProductCode,
+                        CustomerAccountCustomerType = customerAccount. CustomerType,
+                        CustomerAccountCustomerTypeDescription = customerAccount.CustomerTypeDescription,
+                        CustomerAccountStatus = customerAccount.Status,
+                        CustomerAccountCustomerIndividualSalutationDescription = customerAccount.CustomerIndividualSalutationDescription,
+                        CustomerAccountCustomerIndividualFirstName = customerAccount.CustomerIndividualFirstName,
+                        CustomerAccountCustomerIndividualLastName = customerAccount.CustomerIndividualLastName,
+                        CustomerAccountCustomerNonIndividualDescription = customerAccount.CustomerNonIndividualDescription,
+                        CustomerAccountCustomerNonIndividualRegistrationNumber = customerAccount.CustomerNonIndividualRegistrationNumber,
+                        CustomerAccountCustomerPersonalIdentificationNumber = customerAccount.CustomerPersonalIdentificationNumber,
+                        CustomerAccountCustomerNonIndividualDateEstablished = customerAccount.CustomerNonIndividualDateEstablished,
+                        CustomerAccountCustomerIdentificationNumber = customerAccount.CustomerIdentificationNumber,
+                        ProductDescription = customerAccount.CustomerAccountTypeTargetProductDescription,
+                        ProductChartOfAccountCode = customerAccount.CustomerAccountTypeTargetProductChartOfAccountCode,
+                        ProductChartOfAccountName = customerAccount.CustomerAccountTypeTargetProductChartOfAccountName,
+
+                        account1 = customerAccount.BookBalance,
+                        account2 = customerAccount.PrincipalBalance,
+                        account3 = customerAccount.InterestBalance,
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
             }
-
-            return View("Create", fixedDepositDTO);
-        }
-
-        // A helper method to populate the DTO from the customer data
-        private void PopulateFixedDepositDTO(FixedDepositDTO dto, CustomerAccountDTO customer)
-        {
-            dto.CustomerAccountCustomerNonIndividualDescription = customer.FullAccountNumber;
-            dto.CustomerAccountCustomerIndividualLastName = customer.StatusDescription;
-            dto.AvailableBalance = customer.AvailableBalance;
-            dto.CustomerAccountCustomerIndividualFirstName = customer.CustomerFullName;
-            dto.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-            dto.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
-            dto.CustomerAccountCustomerReference1 = customer.CustomerReference1;
-            dto.CustomerAccountCustomerReference2 = customer.CustomerReference2;
-            dto.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-            dto.BranchId = customer.BranchId;
-            dto.BranchDescription = customer.BranchDescription;
-            dto.CustomerAccountCustomerId = customer.CustomerId;
-            dto.ProductChartOfAccountId = customer.CustomerAccountTypeTargetProductChartOfAccountId;
-            dto.CustomerAccountId = customer.Id;
-            dto.CustomerAccountBranchId = customer.BranchId;
-            dto.CustomerAccountCustomerAccountTypeTargetProductId = customer.CustomerAccountTypeTargetProductId;
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the customer account details." }, JsonRequestBehavior.AllowGet);
+            }
         }
 
 
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(FixedDepositDTO fixedDepositDTO)
         {
-            if (ModelState.IsValid) // Validate the model state
+            if (fixedDepositDTO == null)
+            {
+                TempData["SweetAlertMessage"] = "An unexpected error occurred. Please try again.";
+                TempData["SweetAlertType"] = "error";
+                return RedirectToAction("Index");
+            }
+
+            fixedDepositDTO.ValidateAll();
+
+            if (!fixedDepositDTO.HasErrors)
             {
                 try
                 {
-                    // Create a service header (adjust as necessary)
-                    ServiceHeader serviceHeader = GetServiceHeader();
+                    var createdOfficer = await _channelService.InvokeFixedDepositAsync(fixedDepositDTO, GetServiceHeader());
 
-                    // Invoke the service to create the fixed deposit
-                    var result = await _channelService.InvokeFixedDepositAsync(fixedDepositDTO, serviceHeader);
-
-                    if (result != null) // Check if the operation was successful
-                    {
-                        TempData["SuccessMessage"] = "Fixed deposit created successfully."; // Success message
-                        return RedirectToAction("Index"); // Redirect to index or another appropriate action
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Failed to create the fixed deposit."); // Handle failure
-                    }
+                    TempData["SweetAlertMessage"] = "Fixed deposit created successfully.";
+                    TempData["SweetAlertType"] = "success";
+                    return RedirectToAction("Index");
                 }
-                catch (Exception ex) // Catch any exceptions
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("", $"An error occurred: {ex.Message}"); // Add error message
+                    Debug.WriteLine($"Error creating Fixed Deposit: {ex.Message}");
+                    TempData["SweetAlertMessage"] = "An error occurred while creating the Fixed Deposit. Please try again.";
+                    TempData["SweetAlertType"] = "error";
+                    return RedirectToAction("Index");
                 }
             }
+            else
+            {
+                foreach (var error in fixedDepositDTO.ErrorMessages)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
 
-            // If model state is invalid or creation failed, return to the create view with the current model
-            return View(fixedDepositDTO);
+                TempData["SweetAlertMessage"] = "There were errors in your submission. Please review the form and try again.";
+                TempData["SweetAlertType"] = "warning";
+                return RedirectToAction("Index");
+            }
         }
+
 
 
 
@@ -362,12 +373,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Verify(Guid id, FixedDepositDTO fixedDepositDTO, string fixedDepositAuth)
         {
-            // Determine the action based on the value of fixedDepositAuth
             int fixedDepositAuthOption = fixedDepositAuth == "Post"
                 ? (int)FixedDepositAuthOption.Post
                 : (int)FixedDepositAuthOption.Reject;
 
-            int moduleNavigationItemCode = 1; // Assign the appropriate value for moduleNavigationItemCode
+            int moduleNavigationItemCode = 1; // Replace with the actual code if necessary
 
             if (ModelState.IsValid)
             {
@@ -382,29 +392,35 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                     if (result)
                     {
-                        TempData["SuccessMessage"] = fixedDepositAuth == "Post"
-                            ? "Account Fixing Posted successfully."
-                            : "Account Fixing Rejected successfully.";
+                        TempData["SweetAlertMessage"] = fixedDepositAuth == "Post"
+                            ? "Account fixing posted successfully."
+                            : "Account fixing rejected successfully.";
+                        TempData["SweetAlertType"] = "success";
                         return RedirectToAction("Index");
                     }
                     else
                     {
-                        TempData["ErrorMessage"] = "Failed to process the account closure request. Please try again.";
+                        TempData["SweetAlertMessage"] = "Failed to process the account fixing request. Please try again.";
+                        TempData["SweetAlertType"] = "error";
+                        return RedirectToAction("Index");
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Error processing account fixing: {ex.Message}");
-                    TempData["ErrorMessage"] = "An error occurred while processing the account fixed deposit. Please try again.";
+                    TempData["SweetAlertMessage"] = "An error occurred while processing the account fixing. Please try again.";
+                    TempData["SweetAlertType"] = "error";
+                    return RedirectToAction("Index");
                 }
             }
             else
             {
-                TempData["ErrorMessage"] = "There were validation errors. Please review the form and try again.";
+                TempData["SweetAlertMessage"] = "The available balance is below zero.";
+                TempData["SweetAlertType"] = "warning";
+                return RedirectToAction("Index");
             }
-
-            return View(fixedDepositDTO);
         }
+
 
 
 
@@ -417,7 +433,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
-            // Fetch the fixed deposit account
             var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id, GetServiceHeader());
 
             if (fixedDepositDTO != null)
@@ -453,11 +468,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             if (selectedFixedDepositIds == null || selectedFixedDepositIds.Length == 0)
             {
-                TempData["ErrorMessage"] = "No fixed deposit selected for termination.";
+                TempData["SweetAlertMessage"] = "No fixed deposit selected for termination.";
+                TempData["SweetAlertType"] = "warning";
                 return RedirectToAction("Terminate");
             }
 
-            // Fetch the fixed deposits using the selected IDs
             var fixedDeposits = new List<FixedDepositDTO>();
             foreach (var id in selectedFixedDepositIds)
             {
@@ -470,25 +485,43 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (!fixedDeposits.Any())
             {
-                TempData["ErrorMessage"] = "The selected fixed deposit(s) could not be found.";
+                TempData["SweetAlertMessage"] = "The selected fixed deposit(s) could not be found.";
+                TempData["SweetAlertType"] = "warning";
                 return RedirectToAction("Terminate");
             }
 
             var selectedFixedDepositObservableCollection = new ObservableCollection<FixedDepositDTO>(fixedDeposits);
 
-            bool result = await _channelService.RevokeFixedDepositsAsync(selectedFixedDepositObservableCollection, moduleNavigationItemCode, GetServiceHeader());
+            try
+            {
+                bool result = await _channelService.RevokeFixedDepositsAsync(
+                    selectedFixedDepositObservableCollection,
+                    moduleNavigationItemCode,
+                    GetServiceHeader()
+                );
 
-            if (result)
-            {
-                TempData["SuccessMessage"] = "The selected fixed deposit(s) were successfully terminated.";
-                return RedirectToAction("Index", "FixedDeposit", new { Area = "FrontOffice" });
+                if (result)
+                {
+                    TempData["SweetAlertMessage"] = "The selected fixed deposit(s) were successfully terminated.";
+                    TempData["SweetAlertType"] = "success";
+                    return RedirectToAction("Index", "FixedDeposit", new { Area = "FrontOffice" });
+                }
+                else
+                {
+                    TempData["SweetAlertMessage"] = "An error occurred while terminating the selected fixed deposit(s).";
+                    TempData["SweetAlertType"] = "error";
+                    return RedirectToAction("Terminate");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "An error occurred while terminating the selected fixed deposit(s).";
+                Debug.WriteLine($"Error terminating fixed deposits: {ex.Message}");
+                TempData["SweetAlertMessage"] = "An unexpected error occurred while terminating the fixed deposit(s). Please try again.";
+                TempData["SweetAlertType"] = "error";
                 return RedirectToAction("Terminate");
             }
         }
+
 
 
 
@@ -497,10 +530,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
-            // Fetch the fixed deposit account
             var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id, GetServiceHeader());
 
-            // Optionally filter based on the date range and search text
             if (fixedDepositDTO != null)
             {
                 if (startDate.HasValue && endDate.HasValue)
@@ -535,11 +566,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             if (selectedFixedDepositIds == null || selectedFixedDepositIds.Length == 0)
             {
-                TempData["ErrorMessage"] = "No fixed deposit selected for liquidation.";
+                TempData["SweetAlertMessage"] = "No fixed deposit selected for liquidation.";
+                TempData["SweetAlertType"] = "warning";
                 return RedirectToAction("Liquidation");
             }
 
-            // Fetch the fixed deposits using the selected IDs
             var fixedDeposits = new List<FixedDepositDTO>();
             foreach (var id in selectedFixedDepositIds)
             {
@@ -548,7 +579,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     if (fixedDepositDTO.MaturityDate > DateTime.Now)
                     {
-                        TempData["ErrorMessage"] = $"The fixed deposit with account number {fixedDepositDTO.CustomerAccountFullAccountNumber} has not yet reached maturity and cannot be liquidated.";
+                        TempData["SweetAlertMessage"] = $"The fixed deposit with account number {fixedDepositDTO.CustomerAccountFullAccountNumber} has not yet reached maturity and cannot be liquidated.";
+                        TempData["SweetAlertType"] = "warning";
                         return RedirectToAction("Liquidation");
                     }
                     fixedDeposits.Add(fixedDepositDTO);
@@ -557,24 +589,37 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (!fixedDeposits.Any())
             {
-                TempData["ErrorMessage"] = "The selected fixed deposit(s) could not be found.";
+                TempData["SweetAlertMessage"] = "The selected fixed deposit(s) could not be found.";
+                TempData["SweetAlertType"] = "warning";
                 return RedirectToAction("Liquidation");
             }
 
             foreach (var fixedDepositDTO in fixedDeposits)
             {
-                bool result = await _channelService.PayFixedDepositAsync(fixedDepositDTO, moduleNavigationItemCode, GetServiceHeader());
-
-                if (!result)
+                try
                 {
-                    TempData["ErrorMessage"] = $"An error occurred while terminating the fixed deposit with ID {fixedDepositDTO.Id}.";
+                    bool result = await _channelService.PayFixedDepositAsync(fixedDepositDTO, moduleNavigationItemCode, GetServiceHeader());
+                    if (!result)
+                    {
+                        TempData["SweetAlertMessage"] = $"An error occurred while terminating the fixed deposit with ID {fixedDepositDTO.Id}.";
+                        TempData["SweetAlertType"] = "error";
+                        return RedirectToAction("Liquidation");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error liquidating fixed deposit {fixedDepositDTO.Id}: {ex.Message}");
+                    TempData["SweetAlertMessage"] = $"An unexpected error occurred while liquidating the fixed deposit with ID {fixedDepositDTO.Id}.";
+                    TempData["SweetAlertType"] = "error";
                     return RedirectToAction("Liquidation");
                 }
             }
 
-            TempData["SuccessMessage"] = "The selected fixed deposit(s) were successfully terminated.";
+            TempData["SweetAlertMessage"] = "The selected fixed deposit(s) were successfully liquidated.";
+            TempData["SweetAlertType"] = "success";
             return RedirectToAction("Index", "FixedDeposit", new { Area = "FrontOffice" });
         }
+
 
 
 

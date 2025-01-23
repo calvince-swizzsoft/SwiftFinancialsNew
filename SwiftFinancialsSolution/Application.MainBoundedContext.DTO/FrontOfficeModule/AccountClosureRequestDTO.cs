@@ -280,6 +280,10 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Settled By")]
         public string SettledBy { get; set; }
 
+        //[DataMember]
+        //[Display(Name = "Settlement/Rejection Remarks")]
+        //public string SettlementRemarks { get; set; }
+
         [DataMember]
         [Display(Name = "Settled Date")]
         public DateTime? SettledDate { get; set; }
@@ -405,7 +409,29 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
             }
         }
 
+        public int CustomerProductCodeCustomerFilter { get; set; }
 
+        [DataMember]
+        [Display(Name = "Customer Product Code")]
+        public string CustomerProductCodeCustomerFilterDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(ProductCode), CustomerProductCodeCustomerFilter) ? EnumHelper.GetDescription((ProductCode)CustomerProductCodeCustomerFilter) : string.Empty;
+            }
+        }
+
+        public int CustomerAccountCustomerRecordStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Record Status")]
+        public string CustomerAccountCustomerRecordStatusStatusDesccription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CustomerAccountStatus), CustomerAccountCustomerRecordStatus) ? EnumHelper.GetDescription((CustomerAccountStatus)CustomerAccountCustomerRecordStatus) : string.Empty;
+            }
+        }
 
 
     }

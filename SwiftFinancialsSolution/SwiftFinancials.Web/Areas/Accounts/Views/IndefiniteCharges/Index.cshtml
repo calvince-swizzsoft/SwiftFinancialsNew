@@ -97,8 +97,20 @@
                     var editUrl = '<a  href="/accounts/IndefiniteCharges/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/IndefiniteCharges/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/IndefiniteCharges/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/accounts/IndefiniteCharges/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
+
+                    $('td:eq(6)', nRow).html(dropdownHtml);
+
+                   // $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
@@ -106,11 +118,11 @@
                 "aoColumns": [
                     { "mDataProp": "Description", "sTitle": " Name", "sWidth": "15%" },
                     { "mDataProp": "RecoveryModeDescription", "sTitle": " Recoverymode", "sWidth": "10%" },
-                    { "mDataProp": "Description", "sTitle": " Name", "sWidth": "15%" },
-                    { "mDataProp": "InstallmentsBasisValueDescription", "sTitle": "Total Value", "sWidth": "15%" },
+                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
+                    { "mDataProp": "FactorInLoanTerm", "sTitle": "FactorInLoanTerm", "sWidth": "10%" },
+                    { "mDataProp": "ComputeChargeOnTopUp", "sTitle": "ChargeOnTopUp", "sWidth": "5%" },
                     { "mDataProp": "RecoverySourceDescription", "sTitle": "RecoverySource", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "2%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });

@@ -783,6 +783,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         Acknowledged = 2,
         [Description("Rejected")]
         Rejected = 3,
+        [Description("Utilized")]
+        Utilized = 4
     }
 
     public enum CashTransferRequestAcknowledgeOption
@@ -852,7 +854,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         [Description("Verified")]
         Audited = 0xBEBA + 6,
         [Description("Restructured")]
-        Restructured = 0xBEBA + 7,
+        Restructured = 0xBEBA + 7, //48833
     }
 
     public enum LoanCaseFilter

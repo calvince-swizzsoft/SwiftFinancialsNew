@@ -14026,6 +14026,70 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<HolidayDTO> FindHolidayAsync(Guid holidayId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<HolidayDTO>();
+
+            IHolidayService service = GetService<IHolidayService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    HolidayDTO response = ((IHolidayService)result.AsyncState).EndFindHoliday(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindHoliday(holidayId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<ObservableCollection<HolidayDTO>> FindHolidaysAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<HolidayDTO>>();
+
+            IHolidayService service = GetService<IHolidayService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<HolidayDTO> response = ((IHolidayService)result.AsyncState).EndFindHolidays(result);
+
+                    tcs.TrySetResult(new ObservableCollection<HolidayDTO>(response ?? new List<HolidayDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindHolidays(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         #endregion
 
         #region SalaryHeadDTO
@@ -14742,10 +14806,42 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<SalaryCardDTO>> FindSalaryCardsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<SalaryCardDTO>>();
+
+            ISalaryCardService service = GetService<ISalaryCardService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<SalaryCardDTO> response = ((ISalaryCardService)result.AsyncState).EndFindSalaryCards(result);
+
+                    tcs.TrySetResult(new ObservableCollection<SalaryCardDTO>(response ?? new List<SalaryCardDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSalaryCards(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         #endregion
 
         #region SalaryPeriodDTO
-
         public Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsByFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<SalaryProcessingDTO>>();
@@ -14906,6 +15002,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
+
         public Task<bool> ProcessSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ObservableCollection<EmployeeDTO> employees, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();
@@ -14998,6 +15096,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginPostPaySlip(paySlipId, moduleNavigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<SalaryProcessingDTO>> FindSalaryPeriodsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<SalaryProcessingDTO>>();
+
+            ISalaryPeriodService service = GetService<ISalaryPeriodService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<SalaryProcessingDTO> response = ((ISalaryPeriodService)result.AsyncState).EndFindSalaryPeriods(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSalaryPeriods(asyncCallback, service);
 
             return tcs.Task;
         }
@@ -16844,6 +16974,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region DelegateDTO
 
+        public Task<List<DelegateDTO>> FindDelegatesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<DelegateDTO>>();
+
+            IDelegateService service = GetService<IDelegateService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<DelegateDTO> response = ((IDelegateService)result.AsyncState).EndFindDelegates(result);
+
+                    tcs.TrySetResult(new List<DelegateDTO>(response ?? new List<DelegateDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDelegates(asyncCallback, service);
+
+            return tcs.Task;
+        }
         public Task<PageCollectionInfo<DelegateDTO>> FindDelegatesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<DelegateDTO>>();
@@ -17007,7 +17168,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #endregion
 
         #region DirectorDTO
+        public Task<List<DirectorDTO>> FindDirectorsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<DirectorDTO>>();
 
+            IDirectorService service = GetService<IDirectorService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<DirectorDTO> response = ((IDirectorService)result.AsyncState).EndFindDirectors(result);
+
+                    tcs.TrySetResult(new List<DirectorDTO>(response ?? new List<DirectorDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDirectors(asyncCallback, service);
+
+            return tcs.Task;
+        }
         public Task<PageCollectionInfo<DirectorDTO>> FindDirectorsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<DirectorDTO>>();
@@ -19732,7 +19923,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
 
-     
+
 
         public Task<PageCollectionInfo<CustomerAccountDTO>> FindCustomerAccountsByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, bool includeBalances, bool includeProductDescription, bool includeInterestBalanceForLoanAccounts, bool considerMaturityPeriodForInvestmentAccounts, ServiceHeader serviceHeader)
         {
@@ -35206,7 +35397,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
                 }
             });
 
-           
+
             service.BeginUpdateExpensePayableEntriesByExpensePayableId(expensePayableId, expensePayableEntries.ExtendedToList(), asyncCallback, service);
 
             return tcs.Task;
@@ -37359,6 +37550,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
+        public Task<ConditionalLendingDTO> FindConditionalLendingAsync(Guid conditionalLendingId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ConditionalLendingDTO>();
+
+            IConditionalLendingService service = GetService<IConditionalLendingService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    ConditionalLendingDTO response = ((IConditionalLendingService)result.AsyncState).EndFindConditionalLending(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindConditionalLending(conditionalLendingId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<bool> RemoveConditionalLendingEntriesAsync(ObservableCollection<ConditionalLendingEntryDTO> conditionalLendingEntryDTOs, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();
@@ -37848,7 +38072,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
         public Task<PageCollectionInfo<AccountClosureRequestDTO>> FindAccountClosureRequestsByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, bool includeProductDescription, ServiceHeader serviceHeader)
-       {
+        {
             var tcs = new TaskCompletionSource<PageCollectionInfo<AccountClosureRequestDTO>>();
 
             IAccountClosureRequestService service = GetService<IAccountClosureRequestService>(serviceHeader);
@@ -40423,6 +40647,11 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
         public Task FindCustomersByStationIdAndFilterInPageAsync(Func<StationDTO> mapTo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddCustomerAsync(CustomerDTO customerBindingModel, ServiceHeader serviceHeader)
         {
             throw new NotImplementedException();
         }

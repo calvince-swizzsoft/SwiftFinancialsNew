@@ -1,11 +1,22 @@
-﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDTO
+﻿
+@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDTO
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Employees Details";
+    var bloodGroups = ViewBag.BloodGroupSelectList as List<SelectListItem>;
+
+    //var customerId = ViewBag.CustomerId as Guid?;
+    //var customerId = "@Model.CustomerId"; // Ensure 'Model.CustomerId' is available in your view.
+    var passportPhoto = TempData["PassportPhoto"] as byte[];
+    var signaturePhoto = TempData["SignaturePhoto"] as byte[];
+    var idCardFrontPhoto = TempData["IDCardFrontPhoto"] as byte[];
+    var idCardBackPhoto = TempData["IDCardBackPhoto"] as byte[];
+
+
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Employees</h2>
+        <h2>Employee</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -14,17 +25,53 @@
                 @Html.ActionLink("Home", "Index", "Employee", new { Area = "HumanResource" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>View</strong>
+                <strong>Details</strong>
             </li>
         </ol>
     </div>
 </div>
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#ValueDate').datepicker({
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
+
 
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -34,90 +81,1180 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content text-info">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Customer.FullName)<br></strong>
 
-                                @Html.DisplayFor(model => model.Customer.FullName)<br>
-                            </p>
+                <div class="card">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Create", "Employee", new { Area = "HumanResource" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.BranchDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.BranchDescription)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.DesignationDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.DesignationDescription)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.DepartmentDescription)<br></strong>
+                            <!-- Expense Payables -->
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerFullName, htmlAttributes: new { @class = "" })
+                                            @Html.HiddenFor(model => model.CustomerId)
 
-                                @Html.DisplayFor(model => model.DepartmentDescription)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.NationalSocialSecurityFundNumber)<br></strong>
+                                            @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerFullName, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DesignationId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.DesignationId)
+                                            @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "DesignationsLookup form-control required", placeholder = "Designation description" } })
+                                            @Html.ValidationMessageFor(model => model.DesignationId, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        </div>
 
-                                @Html.DisplayFor(model => model.NationalSocialSecurityFundNumber)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.NationalHospitalInsuranceFundNumber)<br></strong>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DepartmentId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.DepartmentId)
+                                            @Html.EditorFor(model => model.DepartmentDescription, new { htmlAttributes = new { @class = "DepartmentsLookup form-control required", placeholder = "Department description" } })
+                                            @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.EmployeeTypeId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.EmployeeTypeId)
+                                            @Html.ValidationMessageFor(model => model.EmployeeTypeId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.EmployeeTypeCategoryDescription, new { htmlAttributes = new { @class = "EmployeeTypesLookup form-control required", placeholder = "EmployeeType Description" } })
+                                        </div>
 
-                                @Html.DisplayFor(model => model.NationalHospitalInsuranceFundNumber)<br>
-                            </p>
-                        </div>
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.OnlineNotificationsEnabled)<br></strong>
 
-                                @Html.DisplayFor(model => model.OnlineNotificationsEnabled)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.IsLocked)<br></strong>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BloodGroupDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.BloodGroupDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.BloodGroupDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerPersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.NationalSocialSecurityFundNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.NationalSocialSecurityFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.NationalSocialSecurityFundNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.NationalHospitalInsuranceFundNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.NationalHospitalInsuranceFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NHIF Number", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.NationalHospitalInsuranceFundNumber, "", new { @class = "text-danger" })
+                                        </div>
 
-                                @Html.DisplayFor(model => model.IsLocked)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.BloodGroup)<br></strong>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        </div>
 
-                                @Html.DisplayFor(model => model.BloodGroup)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Remarks)<br></strong>
+                                    </div>
+                                </div>
+                            </fieldset>
 
-                                @Html.DisplayFor(model => model.Remarks)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.EnforceBiometricsForLogin)<br></strong>
 
-                                @Html.DisplayFor(model => model.EnforceBiometricsForLogin)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
+                            
+                            <div class="row">
+                                <!-- Tab Navigation -->
+                                <ul class="nav nav-tabs" id="loanAccountsTab">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#individualParticular" data-toggle="tab">Individual Particular</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#address" data-toggle="tab">Address</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#referees" data-toggle="tab">Referees</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#specimen" data-toggle="tab">Specimen</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#savingAccount" data-toggle="tab">Saving Accounts</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#loanAccount" data-toggle="tab">Loan Accounts</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#investmentAccount" data-toggle="tab">Investment Accounts</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <!-- Individual Particular Section -->
+                                    <div id="individualParticular" class="tab-pane fade show active">
+                                        <div class="row">
 
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedBy)<br></strong>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualSalutationDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualSalutationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualSalutationDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualGenderDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualGenderDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualGenderDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualMaritalStatusDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualMaritalStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualMaritalStatusDescription, "", new { @class = "text-danger" })
+                                            </div>
 
-                                @Html.DisplayFor(model => model.CreatedBy)<br>
-                            </p>
-                        </div>
-                    </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualNationalityDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualNationalityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualNationalityDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualFirstName, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualFirstName, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualLastName, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualLastName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualIdentityCardTypeDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualIdentityCardTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardTypeDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.DesignationDescription, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.DesignationDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
 
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "Employee", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "Employee", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
+                                    </div>
+                                    <!-- Address Section -->
+                                    <div id="address" class="tab-pane fade">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerAddressLandLine, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerAddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerAddressLandLine, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerAddressPostalCode, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerAddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerAddressPostalCode, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerAddressStreet, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerAddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerAddressStreet, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerAddressAddressLine2, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerAddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine2, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.CustomerAddressAddressLine1, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.CustomerAddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine1, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4">
+                                                @Html.LabelFor(model => model.PaddedCustomerSerialNumber, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.PaddedCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.PaddedCustomerSerialNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- Referees Section -->
+                                    <div id="referees" class="tab-pane fade">
+
+                                        @if (ViewBag.Referees != null && ViewBag.Referees.Count > 0)
+                                        {
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>FullName</th>
+                                                        <th>Identity Card</th>
+                                                        <th>Nationality</th>
+                                                        <th>Address</th>
+                                                        <th>Mobile Line</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var referees in ViewBag.Referees)
+                                                    {
+                                                        <tr>
+                                                            <td>@referees.WitnessFullName</td>
+                                                            <td>@referees.WitnessIndividualIdentityCardTypeDescription</td>
+                                                            <td>@referees.WitnessIndividualNationalityDescription</td>
+                                                            <td>@referees.WitnessAddressAddressLine2</td>
+                                                            <td>@referees.WitnessAddressMobileLine</td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No referees found for this customer.</p>
+                                        }
+                                    </div>
+                                    <!-- SPECIMEN -->
+                                    <div id="specimen" class="tab-pane fade">
+                                        <div id="documentImages">
+                                            <div class="image-container">
+                                                <h3>Passport Photo</h3>
+                                                @if (passportPhoto != null)
+                                                {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(passportPhoto)" alt="Passport Photo" />
+                                                }
+                                                else
+                                                {
+                                                    <p>No passport photo available.</p>
+                                                }
+                                            </div>
+
+                                            <div class="image-container">
+                                                <h3>Signature Photo</h3>
+                                                @if (signaturePhoto != null)
+                                                {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(signaturePhoto)" alt="Signature Photo" />
+                                                }
+                                                else
+                                                {
+                                                    <p>No signature photo available.</p>
+                                                }
+                                            </div>
+
+                                            <div class="image-container">
+                                                <h3>ID Card Front Photo</h3>
+                                                @if (idCardFrontPhoto != null)
+                                                {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(idCardFrontPhoto)" alt="ID Card Front" />
+                                                }
+                                                else
+                                                {
+                                                    <p>No ID Card Front photo available.</p>
+                                                }
+                                            </div>
+
+                                            <div class="image-container">
+                                                <h3>ID Card Back Photo</h3>
+                                                @if (idCardBackPhoto != null)
+                                                {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(idCardBackPhoto)" alt="ID Card Back" />
+                                                }
+                                                else
+                                                {
+                                                    <p>No ID Card Back photo available.</p>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Saving Accounts Section -->
+                                    <div id="savingAccount" class="tab-pane fade">
+                                        @if (ViewBag.SavingsProducts != null && ViewBag.SavingsProducts.Count > 0)
+                                        {
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Maximum Withdrwal Amount</th>
+                                                        <th>Minimum Balance</th>
+                                                        <th>G/L account</th>
+                                                        <th>Priority</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var savings in ViewBag.SavingsProducts)
+                                                    {
+                                                        <tr>
+                                                            <td>@savings.Description</td>
+                                                            <td>@savings.MaximumAllowedWithdrawal</td>
+                                                            <td>@savings.MinimumBalance</td>
+                                                            <td>@savings.ChartOfAccountName</td>
+                                                            <td>@savings.Priority</td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No savings Products found for this customer.</p>
+                                        }
+                                    </div>
+
+
+
+                                    <!-- Investment Accounts Section -->
+                                    <div id="investmentAccount" class="tab-pane fade">
+                                        @if (ViewBag.InvestmentAccount != null && ViewBag.InvestmentAccount.Count > 0)
+                                        {
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parent G/L </th>
+                                                        <th>Name</th>
+                                                        <th>Balance</th>
+                                                        <th>Product Name</th>
+                                                        <th>Priority</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var loan in ViewBag.ViewBag.InvestmentAccount)
+                                                    {
+                                                        <tr>
+                                                            <td>@loan.ParentChartOfAccountNameDescription</td>
+                                                            <td>@loan.Description</td>
+                                                            <td>@loan.MaximumBalance</td>
+                                                            <td>@loan.ProductName</td>
+                                                            <td>@loan.Priority</td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No InvestmentAccount found for this customer.</p>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Tab Content -->
+                    
+
+
+
+
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.OnlineNotificationsEnabled, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.OnlineNotificationsEnabled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Online Notifications Enabled?", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.OnlineNotificationsEnabled, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
+
+
+                                <p>
+                                    @Html.ActionLink("Edit", "Edit", "Employee", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                    @Html.ActionLink("Back to List", "Index", "Employee", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                </p>
+                            </div>
+
+
+
+                        }
                     </div>
                 </div>
+
+                <style>
+                    .card {
+                        margin-bottom: 20px;
+                    }
+
+
+
+                    .form-group-lg {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-control {
+                        border-radius: .25rem;
+                    }
+
+
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #e0f0ff;
+                    }
+                </style>
+                <style>
+                    #documentImages {
+                        display: flex;
+                        justify-content: space-around;
+                        align-items: center;
+                        gap: 10px;
+                        padding: 10px;
+                        background-color: #f5f5fa;
+                        border-radius: 15px;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                        perspective: 1200px;
+                        width: 100%;
+                    }
+
+                    .image-container {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        width: 400px;
+                        background: linear-gradient(145deg, #ffffff, #dcdce1);
+                        padding: 15px;
+                        border-radius: 12px;
+                        box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2), -8px -8px 20px rgba(255, 255, 255, 0.5);
+                        transform-style: preserve-3d;
+                        transition: transform 0.4s ease, box-shadow 0.4s ease;
+                    }
+
+                        .image-container h3 {
+                            font-size: 1rem;
+                            color: #333;
+                            margin-bottom: 10px;
+                            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+                        }
+
+                        .image-container img {
+                            width: 100%;
+                            height: 280px;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                            transition: transform 0.3s ease;
+                        }
+
+                        .image-container:hover {
+                            transform: scale(1.05) rotateY(10deg);
+                            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), -8px -8px 20px rgba(255, 255, 255, 0.4);
+                            cursor: pointer;
+                        }
+                </style>
+
+
+
+
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    .highlight {
+        background-color: #f0c14b; /* Light yellow color for highlighting */
+    }
+</style>
+
+<script>
+            //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var branchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+
+             $('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/humanResource/employee/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                // Display settings
+                 "aoColumns": [
+                     { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
+                     { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+                     { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
+                     { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
+                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+        });
+
+        $("#s tbody").on("click", "tr", function () {
+            var data = customersGrid.row(this).data();
+
+            $('#CustomerId').val(data.Id);
+            $('input[name=CustomerId]').val(data.Id);
+            $('input[name=CustomerFullName]').val(data.FullName);
+            //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
+
+            $('#customerLookupModal').modal('hide');
+        });
+
+            //EmployeeType typehead starts here
+            $('.EmployeeTypesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetEmployeeTypesAsync", "EmployeeType", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (EmployeeTypes) {
+                            var newEmployeeTypesData = [];
+                            EmployeeTypesMap = {};
+                            $.each(EmployeeTypes, function (i, EmployeeType) {
+                                newEmployeeTypesData.push(EmployeeType.CategoryDescription);
+                                EmployeeTypesMap[EmployeeType.CategoryDescription] = EmployeeType;
+                            });
+                            process(newEmployeeTypesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var employeeTypeId = "";
+                    EmployeeTypeId = EmployeeTypesMap[item].Id;
+                    $('#EmployeeTypeId').val(EmployeeTypeId);
+                    //console.log(EmployeeTypeId)
+                    return item;
+                }
+            });
+
+            //Designation typehead starts here
+            $('.DesignationsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetDesignationsAsync", "Designation", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Designations) {
+                            var newDesignationsData = [];
+                            DesignationsMap = {};
+                            $.each(Designations, function (i, Designation) {
+                                newDesignationsData.push(Designation.Description);
+                                DesignationsMap[Designation.Description] = Designation;
+                            });
+                            process(newDesignationsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var designationId = "";
+                    DesignationId = DesignationsMap[item].Id;
+                    $('#DesignationId').val(DesignationId);
+                    //console.log(DesignationId)
+                    return item;
+                }
+            });
+
+            //Department typehead starts here
+            $('.DepartmentsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetDepartmentsAsync", "Department", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Departments) {
+                            var newDepartmentsData = [];
+                            DepartmentsMap = {};
+                            $.each(Departments, function (i, Department) {
+                                newDepartmentsData.push(Department.Description);
+                                DepartmentsMap[Department.Description] = Department;
+                            });
+                            process(newDepartmentsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var departmentId = "";
+                    DepartmentId = DepartmentsMap[item].Id;
+                    $('#DepartmentId').val(DepartmentId);
+                    //console.log(DepartmentId)
+                    return item;
+                }
+            });
+</script>
+
+
+<script>
+    $.ajax({
+        url: '/HumanResource/Create',
+        type: 'POST',
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: response.message
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An unexpected error occurred.'
+            });
+        }
+    });
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    .container1 {
+        width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h2 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .summary-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .summary-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .summary-table label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .summary-table input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+    .tab-content {
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .tab-pane {
+        width: 100%;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 50px;
+    }
+
+    thead {
+        background-color: #f5f5f5;
+    }
+
+        thead th {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-style: italic;
+            color: cadetblue;
+        }
+
+    tbody td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .btn-danger {
+        color: #fff;
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+
+
+    .tab-content {
+        border-top: 1px solid #ddd; /* Add a subtle border if needed */
+        padding: 15px; /* Optional: Add padding for spacing */
+    }
+
+    /* Optional: Add spacing between tab navigation and content */
+    .container {
+        margin-top: 20px; /* Adjust top margin as needed */
+    }
+
+    .fullscreen-overlay {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .fullscreen-img {
+        margin: auto;
+        display: block;
+        max-width: 80%;
+        max-height: 80%;
+    }
+
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        cursor: pointer;
+    }
+</style>
+<style>
+    .image-container {
+        display: inline-block;
+        margin: 20px;
+        text-align: center;
+    }
+
+        .image-container img {
+            max-width: 200px;
+            max-height: 200px;
+            cursor: pointer;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            transition: transform 0.2s ease;
+        }
+
+            .image-container img:hover {
+                transform: scale(1.1);
+            }
+
+    .fullscreen-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .fullscreen-overlay img {
+            max-width: 80%;
+            max-height: 80%;
+            margin: auto;
+        }
+
+    .close-button {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 30px;
+        color: #fff;
+        cursor: pointer;
+    }
+</style>
+
+
+<script>
+    // Initialize DataTable with server-side processing and custom parameters
+    var defaultProductCode = $('#productCode').val();
+    var defaultRecordStatus = $('#recordStatus').val();
+
+    $('#customersGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+                { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus }
+            );
+        },
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var formattedDate = $.datepicker.formatDate('dd/mm/yy', createdDate) +
+                                " " + createdDate.toLocaleTimeString('en-GB');
+
+            aData.CreatedDate = formattedDate;
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomer(\'' + aData.Id + '\')">Select</button>';
+
+            $('td:eq(6)', nRow).html(formattedDate);
+            $('td:eq(7)', nRow).html(selectUrl);
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "25%" },
+            { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "25%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "5%" },
+            { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "10%" },
+            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    // Refresh button functionality for reloading the DataTable after applying filters
+    $('#modalFilterForm').on('submit', function (e) {
+        e.preventDefault();
+        $('#customersGrid').DataTable().ajax.reload();
+    });
+
+    // Function for handling customer selection
+    function selectCustomer(id) {
+        $.ajax({
+            url: '/HumanResource/Employee/CustomerLookUp',
+            type: 'POST',
+            data: { Id: id },
+            success: function (response) {
+                if (response.success) {
+                    // Populate form fields with returned data
+                    $('#CustomerAccountCustomerId').val(response.data.CustomerAccountID);
+                    $('#CustomerAccountCustomerIndividualFirstName').val(response.data.CustomerAccount);
+                    $('#CustomerAccountCustomerStationZoneDivisionEmployerId').val(response.data.EmployerID);
+                    $('#CustomerAccountCustomerStationZoneDivisionEmployerDescription').val(response.data.Employer);
+                    $('#CustomerAccountCustomerStationZoneDivisionStationId').val(response.data.StationID);
+                    $('#CustomerAccountCustomerStationZoneDivisionStationDescription').val(response.data.Station);
+                    $('#CustomerAccountCustomerSerialNumber').val(response.data.SerialNumber);
+                    $('#CustomerAccountCustomerIndividualPayrollNumbers').val(response.data.PayrollNumber);
+                    $('#CustomerRemarks').val(response.data.Remarks);
+                    $('#MembershipPeriod').val(response.data.MembershipPeriod);
+                    $('#CustomerAccountCustomerPersonalIdentificationNumber').val(response.data.IDNumber);
+                    $('#Ref1').val(response.data.Ref1);
+                    $('#Ref2').val(response.data.Ref2);
+                    $('#Ref3').val(response.data.Ref3);
+                    $('#AddressAddressLine1').val(response.data.AddressLine1);
+                    $('#AddressAddressLine2').val(response.data.AddressLine2);
+                    $('#AddressStreet').val(response.data.AddressStreet);
+                    $('#AddressCity').val(response.data.AddressCity);
+                    $('#AddressPostalCode').val(response.data.AddressPostalCode);
+                    $('#AddressEmail').val(response.data.AddressEmail);
+                    $('#AddressLandLine').val(response.data.AddressLandLine);
+                    $('#AddressMobileLine').val(response.data.MobileLine);
+
+                    // Display photos
+                    setPhoto('passportPhoto', response.data.PassportPhoto, 'ppmsg');
+                    setPhoto('signaturePhoto', response.data.SignaturePhoto, 'smsg');
+                    setPhoto('idCardFront', response.data.IDFront, 'idfrontmsg');
+                    setPhoto('idCardBack', response.data.IDBack, 'idbackmsg');
+
+                    // Display customer accounts or no-data message
+                    displayCustomerAccounts(response.data.CustomerAccounts);
+                    $('#customerLookupModal').modal('hide');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    }
+
+    function setPhoto(elementId, photoData, msgElementId) {
+        if (photoData) {
+            document.getElementById(elementId).src = `data:image;base64,${photoData}`;
+            document.getElementById(msgElementId).textContent = '';
+        } else {
+            document.getElementById(msgElementId).textContent = 'Photo not available';
+        }
+    }
+
+    function displayCustomerAccounts(accounts) {
+        const noDataMessage = document.querySelector('.no-data-message');
+        var tbody = $('#dataTable tbody');
+        tbody.empty();
+
+        if (!accounts || accounts.length === 0) {
+            noDataMessage.style.display = 'block';
+        } else {
+            noDataMessage.style.display = 'none';
+            accounts.forEach(function (account) {
+                var row = `
+                    <tr>
+                        <td>${account.StatusDescription}</td>
+                        <td>${account.FullAccountNumber}</td>
+                        <td>${account.CustomerReference1}</td>
+                        <td>${account.CustomerReference2}</td>
+                        <td>${account.CustomerReference3}</td>
+                        <td>${account.BranchCompanyDescription}</td>
+                        <td>${account.BranchDescription}</td>
+                        <td>${account.CustomerAccountTypeTargetProductDescription}</td>
+                        <td>${account.CustomerAccountTypeTargetProductLoanProductSectionDescription}</td>
+                        <td style="text-align: right;">${account.BookBalance}</td>
+                        <td style="text-align: right;">${account.AvailableBalance}</td>
+                        <td style="text-align: right;">${account.PrincipalBalance}</td>
+                    </tr>`;
+                tbody.append(row);
+            });
+        }
+    }
+</script>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        var customerId = "@ViewBag.CustomerId"; // Use ViewBag if Model is unavailable.
+
+        // Fetch document data via AJAX
+        $.getJSON(`/Employee/Details/${customerId}`, function (response) {
+            if (response.success) {
+                // Populate the images dynamically
+                if (response.data.PassportPhoto) {
+                    $("#passportPhoto")
+                        .attr("src", `data:image/png;base64,${response.data.PassportPhoto}`)
+                        .show();
+                    $("#ppmsg").text("");
+                } else {
+                    $("#passportPhoto").hide();
+                    $("#ppmsg").text("Passport Photo not available.");
+                }
+
+                if (response.data.SignaturePhoto) {
+                    $("#signaturePhoto")
+                        .attr("src", `data:image/png;base64,${response.data.SignaturePhoto}`)
+                        .show();
+                    $("#smsg").text("");
+                } else {
+                    $("#signaturePhoto").hide();
+                    $("#smsg").text("Signature Photo not available.");
+                }
+
+                if (response.data.IDFront) {
+                    $("#idCardFront")
+                        .attr("src", `data:image/png;base64,${response.data.IDFront}`)
+                        .show();
+                    $("#idfrontmsg").text("");
+                } else {
+                    $("#idCardFront").hide();
+                    $("#idfrontmsg").text("ID Card Front not available.");
+                }
+
+                if (response.data.IDBack) {
+                    $("#idCardBack")
+                        .attr("src", `data:image/png;base64,${response.data.IDBack}`)
+                        .show();
+                    $("#idbackmsg").text("");
+                } else {
+                    $("#idCardBack").hide();
+                    $("#idbackmsg").text("ID Card Back not available.");
+                }
+            } else {
+                alert(response.message || "Failed to fetch images.");
+            }
+        });
+    });
+
+    // Full-screen functionality
+    function openFullscreen(imageId) {
+        var imageSrc = $(`#${imageId}`).attr("src");
+        if (imageSrc) {
+            $("#fullscreenImage").attr("src", imageSrc);
+            $("#fullscreenOverlay").show();
+        }
+    }
+
+    function closeFullscreen() {
+        $("#fullscreenOverlay").hide();
+        $("#fullscreenImage").attr("src", "");
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+

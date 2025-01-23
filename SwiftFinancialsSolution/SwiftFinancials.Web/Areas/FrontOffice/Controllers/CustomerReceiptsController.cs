@@ -16,6 +16,9 @@ using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using Microsoft.AspNet.Identity;
+using SwiftFinancials.Web.Areas.Registry.DocumentsModel;
+using System.Data.SqlClient;
+using System.Configuration;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
@@ -23,6 +26,44 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
     public class CustomerReceiptsController : MasterController
     {
+        private readonly string _connectionString;
+
+        public CustomerReceiptsController()
+        {
+            // Get connection string from Web.config
+            _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+        }
+        private async Task<List<Document>> GetDocumentsAsync(Guid id)
+        {
+            var documents = new List<Document>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto FROM swiftFin_SpecimenCapture WHERE CustomerId = @CustomerId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            documents.Add(new Document
+                            {
+                                PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
+                                SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
+                                IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
+                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
+                            });
+                        }
+                    }
+                }
+            }
+
+            return documents;
+        }
 
 
         // GET: FrontOffice/CustomerReceipts
@@ -36,22 +77,18 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
-        
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
-            //var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
-            var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+            var selectedTeller = await GetCurrentTeller();
 
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
 
-            DateTime startDate = DateTime.Now;
+            //DateTime startDate = DateTime.Now;
 
-            DateTime endDate = DateTime.Now;
+            //DateTime endDate = DateTime.Now;
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
@@ -61,14 +98,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
 
-            if (currentTeller != null)
+
+            if (selectedTeller != null && !selectedTeller.IsLocked)
             {
                 var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-                    pageIndex,
-                    jQueryDataTablesModel.iDisplayLength,
-                    (Guid)currentTeller.ChartOfAccountId,
-                    currentPostingPeriod.DurationStartDate,
-                    currentPostingPeriod.DurationEndDate,
+                   0, int.MaxValue,
+                    (Guid)selectedTeller.ChartOfAccountId,
+                    startDate,
+                    endDate,
                     jQueryDataTablesModel.sSearch,
                     20,
                     1,
@@ -79,15 +116,20 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
                 {
+
+
+                    var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
+
                     totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                    //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
 
-                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
 
+                    var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
 
-                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
 
-                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                    return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
                 }
                 else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
 
@@ -98,18 +140,30 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
             Guid parseId;
 
+            ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
+
             TransactionModel model = new TransactionModel();
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-                ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
-                ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
-                ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            
+
+                if (id != null)
+                {
+                    ViewBag.Documents = GetDocumentsAsync(id.Value);
+                
+                }
                 return View(model);
             }
 
@@ -129,7 +183,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var _miniStatement = miniStatementOrdersCollection.ToList();
             model.CustomerAccountMiniStatement = _miniStatement;
 
-            ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
+           
 
             return View(model);
         }
@@ -145,7 +199,22 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            var documents = await GetDocumentsAsync(customer.Id);
+            if (documents.Any())
+            {
+                var document = documents.First();
 
+                TempData["PassportPhoto"] = document.PassportPhoto;
+                TempData["SignaturePhoto"] = document.SignaturePhoto;
+                TempData["idCardFront"] = document.IDCardFrontPhoto;
+                TempData["idCardBack"] = document.IDCardBackPhoto;
+
+                // Sending the images as Base64 encoded strings to be used in AJAX
+                ViewBag.PassportPhoto = document.PassportPhoto != null ? Convert.ToBase64String(document.PassportPhoto) : null;
+                ViewBag.SignaturePhoto = document.SignaturePhoto != null ? Convert.ToBase64String(document.SignaturePhoto) : null;
+                ViewBag.IDCardFrontPhoto = document.IDCardFrontPhoto != null ? Convert.ToBase64String(document.IDCardFrontPhoto) : null;
+                ViewBag.IDCardBackPhoto = document.IDCardBackPhoto != null ? Convert.ToBase64String(document.IDCardBackPhoto) : null;
+            }
             if (customer == null)
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
@@ -170,7 +239,22 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             bool considerMaturityPeriodForInvestmentAccounts = true;
 
             var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            var documents = await GetDocumentsAsync(customerAccount.CustomerId);
+            if (documents.Any())
+            {
+                var document = documents.First();
 
+                TempData["PassportPhoto"] = document.PassportPhoto;
+                TempData["SignaturePhoto"] = document.SignaturePhoto;
+                TempData["idCardFront"] = document.IDCardFrontPhoto;
+                TempData["idCardBack"] = document.IDCardBackPhoto;
+
+                // Sending the images as Base64 encoded strings to be used in AJAX
+                ViewBag.PassportPhoto = document.PassportPhoto != null ? Convert.ToBase64String(document.PassportPhoto) : null;
+                ViewBag.SignaturePhoto = document.SignaturePhoto != null ? Convert.ToBase64String(document.SignaturePhoto) : null;
+                ViewBag.IDCardFrontPhoto = document.IDCardFrontPhoto != null ? Convert.ToBase64String(document.IDCardFrontPhoto) : null;
+                ViewBag.IDCardBackPhoto = document.IDCardBackPhoto != null ? Convert.ToBase64String(document.IDCardBackPhoto) : null;
+            }
             if (customerAccount == null)
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
@@ -188,8 +272,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
 
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+            //var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
 
+            var currentTeller = await GetCurrentTeller(); 
             
             model.BranchId = currentTeller.EmployeeBranchId;
 
@@ -220,14 +305,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 if (journal != null && journal.Exception == null)
                 {
 
-                    MessageBox.Show(
-                                                       "Operation Success",
-                                                       "Customer Receipts",
-                                                       MessageBoxButtons.OK,
-                                                       MessageBoxIcon.Information,
-                                                       MessageBoxDefaultButton.Button1,
-                                                       MessageBoxOptions.ServiceNotification
-                                                   );
+                    //MessageBox.Show(
+                    //                                   "Operation Success",
+                    //                                   "Customer Receipts",
+                    //                                   MessageBoxButtons.OK,
+                    //                                   MessageBoxIcon.Information,
+                    //                                   MessageBoxDefaultButton.Button1,
+                    //                                   MessageBoxOptions.ServiceNotification
+                    //                               );
 
                     return Json(new { success = true, message = "Operation Success" });
                 }
@@ -236,21 +321,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     string message = string.Join(Environment.NewLine, model.ErrorMessages);
 
-                    MessageBox.Show(
-                                                       message,
-                                                       "Custmer Receipts",
-                                                       MessageBoxButtons.OK,
-                                                       MessageBoxIcon.Information,
-                                                       MessageBoxDefaultButton.Button1,
-                                                       MessageBoxOptions.ServiceNotification
-                                                   );
+                    //MessageBox.Show(
+                    //                                   message,
+                    //                                   "Custmer Receipts",
+                    //                                   MessageBoxButtons.OK,
+                    //                                   MessageBoxIcon.Information,
+                    //                                   MessageBoxDefaultButton.Button1,
+                    //                                   MessageBoxOptions.ServiceNotification
+                    //                               );
 
                     return Json(new { success = false, message = "Operation Failed" });
                 }
-
-                //service.BeginAddJournalWithApportionments(transactionModel.BranchId, transactionModel.AlternateChannelLogId, transactionModel.TotalValue, transactionModel.PrimaryDescription, transactionModel.SecondaryDescription, transactionModel.Reference, transactionModel.ModuleNavigationItemCode, transactionModel.TransactionCode, transactionModel.ValueDate, transactionModel.DebitChartOfAccountId, transactionModel.CreditCustomerAccount, transactionModel.DebitCustomerAccount, apportionments.ExtendedToList(), tariffs.ExtendedToList(), dynamicCharges.ExtendedToList(), asyncCallback, service);
-                //journal.PostDoubleEntries(debitChartOfAccountId, creditChartOfAccountId, creditCustomerAccountDTO.Id, debitCustomerAccountDTO.Id, serviceHeader);
-                //ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
 
 
             }
@@ -258,7 +339,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var errorMessages = model.ErrorMessages;
     
-                ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
+           
 
                 return Json(new { success = false, errorMessages = errorMessages });
             }
@@ -293,6 +374,26 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+
+        private async Task<TellerDTO> GetCurrentTeller()
+        {
+
+
+            bool includeBalance = true;
+            // Get the current user
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            var teller = await _channelService.FindTellerByEmployeeIdAsync((Guid)user.EmployeeId, includeBalance, GetServiceHeader());
+
+            if (teller == null)
+            {
+                TempData["Missing Teller"] = "You are working without a Recognized Teller";
+            }
+
+            return teller;
+
         }
 
     }

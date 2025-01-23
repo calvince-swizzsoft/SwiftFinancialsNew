@@ -8,6 +8,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -21,38 +22,74 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View();
         }
 
+
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindHolidaysByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindHolidaysByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                0,
+                int.MaxValue,
+                GetServiceHeader()
+            );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(holidayDTO => holidayDTO.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<HolidayDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+               items: new List<HolidayDTO>(),
+               totalRecords: totalRecordCount,
+               totalDisplayRecords: searchRecordCount,
+               sEcho: jQueryDataTablesModel.sEcho
+               );
         }
+
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var holidayDTO = await _channelService.FindHolidaysByPostingPeriodAsync(id, GetServiceHeader());
+            var holidayDTO = await _channelService.FindHolidayAsync(id, GetServiceHeader());
 
             return View(holidayDTO);
         }
+
+
+
+
+
 
         public async Task<ActionResult> Create()
         {
@@ -64,63 +101,75 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(HolidayDTO holidayDTO)
         {
-            var startDate = Request["startDate"];
-
-            var endDate = Request["endDate"];
-
-            holidayDTO.DurationStartDate = DateTime.Parse(startDate).Date;
-
-            holidayDTO.DurationEndDate = DateTime.Parse(endDate).Date;
-            var k = await _channelService.FindPostingPeriodAsync(holidayDTO.PostingPeriodId,GetServiceHeader());
-            holidayDTO.PostingPeriodDurationEndDate = k.DurationEndDate;
-            holidayDTO.PostingPeriodDurationStartDate = k.DurationStartDate;
+            // Validate the DTO
             holidayDTO.ValidateAll();
 
             if (!holidayDTO.HasErrors)
             {
+                // Save the holiday if no errors are present
                 await _channelService.AddHolidayAsync(holidayDTO, GetServiceHeader());
+                TempData["Message"] = "Operation Success: Holiday Created Successfully!";
+                TempData["MessageType"] = "Success";
+
+               
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = holidayDTO.ErrorMessages;
+                // Display specific validation errors
+                if (holidayDTO.ErrorMessages.Any())
+                {
+                    var errorMessages = string.Join("\n- ", holidayDTO.ErrorMessages);
+                    TempData["Message"] = "An unspecified error occurred during validation.";
+                    TempData["MessageType"] = "error";
+
+                   
+                }
+                else
+                {
+                    TempData["Message"] = "Operation Success: Holiday Created Successfully!";
+                    TempData["MessageType"] = "error";
+                   
+                }
 
                 return View(holidayDTO);
             }
         }
 
+
+
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
-            var holidayDTO = await _channelService.FindHolidaysByPostingPeriodAsync(id, GetServiceHeader());
+            var holidayDTO = await _channelService.FindHolidayAsync(id, GetServiceHeader());
 
             return View(holidayDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, HolidayDTO holidayBindingModel)
+        public async Task<ActionResult> Edit(Guid id, HolidayDTO holidayDTO)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateHolidayAsync(holidayBindingModel, GetServiceHeader());
+                await _channelService.UpdateHolidayAsync(holidayDTO, GetServiceHeader());
+                TempData["Message"] = "Operation Success: Holiday has been updated.";
+                TempData["MessageType"] = "Success";
+               
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(holidayBindingModel);
+                TempData["Message"] = "An unspecified error occurred during validation.";
+                TempData["MessageType"] = "error";
+                
             }
+            return View(holidayDTO);
+
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetHolidaysAsync()
-        {
-            var holidaysDTOs = await _channelService.FindCompaniesAsync(GetServiceHeader());
-
-            return Json(holidaysDTOs, JsonRequestBehavior.AllowGet);
-        }
     }
 }

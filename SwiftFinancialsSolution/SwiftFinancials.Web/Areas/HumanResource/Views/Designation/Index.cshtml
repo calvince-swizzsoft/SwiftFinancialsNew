@@ -1,11 +1,28 @@
 ﻿
 @{
-    ViewBag.Title = "Designations";
+    ViewBag.Title = "Designation";
 }
+
+<head>
+    <!-- Add this to your head section if it's not already included -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.all.min.js"></script>
+</head>
+@if (TempData["Message"] != null)
+{
+    <script>
+            Swal.fire({
+                icon: '@TempData["MessageType"]', // success, error, warning
+                title: '@TempData["Message"]',
+                showConfirmButton: true
+            });
+    </script>
+}
+
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Designations</h2>
+        <h2>Designation</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -22,7 +39,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create Designation", "Create", "Designation", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create", "Create", "Designation", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -63,48 +80,62 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#DesignationsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Designation", new { Area = "HumanResource"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Designation", new { Area = "HumanResource" }))",
                 "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/HumanResource/Designation/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/HumanResource/Designation/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+
+                    var viewButton = `<a class="dropdown-item" href="/HumanResource/Designation/details/${aData.Id}">View</a>`;
+                    var editButton = `<a class="dropdown-item" href="/HumanResource/Designation/edit/${aData.Id}">Edit</a>`;
+
+                    switch (aData.Status) {
+                        case 1: // Pending
+                            dropdownHtml += viewButton + editButton;
+                            break;
+                        default:
+                            dropdownHtml += viewButton + editButton;
+                            break;
+                    }
+
+                    dropdownHtml += `</div></div>`;
 
                     $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(4)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                 { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-                    { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "10%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
                     { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
         });
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });

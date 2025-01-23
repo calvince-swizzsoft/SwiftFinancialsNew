@@ -1,4 +1,5 @@
-﻿using Application.Seedwork;
+﻿using Application.MainBoundedContext.DTO.RegistryModule;
+using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
@@ -11,6 +12,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 {
     public class CommissionDTO : BindingModelBase<CommissionDTO>
     {
+        public CommissionDTO commissionDTO;
+
         public CommissionDTO()
         {
             AddAllAttributeValidators();
@@ -123,6 +126,20 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         }
 
         [DataMember]
+        [Display(Name = "Known ChargeType")]
+        public int KnownChargeType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Known ChargeType")]
+        public string KnownChargeTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LoanProductKnownChargeType), KnownChargeType) ? EnumHelper.GetDescription((LoanProductKnownChargeType)KnownChargeType) : string.Empty;
+            }
+        }
+
+        [DataMember]
         [Display(Name = "System Transaction Type")]
         public int SystemTransactionType { get; set; }
 
@@ -196,5 +213,16 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         public string ErrorMessageResult { get; set; }
+
+
+        [DataMember]
+        public CustomerDTO CustomerDTO { get; set; }
+
+        public ObservableCollection<GraduatedScaleDTO> fixedeposite { get; set; }
+
+        [DataMember]
+        [Display(Name = "G/L Account")]
+        [ValidGuid]
+        public Guid ChartOfAccountId { get; set; }
     }
 }

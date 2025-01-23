@@ -87,10 +87,19 @@
 
                     <div class="row">
                         <div class="col-lg-12">
-                            <p>
-                                @*@Html.ActionLink("Edit", "Edit", "PostingPeriod", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "PostingPeriod", new { Area = "Accounts" }, new { @class = "btn btn-success" })*@
-                            </p>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <p>
+                                        @Html.ActionLink("Edit", "Edit", "PostingPeriod", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
+                                        @Html.ActionLink("Back to List", "Index", "PostingPeriod", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                                    </p>
+                                </div>
+                            </div>
+                            @*<p>
+                                @Html.ActionLink("Edit", "Edit", "PostingPeriod", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "PostingPeriod", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                            </p>*@
                         </div>
                     </div>
                 </div>

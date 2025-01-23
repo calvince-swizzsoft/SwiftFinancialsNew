@@ -29,32 +29,31 @@
 
                     @if (TempData["AlertMessage"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AlertMessage"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Successful.',
+                                    confirmButtonColor: '#90EE90',
+                                });
+                            });
+                        </script>
                     }
 
                     @if (TempData["Edit"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Edit"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Successful.',
+                                    confirmButtonColor: '#90EE90',
+                                });
+                            });
+                        </script>
                     }
-
-
-
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -117,22 +116,34 @@
 
                     var editUrl = '<a  href="/accounts/SavingsProduct/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/SavingsProduct/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/SavingsProduct/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/accounts/SavingsProduct/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
 
+                    $('td:eq(7)', nRow).html(dropdownHtml);
+                    
                     $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                  //  $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Code", "sTitle": "Code", "sWidth": "1%" },
-                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "5%" },
-                    { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "5%" },
-                    { "mDataProp": "OperatingBalance", "sTitle": "Operating Balance", "sWidth": "5%" },
+                    { "mDataProp": "Code", "sTitle": "Code", "sWidth": "3%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "10%" },
+                    { "mDataProp": "OperatingBalance", "sTitle": "Operating Balance", "sWidth": "10%" },
                     { "mDataProp": "IsLocked", "sTitle": "Is Locked", "sWidth": "2%" },
                     { "mDataProp": "IsMandatory", "sTitle": "Is Mandatory", "sWidth": "2%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });

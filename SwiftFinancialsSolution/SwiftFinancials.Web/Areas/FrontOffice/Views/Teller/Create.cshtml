@@ -110,7 +110,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "Teller", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Create", "Teller", new { Area = "FrontOffice" }, FormMethod.Post, new {@id="newTellerForm", @class = "wizard-big"}))
                     {
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -127,7 +127,7 @@
 
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Teller Description." } })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @id = "newTellerDescription", @placeholder = "Enter Teller Description." } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -135,13 +135,13 @@
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.RangeLowerLimit, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.RangeLowerLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Range Lower Limit" } })
+                                        @Html.EditorFor(model => model.RangeLowerLimit, new { htmlAttributes = new { @id = "newTellerRangeLowerLimit", @class = "form-control", @placeholder = "Range Lower Limit" } })
                                         @Html.ValidationMessageFor(model => model.RangeLowerLimit, "", new { @class = "text-danger" })
                                     </div>
 
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.RangeUpperLimit, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Range Upper Limit" } })
+                                        @Html.EditorFor(model => model.RangeUpperLimit, new { htmlAttributes = new { @id = "newTellerRangeUpperLimit", @class = "form-control", @placeholder = "Range Upper Limit" } })
                                         @Html.ValidationMessageFor(model => model.RangeUpperLimit, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -162,110 +162,145 @@
                                         </div>
                                     </div>
 
-                                    </div>
+                                </div>
 
-                                    <div class="col-lg-6 agent-type-fields" style="display:none;">
+                                <div class="col-lg-6 agent-type-fields" style="display:none;">
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CommissionCustomerFullName, new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.CommissionCustomerAccountId, new { @id = "CommissionCustomerAccountId", @class = "control-label" })
-                                            @Html.HiddenFor(model => model.CommissionCustomerAccountCustomerAccountTypeTargetProductId, new { @id = "CommissionCustomerAccountTargetProductId", @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.TextBoxFor(model => model.CommissionCustomerFullName, new { @id = "CommissionCustomerFullName", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a id="openCommissionModal" data-toggle="modal" data-target="#CustomerAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <!-- Reference field for Pos Terminal (Agent) (spans two columns) -->
-                                    <div class="col-lg-12 agent-type-fields" style="display:none;">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
-                                            @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CommissionCustomerFullName, new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CommissionCustomerAccountId, new { @id = "CommissionCustomerAccountId", @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CommissionCustomerAccountCustomerAccountTypeTargetProductId, new { @id = "CommissionCustomerAccountTargetProductId", @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.TextBoxFor(model => model.CommissionCustomerFullName, new { @id = "CommissionCustomerFullName", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a id="openCommissionModal" data-toggle="modal" data-target="#CustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
                                         </div>
                                     </div>
 
-                                    <!-- Dynamic fields for Pos Terminal (In-House) -->
-                                    <div class="col-lg-6 inhouse-type-fields" style="display:none;">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ChartOfAccountId, htmlAttributes: new { @id = "ChartOfAccountId", @class = "control-label" })
-                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                            @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
+                                </div>
 
-                                    <div class="col-lg-6 inhouse-type-fields" style="display:none;">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
-                                            @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                        </div>
+                                <!-- Reference field for Pos Terminal (Agent) (spans two columns) -->
+                                <div class="col-lg-12 agent-type-fields" style="display:none;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @id = "posTerminalReference", @class = "form-control", @placeholder = "Reference" } })
+                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
 
-                                    <!-- Dynamic fields for Employee -->
-                                    <div class="col-lg-6 employee-type-fields" style="display:none;">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ChartOfAccountId, htmlAttributes: new { @id = "ChartOfAccountId", @class = "control-label" })
-                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                            @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
+                                <!-- Dynamic fields for Pos Terminal (In-House) -->
+                                <div class="col-lg-6 inhouse-type-fields" style="display:none;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId, htmlAttributes: new { @id = "ChartOfAccountId", @class = "control-label" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @id = "ChartOfAccountAccountName", @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-6 employee-type-fields" style="display:none;">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ShortageChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ShortageChartOfAccountId)
-                                            @Html.EditorFor(model => model.ShortageChartOfAccountAccountName, new { htmlAttributes = new { @class = "ShortageChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                            @Html.ValidationMessageFor(model => model.ShortageChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
+                                <div class="col-lg-6 inhouse-type-fields" style="display:none;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @id = "inHouseReference", @class = "form-control", @placeholder = "Reference" } })
+                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-6 employee-type-fields" style="display:none;">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ExcessChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ExcessChartOfAccountId)
-                                            @Html.EditorFor(model => model.ExcessChartOfAccountAccountName, new { htmlAttributes = new { @class = "ExcessChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                            @Html.ValidationMessageFor(model => model.ExcessChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
+                                <!-- Dynamic fields for Employee -->
+                                <div class="col-lg-6 employee-type-fields" style="display:none;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId, htmlAttributes: new { @id = "ChartOfAccountId", @class = "control-label" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new {@id = "ChartOfAccountAccountName", @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-6 employee-type-fields" style="display:none;">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.EmployeeId, new { @id = "EmployeeId"})
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @id = "EmployeeCustomerFullName", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#EmployeeLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
-                                        </div>
+                                <div class="col-lg-6 employee-type-fields" style="display:none;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ShortageChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ShortageChartOfAccountId, new {@id = "ShortageChartOfAccountId" } )
+                                        @Html.EditorFor(model => model.ShortageChartOfAccountAccountName, new {htmlAttributes = new { @id = "ShortageChartOfAccountName", @class = "ShortageChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.ValidationMessageFor(model => model.ShortageChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
 
-                                    <!-- Dynamic fields for ATM-Type -->
-                                    <div class="col-lg-6 atm-type-fields" style="display:none;">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ChartOfAccountId, htmlAttributes: new { @id = "ChartOfAccountId", @class = "control-label" })
-                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required" } })
-                                            @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
+                                <div class="col-lg-6 employee-type-fields" style="display:none;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ExcessChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
+                                       
+                                        @Html.EditorFor(model => model.ExcessChartOfAccountAccountName, new {htmlAttributes = new { @id = "ExcessChartOfAccountAccountName", @class = "ExcessChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.ValidationMessageFor(model => model.ExcessChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
 
-                                    <!-- Submit Button -->
-                                    <div class="col-lg-12">
-                                        <div class="form-group form-group-sm">
-                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                <div class="col-lg-6 employee-type-fields" style="display:none;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.EmployeeId, new { @id = "EmployeeId" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @id = "EmployeeCustomerFullName", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#EmployeeLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
-</fieldset>
+
+                                <!-- Dynamic fields for ATM-Type -->
+                                <div class="col-lg-6 atm-type-fields" style="display:none;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId, htmlAttributes: new { @id = "ChartOfAccountId", @class = "control-label" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new {@id = "ChartOfAccountAccountName", @class = "ChartOfAccountsLookup form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12" style="margin-top: 20px;">
+                                    <div class="form-group" style="display: flex; justify-content: flex-end; gap: 20px; align-items: center;">
+                                        <!-- Mini Statement Items Cap -->
+                                        <div style="display: flex; align-items: center;">
+                                            @Html.LabelFor(model => model.MiniStatementItemsCap,
+                                                new { @class = "control-label", style = "margin-right: 8px; white-space: nowrap;" })
+                                            @Html.EditorFor(model => model.MiniStatementItemsCap,
+                                                new
+                                                     {
+                                                         htmlAttributes = new
+                                                         {
+                                                             @id = "MiniStatementItemsCap",
+                                                    @class = "form-control form-control-sm",
+                                                    @type = "number",
+                                                    @min = "1",
+                                                    @max = "100",
+                                                    @style = "width: 60px; text-align: center;"
+                                                }
+                                                     })
+                                            @Html.ValidationMessageFor(model => model.MiniStatementItemsCap, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <!-- Teller Is Locked -->
+                                        <div style="display: flex; align-items: center;">
+                                            @Html.CheckBoxFor(model => model.IsLocked, new { id = "IsLocked", style = "margin-right: 5px;" })
+                                            @Html.LabelFor(model => model.IsLocked, new { @class = "control-label", style = "margin-bottom: 0; white-space: nowrap;" })
+                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                        </div>
+
+
+                                        <!-- Create Button -->
+                                        <button id="submitButton" type="submit"
+                                                class="btn btn-primary btn-sm"
+                                                style="min-width: 80px;">
+                                            Create
+                                        </button>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </fieldset>
                     }
 
 
@@ -408,121 +443,6 @@
 
     <script>
 
-      
-
-  //  $("#s tbody").on("click", "tr", function () {
-  //      var data = EmployeeGrid.row(this).data();
-  //      $('#EmployeeId').val(data.Id);
-  ///*      $('input[name=CustomerAccountId]').val(data.Id);*/
-  //      $('input[name=EmployeeCustomerFullName]').val(data.EmployeeCustomerFullname);
-
-  //      var CustomerId = "";
-  //      CustomerId = CustomersMap[item].Id;
-
-  //      //tellerDTO.EmployeeCustomerId = employee.CustomerId;
-  //      //tellerDTO.EmployeeId = employee.Id;
-  //      //tellerDTO.EmployeeCustomerIndividualFirstName = employee.CustomerIndividualFirstName;
-  //      //tellerDTO.FloatCustomerAccountId = employee.CustomerId;
-
-  //      $('#EmployeeId').val(CustomersMap[item].Id);
-  //      $('#EmployeeCustomerId').val(CustomersMap[item].EmployeeCustomerId);
-  //      //$('#CustomerAccountTypeTargetProductId').val(CustomersMap[item].CustomerAccountTypeTargetProductId);
-  //      //$('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
-  //      //$('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-  //      //$('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
-  //      //$('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-  //      //$('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-  //      //$('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
-  //      //$('#EmployeeLookupModal').modal('hide');
-  //  });
-
-
-
-             @*$('#customersGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Employee", new { Area = "HumanResource"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/FrontOffice/Teller/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-                 // Display settings
-                 "aoColumns": [
-                     { "mDataProp": "Customer.FullName", "sTitle": "Name", "sWidth": "15%" },
-                     { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
-                     { "mDataProp": "DepartmentDescription", "sTitle": "DepartmentDescription", "sWidth": "15%" },
-                     { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
-                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-                 "aaSorting": [[0, "desc"]]
-        });
-
-        $("#s tbody").on("click", "tr", function () {
-            var data = customersGrid.row(this).data();
-
-            $('#CustomerId').val(data.Id);
-            $('input[name=CustomerId]').val(data.Id);
-            $('input[name=CustomerFullName]').val(data.FullName);
-            //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-
-            $('#customerLookupModal').modal('hide');
-        });
-
-
-             //Employee typehead starts here
-            $('.EmployeesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetEmployeesAsync", "Employee", new { Area = "HumanResource" })',
-                        { query: query },
-                        function (Employees) {
-                            var newEmployeesData = [];
-                            EmployeesMap = {};
-                            $.each(Employees, function (i, Employee) {
-                                newEmployeesData.push(Employee.CustomerFullName);
-                                EmployeesMap[Employee.CustomerFullName] = Employee;
-                            });
-                            process(newEmployeesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var employeeId = "";
-                    EmployeeId = EmployeesMap[item].Id;
-                    $('#EmployeeId').val(EmployeeId);
-                    $('#EmployeeCustomerFullName').val(EmployeesMap[item].EmployeeCustomerFullName);
-                    //console.log(EmployeeId)
-                    return item;
-                }
-            });*@
             //ChartOfAccount typehead starts here
             $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
@@ -828,7 +748,7 @@
 
     </script>
 
-  <script>
+    <script>
       $(document).ready(function () {
 
         var currentModalTrigger = '';  // Track the trigger
@@ -934,5 +854,70 @@
             });
         }
     });
-</script>
+    </script>
+
+    <script>
+
+        function resetAllFields() {
+            /*$('#CustomerAccountNewAvailableBalance').val('');*/
+            $('#newTellerRangeLowerLimit').val('');
+            $('#newTellerRangeUpperLimit').val('');
+            $('#ChartOfAccountId').val('');
+            $('#ShortageChartOfAccountId').val('');
+            $('#ShortageChartOfAccountName').val('');
+            $('#ExcessChartOfAccountAccountName').val('');
+            $('#ExcessChartOfAccountId').val('');
+            $('#MiniStatementItemsCap').val('');
+            $('#IsLocked').val('');
+            $('#TellerTypeDropDown').val('');
+            $('#newTellerDescription').val('');
+            $('#FloatCustomerAccountTargetProductId').val('');
+            $('#CommissionCustomerAccountId').val('');
+            $('#CommissionCustomerFullName').val('');
+            $('#posTerminalReference').val('');
+            $('#EmployeeCustomerFullName').val('');
+            $('#ChartOfAccountAccountName').val('');
+            $('#inHouseReference').val('');
+            $('#FloatCustomerAccountTargetProductId').val('');
+            $('#FloatCustomerAccountId').val('');
+            $('#FloatCustomerFullName').val('');
+            
+            
+    }
+
+        $(document).ready(function () {
+            $('#submitButton').click(function (e) {
+
+                e.preventDefault();
+                $.ajax({
+                    url: $('#newTellerForm').attr('action'),
+                    type: 'POST',
+                    data: $('#newTellerForm').serialize(),
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log(response);
+                        if (response.redirect) {
+
+                            resetAllFields();
+                        } else if (response.success) {
+
+                            //alert('Customer Receipts: Operation Success');
+                            resetAllFields();
+                        } else {
+
+                            //alert('Customer Receipts: Operation Failed\n\n' + (response.errorMessages ? response.errorMessages.join('\n') : 'Unknown error'));
+                            //resetAllFields();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+
+                        //alert('An error occurred while submitting the form. Please try again.');
+                        //resetAllFields();
+                        console.error(error);
+                    }
+                });
+            });
+        });
+
+    </script>
 }

@@ -144,19 +144,20 @@
                 <div class="ibox-title">
                     <h2>Loan Approval</h2>
 
-                    @if (TempData["approveError"] != null)
+                    @if (TempData["Fail"] != null)
                     {
-                        <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["approveError"]
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Failed!s',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
                     }
 
-                    @if (TempData["ApprovalCheck"] != null)
-                    {
-                        <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["ApprovalCheck"]
-                        </div>
-                    }
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -171,6 +172,8 @@
                     @using (Html.BeginForm("Approve", "ApproveLoan", new { Area = "Loaning" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.LoanRegistrationMinimumAmount)
+                        @Html.HiddenFor(model => model.LoanRegistrationMaximumAmount)
 
                         <fieldset>
                             <div class="row">
@@ -230,6 +233,7 @@
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanProductDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanProductId)
                                         @Html.EditorFor(model => model.LoanProductDescription, new
                                    {
                                        htmlAttributes = new
@@ -443,7 +447,6 @@
                                             <thead>
                                                 <tr>
                                                     <th>Guarantor Name</th>
-                                                    <th>Employer</th>
                                                     <th>Account Number</th>
                                                     <th>Appraisal Factor</th>
                                                     <th>Total Shares</th>
@@ -458,9 +461,8 @@
                                                     foreach (var guarantors in ViewBag.LoanGuarantors)
                                                     {
                                                         <tr>
-                                                            <td>@guarantors.Customer.FullName</td>
-                                                            <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
-                                                            <td>@guarantors.Customer.Reference1</td>
+                                                            <td>@guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
+                                                            <td>@guarantors.CustomerReference1</td>
                                                             <td>@guarantors.AppraisalFactor</td>
                                                             <td style="text-align: right;">@guarantors.TotalShares</td>
                                                             <td style="text-align: right;">@guarantors.CommittedShares</td>

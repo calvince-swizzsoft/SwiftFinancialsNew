@@ -1,0 +1,791 @@
+﻿@model Application.MainBoundedContext.DTO.RegistryModule.NextOfKinDTO
+
+@{
+    ViewBag.Title = "Create NextOfKin";
+    var genders = ViewBag.GenderSelectList as List<SelectListItem>;
+
+    var identityCardTypes = ViewBag.IdentityCardSelectList as List<SelectListItem>;
+    var salutations = ViewBag.SalutationSelectList as List<SelectListItem>;
+    var Relationships = ViewBag.RelationshipSelectList as List<SelectListItem>;
+}
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Next Of Kin</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "NextOfKin", new { Area = "Registry" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white tex">
+                    @using (Html.BeginForm("Create", "NextOfKin", new { Area = "Registry" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.CustomerDTO.StationId, new { id = "StationId" })
+                        @Html.HiddenFor(model => model.CustomerDTO.StationZoneDivisionEmployerId, new { id = "StationZoneDivisionEmployerId" })
+
+
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <h3>Customer Details</h3>
+
+                            <!-- Lower row with three columns -->
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.CustomerDTO.FullName, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.CustomerId, new { @id = "CustomerDTO_Id" })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.FullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @id = "CustomerDTO_FullName" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookup"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="CustomerDTO_Reference3">File Number</label>
+                                        <input type="text" id="CustomerDTO_Reference3" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="CustomerDTO_IndividualIdentityCardNumber">Identity Number</label>
+                                        <input type="text" id="CustomerDTO_IndividualIdentityCardNumber" class="form-control" readonly />
+                                    </div>
+
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="CustomerDTO_StationZoneDivisionEmployerDescription">Employer </label>
+                                        <input type="text" id="CustomerDTO_StationZoneDivisionEmployerDescription" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="CustomerDTO_Reference2">Membership Number</label>
+                                        <input type="text" id="CustomerDTO_Reference2" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="CustomerDTO_SerialNumber">Serial Number</label>
+                                        <input type="text" id="CustomerDTO_SerialNumber" class="form-control" readonly />
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+
+                                    <div class="form-group">
+                                        <label for="CustomerDTO_StationDescription">Station</label>
+                                        <input type="text" id="CustomerDTO_StationDescription" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="CustomerDTO_IndividualPayrollNumbers">Payroll Numbers</label>
+                                        <input type="text" id="CustomerDTO_IndividualPayrollNumbers" class="form-control" readonly />
+                                    </div>
+
+                                   
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                    <h3>Next Of Kin Details</h3>
+
+                    @using (Html.BeginForm("SaveNextOfKin", "Nextofkin", new { Area = "Registry" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <!-- First Column -->
+                            <div class="col-lg-4">
+                                <!-- Salutation -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.SalutationDescription)
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.SalutationDescription, salutations, new { @class = "form-control input-md", id = "SalutationDescription" })
+                                        @Html.ValidationMessageFor(model => model.SalutationDescription)
+                                    </div>
+                                </div>
+                                <!-- First Name -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.FirstName)
+                                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", id = "FirstName" } })
+                                    @Html.ValidationMessageFor(model => model.FirstName)
+                                </div>
+                                <!-- Identity Card Type -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.IdentityCardType)
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.IdentityCardType, identityCardTypes, new { @class = "form-control input-md", id = "IdentityCardType" })
+                                        @Html.ValidationMessageFor(model => model.IdentityCardType)
+                                    </div>
+                                </div>
+                                <!-- Address Street -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressStreet)
+                                    @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", id = "AddressStreet" } })
+                                    @Html.ValidationMessageFor(model => model.AddressStreet)
+                                </div>
+                                <!-- Address Landline -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressLandLine)
+                                    @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", id = "AddressLandLine" } })
+                                    @Html.ValidationMessageFor(model => model.AddressLandLine)
+                                </div>
+                            </div>
+                            <!-- Second Column -->
+                            <div class="col-lg-4">
+                                <!-- Gender -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.GenderDescription)
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.GenderDescription, genders, new { @class = "form-control input-md", id = "GenderDescription" })
+                                        @Html.ValidationMessageFor(model => model.GenderDescription)
+                                    </div>
+                                </div>
+                                <!-- Last Name -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.LastName)
+                                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", id = "LastName" } })
+                                    @Html.ValidationMessageFor(model => model.LastName)
+                                </div>
+                                <!-- Identity Card Number -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.IdentityCardNumber)
+                                    @Html.EditorFor(model => model.IdentityCardNumber, new { htmlAttributes = new { @class = "form-control", id = "IdentityCardNumber" } })
+                                    @Html.ValidationMessageFor(model => model.IdentityCardNumber)
+                                </div>
+                                <!-- Address City -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressCity)
+                                    @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", id = "AddressCity" } })
+                                    @Html.ValidationMessageFor(model => model.AddressCity)
+                                </div>
+                                <!-- Address Mobile Line -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressMobileLine)
+                                    @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", id = "AddressMobileLine" } })
+                                    @Html.ValidationMessageFor(model => model.AddressMobileLine)
+                                </div>
+                            </div>
+                            <!-- Third Column -->
+                            <div class="col-lg-4">
+                                <!-- Relationship -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.RelationshipDescription)
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.RelationshipDescription, Relationships, new { @class = "form-control input-md", id = "RelationshipDescription" })
+                                        @Html.ValidationMessageFor(model => model.RelationshipDescription)
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.NominatedPercentage)
+                                    @Html.EditorFor(model => model.NominatedPercentage, new { htmlAttributes = new { @class = "form-control", id = "NominatedPercentage", maxlength = "3" } })
+                                    @Html.ValidationMessageFor(model => model.NominatedPercentage)
+                                </div>
+
+                                <!-- Address Postal Code -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressPostalCode)
+                                    @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", id = "AddressPostalCode" } })
+                                    @Html.ValidationMessageFor(model => model.AddressPostalCode)
+                                </div>
+                                <!-- Address Email -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.AddressEmail)
+                                    @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", id = "AddressEmail" } })
+                                    @Html.ValidationMessageFor(model => model.AddressEmail)
+                                </div>
+                                <!-- Remarks -->
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.Remarks)
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", id = "Remarks" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks)
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="addDetailsButton" class="btn btn-secondary">Add Details</button>
+
+                        <!-- Data Table for Next of Kin Details -->
+                        <table class="table table-bordered" id="nextOfKinTable">
+                            <thead>
+                                <tr>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+
+                                    <th>Identity Card Number</th>
+                                    <th>Address</th>
+                                    <th>City</th>
+                                    <th>Postal Code</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Remarks</th>
+                                    <th>Nominated Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rows will be appended dynamically here -->
+                            </tbody>
+                        </table>
+
+                    }
+
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
+                        $(document).ready(function () {
+                            $("#addDetailsButton").click(function () {
+                                const formData = {
+                                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                                    SalutationDescription: $("#SalutationDescription").val(),
+                                    FirstName: $("#FirstName").val(),
+                                    LastName: $("#LastName").val(),
+                                    GenderDescription: $("#GenderDescription").val(),
+                                    RelationshipDescription: $("#RelationshipDescription").val(),
+                                    IdentityCardType: $("#IdentityCardType").val(),
+                                    IdentityCardNumber: $("#IdentityCardNumber").val(),
+                                    AddressStreet: $("#AddressStreet").val(),
+                                    AddressCity: $("#AddressCity").val(),
+                                    AddressPostalCode: $("#AddressPostalCode").val(),
+                                    AddressEmail: $("#AddressEmail").val(),
+                                    AddressMobileLine: $("#AddressMobileLine").val(),
+                                    Remarks: $("#Remarks").val(),
+                                    NominatedPercentage: $("#NominatedPercentage").val()
+                                };
+
+                                $.ajax({
+                                    url: '/Registry/Nextofkin/SaveNextOfKin',
+                                    type: 'POST',
+                                    data: formData,
+                                    success: function () {
+                                        $("#nextOfKinTable tbody").append(`
+                                                                                                                                                                                                                                                                                                                <tr>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.FirstName}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.LastName}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.IdentityCardNumber}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressStreet}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressCity}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressPostalCode}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressEmail}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressMobileLine}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.Remarks}</td>
+                                                                                                                                                                                                                                                                                                                    <td>${formData.NominatedPercentage}</td>
+                                                                                                                                                                                                                                                                                                                </tr>
+                                                                                                                                                                                                                                                                                                            `);
+                                        $('form')[0].reset();
+                                    },
+                                    error: function () {
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+
+                    <button type="submit" id="create" class="btn btn-primary">Create</button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="customerLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Customers Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="CustomersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Customer FullName</th>
+                            <th>Nationality</th>
+                            <th>Identity CardNumber</th>
+                            <th>Gender</th>
+                            <th>Marital Status</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+    <script>
+        $(document).ready(function () {
+            // Attach click event to the button
+            $("#create").on("click", function (e) {
+                e.preventDefault(); // Prevent default button behavior
+
+                // Serialize the form data
+                const formData = $("#nextOfKinForm").serialize();
+
+                // AJAX request
+                $.ajax({
+                    url: "/Registry/NextOfKin/Create", // Endpoint to hit
+                    type: "POST", // HTTP method
+                    data: formData, // Form data to send
+                    success: function (response) {
+                        // Handle success
+                        console.log("Success:", response);
+                        window.location.href = '/Registry/Customer/Index'; // Adjust path as needed
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.error("Error:", error);
+                        alert("An error occurred while creating Next of Kin.");
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#NominatedPercentage").on("input", function () {
+                let value = $(this).val();
+                // Remove non-numeric characters
+                value = value.replace(/\D/g, "");
+                // Trim to 3 digits
+                if (value.length > 3) {
+                    value = value.substring(0, 3);
+                }
+                $(this).val(value);
+            });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            $("#submitData").click(function () {
+                // Collect customer data
+                const customerData = {
+                    CustomerId: $("#CustomerDTO_Id").val(),
+                    FullName: $("#CustomerDTO_FullName").val(),
+                    Reference1: $("#CustomerDTO_Reference1").val(),
+                    IndividualIdentityCardNumber: $("#CustomerDTO_IndividualIdentityCardNumber").val(),
+                    StationZoneDivisionEmployerDescription: $("#CustomerDTO_StationZoneDivisionEmployerDescription").val(),
+                    Reference2: $("#CustomerDTO_Reference2").val(),
+                    SerialNumber: $("#CustomerDTO_SerialNumber").val(),
+                    StationDescription: $("#CustomerDTO_StationDescription").val(),
+                    IndividualPayrollNumbers: $("#CustomerDTO_IndividualPayrollNumbers").val(),
+                    Reference3: $("#CustomerDTO_Reference3").val()
+                };
+
+                // Collect table data
+                let nextOfKinDetails = [];
+                $("#detailsTable tbody tr").each(function () {
+                    const row = $(this);
+                    const rowData = {
+                        FirstName: row.find("td:nth-child(1)").text(),
+                        LastName: row.find("td:nth-child(2)").text(),
+                        AddressEmail: row.find("td:nth-child(3)").text(),
+                        AddressStreet: row.find("td:nth-child(4)").text(),
+                        IdentityCardNumber: row.find("td:nth-child(5)").text(),
+                        AddressMobileLine: row.find("td:nth-child(6)").text(),
+                        AddressCity: row.find("td:nth-child(7)").text(),
+                        AddressLandLine: row.find("td:nth-child(8)").text(),
+                        NominatedPercentage: row.find("td:nth-child(9)").text()
+                    };
+                    nextOfKinDetails.push(rowData);
+                });
+
+                // Combine customer and next of kin data
+                const payload = {
+                    Customer: customerData,
+                    NextOfKinCollection: nextOfKinDetails
+                };
+
+                // Send data to the controller via AJAX
+                $.ajax({
+                    url: '/NextOfKin/SaveCustomerAndNextOfKin', // Replace with your controller action URL
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(payload),
+                    success: function (response) {
+                        alert("Data saved successfully!");
+                    },
+                    error: function (xhr, status, error) {
+                        alert("An error occurred: " + error);
+                    }
+                });
+            });
+        });
+
+    </script>
+
+    <script>
+        document.getElementById('addToTable').addEventListener('click', function () {
+            var salutaiondescription = document.getElementById('SalutationDescription').value;
+            var firstname = document.getElementById('FirstName').value;
+            var idcardtype = document.getElementById('IdentityCardType').value;
+            var addressstreet = document.getElementById('AddressStreet').value;
+            var addresslandline = document.getElementById('AddressLandLine').value;
+            var gender = document.getElementById('GenderDescription').value;
+            var lastname = document.getElementById('LastName').value;
+            var idnumber = document.getElementById('IdentityCardNumber').value;
+            var adresscity = document.getElementById('AddressCity').value;
+            var addressmobile = document.getElementById('AddressMobileLine').value;
+            var relationship = document.getElementById('RelationshipDescription').value;
+            var nominated = document.getElementById('NominatedPercentage').value;
+            var postalcode = document.getElementById('AddressPostalCode').value;
+            var email = document.getElementById('AddressEmail').value;
+            var remarks = document.getElementById('Remarks').value;
+
+            if (entries.some())
+
+                var NewEntry = {
+                    SalutationDescription: salutaiondescription,
+                    FirstName: firstname,
+                    IdentityCardType: idcardtype,
+                    AddressStreet: addressstreet,
+                    AddressLandLine: addresslandline,
+                    GenderDescription: gender,
+                    LastName: lastname,
+                    IdentityCardNumber: idnumber,
+                    AddressCity: adresscity,
+                    AddressMobileLine: addressmobile,
+                    RelationshipDescription: relationship,
+                    NominatedPercentage: nominated,
+                    AddressPostalCode: postalcode,
+                    AddressEmail: email,
+                    Remarks: remarks,
+                };
+
+        });
+
+
+    </script>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    var addEntryButton = document.getElementById('addEntryButton');
+    var sendToControllerButton = document.getElementById('sendToControllerButton');
+    var entryTableBody = document.querySelector('#entryTable tbody');
+
+    // Store entries in a JavaScript array
+    var entries = [];
+
+    // Add entry to table
+    addEntryButton.addEventListener('click', function () {
+        var salutaiondescription = document.getElementById('SalutationDescription').value;
+        var firstname = document.getElementById('FirstName').value;
+        var idcardtype = document.getElementById('IdentityCardType').value;
+        var addressstreet = document.getElementById('AddressStreet').value;
+        var addresslandline = document.getElementById('AddressLandLine').value;
+        var gender = document.getElementById('GenderDescription').value;
+        var lastname = document.getElementById('LastName').value;
+        var idnumber = document.getElementById('IdentityCardNumber').value;
+        var adresscity = document.getElementById('AddressCity').value;
+        var addressmobile = document.getElementById('AddressMobileLine').value;
+        var relationship = document.getElementById('RelationshipDescription').value;
+        var nominated = document.getElementById('NominatedPercentage').value;
+        var postalcode = document.getElementById('AddressPostalCode').value;
+        var email = document.getElementById('AddressEmail').value;
+        var remarks = document.getElementById('Remarks').value;
+
+        // Validate the form fields (basic)
+        if (!firstname || !lastname || !email || !addressstreet || !idnumber) {
+            alert('Please fill in all required fields!');
+            return;
+        }
+
+        // Create an entry object
+        var entry = {
+            salutaiondescription,
+            firstname,
+            idcardtype,
+            addressstreet,
+            addresslandline,
+            gender,
+            lastname,
+            idnumber,
+            adresscity,
+            addressmobile,
+            relationship,
+            nominated,
+            postalcode,
+            email,
+            remarks
+        };
+
+        // Add entry to the entries array
+        entries.push(entry);
+
+        // Create table row
+        var row = entryTableBody.insertRow();
+        row.innerHTML = `
+            <td>${sanitize(firstname)}</td>
+            <td>${sanitize(lastname)}</td>
+            <td>${sanitize(email)}</td>
+            <td>${sanitize(addressstreet)}</td>
+            <td>${sanitize(idnumber)}</td>
+            <td>${sanitize(addressmobile)}</td>
+            <td>${sanitize(adresscity)}</td>
+            <td>${sanitize(addresslandline)}</td>
+            <td>${sanitize(nominated)}</td>
+            <td><button class="btn btn-danger btn-sm removeRowButton">Remove</button></td>
+        `;
+
+        // Attach event listener for row removal
+        row.querySelector('.removeRowButton').addEventListener('click', function () {
+            entryTableBody.deleteRow(row.rowIndex - 1); // Remove the row from the table
+            entries.splice(entries.indexOf(entry), 1); // Remove from the array
+        });
+
+        // Clear the form fields after submission
+        clearForm();
+    });
+
+    // Send the entries data to the controller via AJAX
+    sendToControllerButton.addEventListener('click', function () {
+        // Send entries data to the server (controller)
+        fetch('@Url.Action("SaveEntries", "NextOfKin")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(entries) // Send the entries data as JSON
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Entries saved successfully.');
+            } else {
+                alert('There was an error saving the entries.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('There was an error sending the data.');
+        });
+    });
+
+    // Function to sanitize data (basic)
+    function sanitize(data) {
+        var div = document.createElement('div');
+        div.textContent = data;
+        return div.innerHTML;
+    }
+
+    // Function to clear form
+    function clearForm() {
+        document.getElementById('SalutationDescription').value = '';
+        document.getElementById('FirstName').value = '';
+        document.getElementById('IdentityCardType').value = '';
+        document.getElementById('AddressStreet').value = '';
+        document.getElementById('AddressLandLine').value = '';
+        document.getElementById('GenderDescription').value = '';
+        document.getElementById('LastName').value = '';
+        document.getElementById('IdentityCardNumber').value = '';
+        document.getElementById('AddressCity').value = '';
+        document.getElementById('AddressMobileLine').value = '';
+        document.getElementById('RelationshipDescription').value = '';
+        document.getElementById('NominatedPercentage').value = '';
+        document.getElementById('AddressPostalCode').value = '';
+        document.getElementById('AddressEmail').value = '';
+        document.getElementById('Remarks').value = '';
+    }
+
+});
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        $('#CustomersGrid').DataTable({
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@Url.Action("Index", "Customer", new { Area = "Registry" })",
+            "sServerMethod": "POST",
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                $.ajax({
+                    dataType: 'json',
+                    type: 'POST',
+                    url: sSource,
+                    data: aoData,
+                    success: function (response) {
+                        fnCallback(response);
+                    },
+                    error: function () {
+                        alert('Error retrieving data from the server.');
+                    }
+                });
+            },
+            "aoColumns": [
+                { "mDataProp": "FullName", "sTitle": "Customer FullName", "sWidth": "15%" },
+                { "mDataProp": "IndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },
+                { "mDataProp": "IndividualIdentityCardNumber", "sTitle": "Identity Card Number", "sWidth": "15%" },
+                { "mDataProp": "IndividualGenderDescription", "sTitle": "Gender", "sWidth": "15%" },
+                { "mDataProp": "IndividualMaritalStatusDescription", "sTitle": "Marital Status", "sWidth": "15%" },
+                {
+                    "mDataProp": "CreatedDate",
+                    "sTitle": "Created Date",
+                    "sWidth": "15%",
+                    "mRender": function (data) {
+                        var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                        var h = ("0" + createdDate.getHours()).slice(-2);
+                        var m = ("0" + createdDate.getMinutes()).slice(-2);
+                        var s = ("0" + createdDate.getSeconds()).slice(-2);
+                        return $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    }
+                },
+                {
+                    "mDataProp": null,
+                    "sTitle": "Action",
+                    "sWidth": "15%",
+                    "bSortable": false,
+                    "mRender": function (data, type, row) {
+                        return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                    }
+                }
+            ],
+            "aaSorting": [[0, "desc"]]
+        });
+
+        $('#CustomersGrid tbody').on('click', '.select-customer', function () {
+            var customerId = $(this).data('id');
+
+            $.ajax({
+                url: '@Url.Action("GetCustomerDetails", "NextOfKin", new { Area = "Registry" })',
+                type: 'GET',
+                data: { customerId: customerId },
+                success: function (response) {
+                    console.log(response);
+
+                    if (response.success) {
+                        $('#customerId').val(response.data.Id);
+                        $('#CustomerDTO_FullName').val(response.data.FullName);
+                        $('#CustomerDTO_StationZoneDivisionEmployerDescription').val(response.data.StationZoneDivisionEmployerDescription);
+                        $('#CustomerDTO_IndividualIdentityCardNumber').val(response.data.IndividualIdentityCardNumber);
+                        $('#CustomerDTO_IndividualPayrollNumbers').val(response.data.IndividualPayrollNumbers);
+                        $('#CustomerDTO_StationId').val(response.data.StationId);
+                        $('#CustomerDTO_StationDescription').val(response.data.StationDescription);
+                        $('#CustomerDTO_Reference1').val(response.data.Reference1);
+                        $('#CustomerDTO_Reference2').val(response.data.Reference2);
+                        $('#CustomerDTO_Reference3').val(response.data.Reference3);
+                        $('#CustomerDTO_StationZoneDivisionEmployerId').val(response.data.StationZoneDivisionEmployerId);
+                        $('#CustomerDTO_StationZoneDivisionEmployerDescription').val(response.data.StationZoneDivisionEmployerDescription);
+                        $('#CustomerDTO_Remarks').val(response.data.Remarks);
+                        $('#CustomerDTO_SerialNumber').val(response.data.SerialNumber);
+
+                        $('#customerLookup').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while fetching the customer details.');
+                }
+            });
+        });
+    });
+    </script>
+
+
+
+}
+
+

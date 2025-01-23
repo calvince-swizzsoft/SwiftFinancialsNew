@@ -31,7 +31,7 @@
         margin: 20px;
         font-size: 18px;
         font-weight: bold;
-        background-color: #00e0ff;
+        background-color: #e0f0ff;
     }
 
     .content {
@@ -112,7 +112,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     @using (Html.BeginForm("Create", "BatchOrigination_Disbursement", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -132,11 +132,11 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.PriorityDescription, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.PriorityDescription, priority, new { @class = "form-control input-md custom-border-radius" })
-                                                @Html.ValidationMessageFor(model => model.PriorityDescription)
+                                                @Html.DropDownListFor(model => model.Priority, priority, new { @class = "form-control input-md custom-border-radius" })
+                                                @Html.ValidationMessageFor(model => model.Priority)
                                             </div>
                                         </div>
                                     </div>

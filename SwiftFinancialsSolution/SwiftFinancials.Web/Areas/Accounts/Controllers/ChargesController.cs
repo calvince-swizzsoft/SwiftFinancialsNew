@@ -32,25 +32,47 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCommissionsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCommissionsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(commission => commission.CreatedDate).ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(charge => charge.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<CommissionDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<CommissionDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
 
             var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
 
@@ -66,18 +88,47 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
-
+            var levyDTOs = await _channelService.FindLeviesAsync(GetServiceHeader());
+            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            ViewBag.Commisions = commissionDTOs;
+            ViewBag.LevyDTOs = levyDTOs;
             return View();
         }
 
 
-        public async Task<ActionResult> Charge(CommissionDTO commissionDTO)
+        [HttpPost]
+        public async Task<ActionResult> Chargetiers(CommissionDTO commissionDTO)
         {
-            Session["Description"] = commissionDTO.Description;
-            Session["MaximumCharge"] = commissionDTO.MaximumCharge;
+            graduatedScaleDTOS = TempData["graduatedscale"] as ObservableCollection<GraduatedScaleDTO>;
+            if (graduatedScaleDTOS == null)
+                graduatedScaleDTOS = new ObservableCollection<GraduatedScaleDTO>();
+            GraduatedScaleDTO graduatedScaleDTO = new GraduatedScaleDTO();
 
-            return View("Create", commissionDTO);
+            foreach (var chargeSplitDTO in commissionDTO.fixedeposite)
+            {
+                graduatedScaleDTO.ChargeFixedAmount = chargeSplitDTO.ChargeFixedAmount;
+                graduatedScaleDTO.maximumCharge = chargeSplitDTO.maximumCharge;
+                graduatedScaleDTO.RangeLowerLimit = chargeSplitDTO.RangeLowerLimit;
+                graduatedScaleDTO.RangeUpperLimit = chargeSplitDTO.RangeUpperLimit;
+                graduatedScaleDTO.ChargeType = commissionDTO.ChargeType;
+                graduatedScaleDTOS.Add(graduatedScaleDTO);
+            }
+
+            var levyDTOs = await _channelService.FindLeviesAsync(GetServiceHeader());
+            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            ViewBag.Commisions = commissionDTOs;
+            ViewBag.LevyDTOs = levyDTOs;
+            TempData["graduatedscale"] = graduatedScaleDTOS as ObservableCollection<GraduatedScaleDTO>;
+            // Process the data (save to the database or perform necessary logic)
+            // For simplicity, let's return the data back as a JSON response
+            return Json(new
+            {
+                success = true,
+                message = "Charge tier added successfully",
+                data = commissionDTO
+            });
         }
+
 
 
         public async Task<ActionResult> Search(Guid? id, CommissionDTO commissionDTO)
@@ -108,6 +159,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Add(Guid? id, CommissionDTO commissionDTO)
         {
             await ServeNavigationMenus();
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
 
             ChargeSplitDTOs = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
 
@@ -174,7 +226,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     }
                 };
             }
-
+            var levyDTOs = await _channelService.FindLeviesAsync(GetServiceHeader());
+            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            ViewBag.Commisions = commissionDTOs;
+            ViewBag.LevyDTOs = levyDTOs;
             ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
 
             ViewBag.totalPercentage = sumPercentages;
@@ -193,6 +248,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> removeChargeSplit(Guid? id, CommissionDTO commissionDTO)
         {
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
+
             commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
 
             commissionDTO.chargeSplit = Session["chargeSplit"] as ObservableCollection<CommissionSplitDTO>;
@@ -250,23 +307,40 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(CommissionDTO commissionDTO)
+        public async Task<ActionResult> Create(CommissionDTO commissionDTO, string[] commisionIds)
         {
-            commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
+
+            ObservableCollection<LevyDTO> levyDTOs = new ObservableCollection<LevyDTO>();
+            if (commisionIds != null && commisionIds.Any())
+            {
+                var selectedIds = commisionIds.Select(Guid.Parse).ToList();
+
+                foreach (var levyid in selectedIds)
+                {
+                    var levy = await _channelService.FindLevyAsync(levyid, GetServiceHeader());
+                    levyDTOs.Add(levy);
+                }
+            }
+                commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
+            graduatedScaleDTOS = TempData["graduatedscale"] as ObservableCollection<GraduatedScaleDTO>;
 
             if (TempData["ChargeSplitDTOs"] != null)
             {
                 commissionDTO.chargeSplit = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
+
             }
             else
             {
                 await ServeNavigationMenus();
 
                 TempData["chargeSplit"] = "Each created charge must be allocated to at least one G/L account. If the charge is allocated to a single account, enter 100% as the percentage.";
-
+                var levy2 = await _channelService.FindLeviesAsync(GetServiceHeader());
+                var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+                ViewBag.LevyDTOs = levy2;
                 return View(commissionDTO);
             }
-
+            commissionDTO.ChartOfAccountId = commissionDTO.Id;
             commissionDTO.ValidateAll();
 
             if (!commissionDTO.HasErrors)
@@ -296,7 +370,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         TempData["splitPercentage"] = "For charges linked to only one G/L Account, enter 100 as percentage";
 
                         await ServeNavigationMenus();
-
+                        var levy2 = await _channelService.FindLeviesAsync(GetServiceHeader());
+                        var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+                        ViewBag.LevyDTOs = levy2;
                         return View("create");
                     }
                     else
@@ -315,7 +391,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                             TempData["tPercentage"] = "Sorry, you cannot split charge into the same G/L Account more than once";
 
                             await ServeNavigationMenus();
-
+                            var levy2 = await _channelService.FindLeviesAsync(GetServiceHeader());
+                            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+                            ViewBag.LevyDTOs = levy2;
                             return View("create", commissionDTO);
                         }
 
@@ -326,7 +404,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                             await ServeNavigationMenus();
 
                             TempData["ErrorMsg"] = charge.ErrorMessageResult;
-
+                            var levy2 = await _channelService.FindLeviesAsync(GetServiceHeader());
+                            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+                            ViewBag.LevyDTOs = levy2;
                             return View();
                         }
 
@@ -334,7 +414,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         TempData["ChargeDTO"] = "";
 
                         if (chargeSplits.Any())
-                            await _channelService.UpdateCommissionSplitsByCommissionIdAsync(charge.Id, chargeSplits, GetServiceHeader());
+                        {
+
+                        }
+                        await _channelService.UpdateCommissionSplitsByCommissionIdAsync(charge.Id, chargeSplits, GetServiceHeader());
+                        await _channelService.UpdateGraduatedScalesByCommissionIdAsync(charge.Id, graduatedScaleDTOS, GetServiceHeader());
+                        await _channelService.UpdateLeviesByCommissionIdAsync(charge.Id,levyDTOs, GetServiceHeader());
                         TempData["ChargeSplitDTOs"] = "";
                     }
                 }
@@ -347,7 +432,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         TempData["splitPercentage"] = "Total percentage must be equal to 100%";
 
                         await ServeNavigationMenus();
-
+                        var levy2 = await _channelService.FindLeviesAsync(GetServiceHeader());
+                        var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+                        ViewBag.LevyDTOs = levy2;
                         return View("create", commissionDTO);
                     }
                     else
@@ -366,7 +453,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                             TempData["tPercentage"] = "Sorry, you cannot split charge into the same G/L Account more than once";
 
                             await ServeNavigationMenus();
-
+                            var levy2 = await _channelService.FindLeviesAsync(GetServiceHeader());
+                            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+                            ViewBag.LevyDTOs = levy2;
                             return View("create", commissionDTO);
                         }
 
@@ -377,7 +466,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                             await ServeNavigationMenus();
 
                             TempData["ErrorMsg"] = charge.ErrorMessageResult;
-
+                            var levy2 = await _channelService.FindLeviesAsync(GetServiceHeader());
+                            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+                            ViewBag.LevyDTOs = levy2;
                             return View();
                         }
 
@@ -399,7 +490,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 var errorMessages = commissionDTO.ErrorMessages;
 
                 TempData["CreateError"] = "Failed to Create Charge";
-
+                var levy2 = await _channelService.FindLeviesAsync(GetServiceHeader());
+                var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+                ViewBag.LevyDTOs = levy2;
                 return View(commissionDTO);
             }
         }
@@ -461,7 +554,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 else
                 {
                     chargesplits.Add(chargeSplitDTO);
-                   
+
                     sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
 
                     Session["chargeSplit"] = commissionDTO.chargeSplit;

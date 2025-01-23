@@ -20,24 +20,40 @@
 <head>
     <style>
 
-        /* Primary Tabs */
-        .nav-tabs .nav-link {
-            background-color: transparent;
-        }
+        /* Inner Tabs */
 
-            .nav-tabs .nav-link.active {
-                background-color: #f8f9fa; /* light grey */
-            }
-
-        /* inner Tabs */
+        /* General styling for all .inner-nav-tabs */
         .inner-nav-tabs .inner-nav-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #007bff;
             background-color: transparent;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+            text-decoration: none;
         }
+
+            .inner-nav-tabs .inner-nav-link:hover {
+                color: #0056b3;
+                background-color: #e9ecef;
+            }
 
             .inner-nav-tabs .inner-nav-link.active {
-                background-color: #f8f9fa; /* light grey */
+                color: #495057;
+                background-color: #fff;
+                border: 1px solid #dee2e6;
+                border-bottom-color: transparent; /* To match the Bootstrap look */
             }
 
+        .blue-section1 {
+            background-color: #e6f3ff;
+            padding: 10px; /* Padding inside the border */
+            border-radius: 8px; /* Rounded corners (optional) */
+
+
+            font-size: 16px;
+            font-weight: bold;
+        }
 
         /* Tab Content */
         .tab-content > .tab-pane,
@@ -49,7 +65,6 @@
             .inner-tab-content > .inner-tab-pane.active {
                 display: block;
             }
-
     </style>
 </head>
 
@@ -88,7 +103,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
-                    @using (Html.BeginForm("Create", "CashManagement", new { Area = "FrontOffice" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "CashManagement", new { Area = "FrontOffice" }, FormMethod.Post, new { @id = "cashManagementForm" }))
                     {
                         @Html.AntiForgeryToken()
                         <div class="form-horizontal">
@@ -99,26 +114,20 @@
                                 <li class="nav-item">
                                     <a class="nav-link active" data-toggle="tab" href="#cashManagement">Cash Management</a>
                                 </li>
-                                @*<li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#cashWithdrawalRequest">Cash Withdrawal Request</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#fiscalCatalog">Fiscal Catalog</a>
-                                </li>*@
                             </ul>
 
                             <div class="tab-content">
                                 <!-- Cash Management Tab -->
                                 <div id="cashManagement" class="tab-pane active">
                                     <!-- Inner Tabs for Cash Management -->
-                                    <ul class="nav inner-nav-tabs" style="margin-bottom: 20px;">
+                                    <ul class="nav inner-nav-tabs" id="subTabs" style="margin-bottom: 20px;">
                                         <li class="nav-item">
                                             <a class="inner-nav-link active" data-toggle="tab" href="#transaction">Transaction</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="inner-nav-link" data-toggle="tab" href="#treasuryGLAccountStatement">Treasury G/L Account Statement</a>
                                         </li>
-                                    </ul>
+                                    </ul> 
 
                                     <div class="inner-tab-content">
                                         <div id="transaction" class="inner-tab-pane active">
@@ -136,12 +145,12 @@
 
                                                 <label class="col-sm-2 col-form-label">Destination:</label>
                                                 <div class="col-sm-4">
-                                                    @*<div class="form-group">*@
+
                                                     @Html.HiddenFor(model => model.Id, new { @id = "Id" })
                                                     @Html.HiddenFor(model => model.DestinationBranchId, new { @id = "DestinationBranchId" })
 
                                                     <div class="input-group" data-autoclose="true">
-                                                        @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @readonly = "readonly" })
+                                                        @Html.TextBoxFor(model => model.Description, new { @id = "DestinationDescription", @class = "form-control", @readonly = "readonly" })
                                                         <span class="input-group-addon">
                                                             <a id="searchButton" data-toggle="modal" data-target="#">
                                                                 <span class="fa fa-search"></span>
@@ -155,12 +164,12 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Total Value:</label>
                                                 <div class="col-sm-4">
-                                                    @Html.TextBoxFor(model => model.TotalValue, new { @class = "form-control" })
+                                                    @Html.TextBoxFor(model => model.TotalValue, new { @id = "TotalValue", @class = "form-control" })
                                                 </div>
 
                                                 <label class="col-sm-2 col-form-label">Reference:</label>
                                                 <div class="col-sm-4">
-                                                    @Html.TextBoxFor(model => model.Reference, new { @class = "form-control" })
+                                                    @Html.TextBoxFor(model => model.Reference, new { @id = "Reference", @class = "form-control" })
                                                 </div>
 
                                             </div>
@@ -170,7 +179,7 @@
                                         <!-- Teller G/L Account Statement Tab -->
                                         <div id="treasuryGLAccountStatement" class="inner-tab-pane">
                                             <div class="table-responsive">
-                                                <table id="tellerGlTable" class="table table-striped table-bordered table-hover" style="width:100%;">
+                                                <table id="treasuryGlTable" class="table table-striped table-bordered table-hover" style="width:100%;">
                                                     <tbody>
                                                         <tr>
                                                             <td class="dataTables_empty">
@@ -179,9 +188,10 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
+
                                             </div>
 
-                                       
+
                                             <div class="row mt-3">
                                                 <div class="col-md-3">
                                                     <label for="AvailableBalanceBroughtForward">Balance B/F:</label>
@@ -201,77 +211,36 @@
                                                 </div>
                                             </div>
 
+
+                                            <div class="blue-section1" style="display: flex; justify-content: space-between; padding: 20px 50px; margin-top: 20px; align-items: flex-end;">
+                                                <!-- Start Date Section -->
+                                                <div class="col-md-4">
+                                                    <label for="startDate">Start Date:</label>
+                                                    <input type="text" id="startDate" class="form-control" />
+                                                </div>
+
+                                                <!-- End Date Section -->
+                                                <div class="col-md-4" style="margin-left: 20px;">
+                                                    <label for="endDate">End Date:</label>
+                                                    <input type="text" id="endDate" class="form-control" />
+                                                </div>
+
+                                                <!-- Button Section -->
+                                                <div style="display: flex; gap: 10px;">
+                                                    <button type="button" id="refreshButton1" class="btn btn-info">Refresh</button>
+                                                    @*<button type="button" id="printButton" class="btn btn-success">Print</button>*@
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Cash Withdrawal Request Tab -->
-                                <!--<div id="cashWithdrawalRequest" class="tab-pane">
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Savings Account #:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.SavingsProduct.ChartOfAccountName, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                        <label class="col-sm-2 col-form-label">Customer:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Account Product:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.SavingsProduct.Description, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                        <label class="col-sm-2 col-form-label">Payroll Numbers:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.Teller.FloatCustomerAccountCustomerSerialNumber, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Account Remarks:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                        <label class="col-sm-2 col-form-label">Reference 1:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Amount:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.SavingsProduct.WithdrawalNoticeAmount, new { @class = "form-control", @Value = "$0.00" })
-                                        </div>
-                                        <label class="col-sm-2 col-form-label">Remarks:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Identity Card #:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.Teller.CommissionCustomerAccountCustomerReference1, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                        <label class="col-sm-2 col-form-label">Reference 2:</label>
-                                        <div class="col-sm-4">
-                                            @Html.TextBoxFor(model => model.Teller.CommissionCustomerAccountCustomerReference2, new { @class = "form-control", placeholder = "Enter Text..." })
-                                        </div>
-                                    </div>
-                                </div>-->
-
-                                <!-- Fiscal Catalog Tab -->
-                                <!--<div id="fiscalCatalog" class="tab-pane">-->
-                                    <!-- Content for Fiscal Catalog tab -->
-                                <!--</div> -->
                             </div>
 
                             <div class="form-group row" style="margin-top: 20px;">
                                 <div class="col-sm-12 text-right">
-                                    <button type="submit" class="btn btn-primary">Create</button>
+                                    <button id="submitButton" type="submit" class="btn btn-primary">Update</button>
                                 </div>
                             </div>
                         </div>
@@ -281,44 +250,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-            </div>
-            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
 
 
 
@@ -338,15 +269,9 @@
                     </tr>
                 </tbody>
             </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
-
-
 
 
 
@@ -366,15 +291,9 @@
                     </tr>
                 </tbody>
             </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
-
-
 
 
 
@@ -393,20 +312,11 @@
                     </tr>
                 </tbody>
             </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
 
 
-
-
-
-
-<input type='hidden' id='h' name='h' />
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -451,271 +361,188 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<script>
-    $(document).ready(function () {
-        var searchButton = $('#searchButton');
-        var selectedValue = $('#TransactionType').val(); // Get the initial value of the dropdown
 
-        function updateSearchButtonTarget() {
-            // Reset data-target
-            searchButton.attr('data-target', '#');
+    <script>
+        $(document).ready(function () {
+            // Listen for tab clicks
+            $('#subTabs .inner-nav-link').on('click', function () {
+                const isGLAccountTab = $(this).attr('href') === '#treasuryGLAccountStatement'; // Check if the GL Account tab is active
+                const $submitButton = $('#submitButton');
 
-            // Set data-target based on the selected value
-            switch (selectedValue) {
-                case '1':
-                    searchButton.attr('data-target', '#TresuriesLookupModal');
-                    break;
-                case '2':
-                case '4':
-                    searchButton.attr('data-target', '#BankssLookupModal');
-                    break;
-                case '8':
-                    searchButton.attr('data-target', '#EmployeeLookupModal');
-                    break;
-                default:
-                    searchButton.attr('data-target', '#TresuriesLookupModal');
-                    break;
+                if (isGLAccountTab) {
+                    $submitButton.hide(); // Hide the button when the Teller G/L Account Statement tab is active
+                } else {
+                    $submitButton.show(); // Show the button for other tabs
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var searchButton = $('#searchButton');
+            var selectedValue = $('#TransactionType').val(); // Get the initial value of the dropdown
+
+            function updateSearchButtonTarget() {
+                // Reset data-target
+                searchButton.attr('data-target', '#');
+
+                // Set data-target based on the selected value
+                switch (selectedValue) {
+                    case '1':
+                        searchButton.attr('data-target', '#TresuriesLookupModal');
+                        break;
+                    case '2':
+                    case '4':
+                        searchButton.attr('data-target', '#BankssLookupModal');
+                        break;
+                    case '8':
+                        searchButton.attr('data-target', '#EmployeeLookupModal');
+                        break;
+                    default:
+                        searchButton.attr('data-target', '#TresuriesLookupModal');
+                        break;
+                }
             }
-        }
 
-        // Call the function to set the correct target on page load
-        updateSearchButtonTarget();
 
-        // Handle dropdown change event
-        $('#TransactionType').change(function () {
-            selectedValue = $(this).val(); // Get the new selected value
-            updateSearchButtonTarget(); // Update the search button data-target
+            updateSearchButtonTarget();
+
+            $('#TransactionType').change(function () {
+                selectedValue = $(this).val();
+                updateSearchButtonTarget();
+            });
+
+            if (selectedValue) {
+                $('#TransactionType').val(selectedValue).change();
+            }
         });
 
-        // If you need to persist the value across reloads, ensure it's set here
-        if (selectedValue) {
-            $('#TransactionType').val(selectedValue).change();
-        }
-    });
 
+    </script>
 
-
-
-
-
- $('#tellerGlTable').DataTable({
-    "sPaginationType": "full_numbers",
-    "bProcessing": true,
-    "bServerSide": true,
-    "sAjaxSource": "@Url.Action("Index", "CashManagement", new { Area = "FrontOffice" })",
-    "sServerMethod": "POST",
-    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-        var createdDate = new Date(parseInt(aData.JournalCreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-        var h = ("0" + createdDate.getHours()).slice(-2);
-        var m = ("0" + createdDate.getMinutes()).slice(-2);
-        var s = ("0" + createdDate.getSeconds()).slice(-2);
-        var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-        aData.JournalCreatedDate = dt_Created;
-        $('td:eq(1)', nRow).html(dt_Created);
-        return nRow;
-    },
-    "aoColumns": [
-        { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
-        { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
-        { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "25%" },
-        { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
-        { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
-        { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
-        { "mDataProp": "ContraGLAccountName", "sTitle": "Contra G/L Account", "sWidth": "15%" }
-    ],
-    "aaSorting": [[1, "desc"]], // Default sorting, adjust index as needed
-    "fnDrawCallback": function (settings) {
-        // Access the JSON response
-        var jsonResponse = settings.json;
-
-        // Update the summary data
-        $('#AvailableBalanceBroughtForward').val(jsonResponse.summary.AvailableBalanceBroughtForward);
-        $('#TotalCredits').val(jsonResponse.summary.TotalCredits);
-        $('#TotalDebits').val(jsonResponse.summary.TotalDebits);
-        $('#AvailableBalanceCarriedForward').val(jsonResponse.summary.AvailableBalanceCarriedForward);
-    }
-});
-
-
-
-
-
-
-
-    //ChartOfAccount typehead starts here
-        $('.EntriesChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var chartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-
-                    $('#ChartOfAccountId').val(ChartOfAccountId);
-
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-            });
-
-         //Branch typehead starts here
-         $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId  = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    $('#BranchDescription').val(Description);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-
-
-          //PostingPeriod typehead starts here
-            $('.PostingPeriodsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
-                        { query: query },
-                        function (PostingPeriods) {
-                            var newPostingPeriodsData = [];
-                            PostingPeriodsMap = {};
-                            $.each(PostingPeriods, function (i, PostingPeriod) {
-                                newPostingPeriodsData.push(PostingPeriod.Description);
-                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
-                            });
-                            process(newPostingPeriodsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var postingPeriodId = "";
-                    PostingPeriodId = PostingPeriodsMap[item].Id;
-                    $('#PostingPeriodId').val(PostingPeriodId);
-                    //console.log(PostingPeriodId)
-                    return item;
-                }
-            });
+    <script>
 
 
         $(document).ready(function () {
-            $('#data_3 .input-group.date').datepicker({
-                startView: 2,
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                autoclose: true,
-            });
-        });
-             //Station typehead starts here
 
-            $('.LeaveTypeLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetLeaveTypesAsync", "LeaveType", new { Area = "HumanResource" })',
-                        { query: query },
-                        function (LeaveTypes) {
-                            var newLeaveTypesData = [];
-                            LeaveTypesMap = {};
-                            $.each(LeaveTypes, function (i, LeaveType) {
-                                newLeaveTypesData.push(LeaveType.Description);
-                                LeaveTypesMap[LeaveType.Description] = LeaveType;
-                            });
-                            process(newLeaveTypesData); return;
+            $('#refreshButton1').on('click', function () {
+                // Reload the DataTable when the Refresh button is clicked
+                $('#treasuryGlTable').DataTable().ajax.reload();
+                $('#startDate').val('');
+                $('#endDate').val('');
+            });
+
+            const defaultStartDate = new Date();
+            defaultStartDate.setDate(defaultStartDate.getDate() - 30); // 30 days ago
+            const defaultEndDate = new Date();
+
+            $('#treasuryGlTable').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("FetchTreasuryTransactions", "CashManagement", new { Area = "FrontOffice" })",
+                "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    // Add startDate and endDate to the server parameters
+                    aoData.push(
+                        {
+                            "name": "startDate",
+                            "value": $('#startDate').val() || defaultStartDate.toISOString().split('T')[0]
+                        },
+                        {
+                            "name": "endDate",
+                            "value": $('#endDate').val() || defaultEndDate.toISOString().split('T')[0]
+                        }
+                    );
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.JournalCreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.JournalCreatedDate = dt_Created;
+                    $('td:eq(1)', nRow).html(dt_Created);
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
+                    { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
+                    { "mDataProp": "JournalPrimaryDescription", "sTitle": "Primary Description", "sWidth": "25%" },
+                    { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
+                    { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
+                    { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
+                    { "mDataProp": "ContraGLAccountName", "sTitle": "Contra G/L Account", "sWidth": "15%" }
+                ],
+                "aaSorting": [[1, "desc"]], // Default sorting, adjust index as needed
+                "fnDrawCallback": function (settings) {
+                    // Access the JSON response
+                    var jsonResponse = settings.json;
+
+                    if (!jsonResponse.success && jsonResponse.message != null) {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: jsonResponse.message
                         });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var LeaveTypeId = "";
-                    LeaveTypeId = LeaveTypesMap[item].Id;
-                    $('#LeaveTypeId').val(LeaveTypeId);
-                    $('#LeaveTypeZoneDivisionEmployerDescription').val(LeaveTypesMap[item].ZoneDivisionEmployerDescription);
-                    $('#LeaveTypeZoneDescription').val(LeaveTypesMap[item].ZoneDescription);
-                    $('#LeaveTypeZoneDivisionDescription').val(LeaveTypesMap[item].ZoneDivisionDescription);
-                    //console.log(LeaveTypeId)
-                    return item;
+
+                    };
+
+                    // Update the summary data
+                    $('#AvailableBalanceBroughtForward').val(jsonResponse.summary.AvailableBalanceBroughtForward);
+                    $('#TotalCredits').val(jsonResponse.summary.TotalCredits);
+                    $('#TotalDebits').val(jsonResponse.summary.TotalDebits);
+                    $('#AvailableBalanceCarriedForward').val(jsonResponse.summary.AvailableBalanceCarriedForward);
                 }
             });
-$('#EmployeesGrid').DataTable({
-    // Ajax settings
-    "sPaginationType": "full_numbers",
-    "bProcessing": true,
-    "bServerSide": true,
-    "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "FrontOffice" }))",
-    "sServerMethod": "POST",
+
+        })
+
+    </script>
+
+
+    <script>
+        /*$(document).ready(function () {*/
+        const datePickerOptions = {
+            startView: 2,
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+            format: "dd-mm-yyyy"
+        };
+
+        $('#data_3 .input-group.date').datepicker(datePickerOptions);
+        $('#startDate').datepicker(datePickerOptions);
+        $('#endDate').datepicker(datePickerOptions);
+        /*        });*/
+
+    </script>
+
+    <script>
+
+
+        $('#EmployeesGrid').DataTable({
+            // Ajax settings
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "FrontOffice" }))",
+            "sServerMethod": "POST",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "tellerType", "value": 0 }
+
+                )
+            },
     // Callback settings
-    "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        //console.log("Row data:", aData);
+
         var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
         var h = ("0" + createdDate.getHours()).slice(-2);
         var m = ("0" + createdDate.getMinutes()).slice(-2);
@@ -723,7 +550,7 @@ $('#EmployeesGrid').DataTable({
         var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
         aData.CreatedDate = dt_Created;
 
-        var selectUrl = '<button data-id="' + aData.Id + '" data-full-name="' + aData.Description + '" data-destination-branch-id="' + aData.EmployeeBranchId + '" data-teller-chart-of-account-id="' + aData.ChartOfAccountId + '" class="btn btn-outline-info select-btn">Select</button>';
+        var selectUrl = '<button data-id="' + aData.Id + '" data-description="' + aData.Description +'" data-full-name="' + aData.Description + '" data-destination-branch-id="' + aData.EmployeeBranchId + '" data-teller-chart-of-account-id="' + aData.ChartOfAccountId + '" class="btn btn-outline-info select-btn">Select</button>';
 
         $('td:eq(4)', nRow).html(dt_Created);
         $('td:eq(5)', nRow).html(selectUrl);
@@ -748,86 +575,25 @@ $("#EmployeesGrid tbody").on("click", ".select-btn", function() {
     var fullName = $(this).data('full-name');
     var destinationBranchId = $(this).data('destination-branch-id');
     var tellerChartOfAccountId = $(this).data('teller-chart-of-account-id');
+    var description = $(this).data('description');
 
-    console.log($(this).data());  // Logs all data attributes of the current element
+    console.log($(this).data());
 
 
-    // Set values based on selected data
+
     $('#Id').val(id);
     $('input[name=Id]').val(id);
-    //$('input[name=EmployeeCustomerId]').val(id);
-    $('#Description').val(fullName); // Set the selected full name to the Description textbox
-    $('#DestinationBranchId').val(destinationBranchId); // Set the BranchId in the hidden field
-    //$('#TellerChartOfAccountId').val(tellerChartOfAccountId);
+    $('#DestinationBranchId').val(destinationBranchId);
+    $('#DestinationDescription').val(description);
 
     // Close the modal
     $('#EmployeeLookupModal').modal('hide');
 });
 
 
+    </script>
 
-
-
-
-
-
-
-
-
-
-
-    $(document).ready(function () {
-        $('#data_3 .input-group.date').datepicker({
-            startView: 2,
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            autoclose: true,
-        });
-    });
-         //Branch typehead starts here
-    $('.LeaveTypeLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetLeaveTypesAsync", "LeaveType", new { Area = "HumanResource" })',
-                        { query: query },
-                        function (Leavetypes) {
-                            var newLeavetypesData = [];
-                            LeavetypesMap = {};
-                            $.each(Leavetypes, function (i, Leavetype) {
-                                newLeavetypesData.push(Leavetype.Description);
-                                LeavetypesMap[Leavetype.Description] = Leavetype;
-                            });
-                            process(newLeavetypesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var LeaveTypeId = "";
-                    LeaveTypeId = LeaveTypeMap[item].Id;
-                    $('#LeaveTypeId').val(LeaveTypeId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-
-
-
-
-
-
-
+    <script>
 
 $('#TresuriessGrid').DataTable({
     // Ajax settings
@@ -845,7 +611,9 @@ $('#TresuriessGrid').DataTable({
         var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
         aData.CreatedDate = dt_Created;
 
-        var selectUrl = '<button data-id="' + aData.Id + '" data-description="' + aData.Description + '" class="btn btn-outline-info select-btn">Select</button>';
+        console.log(aData);
+
+        var selectUrl = '<button data-branchid="' + aData.BranchId + '" data-id="' + aData.Id + '" data-description="' + aData.Description + '" class="btn btn-outline-info select-btn">Select</button>';
 
         $('td:eq(3)', nRow).html(dt_Created);
         $('td:eq(4)', nRow).html(selectUrl);
@@ -866,34 +634,26 @@ $('#TresuriessGrid').DataTable({
 $("#TresuriessGrid tbody").on("click", ".select-btn", function() {
     var id = $(this).data('id');
     var description = $(this).data('description');
+    var branchId = $(this).data('branchid');
 
     console.log(id);
 
-    // Set values based on selected data
-    $('input[name=Id]').val(id);
-    $('input[name=TreasuryId]').val(id);
-    $('input[name=Description]').val(description);
-
-    // Close the modal permanently
-    $('#TresuriesLookupModal').modal('hide');
-});
-
-// Add click event for lookup buttons to mimic the behavior of select button
-$("#TresuriessGrid tbody").on("click", ".lookup-btn", function() {
-    var id = $(this).data('id');
-    var description = $(this).data('description');
+    console.log("branchid is " + branchId);
 
     // Set values based on selected data
     $('#Id').val(id);
-    $('input[name=TreasuryId]').val(id);
-    $('input[name=Description]').val(description);
+    $('#DestinationBranchId').val(branchId);
+    $('#DestinationDescription').val(description);
 
     // Close the modal permanently
     $('#TresuriesLookupModal').modal('hide');
 });
 
 
+    </script>
 
+
+    <script>
 
 $('#BankssGrid').DataTable({
     // Ajax settings
@@ -934,34 +694,77 @@ $("#BankssGrid tbody").on("click", ".select-btn", function() {
 
     // Set values based on selected data
     $('#Id').val(id);
-    $('input[name=BranchId]').val(id);
-    $('#Description').val(description);
+    $('#DestinationDescription').val(description);
 
     // Close the modal
     $('#BankssLookupModal').modal('hide');
 });
 
-// Behavior for lookup buttons
-$(".lookup-btn").click(function() {
-    var id = $(this).data('id');
-    var description = $(this).data('description');
+    </script>
 
-    // Set values based on selected data
-    $('#Id').val(id);
-    $('input[name=BranchId]').val(id);
-    $('#Description').val(description);
+    <script>
 
-    // Close the modal
-    $('#BankssLookupModal').modal('hide');
-});
+        $(document).ready(function () {
+            $('#submitButton').click(function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to proceed with the transaction?",
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!',
+                    cancelButtonText: 'No, go back'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Proceed with the AJAX request if the user confirms
+                        $.ajax({
+                            url: $('#cashManagementForm').attr('action'),
+                            type: 'POST',
+                            data: $('#cashManagementForm').serialize(),
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success',
+                                        text: response.message
+                                    });
+                                    resetAllFields();
+                                    $('#treasuryGlTable').DataTable().ajax.reload();
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message
+                                    });
+                                    resetAllFields();
+                                    $('#treasuryGlTable').DataTable().ajax.reload();
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'An unexpected error occurred. Please try again later.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+        // Helper function to reset all fields in the form
+        function resetAllFields() {
+            $('#cashManagementForm')[0].reset();
+            // If there are specific fields to reset outside the form, reset them here
+        }
 
 
 
-
-
-
-
-</script>
+    </script>
 }
 
 

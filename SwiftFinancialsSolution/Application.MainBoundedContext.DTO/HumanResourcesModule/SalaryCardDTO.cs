@@ -251,7 +251,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 
         [DataMember]
         [Display(Name = "Salary Group")]
-        [ValidGuid]
+        //[ValidGuid]
         public Guid SalaryGroupId { get; set; }
 
         [DataMember]
@@ -295,5 +295,12 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         [DataMember]
         [Display(Name = "Create dDate")]
         public DateTime CreatedDate { get; set; }
+
+        // added permeters
+        [DataMember]
+        [Display(Name = "Card Value")]
+        public int CardValue { get; set; }
+        public SalaryGroupEntryDTO SalaryGroupEntry { get; set; }
+
     }
 }

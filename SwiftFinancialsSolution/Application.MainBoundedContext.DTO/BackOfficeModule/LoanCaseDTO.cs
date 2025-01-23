@@ -68,7 +68,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Customer")]
         public Guid CustomerId { get; set; }
 
-
         [DataMember]
         [Display(Name = "Customer Type")]
         public int CustomerType { get; set; }
@@ -161,16 +160,13 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
             }
         }
 
-
         [DataMember]
         [Display(Name = "Customer")]
         public string CustomerName { get; set; }
 
-
         [DataMember]
         [Display(Name = "Loanee")]
         public string CustomerLoaneeFullName { get; set; }
-
 
         [DataMember]
         [Display(Name = "Identity Card Number")]
@@ -882,11 +878,8 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [CustomValidation(typeof(LoanCaseDTO), "ValidateLoanSecurity", ErrorMessage = "Security is required for the selected loan product and following conditions must be met:-\n\n-If guarantor security mode is income, the total number of guarantors must not be less than the minimum required\n-If guarantor security mode is investments, the total amount guaranteed must not be less than the amount applied")]
         public decimal TotalAmountGuaranteed { get; set; }
 
-
         [Display(Name = "Amount Pledged")]
         public decimal TotalAmountPledged { get; set; }
-
-
 
         [Display(Name = "Total Collateral")]
         public decimal TotalCollateralAmount { get; set; }
@@ -935,6 +928,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public static ValidationResult ValidateAmountApplied(object value, ValidationContext context)
         {
             var bindingModel = context.ObjectInstance as LoanCaseDTO;
+
             if (bindingModel == null)
                 throw new NotSupportedException("ObjectInstance must be LoanCaseDTO");
 
@@ -1054,13 +1048,21 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "First Name")]
         public string GuarantorIndividualFirstName { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Type")]
+        public string GuarantorTypeDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Remarks")]
+        public string GuarantorRemarks { get; set; }
 
         [DataMember]
         [Display(Name = "Other Names")]
         public string GuarantorIndividualLastName { get; set; }
 
         [DataMember]
-        [Display(Name = "Customer")]
+        [Display(Name = "Substitute Guarantor")]
         public string GuarantorName { get; set; }
 
         [DataMember]
@@ -1078,7 +1080,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Employer")]
         public string GuarantorEmployerDescription { get; set; }
-
 
         [DataMember]
         [Display(Name = "Identification Number")]
@@ -1112,14 +1113,9 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Amount Guaranteed")]
         public decimal GuarantorAmountGuaranteed { get; set; }
 
-
-
-
-
         [DataMember]
         [Display(Name = "Interest Calculation Mode")]
         public string InterestCalculationModeDescription { get; set; }
-
 
         [DataMember]
         [Display(Name = "Section")]
@@ -1258,28 +1254,28 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         // 
         [DataMember]
         [Display(Name = "Security Qualification")]
-        public double LoanQualificationSecurityQualification { get; set; }  
-        
+        public double LoanQualificationSecurityQualification { get; set; }
+
         [DataMember]
         [Display(Name = "System Recommendation")]
-        public double LoanQualificationSystemRecommendation { get; set; } 
-        
+        public double LoanQualificationSystemRecommendation { get; set; }
+
         [DataMember]
         [Display(Name = "Income Qualification")]
-        public double LoanQualificationIncomeQualification { get; set; } 
-        
+        public double LoanQualificationIncomeQualification { get; set; }
+
         [DataMember]
         [Display(Name = "Investments Qualification")]
         public double LoanQualificationInvestmentsQualification { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Attached Loans Balance")]
-        public double LoanQualificationAttachedLoansBalance { get; set; } 
-        
+        public double LoanQualificationAttachedLoansBalance { get; set; }
+
         [DataMember]
         [Display(Name = "Total Loans + Interest")]
-        public double LoanQualificationTotalLoansPlusInterest { get; set; } 
-        
+        public double LoanQualificationTotalLoansPlusInterest { get; set; }
+
         [DataMember]
         [Display(Name = "Loan Amount")]
         public double LoanQualificationLoanAmount { get; set; }
@@ -1289,7 +1285,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Standing Order Principal")]
         public double StandingOrderPrincipal { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Standing Order Interest")]
         public double StandingOrderInterest { get; set; }
@@ -1297,5 +1293,70 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorDTO { get; set; }
+
+
+
+
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public int RecordStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public string RecordStatusDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(RecordStatus), RecordStatus) ? EnumHelper.GetDescription((RecordStatus)RecordStatus) : string.Empty;
+            }
+        }
+
+        [Display(Name = "Customer Filter")]
+        public int CustomerFilter { get; set; }
+
+        [Display(Name = "Customer Filter")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return EnumHelper.GetDescription((CustomerFilter)CustomerFilter);
+            }
+        }
+        public Guid DocumentID { get; set; }  // Unique identifier for the document
+
+        public byte[] PassportPhoto { get; set; }
+        public byte[] SignaturePhoto { get; set; }
+        public byte[] IDCardFrontPhoto { get; set; }
+        public byte[] IDCardBackPhoto { get; set; }
+
+        [DataMember]
+        [Display(Name = "Status")]
+        public string LoanStatus { get; set; }
+
+
+        //Additional DTOs
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public string FullAccountNumber { get; set; }
+
+        [DataMember]
+        public LoanProductDTO LoanProductsDTO { get; set; }
+
+        [DataMember]
+        [Display(Name = "Section")]
+        public string loanProductSection { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Payment Frequency Per Year")]
+        public string loanProductPaymentFrequencyPerYear { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Category")]
+        public string LoanProductCategory { get; set; }
+
+
+        [DataMember]
+        public ObservableCollection<LoanGuarantorDTO> Guarantor { get; set; }
     }
 }

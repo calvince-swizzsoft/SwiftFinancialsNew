@@ -632,9 +632,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Closing Balance")]
         public decimal ClosingBalance { get; set; }
 
-        //[DataMember]
-        //[Display(Name = "Closing Balance Status")]
-        //public string Status { get; set; }
 
         [DataMember]
         [Display(Name = "Items Count")]

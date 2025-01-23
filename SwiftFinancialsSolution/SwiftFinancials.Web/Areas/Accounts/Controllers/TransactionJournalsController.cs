@@ -1,5 +1,6 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
@@ -14,66 +15,59 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
-            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.CustomerTypeSelectList = GetJournalfielterSelectList(string.Empty);
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel ,DateTime? startDate, DateTime? endDate, string reference, int? filter)
         {
-            //, DateTime? startDate, DateTime? endDate, string reference, int filter
             int totalRecordCount = 0;
 
-            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
-
-            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-            DateTime start = DateTime.Now.AddDays(+30);
-
-            DateTime end = DateTime.Now.AddDays(-100000);
-            string reference = "Cw";
-            int filter = 4;
-            var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByDateRangeAndFilterInPageAsync(
-            pageIndex,
-            jQueryDataTablesModel.iDisplayLength,
-            start,
-            end,
-            reference,
-            filter);
-
-            if (pageCollectionInfo == null || !pageCollectionInfo.PageCollection.Any())
+          
+            DateTime start = startDate ?? DateTime.Now.AddDays(-30);
+            DateTime end = endDate ?? DateTime.Now;
+            if (filter == 2)
             {
-                return Json(new
+                var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByDateRangeAndFilterInPageAsync(
+                0, int.MaxValue,
+                start,
+                end,
+                reference,
+                2, GetServiceHeader()
+            );
+
+                if (pageCollectionInfo == null || !pageCollectionInfo.PageCollection.Any())
                 {
-                    sEcho = jQueryDataTablesModel.sEcho,
-                    iTotalRecords = 0,
-                    iTotalDisplayRecords = 0,
-                    aaData = new object[] { },
-                    message = "No records found for the selected filters."
-                }, JsonRequestBehavior.AllowGet);
+                    return Json(new
+                    {
+                        sEcho = 1,
+                        iTotalRecords = 0,
+                        iTotalDisplayRecords = 0,
+                        aaData = new object[] { },
+                        message = "No records found for the selected filters."
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+                // Prepare data for DataTable
+                var result = pageCollectionInfo.PageCollection.Select(t => new
+                {
+                    BranchDescription = t.BranchDescription,
+                    TransactionDate = t.JournalCreatedDate.ToString("dd/MM/yyyy"),
+                    PrimaryDescription = t.JournalPrimaryDescription,
+                    Debit = t.Debit.ToString("N2"),
+                    Credit = t.Credit.ToString("N2"),
+                    RunningBalance = t.RunningBalance.ToString("N2"),
+                    ContraGLAccountName = t.ContraGLAccountName,
+                    Secondary = t.JournalSecondaryDescription
+                });
             }
-
-            // Prepare data for DataTable
-            var result = pageCollectionInfo.PageCollection.Select(t => new
-            {
-                t.BranchDescription,
-                t.JournalCreatedDate,
-                t.JournalPrimaryDescription,
-                t.Debit,
-                t.Credit,
-                t.RunningBalance,
-                t.ContraGLAccountName,
-                t.JournalSecondaryDescription
-            });
-
             return Json(new
             {
-                sEcho = jQueryDataTablesModel.sEcho,
-                iTotalRecords = pageCollectionInfo.PageCollection,
-                iTotalDisplayRecords = pageCollectionInfo.PageIndex,
-                aaData = result
+                sEcho = 2,
             }, JsonRequestBehavior.AllowGet);
-        }
 
+        }
 
         public async Task<ActionResult> Details(Guid id)
         {

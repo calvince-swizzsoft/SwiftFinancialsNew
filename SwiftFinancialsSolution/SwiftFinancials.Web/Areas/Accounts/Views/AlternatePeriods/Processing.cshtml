@@ -57,74 +57,154 @@
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
 
-                        <fieldset>
+                    <fieldset>
 
-                            <div class="row">
-
-
+                        <div class="row">
 
 
 
-                                <div class="col-lg-6">
-                                    <div class="form-group" id="data_3">
-                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="startDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                        </div>
-                                    </div>
 
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AlternateChannelType, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.AlternateChannelType, customerTypes, new { @class = "form-control input-md" })
-                                            @Html.HiddenFor(model => model.AlternateChannelType, new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessageFor(model => model.AlternateChannelType)
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group" id="data_3">
-                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="endDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
-                                        </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group" id="data_3">
+                                    @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" name="startDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
                                     </div>
                                 </div>
 
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.SetDifferenceMode, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.SetDifferenceMode, y, new { @class = "form-control input-md" })
-                                            @Html.HiddenFor(model => model.SetDifferenceMode, new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessageFor(model => model.SetDifferenceMode)
-                                        </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AlternateChannelType, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.AlternateChannelType, customerTypes, new { @class = "form-control input-md" })
+                                        @Html.HiddenFor(model => model.AlternateChannelType, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.AlternateChannelType)
                                     </div>
                                 </div>
-
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group" id="data_3">
+                                    @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" name="endDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
                                     </div>
                                 </div>
                             </div>
 
-
-
-                            <div class="form-group form-group-sm">
-                                <div class="col-md-offset-2">
-                                    <input type="submit" value="Processing" class="btn btn-primary" />
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.SetDifferenceMode, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.SetDifferenceMode, y, new { @class = "form-control input-md" })
+                                        @Html.HiddenFor(model => model.SetDifferenceMode, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.SetDifferenceMode)
+                                    </div>
                                 </div>
                             </div>
-                        </fieldset>
+
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <h1>Bank Reconciliation Table</h1>
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <label for="fileInput">Upload CSV:</label>
+                            <input type="file" id="fileInput" accept=".csv" />
+                            <button type="button" onclick="uploadFile()">Upload</button>
+                        </form>
+                        <br>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Uploaded ID</th>
+                                    <th>Uploaded Amount</th>
+                                    <th>Database ID</th>
+                                    <th>Database Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reconciliationBody">
+                                <!-- Rows will be dynamically populated -->
+                            </tbody>
+                        </table>
+
+                        <script>
+                            function uploadFile() {
+                                const fileInput = document.getElementById('fileInput');
+                                if (!fileInput.files.length) {
+                                    alert('Please upload a file.');
+                                    return;
+                                }
+
+                                const file = fileInput.files[0];
+                                const reader = new FileReader();
+
+                                reader.onload = function (event) {
+                                    const csvData = event.target.result.split(/\r?\n/).map(row => row.split(','));
+                                    reconcileData(csvData);
+                                };
+
+                                reader.readAsText(file);
+                            }
+
+                            function reconcileData(uploadedData) {
+                                // Simulate database records for demonstration
+                                const databaseRecords = [
+                                    { "TransactionID": "TXN001", "PhoneNumber": "+254700123456", "Amount": 1000.00, "Date": "2023-12-01", "Description": "Payment to Merchant" },
+                                    { "TransactionID": "TXN003", "PhoneNumber": "+254702345678", "Amount": 200.00, "Date": "2023-12-02", "Description": "Deposit" },
+                                    { "TransactionID": "TXN005", "PhoneNumber": "+254704567890", "Amount": 700.00, "Date": "2023-12-03", "Description": "Paybill Transaction" },
+                                    { "TransactionID": "TXN007", "PhoneNumber": "+254706789012", "Amount": 400.00, "Date": "2023-12-05", "Description": "Withdrawal" },
+                                    { "TransactionID": "TXN009", "PhoneNumber": "+254708901234", "Amount": 800.00, "Date": "2023-12-07", "Description": "Money Received" }
+                                ]
+                                    ;
+
+                                const reconciliationBody = document.getElementById('reconciliationBody');
+                                reconciliationBody.innerHTML = '';
+
+                                uploadedData.forEach((uploadRow, index) => {
+                                    const [uploadedID, uploadedAmount] = uploadRow; // Expecting ID and Amount in CSV
+                                    if (!uploadedID || !uploadedAmount) return; // Skip empty rows
+
+                                    const dbRecord = databaseRecords.find(record => record.ID === uploadedID);
+                                    const dbMatch = dbRecord && parseFloat(dbRecord.Amount) === parseFloat(uploadedAmount);
+
+                                    const row = document.createElement('tr');
+                                    row.innerHTML = `
+                                                                                                    <td>${index + 1}</td>
+                                                                                                    <td>${uploadedID}</td>
+                                                                                                    <td>${uploadedAmount}</td>
+                                                                                                    <td>${dbRecord ? dbRecord.ID : 'N/A'}</td>
+                                                                                                    <td>${dbRecord ? dbRecord.Amount : 'N/A'}</td>
+                                                                                                    <td class="${dbMatch ? 'matched' : 'unmatched'}">
+                                                                                                        ${dbMatch ? 'Matched' : 'Unmatched'}
+                                                                                                    </td>
+                                                                                                `;
+                                    reconciliationBody.appendChild(row);
+                                });
+                            }
+                        </script>
+
+
+
+
+                        <div class="form-group form-group-sm">
+                            <div class="col-md-offset-2">
+                                <input type="submit" value="Processing" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </fieldset>
 
                     }
 

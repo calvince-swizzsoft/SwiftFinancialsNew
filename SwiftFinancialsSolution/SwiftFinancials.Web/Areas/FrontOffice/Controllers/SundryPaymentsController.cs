@@ -154,29 +154,41 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
 
-            DateTime startDate = DateTime.Now;
-
-            DateTime endDate = DateTime.Now;
-
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindCashDepositRequestsByFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.iColumns, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.sEcho, 1, 1, GetServiceHeader());
+            SelectedTeller = await GetCurrentTeller();
+            var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
+              0,
+              int.MaxValue,
+              (Guid)SelectedTeller.ChartOfAccountId,
+              startDate,
+              endDate,
+              jQueryDataTablesModel.sSearch,
+              16,
+              2,
+              true,
+              GetServiceHeader()
+          );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
+                var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(gl => gl.JournalCreatedDate).ToList();
+
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
+
+
+                var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
+
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<CashDepositRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
@@ -227,7 +239,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
             var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+            _selectedTeller = await GetCurrentTeller();
             _selectedBranch = await _channelService.FindBranchAsync(SelectedTeller.EmployeeBranchId, GetServiceHeader());
 
             expensePayableDTO.BranchId = SelectedTeller.EmployeeBranchId;
@@ -309,29 +321,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         if (cashPaymentJournal != null)
                         {
 
-                            MessageBox.Show(
-                                                               "Operation Success",
-                                                               "Customer Receipts",
-                                                               MessageBoxButtons.OK,
-                                                               MessageBoxIcon.Information,
-                                                               MessageBoxDefaultButton.Button1,
-                                                               MessageBoxOptions.ServiceNotification
-                                                           );
-
                             return Json(new { success = true, message = "Operation Success" });
                         }
 
                         else
                         {
-
-                            MessageBox.Show(
-                                                               "Operation Failed",
-                                                               "Custmer Receipts",
-                                                               MessageBoxButtons.OK,
-                                                               MessageBoxIcon.Information,
-                                                               MessageBoxDefaultButton.Button1,
-                                                               MessageBoxOptions.ServiceNotification
-                                                           );
 
                            return Json(new { success = false, message = "Operation Failed" });
                         }
@@ -353,29 +347,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         if (cashPaymentAccountClosureJournal != null)
                         {
 
-                            MessageBox.Show(
-                                                               "Operation Success",
-                                                               "Customer Receipts",
-                                                               MessageBoxButtons.OK,
-                                                               MessageBoxIcon.Information,
-                                                               MessageBoxDefaultButton.Button1,
-                                                               MessageBoxOptions.ServiceNotification
-                                                           );
-
                             return Json(new { success = true, message = "Operation Success" });
                         }
 
                         else
                         {
-
-                            MessageBox.Show(
-                                                               "Operation Failed",
-                                                               "Custmer Receipts",
-                                                               MessageBoxButtons.OK,
-                                                               MessageBoxIcon.Information,
-                                                               MessageBoxDefaultButton.Button1,
-                                                               MessageBoxOptions.ServiceNotification
-                                                           );
 
                             return Json(new { success = false, message = "Operation Failed" });
                         }
@@ -396,29 +372,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         if (cashPickupJournal != null)
                         {
 
-                            MessageBox.Show(
-                                                               "Operation Success",
-                                                               "Customer Receipts",
-                                                               MessageBoxButtons.OK,
-                                                               MessageBoxIcon.Information,
-                                                               MessageBoxDefaultButton.Button1,
-                                                               MessageBoxOptions.ServiceNotification
-                                                           );
-
                             return Json(new { success = true, message = "Operation Success" });
                         }
 
                         else
                         {
-
-                            MessageBox.Show(
-                                                               "Operation Failed",
-                                                               "Custmer Receipts",
-                                                               MessageBoxButtons.OK,
-                                                               MessageBoxIcon.Information,
-                                                               MessageBoxDefaultButton.Button1,
-                                                               MessageBoxOptions.ServiceNotification
-                                                           );
 
                             return Json(new { success = false, message = "Operation Failed" });
                         }
@@ -442,29 +400,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         if (cashReceiptJournal != null)
                         {
 
-                            MessageBox.Show(
-                                                               "Operation Success",
-                                                               "Customer Receipts",
-                                                               MessageBoxButtons.OK,
-                                                               MessageBoxIcon.Information,
-                                                               MessageBoxDefaultButton.Button1,
-                                                               MessageBoxOptions.ServiceNotification
-                                                           );
-
                             return Json(new { success = true, message = "Operation Success" });
                         }
 
                         else
                         {
-
-                            MessageBox.Show(
-                                                               "Operation Failed",
-                                                               "Custmer Receipts",
-                                                               MessageBoxButtons.OK,
-                                                               MessageBoxIcon.Information,
-                                                               MessageBoxDefaultButton.Button1,
-                                                               MessageBoxOptions.ServiceNotification
-                                                           );
 
                             return Json(new { success = false, message = "Operation Failed" });
                         }
@@ -487,29 +427,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         if (chequeReceiptJournal != null)
                         {
 
-                            MessageBox.Show(
-                                                               "Operation Success",
-                                                               "Customer Receipts",
-                                                               MessageBoxButtons.OK,
-                                                               MessageBoxIcon.Information,
-                                                               MessageBoxDefaultButton.Button1,
-                                                               MessageBoxOptions.ServiceNotification
-                                                           );
 
                             return Json(new { success = true, message = "Operation Success" });
                         }
 
                         else
                         {
-
-                            MessageBox.Show(
-                                                               "Operation Failed",
-                                                               "Custmer Receipts",
-                                                               MessageBoxButtons.OK,
-                                                               MessageBoxIcon.Information,
-                                                               MessageBoxDefaultButton.Button1,
-                                                               MessageBoxOptions.ServiceNotification
-                                                           );
 
                             return Json(new { success = false, message = "Operation Failed" });
                         }
@@ -549,19 +472,21 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByStatusAndFilterInPageAsync(startDate, endDate, status, jQueryDataTablesModel.sSearch, customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, includeProductDescription, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByStatusAndFilterInPageAsync(startDate, endDate, status, jQueryDataTablesModel.sSearch, customerFilter, 0, int.MaxValue, includeProductDescription, GetServiceHeader());
 
                 if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
                 {
                     totalRecordCount = pageCollectionInfo.ItemsCount;
 
 
-                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+                    var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
 
 
-                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
 
-                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                    return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
                 }
                 else return this.DataTablesJson(items: new List<AccountClosureRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
@@ -583,7 +508,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCreditBatchEntriesByCreditBatchTypeInPageAsync(creditBatchType, startDate, endDate, jQueryDataTablesModel.sSearch, creditBatchEntryFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, includeProductDescription, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCreditBatchEntriesByCreditBatchTypeInPageAsync(creditBatchType, startDate, endDate, jQueryDataTablesModel.sSearch, creditBatchEntryFilter, 0, int.MaxValue, includeProductDescription, GetServiceHeader());
 
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
@@ -591,14 +516,39 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+                var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+
+                var paginatedData = sortedData.Skip(jQueryDataTablesModel.iDisplayStart).Take(jQueryDataTablesModel.iDisplayLength).ToList();
 
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: paginatedData, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<CreditBatchEntryDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+        private async Task<TellerDTO> GetCurrentTeller()
+        {
+
+
+            bool includeBalance = true;
+            // Get the current user
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            var teller = await _channelService.FindTellerByEmployeeIdAsync((Guid)user.EmployeeId, includeBalance, GetServiceHeader());
+
+            if (teller == null)
+            {
+                TempData["Missing Teller"] = "You are working without a Recognized Teller";
+            }
+
+            return teller;
+
         }
     }
 }

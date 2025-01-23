@@ -32,9 +32,14 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
             _employeeDocumentRepository = employeeDocumentRepository;
         }
 
-        public EmployeeDocumentDTO AddNewEmployeeDocument(EmployeeDocumentDTO employeeDocumentDTO, string fileUploadDirectory, ServiceHeader serviceHeader)
+        public EmployeeDocumentDTO AddNewEmployeeDocument(
+    EmployeeDocumentDTO employeeDocumentDTO,
+    string fileUploadDirectory,
+    ServiceHeader serviceHeader)
         {
-            if (employeeDocumentDTO == null || string.IsNullOrWhiteSpace(fileUploadDirectory) || string.IsNullOrWhiteSpace(employeeDocumentDTO.FileName))
+            if (employeeDocumentDTO == null ||
+                string.IsNullOrWhiteSpace(fileUploadDirectory) ||
+                string.IsNullOrWhiteSpace(employeeDocumentDTO.FileName))
                 return null;
 
             var path = Path.Combine(fileUploadDirectory, employeeDocumentDTO.FileName);
@@ -43,21 +48,46 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
+                    // Get MIME type of the file
                     employeeDocumentDTO.FileMIMEType = System.Web.MimeMapping.GetMimeMapping(path);
 
-                    var employeeDocument = EmployeeDocumentFactory.CreateEmployeeDocument(employeeDocumentDTO.EmployeeId, employeeDocumentDTO.FileName, employeeDocumentDTO.FileTitle, employeeDocumentDTO.FileDescription, employeeDocumentDTO.FileMIMEType);
+                    // Read file content into a byte array
+                    byte[] fileBuffer;
+                    using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            fileStream.CopyTo(memoryStream);
+                            fileBuffer = memoryStream.ToArray();
+                        }
+                    }
 
+                    // Create EmployeeDocument with FileBuffer
+                    var employeeDocument = EmployeeDocumentFactory.CreateEmployeeDocument(
+                        employeeDocumentDTO.EmployeeId,
+                        employeeDocumentDTO.FileName,
+                        employeeDocumentDTO.FileTitle,
+                        employeeDocumentDTO.FileDescription,
+                        employeeDocumentDTO.FileMIMEType,
+                        fileBuffer);
+
+                    // Set CreatedBy field
                     employeeDocument.CreatedBy = serviceHeader.ApplicationUserName;
 
+                    // Add to repository and save changes
                     _employeeDocumentRepository.Add(employeeDocument, serviceHeader);
-
                     dbContextScope.SaveChanges(serviceHeader);
 
+                    // Return projected DTO
                     return employeeDocument.ProjectedAs<EmployeeDocumentDTO>();
                 }
             }
-            else return null;
+            else
+            {
+                return null;
+            }
         }
+
 
         public bool UpdateEmployeeDocument(EmployeeDocumentDTO employeeDocumentDTO, string fileUploadDirectory, ServiceHeader serviceHeader)
         {
@@ -76,7 +106,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
                     if (persisted != null)
                     {
-                        var current = EmployeeDocumentFactory.CreateEmployeeDocument(employeeDocumentDTO.EmployeeId, employeeDocumentDTO.FileName, employeeDocumentDTO.FileTitle, employeeDocumentDTO.FileDescription, employeeDocumentDTO.FileMIMEType);
+                        var current = EmployeeDocumentFactory.CreateEmployeeDocument(employeeDocumentDTO.EmployeeId, employeeDocumentDTO.FileName, employeeDocumentDTO.FileTitle, employeeDocumentDTO.FileDescription, employeeDocumentDTO.FileMIMEType, employeeDocumentDTO.FileBuffer);
 
                         current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
                         current.CreatedBy = persisted.CreatedBy;

@@ -77,5 +77,30 @@ namespace Application.MainBoundedContext.DTO.MessagingModule
         public ObservableCollection<MessageGroupDTO> messageGroupCustomerDTO { get; set; }
 
 
+
+        [Display(Name = "Record Status")]
+        public byte RecordStatus { get; set; }
+
+        [Display(Name = "Record Status")]
+        public string RecordStatusDescription
+        {
+            get
+            {
+                return EnumHelper.GetDescription((RecordStatus)RecordStatus);
+            }
+        }
+
+
+        [Display(Name = "Customer Filter")]
+        public int CustomerFilter { get; set; }
+
+        [Display(Name = "Record Status")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return EnumHelper.GetDescription((CustomerFilter)CustomerFilter);
+            }
+        }
     }
 }

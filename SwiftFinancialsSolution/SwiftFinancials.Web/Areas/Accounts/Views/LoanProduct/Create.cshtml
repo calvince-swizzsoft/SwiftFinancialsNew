@@ -19,6 +19,8 @@
     var productCode = ViewBag.ProductCodeSelectList as List<SelectListItem>;
     var chargeType = ViewBag.ChargeType as List<SelectListItem>;
     var auxiliaryLoanCondition = ViewBag.AuxiliaryLoanConditions as List<SelectListItem>;
+    var knownChargeTypeDescription = ViewBag.LoanProductKnownChargeType as List<SelectListItem>;
+    var chargeBasisValueDescription = ViewBag.LoanProductChargeBasisValue as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom bg-white page-heading">
     <div class="col-lg-10">
@@ -283,6 +285,7 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<br />
 
 
 <div class="wrapper wrapper-content white-bg">
@@ -611,7 +614,10 @@
 
                                             <ul class="flex flex-wrap space-x-2 mb-6 secondary-tabs" role="tablist">
                                                 <li>
-                                                    <a class="px-3 py-1 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600 text-sm" data-toggle="tab" href="#indefiniteCharges" role="tab">Indefinite Charges</a>
+                                                    <a class="px-3 py-1 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600 text-sm" data-toggle="tab" href="#wellknownCharges" role="tab">Well-Known Charges</a>
+                                                </li>
+                                                <li>
+                                                    <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#indefiniteCharges" role="tab">Indefinite Charges</a>
                                                 </li>
                                                 <li>
                                                     <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#loansProduct" role="tab">Attached Loans Product</a>
@@ -638,8 +644,56 @@
                                             </ul>
 
                                             <div class="inner-tab-content">
+                                                <div id="wellknownCharges" class="inner-tab-pane active">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group form-group-lg">
+                                                                @Html.LabelFor(model => model.commissions[0].KnownChargeType, htmlAttributes: new { @class = "control-label" })
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                                    @Html.DropDownListFor(model => model.commissions[0].KnownChargeType, knownChargeTypeDescription, new { @class = "form-control input-md" })
+                                                                    @Html.ValidationMessageFor(model => model.commissions[0].KnownChargeType)
+                                                                </div>
+                                                            </div>
+                                                        </div>
 
-                                                <div id="indefiniteCharges" class="inner-tab-pane active">
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group form-group-lg">
+                                                                @Html.LabelFor(model => model.commissions[0].ChargeBasisValue, htmlAttributes: new { @class = "control-label" })
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                                    @Html.DropDownListFor(model => model.commissions[0].ChargeBasisValue, chargeBasisValueDescription, new { @class = "form-control input-md" })
+                                                                    @Html.ValidationMessageFor(model => model.commissions[0].ChargeBasisValue)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="wellknownCharges" class="inner-tab-pane">
+                                                        <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Well-known Charges</h3>
+                                                        <div style="text-align: left;">
+                                                            <input type="checkbox" id="wcheaderCheckbox" style="transform: scale(1); color: blue;">
+                                                            <label for="wcheaderCheckbox" style="font-weight: bold; color:#333;">Select All</label>
+                                                        </div>
+
+                                                        <div class="table-responsive">
+                                                            <table id="WellknownChargesGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td colspan="7" class="dataTables_empty">
+                                                                            Loading data from server
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div id="indefiniteCharges" class="inner-tab-pane su">
                                                     <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Indefinite Charges</h3>
                                                     <div style="text-align: left;">
                                                         <input type="checkbox" id="icheaderCheckbox" style="transform: scale(1); color: blue;">
@@ -984,55 +1038,99 @@
                                                                         @Html.ValidationMessageFor(model => model.Deductiles[0].Description, "", new { @class = "text-danger" })
                                                                     </div>
                                                                 </div>
+
                                                             </div>
+
                                                             <div class="row">
                                                                 <div class="col-lg-6">
                                                                     <div class="form-group form-group-lg">
                                                                         @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeProductCode, htmlAttributes: new { @class = "control-label" })
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                                            @Html.DropDownListFor(model => model.Deductiles[0].CustomerAccountTypeProductCodeDescription, productCode, new { @class = "form-control input-md" })
+                                                                            @Html.DropDownListFor(model => model.Deductiles[0].CustomerAccountTypeProductCodeDescription, productCode, new { @class = "form-control input-md", @id = "productDropdown" })
                                                                             @Html.ValidationMessageFor(model => model.Deductiles[0].CustomerAccountTypeProductCodeDescription)
                                                                         </div>
                                                                     </div>
                                                                 </div>
 
-
-                                                                <div class="col-lg-6">
+                                                                <div id="savingsProductSection" class="col-lg-6" style="display:block; text-align: left;">
                                                                     <div class="form-group form-group-lg">
                                                                         @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @class = "control-label" })
                                                                         <div class="input-group" data-autoclose="true">
-                                                                            @Html.HiddenFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @id = "ProductId" })
-                                                                            @Html.TextBoxFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductDescription, new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                                            @Html.HiddenFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @id = "CustomerAccountTypeTargetProductId" })
+                                                                            @Html.EditorFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Lookup Saving Product....", id = "CustomerAccountTypeTargetProductDescription1", @readonly = "" } })
                                                                             <span class="input-group-addon">
-                                                                                <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
+                                                                                <a data-toggle="modal" data-target="#SavingLookup"><span class="fa fa-search"></span></a>
                                                                             </span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
 
+                                                                <div id="loansProductSection" class="col-lg-6" style="display:none; text-align: left;">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @class = "control-label" })
+                                                                        <div class="input-group" data-autoclose="true">
+                                                                            @Html.HiddenFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @id = "CustomerAccountTypeTargetProductId" })
+                                                                            @Html.EditorFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Lookup Loan product...", id = "CustomerAccountTypeTargetProductDescription2", @readonly = "" } })
+                                                                            <span class="input-group-addon">
+                                                                                <a data-toggle="modal" data-target="#LoanProductLookup"><span class="fa fa-search"></span></a>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="investmentsProductSection" class="col-lg-6" style="display:none; text-align: left;">
+                                                                    <div class="">
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @class = "control-label" })
+                                                                            <div class="input-group" data-autoclose="true">
+                                                                                @Html.HiddenFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @id = "ProductId" })
+                                                                                @Html.TextBoxFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductDescription, new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control input-md alpha alphaspace required", @placeholder = "Lookup Investment product...", @readonly = "readonly" })
+                                                                                <span class="input-group-addon">
+                                                                                    <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
 
                                                             </div>
+
+
                                                             <div class="row">
                                                                 <div class="col-lg-6">
                                                                     <div class="form-group form-group-lg">
                                                                         @Html.LabelFor(model => model.Deductiles[0].ChargeType, htmlAttributes: new { @class = "control-label" })
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                                            @Html.DropDownListFor(model => model.Deductiles[0].ChargeTypeDescription, chargeType, new { @class = "form-control input-md" })
-                                                                            @Html.ValidationMessageFor(model => model.Deductiles[0].ChargeTypeDescription)
+                                                                            @Html.DropDownListFor(model => model.Deductiles[0].ChargeType, chargeType, new { @class = "form-control input-md", @id = "chargeDropdown" })
+                                                                            @Html.ValidationMessageFor(model => model.Deductiles[0].ChargeType)
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-6">
+
+
+                                                                <div id="percentageSection" class="col-lg-6" style="display:block; text-align: left;">
                                                                     <div class="form-group form-group-lg">
                                                                         @Html.LabelFor(model => model.Deductiles[0].ChargePercentage, htmlAttributes: new { @class = "control-label" })
-                                                                        @Html.EditorFor(model => model.Deductiles[0].ChargePercentage, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.EditorFor(model => model.Deductiles[0].ChargePercentage, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "Enter rate.....", @required = "" } })
                                                                         @Html.ValidationMessageFor(model => model.Deductiles[0].ChargePercentage, "", new { @class = "text-danger" })
                                                                     </div>
                                                                 </div>
 
+                                                                <div id="fixedAmountSection" class="col-lg-6" style="display:none; text-align: left;">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Deductiles[0].ChargeFixedAmount, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.Deductiles[0].ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "Enter Amount", @required = "" } })
+                                                                        @Html.ValidationMessageFor(model => model.Deductiles[0].ChargeFixedAmount, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+
+
+
                                                             </div>
+
+
                                                             <div class="row entry-footer" style="justify-content:flex-end; gap:40px;">
 
                                                                 <div class="custom-checkbox-container">
@@ -1069,8 +1167,8 @@
                                                                                 <th style="width: 10%;">Name </th>
                                                                                 <th style="width: 10%;">Product Name</th>
                                                                                 <th style="width: 10%;">Charge Type </th>
-                                                                                <th style="width: 10%;">Percentage</th>s
                                                                                 <th style="width: 10%;">Fixed Amount</th>
+                                                                                <th style="width: 10%;">Percentage</th>
                                                                                 <th style="width: 10%;">IsNextOfInvestmentBalance</th>
                                                                                 <th style="width: 10%;">ComputeChargeOnTopUp</th>
                                                                                 <th style="width: 10%;">Action</th>
@@ -1296,6 +1394,79 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="SavingLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    SavingsProducts Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="savingProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>G/L Account Name</th>
+                            <th>G/L Account Cost Center</th>
+                            <th>G/L Account Type</th>
+                            <th>Maximum Allowed Withdrawal</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="LoanProductLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    LoanProducts Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="loanProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Interest Recovery Mode</th>
+                            <th>Interest Calculation Mode</th>
+                            <th>Section</th>
+                            <th>Category</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="TargetLoanProductLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -1318,6 +1489,8 @@
         </div>
     </div>
 </div>
+
+
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -1364,6 +1537,233 @@
 
 
     <script>
+               $(document).ready(function () {
+                   $('#loanProductsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "LoanProduct", new { Area = "Accounts" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "LoanInterestRecoveryModeDescription", "sTitle": "Interest Recovery Mode", "sWidth": "10%" },
+                    { "mDataProp": "LoanInterestCalculationModeDescription", "sTitle": "Interest Calculation Mode", "sWidth": "15%" },
+                    { "mDataProp": "LoanRegistrationLoanProductSectionDescription", "sTitle": "Section", "sWidth": "15%" },
+                    { "mDataProp": "LoanRegistrationLoanProductCategoryDescription", "sTitle": "Category", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#loanProductsGrid tbody').on('click', '.select-customer', function () {
+                       var loanProductId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetloanDetails", "LoanProduct", new { Area = "Accounts" })',
+                    type: 'GET',
+                    data: { loanProductId: loanProductId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#CustomerAccountTypeTargetProductDescription2').val(response.data.CustomerAccountTypeTargetProductDescription);
+                            $('#CustomerAccountTypeTargetProductId').val(response.data.CustomerAccountTypeTargetProductId);
+
+
+
+
+                            $('#LoanProductLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Customer details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+    <script>
+               $(document).ready(function () {
+                   $('#savingProductsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "SavingsProduct", new { Area = "Accounts" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
+                    { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountAccountType", "sTitle": "G/L Account Type", "sWidth": "15%" },
+                    { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maximum Allowed Withdrawal", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#savingProductsGrid tbody').on('click', '.select-customer', function () {
+                       var savingsProductId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetSavingDetails", "LoanProduct", new { Area = "Accounts" })',
+                    type: 'GET',
+                    data: { savingsProductId: savingsProductId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#CustomerAccountTypeTargetProductDescription1').val(response.data.CustomerAccountTypeTargetProductDescription);
+                            $('#CustomerAccountTypeTargetProductId').val(response.data.CustomerAccountTypeTargetProductId);
+
+
+
+
+                            $('#SavingLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Customer details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+    <script>
+        //Dropdown chage Product
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('productDropdown');
+            var savingsProductSection = document.getElementById('savingsProductSection');
+            var loansProductSection = document.getElementById('loansProductSection');
+            var investmentProductSection = document.getElementById('investmentsProductSection');
+
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '1') {
+                    savingsProductSection.style.display = 'block';
+                    loansProductSection.style.display = 'none';
+                    investmentProductSection.style.display = 'none';
+                }
+                else if (dropdown.value === '2') {
+                    loansProductSection.style.display = 'block';
+                    savingsProductSection.style.display = 'none';
+                    investmentProductSection.style.display = 'none';
+                }
+                else if (dropdown.value === '3') {
+                    investmentProductSection.style.display = 'block';
+                    loansProductSection.style.display = 'none';
+                    savingsProductSection.style.display = 'none';
+                }
+                else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    <script>
+        //Dropdown charge Product
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('chargeDropdown');
+            var percentageSection = document.getElementById('percentageSection');
+            var fixedAmountSection = document.getElementById('fixedAmountSection');
+
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '1') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '2') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else if (dropdown.value === '3') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+
+
+
+    <script>
         $(document).ready(function () {
             function activateTab($tab) {
                 $tab.addClass('active bg-blue-500 text-white').removeClass('bg-gray-200 text-gray-700')
@@ -1387,12 +1787,149 @@
         });
     </script>
 
+    @*Well-KnownCharges*@
+    <script>
+       $(document).ready(function () {
+    var selectedCharges = [];
+
+    // Clear the stored checkbox state on page reload
+    localStorage.removeItem('selectedCharges');
+
+    // Function to load checkbox state
+    function loadCheckboxState() {
+        var storedCharges = localStorage.getItem('selectedCharges');
+        if (storedCharges) {
+            selectedCharges = JSON.parse(storedCharges);
+
+            selectedCharges.forEach(function (charge) {
+                var checkbox = $('#wc_' + charge.Id);
+                if (checkbox.length) {
+                    checkbox.prop('checked', true);
+                }
+            });
+        }
+    }
+
+    // Function to save checkbox state
+    function saveCheckboxState() {
+        localStorage.setItem('selectedCharges', JSON.stringify(selectedCharges));
+    }
+
+    // Function to update selected charges on the server
+    function updateSelectedChargesOnServer() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("StoreSelectedWellknownCharges", "LoanProduct")',
+            contentType: 'application/json',
+            data: JSON.stringify(selectedCharges),
+            success: function (response) {
+                if (response.success) {
+                    console.log("Charges updated successfully in session.");
+                } else {
+                    console.log("Error updating charges in session.");
+                }
+            },
+            error: function (error) {
+                console.log("Error occurred while updating charges: ", error);
+            }
+        });
+    }
+
+    // Initialize the DataTable
+    var table = $('#WellknownChargesGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "Commission", new { Area = "Accounts" }))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData) {
+            var checkboxHTML = '<input type="checkbox" class="wcrowCheckbox" id="wc_' + aData.Id + '">';
+            $('td:eq(0)', nRow).html(checkboxHTML);
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.1%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[1, "asc"]],
+        "initComplete": function () {
+            loadCheckboxState();
+        }
+    });
+
+    // Event handler for individual checkbox change
+    $('#WellknownChargesGrid').on('change', '.wcrowCheckbox', function () {
+        var chargeId = $(this).attr('id').replace('wc_', '');
+        var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
+
+        // Capture dropdown values
+        var knownChargeType = $('#KnownChargeType').val();  // Assuming you're assigning the ID to your dropdowns
+        var chargeBasisValue = $('#ChargeBasisValue').val();  // Similarly for the other dropdown
+
+        var chargeData = {
+            Id: chargeId,
+            Description: chargeDescription,
+            KnownChargeType: knownChargeType,
+            ChargeBasisValue: chargeBasisValue
+        };
+
+        if ($(this).is(':checked')) {
+            selectedCharges.push(chargeData);
+        } else {
+            selectedCharges = selectedCharges.filter(charge => charge.Id !== chargeId);
+        }
+
+        saveCheckboxState();
+        updateSelectedChargesOnServer();
+    });
+
+    // Add a header checkbox to select/deselect all rows
+    $('#WellknownChargesGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="wcheaderCheckbox"> Select / Deselect All</div>');
+
+    // Event handler for the header checkbox change
+    $('#wcheaderCheckbox').on('change', function () {
+        var isChecked = $(this).prop('checked');
+        $('.wcrowCheckbox').prop('checked', isChecked).each(function () {
+            var chargeId = $(this).attr('id').replace('wc_', '');
+            var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
+
+            var knownChargeType = $('#KnownChargeType').val();
+            var chargeBasisValue = $('#ChargeBasisValue').val();
+
+            var chargeData = {
+                Id: chargeId,
+                Description: chargeDescription,
+                KnownChargeType: knownChargeType,
+                ChargeBasisValue: chargeBasisValue
+            };
+
+            if (isChecked) {
+                if (!selectedCharges.some(charge => charge.Id === chargeId)) {
+                    selectedCharges.push(chargeData);
+                }
+            } else {
+                selectedCharges = selectedCharges.filter(charge => charge.Id !== chargeId);
+            }
+        });
+
+        saveCheckboxState();
+        updateSelectedChargesOnServer();
+    });
+});
+
+    </script>
+
+
 
     @*Indefinite Charges*@
     <script>
     $(document).ready(function () {
         var selectedCharges = [];
 
+        // Clear the stored checkbox state on page reload
+        localStorage.removeItem('selectedCharges');
+
+        // Function to load checkbox state (we don't need it now if we want to reset on reload)
         function loadCheckboxState() {
             var storedCharges = localStorage.getItem('selectedCharges');
             if (storedCharges) {
@@ -1407,10 +1944,12 @@
             }
         }
 
+        // Function to save checkbox state
         function saveCheckboxState() {
             localStorage.setItem('selectedCharges', JSON.stringify(selectedCharges));
         }
 
+        // Function to update selected charges on the server
         function updateSelectedChargesOnServer() {
             $.ajax({
                 type: 'POST',
@@ -1430,6 +1969,7 @@
             });
         }
 
+        // Initialize the DataTable
         var table = $('#IndefiniteChargesGrid').DataTable({
             "sPaginationType": "full_numbers",
             "bProcessing": true,
@@ -1438,10 +1978,7 @@
             "sServerMethod": "POST",
             "fnRowCallback": function (nRow, aData) {
                 var checkboxHTML = '<input type="checkbox" class="icrowCheckbox" id="ic_' + aData.Id + '"';
-                if (selectedCharges.some(charge => charge.Id === aData.Id.toString())) {
-                    checkboxHTML += ' checked';
-                }
-                checkboxHTML += '>';
+                checkboxHTML += '>';  
                 $('td:eq(0)', nRow).html(checkboxHTML);
                 return nRow;
             },
@@ -1451,7 +1988,6 @@
             ],
             "aaSorting": [[1, "asc"]],
             "initComplete": function () {
-                loadCheckboxState();
             }
         });
 
@@ -1469,7 +2005,6 @@
             }
 
             saveCheckboxState();
-
             updateSelectedChargesOnServer();
         });
 
@@ -1494,12 +2029,11 @@
             });
 
             saveCheckboxState();
-
             updateSelectedChargesOnServer();
         });
-
     });
     </script>
+
 
 
     <script>
@@ -1881,79 +2415,64 @@
 
 
     <script>
-$(document).ready(function () {
+        $(document).ready(function () {
     var selectedLoans = [];
 
-    // Save the state of a checkbox (for Select All)
-    function saveCheckboxState(key, state) {
-        localStorage.setItem(key, JSON.stringify(state));
-    }
-
-    // Load the state of a checkbox from localStorage
-    function loadCheckboxState(key) {
-        return JSON.parse(localStorage.getItem(key)) || false;
-    }
-
-    // Update the selected loans array and send data to the server
+    // Save the state of selected loans to send to the server
     function updateSelectedLoans() {
         selectedLoans = [];
         $('.lrowCheckbox:checked').each(function () {
             var loanId = $(this).data('id');
-            var loanDescription = $(this).closest('tr').find('td:eq(1)').text(); // Get description from the second column
+            var loanDescription = $(this).closest('tr').find('td:eq(1)').text();
             selectedLoans.push({
                 Id: loanId,
                 Description: loanDescription
             });
         });
 
-       $.ajax({
-    url: '@Url.Action("ProcessSelectedLoans", "LoanProduct", new { Area = "Accounts" })',
-    type: 'POST',
-    data: JSON.stringify({
-        EligibileIncomeDeductionLoanProductCollection: selectedLoans
-    }),  // Send as JSON object with the correct structure
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    success: function (response) {
-        console.log('Selected loans updated successfully.');
-        // Optionally, display a success message to the user
-    },
-    error: function (error) {
-        console.error('An error occurred while updating selected loans.');
-        // Optionally, display an error message to the user
+        $.ajax({
+            url: '@Url.Action("ProcessSelectedLoans", "LoanProduct", new { Area = "Accounts" })',
+            type: 'POST',
+            data: JSON.stringify({
+                EligibileIncomeDeductionLoanProductCollection: selectedLoans
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function () {
+                console.log('Selected loans updated successfully.');
+            },
+            error: function () {
+                console.error('An error occurred while updating selected loans.');
+            }
+        });
     }
-});
 
+    // Update the "Select All" checkbox state based on individual checkbox states
+    function updateSelectAllCheckbox() {
+        var totalRows = $('.lrowCheckbox').length;
+        var checkedRows = $('.lrowCheckbox:checked').length;
+
+        $('#lheaderCheckbox').prop('checked', totalRows > 0 && totalRows === checkedRows);
     }
 
     // Initialize the DataTable
     var table = $('#LoanProductsGrid').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
-        "sServerMethod": "POST",
-
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            // Add checkbox for each row
-            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '"';
-
-            if (selectedLoans.some(item => item.Id === aData.Id)) {
-                checkboxHTML += ' checked';
-            }
-
-            checkboxHTML += '>';
+        sPaginationType: "full_numbers",
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
+        sServerMethod: "POST",
+        fnRowCallback: function (nRow, aData) {
+            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '">';
             $('td:eq(0)', nRow).html(checkboxHTML);
             return nRow;
         },
-
-        "aoColumns": [
-            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "10%" },
-            { "mDataProp": "Description", "sTitle": "Loan Product", "sWidth": "90%" }
+        aoColumns: [
+            { mDataProp: "Id", sTitle: "Select", sWidth: "10%" },
+            { mDataProp: "Description", sTitle: "Loan Product", sWidth: "90%" }
         ],
-        "aaSorting": [[1, "asc"]],
-
-        "fnDrawCallback": function () {
+        aaSorting: [[1, "asc"]],
+        fnDrawCallback: function () {
             updateSelectAllCheckbox();
         }
     });
@@ -1982,7 +2501,6 @@ $(document).ready(function () {
         }
 
         updateSelectedLoans();
-        saveCheckboxState('lheaderCheckbox', isChecked);
     });
 
     // Handle individual checkbox changes
@@ -1990,13 +2508,9 @@ $(document).ready(function () {
         updateSelectedLoans();
         updateSelectAllCheckbox();
     });
-
-    // Restore the state of the "Select All" checkbox
-    $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
-
 });
-    </script>
 
+    </script>
 
 
     <script>
@@ -2057,8 +2571,8 @@ $(document).ready(function () {
         });
 
 
-        </script>
-    
+    </script>
+
     <script>
         //Typehead 1
 
@@ -2341,49 +2855,84 @@ $(document).ready(function () {
 
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('chargeDropdown');
+            var percentageSection = document.getElementById('percentageSection');
+            var fixedAmountSection = document.getElementById('fixedAmountSection');
 
-        //Adding the Deductibles Entries
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '1') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '2') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else if (dropdown.value === '3') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
+                }
+            });
+        });
 
         $(document).ready(function () {
             // Handle button click to submit the form with AJAX
             $("#addEntryBtn2").click(function (e) {
-                e.preventDefault(); // Prevent default button behavior
-                submitDeductiblesForm(); // Call the form submission function
+                e.preventDefault();
+                submitDeductiblesForm();
             });
 
-            // Function to handle form submission with AJAX
             function submitDeductiblesForm() {
-                // Get form data
-                const description = document.querySelector('[name="Deductiles[0].Description"]').value;
-                const productCode = document.querySelector('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').value;
-                const productId = document.querySelector('[name="Deductiles[0].CustomerAccountTypeTargetProductId"]').value;
-                const productName = document.querySelector('[name="Deductiles[0].CustomerAccountTypeTargetProductDescription"]').value;
-                const chargeType = document.querySelector('[name="Deductiles[0].ChargeTypeDescription"]').value;
-                const chargePercentage = document.querySelector('[name="Deductiles[0].ChargePercentage"]').value;
-                const computeChargeOnTopUp = document.querySelector('[name="Deductiles[0].ComputeChargeOnTopUp"]').checked;
-                const netOffInvestmentBalance = document.querySelector('[name="Deductiles[0].NetOffInvestmentBalance"]').checked;
+                // Get form data with corrected field selectors
+                const description = $('[name="Deductiles[0].Description"]').val();
+                const productCode = $('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').val();
 
-                // Create an object with the form data
+                // Get the correct product description based on which section is visible
+                let productDescription;
+                if ($('#savingsProductSection').is(':visible')) {
+                    productDescription = $('#CustomerAccountTypeTargetProductDescription1').val();
+                } else if ($('#loansProductSection').is(':visible')) {
+                    productDescription = $('#CustomerAccountTypeTargetProductDescription2').val();
+                } else if ($('#investmentsProductSection').is(':visible')) {
+                    productDescription = $('#CustomerAccountTypeTargetProductDescription').val();
+                }
+
+                const productId = $('#CustomerAccountTypeTargetProductId').val();
+                const chargeType = $('[name="Deductiles[0].ChargeType"]').val();
+                const chargePercentage = $('[name="Deductiles[0].ChargePercentage"]').val();
+                const chargeFixedAmount = $('[name="Deductiles[0].ChargeFixedAmount"]').val();
+                const computeChargeOnTopUp = $('[name="Deductiles[0].ComputeChargeOnTopUp"]').prop('checked');
+                const netOffInvestmentBalance = $('[name="Deductiles[0].NetOffInvestmentBalance"]').prop('checked');
+
                 const formData = {
                     Description: description,
                     CustomerAccountTypeProductCodeDescription: productCode,
                     CustomerAccountTypeTargetProductId: productId,
-                    CustomerAccountTypeTargetProductDescription: productName,
-                    ChargeTypeDescription: chargeType,
+                    CustomerAccountTypeTargetProductDescription: productDescription,
+                    ChargeType: chargeType,
                     ChargePercentage: chargePercentage,
+                    ChargeFixedAmount: chargeFixedAmount,
                     ComputeChargeOnTopUp: computeChargeOnTopUp,
                     NetOffInvestmentBalance: netOffInvestmentBalance
                 };
 
-                // Send the AJAX request
                 $.ajax({
-                    url: '/LoanProduct/AddDeductibles', // Replace with your actual action URL
+                    url: '/LoanProduct/AddDeductibles',
                     type: 'POST',
-                    contentType: 'application/json', // Set content type to JSON
-                    data: JSON.stringify(formData), // Convert the form data object to JSON
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
                     success: function (response) {
                         if (response.success) {
-                            updateEntriesTable(response.data); // Update the table with new data
+                            updateEntriesTable(response.data);
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success!',
@@ -2391,7 +2940,168 @@ $(document).ready(function () {
                                 timer: 1000,
                                 showConfirmButton: false
                             });
-                            clearFormFields(); // Clear form fields using custom logic
+                            clearFormFields();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: response.message || 'An error occurred while adding the deductible.',
+                                timer: 8000,
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while processing your request.',
+                            timer: 8000,
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            }
+
+            function clearFormFields() {
+                $('[name="Deductiles[0].Description"]').val('');
+                $('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').val('');
+                $('[name="Deductiles[0].ChargeType"]').val('');
+                $('#CustomerAccountTypeTargetProductDescription').val('');
+                $('#CustomerAccountTypeTargetProductDescription1').val('');
+                $('#CustomerAccountTypeTargetProductDescription2').val('');
+                $('#CustomerAccountTypeTargetProductId').val('');
+                $('[name="Deductiles[0].ChargePercentage"]').val('');
+                $('[name="Deductiles[0].ChargeFixedAmount"]').val('');
+                $('[name="Deductiles[0].ComputeChargeOnTopUp"]').prop('checked', false);
+                $('[name="Deductiles[0].NetOffInvestmentBalance"]').prop('checked', false);
+            }
+
+            function updateEntriesTable(entries) {
+                var tableBody = $("#DeductilesTable tbody");
+                tableBody.empty();
+
+                $.each(entries, function (index, entry) {
+                    var row = `
+                                            <tr data-id="${entry.Id}">
+                                                <td>${entry.Description || ''}</td>
+                                                <td>${entry.CustomerAccountTypeTargetProductDescription || ''}</td>
+                                                <td>${entry.ChargeType || ''}</td>
+                                                <td>${entry.ChargeFixedAmount || ''}</td>
+                                                <td>${entry.ChargePercentage || ''}</td>
+                                                <td>${entry.NetOffInvestmentBalance ? 'Yes' : 'No'}</td>
+                                                <td>${entry.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                            </tr>`;
+                    tableBody.append(row);
+                });
+            }
+
+            // Handle remove entry
+            $(document).on("click", ".remove-entry", function (event) {
+                event.preventDefault();
+                var entryId = $(this).data("id");
+                removeEntry(entryId);
+            });
+
+            function removeEntry(id) {
+                $.ajax({
+                    url: '/LoanProduct/RemoveDeductibles',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            updateEntriesTable(response.data);
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Entry removed successfully.',
+                                timer: 1000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'An error occurred while removing the entry.',
+                                timer: 3000,
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while processing the request.',
+                            timer: 3000,
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            $("#addEntryBtn23").click(function (e) {
+                e.preventDefault();
+                submitCyclesForm();
+            });
+
+            function submitCyclesForm() {
+                const minAmount = parseFloat(document.querySelector('[name="LoanRegistrationMinimumAmount"]').value);
+                const maxAmount = parseFloat(document.querySelector('[name="LoanRegistrationMaximumAmount"]').value);
+                const rangeLowerLimit = parseFloat(document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value);
+                const numCycles = 4; // Define the number of cycles
+
+                // Calculate range per cycle
+                const rangePerCycle = (maxAmount - minAmount) / numCycles;
+
+                // Determine the upper limit for the current cycle based on the lower limit
+                const rangeUpperLimit = rangeLowerLimit + rangePerCycle;
+
+                // Check if the upper limit exceeds the max amount
+                if (rangeUpperLimit > maxAmount) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Upper limit exceeds maximum allowed amount.',
+                        timer: 5000,
+                        showConfirmButton: true
+                    });
+                    return;
+                }
+
+                // Prepare data for AJAX
+                const formData = {
+                    RangeLowerLimit: rangeLowerLimit,
+                    RangeUpperLimit: rangeUpperLimit
+                };
+
+                $.ajax({
+                    url: '/LoanProduct/AddCycles',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        if (response.success) {
+                            updateEntriesTable(response.data1);
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Loan cycle added successfully.',
+                                timer: 1000,
+                                showConfirmButton: false
+                            });
+                            clearFormFields();
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -2408,40 +3118,26 @@ $(document).ready(function () {
                 });
             }
 
-            // Function to clear form fields after submission
             function clearFormFields() {
-                document.querySelector('[name="Deductiles[0].Description"]').value = '';
-                document.querySelector('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').value = '';
-                document.querySelector('[name="Deductiles[0].CustomerAccountTypeTargetProductDescription"]').value = '';
-                document.querySelector('[name="Deductiles[0].ChargeTypeDescription"]').value = '';
-                document.querySelector('[name="Deductiles[0].ChargePercentage"]').value = '';
-                document.querySelector('[name="Deductiles[0].ComputeChargeOnTopUp"]').checked = false;
-                document.querySelector('[name="Deductiles[0].NetOffInvestmentBalance"]').checked = false;
+                document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value = '';
             }
 
-            // Function to update the entries table with the response data
             function updateEntriesTable(entries) {
-                var tableBody = $("#DeductilesTable tbody");
-                tableBody.empty(); // Clear existing entries
+                var tableBody = $("#loancyclesTable tbody");
+                tableBody.empty();
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                   <td>${entry.Description}</td>
-                                                                                                                    <td>${entry.CustomerAccountTypeTargetProductDescription}</td>
-                                                                                                                   <td>${entry.CustomerAccountTypeProductCodeDescription}</td>
-                                                                                                                   <td>${entry.ChargePercentage}</td>
-                                                                                                                   <td>${entry.ChargeTypeDescription}</td>
-
-                                                                                                                   <td>${entry.ComputeChargeOnTopUp}</td>
-                                                                                                                   <td>${entry.NetOffInvestmentBalance}</td>
-                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
-                                                                                                               </tr>`;
+                                                                                <td>${entry.RangeLowerLimit}</td>
+                                                                                <td>${entry.RangeUpperLimit}</td>
+                                                                                <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
+                                                                            </tr>`;
                     tableBody.append(row);
                 });
             }
 
             // Attach click event to remove buttons (if needed)
-            $(document).on("click", ".remove-entry", function (event) {
+            $(document).on("click", ".remove-entry1", function (event) {
                 event.preventDefault(); // Prevent default behavior
                 var entryId = $(this).data("id"); // Get the ID from the button's data-id
                 removeEntry(entryId);
@@ -2450,12 +3146,12 @@ $(document).ready(function () {
             // Function to remove an entry from the table
             function removeEntry(id) {
                 $.ajax({
-                    url: '/LoanProduct/RemoveDeductibles', // Replace with your actual action URL
+                    url: '/LoanProduct/RemoveCycle', // Replace with your actual action URL
                     type: 'POST',
                     data: { id: id }, // Data to be sent for removal
                     success: function (response) {
                         if (response.success) {
-                            updateEntriesTable(response.data); // Update the table with remaining entries
+                            updateEntriesTable(response.data1); // Update the table with remaining entries
                         } else {
                             alert("An error occurred while removing the entry.");
                         }
@@ -2467,129 +3163,10 @@ $(document).ready(function () {
             }
         });
 
-
-    </script>
-
-   <script>
-       $(document).ready(function () {
-           $("#addEntryBtn23").click(function (e) {
-               e.preventDefault();
-               submitCyclesForm();
-           });
-
-           function submitCyclesForm() {
-               const minAmount = parseFloat(document.querySelector('[name="LoanRegistrationMinimumAmount"]').value);
-               const maxAmount = parseFloat(document.querySelector('[name="LoanRegistrationMaximumAmount"]').value);
-               const rangeLowerLimit = parseFloat(document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value);
-               const numCycles = 4; // Define the number of cycles
-
-               // Calculate range per cycle
-               const rangePerCycle = (maxAmount - minAmount) / numCycles;
-
-               // Determine the upper limit for the current cycle based on the lower limit
-               const rangeUpperLimit = rangeLowerLimit + rangePerCycle;
-
-               // Check if the upper limit exceeds the max amount
-               if (rangeUpperLimit > maxAmount) {
-                   Swal.fire({
-                       icon: 'error',
-                       title: 'Error!',
-                       text: 'Upper limit exceeds maximum allowed amount.',
-                       timer: 5000,
-                       showConfirmButton: true
-                   });
-                   return;
-               }
-
-               // Prepare data for AJAX
-               const formData = {
-                   RangeLowerLimit: rangeLowerLimit,
-                   RangeUpperLimit: rangeUpperLimit
-               };
-
-               $.ajax({
-                   url: '/LoanProduct/AddCycles',
-                   type: 'POST',
-                   contentType: 'application/json',
-                   data: JSON.stringify(formData),
-                   success: function (response) {
-                       if (response.success) {
-                           updateEntriesTable(response.data1);
-                           Swal.fire({
-                               icon: 'success',
-                               title: 'Success!',
-                               text: 'Loan cycle added successfully.',
-                               timer: 1000,
-                               showConfirmButton: false
-                           });
-                           clearFormFields();
-                       } else {
-                           Swal.fire({
-                               icon: 'error',
-                               title: 'Error!',
-                               text: response.message,
-                               timer: 8000,
-                               showConfirmButton: true
-                           });
-                       }
-                   },
-                   error: function (xhr, status, error) {
-                       console.error("An error occurred:", error);
-                   }
-               });
-           }
-
-           function clearFormFields() {
-               document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value = '';
-           }
-
-           function updateEntriesTable(entries) {
-               var tableBody = $("#loancyclesTable tbody");
-               tableBody.empty();
-
-               $.each(entries, function (index, entry) {
-                   var row = `<tr data-id="${entry.Id}">
-                            <td>${entry.RangeLowerLimit}</td>
-                            <td>${entry.RangeUpperLimit}</td>
-                            <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
-                        </tr>`;
-                   tableBody.append(row);
-               });
-           }
-
-           // Attach click event to remove buttons (if needed)
-           $(document).on("click", ".remove-entry1", function (event) {
-               event.preventDefault(); // Prevent default behavior
-               var entryId = $(this).data("id"); // Get the ID from the button's data-id
-               removeEntry(entryId);
-           });
-
-           // Function to remove an entry from the table
-           function removeEntry(id) {
-               $.ajax({
-                   url: '/LoanProduct/RemoveCycle', // Replace with your actual action URL
-                   type: 'POST',
-                   data: { id: id }, // Data to be sent for removal
-                   success: function (response) {
-                       if (response.success) {
-                           updateEntriesTable(response.data1); // Update the table with remaining entries
-                       } else {
-                           alert("An error occurred while removing the entry.");
-                       }
-                   },
-                   error: function () {
-                       alert("An error occurred while processing the request.");
-                   }
-               });
-           }
-       });
-
     </script>
 
     <script>
-
-        //Auxiliary Investment Appraisal Factor
-
+        // Auxiliary Investment Appraisal Factor
         $(document).ready(function () {
             // Handle button click to submit the form with AJAX
             $("#addEntryBtn").click(function (e) {
@@ -2600,18 +3177,31 @@ $(document).ready(function () {
             // Function to handle form submission with AJAX
             function submitInvestmentAppraisalFactorForm() {
                 // Get form data
-                const rangeLowerLimit = document.querySelector('[name="Tiers[0].RangeLowerLimit"]').value;
-                const loaneeMultiplier = document.querySelector('[name="Tiers[0].LoaneeMultiplier"]').value;
-                const guarantorMultiplier = document.querySelector('[name="Tiers[0].GuarantorMultiplier"]').value;
+                const rangeLowerLimit = parseFloat(document.querySelector('[name="Tiers[0].RangeLowerLimit"]').value);
+                const loaneeMultiplier = parseFloat(document.querySelector('[name="Tiers[0].LoaneeMultiplier"]').value);
+                const guarantorMultiplier = parseFloat(document.querySelector('[name="Tiers[0].GuarantorMultiplier"]').value);
 
+                // Validate if values are numeric and not empty
+                if (isNaN(rangeLowerLimit) || isNaN(loaneeMultiplier) || isNaN(guarantorMultiplier)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Input',
+                        text: 'Please ensure all fields are filled correctly.',
+                        timer: 2000,
+                        showConfirmButton: true
+                    });
+                    return;
+                }
 
+                // Calculate the Investment Range Upper Limit (you can adjust the calculation logic here)
+                const rangeUpperLimit = rangeLowerLimit * loaneeMultiplier; // You can adjust this based on your business rules
 
                 // Create an object with the form data
                 const formData = {
                     RangeLowerLimit: rangeLowerLimit,
+                    RangeUpperLimit: rangeUpperLimit, // Send the calculated upper limit
                     LoaneeMultiplier: loaneeMultiplier,
                     GuarantorMultiplier: guarantorMultiplier
-
                 };
 
                 // Send the AJAX request
@@ -2626,7 +3216,7 @@ $(document).ready(function () {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success!',
-                                text: 'Deductible added successfully.',
+                                text: 'Investment Appraisal Factor added successfully.',
                                 timer: 1000,
                                 showConfirmButton: false
                             });
@@ -2652,7 +3242,6 @@ $(document).ready(function () {
                 document.querySelector('[name="Tiers[0].RangeLowerLimit"]').value = '';
                 document.querySelector('[name="Tiers[0].GuarantorMultiplier"]').value = '';
                 document.querySelector('[name="Tiers[0].LoaneeMultiplier"]').value = '';
-
             }
 
             // Function to update the entries table with the response data
@@ -2662,13 +3251,12 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                       <td>${entry.RangeLowerLimit}</td>
-                                                                                                                        <td>${entry.RangeUpperLimit}</td>
-                                                                                                                        <td>${entry.GuarantorMultiplier}</td>
-                                                                                                                        <td>${entry.LoaneeMultiplier}</td>
-
-                                                                                                                       <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
-                                                                                                                   </tr>`;
+                                        <td>${entry.RangeLowerLimit}</td>
+                                        <td>${entry.RangeUpperLimit}</td>
+                                        <td>${entry.LoaneeMultiplier}</td>
+                                        <td>${entry.GuarantorMultiplier}</td>
+                                        <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
+                                    </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2699,9 +3287,8 @@ $(document).ready(function () {
                 });
             }
         });
-
-
     </script>
+
     <script>
 
         //Auxiliary Lending Condition
@@ -2780,13 +3367,13 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                       <td>${entry.TargetLoanProductDescription}</td>
-                                                                                                                        <td>${entry.ConditionDescription}</td>
-                                                                                                                        <td>${entry.MaximumEligiblePercentage}</td>
+                                                                                                                                                                           <td>${entry.TargetLoanProductDescription}</td>
+                                                                                                                                                                            <td>${entry.ConditionDescription}</td>
+                                                                                                                                                                            <td>${entry.MaximumEligiblePercentage}</td>
 
 
-                                                                                                                       <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
-                                                                                                                   </tr>`;
+                                                                                                                                                                           <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                                                                       </tr>`;
                     tableBody.append(row);
                 });
             }

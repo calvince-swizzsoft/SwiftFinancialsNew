@@ -82,7 +82,12 @@ namespace Application.MainBoundedContext.MicroCreditModule.Services
                     var microCreditGroups = _microCreditGroupRepository.AllMatching(spec, serviceHeader);
 
                     if (microCreditGroups != null && microCreditGroups.Any())
-                        throw new InvalidOperationException("Sorry, but the selected customer already exists as a microcredit group!");
+                    {
+                        //microCreditGroupDTO.errorMessages = string.Format(("Sorry, but the selected customer already exists as a microcredit group!"));
+                        return microCreditGroupDTO;
+
+                    }
+
                     else
                     {
                         var microCreditGroup = MicroCreditGroupFactory.CreateMicroCreditGroup(microCreditGroupDTO.ParentId, microCreditGroupDTO.CustomerId, microCreditGroupDTO.MicroCreditOfficerId, microCreditGroupDTO.Type, microCreditGroupDTO.Purpose, microCreditGroupDTO.Activities, microCreditGroupDTO.MeetingFrequency, microCreditGroupDTO.MeetingDayOfWeek, microCreditGroupDTO.MeetingPlace, microCreditGroupDTO.MinimumMembers, microCreditGroupDTO.MaximumMembers, microCreditGroupDTO.Remarks);
@@ -152,12 +157,18 @@ namespace Application.MainBoundedContext.MicroCreditModule.Services
                     }
 
                     if (officials > 0)
-                        throw new InvalidOperationException(string.Format("Sorry, but the selected microcredit group already has a member designated as {0}!", EnumHelper.GetDescription((MicroCreditGroupMemberDesignation)microCreditGroupMemberDTO.Designation)));
+                    {
+                        microCreditGroupMemberDTO.errorMsg = string.Format("Sorry, but the selected microcredit group already has a member designated as {0}!", EnumHelper.GetDescription((MicroCreditGroupMemberDesignation)microCreditGroupMemberDTO.Designation));
+                        return microCreditGroupMemberDTO;
+                    }
 
                     var similarMembers = _microCreditGroupMemberRepository.AllMatchingCount(MicroCreditGroupMemberSpecifications.MicroCreditGroupMemberWithCustomerId(microCreditGroupMemberDTO.CustomerId), serviceHeader);
 
                     if (similarMembers > 0)
-                        throw new InvalidOperationException("Sorry, but the selected customer is already linked to a microcredit group!");
+                    {
+                        microCreditGroupMemberDTO.errorMsg = string.Format("Sorry, but the selected customer is already linked to a microcredit group!");
+                        return microCreditGroupMemberDTO;
+                    }
 
                     var microCreditGroupMember = MicroCreditGroupMemberFactory.CreateMicroCreditGroupMember(microCreditGroupMemberDTO.MicroCreditGroupId, microCreditGroupMemberDTO.CustomerId, microCreditGroupMemberDTO.Designation, microCreditGroupMemberDTO.LoanCycle, microCreditGroupMemberDTO.Remarks);
 

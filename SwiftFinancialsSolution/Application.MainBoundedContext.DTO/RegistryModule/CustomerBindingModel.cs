@@ -622,22 +622,15 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         }
 
 
-        // Additional DTOs
-        [DataMember]
-        [Display(Name = "Passport")]
-        public string PassportPhoto { get; set; }
+        //   // Additional Document DTO
+        //public Guid DocumentID { get; set; }  // Unique identifier for the document
+        //public Guid CustomerId { get; set; }  // Reference to the associated customer
+        //public byte[] PassportPhoto { get; set; }
+        //public byte[] SignaturePhoto { get; set; }
+        //public byte[] IDCardFrontPhoto { get; set; }
+        //public byte[] IDCardBackPhoto { get; set; }
 
-        [DataMember]
-        [Display(Name = "Signature")]
-        public string SignaturePhoto { get; set; }
-
-        [DataMember]
-        [Display(Name = "ID (Front)")]
-        public string IDCardFrontPhoto { get; set; }
-
-        [DataMember]
-        [Display(Name = "ID (Back)")]
-        public string IDCardBackPhoto { get; set; }
+        //public DateTime DocumentCreatedDate { get; set; } = DateTime.Now;
 
 
 
@@ -650,7 +643,8 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         public ObservableCollection<PartnershipMemberDTO> partnershipMemberCollection { get; set; }
         public ObservableCollection<CorporationMemberDTO> corporationMemberDTO { get; set; }
         public ObservableCollection<MicroCreditGroupMemberDTO> microCreditGroupMemberDTOs { get; set; }
-      
+        public ObservableCollection<RefereeDTO> refereeDTOs { get; set; }
+
 
     }
 }

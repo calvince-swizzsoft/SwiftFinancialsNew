@@ -11,6 +11,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 {
     public class CashWithdrawalRequestDTO : BindingModelBase<CashWithdrawalRequestDTO>
     {
+        
+
         public CashWithdrawalRequestDTO()
         {
             AddAllAttributeValidators();
@@ -326,5 +328,9 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
                 return Enum.IsDefined(typeof(CashTransferRequestStatus), CashTransferStatus) ? EnumHelper.GetDescription((CashTransferRequestStatus)CashTransferStatus) : string.Empty;
             }
         }
+
+        public Guid PaymentVoucherId { get; set; }
+
+        public string PaymentVoucherPayee { get; set; }
     }
 }

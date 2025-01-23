@@ -1,10 +1,47 @@
 ﻿@model  Application.MainBoundedContext.DTO.HumanResourcesModule.HolidayDTO
+
 @{
-    ViewBag.Title = "Holiday";
+
+
+    ViewBag.Title = "View Holiday";
 }
+
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#ValueDate').datepicker({
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Employee Types</h2>
+    <div class="col-lg-12">
+        <h1>Holiday Details</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -13,7 +50,7 @@
                 @Html.ActionLink("Home", "Index", "Holiday", new { Area = "HumanResource" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>View</strong>
+                <strong>Create</strong>
             </li>
         </ol>
     </div>
@@ -24,6 +61,8 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -33,53 +72,454 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.PostingPeriodDescription)</strong><br>
 
-                                @Html.DisplayFor(model => model.PostingPeriodDescription)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
+                <div class="card">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Details", "Holiday", new { Area = "HumanResource" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
 
-                                @Html.DisplayFor(model => model.Description)<br>
-                            </p>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.DurationStartDate)</strong><br>
 
-                                @Html.DisplayFor(model => model.DurationStartDate)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.DurationEndDate)</strong><br>
+                            <!-- Expense Payables -->
+                            <fieldset>
+                                <div class="card mb-4">
+                                    <div class="card-body text-dark">
+                                        <div class="row">
 
-                                @Html.DisplayFor(model => model.DurationEndDate)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong><br>
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.PostingPeriodDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.PostingPeriodId)
+                                                @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Select Posting Period" } })
+                                            </div>
 
-                                @Html.DisplayFor(model => model.IsLocked)<br>
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "Description Name required", placeholder = "Enter Text...." } })
+                                            </div>
 
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
 
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "Holiday", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "Holiday", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label" })
+                                                @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Enter Space to autofill....", @readonly = "" } })
+                                            </div>
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label" })
+                                                @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @id = "LeaveTypeDescription", @class = "LeaveTypeLookup form-control required", placeholder = "Enter Space to autofill....", @readonly = "" } })
+                                            </div>
+                                        </div>
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
+
+                                <p>
+                                    @Html.ActionLink("Edit", "Edit", "Holiday", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                    @Html.ActionLink("Back to List", "Index", "Holiday", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                </p>                            
+                            </div>
+
+
+
+                        }
                     </div>
                 </div>
+
+                <style>
+                    .card {
+                        margin-bottom: 20px;
+                    }
+
+                    
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #e0f0ff;
+                    }
+                </style>
+
+
+
             </div>
         </div>
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    <style>
+        .highlight {
+            background-color: #f0c14b; /* Light yellow color for highlighting */
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".datepicker").datepicker({
+                dateFormat: 'dd-mm-yy',  // Use the format you prefer
+                changeMonth: true,
+                changeYear: true
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
+
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
+
+                    var form = $(this);
+
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
+
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
+
+             //PostingPeriod typehead starts here
+            $('.PostingPeriodsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
+                        { query: query },
+                        function (PostingPeriods) {
+                            var newPostingPeriodsData = [];
+                            PostingPeriodsMap = {};
+                            $.each(PostingPeriods, function (i, PostingPeriod) {
+                                newPostingPeriodsData.push(PostingPeriod.Description);
+                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
+                            });
+                            process(newPostingPeriodsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var postingPeriodId = "";
+                    PostingPeriodId = PostingPeriodsMap[item].Id;
+                    $('#PostingPeriodId').val(PostingPeriodId);
+                    //console.log(PostingPeriodId)
+                    return item;
+                }
+            });
+        });</script>
+
+
+
+
+    <script>
+        $.ajax({
+            url: '/HumanResource/Create',
+            type: 'POST',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response.message
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An unexpected error occurred.'
+                });
+            }
+        });
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+        .container1 {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .summary-table label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .summary-table input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #f9f9f9;
+            }
+
+        .tab-content {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .tab-pane {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 50px;
+        }
+
+        thead {
+            background-color: #f5f5f5;
+        }
+
+            thead th {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                font-style: italic;
+                color: cadetblue;
+            }
+
+        tbody td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+        /* Ensure no border between tabs and tab content */
+        .nav-tabs {
+            border-bottom: none; /* Remove bottom border from tab navigation */
+        }
+
+            .nav-tabs .nav-link {
+                border: none; /* Remove borders from tab links */
+                border-radius: 0; /* Remove border radius for a cleaner look */
+            }
+
+        .tab-content {
+            border-top: 1px solid #ddd; /* Add a subtle border if needed */
+            padding: 15px; /* Optional: Add padding for spacing */
+        }
+
+        /* Optional: Add spacing between tab navigation and content */
+        .container {
+            margin-top: 20px; /* Adjust top margin as needed */
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+}

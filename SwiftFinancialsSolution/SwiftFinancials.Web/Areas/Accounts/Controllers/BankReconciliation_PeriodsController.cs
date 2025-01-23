@@ -62,30 +62,38 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        public async Task<ActionResult> PostingPeriod(Guid? id, BankReconciliationPeriodDTO bankReconciliationPeriodDTO)
+
+
+        [HttpGet]
+        public async Task<ActionResult> PostingPeriod(Guid postingPeriodId)
         {
-            await ServeNavigationMenus();
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            try
             {
-                return View();
+                var postingPeriod = await _channelService.FindPostingPeriodAsync(postingPeriodId, GetServiceHeader());
+
+                if (postingPeriod == null)
+                {
+                    return Json(new { success = false, message = "PostingPeriod not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                // Store specific details in the session
+                HttpContext.Session["PostingPeriodDescription"] = postingPeriod.Description;
+                HttpContext.Session["PostingPeriodId"] = postingPeriod.Id;
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        PostingPeriodDescription = postingPeriod.Description,
+                        PostingPeriodId = postingPeriod.Id,
+                    }
+                }, JsonRequestBehavior.AllowGet);
             }
-
-
-            var postingPeriodDetails = await _channelService.FindPostingPeriodAsync(parseId, GetServiceHeader());
-
-            if (postingPeriodDetails != null)
+            catch (Exception)
             {
-                bankReconciliationPeriodDTO.PostingPeriodId = postingPeriodDetails.Id;
-                bankReconciliationPeriodDTO.PostingPeriodDescription = postingPeriodDetails.Description;
-
-                Session["postingPeriodId"] = bankReconciliationPeriodDTO.PostingPeriodId;
-                Session["postingPeriodDescription"] = bankReconciliationPeriodDTO.PostingPeriodDescription;
+                return Json(new { success = false, message = "An error occurred while fetching the PostingPeriod details." }, JsonRequestBehavior.AllowGet);
             }
-
-            return View("Create", bankReconciliationPeriodDTO);
         }
 
 
@@ -154,8 +162,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             bankReconciliationPeriodDTO.BankLinkageId = (Guid)Session["BankId"];
             bankReconciliationPeriodDTO.BankLinkageBankName = Session["BankName"].ToString();
 
-            bankReconciliationPeriodDTO.PostingPeriodId = (Guid)Session["postingPeriodId"];
-            bankReconciliationPeriodDTO.PostingPeriodDescription = Session["postingPeriodDescription"].ToString();
+            var postingPeriodDescription = HttpContext.Session["PostingPeriodDescription"] as string;
+            var postingPeriodId = HttpContext.Session["PostingPeriodId"] as Guid?;
             var k = await _channelService.FindBankLinkageAsync(bankReconciliationPeriodDTO.BankLinkageId, GetServiceHeader());
             bankReconciliationPeriodDTO.BankAccountNumber = k.BankAccountNumber;
             bankReconciliationPeriodDTO.BranchId = k.BranchId;
@@ -171,16 +179,19 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!bankReconciliationPeriodDTO.HasErrors)
             {
                 await _channelService.AddBankReconciliationPeriodAsync(bankReconciliationPeriodDTO, GetServiceHeader());
+                TempData["Message"] = "Bank Reconciliation Period Created Successfully";
+                TempData["MessageType"] = "success";
 
-                TempData["AlertMessage"] = "Bank Reconciliation Period Created Successfully";
+               
 
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = bankReconciliationPeriodDTO.ErrorMessages;
+                TempData["Message"] = "Failed to create Bank Linkage";
+                TempData["MessageType"] = "Error";
 
-                TempData["Error"] = "Failed to create Bank Linkage";
 
                 return View(bankReconciliationPeriodDTO);
             }

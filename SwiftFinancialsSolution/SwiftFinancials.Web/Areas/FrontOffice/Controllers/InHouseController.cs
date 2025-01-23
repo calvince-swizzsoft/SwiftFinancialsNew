@@ -70,33 +70,43 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 startDate,
                 endDate,
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
             );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(inHouseChequeDTO => inHouseChequeDTO.CreatedDate)
+                    .ToList();
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: pageCollectionInfo.PageCollection,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<InHouseChequeDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<InHouseChequeDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
         public async Task<ActionResult> Details()
         {
@@ -128,18 +138,21 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Branch details could not be found.";
-                    return RedirectToAction("Index"); 
+                    TempData["SweetAlertMessage"] = "Branch details could not be found.";
+                    TempData["SweetAlertType"] = "error"; 
+                    return RedirectToAction("Index");
                 }
             }
             else
             {
-                TempData["ErrorMessage"] = "User branch information is missing.";
-                return RedirectToAction("Index"); 
+                TempData["SweetAlertMessage"] = "User branch information is missing.";
+                TempData["SweetAlertType"] = "warning"; 
+                return RedirectToAction("Index");
             }
 
             return View(inHouseChequeDTO);
         }
+
 
 
 
@@ -331,7 +344,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (chequeEntries == null || chequeEntries.Count == 0)
                 {
-                    return RedirectToAction("Index"); 
+                    TempData["SweetAlertMessage"] = "No cheque entries found.";
+                    TempData["SweetAlertType"] = "warning";
+                    return RedirectToAction("Index");
                 }
 
                 var serviceHeader = GetServiceHeader();
@@ -346,21 +361,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     TempData.Remove("ChequeEntries");
 
-                    TempData["SuccessMessage"] = "Cheque submitted successfully.";
-                    return RedirectToAction("Index");
+                    TempData["SweetAlertMessage"] = "Cheque submitted successfully.";
+                    TempData["SweetAlertType"] = "success";
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Failed to submit the cheque entries.";
-                    return RedirectToAction("Index");
+                    TempData["SweetAlertMessage"] = "Failed to submit the cheque entries.";
+                    TempData["SweetAlertType"] = "error";
                 }
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "An error occurred: " + ex.Message;
-                return RedirectToAction("Index");
+                TempData["SweetAlertMessage"] = "An error occurred: " + ex.Message;
+                TempData["SweetAlertType"] = "error";
             }
+
+            return RedirectToAction("Index");
         }
+
 
 
 

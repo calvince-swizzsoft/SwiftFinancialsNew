@@ -1,12 +1,79 @@
 ﻿@model Application.MainBoundedContext.DTO.AdministrationModule.BankDTO
 
 @{
-    ViewBag.Title = "Create Bank";
+    ViewBag.Title = "Edit Bank";
 }
+
+<style>
+    .section-container {
+        border: 1px solid #2E2E2E;
+        border-radius: 5px;
+        padding: 20px;
+        background-color: #fff;
+        width: 100%;
+        margin: auto;
+        position: relative;
+    }
+
+    .section-title {
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background-color: #fff;
+        padding: 0 10px;
+        font-weight: bold;
+        color: black;
+    }
+
+
+    #branchesTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #branchesTable, th, td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    #branchesTable, th {
+        background: linear-gradient(to bottom, #4a90e2, #003366);
+        color: white;
+        text-transform: uppercase;
+        font-size: 1.1em;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #branchesTable, tr:hover td {
+        background: rgba(74, 144, 226, 0.2);
+        transform: translateY(-2px);
+    }
+
+    #branchesTable, td {
+        background: #f9f9f9;
+        color: #333;
+    }
+
+    #branchesTable, tr:nth-child(even) td {
+        background: #f2f2f2;
+    }
+
+    #branchesTable, tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    #branchesTable, tr:last-child td {
+        border-bottom: none;
+    }
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Edit Bank</h2>
+        <h1>Administration</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -21,189 +88,439 @@
     </div>
 </div>
 
-<div class="wrapper wrapper-content white-bg">
-    <div class="ibox">
-        <div class="ibox-title">
-            <h5>Edit Bank</h5>
-            <div class="ibox-tools">
-                <a class="collapse-link">
-                    <i class="fa fa-chevron-up"></i>
-                </a>
-                <a class="close-link">
-                    <i class="fa fa-times"></i>
-                </a>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Edit Bank</h2>
+
+                    @if (TempData["Failed"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Completed Successfully.',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (TempData["EBB"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Failed. Bank Branches required!',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Edit", "Bank", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "addLoanGuarantorsform" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Description, "Bank Name", htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @required = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "font-bold" })
+                                        @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @Id = "Code", @class = "form-control", @required = "" } })
+                                        <span id="code-error" class="text-danger" style="display:none;">Enter code greater than zero</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="section-container mt-2">
+                                <div class="section-title">Branch Details</div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.BankBranchesDTO[0].Description, "Branch Name", htmlAttributes: new { @class = "font-bold" })
+                                            @Html.EditorFor(model => model.BankBranchesDTO[0].Description, new { htmlAttributes = new { @Id = "BranchName", @class = "form-control" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.BankBranchesDTO[0].Code, htmlAttributes: new { @class = "font-bold" })
+                                            @Html.EditorFor(model => model.BankBranchesDTO[0].Code, new { htmlAttributes = new { @Id = "BranchCode", @class = "form-control" } })
+                                            <span id="branchCode-error" class="text-danger" style="display:none;">Enter code greater than zero</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.BankBranchesDTO[0].AddressAddressLine1, htmlAttributes: new { @class = "font-bold" })
+                                            @Html.EditorFor(model => model.BankBranchesDTO[0].AddressAddressLine1, new { htmlAttributes = new { @Id = "AddressAddressLine1", @class = "form-control" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.BankBranchesDTO[0].AddressAddressLine2, htmlAttributes: new { @class = "font-bold" })
+                                            @Html.EditorFor(model => model.BankBranchesDTO[0].AddressAddressLine2, new { htmlAttributes = new { @Id = "AddressAddressLine2", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.BankBranchesDTO[0].AddressStreet, htmlAttributes: new { @class = "font-bold" })
+                                            @Html.EditorFor(model => model.BankBranchesDTO[0].AddressStreet, new { htmlAttributes = new { @Id = "AddressStreet", @class = "form-control" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.BankBranchesDTO[0].AddressPostalCode, htmlAttributes: new { @class = "font-bold" })
+                                            @Html.EditorFor(model => model.BankBranchesDTO[0].AddressPostalCode, new { htmlAttributes = new { @Id = "AddressPostalCode", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.BankBranchesDTO[0].AddressCity, htmlAttributes: new { @class = "font-bold" })
+                                            @Html.EditorFor(model => model.BankBranchesDTO[0].AddressCity, new { htmlAttributes = new { @Id = "AddressCity", @class = "form-control" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.BankBranchesDTO[0].AddressEmail, htmlAttributes: new { @class = "font-bold" })
+                                            @Html.EditorFor(model => model.BankBranchesDTO[0].AddressEmail, new { htmlAttributes = new { @Id = "AddressEmail", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.BankBranchesDTO[0].AddressLandLine, htmlAttributes: new { @class = "font-bold" })
+                                            @Html.EditorFor(model => model.BankBranchesDTO[0].AddressLandLine, new { htmlAttributes = new { @Id = "AddressLandLine", @class = "form-control" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.BankBranchesDTO[0].AddressMobileLine, htmlAttributes: new { @class = "font-bold" })
+                                            @Html.EditorFor(model => model.BankBranchesDTO[0].AddressMobileLine, new { htmlAttributes = new { @Id = "AddressMobileLine", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12" style="text-align: right;">
+                                        <input type="submit" id="addEntryBtn" style="width:150px;" class="btn btn-primary" value="Add" />
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div class="table-container">
+                                    <h3 style="font-size: 1.9rem; text-align: center;">Branches</h3>
+                                    <table id="branchesTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Name</th>
+                                                <th>Address Line 1</th>
+                                                <th>Address Line 2</th>
+                                                <th>Street</th>
+                                                <th>Postal Code</th>
+                                                <th>City</th>
+                                                <th>Email</th>
+                                                <th>Land Line</th>
+                                                <th>Mobile Line</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.BankBranches != null)
+                                            {
+                                                foreach (var branches in ViewBag.BankBranches)
+                                                {
+                                                    <tr>
+                                                        <td>@branches.Code</td>
+                                                        <td>@branches.Description</td>
+                                                        <td>@branches.AddressAddressLine1</td>
+                                                        <td>@branches.AddressAddressLine2</td>
+                                                        <td>@branches.AddressStreet</td>
+                                                        <td>@branches.AddressPostalCode</td>
+                                                        <td>@branches.AddressCity</td>
+                                                        <td id="email">@branches.AddressEmail</td>
+                                                        <td>@branches.AddressLandLine</td>
+                                                        <td>@branches.AddressMobileLine</td>
+                                                        <td><button type="button" class="btn btn-danger remove-entry" data-id="@branches.Id" style="background-color: red; color: white;">Remove</button></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="row mt-5">
+                                <div class="col-md-12">
+                                    <input type="submit" style="width:150px;" class="btn btn-primary" value="Update" />
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
+                </div>
             </div>
-        </div>
-        <div class="ibox-content">
-            @using (Html.BeginForm("Edit", "Bank", new { Area = "Admin" }, FormMethod.Post, new { @class = "form-horizontal", @id = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        @Html.LabelFor(model => model.Description, "Description:", new { @class = "control-label" })
-                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter description..." } })
-                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="col-md-6">
-                        @Html.LabelFor(model => model.Code, "Code:", new { @class = "control-label" })
-                        @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter code..." } })
-                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <h4>Branch Details</h4>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        @Html.Label("Code", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchCode" placeholder="Enter branch code..." />
-                    </div>
-                    <div class="col-md-6">
-                        @Html.Label("Address Line 1", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchAddressLine1" placeholder="Enter address line 1..." />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        @Html.Label("Address Line 2", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchAddressLine2" placeholder="Enter address line 2..." />
-                    </div>
-                    <div class="col-md-6">
-                        @Html.Label("Street", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchStreet" placeholder="Enter street..." />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        @Html.Label("Postal Code", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchPostalCode" placeholder="Enter postal code..." />
-                    </div>
-                    <div class="col-md-6">
-                        @Html.Label("City", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchCity" placeholder="Enter city..." />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        @Html.Label("Email", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchEmail" placeholder="Enter email..." />
-                    </div>
-                    <div class="col-md-6">
-                        @Html.Label("Land Line", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchLandline" placeholder="Enter landline..." />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        @Html.Label("Mobile Line", new { @class = "control-label" })
-                        <input type="text" class="form-control" id="branchMobileLine" placeholder="Enter mobile line..." />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button type="button" id="addBranchBtn" class="btn btn-primary">Add Branch</button>
-                </div>
-
-                <div class="form-group">
-                    <table id="branchTable" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Code</th>
-                                <th>Address Line 1</th>
-                                <th>Address Line 2</th>
-                                <th>Street</th>
-                                <th>Postal Code</th>
-                                <th>City</th>
-                                <th>Email</th>
-                                <th>Land Line</th>
-                                <th>Mobile Line</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Dynamic rows will be inserted here -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-success" />
-                </div>
-            }
         </div>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
-    $(function () {
-        let branchIndex = 0;
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
 
-        $('#addBranchBtn').click(function () {
-            const branchData = {
-                Code: $('#branchCode').val().trim(),
-                AddressLine1: $('#branchAddressLine1').val().trim(),
-                AddressLine2: $('#branchAddressLine2').val().trim(),
-                Street: $('#branchStreet').val().trim(),
-                PostalCode: $('#branchPostalCode').val().trim(),
-                City: $('#branchCity').val().trim(),
-                Email: $('#branchEmail').val().trim(),
-                Landline: $('#branchLandline').val().trim(),
-                MobileLine: $('#branchMobileLine').val().trim()
-            };
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
-            if (!branchData.Code || !branchData.AddressLine1 || !branchData.City) {
-                alert("Please fill in all required fields (Code, Address Line 1, City).");
-                return;
+    <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
+    <script>
+        async function loadCountryCodes() {
+            const countryCodeDropdown = document.getElementById("CountryCode");
+
+            try {
+                const response = await fetch("https://restcountries.com/v3.1/all");
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+                const countries = await response.json();
+                countryCodeDropdown.innerHTML = ""; // Clear dropdown
+                countries.forEach(country => {
+                    if (country.idd?.root && country.idd?.suffixes) {
+                        const dialCode = country.idd.root + country.idd.suffixes[0];
+                        const option = document.createElement("option");
+                        option.value = dialCode;
+                        option.textContent = `${dialCode} (${country.name.common})`;
+                        countryCodeDropdown.appendChild(option);
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching country codes:", error);
+                // Fallback to local data
+                const fallbackData = [
+                    { name: "Kenya", dialCode: "+254" },
+                    { name: "United States", dialCode: "+1" },
+                    { name: "United Kingdom", dialCode: "+44" },
+                    { name: "India", dialCode: "+91" }
+                ];
+                countryCodeDropdown.innerHTML = ""; // Clear dropdown
+                fallbackData.forEach(country => {
+                    const option = document.createElement("option");
+                    option.value = country.dialCode;
+                    option.textContent = `${country.dialCode} (${country.name})`;
+                    countryCodeDropdown.appendChild(option);
+                });
             }
-
-            $.ajax({
-                url: '@Url.Action("Add", "Bank", new { Area = "Admin" })',
-                type: 'POST',
-                data: branchData,
-                success: function (response) {
-                    if (response.success) {
-                        // Add the new branch to the table dynamically
-                        const newRow = `
-                            <tr data-branch-id="${branchIndex}">
-                                <td>${branchData.Code}</td>
-                                <td>${branchData.AddressLine1}</td>
-                                <td>${branchData.AddressLine2}</td>
-                                <td>${branchData.Street}</td>
-                                <td>${branchData.PostalCode}</td>
-                                <td>${branchData.City}</td>
-                                <td>${branchData.Email}</td>
-                                <td>${branchData.Landline}</td>
-                                <td>${branchData.MobileLine}</td>
-                                <td><button type="button" class="btn btn-danger removeBranchBtn">Remove</button></td>
-                            </tr>`;
-                        $('#branchTable tbody').append(newRow);
-                        branchIndex++;
-                        clearBranchInputs();
-                    }
-                }
-            });
-        });
-
-        $(document).on('click', '.removeBranchBtn', function () {
-            const row = $(this).closest('tr');
-            const branchId = row.data('branch-id');
-
-            $.ajax({
-                url: '@Url.Action("Remove", "Bank", new { Area = "Admin" })',
-                type: 'POST',
-                data: { id: branchId },
-                success: function (response) {
-                    if (response.success) {
-                        row.remove();
-                    }
-                }
-            });
-        });
-
-        function clearBranchInputs() {
-            $('#branchCode, #branchAddressLine1, #branchAddressLine2, #branchStreet, #branchPostalCode, #branchCity, #branchEmail, #branchLandline, #branchMobileLine').val('');
         }
+
+    </script>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#addEntryBtn').click(function (event) {
+            event.preventDefault();
+
+            var formData = $('#addLoanGuarantorsform').serialize();
+
+        $.ajax({
+            url: '@Url.Action("AddEdit", "Bank", new { Area = "Admin" })',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    updateEntriesTable(response.entries);
+
+                    console.log('Swal is loaded:', typeof Swal !== 'undefined');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Branch added successfully.',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+
+                    $('#BranchName').val('');
+                    $('#BranchCode').val('');
+                    $('#AddressAddressLine1').val('');
+                    $('#AddressAddressLine2').val('');
+                    $('#AddressStreet').val('');
+                    $('#AddressPostalCode').val('');
+                    $('#AddressCity').val('');
+                    $('#AddressEmail').val('');
+                    $('#AddressLandLine').val('');
+                    $('#AddressMobileLine').val('');
+
+                    console.log('Form fields cleared');
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Could not Add Branch to List!',
+                        text: response.message,
+                        timer: 8000,
+                        showConfirmButton: true
+                    });
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
     });
-</script>
+});
+
+        function updateEntriesTable(entries) {
+            var tableBody = $("#branchesTable tbody");
+            tableBody.empty();
+
+            $.each(entries, function (index, entry) {
+                var row = `<tr data-id="${entry.Description}">
+                               <td>${entry.Code}</td>
+                               <td>${entry.Description}</td>
+                               <td>${entry.AddressAddressLine1}</td>
+                               <td>${entry.AddressAddressLine2}</td>
+                               <td>${entry.AddressStreet}</td>
+                               <td>${entry.AddressPostalCode}</td>
+                               <td>${entry.AddressCity}</td>
+                               <td>${entry.AddressEmail}</td>
+                               <td>${entry.AddressLandLine}</td>
+                               <td>${entry.AddressMobileLine}</td>
+                               <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}" style="background-color: red; color: white;">Remove</button></td>
+                           </tr>`;
+                tableBody.append(row);
+            });
+        }
+
+        $(document).on("click", ".remove-entry", function (event) {
+            event.preventDefault();
+            var entryId = $(this).data("id");
+            removeEntry(entryId);
+        });
+
+
+        function removeEntry(id) {
+            $.ajax({
+                url: '@Url.Action("RemoveEdit", "Bank")',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
+                    } else {
+                        alert("An error occurred while removing the entry.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the request.");
+                }
+            });
+        }
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#Code').on('input', function () {
+                var Code = parseFloat($(this).val()) || 0;
+
+                if (Code < 1) {
+                    $('#code-error').show();
+                    $(this).val('');
+                } else {
+                    $('#code-error').hide();
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#BranchCode').on('input', function () {
+                var BranchCode = parseFloat($(this).val()) || 0;
+
+                if (BranchCode < 1) {
+                    $('#branchCode-error').show();
+                    $(this).val('');
+                } else {
+                    $('#branchCode-error').hide();
+                }
+            });
+        });
+    </script>
+}

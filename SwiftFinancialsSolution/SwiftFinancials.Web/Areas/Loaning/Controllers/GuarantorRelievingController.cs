@@ -18,16 +18,17 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
     public class GuarantorRelievingController : MasterController
     {
-
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
+
+            ViewBag.LoanGuarantorStatus = GetLoanGuarantorStatusTypeSelectList(string.Empty);
 
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate, int loanGuarantorStatus, string filterValue)
         {
             int totalRecordCount = 0;
 
@@ -37,66 +38,59 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanGuarantorAttachmentHistoryByStatusAndFilterInPageAsync((int)LoanGuarantorAttachmentHistoryStatus.Attached, DateTime.Now, DateTime.Now, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanGuarantorAttachmentHistoryByStatusAndFilterInPageAsync(loanGuarantorStatus, startDate, endDate,
+                filterValue, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(LoanCase => LoanCase.CreatedDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(x => x.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<LoanGuarantorDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<LoanGuarantorAttachmentHistoryDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
-
-
-        public async Task<ActionResult> Create(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        
+        public async Task<ActionResult> View(Guid? id)
         {
             await ServeNavigationMenus();
 
             Guid parseId;
-
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-                return View();
+                return Json(new { success = false, message = "Invalid ID" }, JsonRequestBehavior.AllowGet);
+            }
+            Session["LoanGuarantorAttachmentHistoryId"] = parseId;
+            var LoanGuarantorAttachmentHistoryEntries = await _channelService.FindLoanGuarantorAttachmentHistoryEntriesByLoanGuarantorAttachmentHistoryIdAsync(parseId, GetServiceHeader());
+
+            if (LoanGuarantorAttachmentHistoryEntries == null)
+            {
+                return Json(new { success = false, message = "No data found" }, JsonRequestBehavior.AllowGet);
             }
 
-            return View();
+            return Json(new { success = true, data = LoanGuarantorAttachmentHistoryEntries }, JsonRequestBehavior.AllowGet);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(DataAttachmentPeriodDTO dataPeriodDTO)
+        public async Task<ActionResult> Update()
         {
 
-            dataPeriodDTO.ValidateAll();
-
-            if (!dataPeriodDTO.HasErrors)
+            if (Session["LoanGuarantorAttachmentHistoryId"] != null)
             {
-                await _channelService.AddDataAttachmentPeriodAsync(dataPeriodDTO, GetServiceHeader());
+                Guid Id = (Guid)Session["LoanGuarantorAttachmentHistoryId"];
 
-                TempData["message"] = "Successfully created Data Period";
-
+                await _channelService.RelieveLoanGuarantorsAsync(Id, 1234, GetServiceHeader());
+                TempData["Success"] = "Operation Successful.";
+                Session["LoanGuarantorAttachmentHistoryId"] = null;
                 return RedirectToAction("Index");
             }
-            else
-            {
-                var errorMessages = dataPeriodDTO.ErrorMessages.ToString();
-
-                TempData["BugdetBalance"] = errorMessages;
-
-                TempData["messageError"] = "Could not create Data Period";
-
-                ViewBag.MonthSelectList = GetMonthsAsync(dataPeriodDTO.MonthDescription);
-
-                await ServeNavigationMenus();
-
-                return View();
-            }
+            Session["LoanGuarantorAttachmentHistoryId"] = null;
+            TempData["Failed"] = "Operation Failed!";
+            return RedirectToAction("Index");
         }
     }
 }

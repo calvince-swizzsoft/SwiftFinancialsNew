@@ -1,9 +1,12 @@
 ﻿@model Application.MainBoundedContext.DTO.AccountsModule.SystemTransactionTypeInCommissionDTO
-@{
+@{ var commissions = ViewBag.Commisions;
     ViewBag.Title = "Create Well Known Charges";
-    var systemTransactionType = ViewBag.SystemTransactionType as List<SelectListItem> ?? new List<SelectListItem>();
-    var chargeType = ViewBag.Chargetype as List<SelectListItem> ?? new List<SelectListItem>();
-}
+    var systemTransactionType = ViewBag.SystemTransactionType as List<SelectListItem>
+    ?? new List<SelectListItem>
+        ();
+    var chargeType = ViewBag.Chargetype as List<SelectListItem>
+        ?? new List<SelectListItem>
+            (); }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
@@ -21,27 +24,34 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Create Well Known Charges</h2>
-                    @if (TempData["Successfully"] != null)
+
+                    @if (TempData["successfully"] != null)
                     {
-                        <div class="alert alert-primary">
-                            <strong>Successfully!</strong> @TempData["Successfully"]
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>&times;</span>
-                            </button>
-                        </div>
-                    }
+        <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '@TempData["successfully"]',
+                confirmButtonText: 'OK'
+            });
+        });
+        </script>}
+
+                    <h2>Create Well Known Charges</h2>
+
                     <div class="ibox-tools">
                         <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         <a class="close-link"><i class="fa fa-times"></i></a>
                     </div>
                 </div>
 
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-primary">
                     @using (Html.BeginForm("Create", "Wellknowncharges", new { Area = "Accounts" }, FormMethod.Post, new { id = "wellKnownChargesForm" }))
                     {
-                        @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken()
                         <fieldset>
+
                             <div class="form-group">
                                 @Html.LabelFor(model => model.SystemTransactionType, new { @class = "control-label" })
                                 @Html.DropDownListFor(model => model.SystemTransactionType, systemTransactionType, new { @class = "form-control input-md", @id = "Systemtransactionype" })
@@ -58,44 +68,55 @@
                                     @Html.LabelFor(model => model.ComplementFixedAmount, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.ComplementFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Fixed Amount.", @id = "ComplementFixedAmount" } })
                                 </div>
-                            </div>
 
-                            <div class="table-responsive">
-                                <table class="table table-hover" id="commissionsTable">
+                            </div>                                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th style="display: none">Id</th>
                                             <th>Select</th>
-                                            <th>Description</th>
-                                            <th>Maximum Charge</th>
-                                            <th>Is Locked?</th>
-                                            <th>Created Date</th>
+                                            <th>Commission Description</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="commissionsTableBody"></tbody>
+                                    <tbody>
+                                        @if (commissions != null)
+                                        {
+                                            foreach (var commission in commissions)
+                                            {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="commisionIds" value="@commission.Id" />
+                            </td>
+                            <td>@commission.Description</td>
+                        </tr>
+ }
+                }
+                else
+                {
+<tr>
+    <td colspan="2">No commissions available</td>
+</tr>
+}
+                                    </tbody>
                                 </table>
                             </div>
 
                             <button type="submit" id="submitCharges" class="btn btn-primary">Submit</button>
-                        </fieldset>
-                    }
+                        </fieldset>}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
 @section Scripts {
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
     @Scripts.Render("~/plugins/dataTables")
     @Scripts.Render("~/plugins/sweetalert")
-    <script src="~/Scripts/js/navlink.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function () {
+
+    <script>$(document).ready(function () {
             $('#Systemtransactionype').change(function () {
                 loadCommissions($(this).val());
             });
@@ -107,50 +128,25 @@
                     data: { systemTransactionTypeId: systemTransactionTypeId },
                     dataType: 'json',
                     success: function (data) {
-                        if (data) {
+                        if (data && data.linkedTransactionTypes && data.unlinkedTransactionTypes) {
                             populateCommissions(data.linkedTransactionTypes, data.unlinkedTransactionTypes);
                         } else {
                             Swal.fire({ icon: 'warning', title: 'No Data', text: 'No commissions found for the selected type.' });
                         }
                     },
                     error: function (xhr) {
-                        let errorMsg = xhr.status === 404 ? 'Resource not found.' : 'Failed to load commissions.';
-                        Swal.fire({ icon: 'error', title: 'Error', text: errorMsg });
+                        Swal.fire({ icon: 'error', title: 'Error', text: xhr.status === 404 ? 'Resource not found.' : 'Failed to load commissions.' });
                     }
                 });
             }
 
             function populateCommissions(linked, unlinked) {
                 var tableBody = $('#commissionsTableBody').empty();
-
-                // Populate Linked Commissions (checked by default)
-                linked.forEach(function (item) {
-                    tableBody.append(`
-                        <tr>
-                            <td style="display: none">${item.id}</td>
-                            <td><input type="checkbox" class="link-commission" value="${item.id}" checked /></td>
-                            <td>${item.description}</td>
-                            <td>${item.maximumCharge}</td>
-                            <td>${item.isLocked}</td>
-                            <td>${item.createdDate}</td>
-                        </tr>
-                    `);
-                });
-
-                // Populate Unlinked Commissions (unchecked by default)
-                unlinked.forEach(function (item) {
-                    tableBody.append(`
-                        <tr>
-                            <td style="display: none">${item.id}</td>
-                            <td><input type="checkbox" class="link-commission" value="${item.id}" /></td>
-                            <td>${item.description}</td>
-                            <td>${item.maximumCharge}</td>
-                            <td>${item.isLocked}</td>
-                            <td>${item.createdDate}</td>
-                        </tr>
-                    `);
-                });
+                function appendRow(item) {
+                    tableBody.append(`<tr><td>${item.description || 'No Description'}</td></tr>`);
+                }
+                linked.forEach(item => appendRow(item));
+                unlinked.forEach(item => appendRow(item));
             }
-        });
-    </script>
+        });</script>
 }

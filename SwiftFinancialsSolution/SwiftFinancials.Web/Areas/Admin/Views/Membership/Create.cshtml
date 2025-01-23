@@ -1,6 +1,10 @@
 @model  Application.MainBoundedContext.DTO.AdministrationModule.UserBindingModel
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
     ViewBag.Title = "Create System User";
+    var branches = ViewBag.branches;
+
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -40,101 +44,189 @@
                 <div class="ibox-content">
                     @using (Html.BeginForm("Create", "Membership", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
-                    @Html.AntiForgeryToken()
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                    <h1>Company Linkage</h1>
-                    <fieldset>
                         <div class="row">
-                            <div class="col-md-6 form-group">
-                                @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
-                                <div class="input-group" data-autoclose="true">
-                                    @Html.HiddenFor(Model=>Model.BranchId)
-                                    @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                    <span class="input-group-addon">
-                                        <a data-toggle="modal" data-target="#companyLookupModal"><span class="fa fa-search"></span></a>
-                                    </span>
-                                </div>
-                            </div>
                             <div class="col-lg-4">
-                                <div class="text-center">
-                                    <div style="margin-top: 20px">
-                                        <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
+                                <!-- Employee Selection -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(Model => Model.EmployeeId)
+                                        @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#employeeLookUpModal">
+                                                <span class="fa fa-search"></span>
+                                            </a>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </fieldset>
 
-                    <h1>User details</h1>
-                    <fieldset>
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.EmployeeDesignationDescription, "Department", new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.EmployeeDesignationDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.EmployeeDesignationDescription, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
+                                    @Html.HiddenFor(Model => Model.BranchId)
+                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "@disabled" } })
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
                         <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.UserName, new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Username MUST be Lowercase...", oninput = "validateUsername(this)" } })
+                                    <span id="username-warning" class="text-danger" style="display: none;">Username must be lowercase</span>
+                                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
                             <div class="col-lg-8">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control required", placeholder = "First name", colspan = "10" } })
-                                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.OtherNames, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.OtherNames, new { htmlAttributes = new { @class = "form-control required", placeholder = "Other names" } })
-                                    @Html.ValidationMessageFor(model => model.OtherNames, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control required", placeholder = "Email address" } })
+                                    @Html.LabelFor(model => model.Email, new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control required", @Type = "Email" } })
                                     @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                                 </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "Phone number" } })
-                                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="text-center">
-                                    <div style="margin-top: 20px">
-                                        <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
-                                    </div>
-                                </div>
                             </div>
                         </div>
-                    </fieldset>
-
-                    <h1>Role Linkage</h1>
-                    <fieldset>
                         <div class="row">
-                            <div class="col-lg-8">
-                          <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.RoleId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.HiddenFor(model => model.RoleId)
-                                    @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.RoleName, new { htmlAttributes = new { @class = "rolesLookup form-control required", placeholder = "Role.." } })
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="text-center">
-                                    <div style="margin-top: 20px">
-                                        <i class="fa fa-save" style="font-size: 200px;color: #e5e5e5 "></i>
-                                    </div>
+                            <div class="col">
+
+                                <div class="form-group form-group-lg" style="margin-left: 20px;">
+                                    <!-- Adjust the margin as needed -->
+                                    @Html.CheckBoxFor(model => model.LockoutEnabled, new { @class = "form-check-input me-2" })
+                                    @Html.LabelFor(model => model.LockoutEnabled, "Locked?", new { @class = "form-check-label mb-0" })
                                 </div>
                             </div>
                         </div>
-                    </fieldset>
+
+
+
+
+                        <!-- Hidden Fields -->
+                        <input type="hidden" name="SelectedRoles" id="SelectedRoles" />
+                        <input type="hidden" name="SelectedBranches" id="SelectedBranches" />
+
+                        <br />
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs" style="margin-bottom: 20px; font-size: large; margin-top: 40px;">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#roles"><i class="fa fa-table" aria-hidden="true"></i> Authorized Roles</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="#branches"><i class="fa fa-table" aria-hidden="true"></i> Authorized Branches</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="roles" class="tab-pane active">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Role Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.roles != null)
+                                        {
+                                            foreach (var role in ViewBag.roles)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="roles" value="@role" />
+                                                    </td>
+                                                    <td>@($"{role}")</td>
+                                                </tr>
+                                            }
+                                        }
+
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Branches Tab -->
+                            <div id="branches" class="tab-pane">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Branch Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (branches != null)
+                                        {
+                                            foreach (var branch in branches)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="Branchids" value="@branch.Id" />
+                                                    </td>
+                                                    <td>@branch.Description</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <br />
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary" style="width: 150px;">Create</button>
                     }
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal  fade" id="companyLookupModal" role="dialog" aria-hidden="true">
+
+
+<div class="modal  fade" id="employeeLookUpModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h3 class="font-bold">Companies Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                <h3 class="font-bold">G/L Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <table id="companiesGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+
+            <br />
+            <style>
+                #employeesGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+            <table id="employeesGrid" class="table table-hover" style="width:100%">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -150,98 +242,64 @@
         </div>
     </div>
 </div>
+
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
-    @Scripts.Render("~/plugins/dataTables")
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    <script src="~/Scripts/js/navlink.js"></script>
 
     <script>
-        $(document).ready(function () {
-
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-             $('#companiesGrid').DataTable({
-                // Ajax settings
+        $('#employeesGrid').DataTable({
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Branch", new { Area = "Admin"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Employee", new { Area = "HumanResource"}))",
                 "sServerMethod": "POST",
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
@@ -249,110 +307,63 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/admin/membership/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCoA(\'' + aData.Id + '\')">Select</button>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(selectUrl);
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
 
                     return nRow;
                 },
-                // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Name" },
-                    { "mDataProp": "AddressAddressLine1", "sTitle": "Address 1"},
-                    { "mDataProp": "AddressMobileLine", "sTitle": "Mobile No." },
-                    { "mDataProp": "AddressEmail", "sTitle": "Email" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "bSortable": false }],
+                    { "mDataProp": "Customer.FullName", "sTitle": "Employee Name", "sWidth": "10%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+                    { "mDataProp": "DepartmentDescription", "sTitle": "Department", "sWidth": "5%" },
+                    { "mDataProp": "CustomerIndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "5%" },
+                    { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-        });
-
-            $("#s tbody").on("click", "tr", function () {
-                var data = companiesGrid.row(this).data();
-
-                $('#BranchId').val(data.Id);
-                $('input[name=BranchId]').val(data.Id);
-                $('input[name=CompanyDescription]').val(data.Description);
-                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-
-                $('#companyLookupModal').modal('hide');
             });
 
+         function selectCoA(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Admin/Membership/GetEmployeeDetails',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response);
+                        $('#EmployeeCustomerFullName').val(response.data.EmployeeCustomerFullName);
+                        $('#EmployeeId').val(response.data.EmployeeId);
+                        $('#EmployeeDesignationDescription').val(response.data.department);
+                        $('#BranchDescription').val(response.data.Branch);
+                        $('#BranchId').val(response.data.BranchId);
 
-            //roles typehead starts here
-            $('.rolesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetRoles", "Role", new { Area = "Admin" })',
-                        { query: query },
-                        function (roles) {
-                            var newRolesData = [];
-                            rolesMap = {};
-                            $.each(roles, function (i,role) {
-                                newRolesData.push(role.Name);
-                                rolesMap[role.Name] = role;
-                            });
-                            process(newRolesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
+                        $('#employeeLookUpModal').modal('hide');
+                    } else {
+                        alert(response.message);
                     }
                 },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var roleId = "";
-                    roleId = rolesMap[item].Id;
-                    $('#RoleId').val(roleId);
-                    //console.log(roleId)
-                    return item;
+                error: function () {
+                    alert('An error occurred while processing your request.');
                 }
             });
+        }
+    </script>
 
-            //Company typehead starts here
-            $('.CompaniesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetCompaniesAsync", "Company", new { Area = "Admin" })',
-                        { query: query },
-                        function (Companies) {
-                            var newCompaniesData = [];
-                            CompaniesMap = {};
-                            $.each(Companies, function (i, Company) {
-                                newCompaniesData.push(Company.Description);
-                                CompaniesMap[Company.Description] = Company;
-                            });
-                            process(newCompaniesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var CompanyId = "";
-                    CompanyId = CompaniesMap[item].Id;
-                    $('#CompanyId').val(CompanyId);
-                    //console.log(CompanyId)
-                    return item;
-                }
-            });
-        });
+    <script>
+        function validateUsername(input) {
+            input.value = input.value.toLowerCase();
 
+            const hasUppercase = /[A-Z]/.test(input.value);
+
+            const warningMessage = document.getElementById("username-warning");
+            if (hasUppercase) {
+                warningMessage.style.display = "block";
+            } else {
+                warningMessage.style.display = "none";
+            }
+        }
     </script>
 }

@@ -18,6 +18,14 @@
         </ol>
     </div>
 </div>
+<style>
+    .equal-btn {
+        min-width: 150px; /* Ensures consistent width */
+        padding: 10px 20px; /* Adjust padding for desired size */
+        font-size: 16px; /* Adjust font size */
+        text-align: center;
+    }
+</style>
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -35,39 +43,46 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
-
-                                @Html.DisplayFor(model => model.Description)<br>
-                            </p>
-
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.EnforceInvestmentsBalance)</strong><br>
-
-                                @Html.DisplayFor(model => model.EnforceInvestmentsBalance)<br>
-                            </p>
-
+                        <!-- First Column -->
+                        <div class="col-lg-4">
+                            <div class="form-group form-group-sm">
+                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", disabled = "" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong><br>
-
-                                @Html.DisplayFor(model => model.IsLocked)<br>
+                                <span>@Html.DisplayFor(model => model.IsLocked)</span>
                             </p>
+                        </div>
 
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
+                        <!-- Second Column -->
+                        <div class="col-lg-4">
+                            <div class="form-group form-group-sm">
+                                @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Date", disabled = "" } })
+                                @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <!-- Additional Fields -->
+                            <div class="mt-3">
+                                <p>
+                                    <strong>@Html.DisplayNameFor(model => model.EnforceInvestmentsBalance)</strong><br>
+                                    <span>@Html.DisplayFor(model => model.EnforceInvestmentsBalance)</span>
+                                </p>
 
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "EducationVenue", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "EducationVenue", new { Area = "Registry" }, new { @class = "btn btn-success" })
-                            </p>
+                            <div>
+                                @Html.ActionLink("Edit", "Edit", "EducationVenue", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success equal-btn" })
+                                @Html.ActionLink("Back to List", "Index", "EducationVenue", new { Area = "Registry" }, new { @class = "btn btn-success equal-btn" })
+                            </div>
+
                         </div>
                     </div>
                 </div>

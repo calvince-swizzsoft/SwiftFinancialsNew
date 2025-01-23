@@ -12,12 +12,25 @@ using SwiftFinancials.Presentation.Infrastructure.Util;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using System.Collections.ObjectModel;
 using System.Web;
+using System.Configuration;
+using SwiftFinancials.Web.Areas.Admin.DocumentsModel;
+using System.Data.SqlClient;
+using System.IO;
 
 namespace SwiftFinancials.Web.Areas.Admin.Controllers
 {
     [RoleBasedAccessControl]
     public class CompanyController : MasterController
     {
+
+        private readonly string _connectionString;
+        private HttpPostedFileBase uploadedPassportPhoto;
+
+        public CompanyController()
+        {
+            // Get connection string from Web.config
+            _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+        }
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -58,9 +71,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             var CompanyDTO = await _channelService.FindCompanyAsync(id, GetServiceHeader());
 
             // Retrieve all available debit, investment, and savings products
-            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
+            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
             var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
-            var allInvestmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
+            var allInvestmentProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
             var allSavingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
 
             // Retrieve company and its linked products
@@ -74,11 +87,124 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 ViewBag.SelectedInvestmentProducts = linkedProducts.InvestmentProductCollection.Select(i => i.Id).ToList();
                 ViewBag.SelectedSavingsProducts = linkedProducts.SavingsProductCollection.Select(s => s.Id).ToList();
             }
+            var debitType = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+            var creditType = await _channelService.FindCreditTypesAsync(GetServiceHeader());
+            var allInvestmentProduct = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var allSavingsProduct = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+            // Pass the full list and linked items to ViewBag
+            ViewBag.SelectedDebitTypes = debitTypes;
+            ViewBag.SelectedInvestmentProducts = allInvestmentProducts;
+            ViewBag.SelectedSavingsProducts = allSavingsProducts;
+
             // Pass all products to the view
             ViewBag.allInvestments = allInvestmentProducts;
             ViewBag.allSavings = allSavingsProducts;
             ViewBag.debit = debitTypes;
             return View(CompanyDTO.MapTo<CompanyBindingModel>());
+        }
+
+
+        private ActionResult NotFound()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        // Get Documents ...........................
+        private async Task<List<Document>> GetDocumentsAsync(Guid id)
+        {
+            var documents = new List<Document>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto FROM swiftFin_SpecimenCapture WHERE CompanyId = @CompanyId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CompanyId", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            documents.Add(new Document
+                            {
+                                PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
+                                SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
+                                IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
+                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
+                            });
+                        }
+                    }
+                }
+            }
+
+            return documents;
+        }
+
+        private Document ProcessDocumentUpload(Guid CompanyId, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl)
+        {
+            var document = new Document
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = CompanyId
+            };
+
+            // Process the passport photo from the data URL
+            if (!string.IsNullOrEmpty(passportPhotoDataUrl))
+            {
+                var base64Data = passportPhotoDataUrl.Split(',')[1];
+                document.PassportPhoto = Convert.FromBase64String(base64Data);
+            }
+
+            // Process other uploaded files
+            document.SignaturePhoto = ConvertFileToByteArray(signaturePhoto);
+            document.IDCardFrontPhoto = ConvertFileToByteArray(idCardFrontPhoto);
+            document.IDCardBackPhoto = ConvertFileToByteArray(idCardBackPhoto);
+
+            return document;
+        }
+
+        private byte[] ConvertFileToByteArray(HttpPostedFileBase file)
+        {
+            if (file != null && file.ContentLength > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    file.InputStream.CopyTo(memoryStream);
+                    return memoryStream.ToArray();
+                }
+            }
+            return null;
+        }
+
+
+
+        // Save Documents ......................
+        private async Task SaveDocumentAsync(Document document)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "INSERT INTO swiftFin_SpecimenCapture (Id, CompanyId, CreatedDate) " +
+                            "VALUES (@Id, @CompanyId, @CreatedDate)";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", document.Id);
+                    command.Parameters.AddWithValue("@CompanyId", document.CompanyId);
+                    command.Parameters.AddWithValue("@PassportPhoto", document.PassportPhoto ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@SignaturePhoto", document.SignaturePhoto ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@IDCardFrontPhoto", document.IDCardFrontPhoto ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@IDCardBackPhoto", document.IDCardBackPhoto ?? (object)DBNull.Value);
+
+                    command.Parameters.AddWithValue("@CreatedDate", document.CreatedDate);
+
+                    // Execute the query
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
         }
 
         public async Task<ActionResult> Create()
@@ -109,29 +235,32 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             var mandatoryProducts = new ProductCollectionInfo();
 
             SavingsProductDTO j = new SavingsProductDTO();
-            foreach (var k in savingsproducts)
+            if (savingsproducts != null && investmentproducts != null && debittypes != null)
             {
-                j.Id = Guid.Parse(k);
-                mandatorySavingsProducts.Add(j);
-            }
-            mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
+                foreach (var k in savingsproducts)
+                {
+                    j.Id = Guid.Parse(k);
+                    mandatorySavingsProducts.Add(j);
+                }
+                mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
 
 
 
-            InvestmentProductDTO investmentProductDTO = new InvestmentProductDTO();
-            foreach (var invest in investmentproducts)
-            {
-                investmentProductDTO.Id = Guid.Parse(invest);
-                mandatoryInvestmentProducts.Add(investmentProductDTO);
-            }
-            mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
+                InvestmentProductDTO investmentProductDTO = new InvestmentProductDTO();
+                foreach (var invest in investmentproducts)
+                {
+                    investmentProductDTO.Id = Guid.Parse(invest);
+                    mandatoryInvestmentProducts.Add(investmentProductDTO);
+                }
+                mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
 
 
-            DebitTypeDTO debitTypeDTO = new DebitTypeDTO();
-            foreach (var debit in debittypes)
-            {
-                debitTypeDTO.Id = Guid.Parse(debit);
-                mandatoryDebitTypes.Add(debitTypeDTO);
+                DebitTypeDTO debitTypeDTO = new DebitTypeDTO();
+                foreach (var debit in debittypes)
+                {
+                    debitTypeDTO.Id = Guid.Parse(debit);
+                    mandatoryDebitTypes.Add(debitTypeDTO);
+                }
             }
 
 
@@ -139,22 +268,35 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             companyBindingModel.RecoveryPriority = "DirectDebits";
             if (!companyBindingModel.HasErrors)
             {
-                var companies = await _channelService.AddCompanyAsync(companyBindingModel.MapTo<CompanyDTO>(), GetServiceHeader());
-                await _channelService.UpdateAttachedProductsByCompanyIdAsync(companies.Id, mandatoryProducts, GetServiceHeader());
-
-                await _channelService.UpdateDebitTypesByCompanyIdAsync(companies.Id, mandatoryDebitTypes, GetServiceHeader());
-
-
-                TempData["Success"] = "Company Registered Successfully";
                 await ServeNavigationMenus();
 
+                var companies = await _channelService.AddCompanyAsync(companyBindingModel.MapTo<CompanyDTO>(), GetServiceHeader());
+                if (mandatoryProducts != null)
+                    await _channelService.UpdateAttachedProductsByCompanyIdAsync(companies.Id, mandatoryProducts, GetServiceHeader());
+
+                if (mandatoryDebitTypes != null)
+                    await _channelService.UpdateDebitTypesByCompanyIdAsync(companies.Id, mandatoryDebitTypes, GetServiceHeader());
+
+
+                TempData["Successmasssage"] = "Company Registered Successfully";
+                var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+                var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+                var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+                ViewBag.investment = investment;
+                ViewBag.savings = savingsProductDTOs;
+                ViewBag.debit = debitypes;
                 return View("Index");
 
             }
             else
             {
                 var errorMessages = companyBindingModel.ErrorMessages;
-
+                var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+                var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+                var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+                ViewBag.investment = investment;
+                ViewBag.savings = savingsProductDTOs;
+                ViewBag.debit = debitypes;
                 return View(companyBindingModel);
             }
         }
@@ -164,26 +306,46 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             await ServeNavigationMenus();
 
             // Retrieve all available debit, investment, and savings products
-            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
+            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
             var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
-            var allInvestmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
-            var allSavingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
+            var allInvestmentProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            var allSavingsProducts = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
 
             // Retrieve company and its linked products
             var CompanyDTO = await _channelService.FindCompanyAsync(id, GetServiceHeader());
             var debitTypeDTOs = await _channelService.FindDebitTypesByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
             var linkedProducts = await _channelService.FindAttachedProductsByCompanyIdAsync(CompanyDTO.Id, GetServiceHeader());
+            if (linkedProducts != null)
+            {
 
-            // Pass the full list and linked items to ViewBag
-            ViewBag.SelectedDebitTypes = debitTypeDTOs.Select(d => d.Id).ToList();
-            ViewBag.SelectedInvestmentProducts = linkedProducts.InvestmentProductCollection.Select(i => i.Id).ToList();
-            ViewBag.SelectedSavingsProducts = linkedProducts.SavingsProductCollection.Select(s => s.Id).ToList();
 
-            // Pass all products to the view
-            ViewBag.allInvestments = allInvestmentProducts;
-            ViewBag.allSavings = allSavingsProducts;
-            ViewBag.debit = debitTypes;
+                // Pass the full list and linked items to ViewBag
+                ViewBag.SelectedDebitTypes = debitTypeDTOs.Select(d => d.Id).ToList();
+                ViewBag.SelectedInvestmentProducts = linkedProducts.InvestmentProductCollection.Select(i => i.Id).ToList();
+                ViewBag.SelectedSavingsProducts = linkedProducts.SavingsProductCollection.Select(s => s.Id).ToList();
 
+                // Pass all products to the view
+                ViewBag.allInvestments = allInvestmentProducts;
+                ViewBag.allSavings = allSavingsProducts;
+                ViewBag.debit = debitTypes;
+            }
+            else
+            {
+                var debitType = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+                var creditType = await _channelService.FindCreditTypesAsync(GetServiceHeader());
+                var allInvestmentProduct = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+                var allSavingsProduct = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+                // Pass the full list and linked items to ViewBag
+                ViewBag.SelectedDebitTypes = debitTypes;
+                ViewBag.SelectedInvestmentProducts = allInvestmentProducts;
+                ViewBag.SelectedSavingsProducts = allSavingsProducts;
+
+                // Pass all products to the view
+                ViewBag.allInvestments = allInvestmentProducts;
+                ViewBag.allSavings = allSavingsProducts;
+                ViewBag.debit = debitTypes;
+
+            }
             return View(CompanyDTO.MapTo<CompanyBindingModel>());
         }
 

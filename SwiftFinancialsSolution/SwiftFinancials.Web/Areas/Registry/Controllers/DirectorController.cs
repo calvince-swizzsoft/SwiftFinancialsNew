@@ -31,23 +31,43 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindDirectorsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-
+            var pageCollectionInfo = await _channelService.FindDirectorsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(director => director.CreatedDate).ToList();
 
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<DirectorDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<DirectorDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
 
-        
+
 
         [HttpGet]
         public async Task<ActionResult> GetCustomerDetails(Guid customerId)
@@ -123,7 +143,14 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (!directorDTO.HasErrors)
             {
                 await _channelService.AddDirectorAsync(directorDTO, GetServiceHeader());
-
+                //System.Windows.Forms.MessageBox.Show(
+                //         "Director " + directorDTO.CustomerFullName + " Added successfully.",
+                //         "Success",
+                //         System.Windows.Forms.MessageBoxButtons.OK,
+                //         System.Windows.Forms.MessageBoxIcon.Information,
+                //         System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                //         System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                //     );
                 TempData["SuccessMessage"] = "Director created successfully!";
 
                 return RedirectToAction("Index");

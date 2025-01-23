@@ -34,7 +34,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("Details", "Branch", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
@@ -90,7 +90,7 @@
                                     @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
+                                    <label for="AddressMobileLine">Mobile line</label>
                                     @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line", disabled = "disabled" } })
                                     @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
                                 </div>

@@ -22,39 +22,47 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
-         {
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindDirectDebitsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindDirectDebitsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(commission => commission.CreatedDate).ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<DirectDebitDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<DirectDebitDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
-        //public async Task<ActionResult> Details()
-        //{
-        //    await ServeNavigationMenus();
-
-        //    var directDebitDTO = await _channelService.FindDirectDebitsAsync( GetServiceHeader());
-
-        //    return View(directDebitDTO);
-        //}
 
         public async Task<ActionResult> SavingsProduct(Guid? id, DirectDebitDTO directDebitDTO)
         {
@@ -72,19 +80,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
                 ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
 
                 directDebitDTO.CustomerAccountTypeTargetProductId = savingsProduct.Id;
                 directDebitDTO.CustomerAccountTypeTargetProductDescription = savingsProduct.Description;
                 directDebitDTO.CustomerAccountTypeProductCode = 1;
 
-                Session["savingsProductId"] = directDebitDTO.CustomerAccountTypeTargetProductId;
-                Session["savingsProductDescription"] = directDebitDTO.CustomerAccountTypeTargetProductDescription;
+                Session["savingsProductId"] = parseId;
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        CustomerAccountTypeTargetProductId = directDebitDTO.CustomerAccountTypeTargetProductId,
+                        CustomerAccountTypeTargetProductDescription = directDebitDTO.CustomerAccountTypeTargetProductDescription,
+                        CustomerAccountTypeProductCode = directDebitDTO.CustomerAccountTypeProductCode
+                    }
+                });
             }
 
-            return View("Create", directDebitDTO);
+            return Json(new { success = false, message = "Product Not Found!" });
         }
-
-
 
         public async Task<ActionResult> LoansProduct(Guid? id, DirectDebitDTO directDebitDTO)
         {
@@ -102,19 +119,25 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
                 ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
 
-                directDebitDTO.CustomerAccountTypeTargetProductId = loanProductsdetails.Id;
-                directDebitDTO.CustomerAccountTypeTargetProductDescription = loanProductsdetails.Description;
+                directDebitDTO.LoanCustomerAccountTypeTargetProductId = loanProductsdetails.Id;
+                directDebitDTO.LoanCustomerAccountTypeTargetProductDescription = loanProductsdetails.Description;
                 directDebitDTO.CustomerAccountTypeProductCode = 2;
-
-                Session["loanProductId"] = directDebitDTO.CustomerAccountTypeTargetProductId;
-                Session["loanProductDescription"] = directDebitDTO.CustomerAccountTypeTargetProductDescription;
+                Session["loanProductId"] = parseId;
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        LoanCustomerAccountTypeTargetProductId = directDebitDTO.LoanCustomerAccountTypeTargetProductId,
+                        LoanCustomerAccountTypeTargetProductDescription = directDebitDTO.LoanCustomerAccountTypeTargetProductDescription,
+                        LoanCustomerAccountTypeProductCode = directDebitDTO.CustomerAccountTypeProductCode
+                    }
+                });
             }
-
-            return View("Create", directDebitDTO);
+            return Json(new { success = false, message = "Product Not Found!" });
         }
-
-
 
         public async Task<ActionResult> InvestmentProduct(Guid? id, DirectDebitDTO directDebitDTO)
         {
@@ -132,16 +155,25 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
                 ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
 
-                directDebitDTO.CustomerAccountTypeTargetProductId = investmentProductDetails.Id;
-                directDebitDTO.CustomerAccountTypeTargetProductDescription = investmentProductDetails.Description;
+                directDebitDTO.InvestmentCustomerAccountTypeTargetProductId = investmentProductDetails.Id;
+                directDebitDTO.InvestmentCustomerAccountTypeTargetProductDescription = investmentProductDetails.Description;
                 directDebitDTO.CustomerAccountTypeProductCode = 3;
-
-                Session["investmentProductId"] = directDebitDTO.CustomerAccountTypeTargetProductId;
-                Session["investmentProductDescription"] = directDebitDTO.CustomerAccountTypeTargetProductDescription;
+                Session["investmentProductId"] = parseId;
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        InvestmentCustomerAccountTypeTargetProductId = directDebitDTO.InvestmentCustomerAccountTypeTargetProductId,
+                        InvestmentCustomerAccountTypeTargetProductDescription = directDebitDTO.InvestmentCustomerAccountTypeTargetProductDescription,
+                        InvestmentCustomerAccountTypeProductCode = directDebitDTO.CustomerAccountTypeProductCode
+                    }
+                });
             }
 
-            return View("Create", directDebitDTO);
+            return Json(new { success = false, message = "Product Not Found!" });
         }
 
 
@@ -151,31 +183,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
 
             return View();
         }
 
+
         [HttpPost]
         public async Task<ActionResult> Create(DirectDebitDTO directDebitDTO)
         {
-
-            if(Session["savingsProductId"] != null)
-            {
+            if (Session["savingsProductId"] != null)
                 directDebitDTO.CustomerAccountTypeTargetProductId = (Guid)Session["savingsProductId"];
-                directDebitDTO.CustomerAccountTypeTargetProductDescription = Session["savingsProductDescription"].ToString();
-            }
-
             if (Session["loanProductId"] != null)
-            {
                 directDebitDTO.CustomerAccountTypeTargetProductId = (Guid)Session["loanProductId"];
-                directDebitDTO.CustomerAccountTypeTargetProductDescription = Session["loanProductDescription"].ToString();
-            }
-
             if (Session["investmentProductId"] != null)
-            {
                 directDebitDTO.CustomerAccountTypeTargetProductId = (Guid)Session["investmentProductId"];
-                directDebitDTO.CustomerAccountTypeTargetProductDescription = Session["investmentProductDescription"].ToString();
-            }
 
             directDebitDTO.ValidateAll();
 
@@ -191,23 +213,36 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                     ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
                     ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+                    ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
 
                     return View();
                 }
 
+                Session["savingsProductId"] = null;
+                Session["loanProductId"] = null;
+                Session["investmentProductId"] = null;
                 Session.Clear();
-                TempData["Create"] = "Successfully Created Direct Debit";
+
+                TempData["Create"] = "Done";
 
                 return RedirectToAction("Index");
             }
             else
             {
+                Session["savingsProductId"] = null;
+                Session["loanProductId"] = null;
+                Session["investmentProductId"] = null;
+                Session.Clear();
+
                 var errorMessages = directDebitDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
 
                 ViewBag.ProductCode = GetProductCodeSelectList(directDebitDTO.CustomerAccountTypeProductCodeDescription.ToString());
                 ViewBag.ChargeType = GetChargeTypeSelectList(directDebitDTO.ChargeType.ToString());
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(directDebitDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
-                TempData["CreateError"] = "Failed to create Direct Debit";
+                TempData["CreateError"] = "Failed to create Direct Debit: " + errorMessage;
 
                 return View(directDebitDTO);
             }
@@ -217,21 +252,38 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var directDebitDTO = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
+            var findDirectDebits = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
+            var directDebit = findDirectDebits.SingleOrDefault(dd => dd.Id == id);
 
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+            ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
 
-            return View(directDebitDTO);
+            return View(directDebit);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, DirectDebitDTO directDebitDTO)
         {
-            if (ModelState.IsValid)
+            await ServeNavigationMenus();
+
+            if (Session["savingsProductId"] != null)
+                directDebitDTO.CustomerAccountTypeTargetProductId = (Guid)Session["savingsProductId"];
+            if (Session["loanProductId"] != null)
+                directDebitDTO.CustomerAccountTypeTargetProductId = (Guid)Session["loanProductId"];
+            if (Session["investmentProductId"] != null)
+                directDebitDTO.CustomerAccountTypeTargetProductId = (Guid)Session["investmentProductId"];
+
+
+            if (!directDebitDTO.HasErrors)
             {
                 await _channelService.UpdateDirectDebitAsync(directDebitDTO, GetServiceHeader());
+
+                Session["savingsProductId"] = null;
+                Session["loanProductId"] = null;
+                Session["investmentProductId"] = null;
+                Session.Clear();
 
                 TempData["Edit"] = "Successfully Edited Direct Debit";
 
@@ -239,21 +291,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
+                Session["savingsProductId"] = null;
+                Session["loanProductId"] = null;
+                Session["investmentProductId"] = null;
+                Session.Clear();
+
+                var errorMessages = directDebitDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
                 ViewBag.ProductCode = GetProductCodeSelectList(directDebitDTO.CustomerAccountTypeProductCode.ToString());
                 ViewBag.ChargeType = GetChargeTypeSelectList(directDebitDTO.ChargeType.ToString());
+                ViewBag.LoanProductSection = GetLoanRegistrationLoanProductSectionsSelectList(directDebitDTO.LoanRegistrationLoanProductSectionDescription.ToString());
 
-                TempData["EditError"] = "Failed to Edit Direct Debit";
+                TempData["EditError"] = "Failed to Edit Direct Debit: " + errorMessage;
 
                 return View(directDebitDTO);
             }
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetDirectDebitsAsync()
-        {
-            var directDebitsDTOs = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
-
-            return Json(directDebitsDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }

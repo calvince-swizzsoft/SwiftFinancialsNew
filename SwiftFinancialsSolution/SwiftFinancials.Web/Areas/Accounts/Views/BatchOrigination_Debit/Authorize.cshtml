@@ -52,7 +52,7 @@
     }
     .custom-container {
         border: 2px solid gray; /* Border color set to gray */
-        @*padding: 5px; *@/* Padding inside the border */
+        @*padding: 5px; *@ /* Padding inside the border */
         border-radius: 20px; /* Rounded corners (optional) */
 
         display: flex; /* Enable Flexbox */
@@ -62,7 +62,7 @@
         text-align: center; /* Center text within elements */
         margin: 20px;
         font-weight: bold;
-        background-color: #00e0ff;
+        background-color: #e0f0ff;
     }
 
     /* Ensure that any child elements that need to be centered don't affect the container alignment */
@@ -224,7 +224,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     @using (Html.BeginForm("Authorize", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()

@@ -1,0 +1,330 @@
+﻿@model Application.MainBoundedContext.DTO.MicroCreditModule.MicroCreditGroupDTO
+
+@{
+    ViewBag.Title = "Micro-Credit Group Details";
+
+    var typeDescription = ViewBag.TypeDescriptionSelectList as List<SelectListItem>;
+    var meetingFrequencyDescription = ViewBag.MeetingFrequencyDescriptionSelectList as List<SelectListItem>;
+    var meetingDayOfWeekDescription = ViewBag.MeetingDayOfWeekDescriptionSelectList as List<SelectListItem>;
+    var designation = ViewBag.DesignationSelectList as List<SelectListItem>;
+}
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#ValueDate').datepicker({
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Micro-Credit Group Details</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "MicroCreditGroups", new { Area = "MicroCredit" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Edit</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Update", "MicroCreditGroups", new { Area = "MicroCredit" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.Id) <!-- This ensures the id is part of the form data -->
+
+
+                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerSalutationDescription, new { id = "MicroCreditOfficerEmployeeCustomerSalutationDescription" })
+                            @Html.HiddenFor(model => model.MicroCreditOfficerId, new { id = "MicroCreditOfficerId" })
+                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerIndividualFirstName, new { id = "MicroCreditOfficerEmployeeCustomerIndividualFirstName" })
+                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerIndividualLastName, new { id = "MicroCreditOfficerEmployeeCustomerIndividualLastName" })
+                            @Html.HiddenFor(model => model.CustomerNonIndividualRegistrationNumber, new { id = "CustomerNonIndividualRegistrationNumber" })
+                            @Html.HiddenFor(model => model.CustomerStationId, new { id = "CustomerStationId" })
+                            @Html.HiddenFor(model => model.CustomerNonIndividualDateEstablished, new { id = "CustomerNonIndividualDateEstablished" })
+                            @Html.HiddenFor(model => model.CustomerRegistrationDate, new { id = "CustomerRegistrationDate" })
+
+
+                            <!-- Expense Payables -->
+                        <fieldset>
+                            <div class="card mb-4">
+                                <div class="card-body text-dark">
+                                    <div class="card-body text-dark">
+                                        <div class="row">
+
+                                            <!-- Customer Account Fields -->
+                                            <div class="col-lg-4 customer-fields">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.CustomerStationDescription, new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.CustomerStationDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+
+                                                    @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4 customer-fields">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
+                                                    @Html.EditorFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                    @Html.ValidationMessageFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.TypeDescription, new { @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                    @Html.ValidationMessageFor(model => model.TypeDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.MeetingFrequencyDescription, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.MeetingFrequencyDescription, new { @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                    @Html.ValidationMessageFor(model => model.MeetingFrequencyDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Purpose, new { @class = "control-label" })
+                                                    @Html.TextAreaFor(model => model.Purpose, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                    @Html.ValidationMessageFor(model => model.Purpose, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Activities, new { @class = "control-label" })
+                                                    @Html.TextAreaFor(model => model.Activities, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                    @Html.ValidationMessageFor(model => model.Activities, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-lg-4 group-fields">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.MinimumMembers, new { @class = "control-label" })
+                                                    @Html.TextBoxFor(model => model.MinimumMembers, new { @class = "form-control", type = "number", id = "MinimumMembers", min = "0", value = "1", @readonly = "" })
+                                                    @Html.ValidationMessageFor(model => model.MinimumMembers, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4 group-fields">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.MaximumMembers, new { @class = "control-label" })
+                                                    @Html.TextBoxFor(model => model.MaximumMembers, new { @class = "form-control", type = "number", id = "MaximumMembers", min = "0", value = "1", @readonly = "" })
+                                                    @Html.ValidationMessageFor(model => model.MaximumMembers, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
+                                                    @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", id = "Remarks", @readonly = "" })
+                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.MeetingDayOfWeekDescription, new { @class = "control-label" })
+                                                    @Html.TextAreaFor(model => model.MeetingDayOfWeekDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                    @Html.ValidationMessageFor(model => model.MeetingDayOfWeekDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.MeetingPlace, new { @class = "control-label" })
+                                                    @Html.TextAreaFor(model => model.MeetingPlace, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                    @Html.ValidationMessageFor(model => model.MeetingPlace, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.ParentGroup, new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        @Html.EditorFor(model => model.ParentGroup, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "ParentGroup", @readonly = "" } })
+                                                        <span class="input-group-addon">
+                                                            <a data-toggle="modal" data-target="#microCreditGroupLookup">
+                                                                <span class="fa fa-search"></span>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.ParentGroup, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+
+
+
+
+
+
+
+
+
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                    </div>
+
+                                    
+
+                                   
+
+
+
+
+
+
+                                </div>
+                            </div>
+                        </fieldset>
+
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                <p>
+                                    @Html.ActionLink("Edit", "Edit", "MicroCreditGroups", new { id = Model.Id, Area = "MicroCredit" }, new { @class = "btn btn-success" })
+                                    @Html.ActionLink("Back to List", "Index", "MicroCreditGroups", new { Area = "MicroCredit" }, new { @class = "btn btn-success" })
+                                </p>
+                            </div>
+
+
+
+                        }
+                    </div>
+                </div>
+
+                <style>
+                    .card {
+                        margin-bottom: 20px;
+                    }
+
+                    
+                    .form-group-lg {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-control {
+                        border-radius: .25rem;
+                    }
+
+                    
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #e0f0ff;
+                    }
+                </style>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+}

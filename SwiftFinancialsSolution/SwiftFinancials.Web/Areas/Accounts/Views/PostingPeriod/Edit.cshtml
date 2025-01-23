@@ -20,6 +20,55 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#DurationStartDate').datepicker({
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#DurationDate').datepicker({
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -34,7 +83,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     @using (Html.BeginForm("Edit", "PostingPeriod", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -46,14 +95,17 @@
                                 @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Posting Period name.", @required = "" } })
                                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                             </div>
+
+
+
+
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="form-group form-group-lg" id="data_5">
-                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-daterange input-group" id="datepicker">
-                                            <span class="input-group-addon">Start Date</span>
-                                            @Html.TextBox("startDate", DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy"), new { @class = "form-control-lg form-control" })
-                                        </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Enter Date.....", id = "DurationStartDate", required = "required" } })
+                                        <span id="DurationStartDateError" class="text-danger" style="display:none;"></span>
+                                        @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
@@ -62,20 +114,18 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
-                                    <div class="form-group form-group-lg" id="data_5">
-                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-daterange input-group" id="datepicker">
-                                            <span class="input-group-addon">End Date</span>
-                                            @Html.TextBox("endDate", DateTime.Today.ToString("dd/MM/yyyy"), new { @class = "form-control-lg form-control" })
-                                        </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Enter Date.....", id = "DurationDate", required = "required" } })
+                                        <span id="DurationEndDateError" class="text-danger" style="display:none;"></span>
+                                        @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group form-group-sm">
-                                <div class="col-md-offset-2">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
-                                </div>
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                <input type="submit" value="Update" class="btn btn-primary" />
                             </div>
+
                         </fieldset>
 
                     }

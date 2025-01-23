@@ -8,14 +8,18 @@ using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
-    public class PeriodClosingsController : MasterController
+    public class PeriodClosingController : MasterController
     {
+
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -24,114 +28,168 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate, int status, int index)
+        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime? startDate, DateTime? endDate)
         {
-            int totalRecordCount = 0;
+            if (!startDate.HasValue)
+                startDate = DateTime.MinValue;
 
+            if (!endDate.HasValue)
+                endDate = DateTime.MaxValue;
+
+            int totalRecordCount = 0;
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
 
-            var pageCollectionInfo = await _channelService.FindSalaryPeriodsByFilterInPageAsync(status, startDate, endDate, "", jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            int status = 1;
 
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            try
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+                var pageCollectionInfo = await _channelService.FindSalaryPeriodsByFilterInPageAsync(
+                    status,
+                    startDate.Value,
+                    endDate.Value,
+                    jQueryDataTablesModel.sSearch,
+                    0,
+                    int.MaxValue,
+                    GetServiceHeader()
+                );
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                    var sortedData = pageCollectionInfo.PageCollection
+                        .OrderByDescending(salaryProcessingDTO => salaryProcessingDTO.CreatedDate)
+                        .ToList();
+
+                    totalRecordCount = sortedData.Count;
+
+                    var paginatedData = sortedData
+                        .Skip(jQueryDataTablesModel.iDisplayStart)
+                        .Take(jQueryDataTablesModel.iDisplayLength)
+                        .ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                        ? sortedData.Count
+                        : totalRecordCount;
+
+                    return this.DataTablesJson(
+                        items: paginatedData,
+                        totalRecords: totalRecordCount,
+                        totalDisplayRecords: searchRecordCount,
+                        sEcho: jQueryDataTablesModel.sEcho
+                    );
+                }
+
+                return this.DataTablesJson(
+                    items: new List<SalaryProcessingDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+            );
             }
-            else return this.DataTablesJson(items: new List<SalaryProcessingDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
-
-        public async Task<ActionResult> Details(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var salaryCardDTO = await _channelService.FindSalaryHeadAsync(id, GetServiceHeader());
-            //var chartOfAccount = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
-
-            return View(salaryCardDTO);
-        }
-
-        public async Task<ActionResult> Create(Guid? id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.MonthTypeSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(string.Empty);
-
-            Guid parseId;
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            catch (Exception ex)
             {
-                return View();
-            }
-
-            //var savingproducts = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
-
-            SalaryProcessingDTO salaryPeriodDTO = new SalaryProcessingDTO();
-
-            //if (savingproducts != null)
-            //{
-            //    salaryHeadDTO.CustomerAccountTypeTargetProductId = savingproducts.Id;
-            //    salaryHeadDTO.ProductDescription = savingproducts.Description;
-
-            //}
-
-            return View(salaryPeriodDTO);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Create(SalaryProcessingDTO salaryPeriodDTO, Guid? id)
-        {
-            salaryPeriodDTO.ValidateAll();
-
-            if (!salaryPeriodDTO.HasErrors)
-            {
-                var salaryPeriod = await _channelService.AddSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
-
-                ViewBag.MonthTypeSelectList = GetMonthsAsync(salaryPeriodDTO.Month.ToString());
-                ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(salaryPeriodDTO.EmployeeCategoryDescription.ToString());
-                //ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryCardDTO.Type.ToString());
-
-                //await GetChartOfAccountsAsync(id);
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = salaryPeriodDTO.ErrorMessages;
-                return View(salaryPeriodDTO);
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
-        public async Task<ActionResult> Edit(Guid id)
+
+
+
+
+        public async Task<ActionResult> Close(Guid id)
         {
             await ServeNavigationMenus();
 
             var salaryPeriod = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
+            ViewBag.MonthTypeSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(string.Empty);
 
             return View(salaryPeriod);
         }
 
+
+        public async Task<ActionResult> View(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            //Guid parseId;
+            //if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            //{
+            //    return Json(new { success = false, message = "Invalid ID" }, JsonRequestBehavior.AllowGet);
+            //}
+            Session["period"] = id;
+            var salaryPeriod = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
+            if (salaryPeriod == null)
+            {
+                return Json(new { success = false, message = "No data found" }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new { success = true, data = salaryPeriod }, JsonRequestBehavior.AllowGet);
+        }
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, SalaryProcessingDTO salaryPeriodDTO)
+        public async Task<ActionResult> Close()
         {
-            salaryPeriodDTO.ValidateAll();
+            Guid id = Guid.Empty;
 
-            if (!salaryPeriodDTO.HasErrors)
+            if (Session["period"] != null)
+                id = (Guid)Session["period"];
+
+            try
             {
-                await _channelService.UpdateSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
+                if (id == Guid.Empty)
+                {
+                    TempData["Message"] = "Invalid ID.";
+                    TempData["MessageType"] = "error";
+                    return RedirectToAction("Index", "PeriodClosing", new { Area = "HumanResource" });
+                }
 
-                return RedirectToAction("Index");
+                var salaryPeriodDTO = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
+                salaryPeriodDTO.ValidateAll();
+
+                if (salaryPeriodDTO.HasErrors)
+                {
+                    TempData["Message"] = "Failed to close salary period due to validation errors.";
+                    TempData["MessageType"] = "error";
+                    return RedirectToAction("Index", "PeriodClosing", new { Area = "HumanResource" });
+                }
+
+                bool result = await _channelService.CloseSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
+
+                if (result)
+                {
+                    TempData["Message"] = "Salary period closed successfully!";
+                    TempData["MessageType"] = "success";
+                }
+                else
+                {
+                    TempData["Message"] = "Failed to close salary period. Please try again.";
+                    TempData["MessageType"] = "error";
+                }
+
+                return RedirectToAction("Index", "PeriodClosing", new { Area = "HumanResource" });
             }
-            else
+            catch (Exception ex)
             {
-                return View(salaryPeriodDTO);
+                // Log the exception
+                TempData["Message"] = "An unexpected error occurred: " + ex.Message;
+                TempData["MessageType"] = "error";
+                return RedirectToAction("Index", "PeriodClosing", new { Area = "HumanResource" });
             }
         }
+
+
+
+
+
+
     }
 }

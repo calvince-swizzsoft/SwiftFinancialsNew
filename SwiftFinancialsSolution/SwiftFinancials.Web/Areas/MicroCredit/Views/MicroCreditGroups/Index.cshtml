@@ -16,6 +16,12 @@
         </ol>
     </div>
 </div>
+<head>
+    <!-- Include SweetAlert2 CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -24,12 +30,7 @@
                 <div class="ibox-title">
                     <h2>Micro-Credit Groups</h2>
 
-                    @if (TempData["create"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["create"]
-                        </div>
-                    }
+                    
                     <hr />
                     @Html.ActionLink("Create", "Create", "MicroCreditGroups", new { Area = "MicroCredit" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
@@ -62,6 +63,8 @@
         </div>
     </div>
 </div>
+
+
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -112,6 +115,23 @@
     @Scripts.Render("~/plugins/jqueryValidateUnobtrusive")
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const alertType = '@TempData["AlertType"]';
+        const alertMessage = '@TempData["AlertMessage"]';
+
+        if (alertType && alertMessage) {
+            Swal.fire({
+                icon: alertType,
+                title: alertType === 'error' ? 'Error' : alertType === 'warning' ? 'Validation Error' : 'Success',
+                text: alertMessage,
+            });
+        }
+    });
+</script>
+
+
+
     <script type="text/javascript">
 
         $(document).ready(function () {
@@ -141,17 +161,19 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/MicroCredit/MicroCreditGroups/details/${aData.Id}">View</a>
                                 <a class="dropdown-item" href="/MicroCredit/MicroCreditGroups/edit/${aData.Id}">Edit</a>
+                                <a class="dropdown-item" href="/MicroCredit/MicroCreditGroups/apportionment/${aData.Id}">Apportionment</a>
+
                             </div>
                         </div>`;
 
-                    $('td:eq(13)', nRow).html(dt_Created);
-                    $('td:eq(14)', nRow).html(dropdownHtml);
+                    $('td:eq(12)', nRow).html(dt_Created);
+                    $('td:eq(13)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "CustomerNonIndividualDescription", "sTitle": "Name", "sWidth": "10%" },
+                    { "mDataProp": "MicroCreditOfficerEmployeeCustomerFullName", "sTitle": "Name", "sWidth": "10%" },
                     { "mDataProp": "CustomerStationDescription", "sTitle": "Station", "sWidth": "15%" },
                     { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "15%" },
                     { "mDataProp": "Purpose", "sTitle": "Purpose", "sWidth": "10%" },
@@ -163,7 +185,6 @@
                     { "mDataProp": "MaximumMembers", "sTitle": "Maximum Members", "sWidth": "10%" },
                     { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "10%" },
                     { "mDataProp": "MicroCreditOfficerEmployeeCustomerFullName", "sTitle": "Credit Officer", "sWidth": "10%" },
-                    { "mDataProp": "CustomerNonIndividualRegistrationNumber", "sTitle": "Registration Number", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
@@ -177,6 +198,53 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
+
+    @*<script>
+        $(document).ready(function () {
+            $('#groupMembersTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '@Url.Action("GetGroupDetailsAndMembers", "MicroCreditGroups")',
+                    type: 'POST',
+                     data: function (d) {
+                        const groupId = @Model.GroupDetails != null ? `'${Model.GroupDetails.Id}'` : null; // Safe null handling
+                        d.microCreditGroupId = groupId;
+                    }
+                },
+                columns: [
+                    { data: "CustomerFullName", title: "Full Name" },
+                    { data: "CustomerTypeDescription", title: "Type" },
+                    { data: "CustomerIndividualSalutationDescription", title: "Salutation" },
+                    { data: "CustomerIndividualGenderDescription", title: "Gender" },
+                    { data: "LoanCycle", title: "Loan Cycle" },
+                    { data: "DesignationDescription", title: "Designation" },
+                    {
+                        data: null,
+                        title: "Actions",
+                        sortable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return `
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown">
+                                        Action
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="/MicroCredit/MicroCreditGroups/Details/${row.Id}">View</a>
+                                        <a class="dropdown-item" href="/MicroCredit/MicroCreditGroups/Edit/${row.Id}">Edit</a>
+                                    </div>
+                                </div>`;
+                        }
+                    }
+                ]
+            });
+        });
+        </script>*@
+
+
+
+
 
 }
 

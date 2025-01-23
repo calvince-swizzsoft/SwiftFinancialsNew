@@ -7,7 +7,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 {
     public class LeaveApplicationDTO
     {
-
+        
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 
@@ -289,5 +289,59 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        [Display(Name = "Remarks")]
+        public string Remarks { get; set; }
+
+        // Additional DTOs
+        [Display(Name = "Leave Auth Option")]
+        public byte LeaveAutOption { get; set; }
+
+        [Display(Name = "Status")]
+        public string LeaveAutOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LeaveAuthOption), (int)LeaveAutOption) ? EnumHelper.GetDescription((LeaveAuthOption)LeaveAutOption) : string.Empty;
+            }
+        }
+
+        public LeaveAuthOption LeaveAuthOption { get; set; }
+
+        // List to hold error messages
+        public string ErrorMessages { get; set; }
+
+        // Property to check if there are any errors
+        public bool HasErrors { get; set; }
+        // Method to trigger validation for the DTO
+        public void ValidateAll()
+        {
+            
+        }
+
+        // Custom validation for date duration (CheckDates)
+        public static ValidationResult CheckDates(object value, ValidationContext context)
+        {
+            var bindingModel = context.ObjectInstance as HolidayDTO;
+            if (bindingModel == null)
+                throw new NotSupportedException("ObjectInstance must be HolidayDTO");
+
+            if (bindingModel.DurationStartDate < bindingModel.PostingPeriodDurationStartDate || bindingModel.DurationStartDate > bindingModel.PostingPeriodDurationEndDate)
+                return new ValidationResult("Start date is outside the valid range of the posting period.");
+            else if (bindingModel.DurationEndDate < bindingModel.PostingPeriodDurationStartDate || bindingModel.DurationEndDate > bindingModel.PostingPeriodDurationEndDate)
+                return new ValidationResult("End date is outside the valid range of the posting period.");
+            else if (bindingModel.DurationStartDate > bindingModel.DurationEndDate)
+                return new ValidationResult("Start date cannot be later than the end date.");
+
+            return ValidationResult.Success;
+        }
+
+        [Display(Name = "Holiday Id")]
+        public Guid holidayId { get; set; }  // Nullable if not every leave application is linked to a holiday
+
     }
+
+
 }
+

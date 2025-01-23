@@ -158,15 +158,6 @@
                         <div class="row mt-3">
                             <div class="col-lg-3">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#createCategoryModal" style="width: 200px;">
-                                        Create New Category
-                                    </button>
-                                </div>
-                            </div>
-
-
-                            <div class="col-lg-3">
-                                <div class="form-group">
                                     <button type="submit" class="btn btn-primary" style="width: 200px;">
                                         Save Report
                                     </button>
@@ -175,8 +166,8 @@
 
                             <div class="col-lg-3">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#reportBuilderModal" style="width: 200px;">
-                                        Open Report Builder
+                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#createCategoryModal" style="width: 200px;">
+                                        Create New Category
                                     </button>
                                 </div>
                             </div>
@@ -185,6 +176,14 @@
                                 <div class="form-group">
                                     <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#viewReportsModal" style="width: 200px;">
                                         View Saved Reports
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#reportBuilderModal" style="width: 200px;">
+                                        SSRS Resources
                                     </button>
                                 </div>
                             </div>
@@ -313,22 +312,15 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel" style="color: white;">Open Report Builder</h5>
+                <h5 class="modal-title" id="exampleModalLabel" style="color: black;">SSRS Resources</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>To open Microsoft Report Builder, please follow these steps:</p>
-                <ol>
-                    <li>Go to your Start Menu or Search bar.</li>
-                    <li>Search for <strong>"Microsoft Report Builder"</strong>.</li>
-                    <li>Click on the application to open it.</li>
-                </ol>
-                <p>If you don't have Report Builder installed, you can download it from the official Microsoft website:</p>
-
-                <p><a href="https://www.microsoft.com/en-us/download/details.aspx?id=53613" target="_blank">Download Report Builder &gt;&gt;</a></p>
-                <p><a href="http://desktop-trhql6c/Reports_Test/browse/" target="_blank">Upload reports to portal  &gt;&gt;</a></p>
+                <p><a href="https://www.microsoft.com/en-us/download/details.aspx?id=53613&msockid=3d5b7fb1f644673d00996abcf7d26662" target="_blank">Download Report Builder</a></p>
+                <p><a href="https://www.microsoft.com/en-us/download/details.aspx?id=104502&msockid=3d5b7fb1f644673d00996abcf7d26662" target="_blank">Download Microsoft SQL Server 2022 Reporting Services</a></p>
+                <p><a href="http://192.168.1.184/Reports/browse/" target="_blank">Open SSRS Web Portal  &gt;&gt;</a></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: red;">Close</button>
@@ -408,7 +400,7 @@
                             <td style="text-align: right;">
                                 <a href="@Url.Action("EditReport", "SSRSReportSetting")/${report.Id}" style="margin-right: 10px;" title="Edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 
-                                <a href="javascript:void(0);" onclick="deleteReport(${report.Id})" style="margin-right: 10px;" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                <a href="javascript:void(0);" onclick="deleteReport(${report.Id})" style="margin-right: 10px; color: red;" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
 
                                 <a href="@Url.Action("DownloadReport", "SSRSReportSetting")/${report.Id}" title="Download"><i class="fa fa-download" aria-hidden="true"></i></a>
                             </td>

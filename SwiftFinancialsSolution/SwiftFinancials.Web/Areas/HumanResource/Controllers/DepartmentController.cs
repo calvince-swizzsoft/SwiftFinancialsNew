@@ -7,6 +7,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -24,25 +25,67 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortDescending = jQueryDataTablesModel.sSortDir_.First() == "desc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindDepartmentsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindDepartmentsByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                0,
+                int.MaxValue,
+                GetServiceHeader()
+            );
+
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(departmentDTO => departmentDTO.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<DepartmentDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<DepartmentDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
+        //else
+        //{
+        //    return this.DataTablesJson(
+        //        items: new List<DepartmentDTO>(),
+        //        totalRecords: totalRecordCount,
+        //        totalDisplayRecords: searchRecordCount,
+        //        sEcho: jQueryDataTablesModel.sEcho
+        //    );
+        //}
+
+
+
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -67,19 +110,34 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             if (!departmentDTO.HasErrors)
             {
-                await _channelService.AddDepartmentAsync(departmentDTO, GetServiceHeader());
+                try
+                {
+                    await _channelService.AddDepartmentAsync(departmentDTO, GetServiceHeader());
 
-                TempData["SuccessMessage"] = "Department created successfully!";
+                    TempData["Message"] = "Operation Success: Department created successfully!";
+                    TempData["MessageType"] = "success"; 
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
 
-                return RedirectToAction("Index");
+                    TempData["Message"] = "An error occurred while creating the department. Please try again.";
+                    TempData["MessageType"] = "error"; 
+                }
             }
             else
             {
-                var errorMessages = departmentDTO.ErrorMessages;
+                string errorMessages = string.Join(Environment.NewLine, departmentDTO.ErrorMessages);
 
-                return View(departmentDTO);
+                TempData["Message"] = $"Validation Errors: {errorMessages}";
+                TempData["MessageType"] = "warning"; 
             }
+
+            return View(departmentDTO);
         }
+
+
 
 
         public async Task<ActionResult> Edit(Guid id)
@@ -93,21 +151,42 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, DepartmentDTO departmentBindingModel)
+        public async Task<ActionResult> Edit(Guid id, DepartmentDTO departmentDTO)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateDepartmentAsync(departmentBindingModel, GetServiceHeader());
+                try
+                {
+                    await _channelService.UpdateDepartmentAsync(departmentDTO, GetServiceHeader());
+                    TempData["Message"] = "Operation Success: Department updated successfully!";
+                    TempData["MessageType"] = "success";
 
-                TempData["SuccessMessage"] = "Department updated successfully!"; 
+                   
 
-                return RedirectToAction("Index");
+
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    TempData["Message"] = "An error occurred while updating the department. Please try again!!";
+                    TempData["MessageType"] = "error";
+
+                   
+                }
             }
             else
             {
-                return View(departmentBindingModel);
+                string errorMessages = string.Join(Environment.NewLine, departmentDTO.ErrorMessages);
+
+                TempData["Message"] = $"Validation Errors: {errorMessages}";
+                TempData["MessageType"] = "warning";
+               
             }
+
+            return View(departmentDTO);
         }
+
 
         [HttpGet]
         public async Task<JsonResult> GetDepartmentsAsync()

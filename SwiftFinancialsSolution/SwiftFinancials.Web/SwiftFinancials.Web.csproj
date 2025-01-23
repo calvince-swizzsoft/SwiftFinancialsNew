@@ -219,6 +219,27 @@
     <Reference Include="Microsoft.Owin.Security.OAuth, Version=4.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.2.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.WebForms.150.1652.0\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.WebForms.150.1652.0\lib\net40\Microsoft.ReportViewer.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Design, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.WebForms.150.1652.0\lib\net40\Microsoft.ReportViewer.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.WebForms.150.1652.0\lib\net40\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebDesign, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.WebForms.150.1652.0\lib\net40\Microsoft.ReportViewer.WebDesign.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.WebForms.150.1652.0\lib\net40\Microsoft.ReportViewer.WebForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
+    </Reference>
     <Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
       <HintPath>..\packages\Polly.6.1.2\lib\netstandard2.0\Polly.dll</HintPath>
     </Reference>
@@ -519,8 +540,6 @@
     <Compile Include="Areas\Accounts\Controllers\GLAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\IndefiniteChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InterAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\IntraAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
@@ -541,15 +560,21 @@
     <Compile Include="Areas\Accounts\Controllers\TreasuriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
+    <Compile Include="Areas\Admin\Controllers\AuditLogsController.cs" />
     <Compile Include="Areas\Admin\Controllers\DynamicReportingController.cs" />
     <Compile Include="Areas\Admin\Controllers\SSRSReportSettingController.cs" />
     <Compile Include="Areas\Admin\Controllers\SSRSReportSettingLoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemTransactiontypesController.cs" />
     <Compile Include="Areas\Admin\Data\ReportRepository.cs" />
+    <Compile Include="Areas\Admin\DocumentsModel\Document.cs" />
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Admin\Models\StoredProcedureViewModel.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\AccountStatusesController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\ApplicationsController.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\EmailAlertsController.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\FinancialPositionController.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\InstantMessagingController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\MessagingController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\MessagingGroupsController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\Pre_QualificationController.cs" />
@@ -568,20 +593,20 @@
     <Compile Include="Areas\FrontOffice\Controllers\InHouseController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\SundryPaymentsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
-    <Compile Include="Areas\HumanResource\Controllers\DocumentController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeDocumentsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PaySlipsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PeriodClosingController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\PeriodClosingsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryCardsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryGroupsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryPeriodsController.cs" />
-    <Compile Include="Areas\HumanResource\Controllers\SalaryProcessingController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\FixedDepositController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveApplicationController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveApprovalController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveRecallController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\SalaryProcessingController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AddCollateralController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AppraiseLoanController.cs" />
     <Compile Include="Areas\Loaning\Controllers\ApproveLoanController.cs" />
@@ -642,18 +667,26 @@
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
+    <Compile Include="Areas\MicroCredit\Controllers\MicroCreditApportionmentController.cs" />
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditGroupsController.cs" />
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\BindingModelBase.cs" />
+    <Compile Include="Areas\Registry\Controllers\BranchLinkageController.cs" />
+    <Compile Include="Areas\Registry\Controllers\ChargeExemptionsController.cs" />
+    <Compile Include="Areas\Registry\Controllers\ConditionalLendingController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\Registry\Controllers\DelegateController.cs" />
     <Compile Include="Areas\Registry\Controllers\DeviceViewModel.cs" />
     <Compile Include="Areas\Registry\Controllers\DirectorController.cs" />
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\DocumentController.cs" />
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Registry\Controllers\FindEducationRegisterAsync.cs" />
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
+    <Compile Include="Areas\Registry\Controllers\NextOfKinController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
@@ -696,7 +729,6 @@
     <Compile Include="Identity\SmsService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="PDF\CreatePdf.cs" />
     <Compile Include="PDF\PdfHeaderFooter.cs" />
     <Compile Include="PDF\RegisteredLoans.cs" />
@@ -717,6 +749,7 @@
     </Compile>
     <Compile Include="Services\IWebConfigurationService.cs" />
     <Compile Include="Services\WebConfigurationService.cs" />
+    <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Attributes\SystemPermission.cs" />
     <Compile Include="TypeAdapterFactory\ApplicationProfile.cs" />
@@ -729,8 +762,6 @@
     <Content Include="Areas\Reports\Views\Report\Edit.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Index.cshtml" />
     <Content Include="Areas\Reports\Views\Report\_Reports.cshtml" />
-    <Content Include="bin\SwiftFinancials.Web.dll" />
-    <Content Include="bin\SwiftFinancials.Web.pdb" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -1094,9 +1125,6 @@
     <Content Include="Areas\Accounts\Views\UnPayReason\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\UnPayReason\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\UnPayReason\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Create.cshtml" />
@@ -1105,11 +1133,9 @@
     <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
-    <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Index.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Create.cshtml" />
@@ -1173,9 +1199,7 @@
     <Content Include="Areas\HumanResource\Views\SalaryGroups\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryCards\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryCards\Create.cshtml" />
-    <Content Include="Areas\HumanResource\Views\SalaryPeriods\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Create.cshtml" />
-    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\Create.cshtml" />
@@ -1191,12 +1215,9 @@
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\CustomerManagement.cshtml" />
     <Content Include="Areas\Accounts\Views\Management\CustomerManagement.cshtml" />
-    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\Salary\Create.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveApplication\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveApplication\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApproval\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveApproval\Approve.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApproval\Approval.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveRecall\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveRecall\Recall.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveType\Index.cshtml" />
@@ -1311,9 +1332,6 @@
     <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Edit.cshtml" />
-    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Create.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Register\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Index.cshtml" />
@@ -1453,13 +1471,79 @@
     <Content Include="Areas\Dashboard\Views\Applications\ViewDetails.cshtml" />
     <Content Include="Areas\Dashboard\Views\Pre_Qualification\Appraise.cshtml" />
     <Content Include="Areas\Dashboard\Views\Messaging\Index.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Create.cshtml" />
+    <Content Include="Areas\Dashboard\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Dashboard\Views\MessagingGroups\Details.cshtml" />
+    <Content Include="Areas\Dashboard\Views\MessagingGroups\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Delegate\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Delegate\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Delegate\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Delegate\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Document\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Document\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Document\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Document\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditionalLending\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditionalLending\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditionalLending\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditionalLending\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\BranchLinkage\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\BranchLinkage\Index.cshtml" />
     <Content Include="Areas\Dashboard\Views\TextAlerts\Index.cshtml" />
+    <Content Include="Areas\Dashboard\Views\TextAlerts\Create.cshtml" />
+    <Content Include="Areas\Dashboard\Views\FinancialPosition\Index.cshtml" />
+    <Content Include="Areas\Dashboard\Views\AccountStatuses\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AuthorizeLoanBatch\Authorize.cshtml" />
+    <Content Include="Areas\Loaning\Views\AuthorizeLoanBatch\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Edit.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditGroups\Apportionment.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditApportionment\Index.cshtml" />
+    <Content Include="Areas\MicroCredit\Views\MicroCreditApportionment\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Approval.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Recall.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryPeriods\ProcessSalary.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryCards\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryProcessing\ProcessSalary.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryGroups\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryGroups\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AccountClosure\Settle.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\ChargeExemptions\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\NextOfKin\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_ChequeBooks\Index.cshtml" />
+    <Content Include="Areas\Dashboard\Views\InstantMessaging\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryPeriods\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryCards\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryPeriods\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryPeriods\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosing\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PeriodClosing\Close.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslip.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\_PaySlipEntries.cshtml" />
+    <Content Include="Areas\Admin\Views\AuditLogs\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslipEntries.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryPeriods\ViewPayroll.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\GuarantorManagement\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\ActionDropDown.css" />
     <Content Include="Scripts\css\BackOfficeNavigationMenu.css" />
     <Content Include="Scripts\css\CaptureSpecimenForm.css" />
+    <Content Include="Scripts\css\customersGrid.css" />
     <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\MainTabs.css" />
     <Content Include="Scripts\css\Marquee.css" />
@@ -1892,6 +1976,19 @@
     <Content Include="Scripts\summernote\summernote.min.js" />
     <Content Include="calculator.html" />
     <Content Include="loan-calculator.html" />
+    <Content Include="SqlServerTypes\readme.htm" />
+    <Content Include="SqlServerTypes\x64\msvcr120.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x64\SqlServerSpatial140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x86\msvcr120.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x86\SqlServerSpatial140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="ToDoList.html" />
     <Content Include="UploadedCheques\2.png" />
     <Content Include="Web.config" />
@@ -1963,18 +2060,15 @@
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Alternatechannel\" />
     <Folder Include="Areas\Accounts\Views\Credit\" />
-    <Folder Include="Areas\Accounts\Views\Default1\" />
-    <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
+    <Folder Include="Areas\Dashboard\Views\EmailAlerts\" />
     <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
     <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\Default\" />
     <Folder Include="Areas\HumanResource\Views\Delegate\" />
-    <Folder Include="Areas\HumanResource\Views\Document\" />
-    <Folder Include="Areas\HumanResource\Views\Leave\" />
-    <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Loaning\Views\AddCollateral\" />
     <Folder Include="Areas\Loaning\Views\RepaymentSchedule\" />

@@ -606,5 +606,87 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public int RecordStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public string RecordStatusDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(RecordStatus), RecordStatus) ? EnumHelper.GetDescription((RecordStatus)RecordStatus) : string.Empty;
+            }
+        }
+
+        [Display(Name = "Customer Filter")]
+        public int CustomerFilter { get; set; }
+
+        [Display(Name = "Customer Filter")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return EnumHelper.GetDescription((CustomerFilter)CustomerFilter);
+            }
+        }
+
+
+
+        [DataMember]
+        [Display(Name = "Section")]
+        public int LoanRegistrationLoanProductSection { get; set; }
+
+        [DataMember]
+        [Display(Name = "Section")]
+        public string LoanRegistrationLoanProductSectionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LoanProductSection), LoanRegistrationLoanProductSection) ? EnumHelper.GetDescription((LoanProductSection)LoanRegistrationLoanProductSection) : string.Empty;
+            }
+        }
+
+
+        [DataMember]
+        public ObservableCollection<LoanGuarantorDTO> Guarantor { get; set; }
+
+        public List<Guarantor> Guarantors { get; set; } = new List<Guarantor>();
+
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public int CustomerAccountTypeProductCode { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public string CustomerAccountTypeProductCodeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(ProductCode), CustomerAccountTypeProductCode) ? EnumHelper.GetDescription((ProductCode)CustomerAccountTypeProductCode) : string.Empty;
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Amount Applied")]
+        public decimal AmountApplied2 { get; set; }
+    }
+
+
+    public class Guarantor
+    {
+        public string Id { get; set; }
+        public string CustomerId { get; set; }
+        public string AmountGuaranteed { get; set; }
+        public string CommittedShares { get; set; }
+        public string CustomerName { get; set; }
+        public string InterestAttached { get; set; }
+        public string PrincipalAttached { get; set; }
+        public string StatusDescription { get; set; }
+        public string TotalShares { get; set; }        
     }
 }

@@ -1,0 +1,32 @@
+USE [SwiftFinancialsDB_Live]
+GO
+
+/****** Object:  Table [dbo].[swiftFin_SpecimenCapture]    Script Date: 10/12/2024 19:37:47 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[swiftFin_SpecimenCapture](
+	[Id] [uniqueidentifier] NOT NULL,
+	[CustomerId] [uniqueidentifier] NOT NULL,
+	[PassportPhoto] [varbinary](max) NULL,
+	[SignaturePhoto] [varbinary](max) NULL,
+	[IDCardFrontPhoto] [varbinary](max) NULL,
+	[IDCardBackPhoto] [varbinary](max) NULL,
+	[CreatedDate] [datetime] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[swiftFin_SpecimenCapture] ADD  DEFAULT (newid()) FOR [Id]
+GO
+
+ALTER TABLE [dbo].[swiftFin_SpecimenCapture] ADD  DEFAULT (getdate()) FOR [CreatedDate]
+GO
+
+

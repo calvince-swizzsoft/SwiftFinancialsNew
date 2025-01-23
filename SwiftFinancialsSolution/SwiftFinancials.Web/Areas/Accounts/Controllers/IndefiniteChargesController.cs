@@ -70,6 +70,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            ViewBag.Commisions = commissionDTOs;
             ViewBag.DynamicCharge = GetDynamicChargeRecoveryModeSelectList(string.Empty);
             ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
             ViewBag.Source = GetDynamicChargeRecoverySourceSelectList(string.Empty);
@@ -82,22 +84,35 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(DynamicChargeDTO levyDTO, ObservableCollection<CommissionDTO> selectedRows)
+        public async Task<ActionResult> Create(DynamicChargeDTO levyDTO, string[] commisionIds)
         {
+            ObservableCollection<CommissionDTO> commissionDTOs = new ObservableCollection<CommissionDTO>();
+            var selectedIds = commisionIds.Select(Guid.Parse).ToList();
+            // var commissions = new ObservableCollection<CommissionDTO>(selectedIds.Select(rowId => new CommissionDTO { Id = rowId }));
+
+
+            foreach (var commisionid in selectedIds)
+            {
+                var commission = await _channelService.FindCommissionAsync(commisionid, GetServiceHeader());
+                commissionDTOs.Add(commission);
+            }
+            // Process the selected IDs as needed
 
 
             levyDTO.ValidateAll();
 
             if (!levyDTO.HasErrors)
             {
-                await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
+               var result=await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
+                await _channelService.UpdateCommissionsByDynamicChargeIdAsync(result.Id, commissionDTOs, GetServiceHeader());
                 TempData["Successfully"] = "Successfully Create indefinate charges";
                 ViewBag.SystemTransactionType = GetSystemTransactionTypeList(levyDTO.RecoverySource.ToString());
                 // ViewBag.AlternateSelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
                 ViewBag.Source = GetDynamicChargeRecoverySourceSelectList(levyDTO.RecoverySource.ToString());
                 ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoveryMode.ToString());
                 ViewBag.Chargetype = GetChargeTypeSelectList(levyDTO.RecoverySource.ToString());
-
+                var commissions = await _channelService.FindCommissionsAsync(GetServiceHeader());
+                ViewBag.Commisions = commissions;
                 ViewBag.DynamicCharge = GetDynamicChargeRecoveryModeSelectList(levyDTO.RecoverySource.ToString());
                 return RedirectToAction("Index");
             }
@@ -112,6 +127,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
+            var commissionDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            ViewBag.Commisions = commissionDTOs;
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             var debitBatchDTO = await _channelService.FindDynamicChargeAsync(id, GetServiceHeader());
             ViewBag.DynamicCharge = GetDynamicChargeRecoveryModeSelectList(string.Empty);

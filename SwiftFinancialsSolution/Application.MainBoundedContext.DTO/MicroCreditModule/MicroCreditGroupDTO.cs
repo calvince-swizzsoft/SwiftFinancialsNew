@@ -29,9 +29,6 @@ namespace Application.MainBoundedContext.DTO.MicroCreditModule
         [Display(Name = "Parent")]
         public Guid? ParentId { get; set; }
 
-        [Display(Name = "Parent Group")]
-        public string ParentMicroCreditDescription { get; set; }
-
         [DataMember]
         [Display(Name = "Customer")]
         [ValidGuid]
@@ -179,38 +176,32 @@ namespace Application.MainBoundedContext.DTO.MicroCreditModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
         //Added Properties
-
-        [DataMember]
         [Display(Name = "Designation")]
-        public int Designation { get; set; }
+        public string Designation { get; set; }
 
-        [Display(Name = "Designation")]
-        public string DesignationDescription
-        {
-            get
-            {
-                return Enum.IsDefined(typeof(MicroCreditGroupMemberDesignation), Designation) ? EnumHelper.GetDescription((MicroCreditGroupMemberDesignation)Designation) : string.Empty;
-            }
-        }
-
-        [Display (Name = "Employer")]
+        [Display(Name = "Employer")]
         public string Employer { get; set; }
 
-        [Display(Name ="Account Number")]
+        [Display(Name = "Account Number")]
         public string CustomerAccountCustomerReference1 { get; set; }
 
-        [Display(Name ="MemberShip Number")]
+        [Display(Name = "MemberShip Number")]
         public string CustomerAccountCustomerReference2 { get; set; }
 
-        [Display(Name ="Personal File Number")]
+        [Display(Name = "Personal File Number")]
         public string CustomerAccountCustomerReference3 { get; set; }
 
-        [Display(Name ="Loan Cycle")]
+        [Display(Name = "Loan Cycle")]
         public int LoanCycle { get; set; }
-       
+
         [Display(Name = "Customer FullName")]
         public string CustomerFullName { get; set; }
 
         public CustomerDTO customer { get; set; }
+
+        [Display(Name = "Parent Group")]
+        public string ParentGroup { get; set; }
+
+        public List<MicroCreditGroupMemberDTO> GroupMember { get; set; }
     }
 }

@@ -6,7 +6,7 @@
     var typeDescription = ViewBag.TypeDescriptionSelectList as List<SelectListItem>;
     var meetingFrequencyDescription = ViewBag.MeetingFrequencyDescriptionSelectList as List<SelectListItem>;
     var meetingDayOfWeekDescription = ViewBag.MeetingDayOfWeekDescriptionSelectList as List<SelectListItem>;
-    var designationDescription = ViewBag.DesignationSelectList as List<SelectListItem>;
+    var designation = ViewBag.DesignationSelectList as List<SelectListItem>;
 }
 
 
@@ -77,7 +77,7 @@
 
                 <div class="card">
                     <div class="card-body">
-                        @using (Html.BeginForm("Update", "MicroCreditGroups", new { Area = "MicroCredit" }, FormMethod.Post))
+                        @using (Html.BeginForm("Edit", "MicroCreditGroups", new { Area = "MicroCredit" }, FormMethod.Post))
                         {
                             @Html.AntiForgeryToken()
                             @Html.HiddenFor(model => model.Id) <!-- This ensures the id is part of the form data -->
@@ -91,276 +91,293 @@
                             @Html.HiddenFor(model => model.CustomerStationId, new { id = "CustomerStationId" })
                             @Html.HiddenFor(model => model.CustomerNonIndividualDateEstablished, new { id = "CustomerNonIndividualDateEstablished" })
                             @Html.HiddenFor(model => model.CustomerRegistrationDate, new { id = "CustomerRegistrationDate" })
+                            @Html.HiddenFor(model => model.ParentId, new { id = "ParentId" })
 
 
-                            <!-- Expense Payables -->
+
+
                             <fieldset>
                                 <div class="card mb-4">
                                     <div class="card-body text-dark">
-                                        <div class="row">
+                                        <div class="card-body text-dark">
+                                            <div class="row">
 
-                                            <!-- Customer Account Fields -->
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CustomerNonIndividualDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.CustomerNonIndividualDescription, new { @rows = 3, @class = "form-control", @readonly = "" })
+                                                <!-- Customer Account Fields -->
+                                                <div class="col-lg-4 customer-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerStationDescription, new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.CustomerStationDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
 
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { @rows = 3, @class = "form-control", @readonly = "" })
-
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-4 customer-fields">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.ParentMicroCreditDescription, new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        @Html.EditorFor(model => model.ParentMicroCreditDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "MicroCreditOfficerEmployeeCustomerFullName", @readonly = "" } })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#microCreditGroupLookup">
-                                                                <span class="fa fa-search"></span>
-                                                            </a>
-                                                        </span>
+                                                        @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
                                                     </div>
-                                                    @Html.ValidationMessageFor(model => model.ParentMicroCreditDescription, "", new { @class = "text-danger" })
                                                 </div>
-                                            </div>
-                                        </div>
 
-                                        <div class="row">
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.TypeDescription, new { @rows = 3, @class = "form-control", @readonly = "" })
-
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Purpose, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.Purpose, new { @rows = 3, @class = "form-control", @readonly = "" })
-                                                    @Html.ValidationMessageFor(model => model.Purpose, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Activities, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.Activities, new { @rows = 3, @class = "form-control", @readonly = "" })
-                                                    @Html.ValidationMessageFor(model => model.Activities, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MeetingDayOfWeekDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.MeetingDayOfWeekDescription, new { @rows = 3, @class = "form-control", @readonly = "" })
-
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MeetingFrequencyDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.MeetingFrequencyDescription, new { @rows = 3, @class = "form-control", @readonly = "" })
-
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MeetingPlace, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.MeetingPlace, new { @rows = 3, @class = "form-control", @readonly = "" })
-                                                    @Html.ValidationMessageFor(model => model.MeetingPlace, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-
-                                            <div class="col-lg-4 group-fields">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MinimumMembers, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.MinimumMembers, new { @class = "form-control", type = "number", id = "MinimumMembers", min = "0", value = "1", @readonly = "" })
-                                                    @Html.ValidationMessageFor(model => model.MinimumMembers, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-4 group-fields">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.MaximumMembers, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.MaximumMembers, new { @class = "form-control", type = "number", id = "MaximumMembers", min = "0", value = "1" })
-                                                    @Html.ValidationMessageFor(model => model.MaximumMembers, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
-                                                    @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @readonly = "" })
-                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                                    </div>
-
-                                    <div class="member-details-pane">
-                                        <h3>Member Details</h3>
-
-                                        <div class="row">
-                                            <!-- Customer Lookup -->
-                                            <div class="col-lg-4 customer-fields">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CustomerFullName, new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
-
-                                                    <div class="input-group">
-                                                        @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "CustomerFullName", @readonly = "" } })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#customerNameLookup">
-                                                                <span class="fa fa-search"></span>
-                                                            </a>
-                                                        </span>
+                                                <div class="col-lg-4 customer-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
+                                                        @Html.EditorFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                        @Html.ValidationMessageFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, "", new { @class = "text-danger" })
                                                     </div>
-                                                    @Html.ValidationMessageFor(model => model.CustomerFullName, "", new { @class = "text-danger" })
                                                 </div>
-                                            </div>
 
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-
-                                                    @Html.LabelFor(model => model.Employer, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.Employer, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
-                                                    @Html.ValidationMessageFor(model => model.Employer, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CustomerStationDescription, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.CustomerStationDescription, new { @rows = 3, @class = "form-control", @placeholder = "" })
-                                                    @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CustomerAccountCustomerReference1, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.CustomerAccountCustomerReference1, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
-                                                    @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CustomerAccountCustomerReference2, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.CustomerAccountCustomerReference2, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
-                                                    @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CustomerAccountCustomerReference3, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.CustomerAccountCustomerReference3, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
-                                                    @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Designation, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.Designation, designationDescription, new { @class = "form-control input-md", id = "Designation" })
-                                                        @Html.ValidationMessageFor(model => model.Designation)
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.TypeDescription, new { @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                        @Html.ValidationMessageFor(model => model.TypeDescription, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4 group-fields">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanCycle, new { @class = "control-label" })
-                                                    @Html.TextBoxFor(model => model.LoanCycle, new { @class = "form-control", type = "number", id = "LoanCycle", min = "0", value = "1" })
-                                                    @Html.ValidationMessageFor(model => model.LoanCycle, "", new { @class = "text-danger" })
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MeetingFrequencyDescription, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.MeetingFrequencyDescription, new { @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                        @Html.ValidationMessageFor(model => model.MeetingFrequencyDescription, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Purpose, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.Purpose, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.Purpose, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Activities, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.Activities, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.Activities, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-lg-4 group-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MinimumMembers, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.MinimumMembers, new { @class = "form-control", type = "number", id = "MinimumMembers", min = "0", value = "1" })
+                                                        @Html.ValidationMessageFor(model => model.MinimumMembers, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4 group-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MaximumMembers, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.MaximumMembers, new { @class = "form-control", type = "number", id = "MaximumMembers", min = "0", value = "1" })
+                                                        @Html.ValidationMessageFor(model => model.MaximumMembers, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", id = "Remarks" })
+                                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                    </div>
                                                 </div>
                                             </div>
 
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
-                                                    @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", id = "Remarks" })
-                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MeetingDayOfWeekDescription, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.MeetingDayOfWeekDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.MeetingDayOfWeekDescription, "", new { @class = "text-danger" })
+                                                    </div>
                                                 </div>
+
+
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MeetingPlace, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.MeetingPlace, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.MeetingPlace, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.ParentGroup, new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            @Html.EditorFor(model => model.ParentGroup, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "ParentGroup", @readonly = "" } })
+                                                            <span class="input-group-addon">
+                                                                <a data-toggle="modal" data-target="#microCreditGroupLookup">
+                                                                    <span class="fa fa-search"></span>
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.ParentGroup, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+
+
                                             </div>
+
+
+
+
+
+
+
+
+
+
+                                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
                                         </div>
 
+                                        <div class="card-body text-dark">
+                                            <h3>Member Details</h3>
+                                            <div class="row">
+                                                <!-- Customer Lookup -->
+                                                <div class="col-lg-4 customer-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerFullName, new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
+                                                        <div class="input-group">
+                                                            @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "CustomerFullName", @readonly = "" } })
+                                                            <span class="input-group-addon">
+                                                                <a data-toggle="modal" data-target="#customerNameLookup">
+                                                                    <span class="fa fa-search"></span>
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.CustomerFullName, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
 
-                                        <!-- Add Button -->
-                                        <button type="button" class="btn btn-primary" onclick="addMember()">Add Member</button>
-                                    </div>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Employer, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.Employer, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.Employer, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
 
-                                    <div class="tab-pane fade show active" id="entries" role="tabpanel" aria-labelledby="entries-tab">
-                                        <table id="groupMembersTable" class="table table-bordered table-striped mt-2">
-                                            <thead>
-                                                <tr>
-                                                    <th>Full Name</th>
-                                                    <th>Employer</th>
-                                                    <th>Station Description</th>
-                                                    <th>Reference 1</th>
-                                                    <th>Reference 2</th>
-                                                    <th>Reference 3</th>
-                                                    <th>Designation</th>
-                                                    <th>Loan Cycle</th>
-                                                    <th>Remarks</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (ViewBag.GroupMembers != null)
-                                                {
-                                                    foreach (var member in ViewBag.GroupMembers)
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerStationDescription, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.CustomerStationDescription, new { @rows = 3, @class = "form-control", @placeholder = "" })
+                                                        @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerAccountCustomerReference1, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.CustomerAccountCustomerReference1, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerAccountCustomerReference2, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.CustomerAccountCustomerReference2, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerAccountCustomerReference3, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.CustomerAccountCustomerReference3, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-4 group-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanCycle, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.LoanCycle, new { @class = "form-control", type = "number", id = "LoanCycle", min = "0", value = "1" })
+                                                        @Html.ValidationMessageFor(model => model.LoanCycle, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Designation, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.Designation, designation, "Select Type", new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.Designation)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+
+                                               
+                                            </div>
+
+                                            <!-- Add Button -->
+                                            <button type="button" class="btn btn-primary" onclick="addMember()">Add Member</button>
+                                        </div>
+
+                                        <div class="tab-pane fade show active" id="entries" role="tabpanel" aria-labelledby="entries-tab">
+                                            <table id="groupMembersTable" class="table table-bordered table-striped mt-2">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Full Name</th>
+                                                        <th>Employer</th>
+                                                        <th>Station Description</th>
+                                                        <th>Reference 1</th>
+                                                        <th>Reference 2</th>
+                                                        <th>Reference 3</th>
+                                                        <th>Loan Cycle</th>
+                                                        <th>Designation</th>
+                                                        <th>Remarks</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.GroupMembers != null)
                                                     {
-                                                        <tr data-customer-id="@member.CustomerId">
-                                                            <td>@member.CustomerFullName</td>
-                                                            <td>@member.Employer</td>
-                                                            <td>@member.CustomerStationDescription</td>
-                                                            <td>@member.CustomerAccountCustomerReference1</td>
-                                                            <td>@member.CustomerAccountCustomerReference2</td>
-                                                            <td>@member.CustomerAccountCustomerReference3</td>
-                                                            <td>@member.Designation</td>
-                                                            <td>@member.LoanCycle</td>
-                                                            <td>@member.Remarks</td>
-                                                            <td>
-                                                                <button type="button" class="btn btn-danger btn-sm" onclick="removeMember('@member.CustomerId')">Remove</button>
-                                                                <input type="hidden" name="CustomerId" value="@member.CustomerId" />
-                                                            </td>
-                                                        </tr>
+                                                        foreach (var member in ViewBag.GroupMembers)
+                                                        {
+                                                            <tr data-customer-id="@member.CustomerId">
+                                                                <td>@member.CustomerFullName</td>
+                                                                <td>@member.Employer</td>
+                                                                <td>@member.CustomerStationDescription</td>
+                                                                <td>@member.CustomerAccountCustomerReference1</td>
+                                                                <td>@member.CustomerAccountCustomerReference2</td>
+                                                                <td>@member.CustomerAccountCustomerReference3</td>
+                                                                <td>@member.LoanCycle</td>
+                                                                <td>@member.Description</td>
+                                                                <td>@member.Remarks</td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeMember('@member.CustomerId')">Remove</button>
+                                                                    <input type="hidden" name="CustomerId" value="@member.CustomerId" />
+                                                                </td>
+                                                            </tr>
+                                                        }
                                                     }
-                                                }
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+
+
+
+
+
                                     </div>
-
-
-
-
-
                                 </div>
                             </fieldset>
 
@@ -380,10 +397,7 @@
                         margin-bottom: 20px;
                     }
 
-                    .nav-tabs .nav-link.active {
-                        background-color: #007bff;
-                        color: white;
-                    }
+
 
                     .form-group-lg {
                         margin-bottom: 1.5rem;
@@ -393,46 +407,6 @@
                         border-radius: .25rem;
                     }
 
-                    /* The .nav class is incorrectly nested, so I'll fix that */
-                    .nav {
-                        display: flex;
-                        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
-                        padding: 0;
-                        margin: 5px;
-                        margin-bottom: 0;
-                        border: 2px solid black;
-                        border-radius: 8px;
-                        margin-top: 20px;
-                        gap: 10px; /* Space between links */
-                        text-align: center; /* Centers the text inside links */
-                        padding: 10px;
-                    }
-
-                    .nav-link {
-                        display: flex;
-                        text-decoration: none;
-                        color: #007bff; /* Default text color */
-                        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
-                        border-radius: 4px; /* Rounded corners */
-                        font-size: 14px; /* Adjust font size for better fit */
-                        white-space: nowrap; /* Prevents text from wrapping inside the link */
-                    }
-
-                        .nav-link:hover {
-                            color: #fff; /* Text color on hover */
-                            background-color: #0056b3; /* Background color on hover */
-                        }
-
-                        .nav-link i {
-                            margin-right: 8px; /* Space between icon and text */
-                            font-size: 16px; /* Adjust icon size */
-                        }
-
-                        .nav-link.disabled {
-                            pointer-events: none;
-                            opacity: 0.6;
-                            cursor: not-allowed;
-                        }
 
                     .col-lg-2 {
                         display: flex;
@@ -448,7 +422,7 @@
                         border-radius: 5px; /* Rounded corners (optional) */
                         font-size: 16px;
                         font-weight: bold;
-                        background-color: #00e0ff;
+                        background-color: #e0f0ff;
                     }
                 </style>
 
@@ -605,6 +579,7 @@
         </div>
     </div>
 </div>
+
 
 
 
@@ -881,13 +856,13 @@
                     data: { microCreditGroupId: microCreditGroupId },
                     success: function (response) {
                         if (response.success) {
-                            $('#ParentMicroCreditDescription').val(response.data.ParentMicroCreditDescription);
-                            $('#MicroCreditGroupId').val(response.data.MicroCreditGroupId);
+                            $('#ParentGroup').val(response.data.ParentGroup);
+                            $('#ParentId').val(response.data.ParentId);
                             $('#MicroCreditGroupCustomerId').val(response.data.MicroCreditGroupCustomerId);
 
-                            
 
-                            
+
+
 
 
                             $('#microCreditGroupLookup').modal('hide');
@@ -967,7 +942,7 @@
                             $('#CustomerStationDescription').val(response.data.CustomerStationDescription);
                             $('#CustomerStationId').val(response.data.CustomerStationId);
                             $('#CustomerId').val(response.data.CustomerId);
-                            
+
 
                             $('#CustomerFullName').val(response.data.CustomerFullName);
                             $('#CustomerStationId').val(response.data.CustomerStationId);
@@ -995,74 +970,129 @@
 
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-    function addMember() {
-        const member = {
-            CustomerFullName: document.getElementById("CustomerFullName").value,
-            CustomerId: document.getElementById("CustomerId").value,
-            Employer: document.getElementById("Employer").value,
-            CustomerStationDescription: document.getElementById("CustomerStationDescription").value,
-            CustomerAccountCustomerReference1: document.getElementById("CustomerAccountCustomerReference1").value,
-            CustomerAccountCustomerReference2: document.getElementById("CustomerAccountCustomerReference2").value,
-            CustomerAccountCustomerReference3: document.getElementById("CustomerAccountCustomerReference3").value,
-            Designation: document.getElementById("Designation").value,
-            LoanCycle: document.getElementById("LoanCycle").value,
-            Remarks: document.getElementById("Remarks").value,
-        };
+        function clearFields() {
+    document.getElementById("CustomerFullName").value = "";
+    document.getElementById("CustomerId").value = "";
+    document.getElementById("Employer").value = "";
+    document.getElementById("CustomerStationDescription").value = "";
+    document.getElementById("CustomerAccountCustomerReference1").value = "";
+    document.getElementById("CustomerAccountCustomerReference2").value = "";
+    document.getElementById("CustomerAccountCustomerReference3").value = "";
+    document.getElementById("LoanCycle").value = "";
+    document.getElementById("Remarks").value = "";
+}
 
-        const table = document.getElementById("groupMembersTable").getElementsByTagName("tbody")[0];
-        const row = table.insertRow();
-        row.setAttribute("data-customer-id", member.CustomerId);
-        row.innerHTML = `
-            <td>${member.CustomerFullName}</td>
-            <td>${member.Employer}</td>
-            <td>${member.CustomerStationDescription}</td>
-            <td>${member.CustomerAccountCustomerReference1}</td>
-            <td>${member.CustomerAccountCustomerReference2}</td>
-            <td>${member.CustomerAccountCustomerReference3}</td>
-            <td>${member.Designation}</td>
-            <td>${member.LoanCycle}</td>
-            <td>${member.Remarks}</td>
-            <td>
-                <button type="button" class="btn btn-danger btn-sm" onclick="removeMember('${member.CustomerId}')">Remove</button>
-                <input type="hidden" name="CustomerId" value="${member.CustomerId}" />
-            </td>
-        `;
+function addMember() {
+    const table = document.getElementById("groupMembersTable").getElementsByTagName("tbody")[0];
+    const currentRowCount = table.rows.length;
+    const maximumMembers = parseInt(document.getElementById("MaximumMembers").value, 10);
 
-        $.ajax({
-            url: '@Url.Action("AddMemberToGroup")',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(member),
-            success: function () {
-                console.log("Member added successfully!");
-            },
-            error: function () {
-                console.error("Failed to add member.");
-            }
+    if (currentRowCount >= maximumMembers) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Limit Reached',
+            text: `You cannot add more than ${maximumMembers} members to the group.`,
         });
+        return;
     }
 
-    function removeMember(customerId) {
-        // Remove the row from the table
-        const row = document.querySelector(`#groupMembersTable tbody tr[data-customer-id="${customerId}"]`);
+    const member = {
+        CustomerFullName: document.getElementById("CustomerFullName").value,
+        CustomerId: document.getElementById("CustomerId").value,
+        Employer: document.getElementById("Employer").value,
+        CustomerStationDescription: document.getElementById("CustomerStationDescription").value,
+        CustomerAccountCustomerReference1: document.getElementById("CustomerAccountCustomerReference1").value,
+        CustomerAccountCustomerReference2: document.getElementById("CustomerAccountCustomerReference2").value,
+        CustomerAccountCustomerReference3: document.getElementById("CustomerAccountCustomerReference3").value,
+        Designation: document.getElementById("Designation") ? document.getElementById("Designation").value : "", // Optional field
+        LoanCycle: document.getElementById("LoanCycle").value,
+        Remarks: document.getElementById("Remarks").value,
+    };
+
+    const existingRow = Array.from(table.rows).find(row => row.getAttribute("data-customer-id") === member.CustomerId);
+    if (existingRow) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Duplicate Entry',
+            text: 'This member is already in the group.',
+        });
+        return;
+    }
+
+    const row = table.insertRow();
+    row.setAttribute("data-customer-id", member.CustomerId);
+    row.innerHTML = `
+        <td>${member.CustomerFullName}</td>
+        <td>${member.Employer}</td>
+        <td>${member.CustomerStationDescription}</td>
+        <td>${member.CustomerAccountCustomerReference1}</td>
+        <td>${member.CustomerAccountCustomerReference2}</td>
+        <td>${member.CustomerAccountCustomerReference3}</td>
+        <td>${member.LoanCycle}</td>
+        <td>${member.Designation}</td>
+        <td>${member.Remarks}</td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeMember('${member.CustomerId}')">Remove</button>
+            <input type="hidden" name="CustomerId" value="${member.CustomerId}" />
+        </td>
+    `;
+
+    $.ajax({
+        url: '@Url.Action("AddMembersToGroup")',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify([member]),
+        success: function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Member Added',
+                text: 'The member has been successfully added to the group.',
+            });
+            clearFields();
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while adding the member. Please try again.',
+            });
+        }
+    });
+}
+
+function removeMember(customerId) {
+    if (confirm("Are you sure you want to remove this member?")) {
+        const row = document.querySelector(`[data-customer-id='${customerId}']`);
         if (row) row.remove();
 
-        // Send an AJAX request to the server to remove the member from the group
         $.ajax({
-            url: '@Url.Action("RemoveMemberFromGroup")', // Controller action for removing a member
+            url: '@Url.Action("RemoveMemberFromGroup")',
             type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ CustomerId: customerId }),
+            data: { customerId: customerId },
             success: function () {
-                console.log("Member removed successfully!");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Member Removed',
+                    text: 'The member has been successfully removed from the group.',
+                });
             },
             error: function () {
-                console.error("Failed to remove member.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while removing the member. Please try again.',
+                });
             }
         });
     }
+}
+
     </script>
+
+
     <style>
         .highlight {
             background-color: #f0c14b; /* Light yellow color for highlighting */
@@ -1072,39 +1102,6 @@
 
 
 
-    <script>
-        $.ajax({
-            url: '/MicroCredit/Create',
-            type: 'POST',
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.message,
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then(() => {
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: response.message
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An unexpected error occurred.'
-                });
-            }
-        });
-
-
-    </script>
 
 
 
@@ -1205,15 +1202,6 @@
                 border-color: #bd2130;
             }
 
-        /* Ensure no border between tabs and tab content */
-        .nav-tabs {
-            border-bottom: none; /* Remove bottom border from tab navigation */
-        }
-
-            .nav-tabs .nav-link {
-                border: none; /* Remove borders from tab links */
-                border-radius: 0; /* Remove border radius for a cleaner look */
-            }
 
         .tab-content {
             border-top: 1px solid #ddd; /* Add a subtle border if needed */

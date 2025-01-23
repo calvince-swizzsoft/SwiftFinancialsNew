@@ -38,10 +38,12 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<CustomerAccountSignatoryDTO> customerAccountSignatoryDTOs;
         public ObservableCollection<CustomerAccountDTO> customerAccountDTOs;
         public ObservableCollection<CommissionDTO> CommissionDTOs;
-
+        public ObservableCollection<GraduatedScaleDTO> graduatedScaleDTOS;
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
         public ObservableCollection<BankBranchDTO> bankBranches;
+        public ObservableCollection<NextOfKinDTO> NextOfKinDTOs;
 
+        
 
         public ObservableCollection<OverDeductionBatchEntryDTO> OverDeductionBatchEntryDTOs;
 
@@ -149,45 +151,13 @@ namespace SwiftFinancials.Web.Controllers
             return await _applicationUserManager.FindByNameAsync(User.Identity.Name);
         }
 
-        //[NonAction]
-        //public async Task ServeNavigationMenus()
-        //{
-        //    if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
-        //    {
-        //        ViewBag.NavigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-        //    }
-        //    else
-        //    {
-        //        var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
-
-        //        var roles = await _applicationUserManager.GetRolesAsync(user.Id);
-
-        //        var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO> ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
-
-        //        var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-
-        //        var parentsInNavigationItems = navigationItems.Where(x => x.ControllerName == null && x.ActionName == null).ToList();
-
-        //        var userNavigationItems = navigationItems.Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId)).ToList();
-
-        //        userNavigationItems.AddRange(parentsInNavigationItems);
-
-        //        userNavigationItems.ForEach(item => item.Child = userNavigationItems.Where(child => child.AreaCode == item.Code).ToList());
-
-        //        userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
-
-        //        ViewBag.NavigationItems = userNavigationItems;
-        //    }
-        //}
-
 
         [NonAction]
         public async Task ServeNavigationMenus()
         {
             if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
             {
-                var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-                ViewBag.NavigationItems = navigationItems.OrderBy(item => item.Description).ToList();
+                ViewBag.NavigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
             }
             else
             {
@@ -195,30 +165,63 @@ namespace SwiftFinancials.Web.Controllers
 
                 var roles = await _applicationUserManager.GetRolesAsync(user.Id);
 
-                var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO>
-                    ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
+                var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO> ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
 
                 var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
 
-                var parentsInNavigationItems = navigationItems
-                    .Where(x => x.ControllerName == null && x.ActionName == null)
-                    .ToList();
+                var parentsInNavigationItems = navigationItems.Where(x => x.ControllerName == null && x.ActionName == null).ToList();
 
-                var userNavigationItems = navigationItems
-                    .Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId))
-                    .ToList();
+                var userNavigationItems = navigationItems.Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId)).ToList();
 
                 userNavigationItems.AddRange(parentsInNavigationItems);
 
-                userNavigationItems.ForEach(item => item.Child = userNavigationItems
-                    .Where(child => child.AreaCode == item.Code)
-                    .ToList());
+                userNavigationItems.ForEach(item => item.Child = userNavigationItems.Where(child => child.AreaCode == item.Code).ToList());
 
                 userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
 
                 ViewBag.NavigationItems = userNavigationItems.OrderBy(item => item.Description).ToList();
             }
         }
+
+
+        //[NonAction]
+        //public async Task ServeNavigationMenus()
+        //{
+        //    if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
+        //    {
+        //        var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
+        //        ViewBag.NavigationItems = navigationItems.OrderBy(item => item.Description).ToList();
+        //    }
+        //    else
+        //    {
+        //        var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
+
+        //        var roles = await _applicationUserManager.GetRolesAsync(user.Id);
+
+        //        var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO>
+        //            ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
+
+        //        var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
+
+        //        var parentsInNavigationItems = navigationItems
+        //            .Where(x => x.ControllerName == null && x.ActionName == null)
+        //            .ToList();
+
+        //        var userNavigationItems = navigationItems
+        //            .Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId))
+        //            .ToList();
+
+        //        userNavigationItems.AddRange(parentsInNavigationItems);
+
+        //        userNavigationItems.ForEach(item => item.Child = userNavigationItems
+        //            .Where(child => child.AreaCode == item.Code)
+        //            .ToList());
+
+        //        userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
+
+        //        ViewBag.NavigationItems = userNavigationItems.OrderBy(item => item.Description).ToList();
+        //    }
+        //}
 
 
 
@@ -385,7 +388,22 @@ namespace SwiftFinancials.Web.Controllers
             return systemTransactionType;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetsavingsProductKnownChargeTypeList(string selectedValue)
+        {
+            List<SelectListItem> savingsProductKnownChargeType = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SavingsProductKnownChargeType)).Cast<SavingsProductKnownChargeType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            savingsProductKnownChargeType.AddRange(items);
+
+            return savingsProductKnownChargeType;
+        }
 
 
         [NonAction]
@@ -430,6 +448,24 @@ namespace SwiftFinancials.Web.Controllers
             List<SelectListItem> customerFilters = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(CustomerFilter)).Cast<CustomerFilter>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            customerFilters.AddRange(items);
+
+            return customerFilters;
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetCustomerDocumentTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> customerFilters = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CustomerDocumentType)).Cast<CustomerDocumentType>().Select(v => new SelectListItem
             {
                 Text = GetEnumDescription(v),
                 Value = ((int)v).ToString(),
@@ -752,6 +788,24 @@ namespace SwiftFinancials.Web.Controllers
             return salaryHead;
         }
 
+
+        [NonAction]
+        protected List<SelectListItem> GetSalaryHeadCategorySelectList(string selectedValue)
+        {
+            List<SelectListItem> salaryHeadCategory= new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(SalaryHeadCategory)).Cast<SalaryHeadCategory>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            salaryHeadCategory.AddRange(items);
+
+            return salaryHeadCategory;
+        }
+
         [NonAction]
         protected List<SelectListItem> GetValueGroupTypeSelectList(string selectedValue)
         {
@@ -802,6 +856,24 @@ namespace SwiftFinancials.Web.Controllers
 
             return identityCardTypes;
         }
+
+        [NonAction]
+        protected List<SelectListItem> GetRelationshipSelectList(string selectedValue)
+        {
+            List<SelectListItem> NextOfKinRelationship = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(NextOfKinRelationship)).Cast<NextOfKinRelationship>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            NextOfKinRelationship.AddRange(items);
+
+            return NextOfKinRelationship;
+        }
+
 
         [NonAction]
         protected List<SelectListItem> GetNationalitySelectList(string selectedValue)
@@ -1337,7 +1409,22 @@ namespace SwiftFinancials.Web.Controllers
 
             return chequeTypeChargeRecoveryModes;
         }
+        [NonAction]
+        protected List<SelectListItem> GetChequeType(string selectedValue)
+        {
+            List<SelectListItem> chequeType = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(ChequeBookType)).Cast<ChequeBookType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            chequeType.AddRange(items);
+
+            return chequeType;
+        }
         [NonAction]
         protected List<SelectListItem> GetWithdrawalNotificationCategorySelectList(string selectedValue)
         {
@@ -1682,6 +1769,22 @@ namespace SwiftFinancials.Web.Controllers
         }
 
 
+        [NonAction]
+        protected List<SelectListItem> GetJournalfielterSelectList(string selectedValue)
+        {
+            List<SelectListItem> journalEntryFilter = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(JournalEntryFilter)).Cast<JournalEntryFilter>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            journalEntryFilter.AddRange(items);
+
+            return journalEntryFilter;
+        }
         [NonAction]
         protected List<SelectListItem> RecoveryPrioritySelectList(string selectedValue)
         {
@@ -2051,7 +2154,7 @@ namespace SwiftFinancials.Web.Controllers
         [NonAction]
         protected List<SelectListItem> GetMicroCreditGroupTypeSelectList(string selectedValue)
         {
-            List<SelectListItem> microCreditGroupCategories = new List<SelectListItem>();
+            List<SelectListItem> microCreditGroupTypeSelectList = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(MicroCreditGroupType)).Cast<MicroCreditGroupType>().Select(v => new SelectListItem
             {
@@ -2060,16 +2163,16 @@ namespace SwiftFinancials.Web.Controllers
                 Selected = ((int)v).ToString() == selectedValue,
             }).ToList();
 
-            microCreditGroupCategories.AddRange(items);
+            microCreditGroupTypeSelectList.AddRange(items);
 
-            return microCreditGroupCategories;
+            return microCreditGroupTypeSelectList;
         }
 
 
         [NonAction]
         protected List<SelectListItem> GetMicroCreditGroupMeetingFrequencySelectList(string selectedValue)
         {
-            List<SelectListItem> microCreditGroupMeetingFrequencyCategories = new List<SelectListItem>();
+            List<SelectListItem> microCreditGroupMeetingFrequencySelectList = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(MicroCreditGroupMeetingFrequency)).Cast<MicroCreditGroupMeetingFrequency>().Select(v => new SelectListItem
             {
@@ -2078,15 +2181,15 @@ namespace SwiftFinancials.Web.Controllers
                 Selected = ((int)v).ToString() == selectedValue,
             }).ToList();
 
-            microCreditGroupMeetingFrequencyCategories.AddRange(items);
+            microCreditGroupMeetingFrequencySelectList.AddRange(items);
 
-            return microCreditGroupMeetingFrequencyCategories;
+            return microCreditGroupMeetingFrequencySelectList;
         }
 
         [NonAction]
         protected List<SelectListItem> GetMicroCreditGroupMeetingDayOfWeekSelectList(string selectedValue)
         {
-            List<SelectListItem> microCreditGroupMeetingDayOfWeekCategories = new List<SelectListItem>();
+            List<SelectListItem> microCreditGroupMeetingDayOfWeekSelectList = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(MicroCreditGroupMeetingDayOfWeek)).Cast<MicroCreditGroupMeetingDayOfWeek>().Select(v => new SelectListItem
             {
@@ -2095,15 +2198,15 @@ namespace SwiftFinancials.Web.Controllers
                 Selected = ((int)v).ToString() == selectedValue,
             }).ToList();
 
-            microCreditGroupMeetingDayOfWeekCategories.AddRange(items);
+            microCreditGroupMeetingDayOfWeekSelectList.AddRange(items);
 
-            return microCreditGroupMeetingDayOfWeekCategories;
+            return microCreditGroupMeetingDayOfWeekSelectList;
         }
 
         [NonAction]
         protected List<SelectListItem> GetMicroCreditGroupMemberDesignationSelectList(string selectedValue)
         {
-            List<SelectListItem> microCreditGroupMemberDesignationCategories = new List<SelectListItem>();
+            List<SelectListItem> microCreditGroupMemberDesignationSelectList = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(MicroCreditGroupMemberDesignation)).Cast<MicroCreditGroupMemberDesignation>().Select(v => new SelectListItem
             {
@@ -2112,13 +2215,131 @@ namespace SwiftFinancials.Web.Controllers
                 Selected = ((int)v).ToString() == selectedValue,
             }).ToList();
 
-            microCreditGroupMemberDesignationCategories.AddRange(items);
+            microCreditGroupMemberDesignationSelectList.AddRange(items);
 
-            return microCreditGroupMemberDesignationCategories;
+            return microCreditGroupMemberDesignationSelectList;
+        }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetCustomerAccountStatementTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> statementType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CustomerAccountStatementType)).Cast<CustomerAccountStatementType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            statementType.AddRange(items);
+
+            return statementType;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetFixedDepositCategorySelectList(string selectedValue)
+        {
+            List<SelectListItem> fixedDepositCategoryCategories = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(FixedDepositCategory)).Cast<FixedDepositCategory>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            fixedDepositCategoryCategories.AddRange(items);
+
+            return fixedDepositCategoryCategories;
         }
 
 
+        [NonAction]
+        protected List<SelectListItem> GetFixedDepositMaturityActionSelectList(string selectedValue)
+        {
+            List<SelectListItem> fixedDepositMaturityActionCategories = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(FixedDepositMaturityAction)).Cast<FixedDepositMaturityAction>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
 
+            fixedDepositMaturityActionCategories.AddRange(items);
+
+            return fixedDepositMaturityActionCategories;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetCustomerAccountProductCodeSelectList(string selectedValue)
+        {
+            List<SelectListItem> customerAccountProductCodeSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ProductCode)).Cast<ProductCode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            customerAccountProductCodeSelectList.AddRange(items);
+
+            return customerAccountProductCodeSelectList;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanProductChargeBasisValueSelectList(string selectedValue)
+        {
+            List<SelectListItem> ChargeBasisValue = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanProductChargeBasisValue)).Cast<LoanProductChargeBasisValue>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            ChargeBasisValue.AddRange(items);
+
+            return ChargeBasisValue;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanProductKnownChargeTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> KnownChargeType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanProductKnownChargeType)).Cast<LoanProductKnownChargeType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            KnownChargeType.AddRange(items);
+
+            return KnownChargeType;
+        }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetLoanGuarantorStatusTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> LoanGuarantorStatus = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanGuarantorStatus)).Cast<LoanGuarantorStatus>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            LoanGuarantorStatus.AddRange(items);
+
+            return LoanGuarantorStatus;
+        }
     }
 }

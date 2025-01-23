@@ -7,7 +7,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
-
+using System.Windows.Forms;
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class ChartOfAccountController : MasterController
@@ -87,7 +87,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountDTO.AccountType.ToString());
                 ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(chartOfAccountDTO.AccountCategory.ToString());
-
+                MessageBox.Show(
+                                                              "Operation Success",
+                                                              "Customer Receipts",
+                                                              MessageBoxButtons.OK,
+                                                              MessageBoxIcon.Information,
+                                                              MessageBoxDefaultButton.Button1,
+                                                              MessageBoxOptions.ServiceNotification
+                                                          );
                 TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }

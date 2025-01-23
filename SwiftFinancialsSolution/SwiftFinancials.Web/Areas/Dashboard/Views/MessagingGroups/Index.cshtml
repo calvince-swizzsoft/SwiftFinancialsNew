@@ -31,13 +31,6 @@
 
                     @Html.ActionLink("Create Messaging Group", "Create", "MessagingGroups", new { Area = "Dashboard" }, new { @class = "btn btn-primary" })
 
-                    @if (TempData["approve"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["approve"]
-                        </div>
-                    }
-
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -103,14 +96,14 @@
                                 Action
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/dashboard/messaginggroups/index/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/dashboard/messaginggroups/details/${aData.Id}">View</a>
                                 <a class="dropdown-item" href="/dashboard/messaginggroups/edit/${aData.Id}">Edit</a>
                             </div>
                         </div>`;
 
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(dropdownHtml);
+                    $('td:eq(2)', nRow).html(dt_Created);
+                    $('td:eq(3)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
@@ -118,8 +111,7 @@
                 "aoColumns": [
                     { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15" },
                     { "mDataProp": "TargetDescription", "sTitle": "Target","sWidth": "20%" },
-                    { "mDataProp": "TargetValues", "sTitle": "Target Value","sWidth": "20%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Registered Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });

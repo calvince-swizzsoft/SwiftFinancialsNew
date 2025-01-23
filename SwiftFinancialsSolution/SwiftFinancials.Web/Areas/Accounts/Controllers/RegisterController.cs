@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
@@ -58,7 +59,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(debitBatchDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id,AlternateChannelDTO alternateChannelDTO1)
+        public async Task<ActionResult> Create(Guid? id, AlternateChannelDTO alternateChannelDTO1)
         {
             await ServeNavigationMenus();
 
@@ -69,7 +70,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 return View();
             }
-          
+
 
 
             TempData["DailyLimit"] = alternateChannelDTO1.DailyLimit;
@@ -79,7 +80,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 Session["DailyLimit"] = alternateChannelDTO1.DailyLimit = Convert.ToDecimal(Session["DailyLimit"].ToString());
                 Session["CardNumber"] = alternateChannelDTO1.CardNumber = Session["CardNumber"].ToString();
-                
+
 
 
             }
@@ -159,8 +160,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 alternateChannelDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
                 alternateChannelDTO.Remarks = customer.Remarks;
 
-                
-                
+
+
 
             }
             Session["DailyLimit"] = alternateChannelDTO1.DailyLimit;
@@ -191,8 +192,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!alternateChannelDTO.HasErrors)
             {
                 var result = await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
-               // System.Windows.Forms.MessageBox.Show("Test");
-                TempData["SuccessMessage"] =  $"Successfully created Alternate channel For Member {alternateChannelDTO.CustomerFullName}";
+                System.Windows.Forms.MessageBox.Show(
+                           "Alternate Channel for  " + result.CustomerFullName + " Linked successfully.",
+                           "Success",
+                           System.Windows.Forms.MessageBoxButtons.OK,
+                           System.Windows.Forms.MessageBoxIcon.Information,
+                           System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                           System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                       );
+                // Display a success message in a MessageBox with line breaks and formatted content
+                //string message = $"Successfully Created\nAlternate channel for {alternateChannelDTO.CustomerFullName}";
+                //System.Windows.Forms.MessageBox.Show(message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //TempData["SuccessMessage"] = $"Successfully created Alternate channel For Member {alternateChannelDTO.CustomerFullName}";
 
                 if (result.ErrorMessageResult != null)
                 {
@@ -205,7 +216,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-         
+
                 ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
 
                 return RedirectToAction("Index");
@@ -226,7 +237,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ManagementSelectList = GetalternateChannelManagementActionSelectList(string.Empty);
 
-            
+
             ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
 

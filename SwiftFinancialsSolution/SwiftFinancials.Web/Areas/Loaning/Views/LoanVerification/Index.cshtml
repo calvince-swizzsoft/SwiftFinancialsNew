@@ -1,6 +1,9 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 @{
-    ViewBag.Title = "Loan Appraisal";
+    ViewBag.Title = "Loan Verification";
+
+    var LoanCaseFilter = ViewBag.LoanCaseFilterSelectList as List<SelectListItem>;
+    var LoanCaseStatus = ViewBag.LoanCaseStatusSelectList as List<SelectListItem>;
 }
 
 <link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
@@ -82,6 +85,13 @@
             transform: translateY(0);
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
 </style>
 
 
@@ -108,7 +118,6 @@
         <li>@Html.ActionLink("Loan Appraisal", "Index", "AppraiseLoan", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Loan Approval", "Index", "ApproveLoan", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Loan Verification", "Index", "LoanVerification", new { area = "Loaning" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Loan Cancellation", "Index", "LoanCancellation", new { area = "Loaning" }, new { @class = "nav-link" })</li>
     </ul>
 </nav>
 
@@ -119,11 +128,17 @@
                 <div class="ibox-title">
                     <h2>Loan Verification</h2>
 
-                    @if (TempData["verify"] != null)
+                    @if (TempData["Success"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["verify"]
-                        </div>
+                        <script type="text/javascript">
+                            document.addEventListener('DOMContentLoaded', function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    text: '@TempData["Success"]',
+                                    confirmButtonColor: '#006400',
+                                })
+                            });
+                        </script>
                     }
 
                     <div class="ibox-tools">
@@ -140,6 +155,42 @@
                         <div class="sk-double-bounce1"></div>
                         <div class="sk-double-bounce2"></div>
                     </div>
+
+                    <div class="blue-section">
+                        <form id="filterForm">
+                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                                <div class="col-lg-5">
+                                    <div class="form-group form-group-lg">
+                                        <label for="filterType">Loan Filter</label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.filterText, LoanCaseFilter,
+                                            new { @class = "form-control input-md", @id = "filterType" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5" style="margin-top: 27px;">
+                                    <div class="form-group spacing-form-group">
+                                        <div class="input-group text-box">
+                                            @Html.TextBox("filterValue", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "filterValue" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1" style="margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <br />
+
+
                     <div class="table-responsive">
                         <table id="LoanRegistrationsGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
@@ -165,16 +216,19 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#LoanRegistrationsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "LoanVerification", new { Area = "Loaning"}))",
                 "sServerMethod": "POST",
-                // Callback settings
+
+                "fnServerParams": function (aoData) {
+                    aoData.push({ "name": "filterType", "value": $('#filterType').val() });
+                    aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
+                },
+
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -193,38 +247,33 @@
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     aData.ReceivedDate = dt_ReceivedDate;
 
-                    var viewUrl = '<a  href="/loaning/LoanVerification/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
                     var verifyUrl = '<a  href="/loaning/LoanVerification/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
 
-                    var dropdownHtml = `
-                        <div class="dropdown">
-                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/loaning/LoanVerification/verify/${aData.Id}">Approve Loan</a>
-                            </div>
-                        </div>`;
-
-                    //$('td:eq(4)', nRow).html(dt_ReceivedDate);
                     $('td:eq(8)', nRow).html(dt_Created);
                     $('td:eq(9)', nRow).html(verifyUrl);
 
                     return nRow;
                 },
+
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "15" },
-                    { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "20%" },
-                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "20%" },
-                    { "mDataProp": "CustomerReference2", "sTitle": "Membership Number", "sWidth": "10%" },
-                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%" },
-                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "25%" },
-                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "10%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
-                    { "mDataProp": "ApprovedDate", "sTitle": "Approved Date", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "15%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
+                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "2%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "20%" },
+                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "10%"},
+                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "10%"},
+                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
+                    { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "15%"},
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]],
+            }
+            );
+
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#LoanRegistrationsGrid').DataTable().ajax.reload();
             });
         });
 

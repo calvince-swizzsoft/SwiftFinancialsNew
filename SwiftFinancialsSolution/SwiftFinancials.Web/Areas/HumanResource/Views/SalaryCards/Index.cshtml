@@ -1,11 +1,12 @@
-﻿
-@{
+﻿@{
+    /**/
+
     ViewBag.Title = "Salary Cards";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Salary</h1>
+        <h1>Salary Cards</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -16,7 +17,142 @@
         </ol>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+@if (TempData["AlertMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            title: "Notification",
+            text: "@TempData["AlertMessage"]",
+            icon: "@TempData["AlertType"]"
+        });
+    </script>
+}
+
+
+<style>
+    #tabs-container {
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        overflow-x: auto;
+    }
+
+    .nav-tabs {
+        padding: 10px 0;
+        list-style: none;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+        .nav-tabs li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .nav-tabs a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+        }
+
+            .nav-tabs a:hover {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .form-group {
+        border-radius: 10px;
+    }
+
+
+
+
+
+    .navbar {
+        background-color: rgba(255, 255, 255, 0.9); /* White with transparency */
+        padding: 15px 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+        .nav-menu li {
+            position: relative;
+            margin: 0 15px;
+        }
+
+    .nav-link {
+        text-decoration: none;
+        color: #333; /* Dark gray for text */
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        background-color: transparent; /* Clear background for default state */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        .nav-link:hover {
+            color: #007bff; /* Blue for active link */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+</style>
+
+<nav class="navbar">
+    <ul class="nav-menu">
+        <li>@Html.ActionLink("SalaryHeads", "Index", "Salary", new { area = "HumanResource" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("SalaryGroups", "Index", "SalaryGroups", new { area = "HumanResource" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("SalaryCards", "Index", "SalaryCards", new { area = "HumanResource" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("SalaryPeriods", "Index", "SalaryPeriods", new { area = "HumanResource" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("SalaryProcessing", "Index", "SalaryProcessing", new { area = "HumanResource" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("PayRoll", "Index", "PaySlips", new { area = "HumanResource" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("ClosingPeriod", "Index", "PeriodClosing", new { area = "HumanResource" }, new { @class = "nav-link" })</li>
+
+
+    </ul>
+</nav>
+<style>
+
+
+
+    .col-lg-2 {
+        display: flex;
+        align-items: center; /* Center the title vertically */
+        justify-content: center; /* Center the title horizontally if needed */
+        padding: 0; /* Remove default padding if necessary */
+        border-radius: 4px; /* Rounded corners */
+        @*border: 1px solid black;*@ /* Border color and style */
+    }
+</style>
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -24,7 +160,22 @@
                 <div class="ibox-title">
                     <h2>Salary Cards</h2>
                     <hr />
-                    @Html.ActionLink("Create Salary Card", "Create", "SalaryCards", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create SalaryCard", "Create", "SalaryCards", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
+                    <br />
+                    <br />
+                    @if (TempData["AlertMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["AlertMessage"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -63,61 +214,69 @@
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
 
-    <script type="text/javascript">
 
+
+    <script type="text/javascript">
         $(document).ready(function () {
             $('#salaryCardsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "SalaryCards", new { Area = "HumanResource"}))",
+                "sAjaxSource": "@(Url.Action("Index", "SalaryCards", new { Area = "HumanResource" }))",
                 "sServerMethod": "POST",
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var create = '<a  href="/HumanResource/SalaryCards/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Create</a>';
-                    var viewUrl = '<a  href="/HumanResource/SalaryCards/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    var viewButton = `<a class="dropdown-item" href="/HumanResource/SalaryCards/details/${aData.Id}">View</a>`;
+                    var editButton = `<a class="dropdown-item" href="/HumanResource/SalaryCards/edit/${aData.Id}">Edit</a>`;
+
+                    switch (aData.Status) {
+                        case 1: // Pending
+                            dropdownHtml += viewButton + editButton;
+                            break;
+                        default:
+                            dropdownHtml += viewButton + editButton;
+                            break;
+                    }
+
+                    dropdownHtml += `</div></div>`;
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    //{ "mDataProp": "Description", "sTitle": "Type", "sWidth": "15%" },
-                    { "mDataProp": "Employee", "sTitle": "Salary Head", "sWidth": "15%" },
-                    { "mDataProp": "EmployeeCustomerSerialNumber", "sTitle": "EmployeeCustomerSerialNumber?", "sWidth": "8%" },
-                    { "mDataProp": "SalaryGroupEntryChargeType", "sTitle": "Group Value Type", "sWidth": "10%" },
-                    { "mDataProp": "SalaryGroupEntryChargePercentage", "sTitle": "Group Percentage Value", "sWidth": "8%" },
-                    { "mDataProp": "SalaryGroupEntryChargeFixedAmount", "sTitle": "Group Fixed Value", "sWidth": "10%" },
-                    { "mDataProp": "SalaryGroupEntryMinimumValue", "sTitle": "Group Minimum Value", "sWidth": "18%" },
-                    { "mDataProp": "ChargePercentage", "sTitle": "Card Percentage Value", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%" },
-
-                    { "mDataProp": "viewUrl", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
+                    { "mDataProp": "EmployeeCustomerFullName", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "SalaryGroupDescription", "sTitle": "Salary Group", "sWidth": "15%" },
+                    { "mDataProp": "CardNumber", "sTitle": "Card Number", "sWidth": "5%" },
+                    { "mDataProp": "TaxExemption", "sTitle": "Tax Exemption", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "13%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]],
+                "responsive": true,
             });
         });
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
 }
-
-

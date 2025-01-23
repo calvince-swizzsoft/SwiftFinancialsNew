@@ -8,7 +8,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
-
+using System.Windows.Forms;
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
     public class EmployeeTypeController : MasterController
@@ -21,30 +21,60 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View();
         }
 
+
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindEmployeeTypesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindEmployeeTypesByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                0,
+                int.MaxValue,
+                GetServiceHeader()
+            );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(employeeTypeDTO => employeeTypeDTO.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<EmployeeTypeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
 
+            return this.DataTablesJson(
+               items: new List<EmployeeTypeDTO>(),
+               totalRecords: totalRecordCount,
+               totalDisplayRecords: searchRecordCount,
+               sEcho: jQueryDataTablesModel.sEcho
+               );
+        }
+        
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -69,7 +99,11 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!employeeTypeDTO.HasErrors)
             {
                 await _channelService.AddEmployeeTypeAsync(employeeTypeDTO, GetServiceHeader());
+                TempData["Message"] = "Operation Success: Employee Type Created Successfully!";
+                TempData["MessageType"] = "Success";
                 
+
+
 
                 return RedirectToAction("Index");
             }
@@ -97,7 +131,11 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateEmployeeTypeAsync(employeeTypeBindingModel, GetServiceHeader());
+                TempData["Message"] = "Operation Success: Employee Type Updated Successfully!";
+                TempData["MessageType"] = "Success";
+               
                 ViewBag.EmployeeCategorySelectList = GetEmployeeCategorySelectList(employeeTypeBindingModel.Category.ToString());
+
                 return RedirectToAction("Index");
             }
             else

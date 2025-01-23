@@ -18,7 +18,9 @@ namespace Infrastructure.Data.MainBoundedContext.UnitOfWork.Mapping.HumanResourc
             Property(x => x.FileTitle).HasMaxLength(256);
             Property(x => x.FileMIMEType).HasMaxLength(256);
             Property(x => x.FileDescription).HasMaxLength(512);
-            
+            Property(x => x.FileBuffer).HasColumnName("FileBuffer");
+
+
 
             Ignore(x => x.File);
 

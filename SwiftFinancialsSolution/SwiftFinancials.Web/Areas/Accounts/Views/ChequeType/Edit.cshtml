@@ -113,7 +113,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     @using (Html.BeginForm("Edit", "ChequeType", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -362,7 +362,7 @@
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "SavingsProduct", new { Area = "Accounts"}))",
+        "sAjaxSource": "@(Url.Action("Index", "Charges", new { Area = "Accounts"}))",
 
         "sServerMethod": "POST",
         // Callback settings

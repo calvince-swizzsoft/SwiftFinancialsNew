@@ -6,6 +6,7 @@
     ViewBag.Title = "Create Charges";
 
     var chargeType = ViewBag.chargeType as List<SelectListItem>;
+    var commissions = ViewBag.LevyDTOs;
 }
 
 
@@ -33,9 +34,7 @@
 
         .nav-tabs a {
             text-decoration: none;
-            font-size: 14px;
             color: #333;
-            font-weight: bold; /* Set font weight to bold */
             padding: 10px 15px;
             border-bottom: 2px solid transparent;
             transition: border-bottom-color 0.3s ease-in-out;
@@ -51,6 +50,8 @@
                 color: #007bff;
             }
 </style>
+
+
 
 
 <style>
@@ -73,7 +74,6 @@
         }
 
         #ChargeSplits th {
-            font-weight: bold;
         }
 
         #ChargeSplits tbody tr:nth-child(even) {
@@ -218,16 +218,15 @@
                             </div>
 
                             <br />*@
-
                         <fieldset>
+
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Name..." } })
                                     </div>
                                 </div>
-
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.MaximumCharge, htmlAttributes: new { @class = "" })
@@ -235,7 +234,16 @@
                                         @Html.ValidationMessageFor(model => model.MaximumCharge, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChargeType, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.ChargeType, chargeType, new { @class = "form-control input-md", id = "ChargeType" })
+                                            @Html.ValidationMessageFor(model => model.ChargeType)
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-lg-2">
                                     <div class="form-group form-group-lg" style="margin-top: 30px;">
                                         @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
@@ -244,100 +252,288 @@
                                     </div>
                                 </div>
                             </div>
+                        </fieldset>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-                            <br />
-                            <hr />
+                        <div class="container mt-5">
+                            <ul class="nav nav-tabs" role="tablist">
+                                @*<li class="nav-item">
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#general" role="tab">General</a>
+                                    </li>*@
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#splitting" role="tab">Charge Splitting</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tiers" role="tab">Charge Tiers</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#levies" role="tab">Levies</a>
+                                </li>
+                            </ul>
 
-                            @*chargeType Splitting*@
-                            <h2 style="color: cadetblue;">Charge Splitting</h2>
+                            <div class="tab-content mt-3">
+                                <!-- General Tab -->
+                                <!--<div class="tab-pane fade show active" id="general" role="tabpanel">
 
-                            <br />
+                                </div>-->
+                                <!-- Charge Splitting Tab -->
+                                <div class="tab-pane fade show active" id="splitting" role="tabpanel">
+                                    <fieldset>
+                                        <h2 style="color: cadetblue;">Charge Splitting</h2>
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.chargeSplits.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.Id)
+                                                    @Html.EditorFor(model => model.chargeSplits.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account..." } })
+                                                    @Html.ValidationMessageFor(model => model.chargeSplits.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.chargeSplit[0].Description, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.chargeSplit[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Split Name" } })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.00000%" } })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="form-group form-group-lg" style="margin-top: 30px;">
+                                                    @Html.CheckBoxFor(model => model.chargeSplit[0].Leviable, htmlAttributes: new { @class = "" })
+                                                    @Html.LabelFor(model => model.chargeSplit[0].Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                                </div>
+                                            </div>
+                                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.chargeSplits.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.Id)
-                                        @Html.EditorFor(model => model.chargeSplits.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account..." } })
-                                        @Html.ValidationMessageFor(model => model.chargeSplits.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-sm">
+                                                    <input type="submit" value="Add" style="width: 150px;" class="btn btn-primary" />
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.chargeSplit[0].Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.chargeSplit[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Split Name" } })
-                                        @Html.ValidationMessageFor(model => model.chargeSplit[0].Description, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
+                                        <row>
+                                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                    <tr>
+                                                        <th style="width: 15%;">G/L Account Name</th>
+                                                        <th style="width: 10%;">Charge Split Name</th>
+                                                        <th style="width: 5%;">Percentage</th>
+                                                        <th style="width: 2%;">Leviable</th>
+                                                        <th style="width: 5%;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.ChargeSplitDTOs != null)
+                                                    {
+                                                        foreach (var commissionSplit in ViewBag.ChargeSplitDTOs)
+                                                        {
+                                                            <tr data-id="@commissionSplit.Id">
+                                                                <td>@commissionSplit.ChartOfAccountAccountName</td>
+                                                                <td>@commissionSplit.Description</td>
+                                                                <td style="text-align: right;">@commissionSplit.Percentage</td>
+                                                                <td>@commissionSplit.Leviable</td>
+                                                                <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
 
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.00000%" } })
-                                        @Html.ValidationMessageFor(model => model.chargeSplit[0].Percentage, "", new { @class = "text-danger" })
-                                        <div class="invalid-feedback" style="display: none; color:red; "></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-2">
-                                    <div class="form-group form-group-lg" style="margin-top: 30px;">
-                                        @Html.CheckBoxFor(model => model.chargeSplit[0].Leviable, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.chargeSplit[0].Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.chargeSplit[0].Leviable, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <br />
-
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-sm">
-                                        <input type="submit" value="Add" style="width: 150px;" class="btn btn-primary" />
-                                    </div>
-                                </div>
-                            </div>
-                            @*End chargeType Splitting*@
-
-                            <br />
-
-                            <row>
-                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                            <tr>
-                                                <th style="width: 15%;">G/L Account Name</th>
-                                                <th style="width: 10%;">Charge Split Name</th>
-                                                <th style="width: 5%;">Percentage</th>
-                                                <th style="width: 2%;">Leviable</th>
-                                                <th style="width: 5%;">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (ViewBag.ChargeSplitDTOs != null)
+                                            @if (TempData["tPercentage"] != null)
                                             {
-                                                foreach (var commissionSplit in ViewBag.ChargeSplitDTOs)
+                                                <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
+                                            }
+                                        </row>
+                                    </fieldset>
+                                </div>
+
+                                <!-- Charge Tiers Tab -->
+                                <div class="tab-pane fade" id="tiers" role="tabpanel">
+                                    @using (Html.BeginForm("Chargetiers", "Charges", new { Area = "Accounts" }, FormMethod.Post))
+                                    {
+                                        <fieldset>
+                                            <h3 class="text-primary">Charge Tiers</h3>
+                                            <div class="row mb-3">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.ChargeType, new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.ChargeType, chargeType, new { @class = "form-control input-md", id = "ChargeType" })
+                                                            @Html.ValidationMessageFor(model => model.ChargeType)
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.fixedeposite[0].RangeLowerLimit, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                        @Html.EditorFor(model => model.fixedeposite[0].RangeLowerLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Lower Limit", id = "RangeLowerLimit" } })
+                                                    </div>
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.fixedeposite[0].RangeUpperLimit, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                        @Html.EditorFor(model => model.fixedeposite[0].RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Upper Limit", id = "RangeUpperLimit" } })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.fixedeposite[0].ChargePercentage, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                        @Html.EditorFor(model => model.fixedeposite[0].ChargePercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Percentage", id = "Percentage" } })
+                                                    </div>
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.fixedeposite[0].ChargeFixedAmount, htmlAttributes: new { @class = "form-label fw-bold" })
+                                                        @Html.EditorFor(model => model.fixedeposite[0].ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Percentage", id = "Percentage" } })
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <button type="button" id="addChargeTierBtn" class="btn btn-primary">Add Charge Tier</button>
+
+                                        </fieldset>
+
+                                        <!-- Data Table -->
+                                        <table class="table table-bordered" id="chargeTiersTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Charge Type</th>
+                                                    <th>Range Lower Limit</th>
+                                                    <th>Range Upper Limit</th>
+                                                    <th>Percentage</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Rows will be appended dynamically here -->
+                                            </tbody>
+                                        </table>
+
+                                        <script>
+    $(document).ready(function () {
+        // Load existing data from localStorage on page load
+        const storedData = localStorage.getItem('chargeTiers');
+        if (storedData) {
+            const rows = JSON.parse(storedData).map(scale => `
+                <tr>
+                    <td>${scale.ChargeType}</td>
+                    <td>${scale.RangeLowerLimit}</td>
+                    <td>${scale.RangeUpperLimit}</td>
+                    <td>${scale.Percentage}</td>
+                </tr>
+            `);
+            $('#chargeTiersTable tbody').html(rows.join(''));
+        }
+
+        $('#addChargeTierBtn').click(function () {
+            const data = {
+                ChargeType: $('#ChargeType').val(),
+                fixedeposite: [{
+                    RangeLowerLimit: $('#RangeLowerLimit').val(),
+                    RangeUpperLimit: $('#RangeUpperLimit').val(),
+                    Percentage: $('#Percentage').val()
+                }]
+            };
+
+            // Save to server
+            $.ajax({
+                url: '@Url.Action("Chargetiers")',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    if (response.success) {
+                        // Append the new row to the table
+                        const row = `
+                            <tr>
+                                <td>${data.ChargeType}</td>
+                                <td>${data.fixedeposite[0].RangeLowerLimit}</td>
+                                <td>${data.fixedeposite[0].RangeUpperLimit}</td>
+                                <td>${data.fixedeposite[0].Percentage}</td>
+                            </tr>`;
+                        $('#chargeTiersTable tbody').append(row);
+
+                        // Save to localStorage
+                        const existingData = JSON.parse(localStorage.getItem('chargeTiers')) || [];
+                        existingData.push({
+                            ChargeType: data.ChargeType,
+                            RangeLowerLimit: data.fixedeposite[0].RangeLowerLimit,
+                            RangeUpperLimit: data.fixedeposite[0].RangeUpperLimit,
+                            Percentage: data.fixedeposite[0].Percentage
+                        });
+                        localStorage.setItem('chargeTiers', JSON.stringify(existingData));
+
+                        // Clear input fields
+                        $('#ChargeType').val('');
+                        $('#RangeLowerLimit').val('');
+                        $('#RangeUpperLimit').val('');
+                        $('#Percentage').val('');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing the request.');
+                }
+            });
+        });
+
+        // Clear localStorage on page unload (when navigating away)
+        $(window).on('beforeunload', function () {
+            localStorage.removeItem('chargeTiers');
+        });
+    });
+                                        </script>
+
+
+                                    }
+                                </div>
+                                <div class="tab-pane fade" id="levies" role="tabpanel">
+                                    <!-- Levies Tab -->
+                                    <form id="commissionForm" method="post" action="@Url.Action("Create", "Charges", new { area = "Accounts" })">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Select</th>
+                                                    <th>Commission Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (commissions != null)
                                                 {
-                                                    <tr data-id="@commissionSplit.Id">
-                                                        <td>@commissionSplit.ChartOfAccountAccountName</td>
-                                                        <td>@commissionSplit.Description</td>
-                                                        <td style="text-align: right;">@commissionSplit.Percentage</td>
-                                                        <td>@commissionSplit.Leviable</td>
-                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                    foreach (var commission in commissions)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" name="commissionIds" value="@commission.Id" />
+                                                            </td>
+                                                            <td>@commission.Description</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="2">No commissions available</td>
                                                     </tr>
                                                 }
-                                            }
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                        @*<button type="submit" class="btn btn-primary">Submit</button>*@
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
 
-                                    @if (TempData["tPercentage"] != null)
-                                    {
-                                        <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
-                                    }
-                            </row>
-                        </fieldset>
                     }
                 </div>
+
+
+
 
                 <div class="ibox-content bg-white text-info">
                     @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post))
@@ -397,6 +593,103 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+    <script>
+        document.getElementById("commissionForm").addEventListener("submit", function (event) {
+            const selected = document.querySelectorAll('input[name="commissionIds"]:checked');
+            if (selected.length === 0) {
+                event.preventDefault();
+                alert("Please select at least one commission.");
+            }
+        });
+    </script>
+    @*<script>$(document).ready(function () {
+                // Load table data from localStorage
+                const storedData = localStorage.getItem('chargeTiers');
+                if (storedData) {
+                    const rows = JSON.parse(storedData).map(scale => `
+                    <tr>
+                        <td>${scale.ChargeType}</td>
+                        <td>${scale.RangeLowerLimit}</td>
+                        <td>${scale.RangeUpperLimit}</td>
+                        <td>${scale.Percentage}</td>
+                    </tr>
+                `);
+                    $('#chargeTiersTable tbody').html(rows.join(''));
+                }
+
+                $('#addChargeTierBtn').click(function () {
+                    const data = {
+                        ChargeType: $('#ChargeType').val(),
+                        RangeLowerLimit: $('#RangeLowerLimit').val(),
+                        RangeUpperLimit: $('#RangeUpperLimit').val(),
+                        Percentage: $('#Percentage').val()
+                    };
+
+                    // Append to table
+                    const row = `
+                    <tr>
+                        <td>${data.ChargeType}</td>
+                        <td>${data.RangeLowerLimit}</td>
+                        <td>${data.RangeUpperLimit}</td>
+                        <td>${data.Percentage}</td>
+                    </tr>`;
+                    $('#chargeTiersTable tbody').append(row);
+
+                    // Save to localStorage
+                    const existingData = JSON.parse(localStorage.getItem('chargeTiers')) || [];
+                    existingData.push(data);
+                    localStorage.setItem('chargeTiers', JSON.stringify(existingData));
+
+                    // Clear input fields
+                    $('#ChargeType').val('');
+                    $('#RangeLowerLimit').val('');
+                    $('#RangeUpperLimit').val('');
+                    $('#Percentage').val('');
+                });
+            });
+        </script>*@
+    @*<script>
+        $(document).ready(function () {
+            // Save all data from the table to the server
+            $('#saveAllBtn').click(function () {
+                const chargeTiers = [];
+
+                // Collect data from the table rows
+                $('#chargeTiersTable tbody tr').each(function () {
+                    const row = $(this);
+                    const chargeTier = {
+                        ChargeType: row.find('td:eq(0)').text(),
+                        fixedeposite: [{
+                            RangeLowerLimit: row.find('td:eq(1)').text(),
+                            RangeUpperLimit: row.find('td:eq(2)').text(),
+                            Percentage: row.find('td:eq(3)').text()
+                        }]
+                    };
+                    chargeTiers.push(chargeTier);
+                });
+
+                // Send data to the server
+                $.ajax({
+                    url: '@Url.Action("SaveChargeTiers")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({ chargeTiers: chargeTiers }),
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Charge tiers saved successfully!');
+                        } else {
+                            alert('Failed to save charge tiers: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while saving the charge tiers.');
+                    }
+                });
+            });
+        });
+        </script>*@
+
+
 
     <script>
 $(document).ready(function () {
@@ -776,7 +1069,6 @@ $(document).ready(function () {
             border: none;
             border-radius: 8px;
             padding: 10px 20px;
-            font-size: 16px;
             font-family: 'Arial', sans-serif;
             color: white;
             cursor: not-allowed;

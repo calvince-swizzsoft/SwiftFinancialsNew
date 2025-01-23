@@ -1,12 +1,15 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using Domain.MainBoundedContext.AdministrationModule.Aggregates.BankBranchAgg;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -15,6 +18,39 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 {
     public class BankController : MasterController
     {
+        string connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteBank(Guid id)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+                    var query = "DELETE FROM swiftFin_BankBranches WHERE Id = @Id";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Id", id);
+                        int rowsAffected = await cmd.ExecuteNonQueryAsync();
+
+                        if (rowsAffected > 0)
+                        {
+                            return new HttpStatusCodeResult(200);
+                        }
+                        else
+                        {
+                            return new HttpStatusCodeResult(404, "Bank Branch not Found!");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(500, "Internal server error: " + ex.Message);
+            }
+        }
+
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -26,28 +62,42 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            List<string> sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var pageCollectionInfo = await _channelService.FindBanksByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindBanksByFilterInPageAsync
+                (jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(b => b.CreatedDate)
+                    .ToList();
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
+                totalRecordCount = sortedData.Count;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<BankDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<BankDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -55,99 +105,208 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             await ServeNavigationMenus();
 
             var BankDTO = await _channelService.FindBankAsync(id, GetServiceHeader());
+            var BankBranches = await _channelService.FindBankBranchesByBankIdAsync(BankDTO.Id, GetServiceHeader());
+            ViewBag.BankBranches = BankBranches;
 
             return View(BankDTO);
-        }
-
-        //public async Task<ActionResult> Create()
-        //{
-        //    await ServeNavigationMenus();
-
-        //    return View();
-        //}
-        [HttpPost]
-        public JsonResult Add(BankDTO bank, string branchdetails)
-        {
-
-            foreach (var branch in bank.BankBranches)
-            {
-                bankBranches.Add(branch);
-            }
-            return Json(new { success = true, data = bankBranches });
-
         }
 
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-            var bankDto = new BankDTO
-            {
-                BankBranches = new ObservableCollection<BankBranchDTO>()
-            };
-            return View(bankDto);
+            return View();
         }
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> Add(BankDTO bankDTO)
+        {
+            await ServeNavigationMenus();
+
+            var branches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+            if (branches == null)
+            {
+                branches = new ObservableCollection<BankBranchDTO>();
+            }
+
+            foreach (var branch in bankDTO.BankBranchesDTO)
+            {
+                var existingEntry = branches.FirstOrDefault(e => e.Description == branch.Description);
+
+                if (existingEntry != null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "The Selected Branch has already been added to the Branches List."
+                    });
+                }
+
+                branches.Add(branch);
+            }
+
+            Session["bankBranches"] = branches;
+
+            return Json(new { success = true, entries = branches });
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var branches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+            if (branches != null)
+            {
+                var entryToRemove = branches.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    branches.Remove(entryToRemove);
+
+                    Session["bankBranches"] = branches;
+                }
+            }
+
+            return Json(new { success = true, data = branches });
+        }
+
+
+        [HttpPost]
         public async Task<ActionResult> Create(BankDTO bank)
         {
+            if (Session["bankBranches"] == null)
+            {
+                await ServeNavigationMenus();
+                TempData["EBB"] = "Empty Bank Branches";
+                return View(bank);
+            }
+
             bank.ValidateAll();
 
             if (!bank.HasErrors)
             {
                 var bankDTO = await _channelService.AddBankAsync(bank, GetServiceHeader());
-                await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, bank.BankBranches, GetServiceHeader());
+
+                var bankBranches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+                if (bankBranches != null)
+                    await _channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, bankBranches, GetServiceHeader());
+
+                TempData["Success"] = "Ok";
 
                 return RedirectToAction("Index");
             }
+
+            TempData["Failed"] = "Fail!";
             return View(bank);
         }
 
-        [HttpPost]
-        public JsonResult Remove(Guid id, BankDTO bank)
-        {
-            foreach (var branch in bank.BankBranches)
-            {
-                bank.Description = branch.Description;
 
-            }
-            return Json(new { success = true, data = JournalVoucherEntryDTOs });
-
-        }
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
             var BankDTO = await _channelService.FindBankAsync(id, GetServiceHeader());
+            var BankBranches = await _channelService.FindBankBranchesByBankIdAsync(BankDTO.Id, GetServiceHeader());
+            ViewBag.BankBranches = BankBranches;
+            Session["bankBranches"] = BankBranches;
 
             return View(BankDTO);
         }
+        [HttpPost]
+        public async Task<JsonResult> AddEdit(BankDTO bankDTO)
+        {
+            await ServeNavigationMenus();
+
+            var branches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+            if (branches == null)
+            {
+                branches = new ObservableCollection<BankBranchDTO>();
+            }
+
+            foreach (var branch in bankDTO.BankBranchesDTO)
+            {
+                var existingEntry = branches.FirstOrDefault(e => e.Description == branch.Description);
+
+                if (existingEntry != null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "The Selected Branch has already been added to the Branches List."
+                    });
+                }
+
+                branches.Add(branch);
+            }
+
+            Session["bankBranches"] = branches;
+
+            return Json(new { success = true, entries = branches });
+        }
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> RemoveEdit(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var branches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+            if (branches != null)
+            {
+                var entryToRemove = branches.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    branches.Remove(entryToRemove);
+
+                    Session["bankBranches"] = branches;
+                }
+            }
+
+            return Json(new { success = true, data = branches });
+        }
+
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, BankDTO BankBindingModel)
         {
+            if (Session["bankBranches"] == null)
+            {
+                await ServeNavigationMenus();
+                TempData["EBB"] = "Empty Bank Branches";
+                return View(BankBindingModel);
+            }
+
             BankBindingModel.ValidateAll();
 
             if (!BankBindingModel.HasErrors)
             {
-                await _channelService.UpdateBankAsync(BankBindingModel, GetServiceHeader());
-                TempData["SuccessMessage"] = "Bank Edited successfully";
+                var bankDTO = await _channelService.UpdateBankAsync(BankBindingModel, GetServiceHeader());
+
+
+                var bankBranches = Session["bankBranches"] as ObservableCollection<BankBranchDTO>;
+
+                if (bankBranches != null)
+                    await _channelService.UpdateBankBranchesByBankIdAsync(BankBindingModel.Id, bankBranches, GetServiceHeader());
+
+                TempData["Success"] = "Ok";
+
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View(BankBindingModel);
-            }
+
+            TempData["Failed"] = "Fail!";
+            return View(BankBindingModel);
+
+           
         }
-
-        /* [HttpGet]
-         public async Task<JsonResult> GetBanksAsync()
-         {
-             var banksDTOs = await _channelService.FindBanksAsync(GetServiceHeader());
-
-             return Json(banksDTOs, JsonRequestBehavior.AllowGet);
-         }*/
     }
 }

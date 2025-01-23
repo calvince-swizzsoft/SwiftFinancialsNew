@@ -100,29 +100,29 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
         }
 
-        //public async Task<ActionResult> Edit(Guid id)
-        //{
-        //    await ServeNavigationMenus();
+        public async Task<ActionResult> Edit(Guid id)
+        {
+            await ServeNavigationMenus();
 
-        //    var educationregisterDTO = await _channelService.FindEducationRegisterAsync(id, GetServiceHeader());
+            var educationregisterDTO = await _channelService.FindEducationRegisterAsync(id, GetServiceHeader());
 
-        //    return View(educationregisterDTO);
-        //}
+            return View(educationregisterDTO);
+        }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Edit(Guid id, EducationRegisterDTO educationRegisterDTO)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        await _channelService.UpdateEducationRegisterAsync(educationRegisterDTO, GetServiceHeader());
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(Guid id, EducationRegisterDTO educationRegisterDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                await _channelService.UpdateEducationRegisterAsync(educationRegisterDTO, GetServiceHeader());
 
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        return View(educationRegisterDTO);
-        //    }
-        //}
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(educationRegisterDTO);
+            }
+        }
     }
 }

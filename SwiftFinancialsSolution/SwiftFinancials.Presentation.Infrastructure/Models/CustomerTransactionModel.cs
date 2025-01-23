@@ -4,6 +4,7 @@ using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
+using Infrastructure.Crosscutting.Framework.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -265,13 +266,49 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
   
         public CashDepositRequestDTO CashDepositRequest { get; set; }
 
+        public Guid CashDepositRequestId { get; set; }
+
+        public int CashDepositCategory { get; set; }
+
+
+        public string CashDepositCategoryDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CashDepositCategory), CashDepositCategory) ? EnumHelper.GetDescription((CashDepositCategory)CashDepositCategory) : string.Empty;
+            }
+        }
+
         [DataMember]
         public CashWithdrawalRequestDTO CashWithdrawal { get; set; }
 
-        
+
+        public Guid CashWithdrawalRequestId { get; set; }
+
+
+        public int CashWithdrawalCategory { get; set; }
+
+  
+        public string CashWithdrawalCategoryDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CashWithdrawalCategory), CashWithdrawalCategory) ? EnumHelper.GetDescription((CashWithdrawalCategory)CashWithdrawalCategory) : string.Empty;
+            }
+        }
+
+
         public PaymentVoucherDTO PaymentVoucher { get; set; }
 
-        
+        public Guid PaymentVoucherId { get; set; }
+
+        public string PaymentVoucherPayee { get; set; }
+
+        public DateTime? PaymentVoucherWriteDate { get; set; }
+
+        public Guid ChequeBookId { get; set; }
+
+
         public TellerDTO Teller { get; set; }
 
      
@@ -282,6 +319,23 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         public CustomerDTO CustomerDTO { get; set; }
 
         public List<ExternalChequeDTO>  CustomerAccountUnclearedCheques { get; set; }
+
+        public List<Guid> ChequePayableCustomerAccountIds { get; set; }
+
+        public string ChequePayableCustomerAccountIdsJson {
+
+            get
+            {
+
+                return JsonConvert.SerializeObject(ChequePayableCustomerAccountIds);
+            }
+
+            set
+            {
+
+                ChequePayableCustomerAccountIds = JsonConvert.DeserializeObject<List<Guid>>(value);
+            }
+        }
 
         public List<CustomerAccountSignatoryDTO> CustomerAccountSignatories { get; set; }
 
@@ -306,5 +360,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
                 DebitCustomerAccount = JsonConvert.DeserializeObject<CustomerAccountDTO>(value);
             }
         }
+
+        public Boolean DialogResult { get; set; }
     }
 }

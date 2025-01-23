@@ -114,6 +114,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<PageCollectionInfo<AuditLogDTO>> FindAuditLogsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<AuditLogDTO>> FindAuditLogsByDateRangeAndFilterInPageAsync(int pageIndex, int pageSize, DateTime startDate, DateTime endDate, string filter, ServiceHeader serviceHeader = null);
+        Task AddCustomerAsync(CustomerDTO customerBindingModel, ServiceHeader serviceHeader);
 
         #endregion
 
@@ -1014,7 +1015,14 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<bool> RemoveHolidayAsync(Guid holidayId, ServiceHeader serviceHeader = null);
 
+        Task<HolidayDTO> FindHolidayAsync(Guid holidayId, ServiceHeader serviceHeader = null);
+
+
         Task<DateTime?> FindBusinessDayAsync(int addValue, bool nextDay = true, ServiceHeader serviceHeader = null);
+        Task<ObservableCollection<HolidayDTO>> FindHolidaysAsync(ServiceHeader serviceHeader = null);
+
+
+        
 
         #endregion
 
@@ -1071,13 +1079,13 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> UpdateSalaryCardEntryAsync(SalaryCardEntryDTO salaryCardEntryDTO, ServiceHeader serviceHeader = null);
 
         Task<bool> ResetSalaryCardEntriesAsync(SalaryCardDTO salaryCardDTO, ServiceHeader serviceHeader = null);
+        Task<ObservableCollection<SalaryCardDTO>> FindSalaryCardsAsync(ServiceHeader serviceHeader = null);
 
         #endregion
 
         #region SalaryPeriodDTO
 
         Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsByFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
-
         Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<SalaryProcessingDTO> AddSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
@@ -1091,6 +1099,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> CloseSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
 
         Task<bool> PostPaySlipAsync(Guid paySlipId, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
+        Task<List<SalaryProcessingDTO>> FindSalaryPeriodsAsync(ServiceHeader serviceHeader = null);
+
 
         #endregion
 
@@ -1222,9 +1232,12 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<DelegateDTO> FindDelegateAsync(Guid delegateId, ServiceHeader serviceHeader = null);
 
+        Task<List<DelegateDTO>> FindDelegatesAsync(ServiceHeader serviceHeader = null);
+
         #endregion
 
         #region DirectorDTO
+        Task<List<DirectorDTO>> FindDirectorsAsync(ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<DirectorDTO>> FindDirectorsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
@@ -2795,6 +2808,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> UpdateConditionalLendingAsync(ConditionalLendingDTO conditionalLendingDTO, ServiceHeader serviceHeader = null);
 
         Task<ConditionalLendingEntryDTO> AddConditionalLendingEntryAsync(ConditionalLendingEntryDTO conditionalLendingEntryDTO, ServiceHeader serviceHeader = null);
+
+        Task<ConditionalLendingDTO> FindConditionalLendingAsync(Guid conditionalLendingId, ServiceHeader serviceHeader = null);
 
         Task<bool> RemoveConditionalLendingEntriesAsync(ObservableCollection<ConditionalLendingEntryDTO> conditionalLendingEntryDTOs, ServiceHeader serviceHeader = null);
 

@@ -55,27 +55,50 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        public async Task<ActionResult> SavingsProduct(ObservableCollection<SavingsProductDTO> savingProductRowData)
+        [HttpPost]
+        public ActionResult StoreSelectedApplicableCharges(List<CommissionDTO> selectedCharges)
         {
-            Session["savingsProductIds"] = savingProductRowData;
-            
+            // If selectedCharges is null or empty, clear the session
+            if (selectedCharges != null && selectedCharges.Count > 0)
+            {
+                var observableCharges = new ObservableCollection<CommissionDTO>(selectedCharges);
+                Session["selectedCharges"] = observableCharges;
+            }
+            else
+            {
+                // Optionally clear session if no charges are selected
+                Session.Remove("selectedCharges");
+            }
 
-            return View("Create", savingProductRowData);
+            return Json(new { success = true });
+        }
+        [HttpPost]
+        public ActionResult StoreSelectedLoanProducts(List<Guid> selectedProducts)
+        {
+            if (selectedProducts != null && selectedProducts.Count > 0)
+            {
+                var selectedProductList = new ObservableCollection<Guid>(selectedProducts);
+                Session["selectedLoanProducts"] = selectedProductList;
+            }
+            else
+            {
+                Session.Remove("selectedLoanProducts");
+            }
+
+            return Json(new { success = true });
         }
 
-        public async Task<ActionResult> LoansProduct(ObservableCollection<LoanProductDTO> loansProductRowData)
-        {
-            Session["loansProductIds"] = loansProductRowData;
 
-            return View("Create", loansProductRowData);
+        [HttpPost]
+        public JsonResult StoreSelectedInvestmentProducts(List<InvestmentProductDTO> selectedProducts)
+        {
+
+            Session["SelectedInvestmentProducts"] = selectedProducts;
+
+            return Json(new { success = true });
         }
 
-        public async Task<ActionResult> InvestmentsProduct(ObservableCollection<InvestmentProductDTO> investmentProductRowData)
-        {
-            Session["investmentsProductIds"] = investmentProductRowData;
 
-            return View("Create", investmentProductRowData);
-        }
 
 
 
@@ -89,34 +112,59 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(ChequeTypeDTO chequeTypeDTO,ProductCollectionInfo  productCollectionInfo)
+        public async Task<ActionResult> Create(ChequeTypeDTO chequeTypeDTO)
         {
-            chequeTypeDTO.ValidateAll();
+            var selectedCharges = Session["selectedCharges"] as ObservableCollection<CommissionDTO>;
 
-            if (!chequeTypeDTO.HasErrors)
-
+            if (selectedCharges == null || selectedCharges.Count == 0)
             {
-                await _channelService.AddChequeTypeAsync(chequeTypeDTO, GetServiceHeader());
-                if (Session["savingsProductIds"] != null)
+                return Json(new { success = false, message = "No charges selected" });
+            }
+
+            var selectedLoanProducts = Session["selectedLoanProducts"] as ObservableCollection<Guid>;
+
+            var selectedInvestmentProducts = Session["SelectedInvestmentProducts"] as List<InvestmentProductDTO>;
+
+            if ((selectedLoanProducts == null || selectedLoanProducts.Count == 0) &&
+                (selectedInvestmentProducts == null || selectedInvestmentProducts.Count == 0))
+            {
+                return Json(new { success = false, message = "No products selected" });
+            }
+
+            var newChequeType = await _channelService.AddChequeTypeAsync(chequeTypeDTO);
+            if (newChequeType == null)
+            {
+                return Json(new { success = false, message = "Error adding cheque type" });
+            }
+
+            var chequeTypeId = newChequeType.Id;
+            var updateCommissionsSuccess = await _channelService.UpdateCommissionsByChequeTypeIdAsync(chequeTypeId, selectedCharges);
+
+            var attachedProductsTuple = new ProductCollectionInfo
+            {
+                InvestmentProductCollection = selectedInvestmentProducts ?? new List<InvestmentProductDTO>(),
+
+                LoanProductCollection = selectedLoanProducts?.Select(p => new LoanProductDTO
                 {
-                    ObservableCollection<SavingsProductDTO> sRowData = Session["savingsProductIds"] as ObservableCollection<SavingsProductDTO>;
-                     
-                }
+                    Id = p, 
+                    Description = "Loan Product" 
+                }).ToList() ?? new List<LoanProductDTO>()
+            };
 
+            var updateProductsSuccess = await _channelService.UpdateAttachedProductsByChequeTypeIdAsync(chequeTypeId, attachedProductsTuple);
 
-                await _channelService.UpdateAttachedProductsByChequeTypeIdAsync(chequeTypeDTO.Id, productCollectionInfo,GetServiceHeader());
-              
-                TempData["SuccessMessage"] = "Create successful.";
+            if (updateCommissionsSuccess && updateProductsSuccess)
+            {
+                return Json(new { success = true, message = "Cheque type, commissions, and attached products successfully created/updated" });
 
-                return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = chequeTypeDTO.ErrorMessages;
-                ViewBag.ChequeTypeChargeRecoveryModeSelectList = GetChequeTypeChargeRecoveryModeSelectList(chequeTypeDTO.ChargeRecoveryMode.ToString());
-                return View(chequeTypeDTO);
+                return Json(new { success = false, message = "Error updating commissions or attached products" });
             }
+
         }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {

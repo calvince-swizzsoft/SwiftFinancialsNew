@@ -133,7 +133,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
         }
 
         public PageCollectionInfo<DesignationDTO> FindDesignations(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
-      {
+        {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
                 var filter = DesignationSpecifications.DesignationFullText(text);
@@ -142,13 +142,13 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
                 var sortFields = new List<string> { "SequentialId" };
 
-                var designationCollection = _designationRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+                var designationPagedCollection = _designationRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
 
-                if (designationCollection != null)
+                if (designationPagedCollection != null)
                 {
-                    var pageCollection = designationCollection.PageCollection.ProjectedAsCollection<DesignationDTO>();
+                    var pageCollection = designationPagedCollection.PageCollection.ProjectedAsCollection<DesignationDTO>();
 
-                    var itemsCount = designationCollection.ItemsCount;
+                    var itemsCount = designationPagedCollection.ItemsCount;
 
                     return new PageCollectionInfo<DesignationDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
                 }
@@ -229,7 +229,8 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
                         ParentId = persisted.ParentId,
                         Description = persisted.Description,
                         IsLocked = persisted.IsLocked,
-                        CreatedDate = persisted.CreatedDate
+                        CreatedDate = persisted.CreatedDate,
+                        Remarks = persisted.Remarks
                     };
                 }
                 else return null;

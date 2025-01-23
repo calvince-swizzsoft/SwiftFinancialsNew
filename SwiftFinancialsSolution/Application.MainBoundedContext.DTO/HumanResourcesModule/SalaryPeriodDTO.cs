@@ -4,11 +4,18 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Application.MainBoundedContext.DTO.AdministrationModule;
+using System.Collections.ObjectModel;
+
+
+
+
 
 namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 {
     public class SalaryProcessingDTO : BindingModelBase<SalaryProcessingDTO>
     {
+        public int ModuleNavigationItemCode;
         public SalaryProcessingDTO()
         {
             AddAllAttributeValidators();
@@ -121,5 +128,13 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         [DataMember]
         [Display(Name = "Posted Entries")]
         public string PostedEntries { get; set; }
+        public ObservableCollection<SalaryGroupDTO> SelectedGroups { get; set; }
+        public ObservableCollection<BranchDTO> SelectedBranches { get; set; }
+        public ObservableCollection<DepartmentDTO> SelectedDepartments { get; set; }
+        
+        
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
     }
 }

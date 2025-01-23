@@ -1,13 +1,13 @@
-﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryHeadDTO
+﻿
+@model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryHeadDTO
 
 @{
     ViewBag.Title = "Edit Salary Head";
-
-    var type = ViewBag.SalaryHeadTypeSelectList as List<SelectListItem>;
+    var typeDescription = ViewBag.SalaryHeadTypeSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1><strong>Salary</strong></h1>
+        <h2>Salary Head</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -22,12 +22,47 @@
     </div>
 </div>
 
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#ValueDate').datepicker({
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
-        <div class="col-md-12">
-            <div class="ibox ">
+        <div class="col-lg-12">
+            <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Edit Salary Head</h2>
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -37,317 +72,549 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    @using (Html.BeginForm("Edit", "Salary", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                        <h1>Products Linkage</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountTypeTargetProductId, new { htmlAttributes = new { @class = "form-control required", @readonly="readonly"} })
-                                    @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
+                <div class="card">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Edit", "Salary", new { Area = "HumanResource" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.Id)
 
-                                    <label style="color:red"><i>You cannot edit the Target Product</i></label>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
+                            @Html.HiddenFor(model => model.ProductChartOfAccountCode, new { id = "ProductChartOfAccountCode" })
+                            @Html.HiddenFor(model => model.ProductChartOfAccountId, new { id = "ProductChartOfAccountId" })
+                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductCode, new { id = "CustomerAccountTypeTargetProductCode" })
+                            @Html.HiddenFor(model => model.CustomerAccountTypeProductCode, new { id = "CustomerAccountTypeProductCode" })
+                            @Html.HiddenFor(model => model.ProductChartOfAccountName, new { id = "ProductChartOfAccountName" })
+
+
+
+
+
+
+
+
+                            <!-- Expense Payables -->
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Type, typeDescription, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.Type)
+                                            </div>
                                         </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ProductDescription, new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId, new { id = "CustomerAccountTypeTargetProductId" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.TextBoxFor(model => model.ProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", id = "ProductDescription" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#productLookup"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ChartOfAccountAccountName, new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.ChartOfAccountId, new { id = "ChartOfAccountId" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", id = "ChartOfAccountAccountName" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#ChartOfAccountLookup"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+
+
                                     </div>
                                 </div>
+                            </fieldset>
+
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                <div class="col-lg-2">
+                                    @Html.CheckBoxFor(model => model.IsOneOff, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.LabelFor(model => model.IsOneOff, htmlAttributes: new { @class = "" })
+                                    @Html.ValidationMessageFor(model => model.IsOneOff, "", new { @class = "text-danger" })
+                                </div>
+
+                                <input type="submit" value="Update" class="btn btn-primary btn-update" />
                             </div>
-                        </fieldset>
-
-                        <h1>Salary Head Details</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control required", placeholder = "Salary Head Name..." } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                    </div>
-
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Type, type, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.TypeDescription)
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
 
 
-                        <h1>G/L Account Linkage</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill..." } })
-                                    </div>
-                                </div>
-                                <div class="col-lg-14">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px; margin-bottom: 150px">
-                                            <i class="fa fa-save" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    }
+
+                        }
+                    </div>
                 </div>
+
+                <style>
+                    .card {
+                        margin-bottom: 20px;
+                    }
+
+
+
+                    .form-group-lg {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-control {
+                        border-radius: .25rem;
+                    }
+
+
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #e0f0ff;
+                    }
+                </style>
+
+
+
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal  fade" id="companyLookupModal" role="dialog" aria-hidden="true">
+<div class="modal fade" id="productLookup" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h3 class="font-bold">Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                <h3 class="font-bold">
+                    Saving product Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
             </div>
-            <table id="companiesGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
+            <div class="modal-body">
+                <table id="productsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Product G/L Code</th>
+                            <th>Priority</th>
+                            <th>Product G/L Nam</th>
+                            <th>Product Code</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="ChartOfAccountLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Chart Of Account Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="chartofaccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Cost Center</th>
+                            <th>Account Code</th>
+                            <th>Account Type</th>
+                            <th>Account Category</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
-    @Scripts.Render("~/plugins/dataTables")
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    <style>
+        .highlight {
+            background-color: #f0c14b; /* Light yellow color for highlighting */
+        }
+    </style>
+
 
     <script>
-        $(document).ready(function () {
-
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-             $('#companiesGrid').DataTable({
-                // Ajax settings
+               $(document).ready(function () {
+                   $('#productsGrid').DataTable({
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "SavingsProduct", new { Area = "Accounts"}))",
+                "sAjaxSource": "@Url.Action("Index", "SavingsProduct", new { Area = "Accounts" })",
                 "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/humanresource/salary/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(selectUrl);
-
-                    return nRow;
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
                 },
-                // Display settings
                 "aoColumns": [
-                     { "mDataProp": "Code", "sTitle": "Code" },
-                     { "mDataProp": "Description", "sTitle": "Name" },
-                     { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance" },
-                     { "mDataProp": "OperatingBalance", "sTitle": "Operating Balance" },
-                     { "mDataProp": "AnnualPercentageYield", "sTitle": "Annual Percentage Yield" },
-                     { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maximum Allowed Withdrawal" },
-                     { "mDataProp": "WithdrawalNoticePeriod", "sTitle": "Withdrawal Notice Period(Days)" },
-                     { "mDataProp": "CreatedDate", "sTitle": "Created Date" },
-                     { "mDataProp": "CreatedDate", "sTitle": "Action", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
-        });
-
-            $("#s tbody").on("click", "tr", function () {
-                var data = companiesGrid.row(this).data();
-
-                $('#CustomerAccountTypeTargetProductId').val(data.Id);
-                $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
-                $('input[name=ProductDescription]').val(data.Description);
-                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-
-                $('#companyLookupModal').modal('hide');
-            });
-
-            //Company typehead starts here
-            $('.CompaniesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetCompaniesAsync", "Company", new { Area = "Admin" })',
-                        { query: query },
-                        function (Companies) {
-                            var newCompaniesData = [];
-                            CompaniesMap = {};
-                            $.each(Companies, function (i, Company) {
-                                newCompaniesData.push(Company.Description);
-                                CompaniesMap[Company.Description] = Company;
-                            });
-                            process(newCompaniesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountAccountCode", "sTitle": "Product G/L Code", "sWidth": "10%" },
+                    { "mDataProp": "Priority", "sTitle": "Priority", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "Product G/L Name", "sWidth": "15%" },
+                    { "mDataProp": "Code", "sTitle": "Product Code", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
                     }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var CompanyId = "";
-                    CompanyId = CompaniesMap[item].Id;
-                    $('#CompanyId').val(CompanyId);
-                    //console.log(CompanyId)
-                    return item;
-                }
+                ],
+                "aaSorting": [[0, "desc"]]
             });
 
+                   $('#productsGrid tbody').on('click', '.select-customer', function () {
+                       var savingsProductId = $(this).data('id');
 
-            //ChartOfAccount typehead starts here
-$('.ChartOfAccountsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-            '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-            { query: query },
-            function (ChartOfAccounts) {
-                var newChartOfAccountsData = [];
-                ChartOfAccountsMap = {};
-                $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                    newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                    ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                $.ajax({
+                    url: '@Url.Action("GetCSavingProductDetails", "Salary", new { Area = "HumanResource" })',
+                    type: 'GET',
+                    data: { savingsProductId: savingsProductId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#ProductDescription').val(response.data.ProductDescription);
+                            $('#CustomerAccountTypeTargetProductId').val(response.data.CustomerAccountTypeTargetProductId);
+                            $('#CustomerAccountTypeProductCodeDescription').val(response.data.CustomerAccountTypeProductCodeDescription);
+                            $('#ProductChartOfAccountId').val(response.data.ProductChartOfAccountId);
+                            $('#ProductChartOfAccountCode').val(response.data.ProductChartOfAccountCode);
+                            $('#ProductChartOfAccountName').val(response.data.ProductChartOfAccountName);
+                            $('#CustomerAccountTypeProductCode').val(response.data.CustomerAccountTypeProductCode);
+                            $('#CustomerAccountTypeTargetProductCode').val(response.data.CustomerAccountTypeTargetProductCode);
+
+
+
+
+
+
+
+
+                            $('#productLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Customer details.');
+                    }
                 });
-                process(newChartOfAccountsData); return;
             });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var chartOfAccountId = "";
-        ChartOfAccountId = ChartOfAccountsMap[item].Id;
-        $('#ChartOfAccountId').val(ChartOfAccountId);
-        //console.log(ChartOfAccountId)
-        return item;
-    }
-});
         });
 
     </script>
+
+    <script>
+               $(document).ready(function () {
+                   $('#chartofaccountsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "AccountName", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+                    { "mDataProp": "AccountTypeDescription", "sTitle": "Account Type", "sWidth": "15%" },
+                    { "mDataProp": "AccountCode", "sTitle": "Account code", "sWidth": "15%" },
+                    { "mDataProp": "AccountCategoryDescription", "sTitle": "Account Category", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#chartofaccountsGrid tbody').on('click', '.select-customer', function () {
+                       var chartOfAccountId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetChartOfAccountDetails", "Salary", new { Area = "HumanResource" })',
+                    type: 'GET',
+                    data: { chartOfAccountId: chartOfAccountId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#ChartOfAccountAccountName').val(response.data.ChartOfAccountAccountName);
+                            $('#ChartOfAccountId').val(response.data.ChartOfAccountId);
+
+
+
+
+                            $('#ChartOfAccountLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Chat Of Account details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+
+
+
+
+
+
+    <style>
+        .container1 {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .summary-table label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .summary-table input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #f9f9f9;
+            }
+
+        .tab-content {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .tab-pane {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 50px;
+        }
+
+        thead {
+            background-color: #f5f5f5;
+        }
+
+            thead th {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                font-style: italic;
+                color: cadetblue;
+            }
+
+        tbody td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+
+
+        .tab-content {
+            border-top: 1px solid #ddd; /* Add a subtle border if needed */
+            padding: 15px; /* Optional: Add padding for spacing */
+        }
+
+        /* Optional: Add spacing between tab navigation and content */
+        .container {
+            margin-top: 20px; /* Adjust top margin as needed */
+        }
+    </style>
+
+
+
+
+
+
+
+
+
 }

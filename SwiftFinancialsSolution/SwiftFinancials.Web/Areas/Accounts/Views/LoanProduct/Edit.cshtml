@@ -31,7 +31,7 @@
                 @Html.ActionLink("Home", "Index", "LoanProduct", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Create</strong>
+                <strong>Edit</strong>
             </li>
         </ol>
     </div>
@@ -204,7 +204,6 @@
     #loanProductForm input[type="checkbox"] {
         margin-right: 10px;
         margin-top: 5px; /* Align with first line of text */
-        accent-color: blue;
     }
 
     .custom-checkbox-container label {
@@ -286,7 +285,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-<div class="wrapper wrapper-content white-bg text-dark">
+<div class="wrapper wrapper-content white-bg">
     <div class="row">
         <div class="col-md-12">
             <div class="ibox ">
@@ -307,6 +306,8 @@
                         @using (Html.BeginForm("Edit", "LoanProduct", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                         {
                             @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.Id)
+
 
 
 
@@ -368,12 +369,11 @@
                                                         @Html.LabelFor(model => model.LoanInterestChargeMode, htmlAttributes: new { @class = "control-label" })
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                            @Html.DropDownListFor(model => model.LoanInterestChargeMode, (IEnumerable<SelectListItem>)ViewBag.LoanInterestChargeModeSelectList, new { @class = "form-control input-md" })
+                                                            @Html.DropDownListFor(model => model.LoanInterestChargeMode, loanInterestChargeModes, new { @class = "form-control input-md" })
                                                             @Html.ValidationMessageFor(model => model.LoanInterestChargeMode)
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="col-lg-3">
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
@@ -417,6 +417,16 @@
                                                 </div>
                                                 <div class="col-lg-3">
                                                     <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationPaymentFrequencyPerYear, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationPaymentFrequencyPerYear, loanPaymentFrequencyPerYear, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationPaymentFrequencyPerYear)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.TakeHomeType, htmlAttributes: new { @class = "control-label" })
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
@@ -443,6 +453,44 @@
                                                             @Html.DropDownListFor(model => model.LoanRegistrationStandingOrderTrigger, loanRegistrationStandingOrderTriggers, new { @class = "form-control input-md" })
                                                             @Html.ValidationMessageFor(model => model.LoanRegistrationStandingOrderTrigger)
                                                         </div>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationGracePeriod, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationGracePeriod, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationGracePeriod, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationMaximumGuarantees, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationMaximumGuarantees, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumGuarantees, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationMinimumInterestAmount, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationMinimumInterestAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumInterestAmount, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
@@ -487,160 +535,6 @@
                                                 </div>
                                                 <div class="col-lg-3">
                                                     <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                            @Html.DropDownListFor(model => model.Priority, loanRegistrationRoundingTypes, new { @class = "form-control input-md" })
-                                                            @Html.ValidationMessageFor(model => model.Priority)
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanInterestChargeMode, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanInterestChargeMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanInterestChargeMode, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanInterestRecoveryMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanInterestRecoveryMode, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationLoanProductSection, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductSection, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationGuarantorSecurityMode, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationGuarantorSecurityMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationGuarantorSecurityMode, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationPaymentDueDate, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationPaymentDueDate, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationPaymentDueDate, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationPaymentFrequencyPerYear, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationPaymentFrequencyPerYear, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationPaymentFrequencyPerYear, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.TakeHomeType, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.TakeHomeType, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.TakeHomeType, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationPayoutRecoveryMode, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationPayoutRecoveryMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationPayoutRecoveryMode, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationStandingOrderTrigger, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationStandingOrderTrigger, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationStandingOrderTrigger, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-
-
-
-                                                <div class="col-lg-3">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationGracePeriod, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationGracePeriod, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationGracePeriod, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationMaximumGuarantees, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationMaximumGuarantees, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumGuarantees, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationMinimumInterestAmount, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationMinimumInterestAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumInterestAmount, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanInterestCalculationMode, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanInterestCalculationMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanInterestCalculationMode, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationLoanProductCategory, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationLoanProductCategory, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductCategory, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.LoanRegistrationRoundingType, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.LoanRegistrationRoundingType, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationRoundingType, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage, htmlAttributes: new { @class = "control-label" })
                                                         @Html.EditorFor(model => model.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
                                                         @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage, "", new { @class = "text-danger" })
@@ -654,11 +548,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.Priority, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                        @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.Priority, loanRegistrationRoundingTypes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.Priority)
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
@@ -697,6 +593,14 @@
                                                         @Html.HiddenFor(model => model.InterestReceivableChartOfAccountId, new { @id = "ChartofAccountTypehead33" })
                                                         @Html.ValidationMessageFor(model => model.ChartOfAccountName, "", new { @class = "text-danger" })
                                                         @Html.EditorFor(model => model.ChartOfAccountName, new { htmlAttributes = new { @class = "ChartofAccountTypehead3 form-control required entry-field", placeholder = "Enter space to autofill.." } })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.InterestChargedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.InterestChargedChartOfAccountId, new { @id = "ChartofAccountTypehead44" })
+                                                        @Html.ValidationMessageFor(model => model.InterestChargedChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                                        @Html.EditorFor(model => model.InterestChargedChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartofAccountTypehead3 form-control required entry-field", placeholder = "Enter space to autofill.." } })
                                                     </div>
                                                 </div>
 
@@ -966,12 +870,15 @@
 
                                                                 </div>
                                                                 <div class="col-lg-4">
-                                                                    
                                                                     <div class="form-group form-group-lg">
                                                                         @Html.LabelFor(model => model.AuxiliaryConditions[0].Condition, htmlAttributes: new { @class = "control-label" })
-                                                                        @Html.EditorFor(model => model.AuxiliaryConditions[0].Condition, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
-                                                                        @Html.ValidationMessageFor(model => model.AuxiliaryConditions[0].Condition, "", new { @class = "text-danger" })
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                                            @Html.DropDownListFor(model => model.AuxiliaryConditions[0].Condition, auxiliaryLoanCondition, new { @class = "form-control input-md" })
+                                                                            @Html.ValidationMessageFor(model => model.AuxiliaryConditions[0].Condition)
+                                                                        </div>
                                                                     </div>
+
                                                                 </div>
                                                                 <div class="col-lg-4">
                                                                     <div class="form-group form-group-lg">
@@ -1079,47 +986,99 @@
                                                                         @Html.ValidationMessageFor(model => model.Deductiles[0].Description, "", new { @class = "text-danger" })
                                                                     </div>
                                                                 </div>
+
                                                             </div>
+
                                                             <div class="row">
                                                                 <div class="col-lg-6">
-                                                                    
                                                                     <div class="form-group form-group-lg">
                                                                         @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeProductCode, htmlAttributes: new { @class = "control-label" })
-                                                                        @Html.EditorFor(model => model.Deductiles[0].CustomerAccountTypeProductCode, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
-                                                                        @Html.ValidationMessageFor(model => model.Deductiles[0].CustomerAccountTypeProductCode, "", new { @class = "text-danger" })
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                                            @Html.DropDownListFor(model => model.Deductiles[0].CustomerAccountTypeProductCodeDescription, productCode, new { @class = "form-control input-md", @id = "productDropdown" })
+                                                                            @Html.ValidationMessageFor(model => model.Deductiles[0].CustomerAccountTypeProductCodeDescription)
+                                                                        </div>
                                                                     </div>
                                                                 </div>
 
-
-                                                                <div class="col-lg-6">
-                                                                   
+                                                                <div id="savingsProductSection" class="col-lg-6" style="display:block; text-align: left;">
                                                                     <div class="form-group form-group-lg">
-                                                                        @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
-                                                                        @Html.HiddenFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @id = "ProductId" })
-                                                                        @Html.ValidationMessageFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
+                                                                        @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @class = "control-label" })
+                                                                        <div class="input-group" data-autoclose="true">
+                                                                            @Html.HiddenFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @id = "CustomerAccountTypeTargetProductId" })
+                                                                            @Html.EditorFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Lookup Saving Product....", id = "CustomerAccountTypeTargetProductDescription1", @readonly = "" } })
+                                                                            <span class="input-group-addon">
+                                                                                <a data-toggle="modal" data-target="#SavingLookup"><span class="fa fa-search"></span></a>
+                                                                            </span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
 
+                                                                <div id="loansProductSection" class="col-lg-6" style="display:none; text-align: left;">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @class = "control-label" })
+                                                                        <div class="input-group" data-autoclose="true">
+                                                                            @Html.HiddenFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @id = "CustomerAccountTypeTargetProductId" })
+                                                                            @Html.EditorFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Lookup Loan product...", id = "CustomerAccountTypeTargetProductDescription2", @readonly = "" } })
+                                                                            <span class="input-group-addon">
+                                                                                <a data-toggle="modal" data-target="#LoanProductLookup"><span class="fa fa-search"></span></a>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="investmentsProductSection" class="col-lg-6">
+                                                                    <div class="">
+                                                                        <div class="form-group form-group-lg">
+                                                                            @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @class = "control-label" })
+                                                                            <div class="input-group" data-autoclose="true">
+                                                                                @Html.HiddenFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @id = "ProductId" })
+                                                                                @Html.TextBoxFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductDescription, new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control input-md alpha alphaspace required", @placeholder = "Lookup Loan product...", @readonly = "readonly" })
+                                                                                <span class="input-group-addon">
+                                                                                    <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
 
                                                             </div>
+
+
                                                             <div class="row">
                                                                 <div class="col-lg-6">
-                                                                    
                                                                     <div class="form-group form-group-lg">
                                                                         @Html.LabelFor(model => model.Deductiles[0].ChargeType, htmlAttributes: new { @class = "control-label" })
-                                                                        @Html.EditorFor(model => model.Deductiles[0].ChargeType, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
-                                                                        @Html.ValidationMessageFor(model => model.Deductiles[0].ChargeType, "", new { @class = "text-danger" })
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                                            @Html.DropDownListFor(model => model.Deductiles[0].ChargeType, chargeType, new { @class = "form-control input-md", @id = "chargeDropdown" })
+                                                                            @Html.ValidationMessageFor(model => model.Deductiles[0].ChargeType)
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-6">
+
+
+                                                                <div id="percentageSection" class="col-lg-6" style="display:block; text-align: left;">
                                                                     <div class="form-group form-group-lg">
                                                                         @Html.LabelFor(model => model.Deductiles[0].ChargePercentage, htmlAttributes: new { @class = "control-label" })
-                                                                        @Html.EditorFor(model => model.Deductiles[0].ChargePercentage, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.EditorFor(model => model.Deductiles[0].ChargePercentage, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "Enter rate.....", @required = "" } })
                                                                         @Html.ValidationMessageFor(model => model.Deductiles[0].ChargePercentage, "", new { @class = "text-danger" })
                                                                     </div>
                                                                 </div>
 
+                                                                <div id="fixedAmountSection" class="col-lg-6" style="display:none; text-align: left;">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Deductiles[0].ChargeFixedAmount, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.Deductiles[0].ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "Enter Amount", @required = "" } })
+                                                                        @Html.ValidationMessageFor(model => model.Deductiles[0].ChargeFixedAmount, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+
+
+
                                                             </div>
+
+
                                                             <div class="row entry-footer" style="justify-content:flex-end; gap:40px;">
 
                                                                 <div class="custom-checkbox-container">
@@ -1156,8 +1115,8 @@
                                                                                 <th style="width: 10%;">Name </th>
                                                                                 <th style="width: 10%;">Product Name</th>
                                                                                 <th style="width: 10%;">Charge Type </th>
-                                                                                <th style="width: 10%;">Percentage</th>s
                                                                                 <th style="width: 10%;">Fixed Amount</th>
+                                                                                <th style="width: 10%;">Percentage</th>
                                                                                 <th style="width: 10%;">IsNextOfInvestmentBalance</th>
                                                                                 <th style="width: 10%;">ComputeChargeOnTopUp</th>
                                                                                 <th style="width: 10%;">Action</th>
@@ -1192,7 +1151,6 @@
                                                     </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationSecurityRequired, "", new { @class = "text-danger" })
                                                 </div>
-
                                                 <div class="col-lg-6">
                                                     <div class="custom-checkbox-container">
                                                         @Html.CheckBoxFor(model => model.LoanRegistrationRejectIfMemberHasBalance, new { @class = "form-check-input" })
@@ -1309,7 +1267,7 @@
                                     </div>
                                     <div class="myfooter">
                                         <div class="form-group col-md-12 d-flex justify-content-end">
-                                            <button type="button" id="submitFormButton" data-action="create" class="btn btn-primary">Update</button>
+                                            <button type="button" id="submitFormButton" data-action="edit" class="btn btn-primary">Update</button>
                                         </div>
                                     </div>
 
@@ -1384,6 +1342,79 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="SavingLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Employee Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="savingProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>G/L Account Name</th>
+                            <th>G/L Account Cost Center</th>
+                            <th>G/L Account Type</th>
+                            <th>Maximum Allowed Withdrawal</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="LoanProductLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Employee Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="loanProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Interest Recovery Mode</th>
+                            <th>Interest Calculation Mode</th>
+                            <th>Section</th>
+                            <th>Category</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="TargetLoanProductLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -1406,6 +1437,8 @@
         </div>
     </div>
 </div>
+
+
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -1452,6 +1485,233 @@
 
 
     <script>
+               $(document).ready(function () {
+                   $('#loanProductsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "LoanProduct", new { Area = "Accounts" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "LoanInterestRecoveryModeDescription", "sTitle": "Interest Recovery Mode", "sWidth": "10%" },
+                    { "mDataProp": "LoanInterestCalculationModeDescription", "sTitle": "Interest Calculation Mode", "sWidth": "15%" },
+                    { "mDataProp": "LoanRegistrationLoanProductSectionDescription", "sTitle": "Section", "sWidth": "15%" },
+                    { "mDataProp": "LoanRegistrationLoanProductCategoryDescription", "sTitle": "Category", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#loanProductsGrid tbody').on('click', '.select-customer', function () {
+                       var loanProductId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetloanDetails", "LoanProduct", new { Area = "Accounts" })',
+                    type: 'GET',
+                    data: { loanProductId: loanProductId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#CustomerAccountTypeTargetProductDescription2').val(response.data.CustomerAccountTypeTargetProductDescription);
+                            $('#CustomerAccountTypeTargetProductId').val(response.data.CustomerAccountTypeTargetProductId);
+
+
+
+
+                            $('#LoanProductLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Customer details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+    <script>
+               $(document).ready(function () {
+                   $('#savingProductsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "SavingsProduct", new { Area = "Accounts" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
+                    { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountAccountType", "sTitle": "G/L Account Type", "sWidth": "15%" },
+                    { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maximum Allowed Withdrawal", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#savingProductsGrid tbody').on('click', '.select-customer', function () {
+                       var savingsProductId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetSavingDetails", "LoanProduct", new { Area = "Accounts" })',
+                    type: 'GET',
+                    data: { savingsProductId: savingsProductId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#CustomerAccountTypeTargetProductDescription1').val(response.data.CustomerAccountTypeTargetProductDescription);
+                            $('#CustomerAccountTypeTargetProductId').val(response.data.CustomerAccountTypeTargetProductId);
+
+
+
+
+                            $('#SavingLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Customer details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+    <script>
+        //Dropdown chage Product
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('productDropdown');
+            var savingsProductSection = document.getElementById('savingsProductSection');
+            var loansProductSection = document.getElementById('loansProductSection');
+            var investmentProductSection = document.getElementById('investmentsProductSection');
+
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '1') {
+                    savingsProductSection.style.display = 'block';
+                    loansProductSection.style.display = 'none';
+                    investmentProductSection.style.display = 'none';
+                }
+                else if (dropdown.value === '2') {
+                    loansProductSection.style.display = 'block';
+                    savingsProductSection.style.display = 'none';
+                    investmentProductSection.style.display = 'none';
+                }
+                else if (dropdown.value === '3') {
+                    investmentProductSection.style.display = 'block';
+                    loansProductSection.style.display = 'none';
+                    savingsProductSection.style.display = 'none';
+                }
+                else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    <script>
+        //Dropdown charge Product
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('chargeDropdown');
+            var percentageSection = document.getElementById('percentageSection');
+            var fixedAmountSection = document.getElementById('fixedAmountSection');
+
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '1') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '2') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else if (dropdown.value === '3') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+
+
+
+    <script>
         $(document).ready(function () {
             function activateTab($tab) {
                 $tab.addClass('active bg-blue-500 text-white').removeClass('bg-gray-200 text-gray-700')
@@ -1476,29 +1736,67 @@
     </script>
 
 
-    @*Indefinite Charges*@
     <script>
     $(document).ready(function () {
-        var selectedCharges = [];
+        var selectedCharges = @Html.Raw(Json.Serialize(ViewBag.SelectedCharges)); // Pass the selected charges to JavaScript
 
+        // Function to load checkbox state
         function loadCheckboxState() {
-            var storedCharges = localStorage.getItem('selectedCharges');
-            if (storedCharges) {
-                selectedCharges = JSON.parse(storedCharges);
-
-                selectedCharges.forEach(function (charge) {
-                    var checkbox = $('#ic_' + charge.Id);
-                    if (checkbox.length) {
-                        checkbox.prop('checked', true);
-                    }
-                });
-            }
+            selectedCharges.forEach(function (charge) {
+                var checkbox = $('#ic_' + charge.Id);
+                if (checkbox.length) {
+                    checkbox.prop('checked', true); // Mark the checkbox as checked
+                }
+            });
         }
 
+        // Initialize the DataTable
+        var table = $('#IndefiniteChargesGrid').DataTable({
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "IndefiniteCharges", new { Area = "Accounts" }))",
+            "sServerMethod": "POST",
+            "fnRowCallback": function (nRow, aData) {
+                var checkboxHTML = '<input type="checkbox" class="icrowCheckbox" id="ic_' + aData.Id + '"';
+                checkboxHTML += '>';  // By default, the checkboxes will not be checked
+                $('td:eq(0)', nRow).html(checkboxHTML);
+                return nRow;
+            },
+            "aoColumns": [
+                { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.1%" },
+                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+            ],
+            "aaSorting": [[1, "asc"]],
+            "initComplete": function () {
+                loadCheckboxState();  // Load the state of checkboxes when the DataTable is initialized
+            }
+        });
+
+        // Event handler for individual checkbox change
+        $('#IndefiniteChargesGrid').on('change', '.icrowCheckbox', function () {
+            var chargeId = $(this).attr('id').replace('ic_', '');
+            var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
+
+            if ($(this).is(':checked')) {
+                selectedCharges.push({
+                    Id: chargeId,
+                    Description: chargeDescription
+                });
+            } else {
+                selectedCharges = selectedCharges.filter(charge => charge.Id !== chargeId);
+            }
+
+            saveCheckboxState();
+            updateSelectedChargesOnServer();
+        });
+
+        // Function to save checkbox state
         function saveCheckboxState() {
             localStorage.setItem('selectedCharges', JSON.stringify(selectedCharges));
         }
 
+        // Function to update selected charges on the server
         function updateSelectedChargesOnServer() {
             $.ajax({
                 type: 'POST',
@@ -1517,161 +1815,99 @@
                 }
             });
         }
-
-        var table = $('#IndefiniteChargesGrid').DataTable({
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "@(Url.Action("Index", "IndefiniteCharges", new { Area = "Accounts" }))",
-            "sServerMethod": "POST",
-            "fnRowCallback": function (nRow, aData) {
-                var checkboxHTML = '<input type="checkbox" class="icrowCheckbox" id="ic_' + aData.Id + '"';
-                if (selectedCharges.some(charge => charge.Id === aData.Id.toString())) {
-                    checkboxHTML += ' checked';
-                }
-                checkboxHTML += '>';
-                $('td:eq(0)', nRow).html(checkboxHTML);
-                return nRow;
-            },
-            "aoColumns": [
-                { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.1%" },
-                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
-            ],
-            "aaSorting": [[1, "asc"]],
-            "initComplete": function () {
-                loadCheckboxState();
-            }
-        });
-
-        $('#IndefiniteChargesGrid').on('change', '.icrowCheckbox', function () {
-            var chargeId = $(this).attr('id').replace('ic_', '');
-            var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
-
-            if ($(this).is(':checked')) {
-                selectedCharges.push({
-                    Id: chargeId,
-                    Description: chargeDescription
-                });
-            } else {
-                selectedCharges = selectedCharges.filter(charge => charge.Id !== chargeId);
-            }
-
-            saveCheckboxState();
-
-            updateSelectedChargesOnServer();
-        });
-
-        $('#IndefiniteChargesGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="icheaderCheckbox"> Select / Deselect All</div>');
-
-        $('#icheaderCheckbox').on('change', function () {
-            var isChecked = $(this).prop('checked');
-            $('.icrowCheckbox').prop('checked', isChecked).each(function () {
-                var chargeId = $(this).attr('id').replace('ic_', '');
-                var chargeDescription = $(this).closest('tr').find('td:eq(1)').text();
-
-                if (isChecked) {
-                    if (!selectedCharges.some(charge => charge.Id === chargeId)) {
-                        selectedCharges.push({
-                            Id: chargeId,
-                            Description: chargeDescription
-                        });
-                    }
-                } else {
-                    selectedCharges = selectedCharges.filter(charge => charge.Id !== chargeId);
-                }
-            });
-
-            saveCheckboxState();
-
-            updateSelectedChargesOnServer();
-        });
-
     });
     </script>
 
 
+
     <script>
-    $(document).ready(function () {
-        var selectedProducts = [];
+       $(document).ready(function () {
+    var selectedProducts = [];
 
-        function updateSelectedProducts() {
-            selectedProducts = [];
+    function updateSelectedProducts() {
+        selectedProducts = [];
 
-            $('.srowCheckbox:checked').each(function () {
-                var productId = $(this).data('id');
-                selectedProducts.push(productId);
-            });
-
-            console.log('Selected products: ', selectedProducts);
-
-            if (selectedProducts.length > 0) {
-                $.ajax({
-                    url: '@Url.Action("ProcessSelectedProducts", "LoanProduct", new { Area = "Accounts" })',
-                    type: 'POST',
-                    data: { selectedSavingProductIds: selectedProducts },
-                    success: function (response) {
-                        if (response.success) {
-                            console.log('Products successfully updated.');
-                        } else {
-                            console.log('Failed to update products: ' + response.message);
-                        }
-                    },
-                    error: function (error) {
-                        console.log('AJAX error: ' + error.statusText);
-                    }
-                });
-            } else {
-                console.log('No products selected. Skipping server update.');
-            }
-        }
-
-        function updateSelectAllCheckbox() {
-            var allChecked = $('.srowCheckbox:checked').length === $('.srowCheckbox').length && $('.srowCheckbox').length > 0;
-            $('#sheaderCheckbox').prop('checked', allChecked);
-        }
-
-        $('#sheaderCheckbox').on('change', function () {
-            var isChecked = $(this).prop('checked');
-            $('.srowCheckbox').prop('checked', isChecked);
-
-            updateSelectedProducts();
+        // Collect both ID and Description
+        $('.srowCheckbox:checked').each(function () {
+            var productId = $(this).data('id');
+            var productDescription = $(this).closest('tr').find('td:eq(1)').text(); // Assuming the second column contains the description
+            selectedProducts.push({ Id: productId, Description: productDescription });
         });
 
-        $('#SavingsProductGrid').on('change', '.srowCheckbox', function () {
-            updateSelectedProducts();
+        console.log('Selected products: ', selectedProducts);
+
+        if (selectedProducts.length > 0) {
+            $.ajax({
+                url: '@Url.Action("ProcessSelectedSavingProducts", "LoanProduct", new { Area = "Accounts" })',
+                type: 'POST',
+                data: JSON.stringify({
+                    EligibileIncomeDeductionSavingsProductCollection: selectedProducts
+                }), // Match the structure
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.success) {
+                        console.log('Products successfully updated.');
+                    } else {
+                        console.log('Failed to update products: ' + response.message);
+                    }
+                },
+                error: function (error) {
+                    console.log('AJAX error: ' + error.statusText);
+                }
+            });
+        } else {
+            console.log('No products selected. Skipping server update.');
+        }
+    }
+
+    function updateSelectAllCheckbox() {
+        var allChecked = $('.srowCheckbox:checked').length === $('.srowCheckbox').length && $('.srowCheckbox').length > 0;
+        $('#sheaderCheckbox').prop('checked', allChecked);
+    }
+
+    $('#sheaderCheckbox').on('change', function () {
+        var isChecked = $(this).prop('checked');
+        $('.srowCheckbox').prop('checked', isChecked);
+
+        updateSelectedProducts();
+    });
+
+    $('#SavingsProductGrid').on('change', '.srowCheckbox', function () {
+        updateSelectedProducts();
+        updateSelectAllCheckbox();
+    });
+
+    var table = $('#SavingsProductGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": '@Url.Action("Index", "SavingsProduct", new { Area = "Accounts" })',
+        "sServerMethod": "POST",
+
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var checkboxHTML = '<input type="checkbox" class="srowCheckbox" data-id="' + aData.Id + '"';
+
+            if (selectedProducts.some(product => product.Id === aData.Id)) {
+                checkboxHTML += ' checked';
+            }
+
+            checkboxHTML += '>';
+            $('td:eq(0)', nRow).html(checkboxHTML);
+            return nRow;
+        },
+
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "5%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "95%", "bSortable": false }
+        ],
+        "aaSorting": [[1, "asc"]],
+
+        "fnDrawCallback": function () {
             updateSelectAllCheckbox();
-        });
-
-        var table = $('#SavingsProductGrid').DataTable({
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": '@Url.Action("Index", "SavingsProduct", new { Area = "Accounts" })',
-            "sServerMethod": "POST",
-
-            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                var checkboxHTML = '<input type="checkbox" class="srowCheckbox" data-id="' + aData.Id + '"';
-
-                if (selectedProducts.includes(aData.Id)) {
-                    checkboxHTML += ' checked';
-                }
-
-                checkboxHTML += '>';
-                $('td:eq(0)', nRow).html(checkboxHTML);
-                return nRow;
-            },
-
-            "aoColumns": [
-                { "mDataProp": "Id", "sTitle": "Select", "sWidth": "5%" },
-                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "95%", "bSortable": false }
-            ],
-            "aaSorting": [[1, "asc"]],
-
-            "fnDrawCallback": function () {
-                updateSelectAllCheckbox();
-            }
-        });
+        }
     });
+});
+
     </script>
 
 
@@ -1679,7 +1915,7 @@
 
 
     <script>
-        $(document).ready(function () {
+       $(document).ready(function () {
     function saveCheckboxState(key, state) {
         localStorage.setItem(key, state);
     }
@@ -1729,8 +1965,8 @@
             saveCheckboxState(checkboxKey, $(this).prop('checked'));
         });
 
-        var selectedIds = getSelectedIds();
-        updateSelectionOnServer(selectedIds, $(this).prop('checked'));
+        var selectedProducts = getSelectedProducts();
+        updateSelectionOnServer(selectedProducts, $(this).prop('checked'));
 
         saveCheckboxState('aiheaderCheckbox', $(this).prop('checked'));
     });
@@ -1739,7 +1975,8 @@
         var checkboxKey = $(this).attr('data-id');
         saveCheckboxState(checkboxKey, $(this).prop('checked'));
 
-        updateSelectionOnServer([checkboxKey], $(this).prop('checked'));
+        var selectedProduct = getSelectedProduct($(this).data('id'));
+        updateSelectionOnServer([selectedProduct], $(this).prop('checked'));
 
         if (!$(this).prop('checked')) {
             $('#aiheaderCheckbox').prop('checked', false);
@@ -1751,19 +1988,31 @@
         }
     });
 
-    function getSelectedIds() {
-        var selectedIds = [];
+    function getSelectedProducts() {
+        var selectedProducts = [];
         $('.airowCheckbox:checked').each(function () {
-            selectedIds.push($(this).data('id'));
+            var id = $(this).data('id');
+            var description = $(this).closest('tr').find('td:eq(1)').text(); // Assuming the second column has the description
+            selectedProducts.push({ Id: id, Description: description });
         });
-        return selectedIds;
+        return selectedProducts;
     }
 
-    function updateSelectionOnServer(selectedIds, isChecked) {
+    function getSelectedProduct(id) {
+        var row = $('.airowCheckbox[data-id="' + id + '"]').closest('tr');
+        var description = row.find('td:eq(1)').text(); // Assuming the second column has the description
+        return { Id: id, Description: description };
+    }
+
+    function updateSelectionOnServer(selectedProducts, isChecked) {
         $.ajax({
             type: "POST",
             url: '@Url.Action("SaveSelection", "LoanProduct")',
-            data: { selectedIds: selectedIds, isChecked: isChecked },
+            data: JSON.stringify({
+                selectedInvestments: { InvestmentProductCollection: selectedProducts },
+                isChecked: isChecked
+            }),
+            contentType: 'application/json',
             success: function (response) {
                 if (!response.success) {
                     console.error("Failed to save selection on the server.");
@@ -1783,20 +2032,28 @@
 
 
     <script>
-$(document).ready(function () {
+       $(document).ready(function () {
     var selectedInvestmentProducts = [];
 
     function updateSelectedInvestmentProducts() {
         selectedInvestmentProducts = [];
         $('.irowCheckbox:checked').each(function () {
             var productId = $(this).data('id');
-            selectedInvestmentProducts.push(productId);
+            var productDescription = $(this).closest('tr').find('td:eq(1)').text(); // Get the description from the second column
+            selectedInvestmentProducts.push({
+                Id: productId,
+                Description: productDescription
+            });
         });
 
         $.ajax({
             url: '@Url.Action("ProcessSelectedInvestmentProducts", "LoanProduct", new { Area = "Accounts" })',
             type: 'POST',
-            data: { selectedInvestmentProductIds: selectedInvestmentProducts },
+            contentType: "application/json; charset=utf-8",  // Ensure data is sent as JSON
+            dataType: "json",
+            data: JSON.stringify({
+                EligibileIncomeDeductionInvestmentProductCollection: selectedInvestmentProducts
+            }),  // Send as JSON object with both Id and Description
             success: function (response) {
                 if (response.success) {
                     console.log('Investment products updated successfully in session.');
@@ -1853,126 +2110,71 @@ $(document).ready(function () {
         }
     });
 });
+
     </script>
 
 
 
     <script>
-    $(document).ready(function () {
-        function sendSelectedProductsToController(selectedProducts) {
-            console.log("Selected Products: ", selectedProducts);
-
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("StoreSelectedProducts", "LoanProduct", new { Area = "Accounts" })",
-                data: { selectedProductIds: selectedProducts },
-                traditional: true,
-                success: function (response) {
-                    console.log("Selected products successfully sent to the controller.");
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error sending data: " + error);
-                }
-            });
-        }
-
-        $('#1lheaderCheckbox').on('change', function () {
-            var isChecked = $(this).prop('checked');
-            $('.1lrowCheckbox').prop('checked', isChecked);
-
-            var selectedProducts = [];
-            $('.1lrowCheckbox:checked').each(function () {
-                selectedProducts.push($(this).data('id'));
-            });
-
-            sendSelectedProductsToController(selectedProducts);
-        });
-
-        $('#LoanProductsGrid1').on('change', '.1lrowCheckbox', function () {
-            var selectedProducts = [];
-            $('.1lrowCheckbox:checked').each(function () {
-                selectedProducts.push($(this).data('id'));
-            });
-
-            sendSelectedProductsToController(selectedProducts);
-        });
-
-        var table = $('#LoanProductsGrid1').DataTable({
-            "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "" }))",
-            "sServerMethod": "POST",
-
-            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                var checkboxHTML = '<input type="checkbox" class="1lrowCheckbox" data-id="' + aData.Id + '"';
-                checkboxHTML += '>';
-                $('td:eq(0)', nRow).html(checkboxHTML);
-                return nRow;
-            },
-
-            "aoColumns": [
-                { "mDataProp": "Id", "sTitle": "Select", "sWidth": "10%" },
-                { "mDataProp": "Description", "sTitle": "Product Name", "sWidth": "80%" }
-            ],
-            "aaSorting": [[1, "asc"]],
-
-            "initComplete": function (settings, json) {
-            }
-        });
-    });
-    </script>
-
-
-
-
-
-
-    <script>
-$(document).ready(function () {
-    var selectedLoans = [];
-
-    function saveCheckboxState(key, state) {
-        localStorage.setItem(key, JSON.stringify(state));
-    }
-
-    function loadCheckboxState(key) {
-        return JSON.parse(localStorage.getItem(key)) || false;
-    }
-
-    function updateSelectedLoans() {
-        selectedLoans = [];
-        $('.lrowCheckbox:checked').each(function () {
-            selectedLoans.push($(this).data('id'));
-        });
+       $(document).ready(function () {
+    function sendSelectedProductsToController(selectedProducts) {
+        console.log("Selected Products: ", selectedProducts);
 
         $.ajax({
-            url: '@Url.Action("ProcessSelectedLoans", "LoanProduct", new { Area = "Accounts" })',
-            type: 'POST',
-            data: { selectedLoanIds: selectedLoans },
+            type: "POST",
+            url: "@Url.Action("StoreSelectedProducts", "LoanProduct", new { Area = "Accounts" })",
+            data: JSON.stringify({ LoanProductCollection: selectedProducts }), // Ensure key matches server-side model property
+            contentType: "application/json", // Set content type to JSON
             success: function (response) {
-                console.log('Selected loans updated successfully.');
+                console.log("Selected products successfully sent to the controller.");
             },
-            error: function (error) {
-                console.error('An error occurred while updating selected loans.');
+            error: function (xhr, status, error) {
+                console.error("Error sending data: " + error);
             }
         });
     }
 
-    var table = $('#LoanProductsGrid').DataTable({
+    // Handle header checkbox change (select all/deselect all)
+    $('#1lheaderCheckbox').on('change', function () {
+        var isChecked = $(this).prop('checked');
+        $('.1lrowCheckbox').prop('checked', isChecked);
+
+        var selectedProducts = [];
+        $('.1lrowCheckbox:checked').each(function () {
+            var product = {
+                id: $(this).data('id'),
+                description: $(this).data('description') // Collecting the description as well
+            };
+            selectedProducts.push(product);
+        });
+
+        sendSelectedProductsToController(selectedProducts);
+    });
+
+    // Handle individual checkbox changes
+    $('#LoanProductsGrid1').on('change', '.1lrowCheckbox', function () {
+        var selectedProducts = [];
+        $('.1lrowCheckbox:checked').each(function () {
+            var product = {
+                id: $(this).data('id'),
+                description: $(this).data('description') // Collecting the description as well
+            };
+            selectedProducts.push(product);
+        });
+
+        sendSelectedProductsToController(selectedProducts);
+    });
+
+    // Initialize DataTable
+    var table = $('#LoanProductsGrid1').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
+        "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "" }))",
         "sServerMethod": "POST",
 
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '"';
-
-            if (selectedLoans.includes(aData.Id)) {
-                checkboxHTML += ' checked';
-            }
-
+            var checkboxHTML = '<input type="checkbox" class="1lrowCheckbox" data-id="' + aData.Id + '" data-description="' + aData.Description + '"';
             checkboxHTML += '>';
             $('td:eq(0)', nRow).html(checkboxHTML);
             return nRow;
@@ -1980,15 +2182,86 @@ $(document).ready(function () {
 
         "aoColumns": [
             { "mDataProp": "Id", "sTitle": "Select", "sWidth": "10%" },
-            { "mDataProp": "Description", "sTitle": "Loan Product", "sWidth": "90%" }
+            { "mDataProp": "Description", "sTitle": "Product Name", "sWidth": "80%" }
         ],
         "aaSorting": [[1, "asc"]],
 
-        "fnDrawCallback": function () {
+        "initComplete": function (settings, json) {
+        }
+    });
+});
+
+    </script>
+
+
+
+
+
+
+    <script>
+        $(document).ready(function () {
+    var selectedLoans = [];
+
+    // Save the state of selected loans to send to the server
+    function updateSelectedLoans() {
+        selectedLoans = [];
+        $('.lrowCheckbox:checked').each(function () {
+            var loanId = $(this).data('id');
+            var loanDescription = $(this).closest('tr').find('td:eq(1)').text();
+            selectedLoans.push({
+                Id: loanId,
+                Description: loanDescription
+            });
+        });
+
+        $.ajax({
+            url: '@Url.Action("ProcessSelectedLoans", "LoanProduct", new { Area = "Accounts" })',
+            type: 'POST',
+            data: JSON.stringify({
+                EligibileIncomeDeductionLoanProductCollection: selectedLoans
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function () {
+                console.log('Selected loans updated successfully.');
+            },
+            error: function () {
+                console.error('An error occurred while updating selected loans.');
+            }
+        });
+    }
+
+    // Update the "Select All" checkbox state based on individual checkbox states
+    function updateSelectAllCheckbox() {
+        var totalRows = $('.lrowCheckbox').length;
+        var checkedRows = $('.lrowCheckbox:checked').length;
+
+        $('#lheaderCheckbox').prop('checked', totalRows > 0 && totalRows === checkedRows);
+    }
+
+    // Initialize the DataTable
+    var table = $('#LoanProductsGrid').DataTable({
+        sPaginationType: "full_numbers",
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
+        sServerMethod: "POST",
+        fnRowCallback: function (nRow, aData) {
+            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '">';
+            $('td:eq(0)', nRow).html(checkboxHTML);
+            return nRow;
+        },
+        aoColumns: [
+            { mDataProp: "Id", sTitle: "Select", sWidth: "10%" },
+            { mDataProp: "Description", sTitle: "Loan Product", sWidth: "90%" }
+        ],
+        aaSorting: [[1, "asc"]],
+        fnDrawCallback: function () {
             updateSelectAllCheckbox();
         }
     });
 
+    // Handle the "Select All" checkbox
     $('#lheaderCheckbox').on('change', function () {
         var isChecked = $(this).prop('checked');
         $('.lrowCheckbox').prop('checked', isChecked);
@@ -1996,33 +2269,36 @@ $(document).ready(function () {
         if (isChecked) {
             table.rows({ page: 'current' }).every(function () {
                 var loanId = this.data().Id;
-                if (!selectedLoans.includes(loanId)) {
-                    selectedLoans.push(loanId);
+                var loanDescription = this.data().Description;
+                if (!selectedLoans.some(item => item.Id === loanId)) {
+                    selectedLoans.push({
+                        Id: loanId,
+                        Description: loanDescription
+                    });
                 }
             });
         } else {
             table.rows({ page: 'current' }).every(function () {
                 var loanId = this.data().Id;
-                selectedLoans = selectedLoans.filter(id => id !== loanId);
+                selectedLoans = selectedLoans.filter(item => item.Id !== loanId);
             });
         }
 
         updateSelectedLoans();
-        saveCheckboxState('lheaderCheckbox', isChecked);
     });
 
+    // Handle individual checkbox changes
     $('#LoanProductsGrid').on('change', '.lrowCheckbox', function () {
         updateSelectedLoans();
         updateSelectAllCheckbox();
     });
-
-    $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
-
 });
+
     </script>
 
 
-    @*<script>
+
+    <script>
 
 
         $('#chartOfAccountsGrid').DataTable({
@@ -2080,8 +2356,8 @@ $(document).ready(function () {
         });
 
 
-        </script>
-    *@
+    </script>
+
     <script>
         //Typehead 1
 
@@ -2162,6 +2438,42 @@ $(document).ready(function () {
         //Typehead 3
 
         $('.ChartofAccountTypehead3').typeahead({
+            source: function (query, process) {
+                return $.getJSON(
+                    '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                    { query: query },
+                    function (ChartOfAccounts) {
+                        var newChartOfAccountsData = [];
+                        ChartOfAccountsMap = {};
+                        $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                            newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                            ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                        });
+                        process(newChartOfAccountsData); return;
+                    });
+            },
+            matcher: function (item) {
+                if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                    return true;
+                }
+            },
+            sorter: function (items) {
+                return items.sort();
+            },
+            highlighter: function (item) {
+                var regex = new RegExp('(' + this.query + ')', 'gi');
+                return item.replace(regex, "<strong>$1</strong>");
+            },
+            updater: function (item) {
+                var chartOfAccountId = "";
+                ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                $('#ChartofAccountTypehead33').val(ChartOfAccountId);
+                //console.log(ChartOfAccountId)
+                return item;
+            }
+        });
+
+         $('.ChartofAccountTypehead4').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
                         '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
@@ -2191,11 +2503,11 @@ $(document).ready(function () {
                 updater: function (item) {
                     var chartOfAccountId = "";
                     ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#ChartofAccountTypehead33').val(ChartOfAccountId);
+                    $('#ChartofAccountTypehead44').val(ChartOfAccountId);
                     //console.log(ChartOfAccountId)
                     return item;
                 }
-    });
+        });
     </script>
 
 
@@ -2328,49 +2640,84 @@ $(document).ready(function () {
 
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('chargeDropdown');
+            var percentageSection = document.getElementById('percentageSection');
+            var fixedAmountSection = document.getElementById('fixedAmountSection');
 
-        //Adding the Deductibles Entries
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '1') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '2') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else if (dropdown.value === '3') {
+                    fixedAmountSection.style.display = 'block';
+                    percentageSection.style.display = 'none';
+                }
+                else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
+                }
+            });
+        });
 
         $(document).ready(function () {
             // Handle button click to submit the form with AJAX
             $("#addEntryBtn2").click(function (e) {
-                e.preventDefault(); // Prevent default button behavior
-                submitDeductiblesForm(); // Call the form submission function
+                e.preventDefault();
+                submitDeductiblesForm();
             });
 
-            // Function to handle form submission with AJAX
             function submitDeductiblesForm() {
-                // Get form data
-                const description = document.querySelector('[name="Deductiles[0].Description"]').value;
-                const productCode = document.querySelector('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').value;
-                const productId = document.querySelector('[name="Deductiles[0].CustomerAccountTypeTargetProductId"]').value;
-                const productName = document.querySelector('[name="Deductiles[0].CustomerAccountTypeTargetProductDescription"]').value;
-                const chargeType = document.querySelector('[name="Deductiles[0].ChargeTypeDescription"]').value;
-                const chargePercentage = document.querySelector('[name="Deductiles[0].ChargePercentage"]').value;
-                const computeChargeOnTopUp = document.querySelector('[name="Deductiles[0].ComputeChargeOnTopUp"]').checked;
-                const netOffInvestmentBalance = document.querySelector('[name="Deductiles[0].NetOffInvestmentBalance"]').checked;
+                // Get form data with corrected field selectors
+                const description = $('[name="Deductiles[0].Description"]').val();
+                const productCode = $('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').val();
 
-                // Create an object with the form data
+                // Get the correct product description based on which section is visible
+                let productDescription;
+                if ($('#savingsProductSection').is(':visible')) {
+                    productDescription = $('#CustomerAccountTypeTargetProductDescription1').val();
+                } else if ($('#loansProductSection').is(':visible')) {
+                    productDescription = $('#CustomerAccountTypeTargetProductDescription2').val();
+                } else if ($('#investmentsProductSection').is(':visible')) {
+                    productDescription = $('#CustomerAccountTypeTargetProductDescription').val();
+                }
+
+                const productId = $('#CustomerAccountTypeTargetProductId').val();
+                const chargeType = $('[name="Deductiles[0].ChargeType"]').val();
+                const chargePercentage = $('[name="Deductiles[0].ChargePercentage"]').val();
+                const chargeFixedAmount = $('[name="Deductiles[0].ChargeFixedAmount"]').val();
+                const computeChargeOnTopUp = $('[name="Deductiles[0].ComputeChargeOnTopUp"]').prop('checked');
+                const netOffInvestmentBalance = $('[name="Deductiles[0].NetOffInvestmentBalance"]').prop('checked');
+
                 const formData = {
                     Description: description,
                     CustomerAccountTypeProductCodeDescription: productCode,
                     CustomerAccountTypeTargetProductId: productId,
-                    CustomerAccountTypeTargetProductDescription: productName,
-                    ChargeTypeDescription: chargeType,
+                    CustomerAccountTypeTargetProductDescription: productDescription,
+                    ChargeType: chargeType,
                     ChargePercentage: chargePercentage,
+                    ChargeFixedAmount: chargeFixedAmount,
                     ComputeChargeOnTopUp: computeChargeOnTopUp,
                     NetOffInvestmentBalance: netOffInvestmentBalance
                 };
 
-                // Send the AJAX request
                 $.ajax({
-                    url: '/LoanProduct/AddDeductibles', // Replace with your actual action URL
+                    url: '/LoanProduct/AddDeductibles',
                     type: 'POST',
-                    contentType: 'application/json', // Set content type to JSON
-                    data: JSON.stringify(formData), // Convert the form data object to JSON
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
                     success: function (response) {
                         if (response.success) {
-                            updateEntriesTable(response.data); // Update the table with new data
+                            updateEntriesTable(response.data);
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success!',
@@ -2378,12 +2725,12 @@ $(document).ready(function () {
                                 timer: 1000,
                                 showConfirmButton: false
                             });
-                            clearFormFields(); // Clear form fields using custom logic
+                            clearFormFields();
                         } else {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error!',
-                                text: response.message,
+                                text: response.message || 'An error occurred while adding the deductible.',
                                 timer: 8000,
                                 showConfirmButton: true
                             });
@@ -2391,112 +2738,155 @@ $(document).ready(function () {
                     },
                     error: function (xhr, status, error) {
                         console.error("An error occurred:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while processing your request.',
+                            timer: 8000,
+                            showConfirmButton: true
+                        });
                     }
                 });
             }
 
-            // Function to clear form fields after submission
             function clearFormFields() {
-                document.querySelector('[name="Deductiles[0].Description"]').value = '';
-                document.querySelector('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').value = '';
-                document.querySelector('[name="Deductiles[0].CustomerAccountTypeTargetProductDescription"]').value = '';
-                document.querySelector('[name="Deductiles[0].ChargeTypeDescription"]').value = '';
-                document.querySelector('[name="Deductiles[0].ChargePercentage"]').value = '';
-                document.querySelector('[name="Deductiles[0].ComputeChargeOnTopUp"]').checked = false;
-                document.querySelector('[name="Deductiles[0].NetOffInvestmentBalance"]').checked = false;
+                $('[name="Deductiles[0].Description"]').val('');
+                $('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').val('');
+                $('[name="Deductiles[0].ChargeType"]').val('');
+                $('#CustomerAccountTypeTargetProductDescription').val('');
+                $('#CustomerAccountTypeTargetProductDescription1').val('');
+                $('#CustomerAccountTypeTargetProductDescription2').val('');
+                $('#CustomerAccountTypeTargetProductId').val('');
+                $('[name="Deductiles[0].ChargePercentage"]').val('');
+                $('[name="Deductiles[0].ChargeFixedAmount"]').val('');
+                $('[name="Deductiles[0].ComputeChargeOnTopUp"]').prop('checked', false);
+                $('[name="Deductiles[0].NetOffInvestmentBalance"]').prop('checked', false);
             }
 
-            // Function to update the entries table with the response data
             function updateEntriesTable(entries) {
                 var tableBody = $("#DeductilesTable tbody");
-                tableBody.empty(); // Clear existing entries
+                tableBody.empty();
 
                 $.each(entries, function (index, entry) {
-                    var row = `<tr data-id="${entry.Id}">
-                                                                                                               <td>${entry.Description}</td>
-                                                                                                                <td>${entry.CustomerAccountTypeTargetProductDescription}</td>
-                                                                                                               <td>${entry.CustomerAccountTypeProductCodeDescription}</td>
-                                                                                                               <td>${entry.ChargePercentage}</td>
-                                                                                                               <td>${entry.ChargeTypeDescription}</td>
-
-                                                                                                               <td>${entry.ComputeChargeOnTopUp}</td>
-                                                                                                               <td>${entry.NetOffInvestmentBalance}</td>
-                                                                                                               <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
-                                                                                                           </tr>`;
+                    var row = `
+                                        <tr data-id="${entry.Id}">
+                                            <td>${entry.Description || ''}</td>
+                                            <td>${entry.CustomerAccountTypeTargetProductDescription || ''}</td>
+                                            <td>${entry.ChargeType || ''}</td>
+                                            <td>${entry.ChargeFixedAmount || ''}</td>
+                                            <td>${entry.ChargePercentage || ''}</td>
+                                            <td>${entry.NetOffInvestmentBalance ? 'Yes' : 'No'}</td>
+                                            <td>${entry.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>`;
                     tableBody.append(row);
                 });
             }
 
-            // Attach click event to remove buttons (if needed)
+            // Handle remove entry
             $(document).on("click", ".remove-entry", function (event) {
-                event.preventDefault(); // Prevent default behavior
-                var entryId = $(this).data("id"); // Get the ID from the button's data-id
+                event.preventDefault();
+                var entryId = $(this).data("id");
                 removeEntry(entryId);
             });
 
-            // Function to remove an entry from the table
             function removeEntry(id) {
                 $.ajax({
-                    url: '/LoanProduct/RemoveDeductibles', // Replace with your actual action URL
+                    url: '/LoanProduct/RemoveDeductibles',
                     type: 'POST',
-                    data: { id: id }, // Data to be sent for removal
+                    data: { id: id },
                     success: function (response) {
                         if (response.success) {
-                            updateEntriesTable(response.data); // Update the table with remaining entries
+                            updateEntriesTable(response.data);
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Entry removed successfully.',
+                                timer: 1000,
+                                showConfirmButton: false
+                            });
                         } else {
-                            alert("An error occurred while removing the entry.");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'An error occurred while removing the entry.',
+                                timer: 3000,
+                                showConfirmButton: true
+                            });
                         }
                     },
                     error: function () {
-                        alert("An error occurred while processing the request.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while processing the request.',
+                            timer: 3000,
+                            showConfirmButton: true
+                        });
                     }
                 });
             }
         });
-
-
     </script>
 
+
     <script>
-
-        //Adding the LoanCycles Entries
-
         $(document).ready(function () {
-            // Handle button click to submit the form with AJAX
             $("#addEntryBtn23").click(function (e) {
-                e.preventDefault(); // Prevent default button behavior
-                submitCyclesForm(); // Call the form submission function
+                e.preventDefault();
+                submitCyclesForm();
             });
 
-            // Function to handle form submission with AJAX
             function submitCyclesForm() {
-                // Get form data
-                const rangeLowerLimit = document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value;
+                const minAmount = parseFloat(document.querySelector('[name="LoanRegistrationMinimumAmount"]').value);
+                const maxAmount = parseFloat(document.querySelector('[name="LoanRegistrationMaximumAmount"]').value);
+                const rangeLowerLimit = parseFloat(document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value);
+                const numCycles = 4; // Define the number of cycles
 
+                // Calculate range per cycle
+                const rangePerCycle = (maxAmount - minAmount) / numCycles;
 
-                // Create an object with the form data
+                // Determine the upper limit for the current cycle based on the lower limit
+                const rangeUpperLimit = rangeLowerLimit + rangePerCycle;
+
+                // Check if the upper limit exceeds the max amount
+                if (rangeUpperLimit > maxAmount) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Upper limit exceeds maximum allowed amount.',
+                        timer: 5000,
+                        showConfirmButton: true
+                    });
+                    return;
+                }
+
+                // Prepare data for AJAX
                 const formData = {
                     RangeLowerLimit: rangeLowerLimit,
-
+                    RangeUpperLimit: rangeUpperLimit
                 };
 
-                // Send the AJAX request
                 $.ajax({
-                    url: '/LoanProduct/AddCycles', // Replace with your actual action URL
+                    url: '/LoanProduct/AddCycles',
                     type: 'POST',
-                    contentType: 'application/json', // Set content type to JSON
-                    data: JSON.stringify(formData), // Convert the form data object to JSON
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
                     success: function (response) {
                         if (response.success) {
-                            updateEntriesTable(response.data1); // Update the table with new data
+                            updateEntriesTable(response.data1);
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success!',
-                                text: 'Deductible added successfully.',
+                                text: 'Loan cycle added successfully.',
                                 timer: 1000,
                                 showConfirmButton: false
                             });
-                            clearFormFields(); // Clear form fields using custom logic
+                            clearFormFields();
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -2513,24 +2903,20 @@ $(document).ready(function () {
                 });
             }
 
-            // Function to clear form fields after submission
             function clearFormFields() {
                 document.querySelector('[name="Cycles[0].RangeLowerLimit"]').value = '';
-
             }
 
-            // Function to update the entries table with the response data
             function updateEntriesTable(entries) {
                 var tableBody = $("#loancyclesTable tbody");
-                tableBody.empty(); // Clear existing entries
+                tableBody.empty();
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                               <td>${entry.RangeLowerLimit}</td>
-                                                                                                                <td>${entry.RangeUpperLimit}</td>
-
-                                                                                                               <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
-                                                                                                           </tr>`;
+                                                                            <td>${entry.RangeLowerLimit}</td>
+                                                                            <td>${entry.RangeUpperLimit}</td>
+                                                                            <td><button type="button" class="btn btn-danger remove-entry1" data-id="${entry.Id}">Remove</button></td>
+                                                                        </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2562,13 +2948,10 @@ $(document).ready(function () {
             }
         });
 
-
     </script>
 
     <script>
-
-        //Auxiliary Investment Appraisal Factor
-
+        // Auxiliary Investment Appraisal Factor
         $(document).ready(function () {
             // Handle button click to submit the form with AJAX
             $("#addEntryBtn").click(function (e) {
@@ -2579,18 +2962,31 @@ $(document).ready(function () {
             // Function to handle form submission with AJAX
             function submitInvestmentAppraisalFactorForm() {
                 // Get form data
-                const rangeLowerLimit = document.querySelector('[name="Tiers[0].RangeLowerLimit"]').value;
-                const loaneeMultiplier = document.querySelector('[name="Tiers[0].LoaneeMultiplier"]').value;
-                const guarantorMultiplier = document.querySelector('[name="Tiers[0].GuarantorMultiplier"]').value;
+                const rangeLowerLimit = parseFloat(document.querySelector('[name="Tiers[0].RangeLowerLimit"]').value);
+                const loaneeMultiplier = parseFloat(document.querySelector('[name="Tiers[0].LoaneeMultiplier"]').value);
+                const guarantorMultiplier = parseFloat(document.querySelector('[name="Tiers[0].GuarantorMultiplier"]').value);
 
+                // Validate if values are numeric and not empty
+                if (isNaN(rangeLowerLimit) || isNaN(loaneeMultiplier) || isNaN(guarantorMultiplier)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Input',
+                        text: 'Please ensure all fields are filled correctly.',
+                        timer: 2000,
+                        showConfirmButton: true
+                    });
+                    return;
+                }
 
+                // Calculate the Investment Range Upper Limit (you can adjust the calculation logic here)
+                const rangeUpperLimit = rangeLowerLimit * loaneeMultiplier; // You can adjust this based on your business rules
 
                 // Create an object with the form data
                 const formData = {
                     RangeLowerLimit: rangeLowerLimit,
+                    RangeUpperLimit: rangeUpperLimit, // Send the calculated upper limit
                     LoaneeMultiplier: loaneeMultiplier,
                     GuarantorMultiplier: guarantorMultiplier
-
                 };
 
                 // Send the AJAX request
@@ -2605,7 +3001,7 @@ $(document).ready(function () {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success!',
-                                text: 'Deductible added successfully.',
+                                text: 'Investment Appraisal Factor added successfully.',
                                 timer: 1000,
                                 showConfirmButton: false
                             });
@@ -2631,7 +3027,6 @@ $(document).ready(function () {
                 document.querySelector('[name="Tiers[0].RangeLowerLimit"]').value = '';
                 document.querySelector('[name="Tiers[0].GuarantorMultiplier"]').value = '';
                 document.querySelector('[name="Tiers[0].LoaneeMultiplier"]').value = '';
-
             }
 
             // Function to update the entries table with the response data
@@ -2641,13 +3036,12 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                   <td>${entry.RangeLowerLimit}</td>
-                                                                                                                    <td>${entry.RangeUpperLimit}</td>
-                                                                                                                    <td>${entry.GuarantorMultiplier}</td>
-                                                                                                                    <td>${entry.LoaneeMultiplier}</td>
-
-                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
-                                                                                                               </tr>`;
+                                    <td>${entry.RangeLowerLimit}</td>
+                                    <td>${entry.RangeUpperLimit}</td>
+                                    <td>${entry.LoaneeMultiplier}</td>
+                                    <td>${entry.GuarantorMultiplier}</td>
+                                    <td><button type="button" class="btn btn-danger remove-entry2" data-id="${entry.Id}">Remove</button></td>
+                                </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2678,9 +3072,8 @@ $(document).ready(function () {
                 });
             }
         });
-
-
     </script>
+
     <script>
 
         //Auxiliary Lending Condition
@@ -2759,13 +3152,13 @@ $(document).ready(function () {
 
                 $.each(entries, function (index, entry) {
                     var row = `<tr data-id="${entry.Id}">
-                                                                                                                   <td>${entry.TargetLoanProductDescription}</td>
-                                                                                                                    <td>${entry.ConditionDescription}</td>
-                                                                                                                    <td>${entry.MaximumEligiblePercentage}</td>
+                                                                                                                                                                       <td>${entry.TargetLoanProductDescription}</td>
+                                                                                                                                                                        <td>${entry.ConditionDescription}</td>
+                                                                                                                                                                        <td>${entry.MaximumEligiblePercentage}</td>
 
 
-                                                                                                                   <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
-                                                                                                               </tr>`;
+                                                                                                                                                                       <td><button type="button" class="btn btn-danger remove-entry3" data-id="${entry.Id}">Remove</button></td>
+                                                                                                                                                                   </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -2813,7 +3206,7 @@ $(document).ready(function () {
             submitButton.addEventListener('click', function (event) {
                 event.preventDefault();
                 const formData = new FormData(form);
-                fetch('/LoanProduct/Create', {
+                fetch('/LoanProduct/Edit', {
                     method: 'POST',
                     body: formData,
                     headers: {

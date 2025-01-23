@@ -3,13 +3,13 @@
 @{
     /**/
 
-    ViewBag.Title = "Create Designation";
+    ViewBag.Title = "Edit Designation";
     var systemTransactionType = ViewBag.TransactionTypeSelectList as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Designation</h2>
+        <h2>Edit Designation</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -49,29 +49,34 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     @using (Html.BeginForm("Edit", "Designation", new { Area = "HumanResource" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.Id)
 
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <!-- Name field -->
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">Name:</label>
-                                            <div class="col-sm-10">
-                                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                                            </div>
-                                        </div>
+                                        <div class="row">
 
-                                        <!-- Remarks field -->
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">Remarks:</label>
-                                            <div class="col-sm-10">
-                                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-sm">
+                                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                                </div>
                                             </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+
                                         </div>
 
                                         <!-- Transaction Threshold Details -->
@@ -104,10 +109,10 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row mt-2">
-                                                    <div class="col-md-12 text-right">
-                                                        <button type="button" id="addThreshold" class="btn btn-success">Add</button>
-                                                    </div>
+                                                
+                                                <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                                    <button type="button" id="addThreshold" class="btn btn-success">Add</button>
+
                                                 </div>
 
                                                 <!-- Transaction Threshold Preferences Table -->
@@ -156,17 +161,18 @@
                                             </div>
                                         </div>
 
-                                        <!-- Designation is locked checkbox -->
-                                        <div class="form-group mt-3 d-flex justify-content-end">
+                                        
+
+                                        <!-- Update button -->
+                                        
+                                        <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
                                             <div class="custom-control custom-checkbox">
                                                 @Html.CheckBoxFor(model => model.IsLocked, new { @class = "custom-control-input", id = "IsLocked" })
                                                 <label class="custom-control-label" for="IsLocked">Designation is locked?</label>
                                             </div>
-                                        </div>
 
-                                        <!-- Update button -->
-                                        <div class="form-group mt-3 d-flex justify-content-end">
                                             <button type="submit" class="btn btn-primary">Update</button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -413,5 +419,29 @@ $(document).ready(function() {
     });
 });
     </script>
+    <style>
+        .card {
+            margin-bottom: 20px;
+        }
+
+       
+
+        .col-lg-2 {
+            display: flex;
+            align-items: center; /* Center the title vertically */
+            justify-content: center; /* Center the title horizontally if needed */
+            padding: 0; /* Remove default padding if necessary */
+            border-radius: 4px; /* Rounded corners */
+        }
+
+        .bottom-button {
+            border: 2px solid gray; /* Border color set to gray */
+            padding: 10px; /* Padding inside the border */
+            border-radius: 5px; /* Rounded corners (optional) */
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #e0f0ff;
+        }
+    </style>
 
 }

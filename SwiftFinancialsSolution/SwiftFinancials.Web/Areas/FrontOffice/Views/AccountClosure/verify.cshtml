@@ -78,7 +78,7 @@
                             <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountFullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerAccountFullAccountNumber", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountFullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerAccountFullAccountNumber", @readonly ="" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountFullAccountNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
                             <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.CustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Status", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Status", @readonly = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountStatusDescription, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -95,7 +95,7 @@
                             <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.CustomerAccountRemarks, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountRemarks, new { htmlAttributes = new { @id = "CustomerAccountRemarks", @class = "form-control", @placeholder = "Account Remarks", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountRemarks, new { htmlAttributes = new { @id = "CustomerAccountRemarks", @class = "form-control", @placeholder = "Account Remarks", @readonly = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountRemarks, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -103,7 +103,7 @@
                             <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.CustomerAccountTypeTargetProductDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control", @placeholder = "Product Name", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control", @placeholder = "Product Name", @readonly = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -115,7 +115,7 @@
                                 <div class="form-group form-group-lg">
                                     @Html.HiddenFor(model => model.CustomerAccountCustomerId)
                                     @Html.LabelFor(model => model.CustomerAccountCustomerFullName, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountCustomerFullName, new { htmlAttributes = new { @id = "CustomerAccountCustomerId", @class = "form-control", @placeholder = "Customer", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerFullName, new { htmlAttributes = new { @id = "CustomerAccountCustomerId", @class = "form-control", @placeholder = "Customer", @readonly = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountCustomerFullName, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -123,7 +123,7 @@
                             <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.CustomerAccountCustomerTypeDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountCustomerTypeDescription, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Type", @id = "CustomerAccountCustomerTypeDescription", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerTypeDescription, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Type", @id = "CustomerAccountCustomerTypeDescription", @readonly = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountCustomerTypeDescription, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -131,7 +131,7 @@
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Payroll Number", @id = "CustomerAccountCustomerIndividualPayrollNumbers", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Payroll Number", @id = "CustomerAccountCustomerIndividualPayrollNumbers", @readonly = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -142,7 +142,7 @@
                             <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.CustomerAccountCustomerIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Identification Number", @id = "CustomerAccountCustomerIdentificationNumber", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Identification Number", @id = "CustomerAccountCustomerIdentificationNumber", @readonly = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIdentificationNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -150,7 +150,7 @@
                             <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Account Number", @id = "CustomerAccountCustomerReference1", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Account Number", @id = "CustomerAccountCustomerReference1", @readonly = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -158,7 +158,7 @@
                             <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Membership Number", @id = "CustomerAccountCustomerReference2", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Membership Number", @id = "CustomerAccountCustomerReference2", @readonly = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -166,7 +166,7 @@
                             <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "PersonalFile Number", @id = "CustomerAccountCustomerReference3", @required = "" } })
+                                    @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "PersonalFile Number", @id = "CustomerAccountCustomerReference3", @readonly = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -188,10 +188,7 @@
 
 
 
-                            <div class="col-md-3">
-                                @Html.LabelFor(model => model.CreatedDate)
-                                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
-                            </div>
+                       
 
                             <div class="col-md-3">
                                 <label for="closureAction">Closure Action</label>
@@ -330,8 +327,7 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Customer FullName</th>
-                                                <th>Guarantor Customer FullName</th>
+                                                
                                                 <th>Loanee Customer FullName</th>
                                                 <th>LoanProduct Description</th>
                                                 <th>LoanCaseStatus Description</th>
@@ -344,8 +340,7 @@
                                             @foreach (var guarantor in ViewBag.LoanGuarantors)
                                             {
                                                 <tr>
-                                                    <td>@guarantor.CustomerFullName</td>
-                                                    <td>@guarantor.GuarantorCustomerFullName</td>
+                                                    
                                                     <td>@guarantor.LoaneeCustomerFullName</td>
                                                     <td>@guarantor.LoanProductDescription</td>
                                                     <td>@guarantor.LoanCaseStatusDescription</td>

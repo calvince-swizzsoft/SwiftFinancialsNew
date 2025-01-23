@@ -5,6 +5,9 @@
 
     ViewBag.Title = "Create Account Closure";
     var customerTypes = ViewBag.AccountClosureSelectList as List<SelectListItem>;
+    var ProductCode = ViewBag.CustomerAccountProductCodeSelectList as List<SelectListItem>;
+
+    var customerFilter = ViewBag.CustomerFilterSelectList as List<SelectListItem>;
 
 
 }
@@ -84,7 +87,7 @@
 
                                         @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, "Full Account Number:", new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
-                                            @Html.TextBoxFor(model => model.CustomerAccountCustomerIndividualLastName, new { @class = "form-control", @readonly = "readonly", @id = "CustomerAccountCustomerIndividualLastName" }) <!-- Unique ID here -->
+                                            @Html.TextBoxFor(model => model.CustomerAccountCustomerIndividualLastName, new { @class = "form-control", @readonly = "", @id = "CustomerAccountCustomerIndividualLastName" }) <!-- Unique ID here -->
                                             <span class="input-group-addon">
                                                 <a data-toggle="modal" data-target="#customerAccountLookupModal" onclick="captureDetails();">
                                                     <span class="fa fa-search"></span>
@@ -98,7 +101,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductChartOfAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductChartOfAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountStatusDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -106,7 +109,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountRemarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountRemarks, new { htmlAttributes = new { @id = "CustomerAccountRemarks", @class = "form-control", @placeholder = "", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountRemarks, new { htmlAttributes = new { @id = "CustomerAccountRemarks", @class = "form-control", @placeholder = "", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountRemarks, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -116,7 +119,7 @@
                                         @Html.LabelFor(model => model.CustomerAccountTypeTargetProductDescription, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductChartOfAccountId)
 
-                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control", @placeholder = "", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control", @placeholder = "", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -127,7 +130,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerFullName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualFirstName, new { htmlAttributes = new { @id = "CustomerAccountCustomerIndividualFirstName", @class = "form-control", @placeholder = "", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualFirstName, new { htmlAttributes = new { @id = "CustomerAccountCustomerIndividualFirstName", @class = "form-control", @placeholder = "", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerFullName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -135,7 +138,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerTypeDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerNonIndividualDescription, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerTypeDescription", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerNonIndividualDescription, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerTypeDescription", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerTypeDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -143,7 +146,7 @@
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerIndividualPayrollNumbers", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerIndividualPayrollNumbers", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -154,7 +157,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerIdentificationNumber", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerIdentificationNumber", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIdentificationNumber, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -162,7 +165,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerReference1", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerReference1", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -170,7 +173,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerReference2", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerReference2", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -178,7 +181,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerReference3", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerReference3", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -318,8 +321,7 @@
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th>Customer FullName</th>
-                                                    <th>Guarantor Customer FullName</th>
+                                                   
                                                     <th>Loanee Customer FullName</th>
                                                     <th>LoanProduct Description</th>
                                                     <th>LoanCaseStatus Description</th>
@@ -332,8 +334,7 @@
                                                 @foreach (var guarantor in ViewBag.LoanGuarantors)
                                                 {
                                                     <tr>
-                                                        <td>@guarantor.CustomerFullName</td>
-                                                        <td>@guarantor.GuarantorCustomerFullName</td>
+                                                        
                                                         <td>@guarantor.LoaneeCustomerFullName</td>
                                                         <td>@guarantor.LoanProductDescription</td>
                                                         <td>@guarantor.LoanCaseStatusDescription</td>
@@ -403,29 +404,131 @@
 
 
 
-
 <div class="modal  fade" id="customerAccountLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header  bg-primary">
                 <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="modal-body">
+                <!-- Table for Account Closure Requests -->
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="min-width: 1000px;">
+                        <tbody>
+                            <tr>
+                                <td class="dataTables_empty">Loading data from server</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Filter Form -->
+                <div class="blue-section mt-1">
+                    <form id="CustomerModalFilterForm">
+                        <div class="row align-items-end mb-3">
+                            <div class="col-md-3">
+                                <div id="items-dropdown"></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div id="page-control"></div>
+                            </div>
+                        </div>
+
+                        @*<div class="row align-items-end mb-3">
+
+                            </div>*@
+
+                    <div class="row align-items-end">
+
+                        <div class="col-md-2">
+                            <div class="form-group mb-0">
+                                <label for="CustomerProductCodeCustomerFilter">Product Code</label>
+                                @Html.DropDownListFor(m => m.CustomerProductCodeCustomerFilter, ProductCode, new { @class = "form-control", @id = "CustomerProductCodeCustomerFilter" })
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-2">
+                            <div class="form-group mb-0">
+
+                                <div class="input-group">
+
+                                    @Html.DropDownListFor(m => m.CustomerAccountCustomerFilter, customerFilter,
+                                    new { @class = "form-control", @id = "CustomerAccountCustomerFilter" })
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="col-md-6">
+                            <div id="searchField" class="form-group mb-0"></div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group mb-0">
+                                <button type="submit" id="refreshButton" class="btn btn-success form-control">Refresh</button>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+                <style>
+                    .blue-section {
+                        background-color: #e6f3ff;
+                        padding: 15px;
+                        border-radius: 5px;
+                    }
+
+                    .row.align-items-end {
+                        display: flex;
+                        align-items: flex-end;
+                    }
+
+                        .row.align-items-end > div {
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                    #searchField {
+                        width: 100%;
+                    }
+
+                        #searchField .dataTables_filter {
+                            margin-bottom: 0;
+                            width: 100%;
+                        }
+
+                            #searchField .dataTables_filter label {
+                                width: 100%;
+                                margin-bottom: 0;
+                                display: flex;
+                            }
+
+                            #searchField .dataTables_filter input {
+                                width: 100% !important;
+                                margin-left: 0 !important;
+                                height: calc(1.5em + .75rem + 2px); /* Match Bootstrap's form-control height */
+                            }
+
+                    #items-dropdown .dataTables_length {
+                        margin-bottom: 0;
+                    }
+
+                    #page-control .dataTables_paginate {
+                        float: right;
+                    }
+                </style>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
+
     </div>
 </div>
-
 <input type="hidden" id="customerId" name="customerId" />
 
 
@@ -480,13 +583,29 @@
 
 
 
-<script>
-    $('#CustomerAccountsGrid').DataTable({
+    <script>
+    // Set Default Value for Filters
+    var defaultProductCode = $('#CustomerProductCodeCustomerFilter').val();
+
+    // Refresh button for reloading the DataTable after applying the filters
+    $('#CustomerModalFilterForm').on('submit', function (e) {
+        e.preventDefault();
+        $('#CustomerAccountsGrid').DataTable().ajax.reload();
+    });
+
+    // Initialize the DataTable
+    var customerTable = $('#CustomerAccountsGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+        "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" }))",
         "sServerMethod": "POST",
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "productCode", "value": $('#CustomerProductCodeCustomerFilter').val() || defaultProductCode },
+            );
+        },
+
 
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -500,6 +619,7 @@
             // Change URL to point to Edit action
             var selectUrl = '<a href="/FrontOffice/AccountClosure/Create/' + aData.Id + '" class="btn btn-outline-info">Select</a>';
 
+            // Update the table row with formatted date and select button
             $('td:eq(5)', nRow).html(dt_Created);
             $('td:eq(6)', nRow).html(selectUrl);
 
@@ -509,38 +629,59 @@
         "aoColumns": [
             { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "15%" },
             { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
-            { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15%" },
-            { "mDataProp": "CustomerFullName", "sTitle": "Customer FullName", "sWidth": "15%" },
+            { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Name", "sWidth": "15%" },
+            { "mDataProp": "CustomerFullName", "sTitle": "Customer Full Name", "sWidth": "15%" },
             { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "15%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }
         ],
-        "aaSorting": [[0, "desc"]]
+        "aaSorting": [[0, "desc"]],
+        "dom": 'lftip',
+        "responsive": true,
+        "initComplete": function (settings, json) {
+            $('#CustomerAccountsGrid_length').appendTo('.blue-section .row:first-child #items-dropdown');
+            $('#CustomerAccountsGrid_filter').appendTo('.blue-section #searchField').find('input').attr('placeholder', 'Search...');
+            $('#CustomerAccountsGrid_filter label').contents().filter(function () {
+                return this.nodeType === 3;
+            }).remove();
+            $('#Customers_paginate').appendTo('.blue-section .row:first-child #page-control');
+        },
+        "error": function (xhr, error, thrown) {
+            console.log("Error fetching data: ", xhr, error, thrown);
+            alert("Failed to load data. Please try again.");
+        }
     });
 
-    // Handle row selection and data population for Edit
+    // Customer selection logic with status check
     $("#CustomerAccountsGrid tbody").on("click", "tr", function () {
-        var data = CustomerAccountsGrid.row(this).data();
+        var data = customerTable.row(this).data();  // Use the correct DataTable instance
 
-        // Populate Edit form fields based on selected customer account details
-        $('#Id').val(data.Id);
-        $('#CustomerAccountCustomerId').val(data.CustomerAccountCustomerId);
-        $('input[name=CustomerAccountFullAccountNumber]').val(data.FullAccountNumber);
-        $('#CustomerStationZoneDivisionEmployerDescription').val(data.StationDescription);
-        $('#CustomerAccountCustomerIndividualLastName').val(data.FullAccountNumber);
-        $('#CustomerAccountTypeTargetProductChartOfAccountName').val(data.StationDescription);
-        $('#CustomerReference1').val(data.CustomerReference1);
-        $('#CustomerReference2').val(data.CustomerReference2);
-        $('#CustomerAccountCustomerIndividualFirstName').val(data.CustomerFullName);
-        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(data.IndividualIdentityCardNumber);
-        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(data.IndividualPayrollNumbers);
-        $('#CustomerAccountTypeTargetProductDescription').val(data.CustomerAccountTypeTargetProductDescription);
-        $('#CustomerAccountTypeProductCodeDescription').val(data.CustomerAccountTypeProductCodeDescription);
+        // Check if the customer's status is 'Approved'
+        if (data.RecordStatusDescription !== 'Approved') {
+            // Alert the user that they need to select an approved customer
+            alert('Please select a customer with an Normal status.');
+        } else {
+            // Populate Edit form fields based on selected customer account details
+            $('#Id').val(data.Id);
+            $('#CustomerAccountCustomerId').val(data.CustomerAccountCustomerId);
+            $('input[name=CustomerAccountFullAccountNumber]').val(data.FullAccountNumber);
+            $('#CustomerStationZoneDivisionEmployerDescription').val(data.StationDescription);
+            $('#CustomerAccountCustomerIndividualLastName').val(data.FullAccountNumber);
+            $('#CustomerAccountTypeTargetProductChartOfAccountName').val(data.StationDescription);
+            $('#CustomerReference1').val(data.CustomerReference1);
+            $('#CustomerReference2').val(data.CustomerReference2);
+            $('#CustomerAccountCustomerIndividualFirstName').val(data.CustomerFullName);
+            $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(data.IndividualIdentityCardNumber);
+            $('#CustomerAccountCustomerIndividualPayrollNumbers').val(data.IndividualPayrollNumbers);
+            $('#CustomerAccountTypeTargetProductDescription').val(data.CustomerAccountTypeTargetProductDescription);
+            $('#CustomerAccountTypeProductCodeDescription').val(data.CustomerAccountTypeProductCodeDescription);
 
-        // Close the modal after selecting
-        $('#customerLookupModal').modal('hide');
+            // Close the modal
+            $('#customerLookupModal').modal('hide');
+        }
     });
-</script>
+    </script>
+
 
     //ajax form submisstion
     <script>

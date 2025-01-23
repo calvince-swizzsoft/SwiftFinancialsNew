@@ -39,7 +39,7 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         public string RegistrationNumber { get; set; }
 
         [DataMember]
-        [Display(Name = "Personal Identification Number")]
+        [Display(Name = "P.I.N Number")]
         [Required]
         public string PersonalIdentificationNumber { get; set; }
 

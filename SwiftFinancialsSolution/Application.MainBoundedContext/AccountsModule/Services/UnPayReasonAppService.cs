@@ -58,7 +58,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     if (matchedunPayReason != null && matchedunPayReason.Any())
                     {
                         //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
-                        unPayReasonDTO.ErrorMessageResult = string.Format("Sorry, but Unpay Reason \"{0}\" already exists!", unPayReasonDTO.Description.ToUpper());
+                        unPayReasonDTO.ErrorMessageResult = string.Format("Sorry, but Unpay Reason {0} already exists!", unPayReasonDTO.Description.ToUpper());
                         return unPayReasonDTO;
                     }
                     else

@@ -8,8 +8,8 @@
     var standingOrders = ViewBag.StandingOrders;
     var payouts = ViewBag.Payouts;
     var LoanApplications = ViewBag.LoanApplications;
-    var loanGuarantors = ViewBag.LoanGuarantors;
-    var loanAccounts = ViewBag.LoanAccounts;
+    var loanGuarantors = ViewBag.PrintLoanGuarantors;
+    var loanAccounts = ViewBag.PrintCustomerAccounts;
 
     // Repayment Schedule
 
@@ -20,6 +20,12 @@
 }
 
 <link href="~/Scripts/css/printAppraisalForm.css" rel="stylesheet" />
+
+<style>
+    button {
+        cursor: pointer;
+    }
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -38,17 +44,32 @@
     </div>
 </div>
 
+
+@if (TempData["Success"] != null)
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                text: '@TempData["Success"]',
+                confirmButtonColor: '#006400',
+            })
+        });
+    </script>
+}
+
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Print Loan Appraisal Form</h2>
-
-                    <button onclick="printAppraisalForm()">Print</button>
-
-
                     <div class="ibox-tools">
+                        <button class="btn btn-outline-secondary" onclick="printAppraisalForm()">
+                            Print
+                        </button>
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
                         </a>
@@ -58,6 +79,8 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
+                    @Html.ActionLink("<- Return to Appraied Loans List", "Index", "AppraiseLoan", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
+                    <br />
                     <div id="appraisalForm">
                         <div class="container">
                             <div class="printDate">
@@ -160,7 +183,6 @@
                             <table>
                                 <tr>
                                     <th>Guarantor Name</th>
-                                    <th>Employer</th>
                                     <th>Account Number</th>
                                     <th>Appraisal Factor</th>
                                     <th>Total Shares</th>
@@ -174,9 +196,8 @@
                                         foreach (var guarantors in loanGuarantors)
                                         {
                                             <tr>
-                                                <td>@guarantors.Customer.FullName</td>
-                                                <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
-                                                <td>@guarantors.Customer.Reference1</td>
+                                                <td>@guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
+                                                <td>@guarantors.CustomerReference1</td>
                                                 <td>@guarantors.AppraisalFactor</td>
                                                 <td style="text-align: right;">@guarantors.TotalShares</td>
                                                 <td style="text-align: right;">@guarantors.CommittedShares</td>
@@ -298,6 +319,14 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row mt-5" style="display: flex; justify-content: center; align-items: center;">
+                        <div>
+                            <button class="btn btn-outline-secondary" onclick="printAppraisalForm()">
+                                Print
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -403,7 +432,7 @@
         printWindow.document.write('<html><head><title>Print Appraisal Form</title>');
         printWindow.document.write('<style>');
         printWindow.document.write(`
-               #loanApplications {
+            #loanApplications {
             height: auto;
         }
 
@@ -418,18 +447,13 @@
             font-family: Arial, sans-serif;
         }
 
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #000;
-        }
+      }
+
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 100px;
         }
 
         th, td {
@@ -447,6 +471,7 @@
             font-weight: bold;
             padding: 5px;
             text-align: left;
+            mrgin-top: 200px;
         }
 
         .signature {
@@ -454,7 +479,7 @@
         }
 
         .signature-table {
-            width: 100%;
+            width: fit-content;
             border: none;
             text-align: left;
         }
@@ -481,13 +506,35 @@
         printWindow.document.write('</body></html>');
 
         printWindow.document.close();
-        printWindow.focus(); 
+        printWindow.focus();
 
         setTimeout(function () {
-            printWindow.print(); 
-            printWindow.close(); 
+            printWindow.print();
+            printWindow.close();
+
+            let countdown = 5;
+            const messageDiv = document.createElement("div");
+            messageDiv.style.position = "fixed";
+            messageDiv.style.top = "50%";
+            messageDiv.style.left = "50%";
+            messageDiv.style.transform = "translate(-50%, -50%)";
+            messageDiv.style.backgroundColor = "#F5F5F5";
+            messageDiv.style.padding = "20px";
+            messageDiv.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+            messageDiv.style.textAlign = "center";
+            messageDiv.style.borderRadius = "10px";
+            messageDiv.innerHTML = `<h2>Returning to Appraised Loans List in <span id="countdown">5</span>...</h2>`;
+            document.body.appendChild(messageDiv);
+
+            const countdownInterval = setInterval(() => {
+                countdown -= 1;
+                document.getElementById("countdown").textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    window.location.href = '/Loaning/AppraiseLoan/Index'; 
+                }
+            }, 1000);
         }, 500);
     }
-
 </script>
 

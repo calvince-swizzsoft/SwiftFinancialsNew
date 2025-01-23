@@ -17,6 +17,35 @@
     </div>
 </div>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const successMessage = '@TempData["SuccessMessage"]';
+        const errorMessage = '@TempData["ErrorMessage"]';
+
+        if (successMessage) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: successMessage,
+                confirmButtonText: 'OK'
+            });
+        }
+
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage,
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+</script>
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -24,13 +53,7 @@
                 <div class="ibox-title">
                     <h2>Micro-Credit Officers</h2>
 
-                    @if (TempData["create"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["create"]
-                        </div>
-                    }
-                    <hr />
+
                     @Html.ActionLink("Create", "Create", "MicroCreditOfficers", new { Area = "MicroCredit" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">

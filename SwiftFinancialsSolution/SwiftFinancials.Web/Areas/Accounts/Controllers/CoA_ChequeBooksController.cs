@@ -33,7 +33,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindChequeBooksByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength,GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -55,97 +55,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var customerAccountDTO = await _channelService.FindCustomerAccountAsync(id, false, false, false, false, GetServiceHeader());
             return View(customerAccountDTO);
         }
-        //[HttpPost]
-        //public async Task<ActionResult> Add( CustomerAccountDTO commissionDTO)
-        //{
-        //    await ServeNavigationMenus();
-
-        //    customerAccountDTOs = TempData["customerAccountDTOs"] as ObservableCollection<CustomerAccountDTO>;
-
-        //    double sumPercentages = 0;
-
-
-
-        //    if (ChargeSplitDTOs == null)
-        //        ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
-
-        //    //if (commissionDTO.pa == null || commissionDTO.MaximumCharge == 0)
-        //    //{
-        //    //    TempData["tPercentage"] = "Charge name and maximum charge required to proceed.";
-        //    //}
-        //    //else
-        //    //{
-        //   // Guid parseId;
-
-        //    //if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-        //    //{
-        //    //    TempData["tPercentage"] = "Could not add charge split. Choose G/L Account.";
-
-        //    //    await ServeNavigationMenus();
-
-        //    //    return View("Create", commissionDTO);
-        //    //}
-
-
-
-
-        //    //foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
-        //    //{
-        //    //    chargeSplitDTO.Id = parseId;
-        //    //    chargeSplitDTO.Description = chargeSplitDTO.Description;
-        //    //    chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
-        //    //    chargeSplitDTO.ChartOfAccountAccountName = glAccount.ChartOfAccountAccountName;
-        //    //    chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
-        //    //    chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
-
-
-        //    //    TempData["tPercentage"] = "";
-
-
-        //    //    if (chargeSplitDTO.Description == null || chargeSplitDTO.ChartOfAccountAccountName == null || chargeSplitDTO.Percentage == 0)
-        //    //    {
-        //    //        TempData["tPercentage"] = "Could not add charge split. Make sure to provide all charge split details to proceed.";
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        ChargeSplitDTOs.Add(chargeSplitDTO);
-
-        //    //        sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
-
-
-        //    //        if (sumPercentages > 100)
-        //    //        {
-        //    //            TempData["tPercentage"] = "Failed to add \"" + chargeSplitDTO.Description.ToUpper() + "\". Total percentage exceeded 100%.";
-
-        //    //            ChargeSplitDTOs.Remove(chargeSplitDTO);
-        //    //        }
-        //    //        else if (sumPercentages < 1)
-        //    //        {
-        //    //            TempData["tPercentage"] = "Total percentage must be at least greater than 1%.";
-        //    //        }
-        //    //    }
-        //    //;
-        //    //}
-
-        //    ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
-
-        //    ViewBag.totalPercentage = sumPercentages;
-
-        //    Session["totalPercentage"] = sumPercentages;
-
-        //    TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
-
-
-        //    TempData["ChargeDTO"] = commissionDTO;
-
-        //    return View("Create");
-        //}
 
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
 
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
+
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            ViewBag.GetChequeType = GetChequeType(string.Empty);
 
             Guid parseId;
 
@@ -163,24 +83,24 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
 
                 customerAccountDTO.CustomerAccountId = customer.Id;
-                customerAccountDTO.CustomerAccountCustomerIndividualLastName= customer.FullAccountNumber;
-
+                customerAccountDTO.CustomerAccountCustomerIndividualLastName = customer.FullAccountNumber;
                 customerAccountDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerFullName;
                 customerAccountDTO.CustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
                 customerAccountDTO.SerialNumber = customer.CustomerSerialNumber;
                 customerAccountDTO.CustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
-                //customerAccountDTO.s = customer.CustomerStationZoneDivisionEmployerDescription;
-                //customerAccountDTO.CustomerStationZoneDivisionEmployerDescription = customer.CustomerStationZoneDivisionEmployerDescription;
                 customerAccountDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
                 customerAccountDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
                 customerAccountDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                //customerAccountDTO.CustomerAccountBranchCode = customer.BranchId;
-                //customerAccountDTO.BranchDescription = customer.BranchDescription;
 
 
             }
            var k= await _channelService.FindPaymentVouchersByChequeBookIdAsync(parseId, GetServiceHeader());
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
 
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            ViewBag.GetChequeType = GetChequeType(string.Empty);
             ViewBag.j = k;
 
             return View(customerAccountDTO);
@@ -245,12 +165,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ChequeBookDTO customerAccountDTO, ObservableCollection<SavingsProductDTO> selectedRows)
         {
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
 
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            ViewBag.GetChequeType = GetChequeType(string.Empty);
 
             customerAccountDTO.ValidateAll();
 
             if (!customerAccountDTO.HasErrors)
             {
+                ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+                ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+                ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
+
+                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+                ViewBag.GetChequeType = GetChequeType(string.Empty);
                 var result = await _channelService.AddChequeBookAsync(customerAccountDTO,1,GetServiceHeader());
                
                 TempData["SuccessMessage"] = "Cheque Book created successfully";

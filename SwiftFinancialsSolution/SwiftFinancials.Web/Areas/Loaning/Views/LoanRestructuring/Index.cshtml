@@ -1,9 +1,10 @@
 ﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 
 @{
-    ViewBag.Title = "Loan Cases";
+    ViewBag.Title = "Loan Restructuring";
 
     var LoanCaseFilter = ViewBag.LoanCaseFilterSelectList as List<SelectListItem>;
+    var LoanCaseStatus = ViewBag.LoanCaseStatusSelectList as List<SelectListItem>;
 }
 
 
@@ -11,16 +12,16 @@
     #tabs-container {
         background-color: #f5f5f5;
         border-bottom: 1px solid #ddd;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
-        overflow-x: auto; /* Allow horizontal scrolling if necessary */
+        overflow-x: auto;
     }
 
     .nav-tabs {
-        padding: 10px 0; /* Adjusted padding */
+        padding: 10px 0;
         list-style: none;
         margin: 0;
-        white-space: nowrap; /* Prevent line breaks */
+        white-space: nowrap;
     }
 
         .nav-tabs li {
@@ -32,7 +33,7 @@
             text-decoration: none;
             font-size: 14px;
             color: #333;
-            font-weight: bold; /* Set font weight to bold */
+            font-weight: bold;
             padding: 10px 15px;
             border-bottom: 2px solid transparent;
             transition: border-bottom-color 0.3s ease-in-out;
@@ -42,6 +43,65 @@
                 border-bottom-color: #007bff;
                 color: #007bff;
             }
+
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .form-group {
+        border-radius: 10px;
+    }
+
+
+
+
+
+    .navbar {
+        background-color: rgba(255, 255, 255, 0.9); /* White with transparency */
+        padding: 15px 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+        .nav-menu li {
+            position: relative;
+            margin: 0 15px;
+        }
+
+    .nav-link {
+        text-decoration: none;
+        color: #333; /* Dark gray for text */
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        background-color: transparent; /* Clear background for default state */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        .nav-link:hover {
+            color: #007bff; /* Blue for active link */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
 </style>
 
 
@@ -62,15 +122,18 @@
     </div>
 </div>
 
-<div id="tabs-container">
-    <ul class="nav-tabs">
-        <li>@Html.ActionLink("Restructuring", "create", "LoanRestructuring")</li>
-        <li>@Html.ActionLink("Guarantor Attachment", "create", "Attachment")</li>
-        <li>@Html.ActionLink("Guarantor Substitution", "create", "GuarantorSubstitution")</li>
-        <li>@Html.ActionLink("Guarantor Relieving", "Index", "GuarantorRelieving")</li>
-        <li>@Html.ActionLink("Guarantor Management", "Index", "GuarantorManagement")</li>
+
+
+<br />
+<nav class="navbar">
+    <ul class="nav-menu">
+        <li>@Html.ActionLink("Loan Restructuring", "Index", "LoanRestructuring", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Attachment", "Create", "GuarantorAttachment", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Substitution", "Create", "GuarantorSubstitution", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Relieving", "Index", "GuarantorRelieving", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Management", "Index", "GuarantorManagement", new { area = "Loaning" }, new { @class = "nav-link" })</li>
     </ul>
-</div>
+</nav>
 
 
 <div class="wrapper wrapper-content">
@@ -80,34 +143,7 @@
                 <div class="ibox-title">
                     <h2>Loan Restructuring</h2>
                     <hr />
-
                     @Html.ActionLink("Restructure Loan", "Create", "LoanRestructuring", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
-
-
-                    @if (TempData["AlertMessage"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AlertMessage"]
-                        </div>
-                    }
-
-
-                    @if (TempData["Edit"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Edit"]
-                        </div>
-                    }
-
-                    @if (TempData["LoanCaseStatusInvalid"] != null)
-                    {
-                        <div class="alert alert-danger"><strong>Attempt Failed !</strong> @TempData["LoanCaseStatusInvalid"]</div>
-                    }
-
-                    <hr />
-                    <a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#loanCasesModal">
-                        Export Loan Cases
-                    </a>
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -123,6 +159,43 @@
                         <div class="sk-double-bounce1"></div>
                         <div class="sk-double-bounce2"></div>
                     </div>
+
+
+                    <div class="blue-section">
+                        <form id="filterForm">
+                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                                <div class="col-lg-5">
+                                    <div class="form-group form-group-lg">
+                                        <label for="filterType">Loan Filter</label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.filterText, LoanCaseFilter,
+                                            new { @class = "form-control input-md", @id = "filterType" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5" style="margin-top: 27px;">
+                                    <div class="form-group spacing-form-group">
+                                        <div class="input-group text-box">
+                                            @Html.TextBox("filterValue", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "filterValue" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1" style="margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <br />
+
+
                     <div class="table-responsive">
                         <table id="LoanRegistrationsGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
@@ -143,59 +216,6 @@
 
 
 
-
-<!-- Modal Structure -->
-<div class="modal fade" id="loanCasesModal" tabindex="-1" role="dialog" aria-labelledby="loanCasesModalLabel" aria-hidden="true" style="width: 100%;">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="loanCasesModalLabel">Loan Cases Export</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table id="LoanCasesExportGrid" class="table table-striped table-bordered" width="50%">
-                    <thead>
-                        <tr>
-                            <th>Loan Number</th>
-                            <th>Customer</th>
-                            <th>Amount Applied</th>
-                            <th>Loan Product</th>
-                            <th>Loan Purpose</th>
-                            <th>Branch</th>
-                            <th>Savings Product</th>
-                            <th>Status</th>
-                            <th>Created Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @* Data will be loaded via DataTables AJAX *@
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.7/css/buttons.dataTables.min.css">
-@*<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">*@
-
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.7/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.7/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.7/js/buttons.print.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-
-
-
 @section Styles {
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
 }
@@ -204,16 +224,19 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#LoanRegistrationsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "LoanRegistration", new { Area = "Loaning"}))",
+                "sAjaxSource": "@(Url.Action("Index", "LoanRestructuring", new { Area = "Loaning"}))",
                 "sServerMethod": "POST",
-                // Callback settings
+
+                "fnServerParams": function (aoData) {
+                    aoData.push({ "name": "filterType", "value": $('#filterType').val() });
+                    aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
+                },
+
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -232,30 +255,9 @@
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     aData.ReceivedDate = dt_ReceivedDate;
 
-                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var appraiseUrl = '<a  href="/loaning/LoanRegistration/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
-                    var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
-                    var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
-
-
-                    var dropdownHtml = `
-                        <div class="dropdown">
-                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
-                                <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Res</a>
-                            </div>
-                        </div>`;
-
-                    var restructure = '<a  href="/loaning/loanrestructuring/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var verifyUrl = '<a  href="/loaning/LoanVerification/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
 
                     $('td:eq(8)', nRow).html(dt_Created);
-                    $('td:eq(9)', nRow).html(restructure);
 
                     return nRow;
                 },
@@ -270,45 +272,15 @@
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
                     { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "15%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]],
-
-                // Code to print table data to CSV, pdf and Excel
-                //"dom": "Bfrtip",
-                //"buttons": [
-                //    {
-                //        extend: 'copy',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-clipboard"></i> Copy'
-                //    },
-
-                //    {
-                //        extend: 'excel',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-table"></i> Excel'
-                //    },
-
-                //    {
-                //        extend: 'pdf',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-file-pdf-o"></i> PDF'
-                //    },
-
-                //    {
-                //        extend: 'csv',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-file"></i> CSV'
-                //    },
-
-                //    {
-                //        extend: 'print',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-print"></i> Print'
-                //    },
-                //],
             }
             );
+
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#LoanRegistrationsGrid').DataTable().ajax.reload();
+            });
         });
 
         $(document).ajaxStart(function () {
@@ -317,94 +289,6 @@
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
-    </script>
-
-
-
-
-    <script>
-    $(document).ready(function () {
-        $('#loanCasesModal').on('shown.bs.modal', function () {
-            if (!$.fn.DataTable.isDataTable('#LoanCasesExportGrid')) {
-                $('#LoanCasesExportGrid').DataTable({
-                    "sPaginationType": "full_numbers",
-                    "bProcessing": true,
-                    "bServerSide": true,
-                    "sAjaxSource": "@(Url.Action("GetAllLoanCases", "LoanRegistration", new { Area = "Loaning" }))",
-                    "sServerMethod": "POST",
-                    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                        var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                        var h = ("0" + createdDate.getHours()).slice(-2);
-                        var m = ("0" + createdDate.getMinutes()).slice(-2);
-                        var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                        var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                        aData.CreatedDate = dt_Created;
-
-                        $('td:eq(8)', nRow).html(dt_Created);
-                    },
-
-                    "aoColumns": [
-                        { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "5%" },
-                        { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "10%" },
-                        { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%" },
-                        { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "7%" },
-                        { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "7%" },
-                        { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "7%" },
-                        { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "7%" },
-                        { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                        { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" }
-                    ],
-
-                    "aaSorting": [[0, "desc"]],
-                    "dom": "Bfrtip",
-                    "buttons": [
-                        {
-                        extend: 'pdf',
-                        className: 'btn btn-light rounded-0',
-                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
-                        customize: function (win) {
-                        var imgSrc = '@Url.Content("~/Images/MIA.JPG")'; // Generate absolute URL
-
-                        $(win.document.body)
-                        .prepend(
-                        `<center><img src="${imgSrc}" style="text-align:center; margin-top:20px; width: 250px;"></center>`)
-                         .css('font-size', '10pt')
-                         .prepend(
-                         `<h1 style="text-align:center;">Swizzsoft Ltd.</h1>`
-                             );
-                           }
-                        },
-
-                        {
-                            extend: 'print',
-                            className: 'btn btn-light rounded-0',
-                            text: '<i class="fa fa-print"></i> Print',
-                            customize: function (win) {
-                                var imgSrc = '@Url.Content("~/Images/MIA.JPG")'; // Generate absolute URL
-
-                                $(win.document.body)
-                                    .prepend(
-                                        `<center><img src="${imgSrc}" style="text-align:center; margin-top:20px; width: 250px;"></center>`
-                                    )
-                                    .css('font-size', '10pt')
-                                    .prepend(
-                                        `<h1 style="text-align:center;">Swizzsoft Ltd.</h1>`
-                                    );
-                            }
-                        }
-                    ],
-
-                    "initComplete": function (settings, json) {
-                        var info = this.api().page.info();
-                        var numEntries = `Showing ${info.start + 1} to ${info.end} of ${info.recordsTotal} entries`;
-                        $(this).append(`<div class="dataTables_info">${numEntries}</div>`);
-                    }
-                });
-            }
-        });
-    });
     </script>
 
 }

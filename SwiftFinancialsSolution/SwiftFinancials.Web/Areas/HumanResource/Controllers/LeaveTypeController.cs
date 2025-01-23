@@ -23,30 +23,61 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View();
         }
 
+        
+
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortDescending = jQueryDataTablesModel.sSortDir_.First() == "desc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindLeaveTypesFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLeaveTypesFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                0,
+                int.MaxValue,
+                GetServiceHeader()
+            );
+
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(leaveTypeDTO => leaveTypeDTO.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<LeaveTypeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
 
+            return this.DataTablesJson(
+                items: new List<LeaveTypeDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
+        }
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -72,22 +103,26 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!leaveTypeBindingModel.HasErrors)
             {
                 await _channelService.AddNewLeaveTypeAsync(leaveTypeBindingModel.MapTo<LeaveTypeDTO>(), GetServiceHeader());
+                TempData["AlertMessage"] = "Leave type created successfully!";
+                TempData["AlertType"] = "success";
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = leaveTypeBindingModel.ErrorMessages;
-
+                TempData["AlertMessage"] = string.Join("<br>", leaveTypeBindingModel.ErrorMessages);
+                TempData["AlertType"] = "error";
                 return View(leaveTypeBindingModel);
             }
         }
 
+
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
+           
+            var LeaveTypeDTO = await _channelService.FindLeaveTypeAsync(id, GetServiceHeader());
             ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
             ViewBag.UnitTypes = GetUnitTypes(string.Empty);
-            var LeaveTypeDTO = await _channelService.FindLeaveTypeAsync(id, GetServiceHeader());
 
             return View(LeaveTypeDTO);
         }
@@ -99,14 +134,20 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateLeaveTypeAsync(leaveTypeBindingModel, GetServiceHeader());
+                TempData["AlertMessage"] = "Leave type updated successfully!";
+                TempData["AlertType"] = "success";
 
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["AlertMessage"] = "Failed to update leave type. Please correct the errors and try again.";
+                TempData["AlertType"] = "error";
+
                 return View(leaveTypeBindingModel);
             }
         }
+
 
         [HttpGet]
         public async Task<JsonResult> GetLeaveTypesAsync()

@@ -16,5 +16,9 @@ namespace Application.MainBoundedContext.DTO
         public List<InvestmentProductDTO> EligibileIncomeDeductionInvestmentProductCollection { get; set; }
 
         public List<SavingsProductDTO> EligibileIncomeDeductionSavingsProductCollection { get; set; }
+
+
+        // Additional Attribute
+        public List<LoanProductDTO> ConcessionLoanProductCollection { get; set; }
     }
 }

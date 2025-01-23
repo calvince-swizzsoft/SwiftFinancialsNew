@@ -1,7 +1,9 @@
-﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDTO
+﻿
+@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDTO
 
 @{
-    ViewBag.Title = "Edit Employees";
+    ViewBag.Title = "Edit Employee";
+    var bloodGroupDescription = ViewBag.BloodGroupSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -14,17 +16,53 @@
                 @Html.ActionLink("Home", "Index", "Employee", new { Area = "HumanResource" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Edit</strong>
+                <strong>Create</strong>
             </li>
         </ol>
     </div>
 </div>
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#ValueDate').datepicker({
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
+
 
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -34,183 +72,638 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-secondary text-info">
-                    @using (Html.BeginForm("Edit", "Employee", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
 
-                        <h1>Linkage Details</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.CustomerId)
-                                        @Html.EditorFor(model => model.Customer.FullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer Name" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.DesignationId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.DesignationId)
-                                        @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "DesignationsLookup form-control required", placeholder = "Designation description" } })
-                                        @Html.ValidationMessageFor(model => model.DesignationId, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.DepartmentId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.DepartmentId)
-                                        @Html.EditorFor(model => model.DepartmentDescription, new { htmlAttributes = new { @class = "DepartmentsLookup form-control required", placeholder = "Department description" } })
-                                        @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
+                <div class="card">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Edit", "Employee", new { Area = "HumanResource" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
 
-                        <h1>Employee Details</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.NationalSocialSecurityFundNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.NationalSocialSecurityFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.NationalSocialSecurityFundNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.NationalHospitalInsuranceFundNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.NationalHospitalInsuranceFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NHIF Number", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.NationalHospitalInsuranceFundNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.OnlineNotificationsEnabled, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.OnlineNotificationsEnabled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Online Notifications Enabled?", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.OnlineNotificationsEnabled, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BloodGroup, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.BloodGroup, new { htmlAttributes = new { @class = "form-control", @placeholder = "Blood Group", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.BloodGroup, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.EnforceBiometricsForLogin, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.EnforceBiometricsForLogin, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enforce Biometrics For Login?" } })
-                                        @Html.ValidationMessageFor(model => model.EnforceBiometricsForLogin, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="text-center">
-                                    <div style="margin-top: 20px">
-                                        <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    }
 
-                    <div>
-                        @Html.ActionLink("Back to List", "Index", "Employee", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
+
+                            <!-- Expense Payables -->
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.CustomerFullName, new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
+                                                <div class="input-group">
+                                                    @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "CustomerFullName", @readonly = "" } })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#customerLookup">
+                                                            <span class="fa fa-search"></span>
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(model => model.CustomerFullName, "", new { @class = "text-danger" })
+                                            </div>
+                                        
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DesignationId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.DesignationId)
+                                            @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "DesignationsLookup form-control required", placeholder = "Designation description" } })
+                                            @Html.ValidationMessageFor(model => model.DesignationId, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DepartmentId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.DepartmentId)
+                                            @Html.EditorFor(model => model.DepartmentDescription, new { htmlAttributes = new { @class = "DepartmentsLookup form-control required", placeholder = "Department description" } })
+                                            @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.EmployeeTypeId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.EmployeeTypeId)
+                                            @Html.ValidationMessageFor(model => model.EmployeeTypeId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.EmployeeTypeCategoryDescription, new { htmlAttributes = new { @class = "EmployeeTypesLookup form-control required", placeholder = "EmployeeType Description" } })
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BloodGroup, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.BloodGroup, bloodGroupDescription, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.BloodGroup)
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerPersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.NationalSocialSecurityFundNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.NationalSocialSecurityFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.NationalSocialSecurityFundNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.NationalHospitalInsuranceFundNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.NationalHospitalInsuranceFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NHIF Number", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.NationalHospitalInsuranceFundNumber, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.OnlineNotificationsEnabled, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.OnlineNotificationsEnabled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Online Notifications Enabled?", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.OnlineNotificationsEnabled, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
+
+
+                                <input type="submit" value="Update" class="btn btn-primary btn-update" />
+                            </div>
+
+
+
+                        }
                     </div>
                 </div>
+
+                <style>
+                    .card {
+                        margin-bottom: 20px;
+                    }
+
+                    
+                    .form-group-lg {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-control {
+                        border-radius: .25rem;
+                    }
+
+
+                    
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #e0f0ff;
+                    }
+                </style>
+
+
+
             </div>
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="customerLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Customer Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Customer FullName</th>
+                            <th>Branch</th>
+                            <th>Type</th>
+                            <th>Gender</th>
+                            <th>Nationality</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    <style>
+        .highlight {
+            background-color: #f0c14b; /* Light yellow color for highlighting */
+        }
+    </style>
 
     <script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
+               $(document).ready(function () {
+            $('#customersGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "Customer", new { Area = "Registry" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "FullName", "sTitle": "Customer FullName", "sWidth": "15%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "15%" },
+                    { "mDataProp": "IndividualGenderDescription", "sTitle": "Gender", "sWidth": "15%" },
+                    { "mDataProp": "IndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#customersGrid tbody').on('click', '.select-customer', function () {
+                var customerId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetCustomerDetails", "Employee", new { Area = "HumanResource" })',
+                    type: 'GET',
+                    data: { customerId: customerId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#CustomerFullName').val(response.data.CustomerFullName);
+                            $('#CustomerId').val(response.data.CustomerId);
+                            
+
+
+
+
+                            $('#customerLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Customer details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+    <script>
+            //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
                         return true;
                     }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
                 },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
+                sorter: function (items) {
+                    return items.sort();
                 },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
                 },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
+                updater: function (item) {
+                    var branchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
                 }
             });
-        });</script>
+
+
+
+            //EmployeeType typehead starts here
+            $('.EmployeeTypesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetEmployeeTypesAsync", "EmployeeType", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (EmployeeTypes) {
+                            var newEmployeeTypesData = [];
+                            EmployeeTypesMap = {};
+                            $.each(EmployeeTypes, function (i, EmployeeType) {
+                                newEmployeeTypesData.push(EmployeeType.CategoryDescription);
+                                EmployeeTypesMap[EmployeeType.CategoryDescription] = EmployeeType;
+                            });
+                            process(newEmployeeTypesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var employeeTypeId = "";
+                    EmployeeTypeId = EmployeeTypesMap[item].Id;
+                    $('#EmployeeTypeId').val(EmployeeTypeId);
+                    //console.log(EmployeeTypeId)
+                    return item;
+                }
+            });
+
+            //Designation typehead starts here
+            $('.DesignationsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetDesignationsAsync", "Designation", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Designations) {
+                            var newDesignationsData = [];
+                            DesignationsMap = {};
+                            $.each(Designations, function (i, Designation) {
+                                newDesignationsData.push(Designation.Description);
+                                DesignationsMap[Designation.Description] = Designation;
+                            });
+                            process(newDesignationsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var designationId = "";
+                    DesignationId = DesignationsMap[item].Id;
+                    $('#DesignationId').val(DesignationId);
+                    //console.log(DesignationId)
+                    return item;
+                }
+            });
+
+            //Department typehead starts here
+            $('.DepartmentsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetDepartmentsAsync", "Department", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Departments) {
+                            var newDepartmentsData = [];
+                            DepartmentsMap = {};
+                            $.each(Departments, function (i, Department) {
+                                newDepartmentsData.push(Department.Description);
+                                DepartmentsMap[Department.Description] = Department;
+                            });
+                            process(newDepartmentsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var departmentId = "";
+                    DepartmentId = DepartmentsMap[item].Id;
+                    $('#DepartmentId').val(DepartmentId);
+                    //console.log(DepartmentId)
+                    return item;
+                }
+            });
+    </script>
+
+
+    @*<script>
+        $.ajax({
+            url: '/HumanResource/Create',
+            type: 'POST',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response.message
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An unexpected error occurred.'
+                });
+            }
+        });
+
+
+    </script>*@
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+        .container1 {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .summary-table label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .summary-table input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #f9f9f9;
+            }
+
+        .tab-content {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .tab-pane {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 50px;
+        }
+
+        thead {
+            background-color: #f5f5f5;
+        }
+
+            thead th {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                font-style: italic;
+                color: cadetblue;
+            }
+
+        tbody td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+
+        .tab-content {
+            border-top: 1px solid #ddd; /* Add a subtle border if needed */
+            padding: 15px; /* Optional: Add padding for spacing */
+        }
+
+        /* Optional: Add spacing between tab navigation and content */
+        .container {
+            margin-top: 20px; /* Adjust top margin as needed */
+        }
+    </style>
+
+
+
+
+
+
+
+
+
 }

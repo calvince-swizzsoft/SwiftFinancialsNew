@@ -5,6 +5,8 @@
 
     var LoanCaseFilter = ViewBag.LoanCaseFilterSelectList as List<SelectListItem>;
     var LoanCaseStatus = ViewBag.LoanCaseStatusSelectList as List<SelectListItem>;
+
+    var successMessage = TempData["Success"] as string;
 }
 
 
@@ -130,7 +132,6 @@
         <li>@Html.ActionLink("Loan Appraisal", "Index", "AppraiseLoan", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Loan Approval", "Index", "ApproveLoan", new { area = "Loaning" }, new { @class = "nav-link" })</li>
         <li>@Html.ActionLink("Loan Verification", "Index", "LoanVerification", new { area = "Loaning" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Loan Cancellation", "Index", "LoanCancellation", new { area = "Loaning" }, new { @class = "nav-link" })</li>
     </ul>
 </nav>
 
@@ -141,44 +142,22 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Loan Registration</h2>
-
-                    @if (TempData["Edit"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Edit"]
-                        </div>
-                    }
-
-                    @if (TempData["AlertMessage"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AlertMessage"]
-                        </div>
-                    }
-
-                    @if (TempData["LoanCaseStatusInvalid"] != null)
-                    {
-                        <div class="alert alert-danger"><strong>Attempt Failed !</strong> @TempData["LoanCaseStatusInvalid"]</div>
-                    }
-
                     <hr />
                     @Html.ActionLink("Register Loan", "Create", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
 
-
-                    @*<a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#loanCasesModal">
-                            Export Loan Cases
-                        </a>*@
-
-
-                    @*@using (Html.BeginForm("ExportToExcel", "LoanRegistration", FormMethod.Post))
-                        {*@
-                    @* Include necessary hidden fields or input elements for jQueryDataTablesModel *@
-                    @Html.Hidden("sEcho", "1") @* or bind it to your model *@
-
-                    @*<button type="submit" class="btn btn-primary">Export to Excel</button>
-                        }*@
-
-
+                    @if (successMessage != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Completed Successfully.',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
 
 
                     <div class="ibox-tools">
@@ -196,7 +175,6 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
 
-
                     <div class="blue-section">
                         <form id="filterForm">
                             <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
@@ -212,7 +190,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-3">  
+                                <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         <label for="filterType">Loan Filter</label>
 
@@ -272,7 +250,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#LoanRegistrationsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
@@ -280,13 +257,11 @@
                 "sServerMethod": "POST",
 
                 "fnServerParams": function (aoData) {
-                    // Add filter type and value to server params
                     aoData.push({ "name": "loanCaseStatus", "value": $('#loanCaseStatus').val() });
                     aoData.push({ "name": "filterType", "value": $('#filterType').val() });
                     aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
                 },
 
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -305,15 +280,6 @@
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     aData.ReceivedDate = dt_ReceivedDate;
 
-                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var appraiseUrl = '<a  href="/loaning/LoanRegistration/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
-                    var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
-                    var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
-
-                    // Generate dropdown HTML with conditional logic based on status
                     var dropdownHtml = `
                         <div class="dropdown">
                             <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -321,31 +287,10 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    // Buttons to be included
-                    var viewButton = `<a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
-                    var AttachGuarantor = `<a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantors</a>`;
-
-                    // Conditional logic for button enabling/disabling based on status
-                    switch (aData.Status) {
-                        case 48826: // Registered
-                            dropdownHtml += viewButton + AttachGuarantor;
-                            break;
-                        // If the status is 48828 (Approved) or any other status, only "View" button will be enabled
-                        default:
-                            dropdownHtml += viewButton;
-                            break;
-                    }
-
-                    dropdownHtml += `</div></div>`;
-
+                    var viewButton = `<a class="btn btn-primary" style="width: 150px;" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
+                    
                     $('td:eq(8)', nRow).html(dt_Created);
-                    $('td:eq(9)', nRow).html(dropdownHtml);
-
-                    // Prevent default action for disabled links
-                    $('.dropdown-item.disabled').on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    });
+                    $('td:eq(9)', nRow).html(viewButton);
 
                     return nRow;
                 },
@@ -360,7 +305,7 @@
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
                     { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "15%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]],
             }

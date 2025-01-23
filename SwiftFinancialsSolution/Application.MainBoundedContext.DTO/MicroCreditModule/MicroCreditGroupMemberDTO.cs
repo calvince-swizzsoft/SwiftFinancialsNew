@@ -240,5 +240,96 @@ namespace Application.MainBoundedContext.DTO.MicroCreditModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        //Added Properties
+
+        
+        [DataMember]
+        [Display(Name = "Employer")]
+        public string Employer { get; set; }
+        [DataMember]
+        [Display(Name = "Account Number")]
+        public string CustomerAccountCustomerReference1 { get; set; }
+        [DataMember]
+        [Display(Name = "MemberShip Number")]
+        public string CustomerAccountCustomerReference2 { get; set; }
+        [DataMember]
+        [Display(Name = "Personal File Number")]
+        public string CustomerAccountCustomerReference3 { get; set; }
+        
+
+        [DataMember]
+        [Display(Name = "Account Status")]
+        public int AccountStatus { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Principal")]
+        public decimal Principal { get; set; }
+
+        [DataMember]
+        [Display(Name = "Interest")]
+        public decimal Interest { get; set; }
+
+        [DataMember]
+        [Display(Name = "Primary Description")]
+        [Required]
+        public string PrimaryDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Secondary Description")]
+        [Required]
+        public string SecondaryDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Reference")]
+        [Required]
+        public string Reference { get; set; }
+
+        [DataMember]
+        [Display(Name = "Status")]
+        public int Status { get; set; }
+
+        [DataMember]
+        [Display(Name = "Status")]
+        public string StatusDescription { get; set; }
+
+
+
+        [DataMember]
+        [Display(Name = "Status")]
+        public string AccountStatusDescription { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Available Balance")]
+        public decimal AvailableBalance { get; set; }
+
+        [DataMember]
+        [Display(Name = "Book Balance")]
+        public decimal BookBalance { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Account Number")]
+        public String AccountNumber { get; set; }
+
+        
+
+       
+
+        
+
+        [DataMember]
+        [Display(Name = "Personal Id Number")]
+        public string CustomerPersonalIdentificationNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public string CustomerAccountFullAccountNumber { get; set; }
+
+
+        [DataMember]
+        public string errorMsg { get; set; }
     }
 }

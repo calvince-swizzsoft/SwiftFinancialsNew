@@ -563,5 +563,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         public ProductCollectionInfo productCollection { get; set; }
+
+        [DataMember]
+        public ObservableCollection<CommissionDTO> commissions { get; set; }
     }
 }

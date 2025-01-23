@@ -74,33 +74,43 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 startDate,
                 endDate,
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
             );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(externalChequeDTO => externalChequeDTO.CreatedDate)
+                    .ToList();
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: pageCollectionInfo.PageCollection,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<ExternalChequeDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<ExternalChequeDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
 
@@ -230,6 +240,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return Json(new { success = false, message = "No cheques selected." });
             }
 
+            if (bankLinkageDTO == null || bankLinkageDTO.Id == Guid.Empty) 
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Bank linkage is required. Please enter the bank linkage details and try again."
+                });
+            }
+
             var serviceHeader = GetServiceHeader();
             bool isSuccess = true;
             string errorMessage = string.Empty;
@@ -261,12 +280,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     cheque.BankLinkageChartOfAccountId = (Guid)TempData["BankLinkageChartOfAccountId"];
                     cheque.ChartOfAccountAccountName = TempData["ChartOfAccountAccountName"].ToString();
-                    bankLinkageDTO = TempData["BankLinkageDTO"] as BankLinkageDTO;
-                }
-
-                if (!isSuccess)
-                {
-                    return Json(new { success = false, message = errorMessage });
                 }
 
                 var externalChequeDTOs = new ObservableCollection<ExternalChequeDTO>(selectedCheques.Select(cheque => new ExternalChequeDTO
@@ -275,7 +288,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     Number = cheque.Number,
                     Amount = cheque.Amount,
                     BankLinkageChartOfAccountId = cheque.BankLinkageChartOfAccountId,
-                    BankLinkageChartOfAccountAccountName = cheque.BankLinkageChartOfAccountName,
+                    BankLinkageChartOfAccountAccountName = cheque.ChartOfAccountAccountName,
                 }).ToList());
 
                 var result = await _channelService.BankExternalChequesAsync(
@@ -396,13 +409,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             else
                             {
                                 isSuccess = false;
-                                errorMessage += $"Failed to mark cheque with ID {cheque.Id} as cleared. ";
+                                errorMessage += $"Failed to mark cheque with ID {cheque.ChequeTypeDescription} as cleared. ";
                             }
                         }
                         else
                         {
                             isSuccess = false;
-                            errorMessage += $"Failed to clear cheque with ID {cheque.Id}. ";
+                            errorMessage += $"Failed to clear cheque with ID {cheque.ChequeTypeDescription}. ";
                         }
                     }
                     else if (actionType.ToLower() == "unpay")
@@ -430,19 +443,18 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             else
                             {
                                 isSuccess = false;
-                                errorMessage += $"Failed to mark cheque with ID {cheque.Id} as cleared. ";
+                                errorMessage += $"Failed to mark cheque with ID {cheque.ChequeTypeDescription} as cleared. ";
                             }
                         }
                         else
                         {
                             isSuccess = false;
-                            errorMessage += $"Failed to unpay cheque with ID {cheque.Id}. ";
+                            errorMessage += $"Failed to unpay cheque with ID {cheque.ChequeTypeDescription}. ";
                         }
                     }
 
                     if (chequeProcessed)
                     {
-                        // Optionally log successful processing
                     }
                 }
             }

@@ -348,7 +348,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         {
             get
             {
-                return Enum.IsDefined(typeof(CustomerFilter), CustomerAccountTypeProductCode) ? EnumHelper.GetDescription((CustomerFilter)CustomerFilter) : string.Empty;
+                return Enum.IsDefined(typeof(CustomerFilter), CustomerFilter) ? EnumHelper.GetDescription((CustomerFilter)CustomerFilter) : string.Empty;
             }
         }
 
@@ -547,12 +547,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
                             CustomerAccountTypeTargetProductCode.ToString().PadLeft(3, '0'));
             }
         }
-
-
-        //[DataMember]
-        //[Display(Name = "Full Account Number")]
-        //public string FullAcctNumber { get; set; }
-
 
         [DataMember]
         [Display(Name = "Scored Loan Disbursement Product Code")]

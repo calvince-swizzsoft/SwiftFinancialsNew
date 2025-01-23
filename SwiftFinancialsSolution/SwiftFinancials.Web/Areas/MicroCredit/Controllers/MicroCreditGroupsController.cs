@@ -40,60 +40,58 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
 
             var pageCollectionInfo = await _channelService.FindMicroCreditGroupsByFilterInPageAsync(
                 jQueryDataTablesModel.sSearch,
-                pageIndex,
-                pageSize,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
             );
 
-            if (pageCollectionInfo != null)
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                var sortedData = sortAscending
-                    ? pageCollectionInfo.PageCollection
-                        .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList()
-                    : pageCollectionInfo.PageCollection
-                        .OrderByDescending(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
-                        .ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(microCreditGroupDTO => microCreditGroupDTO.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: sortedData,
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<MicroCreditGroupDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+
+            return this.DataTablesJson(
+                items: new List<MicroCreditGroupDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
 
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
-            ViewBag.TypeDescriptionSelectList = GetMicroCreditGroupTypeSelectList(string.Empty);
-            ViewBag.MeetingFrequencyDescriptionSelectList = GetMicroCreditGroupMeetingFrequencySelectList(string.Empty);
-            ViewBag.MeetingDayOfWeekDescriptionSelectList = GetMicroCreditGroupMeetingDayOfWeekSelectList(string.Empty);
-            ViewBag.DesignationSelectList = GetMicroCreditGroupMemberDesignationSelectList(string.Empty);
 
-            var microCreditOfficerDTO = await _channelService.FindMicroCreditGroupAsync(id, GetServiceHeader());
-            if (microCreditOfficerDTO == null)
+            var microCreditGroupDTO = await _channelService.FindMicroCreditGroupAsync(id, GetServiceHeader());
+            if (microCreditGroupDTO == null)
             {
-                TempData["ErrorMessage"] = "MicroCredit Group not found.";
+                TempData["ErrorMessage"] = "MicroCredit Officer not found.";
                 return RedirectToAction("Index");
             }
 
-            return View(microCreditOfficerDTO);
+            return View(microCreditGroupDTO);
         }
 
 
@@ -160,7 +158,6 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                     return Json(new { success = false, message = "Customer not found." }, JsonRequestBehavior.AllowGet);
                 }
 
-                Session["MicroCreditGroupId"] = customer.Id;
                 return Json(new
                 {
                     success = true,
@@ -174,7 +171,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                         CustomerFullName = customer.FullName,
                         CustomerId = customer.Id,
                         Employer = customer.StationZoneDivisionEmployerDescription,
-                        
+
 
 
 
@@ -236,10 +233,8 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                     success = true,
                     data = new
                     {
+                        ParentGroup = parentGroup.MicroCreditOfficerEmployeeCustomerFullName,
                         ParentId = parentGroup.Id,
-                        ParentMicroCreditDescription = parentGroup.CustomerNonIndividualDescription,
-                        
-
 
 
                     }
@@ -251,45 +246,55 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             }
         }
 
-
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(MicroCreditGroupDTO microCreditGroupDTO)
         {
             if (microCreditGroupDTO == null)
             {
-                TempData["ErrorMessage"] = "An unexpected error occurred. Please try again.";
-                return View("Error"); 
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = "Invalid data submitted. Please try again.";
+                return View("Index");
             }
 
-            microCreditGroupDTO.ValidateAll();
-
-            if (!microCreditGroupDTO.HasErrors)
+            try
             {
-                try
+                microCreditGroupDTO.ValidateAll();
+                if (microCreditGroupDTO.HasErrors)
                 {
-                    var createdOfficer = await _channelService.AddMicroCreditGroupAsync(microCreditGroupDTO, GetServiceHeader());
-                    TempData["Message"] = "Micro Credit Group created successfully!";
-                    return RedirectToAction("Index");
+                    foreach (var error in microCreditGroupDTO.ErrorMessages)
+                    {
+                        ModelState.AddModelError(string.Empty, error);
+                    }
+
+                    TempData["AlertType"] = "warning";
+                    TempData["AlertMessage"] = "There were errors in your submission. Please review and try again.";
+                    return View("Index", microCreditGroupDTO);
                 }
-                catch (Exception ex)
+
+                var createdGroup = await _channelService.AddMicroCreditGroupAsync(microCreditGroupDTO, GetServiceHeader());
+                if (createdGroup == null)
                 {
-                    Debug.WriteLine($"Error creating Micro Credit Group: {ex.Message}");
-                    TempData["ErrorMessage"] = "An error occurred while creating the Micro Credit Group. Please try again.";
-                    return View(microCreditGroupDTO);
+                    TempData["AlertType"] = "error";
+                    TempData["AlertMessage"] = "An unexpected error occurred while creating the Micro Credit Group.";
+                    return View("Index", microCreditGroupDTO);
                 }
+
+                TempData["AlertType"] = "success";
+                TempData["AlertMessage"] = "Micro Credit Group created successfully!";
+                return RedirectToAction("Index");
             }
-            else
+            catch (Exception ex)
             {
-                foreach (var error in microCreditGroupDTO.ErrorMessages)
-                {
-                    ModelState.AddModelError(string.Empty, error);
-                }
+                Debug.WriteLine($"Error in Create action: {ex.Message}");
 
-                TempData["ErrorMessage"] = "There were errors in your submission. Please review the form and try again.";
-                return View(microCreditGroupDTO);
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = "An error occurred while processing your request. Please try again later.";
+                return View("Index", microCreditGroupDTO);
             }
         }
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -320,7 +325,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             var microCreditGroupId = TempData["MicroCreditGroupId"] as Guid?;
             if (microCreditGroupId == null)
             {
-                return new JsonResult { Data = new { success = false, message = "MicroCreditGroupId not found in session." } };
+                return Json(new { success = false, message = "MicroCreditGroupId not found in session." });
             }
 
             var groupMembers = TempData["GroupMembers"] as List<MicroCreditGroupMemberDTO> ?? new List<MicroCreditGroupMemberDTO>();
@@ -338,15 +343,16 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                 }
                 else
                 {
-                    return new JsonResult { Data = new { success = false, message = "Failed to add one or more members to the group." } };
+                    return Json(new { success = false, message = "Failed to add one or more members to the group." });
                 }
             }
 
             TempData["GroupMembers"] = groupMembers;
             TempData.Keep("GroupMembers");
 
-            return new JsonResult { Data = new { success = true, members = groupMembers } };
+            return Json(new { success = true, members = groupMembers, message = "Members added successfully!" });
         }
+
 
 
         [HttpPost]
@@ -358,7 +364,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             var memberToRemove = groupMembers.FirstOrDefault(m => m.CustomerId == member.CustomerId);
             if (memberToRemove == null)
             {
-                return new JsonResult { Data = new { success = false, message = "Member not found in the group." } };
+                return Json(new { success = false, message = "Member not found in the group." });
             }
 
             var membersToRemove = new ObservableCollection<MicroCreditGroupMemberDTO> { memberToRemove };
@@ -372,29 +378,25 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
                 TempData["GroupMembers"] = groupMembers;
                 TempData.Keep("GroupMembers");
 
-                return new JsonResult { Data = new { success = true } };
+                return Json(new { success = true, message = "Member removed successfully!" });
             }
             else
             {
-                return new JsonResult { Data = new { success = false, message = "Failed to remove member from the group." } };
+                return Json(new { success = false, message = "Failed to remove member from the group." });
             }
         }
 
 
 
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Update(Guid id, MicroCreditGroupDTO microCreditGroupDTO)
+        public async Task<ActionResult> Edit(Guid id, MicroCreditGroupDTO microCreditGroupDTO)
         {
             try
             {
-                var storedGroupId = TempData["MicroCreditGroupId"] as Guid?;
-                if (!storedGroupId.HasValue || storedGroupId.Value != id)
-                {
-                    TempData["ErrorMessage"] = "The MicroCredit Group ID is invalid.";
-                    return RedirectToAction("Index");
-                }
+               
 
                 var serviceHeader = GetServiceHeader();
 
@@ -402,34 +404,88 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
 
                 if (updateSuccess)
                 {
-                    TempData["SuccessMessage"] = "MicroCredit Group updated successfully.";
-                    return RedirectToAction("Index"); 
+                    TempData["AlertType"] = "success";
+                    TempData["AlertMessage"] = "MicroCredit Group updated successfully.";
+                    return RedirectToAction("Index");
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Failed to update the MicroCredit Group.";
+                    TempData["AlertType"] = "error";
+                    TempData["AlertMessage"] = "Failed to update the MicroCredit Group.";
                 }
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "An error occurred: " + ex.Message;
+                Debug.WriteLine($"Error in Create action: {ex.Message}");
+
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = "An error occurred while processing your request. Please try again later.";
+                return View("Index", microCreditGroupDTO);
             }
+
 
             return View("Edit", microCreditGroupDTO);
         }
 
 
+        public async Task<ActionResult> Apportionment(Guid id)
+        {
+            await ServeNavigationMenus();
+            ViewBag.TypeDescriptionSelectList = GetMicroCreditGroupTypeSelectList(string.Empty);
+            ViewBag.MeetingFrequencyDescriptionSelectList = GetMicroCreditGroupMeetingFrequencySelectList(string.Empty);
+            ViewBag.MeetingDayOfWeekDescriptionSelectList = GetMicroCreditGroupMeetingDayOfWeekSelectList(string.Empty);
+            ViewBag.DesignationSelectList = GetMicroCreditGroupMemberDesignationSelectList(string.Empty);
+
+            var microCreditGroupDTO = await _channelService.FindMicroCreditGroupAsync(id, GetServiceHeader());
+            if (microCreditGroupDTO == null)
+            {
+                TempData["ErrorMessage"] = "MicroCredit Group not found.";
+                return RedirectToAction("Index");
+            }
+
+            TempData["MicroCreditGroupId"] = microCreditGroupDTO.Id;
 
 
 
+            return View(microCreditGroupDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Apportionment(Guid id, MicroCreditGroupDTO microCreditGroupDTO)
+        {
+            try
+            {
 
 
+                var serviceHeader = GetServiceHeader();
+
+                bool updateSuccess = await _channelService.UpdateMicroCreditGroupAsync(microCreditGroupDTO, serviceHeader);
+
+                if (updateSuccess)
+                {
+                    TempData["AlertType"] = "success";
+                    TempData["AlertMessage"] = "MicroCredit Group updated successfully.";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["AlertType"] = "error";
+                    TempData["AlertMessage"] = "Failed to update the MicroCredit Group.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in Create action: {ex.Message}");
+
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = "An error occurred while processing your request. Please try again later.";
+                return View("Index", microCreditGroupDTO);
+            }
 
 
-
-
-
-
+            return View("Edit", microCreditGroupDTO);
+        }
 
 
     }

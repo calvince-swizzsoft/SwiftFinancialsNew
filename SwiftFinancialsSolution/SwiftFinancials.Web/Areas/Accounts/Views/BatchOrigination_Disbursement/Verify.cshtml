@@ -24,7 +24,7 @@
         text-align: center; /* Center text within elements */
         margin-top: 30px;
         font-weight: bold;
-        background-color: #00e0ff;
+        background-color: #e0f0ff;
     }
 
    @* Batch Entries table Styling*@
@@ -214,7 +214,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-dark">
                     @using (Html.BeginForm("verify", "BatchOrigination_Disbursement", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()

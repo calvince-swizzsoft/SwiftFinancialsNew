@@ -13,7 +13,7 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         public BankDTO()
         {
             AddAllAttributeValidators();
-            BankBranches = new ObservableCollection<BankBranchDTO>();
+            BankBranche = new ObservableCollection<BankBranchDTO>();
         }
 
         [DataMember]
@@ -45,10 +45,10 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
 
         // Using ObservableCollection for BankBranches
         private ObservableCollection<BankBranchDTO> _bankBranches;
-
+        public BankBranchDTO BankBranches { get; set; }
         [DataMember]
         [Display(Name = "Bank Branches")]
-        public ObservableCollection<BankBranchDTO> BankBranches
+        public ObservableCollection<BankBranchDTO> BankBranche
         {
             get
             {
@@ -64,6 +64,7 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
             }
         }
 
-        // Other properties and methods...
+        [DataMember]
+        public ObservableCollection<BankBranchDTO> BankBranchesDTO { get; set; }
     }
 }

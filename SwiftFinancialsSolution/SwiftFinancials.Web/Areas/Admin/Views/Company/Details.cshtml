@@ -19,7 +19,30 @@
         </ol>
     </div>
 </div>
+<style>
 
+    .myfooter .btn {
+        margin-left: 10px; /* Adds space between buttons */
+        margin-right: 10px; /* Optional for equal padding on both sides */
+        min-width: 120px; /* Ensures consistent button width */
+    }
+
+    .myfooter .form-group {
+        display: flex; /* Align items horizontally */
+        justify-content: flex-end; /* Align buttons to the right */
+        gap: 10px; /* Adds consistent spacing between buttons */
+    }
+
+    .myfooter a.btn {
+        text-align: center; /* Ensures the button content is centered */
+    }
+
+
+    input[type="checkbox"]:disabled {
+        cursor: not-allowed;
+        opacity: 0.6; /* Makes it look greyed-out */
+    }
+</style>
 <div class="wrapper wrapper-content" style="padding: 20px;">
     <div class="row">
         <div class="col-md-12">
@@ -34,70 +57,101 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info" style="padding: 20px;">
+                <div class="ibox-content bg-white " style="padding: 20px;">
                     @using (Html.BeginForm("Details", "Company", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
-                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                        </div>
-
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                </div>
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
+                                    @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="col-md-4">
+
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
+                                    @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
                                 </div>
-                            </div>
-                            <div class="col-md-4">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
+                                    @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, "Termination Notice Period", htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.MembershipTerminationNoticePeriod, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-
                         </div>
 
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Vision, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Vision, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Vision.", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
-                            @Html.ValidationMessageFor(model => model.Vision, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Mission, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Mission, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Mission.", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
-                            @Html.ValidationMessageFor(model => model.Mission, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Motto, htmlAttributes: new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Motto, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Motto.", @required = "", @style = "border-radius: 5px;", @disabled = "disabled" } })
-                            @Html.ValidationMessageFor(model => model.Motto, "", new { @class = "text-danger" })
+                        @*<script>
+                                document.getElementById('logoInput').addEventListener('change', function (event) {
+                                    const file = event.target.files[0];
+                                    const reader = new FileReader();
+
+                                    reader.onload = function (e) {
+                                        document.getElementById('logoPreview').src = e.target.result;
+                                    };
+
+                                    if (file) {
+                                        reader.readAsDataURL(file);
+                                    }
+                                });
+                            </script>*@
+
+
+
+                        <!-- Vision, Mission, and Motto Section -->
+                        <br />
+                        <h>Vision, Mission, and Motto</h>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group mb-4">
+                                    @Html.LabelFor(model => model.Vision, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.Vision, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.Vision, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group mb-4">
+                                    @Html.LabelFor(model => model.Mission, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.Mission, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.Mission, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
                         </div>
 
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.RecoveryPriority, htmlAttributes: new { @class = "font-bold" })
-                            @Html.DropDownListFor(model => model.RecoveryPriority, new List<SelectListItem>
-                            {
-                                new SelectListItem { Text = "DirectDebits", Value = "DirectDebits" },
-                                new SelectListItem { Text = "Investments", Value = "Investments" },
-                                new SelectListItem { Text = "Loans", Value = "Loans" },
-                                new SelectListItem { Text = "Savings", Value = "Savings" }
-                            }, new { @class = "form-control", @style = "border-radius: 5px;" })
-                            @Html.ValidationMessageFor(model => model.RecoveryPriority, "", new { @class = "text-danger" })
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group mb-4">
+                                    @Html.LabelFor(model => model.Motto, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.EditorFor(model => model.Motto, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
+                                    @Html.ValidationMessageFor(model => model.Motto, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.RecoveryPriority, htmlAttributes: new { @class = "font-bold" })
+                                    @Html.DropDownListFor(model => model.RecoveryPriority, new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "DirectDebits", Value = "DirectDebits" },
+                                        new SelectListItem { Text = "Investments", Value = "Investments" },
+                                        new SelectListItem { Text = "Loans", Value = "Loans" },
+                                        new SelectListItem { Text = "Savings", Value = "Savings" }
+                                    }, new { @class = "form-control", @style = "border-radius: 5px;" })
+                                    @Html.ValidationMessageFor(model => model.RecoveryPriority, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
                         </div>
 
                         <ul class="nav nav-tabs" style="margin-bottom: 20px;">
@@ -195,14 +249,18 @@
                                             <tbody>
                                                 @if (ViewBag.debit != null)
                                                 {
-                                                    var selectedDebitTypes = ViewBag.SelectedDebitTypes as List<Guid>; // assuming these are GUIDs
+                                                    var selectedDebitTypes = ViewBag.SelectedDebitTypes as List<Guid> ?? new List<Guid>();
 
-                                                    foreach (var debitype in ViewBag.debit)
+                                                    foreach (var debit in ViewBag.debit)
                                                     {
                                                         <tr style="background-color: #f5f5f5;">
                                                             <td>
-                                                                <input type="checkbox" class="debit-checkbox" name="debittypes" value="@debitype.Id" @(selectedDebitTypes != null && selectedDebitTypes.Contains(debitype.Id) ? "checked" : "") />
-                                                                @debitype.Description
+                                                                <input type="checkbox"
+                                                                       class="debit-checkbox"
+                                                                       name="debittypes"
+                                                                       value="@debit.Id"
+                                                                       @(selectedDebitTypes.Contains(debit.Id) ? "checked" : "") />
+                                                                @debit.Description
                                                             </td>
                                                         </tr>
                                                     }
@@ -223,6 +281,8 @@
                                             <tbody>
                                                 @if (ViewBag.allInvestments != null)
                                                 {
+                                                    var selectedInvestmentProducts = ViewBag.SelectedInvestmentProducts as List<Guid> ?? new List<Guid>();
+
                                                     foreach (var invest in ViewBag.allInvestments)
                                                     {
                                                         <tr style="background-color: #f5f5f5;">
@@ -231,7 +291,7 @@
                                                                        class="investment-checkbox"
                                                                        name="investmentproducts"
                                                                        value="@invest.Id"
-                                                                       @(ViewBag.SelectedInvestmentProducts.Contains(invest.Id) ? "checked" : "") />
+                                                                       @(selectedInvestmentProducts.Contains(invest.Id) ? "checked" : "") />
                                                                 @invest.Description
                                                             </td>
                                                         </tr>
@@ -241,7 +301,6 @@
                                         </table>
                                     </div>
                                 </div>
-
                                 <div id="mandatorySavingsProducts" class="tab-pane">
                                     <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
                                         <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
@@ -253,6 +312,8 @@
                                             <tbody>
                                                 @if (ViewBag.allSavings != null)
                                                 {
+                                                    var selectedSavingsProducts = ViewBag.SelectedSavingsProducts as List<Guid> ?? new List<Guid>();
+
                                                     foreach (var save in ViewBag.allSavings)
                                                     {
                                                         <tr style="background-color: #f5f5f5;">
@@ -261,7 +322,7 @@
                                                                        class="savings-checkbox"
                                                                        name="savingsproducts"
                                                                        value="@save.Id"
-                                                                       @(ViewBag.SelectedSavingsProducts.Contains(save.Id) ? "checked" : "") />
+                                                                       @(selectedSavingsProducts.Contains(save.Id) ? "checked" : "") />
                                                                 @save.Description
                                                             </td>
                                                         </tr>
@@ -340,25 +401,28 @@
                                 </fieldset>
                             </div>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                            <div>
-                                @Html.ActionLink("Back to List", "Index", "Company", new { Area = "Admin" }, new { @class = "btn btn-success" })
-                            </div>
-                            <div>
-                                <button type="submit" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer;">Finish</button>
+                        <div class="myfooter">
+                            <div class="form-group col-md-12 d-flex justify-content-end">
+                                <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">
+                                    <i class="fa fa-edit"></i> Edit
+                                </a>
+
+                                <a href="@Url.Action("Index")" class="btn btn-primary">
+                                    <i class="fa fa-arrow-left"></i> Back to List
+                                </a>
                             </div>
                         </div>
 
+
+
+
+
                     }
-
-
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -367,7 +431,34 @@
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
-
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.disabled = true;
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="text"]').forEach(textbox => {
+                textbox.disabled = true;
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="numbers"]').forEach(textbox => {
+                textbox.disabled = true;
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('select').forEach(dropdown => {
+                dropdown.disabled = true;
+            });
+        });
+    </script>
 
     <script>
         $(document).ready(function () {

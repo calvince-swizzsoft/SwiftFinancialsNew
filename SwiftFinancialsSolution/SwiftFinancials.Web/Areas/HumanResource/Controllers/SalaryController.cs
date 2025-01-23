@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -27,90 +28,192 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            var pageCollectionInfo = await _channelService.FindSalaryHeadsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
+            bool includeProductDescription = true;
+
+            var pageCollectionInfo = await _channelService.FindSalaryHeadsByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                0,
+                int.MaxValue,
+                includeProductDescription,
+                GetServiceHeader()
+            );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(salaryHeadDTO => salaryHeadDTO.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<SalaryHeadDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<SalaryHeadDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+        );
         }
+
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
             var salaryHeadDTO = await _channelService.FindSalaryHeadAsync(id, GetServiceHeader());
-            //var chartOfAccount = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
 
             return View(salaryHeadDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id)
+        [HttpGet]
+        public async Task<ActionResult> GetCSavingProductDetails(Guid savingsProductId)
+        {
+            try
+            {
+                var savingsProduct = await _channelService.FindSavingsProductAsync(savingsProductId, GetServiceHeader());
+               
+
+                if (savingsProduct == null)
+                {
+                    return Json(new { success = false, message = "SavingsProduct not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        ProductDescription = savingsProduct.Description,
+                        CustomerAccountTypeTargetProductId = savingsProduct.Id,
+                        CustomerAccountTypeProductCodeDescription = savingsProduct.Code,
+                        ProductChartOfAccountId = savingsProduct.ChartOfAccountId,
+                        ProductChartOfAccountCode = savingsProduct.ChartOfAccountAccountCode,
+                        ProductChartOfAccountName = savingsProduct.ChartOfAccountAccountName,
+                        CustomerAccountTypeProductCode = savingsProduct.Code,
+                        CustomerAccountTypeTargetProductCode = savingsProduct.Code,
+                        ChartOfAccountCostCenterId = savingsProduct.ChartOfAccountCostCenterId,
+                        ChartOfAccountCostCenterDescription = savingsProduct.ChartOfAccountCostCenterDescription,
+
+
+
+
+
+
+
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the saving Product details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetChartOfAccountDetails(Guid chartOfAccountId)
+        {
+            try
+            {
+                var chartOfAccount = await _channelService.FindChartOfAccountAsync(chartOfAccountId, GetServiceHeader());
+                
+
+
+                if (chartOfAccount == null)
+                {
+                    return Json(new { success = false, message = "ChartOfAccount not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        ChartOfAccountAccountName = chartOfAccount.AccountName,
+                        ChartOfAccountId = chartOfAccount.Id,
+                        
+
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while fetching the chartOfAccount details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
 
             ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(string.Empty);
+            ViewBag.SalaryHeadCategorySelectList = GetSalaryHeadCategorySelectList(string.Empty);
 
-            Guid parseId;
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
 
-            var savingproducts = await _channelService.FindSavingsProductAsync(parseId,GetServiceHeader());
-
-            SalaryHeadDTO salaryHeadDTO = new SalaryHeadDTO();
-            await GetChartOfAccountsAsync(id);
-            
-            if (savingproducts != null)
-            {
-                salaryHeadDTO.CustomerAccountTypeTargetProductId = savingproducts.Id;
-                salaryHeadDTO.ProductDescription = savingproducts.Description;
-            }
-
-            return View(salaryHeadDTO);
+            return View();
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(SalaryHeadDTO salaryHeadDTO, ChartOfAccountDTO chartOfAccountDTO)
+        public async Task<ActionResult> Create(SalaryHeadDTO salaryHeadDTO)
         {
-        //    salaryHeadDTO.ChartOfAccountId = chartOfAccountDTO.Id;
             salaryHeadDTO.ValidateAll();
-           // chartOfAccountDTO.ValidateAll();
 
-            if (!salaryHeadDTO.HasErrors)
+            if (salaryHeadDTO.HasErrors)
+            {
+                TempData["AlertMessage"] = "Validation failed. Please correct the highlighted errors.";
+                TempData["AlertType"] = "error";
+
+                ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
+                return View(salaryHeadDTO);
+            }
+
+            try
             {
                 var salaryHead = await _channelService.AddSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
 
-                ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
+                TempData["AlertMessage"] = "Salary Head added successfully.";
+                TempData["AlertType"] = "success";
 
-                TempData["AlertMessage"] = "Salary Head Created Successfully";
-                //await GetChartOfAccountsAsync(id);
                 return RedirectToAction("Index");
             }
-            else
+            catch (Exception ex)
             {
-                var errorMessages = salaryHeadDTO.ErrorMessages;
+                Console.WriteLine(ex.Message); 
 
-                TempData["AlertError"] = "Create Salary Head Failed";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again.";
+                TempData["AlertType"] = "error";
 
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
-                return View(salaryHeadDTO );
+                return View(salaryHeadDTO);
             }
         }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -123,25 +226,43 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(salaryHeadDTO);
         }
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(SalaryHeadDTO salaryHeadDTO)
+        public async Task<ActionResult> Edit(Guid id, SalaryHeadDTO salaryHeadDTO)
         {
             salaryHeadDTO.ValidateAll();
 
-            if (!salaryHeadDTO.HasErrors)
+            if (salaryHeadDTO.HasErrors)
             {
-                await _channelService.UpdateSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
+                // Validation failed, show error message using SweetAlert
+                TempData["AlertMessage"] = "Validation failed. Please correct the highlighted errors.";
+                TempData["AlertType"] = "error";
 
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
+                return View(salaryHeadDTO);
+            }
 
-                TempData["AlertMessage"] = "Salary Head Edited Successfully";
+            try
+            {
+                var salaryHead = await _channelService.UpdateSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
+
+                // Show success message using SweetAlert
+                TempData["AlertMessage"] = "Salary Head Updated successfully.";
+                TempData["AlertType"] = "success";
 
                 return RedirectToAction("Index");
             }
-            else
+            catch (Exception ex)
             {
-                var errorMessages = salaryHeadDTO.ErrorMessages;
+                // Log the error if necessary, and show error message using SweetAlert
+                Console.WriteLine(ex.Message); // Log the exception
+
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+
+                // Repopulate dropdown and return the same view
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
                 return View(salaryHeadDTO);
             }
@@ -155,34 +276,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return Json(salaryHeadsDTO, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetChartOfAccountsAsync(Guid? id)
-        {
-            await ServeNavigationMenus();
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            ChartOfAccountDTO chartOfAccountDTO = new ChartOfAccountDTO();
-            var chartOfAccounts = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
-
-            if (chartOfAccounts != null)
-            {
-                chartOfAccountDTO.AccountCode = Convert.ToInt32(chartOfAccounts.Id);
-                chartOfAccountDTO.AccountName = chartOfAccounts.AccountName;
-            }
-            return View(chartOfAccountDTO);
-        }
-
-
-        [HttpGet]
-        public ActionResult LoadProducts()
-        {
-            return PartialView("_Products");
-        }
+       
     }
 }

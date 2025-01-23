@@ -1,0 +1,383 @@
+﻿﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryProcessingDTO
+
+@{
+    ViewBag.Title = "Salary Period";
+    var monthDescription = ViewBag.MonthTypeSelectList as List<SelectListItem>;
+    var employeeType = ViewBag.EmployeeTypeSelectList as List<SelectListItem>;
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1> Close Salary Period</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "SalaryPeriods", new { Area = "HumanResource" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Close Salary Period</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Close", "PeriodClosing", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-4">
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PostingPeriodDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Enter space to autofill...", id = "PostingPeriodDescription", @readonly = "" } })
+                                        @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Month, htmlAttributes: new { @class = "" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Month, monthDescription, new { @class = "form-control input-md", @readonly = "" })
+                                            @Html.ValidationMessageFor(model => model.Month)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EmployeeCategory, htmlAttributes: new { @class = "" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.EmployeeCategory, employeeType, new { @class = "form-control input-md", @readonly = "a" })
+                                            @Html.ValidationMessageFor(model => model.EmployeeCategory)
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.TaxReliefAmount, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.TaxReliefAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
+                                        @Html.ValidationMessageFor(model => model.TaxReliefAmount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.MaximumProvidentFundReliefAmount, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.MaximumProvidentFundReliefAmount, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.MaximumProvidentFundReliefAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "" } })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.MaximumInsuranceReliefAmount, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.MaximumInsuranceReliefAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "" } })
+                                        @Html.ValidationMessageFor(model => model.MaximumInsuranceReliefAmount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter Remarks...", @readonly = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.StatusDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.StatusDescription, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.StatusDescription, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter Remarks...", @readonly = "" } })
+                                    </div>
+                                </div>
+
+                            </div>
+                        </fieldset>
+                        <div class="ibox-content m-b-sm border-bottom">
+                            @using (Html.BeginForm("Close", "PeriodClosing", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(model => model.Id)
+                                <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <input type="submit" value="Close" class="btn btn-success" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+
+
+
+    <script>
+    $(document).ready(function () {
+        initTypeahead('.PostingPeriodsLookup', '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })', 'PostingPeriodId');
+
+        function initTypeahead(selector, url, hiddenFieldId) {
+            var dataMap = {};
+            $(selector).typeahead({
+                source: function (query, process) {
+                    return $.getJSON(url, { query: query }, function (data) {
+                        var newData = [];
+                        dataMap = {};
+                        $.each(data, function (i, item) {
+                            newData.push(item.Description);
+                            dataMap[item.Description] = item;
+                        });
+                        process(newData);
+                    });
+                },
+                matcher: function (item) {
+                    return item.toLowerCase().indexOf(this.query.trim().toLowerCase()) !== -1;
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var data = dataMap[item];
+                    if (data) {
+                        $('#' + hiddenFieldId).val(data.Id);
+                    }
+                    return item;
+                }
+            });
+        }
+
+        $('#lookupPostingPeriod').click(function () {
+        });
+    });
+    </script>
+
+    <style>
+        .card {
+            margin-bottom: 20px;
+        }
+
+
+
+        .form-group-lg {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border-radius: .25rem;
+        }
+
+
+
+        .col-lg-2 {
+            display: flex;
+            align-items: center; /* Center the title vertically */
+            justify-content: center; /* Center the title horizontally if needed */
+            padding: 0; /* Remove default padding if necessary */
+            border-radius: 4px; /* Rounded corners */
+        }
+
+        .bottom-button {
+            border: 2px solid gray; /* Border color set to gray */
+            padding: 10px; /* Padding inside the border */
+            border-radius: 5px; /* Rounded corners (optional) */
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #00e0ff;
+        }
+    </style>
+
+    <style>
+        .container1 {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .summary-table label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .summary-table input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #f9f9f9;
+            }
+
+        .tab-content {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .tab-pane {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 50px;
+        }
+
+        thead {
+            background-color: #f5f5f5;
+        }
+
+            thead th {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                font-style: italic;
+                color: cadetblue;
+            }
+
+        tbody td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+
+        .tab-content {
+            border-top: 1px solid #ddd; /* Add a subtle border if needed */
+            padding: 15px; /* Optional: Add padding for spacing */
+        }
+
+        /* Optional: Add spacing between tab navigation and content */
+        .container {
+            margin-top: 20px; /* Adjust top margin as needed */
+        }
+    </style>
+
+}
