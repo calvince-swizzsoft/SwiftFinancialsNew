@@ -1239,7 +1239,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         // Additional DTOs
         [DataMember]
-        public List<IncomeAdjustmentDTO> incomeAdjustmentDTO { get; set; }
+        public List<LoanAppraisalFactorDTO> incomeAdjustmentDTO { get; set; }
 
 
         // Reports DTOs

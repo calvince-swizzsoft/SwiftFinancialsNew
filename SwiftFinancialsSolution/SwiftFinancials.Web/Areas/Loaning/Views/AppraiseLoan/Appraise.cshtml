@@ -622,8 +622,6 @@
                                                             <th>Loan Product</th>
                                                             <th>Received Date</th>
                                                             <th>Amount Applied</th>
-                                                            <th>Appraised Amount</th>
-                                                            <th>System Appraisal Remarks</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -639,8 +637,6 @@
                                                                     <td>@loanApplications.LoanProductDescription</td>
                                                                     <td>@loanApplications.ReceivedDate</td>
                                                                     <td style="text-align: right;">@loanApplications.AmountApplied</td>
-                                                                    <td style="text-align: right;">@loanApplications.AppraisedAmount</td>
-                                                                    <td>@loanApplications.SystemAppraisalRemarks</td>
                                                                 </tr>
                                                             }
                                                         }
@@ -995,7 +991,7 @@
                                            {
                                                htmlAttributes = new
                                                {
-                                                   @id = "CustomerPersonalIdentificationNumber",
+                                                   @id = "LoanQualificationIncomeQualification",
                                                    @class = "form-control required",
                                                    @disabled = "disabled"
                                                }
@@ -1247,14 +1243,12 @@
                 const loanTerm = parseFloat(loanTermField.value) || 1;
                 const loanPart = parseFloat(loanPartField.value) || 0;
                 const loanInterestRate = parseFloat(loanInterestRateField?.value) || 0;
-
                 const totalIncome = netIncome + totalAllowances;
                 const abilityToPay = netIncome - totalDeductions;
                 const abilityToPayOverLoanTerm = abilityToPay * loanTerm;
                 const takeHomeFixedAmount = netIncome - totalDeductions;
 
                 const monthlyInterestRate = loanInterestRate / (12 * 100);
-
                 const interestPart = loanPart * monthlyInterestRate * loanTerm;
 
                 totalIncomeField.value = totalIncome.toFixed(2);
@@ -1269,6 +1263,7 @@
             });
         });
     </script>
+
 
     <script>
         const openModalButton = document.getElementById('openModalButton');

@@ -77,7 +77,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             );
         }
 
-        public async Task<ActionResult> IncomeAdjustmentsLookUp(Guid? id, IncomeAdjustmentDTO model)
+        public async Task<ActionResult> IncomeAdjustmentsLookUp(Guid? id, LoanAppraisalFactorDTO model)
         {
             await ServeNavigationMenus();
 
@@ -126,8 +126,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
-            var attachedLoans = await _channelService.FindAttachedLoansByLoanCaseIdAsync(parseId, GetServiceHeader());
-
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
             var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
@@ -150,6 +148,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 {
                     iBalance.Add(investmentsBalances.BookBalance);
                 }
+
                 var investmentsBalance = iBalance.Sum();
                 loanCaseDTO.LoanProductInvestmentsBalance = investmentsBalance;
                 loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loanProductDetails.LoanRegistrationInvestmentsMultiplier;
@@ -189,7 +188,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
                     if (standingOrders != null && standingOrders.Any())
                     {
-                        allStandingOrders.AddRange(standingOrders); // Add standing orders to the collection
+                        allStandingOrders.AddRange(standingOrders);
                     }
                     else
                     {
@@ -205,7 +204,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 }
 
                 ////Salary...
-
+                var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
+                var isEmployee = employees.Where(e => e.CustomerId == loaneeCustomer.CustomerId);
+                if (isEmployee != null)
+                {
+                    var findCustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
+                    foreach(var accts in findCustomerAccounts)
+                    {
+                    }
+                }
 
                 var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(loaneeCustomer.CustomerId, GetServiceHeader());
                 if (loanApplications != null)
@@ -261,12 +268,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var loanAppraisalFactors = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
+            var loanAppraisalFactors = Session["loanAppraisalFactors"] as ObservableCollection<LoanAppraisalFactorDTO>;
 
             if (loanAppraisalFactors == null)
             {
-                loanAppraisalFactors = new ObservableCollection<IncomeAdjustmentDTO>();
+                loanAppraisalFactors = new ObservableCollection<LoanAppraisalFactorDTO>();
             }
+
+            var fullDetails = await _channelService.FindIncomeAdjustmentAsync(loanCaseDTO.incomeAdjustmentDTO[0].Id, GetServiceHeader());
 
             foreach (var incomeadjustment in loanCaseDTO.incomeAdjustmentDTO)
             {
@@ -282,6 +291,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     });
                 }
 
+                incomeadjustment.Description = fullDetails.Description;
                 loanAppraisalFactors.Add(incomeadjustment);
             }
 
@@ -295,7 +305,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var loanAppraisalFactors = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
+            var loanAppraisalFactors = Session["loanAppraisalFactors"] as ObservableCollection<LoanAppraisalFactorDTO>;
 
             if (loanAppraisalFactors != null)
             {
