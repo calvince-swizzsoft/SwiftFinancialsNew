@@ -62,23 +62,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return documents;
         }
 
-        //public async Task<ActionResult> LoadDocumentUploadPartialAsync(Guid customerId)
-        //{
-
-        //    if (Session["customerID"] != null)
-        //        customerId = (Guid)Session["customerID"];
-
-        //    var documents = await GetDocumentsAsync(customerId);
-
-        //    if (documents == null || documents.Count == 0)
-        //    {
-        //        return View();
-        //    }
-
-
-        //    return PartialView("_DocumentUploadPartial", documents);
-        //}
-
+      
 
         public async Task<ActionResult> Index()
         {
