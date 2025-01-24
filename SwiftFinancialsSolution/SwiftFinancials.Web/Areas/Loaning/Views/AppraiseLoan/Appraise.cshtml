@@ -299,6 +299,19 @@
                         </script>
                     }
 
+                    @if (TempData["Unqualified"] != null)
+                    {
+                        <script type="text/javascript">
+                            document.addEventListener('DOMContentLoaded', function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    text: '@TempData["Unqualified"]',
+                                    confirmButtonColor: '#FF0000',
+                                })
+                            });
+                        </script>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -943,30 +956,10 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanQualificationSystemRecommendation, htmlAttributes: new { @class = "control-label" })
                                                 @Html.ValidationMessageFor(model => model.LoanQualificationSystemRecommendation, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.LoanQualificationSystemRecommendation, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanQualificationSystemRecommendation, new { htmlAttributes = new { @id = "LoanQualificationSystemRecommendation", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4 form-group">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.SystemAppraisalRemarks, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.SystemAppraisalRemarks)
-                                                @Html.EditorFor(model => model.SystemAppraisalRemarks, new
-                                                {
-                                                    htmlAttributes = new
-                                                    {
-                                                        @id = "CustomerReference1",
-                                                        @class = "form-control required",
-
-                                                        @readonly = "readonly"
-            }
-            })
-                                                @Html.ValidationMessageFor(model => model.SystemAppraisalRemarks, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanQualificationSecurityQualification, htmlAttributes: new { @class = "control-label" })
@@ -974,7 +967,7 @@
                                            {
                                                htmlAttributes = new
                                                {
-                                                   @id = "CustomerPersonalIdentificationNumber",
+                                                   @id = "LoanQualificationSecurityQualification",
                                                    @class = "form-control required",
                                                    @placeholder = "Personal Identification Number",
                                                    @readonly = "readonly"
@@ -983,7 +976,9 @@
                                                 @Html.ValidationMessageFor(model => model.LoanQualificationSecurityQualification, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
+                                    </div>
 
+                                    <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanQualificationIncomeQualification, htmlAttributes: new { @class = "control-label" })
@@ -1003,13 +998,11 @@
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanQualificationInvestmentsQualification, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.LoanQualificationInvestmentsQualification, new { htmlAttributes = new { @id = "GuarantorIndividualPayrollNumbers", @class = "form-control required", @placeholder = "Payroll Number", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanQualificationInvestmentsQualification, new { htmlAttributes = new { @id = "LoanQualificationInvestmentsQualification", @class = "form-control required", @placeholder = "Payroll Number", @readonly = "readonly" } })
                                                 @Html.ValidationMessageFor(model => model.LoanQualificationInvestmentsQualification, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.AppraisedAmount, htmlAttributes: new { @class = "" })
@@ -1017,7 +1010,9 @@
                                                 @Html.ValidationMessageFor(model => model.AppraisedAmount, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
+                                    </div>
 
+                                    <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.AppraisalRemarks, htmlAttributes: new { @class = "" })
@@ -1033,9 +1028,7 @@
                                                 @Html.ValidationMessageFor(model => model.LoanQualificationLoanAmount, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.PaymentPerPeriod, htmlAttributes: new { @class = "" })
@@ -1074,8 +1067,8 @@
                                                                     <td><input type="checkbox" value="@attachedLoans.Id" /></td>
                                                                     <td>@attachedLoans.FullAccountNumber</td>
                                                                     <td>@attachedLoans.CustomerAccountTypeTargetProductDescription</td>
-                                                                    <td><input type="number" value="@attachedLoans.PrincipalBalance"/></td>
-                                                                    <td><input type="number" value="@attachedLoans.InterestBalance"/></td>
+                                                                    <td><input type="number" value="@attachedLoans.PrincipalBalance" /></td>
+                                                                    <td><input type="number" value="@attachedLoans.InterestBalance" /></td>
                                                                     <td>@attachedLoans.CarryForwardsBalance</td>
                                                                 </tr>
                                                             }
@@ -1236,6 +1229,12 @@
             const loanPartField = document.getElementById("LoanRegistrationLoanPart");
             const loanInterestRateField = document.getElementById("LoanInterestAnnualPercentageRate");
 
+            const incomeQualificationField = document.getElementById("LoanQualificationIncomeQualification");
+
+            const systemRecommendationField = document.getElementById("LoanQualificationSystemRecommendation");
+            const investmentsField = document.getElementById("LoanQualificationInvestmentsQualification");
+            const securityQualificationField = document.getElementById("LoanQualificationSecurityQualification");
+
             function calculateValues() {
                 const netIncome = parseFloat(netIncomeField.value) || 0;
                 const totalDeductions = parseFloat(totalDeductionsField.value) || 0;
@@ -1251,11 +1250,20 @@
                 const monthlyInterestRate = loanInterestRate / (12 * 100);
                 const interestPart = loanPart * monthlyInterestRate * loanTerm;
 
+                const incomeQualification = netIncome * loanTerm * 0.33333;
+
+                const investmentsValue = parseFloat(investmentsField.value) || 0;
+                const securityQualificationValue = parseFloat(securityQualificationField.value) || 0;
+
+                const systemRecommendation = Math.min(incomeQualification, investmentsValue, securityQualificationValue);
+
                 totalIncomeField.value = totalIncome.toFixed(2);
                 abilityToPayField.value = abilityToPay.toFixed(2);
                 abilityToPayOverLoanTermField.value = abilityToPayOverLoanTerm.toFixed(2);
                 takeHomeFixedAmountField.value = takeHomeFixedAmount.toFixed(2);
                 interestPartField.value = interestPart.toFixed(2);
+                incomeQualificationField.value = incomeQualification.toFixed(2);
+                systemRecommendationField.value = systemRecommendation.toFixed(2);
             }
 
             [netIncomeField, totalDeductionsField, totalAllowancesField].forEach((field) => {
@@ -1263,6 +1271,7 @@
             });
         });
     </script>
+
 
 
     <script>

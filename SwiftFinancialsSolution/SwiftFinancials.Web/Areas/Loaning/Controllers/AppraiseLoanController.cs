@@ -143,6 +143,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 var products = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(loanCaseDTO.CustomerId, new[] { (int)ProductCode.Savings, (int)ProductCode.Loan, (int)ProductCode.Investment },
                    true, true, true, true, GetServiceHeader());
                 var investmentProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Investment).ToList();
+                var savingsProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Savings).ToList();
                 List<decimal> iBalance = new List<decimal>();
                 foreach (var investmentsBalances in investmentProducts)
                 {
@@ -168,6 +169,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanRegistrationInterestPart = loanCaseDTO.LoanRegistrationLoanPart * Convert.ToDecimal(((decimal)loanCaseDTO.LoanInterestAnnualPercentageRate / 100) * (loanCaseDTO.LoanRegistrationTermInMonths / 12));
                 loanCaseDTO.LoanRegistrationLoanPlusInterest = loanCaseDTO.LoanRegistrationLoanPart + loanCaseDTO.LoanRegistrationInterestPart;
                 loanCaseDTO.LoanQualificationLoanAmount = (double)loanCaseDTO.AmountApplied;
+
+                List<decimal> sBalance = new List<decimal>();
+                foreach (var savingsBalances in savingsProducts)
+                {
+                    sBalance.Add(savingsBalances.BookBalance);
+                }
+                var totalShares = iBalance.Sum() + sBalance.Sum();
+                loanCaseDTO.LoanQualificationSecurityQualification = Convert.ToDouble((double)totalShares * loanCaseDTO.LoanRegistrationInvestmentsMultiplier);
+                loanCaseDTO.LoanQualificationInvestmentsQualification = (double)totalShares;
 
                 var monthlyInterestRate = loanCaseDTO.LoanInterestAnnualPercentageRate / (12 * 100);
                 var totalNumberOfPeriods = loanCaseDTO.LoanRegistrationTermInMonths;
@@ -209,7 +219,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 if (isEmployee != null)
                 {
                     var findCustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
-                    foreach(var accts in findCustomerAccounts)
+                    foreach (var accts in findCustomerAccounts)
                     {
                     }
                 }
@@ -336,15 +346,23 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO)
         {
             loanCaseDTO = Session["Form"] as LoanCaseDTO;
-            var incomeAdjustments = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
+            var incomeAdjustments = Session["loanAppraisalFactors"] as ObservableCollection<LoanAppraisalFactorDTO>;
 
             try
             {
+                if (loanCaseDTO.LoanRegistrationMaximumEntitled < loanCaseDTO.AmountApplied)
+                {
+                    TempData["Unqualified"] = $"The selected Loanee does not qualify to get the total sum of Kshs. {loanCaseDTO.AmountApplied}";
+                    return View(loanCaseDTO);
+                }
+
                 loanCaseDTO.AppraisedDate = DateTime.Now;
                 var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
                 Session["loanCaseId"] = loanCaseDTO.Id;
                 Session["printCustomerId"] = loanCaseDTO.CustomerId;
-                //await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
+
+                if (incomeAdjustments.Any())
+                    await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
 
                 TempData["Success"] = "Operation Successful";
                 return RedirectToAction("Print");
