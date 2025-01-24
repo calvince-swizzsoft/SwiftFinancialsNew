@@ -1246,7 +1246,7 @@
                 const totalIncome = netIncome + totalAllowances;
                 const abilityToPay = netIncome - totalDeductions;
                 const abilityToPayOverLoanTerm = abilityToPay * loanTerm;
-                const takeHomeFixedAmount = netIncome - totalDeductions;
+                const takeHomeFixedAmount = totalIncome - totalDeductions;
 
                 const monthlyInterestRate = loanInterestRate / (12 * 100);
                 const interestPart = loanPart * monthlyInterestRate * loanTerm;
