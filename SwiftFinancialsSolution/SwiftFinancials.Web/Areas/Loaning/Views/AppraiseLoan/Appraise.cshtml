@@ -11,8 +11,6 @@
     var termInMonths = ViewBag.TermInMonths;
 }
 
-
-
 <style>
 
     .tab {
@@ -228,8 +226,6 @@
 
 <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
-
-
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Back Office</h1>
@@ -299,6 +295,19 @@
                                     text: 'Operation Failed!',
                                     confirmButtonColor: '#FF0000',
                                 });
+                            });
+                        </script>
+                    }
+
+                    @if (TempData["Unqualified"] != null)
+                    {
+                        <script type="text/javascript">
+                            document.addEventListener('DOMContentLoaded', function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    text: '@TempData["Unqualified"]',
+                                    confirmButtonColor: '#FF0000',
+                                })
                             });
                         </script>
                     }
@@ -451,9 +460,9 @@
 
                                         <div class="col-md-3 form-group">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.MaximumAmountPercentage, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.MaximumAmountPercentage, new { htmlAttributes = new { @id = "GuarantorCustomerSerialNumber", @class = "form-control", @placeholder = "Serial Number", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.MaximumAmountPercentage, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @id = "LoanInterestAnnualPercentageRate", @class = "form-control", @placeholder = "Serial Number", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
@@ -626,8 +635,6 @@
                                                             <th>Loan Product</th>
                                                             <th>Received Date</th>
                                                             <th>Amount Applied</th>
-                                                            <th>Appraised Amount</th>
-                                                            <th>System Appraisal Remarks</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -643,8 +650,6 @@
                                                                     <td>@loanApplications.LoanProductDescription</td>
                                                                     <td>@loanApplications.ReceivedDate</td>
                                                                     <td style="text-align: right;">@loanApplications.AmountApplied</td>
-                                                                    <td style="text-align: right;">@loanApplications.AppraisedAmount</td>
-                                                                    <td>@loanApplications.SystemAppraisalRemarks</td>
                                                                 </tr>
                                                             }
                                                         }
@@ -655,6 +660,33 @@
                                     </div>
 
                                     <div id="MainTab6" class="tabcontent">
+                                        <div class="table-container">
+                                            <h3 style="font-size: 1.9rem; text-align: center;">Collaterals</h3>
+                                            <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Status</th>
+                                                        <th>Document Title</th>
+                                                        <th>Value</th>
+                                                        <th>Date Attached</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.Collaterals != null)
+                                                    {
+                                                        foreach (var collaterals in ViewBag.Collaterals)
+                                                        {
+                                                            <tr>
+                                                                <td>@collaterals.CustomerDocumentCollateralStatusDescription</td>
+                                                                <td>@collaterals.CustomerDocumentFileTitle</td>
+                                                                <td style="text-align: right;">@collaterals.Value</td>
+                                                                <td>@collaterals.CreatedDate</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
 
                                     <div id="MainTab7" class="tabcontent">
@@ -771,7 +803,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationTotalAllowance, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationTotalAllowance)
-                                                @Html.EditorFor(model => model.LoanRegistrationTotalAllowance, new { htmlAttributes = new { @id = "TotalAllowance", @class = "form-control required", @disabled = "disabled" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationTotalAllowance, new { htmlAttributes = new { @id = "TotalAllowance", @class = "form-control required" } })
                                             </div>
                                         </div>
 
@@ -779,7 +811,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanRegistrationTotalDeduction, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.LoanRegistrationTotalDeduction)
-                                                @Html.EditorFor(model => model.LoanRegistrationTotalDeduction, new { htmlAttributes = new { @id = "TotalDeduction", @class = "form-control required", @placeholder = "Kshs.0.00", @disabled = "disabled" } })
+                                                @Html.EditorFor(model => model.LoanRegistrationTotalDeduction, new { htmlAttributes = new { @id = "TotalDeduction", @class = "form-control required", @placeholder = "Kshs.0.00" } })
                                             </div>
                                         </div>
 
@@ -880,7 +912,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-2" style="text-align: right;">
+                                            <div class="col-md-2">
                                                 <input type="submit" id="addEntryBtn" style="width:150px; margin-top: 20px;" class="btn btn-primary" value="Add" />
                                             </div>
                                         </div>
@@ -924,30 +956,10 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanQualificationSystemRecommendation, htmlAttributes: new { @class = "control-label" })
                                                 @Html.ValidationMessageFor(model => model.LoanQualificationSystemRecommendation, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.LoanQualificationSystemRecommendation, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanQualificationSystemRecommendation, new { htmlAttributes = new { @id = "LoanQualificationSystemRecommendation", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4 form-group">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.SystemAppraisalRemarks, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.SystemAppraisalRemarks)
-                                                @Html.EditorFor(model => model.SystemAppraisalRemarks, new
-                                                {
-                                                    htmlAttributes = new
-                                                    {
-                                                        @id = "CustomerReference1",
-                                                        @class = "form-control required",
-
-                                                        @readonly = "readonly"
-            }
-            })
-                                                @Html.ValidationMessageFor(model => model.SystemAppraisalRemarks, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanQualificationSecurityQualification, htmlAttributes: new { @class = "control-label" })
@@ -955,7 +967,7 @@
                                            {
                                                htmlAttributes = new
                                                {
-                                                   @id = "CustomerPersonalIdentificationNumber",
+                                                   @id = "LoanQualificationSecurityQualification",
                                                    @class = "form-control required",
                                                    @placeholder = "Personal Identification Number",
                                                    @readonly = "readonly"
@@ -964,7 +976,9 @@
                                                 @Html.ValidationMessageFor(model => model.LoanQualificationSecurityQualification, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
+                                    </div>
 
+                                    <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanQualificationIncomeQualification, htmlAttributes: new { @class = "control-label" })
@@ -972,7 +986,7 @@
                                            {
                                                htmlAttributes = new
                                                {
-                                                   @id = "CustomerPersonalIdentificationNumber",
+                                                   @id = "LoanQualificationIncomeQualification",
                                                    @class = "form-control required",
                                                    @disabled = "disabled"
                                                }
@@ -984,18 +998,8 @@
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanQualificationInvestmentsQualification, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.LoanQualificationInvestmentsQualification, new { htmlAttributes = new { @id = "GuarantorIndividualPayrollNumbers", @class = "form-control required", @placeholder = "Payroll Number", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.LoanQualificationInvestmentsQualification, new { htmlAttributes = new { @id = "LoanQualificationInvestmentsQualification", @class = "form-control required", @placeholder = "Payroll Number", @readonly = "readonly" } })
                                                 @Html.ValidationMessageFor(model => model.LoanQualificationInvestmentsQualification, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-4 form-group">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.LoanQualificationAttachedLoansBalance, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.LoanQualificationAttachedLoansBalance, new { htmlAttributes = new { @id = "GuarantorCustomerSerialNumber", @class = "form-control", @placeholder = "Serial Number", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.LoanQualificationAttachedLoansBalance, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
@@ -1006,7 +1010,9 @@
                                                 @Html.ValidationMessageFor(model => model.AppraisedAmount, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
+                                    </div>
 
+                                    <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.AppraisalRemarks, htmlAttributes: new { @class = "" })
@@ -1014,9 +1020,7 @@
                                                 @Html.ValidationMessageFor(model => model.AppraisalRemarks, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="row">
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.LoanQualificationLoanAmount, htmlAttributes: new { @class = "" })
@@ -1032,14 +1036,6 @@
                                                 @Html.ValidationMessageFor(model => model.PaymentPerPeriod, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.LoanQualificationTotalLoansPlusInterest, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.LoanQualificationTotalLoansPlusInterest, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.LoanQualificationTotalLoansPlusInterest, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
                                     </div>
 
                                     <div class="tab">
@@ -1047,7 +1043,7 @@
                                         <button class="tablinks" onclick="openTab(event, 'Tab2')"><i class="fa fa-table" aria-hidden="true"></i> Repayment Schedule</button>
                                     </div>
 
-                                    <div id="Tab8" class="tabcontent" style="display: block;">
+                                    <div id="Tab1" class="tabcontent" style="display: block;">
                                         <div class="tab-content">
                                             <div class="table-container">
                                                 <h3 style="font-size: 1.9rem; text-align: center;">Attached Loans</h3>
@@ -1059,10 +1055,24 @@
                                                             <th>Product Name</th>
                                                             <th>Principal Balance</th>
                                                             <th>Interest Balance</th>
+                                                            <th>Carry Forwards Balance</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <!--Look back later-->
+                                                        @if (ViewBag.AttachedLoans != null)
+                                                        {
+                                                            foreach (var attachedLoans in ViewBag.AttachedLoans)
+                                                            {
+                                                                <tr>
+                                                                    <td><input type="checkbox" value="@attachedLoans.Id" /></td>
+                                                                    <td>@attachedLoans.FullAccountNumber</td>
+                                                                    <td>@attachedLoans.CustomerAccountTypeTargetProductDescription</td>
+                                                                    <td><input type="number" value="@attachedLoans.PrincipalBalance" /></td>
+                                                                    <td><input type="number" value="@attachedLoans.InterestBalance" /></td>
+                                                                    <td>@attachedLoans.CarryForwardsBalance</td>
+                                                                </tr>
+                                                            }
+                                                        }
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -1070,7 +1080,7 @@
                                     </div>
 
 
-                                    <div id="Tab9" class="tabcontent">
+                                    <div id="Tab2" class="tabcontent">
                                         <div class="tab-content">
                                             <div class="table-container">
                                                 <h3 style="font-size: 1.9rem; text-align: center;">Repayment Schedule</h3>
@@ -1202,36 +1212,67 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    <script src="~/Scripts/js/navlink.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const netIncomeField = document.getElementById("NetIncome");
-            const totalDeductionsField = document.getElementById("TotalDeductions");
-            const totalAllowancesField = document.getElementById("TotalAllowances");
+            const totalDeductionsField = document.getElementById("TotalDeduction");
+            const totalAllowancesField = document.getElementById("TotalAllowance");
             const loanTermField = document.getElementById("LoanRegistrationTermInMonths");
 
             const abilityToPayField = document.getElementById("AbilityToPay");
             const totalIncomeField = document.getElementById("TotalIncome");
             const abilityToPayOverLoanTermField = document.getElementById("AbilityToPayOverLoanTerm");
             const takeHomeFixedAmountField = document.getElementById("TakeHomeValue");
+            const interestPartField = document.getElementById("LoanRegistrationInterestPart");
+            const loanPartField = document.getElementById("LoanRegistrationLoanPart");
+            const loanInterestRateField = document.getElementById("LoanInterestAnnualPercentageRate");
 
-            netIncomeField.addEventListener("input", function () {
+            const incomeQualificationField = document.getElementById("LoanQualificationIncomeQualification");
+
+            const systemRecommendationField = document.getElementById("LoanQualificationSystemRecommendation");
+            const investmentsField = document.getElementById("LoanQualificationInvestmentsQualification");
+            const securityQualificationField = document.getElementById("LoanQualificationSecurityQualification");
+
+            function calculateValues() {
                 const netIncome = parseFloat(netIncomeField.value) || 0;
-                const totalDeductions = parseFloat(totalDeductionsField?.value) || 0;
-                const totalAllowances = parseFloat(totalAllowancesField?.value) || 0;
-                const loanTerm = parseFloat(loanTermField?.value) || 1;
-
-                const abilityToPay = netIncome - totalDeductions;
+                const totalDeductions = parseFloat(totalDeductionsField.value) || 0;
+                const totalAllowances = parseFloat(totalAllowancesField.value) || 0;
+                const loanTerm = parseFloat(loanTermField.value) || 1;
+                const loanPart = parseFloat(loanPartField.value) || 0;
+                const loanInterestRate = parseFloat(loanInterestRateField?.value) || 0;
                 const totalIncome = netIncome + totalAllowances;
+                const abilityToPay = netIncome - totalDeductions;
                 const abilityToPayOverLoanTerm = abilityToPay * loanTerm;
-                const takeHomeFixedAmount = netIncome - totalDeductions;
+                const takeHomeFixedAmount = totalIncome - totalDeductions;
 
-                abilityToPayField.value = abilityToPay.toFixed(2);
+                const monthlyInterestRate = loanInterestRate / (12 * 100);
+                const interestPart = loanPart * monthlyInterestRate * loanTerm;
+
+                const incomeQualification = netIncome * loanTerm * 0.33333;
+
+                const investmentsValue = parseFloat(investmentsField.value) || 0;
+                const securityQualificationValue = parseFloat(securityQualificationField.value) || 0;
+
+                const systemRecommendation = Math.min(incomeQualification, investmentsValue, securityQualificationValue);
+
                 totalIncomeField.value = totalIncome.toFixed(2);
+                abilityToPayField.value = abilityToPay.toFixed(2);
                 abilityToPayOverLoanTermField.value = abilityToPayOverLoanTerm.toFixed(2);
                 takeHomeFixedAmountField.value = takeHomeFixedAmount.toFixed(2);
+                interestPartField.value = interestPart.toFixed(2);
+                incomeQualificationField.value = incomeQualification.toFixed(2);
+                systemRecommendationField.value = systemRecommendation.toFixed(2);
+            }
+
+            [netIncomeField, totalDeductionsField, totalAllowancesField].forEach((field) => {
+                field.addEventListener("input", calculateValues);
             });
         });
     </script>
+
+
 
     <script>
         const openModalButton = document.getElementById('openModalButton');
@@ -1252,9 +1293,6 @@
             }
         });
     </script>
-
-
-    <script src="~/Scripts/js/navlink.js"></script>
 
     <script>
         function openTab(evt, tabName) {

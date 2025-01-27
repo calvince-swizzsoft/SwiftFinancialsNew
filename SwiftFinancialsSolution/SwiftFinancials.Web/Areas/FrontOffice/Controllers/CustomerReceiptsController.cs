@@ -22,8 +22,6 @@ using System.Configuration;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
-
-
     public class CustomerReceiptsController : MasterController
     {
         private readonly string _connectionString;
@@ -183,11 +181,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var _miniStatement = miniStatementOrdersCollection.ToList();
             model.CustomerAccountMiniStatement = _miniStatement;
 
-           
-
             return View(model);
         }
-
 
         public async Task<JsonResult> GetCustomerDetailsJson(Guid? id)
         {
@@ -199,7 +194,22 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            var documents = await GetDocumentsAsync(customer.Id);
+            if (documents.Any())
+            {
+                var document = documents.First();
 
+                TempData["PassportPhoto"] = document.PassportPhoto;
+                TempData["SignaturePhoto"] = document.SignaturePhoto;
+                TempData["idCardFront"] = document.IDCardFrontPhoto;
+                TempData["idCardBack"] = document.IDCardBackPhoto;
+
+                // Sending the images as Base64 encoded strings to be used in AJAX
+                ViewBag.PassportPhoto = document.PassportPhoto != null ? Convert.ToBase64String(document.PassportPhoto) : null;
+                ViewBag.SignaturePhoto = document.SignaturePhoto != null ? Convert.ToBase64String(document.SignaturePhoto) : null;
+                ViewBag.IDCardFrontPhoto = document.IDCardFrontPhoto != null ? Convert.ToBase64String(document.IDCardFrontPhoto) : null;
+                ViewBag.IDCardBackPhoto = document.IDCardBackPhoto != null ? Convert.ToBase64String(document.IDCardBackPhoto) : null;
+            }
             if (customer == null)
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
@@ -224,7 +234,22 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             bool considerMaturityPeriodForInvestmentAccounts = true;
 
             var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            var documents = await GetDocumentsAsync(customerAccount.CustomerId);
+            if (documents.Any())
+            {
+                var document = documents.First();
 
+                TempData["PassportPhoto"] = document.PassportPhoto;
+                TempData["SignaturePhoto"] = document.SignaturePhoto;
+                TempData["idCardFront"] = document.IDCardFrontPhoto;
+                TempData["idCardBack"] = document.IDCardBackPhoto;
+
+                // Sending the images as Base64 encoded strings to be used in AJAX
+                ViewBag.PassportPhoto = document.PassportPhoto != null ? Convert.ToBase64String(document.PassportPhoto) : null;
+                ViewBag.SignaturePhoto = document.SignaturePhoto != null ? Convert.ToBase64String(document.SignaturePhoto) : null;
+                ViewBag.IDCardFrontPhoto = document.IDCardFrontPhoto != null ? Convert.ToBase64String(document.IDCardFrontPhoto) : null;
+                ViewBag.IDCardBackPhoto = document.IDCardBackPhoto != null ? Convert.ToBase64String(document.IDCardBackPhoto) : null;
+            }
             if (customerAccount == null)
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
@@ -232,8 +257,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return Json(customerAccount, JsonRequestBehavior.AllowGet);
         }
-
-
 
         [HttpPost]
         public async Task<ActionResult> Create(TransactionModel model)
@@ -345,7 +368,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
-
 
         private async Task<TellerDTO> GetCurrentTeller()
         {

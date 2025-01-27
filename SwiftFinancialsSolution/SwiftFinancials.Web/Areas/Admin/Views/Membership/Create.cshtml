@@ -79,6 +79,8 @@
                                     @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "@disabled" } })
                                 </div>
                             </div>
+
+
                         </div>
 
 
@@ -101,6 +103,19 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col">
+
+                                <div class="form-group form-group-lg" style="margin-left: 20px;">
+                                    <!-- Adjust the margin as needed -->
+                                    @Html.CheckBoxFor(model => model.LockoutEnabled, new { @class = "form-check-input me-2" })
+                                    @Html.LabelFor(model => model.LockoutEnabled, "Locked?", new { @class = "form-check-label mb-0" })
+                                </div>
+                            </div>
+                        </div>
+
+
+
 
                         <!-- Hidden Fields -->
                         <input type="hidden" name="SelectedRoles" id="SelectedRoles" />
@@ -201,7 +216,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h3 class="font-bold">G/L Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                <h3 class="font-bold">Employees Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
 
             <br />

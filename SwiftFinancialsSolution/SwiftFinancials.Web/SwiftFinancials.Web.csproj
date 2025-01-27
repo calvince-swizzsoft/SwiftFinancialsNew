@@ -1522,7 +1522,6 @@
     <Content Include="Areas\Registry\Views\ChargeExemptions\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\ChargeExemptions\Details.cshtml" />
     <Content Include="Areas\Registry\Views\NextOfKin\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_ChequeBooks\Index.cshtml" />
     <Content Include="Areas\Dashboard\Views\InstantMessaging\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Index.cshtml" />
@@ -1531,13 +1530,8 @@
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\PeriodClosing\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PeriodClosing\Close.cshtml" />
-    <Content Include="Areas\HumanResource\Views\PeriodClosings\Details.cshtml" />
-    <Content Include="Areas\HumanResource\Views\PeriodClosings\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\PeriodClosings\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslip.cshtml" />
-    <Content Include="Areas\HumanResource\Views\PeriodClosings\Close.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\_PaySlipEntries.cshtml" />
-    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\AuditLogs\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslipEntries.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\ViewPayroll.cshtml" />

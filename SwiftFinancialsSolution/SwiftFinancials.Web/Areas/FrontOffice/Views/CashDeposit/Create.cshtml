@@ -20,6 +20,7 @@
     var idCardFront = TempData["idCardFront"] as byte[];
     var idCardBack = TempData["idCardBack"] as byte[];
 
+
 }
 
 
@@ -351,7 +352,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
-                    @using (Html.BeginForm("Create", "CashDeposit", new { Area = "FrontOffice" }, FormMethod.Post, new { @id = "savingsReceiptsPaymentsForm" }))
+                    @using (Html.BeginForm("Create", "CashDeposit", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "savingsReceiptsPaymentsForm", enctype = "multipart/form-data", method = "Get" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -381,7 +382,7 @@
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.CustomerAccount.StatusDescription, "Account Status:", new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.CustomerAccount.StatusDescription, new { @class = "control-label" })
                                             @Html.TextBoxFor(model => model.CustomerAccount.StatusDescription, new { @id = "CustomerAccountStatusDescription", @class = "form-control", @readonly = "readonly" })
                                         </div>
                                     </div>
@@ -562,36 +563,62 @@
                                                     @Html.EditorFor(model => model.CashWithdrawal.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
                                                     @Html.ValidationMessageFor(model => model.CashWithdrawal.Remarks, "", new { @class = "text-danger" })
                                                 </div>
+                                                <div class="row" style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                                                    <div class="upload-container" style="flex-grow: 1;">
+                                                        <div id="documentImages" title="Click on an image to view in full-screen" style="display: flex; flex-direction: row; gap: 20px; flex-wrap: wrap;">
+                                                            <!-- Passport Photo -->
+                                                            <div class="image-container" onclick="openFullscreen('passportPhoto')" style="flex: 1 1 20%;">
+                                                                <h3>Passport Photo</h3>
+                                                                @if (passportPhoto != null)
+                                                                {
+                                                                    <img src="data:image/png;base64,@Convert.ToBase64String(passportPhoto)" alt="Passport Photo" style="width: 100%;" /> }
+                                                                else
+                                                                {
+                                                                    <p>No passport photo available.</p>}
+                                                                <div id="ppmsg" style="color: red; text-align: center;"></div>
+                                                            </div>
 
-                                                @*<div class="upload-container">
-                                                    <div class="upload-box">
-                                                        <label for="passport">Passport</label>
-                                                        <div id="passport" class="upload-area">
-                                                            <img src="~/Images/passportDemo.jpg" style="width: 54%; height: auto;" />
+                                                            <!-- Signature Photo -->
+                                                            <div class="image-container" onclick="openFullscreen('signaturePhoto')" style="flex: 1 1 20%;">
+                                                                <h3>Signature Photo</h3>
+                                                                @if (signaturePhoto != null)
+                                                                {
+                                                                    <img src="data:image/png;base64,@Convert.ToBase64String(signaturePhoto)" alt="Signature Photo" style="width: 100%;" /> }
+                                                                else
+                                                                {
+                                                                    <p>No signature photo available.</p>}
+                                                                <div id="smsg" style="color: red; text-align: center;"></div>
+                                                            </div>
+
+                                                            <!-- ID Card Front Photo -->
+                                                            <div class="image-container" onclick="openFullscreen('idCardFront')" style="flex: 1 1 20%;">
+                                                                <h3>ID Card Front</h3>
+                                                                @if (idCardFront != null)
+                                                                {
+                                                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(idCardFront)" alt="ID Card Front" style="width: 100%;" /> }
+                                                                else
+                                                                {
+                                                                    <p>No ID Card Front photo available.</p>}
+                                                                <div id="idfrontmsg" style="color: red; text-align: center;"></div>
+                                                            </div>
+
+                                                            <!-- ID Card Back Photo -->
+                                                            <div class="image-container" onclick="openFullscreen('idCardBack')" style="flex: 1 1 20%;">
+                                                                <h3>ID Card Back</h3>
+                                                                @if (idCardBack != null)
+                                                                {
+                                                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(idCardBack)" alt="ID Card Back" style="width: 100%;" /> }
+                                                                else
+                                                                {
+                                                                    <p>No ID Card Back photo available.</p>}
+                                                                <div id="idbackmsg" style="color: red; text-align: center;"></div>
+                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    <div class="upload-box">
-                                                        <label for="signature">Signature</label>
-                                                        <div id="signature" class="upload-area">
-                                                            <img src="~/Images/signatureDemo.jpg" style="width: 100%; height: 60%;" />
-                                                        </div>
-                                                    </div>
+                                                    <input type="button" value="Update" class="btn btn-primary" style="width: 150px; align-self: flex-start;" onclick="submitForm()" />
+                                                </div>
 
-                                                    <div class="upload-box">
-                                                        <label for="id-front">Identity Card (Front)</label>
-                                                        <div id="id-front" class="upload-area">
-                                                            <img src="~/Images/idDemo_Front.jpg" style="width: 100%; height: 60%;" />
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="upload-box">
-                                                        <label for="id-back">Identity Card (Back)</label>
-                                                        <div id="id-back" class="upload-area">
-                                                            <img src="~/Images/idDemo_Front.jpg" style="width: 100%; height: 60%;" />
-                                                        </div>
-                                                    </div>
-                                                </div>*@
                                             </div>
 
                                             <!-- Cheque Deposit Tab -->
@@ -1260,55 +1287,62 @@
                                         </div>
                                 
                                         <div id="specimen" class="inner-tab-pane">
-                                            <div id="documentImages">
-                                                <div class="image-container">
-                                                    <h3>Passport Photo</h3>
-                                                    @if (passportPhoto != null)
-                                                    {
-                                                        <img src="data:image/png;base64,@Convert.ToBase64String(passportPhoto)" alt="Passport Photo" />
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>No passport photo available.</p>
-                                                    }
+                                            <div class="row" style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                                                <div class="upload-container" style="flex-grow: 1;">
+                                                    <div id="documentImages" title="Click on an image to view in full-screen" style="display: flex; flex-direction: row; gap: 20px; flex-wrap: wrap;">
+                                                        <!-- Passport Photo -->
+                                                        <div class="image-container" onclick="openFullscreen('passportPhoto')" style="flex: 1 1 20%;">
+                                                            <h3>Passport Photo</h3>
+                                                            @if (passportPhoto != null)
+                                                            {
+                                                                <img src="data:image/png;base64,@Convert.ToBase64String(passportPhoto)" alt="Passport Photo" style="width: 100%;" /> }
+                                                            else
+                                                            {
+                                                                <p>No passport photo available.</p>}
+                                                            <div id="ppmsg" style="color: red; text-align: center;"></div>
+                                                        </div>
+
+                                                        <!-- Signature Photo -->
+                                                        <div class="image-container" onclick="openFullscreen('signaturePhoto')" style="flex: 1 1 20%;">
+                                                            <h3>Signature Photo</h3>
+                                                            @if (signaturePhoto != null)
+                                                            {
+                                                                <img src="data:image/png;base64,@Convert.ToBase64String(signaturePhoto)" alt="Signature Photo" style="width: 100%;" /> }
+                                                            else
+                                                            {
+                                                                <p>No signature photo available.</p>}
+                                                            <div id="smsg" style="color: red; text-align: center;"></div>
+                                                        </div>
+
+                                                        <!-- ID Card Front Photo -->
+                                                        <div class="image-container" onclick="openFullscreen('idCardFront')" style="flex: 1 1 20%;">
+                                                            <h3>ID Card Front</h3>
+                                                            @if (idCardFront != null)
+                                                            {
+                                                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(idCardFront)" alt="ID Card Front" style="width: 100%;" /> }
+                                                            else
+                                                            {
+                                                                <p>No ID Card Front photo available.</p>}
+                                                            <div id="idfrontmsg" style="color: red; text-align: center;"></div>
+                                                        </div>
+
+                                                        <!-- ID Card Back Photo -->
+                                                        <div class="image-container" onclick="openFullscreen('idCardBack')" style="flex: 1 1 20%;">
+                                                            <h3>ID Card Back</h3>
+                                                            @if (idCardBack != null)
+                                                            {
+                                                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(idCardBack)" alt="ID Card Back" style="width: 100%;" /> }
+                                                            else
+                                                            {
+                                                                <p>No ID Card Back photo available.</p>}
+                                                            <div id="idbackmsg" style="color: red; text-align: center;"></div>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
-                                                <div class="image-container">
-                                                    <h3>Signature Photo</h3>
-                                                    @if (signaturePhoto != null)
-                                                    {
-                                                        <img src="data:image/png;base64,@Convert.ToBase64String(signaturePhoto)" alt="Signature Photo" />
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>No signature photo available.</p>
-                                                    }
-                                                </div>
-
-                                                <div class="image-container">
-                                                    <h3>ID Card Front Photo</h3>
-                                                    @if (idCardFront != null)
-                                                    {
-                                                        <img src="data:image/png;base64,@Convert.ToBase64String(idCardFront)" alt="ID Card Front" />
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>No ID Card Front photo available.</p>
-                                                    }
-                                                </div>
-
-                                                <div class="image-container">
-                                                    <h3>ID Card Back Photo</h3>
-                                                    @if (idCardBack != null)
-                                                    {
-                                                        <img src="data:image/png;base64,@Convert.ToBase64String(idCardBack)" alt="ID Card Back" />
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>No ID Card Back photo available.</p>
-                                                    }
-                                                </div>
+                                                <input type="button" value="Update" class="btn btn-primary" style="width: 150px; align-self: flex-start;" onclick="submitForm()" />
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -1397,7 +1431,7 @@
                     </table>
                 </div>
                 @*</div>*@
-            
+
                 <!-- Filter Form -->
                 <div class="blue-section mt-1">
                     <form id="CustomerAccountModalFilterForm">
@@ -1605,7 +1639,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<link href="~/Scripts/css/customersGrid.css" rel="stylesheet" />
+    <link href="~/Scripts/css/customersGrid.css" rel="stylesheet" />
     <!-- Include SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -2014,7 +2048,7 @@
                                         Swal.fire('Info', "You chose not to print the receipt.", 'info');
                                     }
                                 });
-                            } 
+                            }
 
                             else if (!response.success && response.dialog) {
                                 console.log("Response message is", response.message);
@@ -2045,7 +2079,7 @@
                                         // Finalize Cash Deposit transaction
                                         $.ajax({
                                             url: '/FrontOffice/CashDeposit/PlaceCashDepositAuthorizationRequestAsync',
-                                            type: 'POST', 
+                                            type: 'POST',
                                             contentType: 'application/json',
                                             data: JSON.stringify(data), // Convert `data` object to JSON string
                                             success: function (finalizeResult) {
@@ -2107,7 +2141,7 @@
                                     }
                                 } else {
                                     Swal.fire("Cancelled", "Transaction was cancelled.", "info");
-                                }  
+                                }
                             }
 
                             else if (!response.success && !response.dialog) {
@@ -2123,7 +2157,7 @@
 
                             // Reload DataTable and reset fields
                             $('#tellerGlTable').DataTable().ajax.reload();
-                         
+
                         } catch (error) {
                             console.error("Error occurred:", error);
                             Swal.fire('Error', 'An error occurred while processing the request. Please try again.', 'error');
@@ -2169,7 +2203,7 @@
         "fnRowCallback": function (nRow, aData) {
             var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + createdDate.toLocaleTimeString();
-      
+
 
             var formatDate = function (date) {
                 return $.datepicker.formatDate('dd/mm/yy', date);
@@ -2192,7 +2226,7 @@
                 { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product", "sWidth": "15%" },
 /*                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },*/
                 { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }
-            
+
             ],
 
         "aaSorting": [[5, "desc"]],
@@ -2475,12 +2509,12 @@
             function updateChargesTable(commissions, transactionType) {
                 if (commissions && commissions.length > 0) {
                     let tableBody = commissions.map(commission => `
-                <tr>
-                    <td>${commission.Description || 'N/A'}</td>
-                    <td>${commission.MaximumCharge || 'N/A'}</td>
-                    <td>${commission.ExtendedChargeBenefactorDescription || 'N/A'}</td>
-                </tr>
-            `).join('');
+                                                            <tr>
+                                                                <td>${commission.Description || 'N/A'}</td>
+                                                                <td>${commission.MaximumCharge || 'N/A'}</td>
+                                                                <td>${commission.ExtendedChargeBenefactorDescription || 'N/A'}</td>
+                                                            </tr>
+                                                        `).join('');
                     $('#chargesLevies tbody').html(tableBody);
                 } else {
                     $('#chargesLevies tbody').html(`<tr><td colspan="3">No charges available for ${transactionType.toLowerCase()}</td></tr>`);
@@ -2843,7 +2877,7 @@
                                                 PrimaryDescription: processedResult.journalPrimaryDescription,
                                                 SecondaryDescription: processedResult.journalSecondaryDescription,
                                                 PostingPeriodDescription: processedResult.journalPostingPeriodDescription,
-                                                ApplicationUserName: processedResult.journalApplicationUserName, 
+                                                ApplicationUserName: processedResult.journalApplicationUserName,
                                                 CreatedDate: processedResult.journalCreatedDate,
                                                 TotalValue: processedResult.journalTotalValue,
                                                 Reference: processedResult.journalReference
@@ -2970,7 +3004,7 @@
                 } else {
                     console.log("Submission cancelled by user.");
                 }
-            });            
+            });
         });
 
 
@@ -3011,7 +3045,7 @@
                             Reference:result.transactionReference,
                             CashWithdrawalCategory: result.transactionCategory,
                             ChequeBookId: result.paymentVoucherChequeBookId,
-                            CashWithdrawalRequestId: result.cashTransactionRequestId,  
+                            CashWithdrawalRequestId: result.cashTransactionRequestId,
                             PaymentVoucherWriteDate: result.paymentVoucherWriteDate
 
                         };

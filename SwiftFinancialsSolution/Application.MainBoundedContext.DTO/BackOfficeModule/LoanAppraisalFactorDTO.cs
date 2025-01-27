@@ -67,6 +67,10 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Created Date")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Type")]
+        public string typeTypeDescription { get; set; }
     }
 }

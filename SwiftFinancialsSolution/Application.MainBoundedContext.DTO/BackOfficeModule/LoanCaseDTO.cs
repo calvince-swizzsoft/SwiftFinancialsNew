@@ -1239,7 +1239,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         // Additional DTOs
         [DataMember]
-        public List<IncomeAdjustmentDTO> incomeAdjustmentDTO { get; set; }
+        public List<LoanAppraisalFactorDTO> incomeAdjustmentDTO { get; set; }
 
 
         // Reports DTOs
@@ -1350,6 +1350,10 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Payment Frequency Per Year")]
         public string loanProductPaymentFrequencyPerYear { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Category")]
+        public string LoanProductCategory { get; set; }
 
 
         [DataMember]

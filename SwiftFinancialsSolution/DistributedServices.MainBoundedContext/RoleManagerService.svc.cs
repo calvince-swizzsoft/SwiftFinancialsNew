@@ -8,6 +8,7 @@ using DistributedServices.Seedwork.ErrorHandlers;
 using Infrastructure.Crosscutting.Framework.Extensions;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Linq;
 using System.ServiceModel;
 using System.Web.Profile;
 using System.Web.Security;
@@ -142,7 +143,7 @@ namespace DistributedServices.MainBoundedContext
 
             Roles.ApplicationName = string.Format("/{0}", serviceHeader.ApplicationDomainName);
 
-            Roles.AddUserToRoles(userName, roles);
+            Roles.AddUserToRoles(userName, (String[])roles);
 
             #region Audit Trail
 

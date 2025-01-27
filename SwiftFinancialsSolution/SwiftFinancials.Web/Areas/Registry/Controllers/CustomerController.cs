@@ -461,7 +461,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
 
             //TempData["WithdrawalNotificationDTOs"] = withdrawalNotificationDTO;
-
+            
             return View("Create", customer.MapTo<CustomerBindingModel>());
         }
 
@@ -483,6 +483,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var startDate = Request["registrationdate"];
             var endDate = Request["birthdate"];
+            TempData["passportPhoto"] = passportPhoto as HttpPostedFileBase;
 
             // Parse and set dates
             //customerBindingModel.IndividualBirthDate = new DateTime(1990, DateTime.Today.Month, DateTime.Today.Day);
@@ -594,8 +595,23 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
      1,
      GetServiceHeader()
  );
-                    await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
-
+                    if (signaturePhoto != null && idCardBackPhoto != null && passportPhotoDataUrl != null)
+                    {
+                        if (passportPhotoDataUrl == null)
+                        {
+                            TempData["passportPhoto"] = passportPhoto as HttpPostedFileBase;
+                        }
+                        await SaveDocumentAsync(ProcessDocumentUpload(result.Id, signaturePhoto, idCardFrontPhoto, idCardBackPhoto, passportPhotoDataUrl));
+                    }
+                    else if (signaturePhoto == null && idCardBackPhoto == null && passportPhotoDataUrl == null)
+                    {
+                        TempData["Error2"] = "Customer " + result.FullName + " has no attached Documents please Upload the documents on the specimen tab.";
+                        ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+                        ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+                        ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+                        await ServeNavigationMenus();
+                        return RedirectToAction("Create", customerBindingModel);
+                    }
                     if (result.ErrorMessages == null || result == null)
                     {
                         TempData["SuccessMessage"] = "Customer " + result.FullName + " created successfully.";
@@ -774,14 +790,20 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 Id = Guid.NewGuid(),
                 CustomerId = customerId
             };
-
-            // Process the passport photo from the data URL
-            if (!string.IsNullOrEmpty(passportFile))
+            if (passportFile != null)
             {
-                var base64Data = passportFile.Split(',')[1];
-                document.PassportPhoto = Convert.FromBase64String(base64Data);
+                // Process the passport photo from the data URL
+                if (!string.IsNullOrEmpty(passportFile))
+                {
+                        var base64Data = passportFile.Split(',')[1];
+                    document.PassportPhoto = Convert.FromBase64String(base64Data);
+                }
+                else
+                {
+                    HttpPostedFileBase j = TempData["passportPhoto"] as HttpPostedFileBase;
+                    document.PassportPhoto = ConvertFileToByteArray(j);
+                }
             }
-
             // Process other uploaded files
             document.SignaturePhoto = ConvertFileToByteArray(signaturePhoto);
             document.IDCardFrontPhoto = ConvertFileToByteArray(idCardFrontPhoto);
@@ -998,7 +1020,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     var result = await _channelService.UpdateCustomerAsync(customerDTO,
                         GetServiceHeader()
                     );
-                    TempData["SuccessMessage"] = "Customer "+customerDTO.FullName +" Edit Successfully";
+                    TempData["SuccessMessage"] = "Customer " + customerDTO.FullName + " Edit Successfully";
 
                     if (result == true)
                     {
