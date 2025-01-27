@@ -77,8 +77,6 @@
         }
 </style>
 
-
-
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Back Office</h1>
@@ -103,13 +101,27 @@
                 <div class="ibox-title">
                     <h2>Verify Loan</h2>
 
-                   @if (TempData["Fail"] != null)
+                    @if (TempData["Fail"] != null)
                     {
                         <script type="text/javascript">
                             document.addEventListener('DOMContentLoaded', function () {
                                 Swal.fire({
                                     icon: 'error',
                                     text: '@TempData["Fail"]',
+                                    confirmButtonColor: '#FF0000',
+                                })
+                            });
+                        </script>
+                    }
+
+                    @if (TempData["UnAuthorized"] != null)
+                    {
+                        <script type="text/javascript">
+                            document.addEventListener('DOMContentLoaded', function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title:'Error!',
+                                    text: '@TempData["UnAuthorized"]',
                                     confirmButtonColor: '#FF0000',
                                 })
                             });

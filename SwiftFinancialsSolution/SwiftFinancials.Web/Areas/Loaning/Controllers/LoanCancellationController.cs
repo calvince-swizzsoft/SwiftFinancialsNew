@@ -11,6 +11,7 @@ using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Microsoft.AspNet.Identity;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -67,6 +68,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            var userEmail = userDTO.Email;
+            if (userEmail == loaneeCustomer.CreatedBy || userEmail == loaneeCustomer.AppraisedBy || userEmail == loaneeCustomer.ApprovedBy ||
+                userEmail == loaneeCustomer.AuditedBy)
+            {
+                await ServeNavigationMenus();
+                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
+
+                TempData["UnAuthorized"] = "Unauthorized Access!\nYou are not Authorized to Appraise Loans.";
+                return RedirectToAction("Index");
+            }
+
             if (loaneeCustomer != null)
             {
                 loanCaseDTO = loaneeCustomer as LoanCaseDTO;
@@ -166,47 +179,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
             loanCaseDTO.LoanPurposeId = findLoanCaseDetails.LoanPurposeId;
             loanCaseDTO.SavingsProductId = findLoanCaseDetails.SavingsProductId;
-            loanCaseDTO.AuditedDate = DateTime.Now;
+            loanCaseDTO.CancelledDate = DateTime.Now;
 
             loanCaseDTO.ValidateAll();
 
             if (!loanCaseDTO.HasErrors)
             {
-
-                string message = string.Format(
-                                  "Do you want to proceed with loan cancellation for: \n{0}?",
-                                  findLoanCaseDetails.CustomerIndividualSalutationDescription.ToUpper() + " " + findLoanCaseDetails.CustomerIndividualFirstName.ToUpper() + " " +
-                                  findLoanCaseDetails.CustomerIndividualLastName.ToUpper()
-                              );
-
-                // Show the message box with Yes/No options
-                DialogResult result = MessageBox.Show(
-                    message,
-                    "Loan Cancellation",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
-
-                if (result == DialogResult.Yes)
-                {
-
-                    await _channelService.CancelLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanCancellationOption, GetServiceHeader());
-
-                    MessageBox.Show(Form.ActiveForm, "Operation Completed Successfully.", "Loan Cancellation", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    await ServeNavigationMenus();
-
-                    ViewBag.LoanCancellationOptionSelectList = GetLoanCancellationOptionSelectList(loanCaseDTO.LoanCancellationOption.ToString());
-
-                    MessageBox.Show(Form.ActiveForm, "Operation Cancelled.", "Loan Cancellation", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View(loanCaseDTO);
-                }
+                var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+                var userEmail = userDTO.Email;
+                loanCaseDTO.CancelledBy = userDTO.Email;
+                await _channelService.CancelLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanCancellationOption, GetServiceHeader());
+                TempData["Success"] = "Operation Successful";
+                return RedirectToAction("Index");
             }
             else
             {
@@ -217,9 +201,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                 ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
                 ViewBag.LoanCancellationOptionSelectList = GetLoanCancellationOptionSelectList(loanCaseDTO.LoanCancellationOption.ToString());
-
-                MessageBox.Show(Form.ActiveForm, "Operation Unsuccessful.", "Loan Cancellation", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
+                TempData["Success"] = "Operation Unsuccessful";
                 return View(loanCaseDTO);
             }
         }

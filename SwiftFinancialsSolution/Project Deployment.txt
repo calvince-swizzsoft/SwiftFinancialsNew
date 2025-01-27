@@ -1,9 +1,0 @@
-The following are the steps to deploy SwiftFinancials Solution:
-
-1. Change the project mode from Debug to Release mode.
-2. Clean, Build then Rebuild the SwiftFinancial.Web project.
-3. Publish the SwiftFinancials.Web project into a local (empty) folder.
-4. Clean, Build then Rebuild the DistributedServices.MainBoundedContext project.
-5. Publish the DistributedServices.MainBoundedContext project into a local (empty) folder.
-6. Copy the SwiftFinancials.Utility release files and save to a local (empty) folder.
-7. Copy the SwiftFinancials.WindowsService release files and save to a local (empty) folder.
