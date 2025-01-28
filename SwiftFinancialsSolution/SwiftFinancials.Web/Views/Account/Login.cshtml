@@ -21,15 +21,7 @@
 
 <body class="bg-transparent">
     <div id="particles-js"></div>
-
-    <div class="splash-screen">
-        <div id="splashText" class="splash-text">Flow Finance</div>
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading...</div>
-        <div id="dollar-rain"></div> <!-- Container for dollar signs -->
-    </div>
-
-    <div class="panel-body center-orientation text-center animated fadeInDown" style="display: none;">
+    <div class="panel-body center-orientation text-center animated fadeInDown">
         @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "m-t", role = "form" }))
         {
             <div class="widget-head-color-box p-lg text-center">
@@ -63,67 +55,7 @@
     @Scripts.Render("~/bundles/inspinia")
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-
-
     <script>
-        $(document).ready(function () {
-            var splashText = $("#splashText");
-
-            splashText.addClass("move-to-center");
-
-            splashText.on("animationend", function () {
-                if (splashText.hasClass("move-to-center")) {
-                    splashText.removeClass("move-to-center").addClass("jump-and-flip");
-
-                    splashText.on("animationend", function () {
-                        var audio = new Audio('https://www.soundjay.com/button/sounds/button-16.mp3');
-                        audio.play();
-
-                        setTimeout(function () {
-                            splashText.removeClass("jump-and-flip").addClass("move-out");
-
-                            splashText.on("animationend", function () {
-                                setTimeout(function () {
-                                    $(".splash-screen").fadeOut(function () {
-                                        $(".panel-body").fadeIn();
-                                    });
-                                }, 1000); // Delay to ensure smooth transition
-                            });
-                        }, 1000); // Delay before moving out
-                    });
-                }
-            });
-
-            // Set splash screen to display for 40 seconds
-            setTimeout(function () {
-                $(".splash-screen").fadeOut(function () {
-                    $(".panel-body").fadeIn();
-                });
-            }, 40000); // 40 seconds
-
-            // Dollar rain effect
-            function createDollarSign() {
-                var dollarSign = $("<div class='dollar-sign'>$</div>");
-                var startPos = Math.random() * 100; // Random horizontal position
-                var duration = Math.random() * 3 + 2; // Random falling speed
-
-                dollarSign.css({
-                    left: startPos + "vw",
-                    animationDuration: duration + "s"
-                });
-
-                $("#dollar-rain").append(dollarSign);
-
-                // Remove dollar sign after animation
-                setTimeout(function () {
-                    dollarSign.remove();
-                }, duration * 1000);
-            }
-
-            // Generate dollar signs at intervals
-            setInterval(createDollarSign, 200);
-        });
-
         particlesJS("particles-js", {
             "particles": {
                 "number": {

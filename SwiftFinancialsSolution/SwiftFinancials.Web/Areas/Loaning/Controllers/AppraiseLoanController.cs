@@ -139,9 +139,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 await ServeNavigationMenus();
                 ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
-
+                ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
+                ViewBag.LoanCaseStatusSelectList = GetLoanCaseStatusSelectList(string.Empty);
                 TempData["UnAuthorized"] = "Unauthorized Access!\nYou are not Authorized to Appraise Loans.";
-                return RedirectToAction("Index");
+                return View("Index");
             }
 
 
