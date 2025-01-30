@@ -298,44 +298,14 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
             if (!model.HasErrors)
             {
-                string message = string.Format(
-                                    "Do you want to proceed?"
-                                );
+                model.CreatedDate = DateTime.Now;
+                await _channelService.AddNewMessageGroupAsync(model, GetServiceHeader());
 
-                DialogResult result = MessageBox.Show(
-                    message,
-                    "Messaging Groups",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["Success"] = "Operation Completed Successfully.";
+                Session["messageGroupDTO"] = null;
+                Session["messageGroupDTOs"] = null;
 
-
-                if (result == DialogResult.Yes)
-                {
-                    await _channelService.AddNewMessageGroupAsync(model, GetServiceHeader());
-                    MessageBox.Show(Form.ActiveForm, "Operation completed successfully.", "Messaging Groups", MessageBoxButtons.OK, MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                    Session["messageGroupDTO"] = null;
-                    Session["messageGroupDTOs"] = null;
-
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    await ServeNavigationMenus();
-
-                    var errorMessages = model.ErrorMessages;
-
-                    ViewBag.target = GetMessagingGroupTargetSelectList(model.TargetDescription.ToString());
-                    ViewBag.recordStatus = GetRecordStatusSelectList(model.RecordStatusDescription.ToString());
-                    ViewBag.customerFilter = GetCustomerFilterSelectList(model.CustomerFilterDescription.ToString());
-
-                    MessageBox.Show(Form.ActiveForm, "Operation cancelled.", "Messaging Groups", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View(model);
-                }
+                return RedirectToAction("Index");
             }
             else
             {
@@ -347,7 +317,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                 ViewBag.recordStatus = GetRecordStatusSelectList(model.RecordStatusDescription.ToString());
                 ViewBag.customerFilter = GetCustomerFilterSelectList(model.CustomerFilterDescription.ToString());
 
-                MessageBox.Show(Form.ActiveForm, "Operation failed.", "Messaging Groups", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                TempData["Failed"] = "Operation Failed!";
                 return View(model);
             }
 
@@ -524,75 +494,22 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
         }
 
 
-
-        //public async Task<ActionResult>Data(MessageGroupDTO model)
-        //{
-        //    Session["savedData"] = model;
-
-        //    return null;
-        //}
-
-
         [HttpPost]
         public async Task<ActionResult> Edit(MessageGroupDTO model)
         {
-            //var model = new MessageGroupDTO();
-
-            //if (Session["savedData"] != null)
-            //{
-            //    model = Session["savedData"] as MessageGroupDTO;
-            //}
-
-            //if (Session["messageGroupDTOsEdit"] != null)
-            //{
-            //    model.messageGroupCustomerDTO = Session["messageGroupDTOsEdit"] as ObservableCollection<MessageGroupDTO>;
-
-            //    model.TargetValues = JsonConvert.SerializeObject(model.messageGroupCustomerDTO);
-            //}
-
             model.ValidateAll();
 
             if (!model.HasErrors)
             {
-                string message = string.Format(
-                                    "Do you want to proceed?"
-                                );
+                await _channelService.UpdateMessageGroupAsync(model, GetServiceHeader());
 
-                DialogResult result = MessageBox.Show(
-                    message,
-                    "Messaging Groups",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.ServiceNotification
-                );
+                TempData["Success"] = "Operation Completed Successfully.";
 
+                Session["messageGroupDTOEdit"] = null;
+                Session["messageGroupDTOsEdit"] = null;
+                Session["savedData"] = null;
 
-                if (result == DialogResult.Yes)
-                {
-                    await _channelService.UpdateMessageGroupAsync(model, GetServiceHeader());
-                    MessageBox.Show(Form.ActiveForm, "Operation completed successfully.", "Messaging Groups", MessageBoxButtons.OK, MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-                    Session["messageGroupDTOEdit"] = null;
-                    Session["messageGroupDTOsEdit"] = null;
-                    Session["savedData"] = null;
-
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    await ServeNavigationMenus();
-
-                    var errorMessages = model.ErrorMessages;
-
-                    ViewBag.target2 = GetMessagingGroupTargetSelectList(model.TargetDescription.ToString());
-                    ViewBag.recordStatus2 = GetRecordStatusSelectList(model.RecordStatusDescription.ToString());
-                    ViewBag.customerFilter2 = GetCustomerFilterSelectList(model.CustomerFilterDescription.ToString());
-
-                    MessageBox.Show(Form.ActiveForm, "Operation cancelled.", "Messaging Groups", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-                    return View(model);
-                }
+                return RedirectToAction("Index");
             }
             else
             {
@@ -604,7 +521,8 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                 ViewBag.recordStatus2 = GetRecordStatusSelectList(model.RecordStatusDescription.ToString());
                 ViewBag.customerFilter2 = GetCustomerFilterSelectList(model.CustomerFilterDescription.ToString());
 
-                MessageBox.Show(Form.ActiveForm, "Operation failed.", "Messaging Groups", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                TempData["Failed"] = "Operation Failed!";
+
                 return View(model);
             }
 

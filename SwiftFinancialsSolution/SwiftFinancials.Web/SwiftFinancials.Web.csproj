@@ -1537,6 +1537,7 @@
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\ViewPayroll.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\GuarantorManagement\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\TransactionJournals\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

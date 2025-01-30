@@ -5,9 +5,23 @@
 }
 
 
+@if (TempData["Success"] != null)
+{
+    <script type="text/javascript">
+     document.addEventListener('DOMContentLoaded', function () {
+         Swal.fire({
+         icon: 'success',
+         text: '@TempData["Success"]',
+         confirmButtonColor: '#006400',
+         })
+     });
+    </script>
+}
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Dashboard Module</h1>
+        <h1>Command Hub</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)

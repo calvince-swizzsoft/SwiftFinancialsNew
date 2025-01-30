@@ -67,9 +67,24 @@
 </style>
 
 
+@if (TempData["Failed"] != null)
+{
+    <script type="text/javascript">
+     document.addEventListener('DOMContentLoaded', function () {
+         Swal.fire({
+         icon: 'error',
+         text: '@TempData["Failed"]',
+         confirmButtonColor: '#006400',
+         })
+     });
+    </script>
+}
+
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h1>Dashboard Module</h1>
+        <h1>Command Hub</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -449,7 +464,7 @@
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("CustomerIndex", "MessagingGroups", new { Area = "Dashboard"}))",
                 "sServerMethod": "POST",
-                
+
                 "fnServerParams": function (aoData) {
                     aoData.push(
                         { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter },
