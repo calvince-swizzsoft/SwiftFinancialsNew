@@ -25,43 +25,88 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int Status, DateTime startDate, DateTime endDate, string filterValue)
         {
             int totalRecordCount = 0;
-
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var pageCollectionInfo = new PageCollectionInfo<LoanDisbursementBatchDTO>();
 
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(
-                1,
-                DateTime.Now.AddDays(-1000),
-                DateTime.Now,
-                jQueryDataTablesModel.sSearch,
-                pageIndex,
-                jQueryDataTablesModel.iDisplayLength,
+            if (filterValue == string.Empty || filterValue == "" && startDate != null && endDate != null)
+                pageCollectionInfo = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(
+                 Status,
+                 startDate,
+                 endDate,
+                 jQueryDataTablesModel.sSearch,
+                 0,
+                 int.MaxValue,
+                 GetServiceHeader()
+                 );
+            else if (startDate == null || endDate == null)
+                pageCollectionInfo = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(
+                 Status,
+                 DateTime.Now.AddDays(-1000),
+                 DateTime.Now,
+                 jQueryDataTablesModel.sSearch,
+                 0,
+                 int.MaxValue,
+                 GetServiceHeader()
+                 );
+            else if (filterValue != null | filterValue != string.Empty && startDate != null && endDate != null)
+                pageCollectionInfo = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(
+                Status,
+                startDate,
+                endDate,
+                filterValue,
+                0,
+                int.MaxValue,
                 GetServiceHeader()
                 );
+            else
+                pageCollectionInfo = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(
+                    1,
+                    DateTime.Now.AddDays(-1000),
+                    DateTime.Now,
+                    jQueryDataTablesModel.sSearch,
+                    0,
+                    int.MaxValue,
+                    GetServiceHeader()
+                    );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(k => k.CreatedDate)
+                    .ToList();
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
 
                 return this.DataTablesJson(
-                    items: pageCollectionInfo.PageCollection.OrderByDescending(x => x.CreatedDate),
+                    items: paginatedData,
                     totalRecords: totalRecordCount,
                     totalDisplayRecords: searchRecordCount,
                     sEcho: jQueryDataTablesModel.sEcho
                 );
             }
-            else return this.DataTablesJson(items: new List<LoanDisbursementBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<LoanDisbursementBatchDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
+
 
         public async Task<ActionResult> Details(Guid id)
         {

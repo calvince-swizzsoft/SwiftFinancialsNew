@@ -24,7 +24,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
-
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int Status, DateTime startDate, DateTime endDate, string filterValue)
         {
