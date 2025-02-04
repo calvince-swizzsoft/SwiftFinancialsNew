@@ -179,7 +179,7 @@ namespace SwiftFinancials.Web.Controllers
 
                 userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
 
-                ViewBag.NavigationItems = userNavigationItems.OrderBy(item => item.Description).ToList();
+                ViewBag.NavigationItems = userNavigationItems.ToList();
             }
         }
 

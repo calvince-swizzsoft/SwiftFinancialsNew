@@ -228,11 +228,19 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(UserBindingModel userBindingModel, string[] Branchids, string[] roles)
         {
+            if (Branchids == null || roles == null)
+            {
+                TempData["BR"] = "Branches and Roles required!";
+                await ServeNavigationMenus();
+
+                return View(userBindingModel);
+            }
+
             var Branches = Branchids.Select(Guid.Parse).ToList();
             ObservableCollection<BranchDTO> branchDTOs = new ObservableCollection<BranchDTO>();
-            foreach(var Branch in Branches)
+            foreach (var Branch in Branches)
             {
-                var branchDTO = await _channelService.FindBranchAsync(Branch,GetServiceHeader());
+                var branchDTO = await _channelService.FindBranchAsync(Branch, GetServiceHeader());
 
                 branchDTOs.Add(branchDTO);
             }

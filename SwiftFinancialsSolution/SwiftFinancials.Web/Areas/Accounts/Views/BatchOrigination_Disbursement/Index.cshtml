@@ -5,32 +5,17 @@
 
 
 @{
-    ViewBag.Title = "BatchOrigination_Disbursement Authorize";
+    ViewBag.Title = "Disbursement | Origination";
     var status = ViewBag.BatchStatus as List<SelectListItem>;
 
 }
 
 <style>
-
-    
-
-    .col-lg-2 {
-        display: flex;
-        align-items: center; /* Center the title vertically */
-        justify-content: center; /* Center the title horizontally if needed */
-        padding: 0; /* Remove default padding if necessary */
-        border-radius: 4px; /* Rounded corners */
-        @*border: 1px solid black;*@ /* Border color and style */
-    }
-    .bottom-button {
-        border: 2px solid gray; /* Border color set to gray */
-        padding: 10px; /* Padding inside the border */
-        border-radius: 5px; /* Rounded corners (optional) */
-
-
-        font-size: 16px;
-        font-weight: bold;
+    .blue-section {
+        margin-top: 20px;
         background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
     }
 </style>
 
@@ -38,7 +23,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Authorize Disbursments Batch</h2>
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -49,50 +34,15 @@
         </ol>
     </div>
 </div>
-<div class="row row-center">
 
-    <div class="col-lg-12">
-        <div class="nav1">
-            <div class="col-lg-12">
-                <nav class="nav">
-                    <a href="@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Voucher
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Credit Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Debit Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Refund Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Disbursement Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Wire Transfer Batch
-                    </a>
-                    <a href="@Url.Action("Index", "AddGeneralLedger", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> General Ledger Batch
-                    </a>
-
-                    <a href="@Url.Action("Index", "InterAccountTransfer", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Inter Account Transfer Batch
-                    </a>
-
-                </nav>
-            </div>
-
-        </div>
-    </div>
-</div>
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create BatchOrigination_Disbursement", "Create", "BatchOrigination_Disbursement", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    <h2>Loan Disbursement Batch</h2>
+                    <hr />
+                    @Html.ActionLink("Create Disbursement Batch", "Create", "BatchOrigination_Disbursement", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
                     @if (TempData["Verification"] != null)
                     {
@@ -140,51 +90,6 @@
                             </tbody>
                         </table>
                     </div>
-                    @using (Html.BeginForm("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        <div class="bottom-button">
-
-                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Status, new { @class = "control-label" })
-
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Status, status,
-                                            new { @class = "form-control input-md", @id = "status" })
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group spacing-form-group" id="data_3">
-                                        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="valuedate" class="form-control" id="startDate" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group spacing-form-group" id="data_3">
-                                        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="valuedate" class="form-control" id="endDate" value="@DateTime.Today.ToString("dd/MM/yyyy")">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
-                                    <div class="form-group form-group-sm">
-                                        <input type="submit" value="Refresh" class="btn btn-primary" />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    }
                 </div>
             </div>
         </div>
@@ -248,12 +153,6 @@
                 language: 'en-GB'  // Use British English locale to ensure dd/mm/yyyy format
             });
 
-
-            // Set default values
-            var defaultStatus = $('#status').val();
-            var defaultStartDate = $('#startDate').val();
-            var defaultEndDate = $('#endDate').val();
-
             // Function to convert date from dd/mm/yyyy to yyyy-mm-dd
             function formatDate(dateString) {
                 var parts = dateString.split("/");
@@ -269,13 +168,6 @@
                 "sAjaxSource": "@(Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
 
-                "fnServerParams": function (aoData) {
-                    aoData.push(
-                        { "name": "status", "value": $('#status').val() || defaultStatus },
-                        { "name": "startDate", "value": formatDate($('#startDate').val() || defaultStartDate) },
-                        { "name": "endDate", "value": formatDate($('#endDate').val() || defaultEndDate) }
-                    );
-                },
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
@@ -286,45 +178,19 @@
 
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
-                    $('td:eq(7)', nRow).html(dt_Created);
 
-                    // Generate dropdown HTML with conditional logic based on status
                     var dropdownHtml = `
-        <div class="dropdown">
-            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Actions
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/BatchOrigination_Disbursement/details/${aData.Id}">View</a>
+                            </div>
+                        </div>`;
 
-                    // Buttons to be included
-                    var viewButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Disbursement/details/${aData.Id}">View</a>`;
-                    var verifyButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Disbursement/Verify/${aData.Id}">Verify</a>`;
-                    var authorizeButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Disbursement/Authorize/${aData.Id}">Authorize</a>`;
-
-                    // Conditional logic for button enabling/disabling based on status
-                    switch (aData.Status) {
-                        case 1: // Pending
-                            dropdownHtml += verifyButton;
-                            break;
-                        case 8: // Audited
-                            dropdownHtml += authorizeButton ;
-                            break;
-                        case 2: // Posted
-                            break;
-                        // If the status is 4 (Rejected) or any other status, only "View" button will be enabled
-                        default:
-                            break;
-                    }
-
-                    dropdownHtml += `</div></div>`;
-
+                    $('td:eq(7)', nRow).html(dt_Created);
                     $('td:eq(8)', nRow).html(dropdownHtml);
-
-                    // Prevent default action for disabled links
-                    $('.dropdown-item.disabled').on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    });
 
                     return nRow;
                 },
@@ -332,20 +198,15 @@
                 // Display settings
                 "aoColumns": [
                     { "mDataProp": "BatchNumber", "sTitle": "Batch Number", "sWidth": "10%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
-                    { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
                     { "mDataProp": "PriorityDescription", "sTitle": "Priority", "sWidth": "10%" },
-                    { "mDataProp": "BatchTotal", "sTitle": "Batch Total", "sWidth": "10%" },
                     { "mDataProp": "LoanProductCategoryDescription", "sTitle": "Category", "sWidth": "10%" },
+                    { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "5%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-            });
-            // Refresh button click handler
-            $('#form').on('submit', function (e) {
-                e.preventDefault();
-                $('#DisbursmentsGrid').DataTable().ajax.reload();
             });
         });
 

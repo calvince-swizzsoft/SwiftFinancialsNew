@@ -14,6 +14,7 @@ using Application.MainBoundedContext.DTO.MessagingModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.List;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -299,6 +300,9 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
             if (!model.HasErrors)
             {
                 model.CreatedDate = DateTime.Now;
+
+                var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+                model.CreatedBy = userDTO.Email;
                 await _channelService.AddNewMessageGroupAsync(model, GetServiceHeader());
 
                 TempData["Success"] = "Operation Completed Successfully.";

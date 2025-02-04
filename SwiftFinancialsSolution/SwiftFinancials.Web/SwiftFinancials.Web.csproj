@@ -513,6 +513,7 @@
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_ReversalController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_DisbursementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChargesController.cs" />
@@ -1538,6 +1539,9 @@
     <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\GuarantorManagement\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\TransactionJournals\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Disbursement\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

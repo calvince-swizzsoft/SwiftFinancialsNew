@@ -100,14 +100,14 @@ namespace SwiftFinancials.Web.Areas.Loaning
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
             var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             var userEmail = userDTO.Email;
-            if (userEmail == loaneeCustomer.CreatedBy || userEmail == loaneeCustomer.AppraisedBy || userEmail == loaneeCustomer.ApprovedBy)
-            {
-                await ServeNavigationMenus();
-                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
+            //if (userEmail == loaneeCustomer.CreatedBy || userEmail == loaneeCustomer.AppraisedBy || userEmail == loaneeCustomer.ApprovedBy)
+            //{
+            //    await ServeNavigationMenus();
+            //    ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
 
-                TempData["UnAuthorized"] = "Unauthorized Access!\nYou are not Authorized to Appraise Loans.";
-                return RedirectToAction("Index");
-            }
+            //    TempData["UnAuthorized"] = "Unauthorized Access!\nYou are not Authorized to Appraise Loans.";
+            //    return RedirectToAction("Index");
+            //}
 
             if (loaneeCustomer != null)
             {
