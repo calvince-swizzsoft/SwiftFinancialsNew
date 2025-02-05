@@ -507,6 +507,7 @@
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankReconciliation_PeriodsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_DisbursementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DisbursementController.cs" />
@@ -515,6 +516,7 @@
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_DisbursementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChargesController.cs" />
@@ -1546,6 +1548,7 @@
     <Content Include="Areas\Accounts\Views\BatchVerification_Disbursement\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchAuthorization_Disbursement\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchAuthorization_Disbursement\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Voucher\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2068,6 +2071,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Alternatechannel\" />
+    <Folder Include="Areas\Accounts\Views\BatchAuthorization_Voucher\" />
     <Folder Include="Areas\Accounts\Views\Credit\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
