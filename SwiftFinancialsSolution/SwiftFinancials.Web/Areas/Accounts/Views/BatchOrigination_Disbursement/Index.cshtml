@@ -44,26 +44,21 @@
                     <hr />
                     @Html.ActionLink("Create Disbursement Batch", "Create", "BatchOrigination_Disbursement", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
-                    @if (TempData["Verification"] != null)
-                    {
-                        <div class="alert alert-success">
-                            @TempData["Verification"]
-                        </div>
-                    }
-
-                    @if (TempData["Authorization"] != null)
-                    {
-                        <div class="alert alert-success">
-                            @TempData["Authorization"]
-                        </div>
-                    }
-
                     @if (TempData["SuccessMessage"] != null)
                     {
-                        <div class="alert alert-success">
-                            @TempData["SuccessMessage"]
-                        </div>
-                    }                    <div class="ibox-tools">
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Success",
+                                    text: "@TempData["SuccessMessage"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
+                    }
+
+                    <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
                         </a>
@@ -77,57 +72,6 @@
                         <div class="sk-double-bounce1"></div>
                         <div class="sk-double-bounce2"></div>
                     </div>
-
-                    <div class="blue-section">
-                        <form id="filterForm">
-                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
-                                <div class="col-lg-2">
-                                    <div class="form-group form-group-lg">
-                                        <label for="filterType">Status</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Status, batchStatus,
-                                            new { @class = "form-control input-md", @id = "Status" })
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-2">
-                                    <div class="form-group form-group-lg">
-                                        <label for="filterType">Start Date</label>
-                                        <div class="input-group">
-                                            <input type="date" class="form-control" id="startDate" value="@DateTime.Now.AddDays(-355).ToString("yyyy-MM-dd")" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-2">
-                                    <div class="form-group form-group-lg">
-                                        <label for="filterType">End Date</label>
-                                        <div class="input-group">
-                                            <input type="date" class="form-control" id="endDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-5" style="margin-top: 27px;">
-                                    <div class="form-group spacing-form-group">
-                                        <div class="input-group text-box">
-                                            @Html.TextBox("filterValue", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "filterValue" })
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-1" style="margin-top:20px;">
-                                    <div class="form-group form-group-sm">
-                                        <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <br />
                     <div class="table-responsive">
                         <table id="LoanDisbursementBatchesGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
@@ -164,26 +108,6 @@
                 "sAjaxSource": "@(Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
 
-                "fnServerParams": function (aoData) {
-                    var startDateValue = $('#startDate').val();
-                    var endDateValue = $('#endDate').val();
-
-                    var formattedStartDate = startDateValue ? new Date(startDateValue).toISOString().split("T")[0] : null;
-                    var formattedEndDate = endDateValue ? new Date(endDateValue).toISOString().split("T")[0] : null;
-
-                    console.log("Sending AJAX Params:");
-                    console.log("Status:", $('#Status').val());
-                    console.log("Start Date:", formattedStartDate);
-                    console.log("End Date:", formattedEndDate);
-                    console.log("Filter Value:", $('#filterValue').val());
-
-                    aoData.push({ "name": "Status", "value": $('#Status').val() });
-                    aoData.push({ "name": "startDate", "value": formattedStartDate });
-                    aoData.push({ "name": "endDate", "value": formattedEndDate });
-                    aoData.push({ "name": "filterValue", "value": $('#filterValue').val() });
-                },
-
-
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -196,8 +120,8 @@
 
                     var viewButton = `<a class="btn btn-primary" style="width: 150px;" href="/accounts/BatchOrigination_Disbursement/Details/${aData.Id}">View</a>`;
 
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewButton);
+                    $('td:eq(8)', nRow).html(dt_Created);
+                    $('td:eq(9)', nRow).html(viewButton);
 
                     return nRow;
                 },
@@ -210,6 +134,7 @@
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
                     { "mDataProp": "PriorityDescription", "sTitle": "Priority", "sWidth": "10%" },
                     { "mDataProp": "LoanProductCategoryDescription", "sTitle": "Category", "sWidth": "10%" },
+                    { "mDataProp": "BatchTotal", "sTitle": "Batch Total", "sWidth": "10%" },
                     { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],

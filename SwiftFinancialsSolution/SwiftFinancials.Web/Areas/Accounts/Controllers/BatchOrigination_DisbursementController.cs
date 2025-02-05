@@ -25,45 +25,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int Status, DateTime startDate, DateTime endDate, string filterValue)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
             int searchRecordCount = 0;
 
-            var pageCollectionInfo = new PageCollectionInfo<LoanDisbursementBatchDTO>();
-
-            if (filterValue == string.Empty || filterValue == "" && startDate != null && endDate != null)
-                pageCollectionInfo = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(
-                 Status,
-                 startDate,
-                 endDate,
-                 jQueryDataTablesModel.sSearch,
-                 0,
-                 int.MaxValue,
-                 GetServiceHeader()
-                 );
-            else if (startDate == null || endDate == null)
-                pageCollectionInfo = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(
-                 Status,
-                 DateTime.Now.AddDays(-1000),
-                 DateTime.Now,
-                 jQueryDataTablesModel.sSearch,
-                 0,
-                 int.MaxValue,
-                 GetServiceHeader()
-                 );
-            else if (filterValue != null | filterValue != string.Empty && startDate != null && endDate != null)
-                pageCollectionInfo = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(
-                Status,
-                startDate,
-                endDate,
-                filterValue,
-                0,
-                int.MaxValue,
-                GetServiceHeader()
-                );
-            else
-                pageCollectionInfo = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(
+            var pageCollectionInfo = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(
                     1,
                     DateTime.Now.AddDays(-1000),
                     DateTime.Now,
@@ -107,13 +74,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             );
         }
 
-
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
             var LDB = await _channelService.FindLoanDisbursementBatchAsync(id, GetServiceHeader());
-
+            var loanDisbursementBatchEntries = await _channelService.FindLoanDisbursementBatchEntriesByLoanDisbursementBatchIdAsync(id, GetServiceHeader());
+            ViewBag.BatchEntries = loanDisbursementBatchEntries;
             return View(LDB);
         }
         public async Task<ActionResult> Create()
@@ -134,7 +101,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(LoanDisbursementBatchDTO loanDisbursementBatchDTO, LoanDisbursementBatchEntryDTO loanDisbursementBatchEntryDTO)
+        public async Task<ActionResult> Create(LoanDisbursementBatchDTO loanDisbursementBatchDTO)
         {
             loanDisbursementBatchDTO.ValidateAll();
 
@@ -145,24 +112,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 {
                     loanDisbursementBatchDTO.BranchId = (Guid)userDTO.BranchId;
                 }
-
                 var loanDisbursement = await _channelService.AddLoanDisbursementBatchAsync(loanDisbursementBatchDTO, GetServiceHeader());
-                TempData["SuccessMessage"] = "Loan Disbursement Batch created Successful ";
-                //if (loanDisbursement != null)
-                //{
-                //    var verifiedLoanCasesList = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Audited, string.Empty, (int)LoanCaseFilter.CaseNumber, 0, 200, false, GetServiceHeader());
 
-                //    var verifiedLoanCases = verifiedLoanCasesList.PageCollection.Where(x => x.IsBatched == false);
-
-                //    foreach (var loanCase in verifiedLoanCases)
-                //    {
-                //        loanDisbursementBatchEntryDTO.LoanCaseId = loanCase.Id;
-                //        loanDisbursementBatchEntryDTO.LoanDisbursementBatchId = loanDisbursement.Id;
-
-                //        await _channelService.AddLoanDisbursementBatchEntryAsync(loanDisbursementBatchEntryDTO, GetServiceHeader());
-                //    }
-                //}
-
+                TempData["SuccessMessage"] = "Operation Completed Successfully";
                 return RedirectToAction("Index");
             }
             else
@@ -222,114 +174,5 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(loanDisbursementBatchDTO);
             }
         }
-
-        //public async Task<ActionResult> Verify(Guid id)
-        //{
-        //    await ServeNavigationMenus();
-
-        //    ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
-        //    ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(string.Empty);
-        //    ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-        //    ViewBag.BatchStatuselectList = GetBatchStatusTypeSelectList(string.Empty);
-        //    ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-        //    ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
-
-
-        //    var loanDisbursementBatchDTO = await _channelService.FindLoanDisbursementBatchAsync(id, GetServiceHeader());
-
-        //    return View(loanDisbursementBatchDTO);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Verify(Guid id, LoanDisbursementBatchDTO loanDisbursementBatchDTO)
-        //{
-        //    loanDisbursementBatchDTO.ValidateAll();
-        //    int batchAuthOption = loanDisbursementBatchDTO.Auth;
-        //    if (!loanDisbursementBatchDTO.HasErrors)
-        //    {
-        //        await _channelService.AuditLoanDisbursementBatchAsync(loanDisbursementBatchDTO, batchAuthOption, GetServiceHeader());
-
-        //        ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
-        //        ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
-        //        ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
-
-        //        ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        var errorMessages = loanDisbursementBatchDTO.ErrorMessages;
-        //        ViewBag.BatchStatuselectList = GetBatchStatusTypeSelectList(loanDisbursementBatchDTO.Status.ToString());
-        //        ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(loanDisbursementBatchDTO.Type.ToString());
-
-        //        ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
-        //        ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
-        //        ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
-
-        //        ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
-
-        //        TempData["Verification"] = "Verification successfull";
-        //        return View(loanDisbursementBatchDTO);
-        //    }
-        //}
-
-        //public async Task<ActionResult> Authorize(Guid id)
-        //{
-        //    await ServeNavigationMenus();
-
-        //    ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
-        //    ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(string.Empty);
-        //    ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-        //    ViewBag.BatchStatuselectList = GetBatchStatusTypeSelectList(string.Empty);
-        //    ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-        //    ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
-
-        //    var loanDisbursementBatchDTO = await _channelService.FindLoanDisbursementBatchAsync(id, GetServiceHeader());
-
-        //    return View(loanDisbursementBatchDTO);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Authorize(Guid id, LoanDisbursementBatchDTO loanDisbursementBatchDTO)
-        //{
-        //    /*var batchAuthOption = wireTransferBatchDTO.batch*/
-        //    int batchAuthOption = loanDisbursementBatchDTO.Auth;
-        //    loanDisbursementBatchDTO.ValidateAll();
-
-
-
-        //    if (!loanDisbursementBatchDTO.HasErrors)
-        //    {
-        //        await _channelService.AuthorizeLoanDisbursementBatchAsync(loanDisbursementBatchDTO,batchAuthOption, 1, GetServiceHeader());
-
-        //        ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
-        //        ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
-        //        ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
-        //        ViewBag.BatchStatuselectList = GetBatchStatusTypeSelectList(loanDisbursementBatchDTO.Status.ToString());
-        //        ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(loanDisbursementBatchDTO.Auth.ToString());
-
-        //        ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
-        //        TempData["Authorization"] = "Authorization successfull";
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        var errorMessages = loanDisbursementBatchDTO.ErrorMessages;
-
-        //        ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
-        //        ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
-        //        ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
-
-        //        ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
-
-        //        return View(loanDisbursementBatchDTO);
-        //    }
-        //}
     }
-
 }

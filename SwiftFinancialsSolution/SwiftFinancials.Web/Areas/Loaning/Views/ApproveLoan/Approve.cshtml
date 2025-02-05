@@ -885,7 +885,7 @@
                         <fieldset class="incomeAdjustment-section">
                             <div style="border: solid 0px; align-content: center; justify-content: center; width: 100%; margin-top: 20px;">
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanApprovalOption, htmlAttributes: new { @class = "" })
                                             @Html.DropDownListFor(model => model.LoanApprovalOption, loanApprovalOption, "-- Select loan approval action --", new { @class = "form-control" })
@@ -893,15 +893,23 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ApprovedAmount, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.ApprovedAmount, new { htmlAttributes = new { @class = "form-control", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.ApprovedAmount, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.ApprovalRemarks, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.ApprovalRemarks, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.EditorFor(model => model.ApprovalRemarks, new { htmlAttributes = new { @class = "form-control", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.ApprovalRemarks, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4" style="margin-top: 20px;">
+                                    <div class="col-lg-3" style="margin-top: 20px;">
                                         <input type="submit" id="submitFormData" class="btn btn-primary" style="width: 150px;" name="name" value="Update" />
                                     </div>
                                 </div>

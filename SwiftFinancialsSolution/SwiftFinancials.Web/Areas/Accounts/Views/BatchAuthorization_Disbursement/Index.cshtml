@@ -36,7 +36,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Disbursement Batch Verification</h2>
+                    <h2>Loan Disbursement Batch Authorization</h2>
 
                     @if (TempData["Success"] != null)
                     {
@@ -51,15 +51,15 @@
                             });
                         </script>
                     }
-
-                    @if (TempData["Audited"] != null)
+                    
+                    @if (TempData["Authorized"] != null)
                     {
                         <script>
                             document.addEventListener("DOMContentLoaded", function () {
                                 Swal.fire({
                                     icon: "warning",
                                     title: "Warning!",
-                                    text: "@TempData["Audited"]",
+                                    text: "@TempData["Authorized"]",
                                     confirmButtonColor: "#007bff"
                                 });
                             });
@@ -113,7 +113,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "BatchVerification_Disbursement", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "BatchAuthorization_Disbursement", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
 
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -126,10 +126,10 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var viewButton = `<a class="btn btn-primary" style="width: 150px;" href="/accounts/BatchVerification_Disbursement/verify/${aData.Id}">Verify</a>`;
+                    var AuthorizeButton = `<a class="btn btn-primary" style="width: 150px;" href="/accounts/BatchAuthorization_Disbursement/Authorize/${aData.Id}">Authorize</a>`;
 
                     $('td:eq(8)', nRow).html(dt_Created);
-                    $('td:eq(9)', nRow).html(viewButton);
+                    $('td:eq(9)', nRow).html(AuthorizeButton);
 
                     return nRow;
                 },

@@ -15,7 +15,7 @@ using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class BatchVerification_DisbursementController : MasterController
+    public class BatchAuthorization_DisbursementController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -76,85 +76,53 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        public async Task<ActionResult> Verify(Guid id)
+        public async Task<ActionResult> Authorize(Guid id)
         {
             await ServeNavigationMenus();
 
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
             var loanDisbursementBatchDTO = await _channelService.FindLoanDisbursementBatchAsync(id, GetServiceHeader());
-            if (loanDisbursementBatchDTO.Status == (int)BatchStatus.Audited)
+            if (loanDisbursementBatchDTO.Status == (int)BatchStatus.Posted)
             {
-                TempData["Audited"] = "The selected Batch is already Verified";
+                TempData["Authorized"] = "The selected Batch is already Authorized";
                 return RedirectToAction("Index");
             }
 
-            var verifiedLoanCasesList = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Audited,
-                string.Empty, (int)LoanCaseFilter.CaseNumber, 0, 200, false, GetServiceHeader());
-            var verifiedLoanCases = verifiedLoanCasesList.PageCollection.Where(x => x.IsBatched == false);
-
-            ViewBag.BatchEntries = verifiedLoanCases;
+            var loanDisbursementBatchEntries = await _channelService.FindLoanDisbursementBatchEntriesByLoanDisbursementBatchIdAsync(id, GetServiceHeader());
+            ViewBag.BatchEntries = loanDisbursementBatchEntries;
             return View(loanDisbursementBatchDTO);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(string selectedIds, LoanDisbursementBatchDTO loanDisbursementBatchDTO, LoanDisbursementBatchEntryDTO loanDisbursementBatchEntryDTO)
+        public async Task<ActionResult> Authorize(LoanDisbursementBatchDTO loanDisbursementBatchDTO)
         {
-            if (string.IsNullOrWhiteSpace(selectedIds))
-            {
-                await ServeNavigationMenus();
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-                TempData["required"] = "Loan Disbursement Batch Entries are required!";
-                return View(loanDisbursementBatchDTO);
-            }
-
             int batchAuthOption = loanDisbursementBatchDTO.Auth;
             loanDisbursementBatchDTO.ValidateAll();
 
             if (!loanDisbursementBatchDTO.HasErrors)
             {
-                List<Guid> selectedBatchIds = selectedIds
-                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(id => Guid.Parse(id.Trim())).ToList();
+                await _channelService.AuthorizeLoanDisbursementBatchAsync(loanDisbursementBatchDTO, batchAuthOption, 1, GetServiceHeader());
 
-                List<LoanDisbursementBatchEntryDTO> batchEntryDTO = new List<LoanDisbursementBatchEntryDTO>();
+                ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
+                ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
+                ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
+                ViewBag.BatchStatuselectList = GetBatchStatusTypeSelectList(loanDisbursementBatchDTO.Status.ToString());
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(loanDisbursementBatchDTO.Auth.ToString());
 
-                foreach (var loanCaseId in selectedBatchIds)
-                {
-                    loanDisbursementBatchEntryDTO.LoanCaseId = loanCaseId;
-                    loanDisbursementBatchEntryDTO.LoanDisbursementBatchId = loanDisbursementBatchDTO.Id;
-
-                    await _channelService.AddLoanDisbursementBatchEntryAsync(loanDisbursementBatchEntryDTO, GetServiceHeader());
-
-                    // Calculate Batch Total
-                    List<LoanCaseDTO> LCDTO = new List<LoanCaseDTO>();
-                    decimal batchTotal = 0;
-                    var loanCase = await _channelService.FindLoanCaseAsync(loanCaseId, GetServiceHeader());
-                    if (loanCase != null)
-                    {
-                        LCDTO.Add(loanCase);
-                        batchTotal += loanCase.ApprovedAmount;
-                    }
-                    //Update LoanDisbursement with the Batch Total
-                    var mainBatchDetails = await _channelService.FindLoanDisbursementBatchAsync(loanDisbursementBatchDTO.Id, GetServiceHeader());
-                    mainBatchDetails.BatchTotal = batchTotal;
-                    await _channelService.UpdateLoanDisbursementBatchAsync(mainBatchDetails, GetServiceHeader());
-                }
-                var submit = await _channelService.AuditLoanDisbursementBatchAsync(loanDisbursementBatchDTO, batchAuthOption, GetServiceHeader());
-
+                ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
                 TempData["Success"] = "Operation Completed Successfully";
-
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = loanDisbursementBatchDTO.ErrorMessages;
                 string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
                 ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(loanDisbursementBatchDTO.AuthDescriptiom.ToString());
                 TempData["Fail"] = $"Operation Failed!\n{errorMessage}";
+
                 return View(loanDisbursementBatchDTO);
             }
         }

@@ -506,6 +506,7 @@
     <Compile Include="Areas\Accounts\Controllers\BackOfficeTransfersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankReconciliation_PeriodsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_DisbursementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DisbursementController.cs" />
@@ -1542,6 +1543,9 @@
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchVerification_Disbursement\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Disbursement\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Disbursement\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Disbursement\Authorize.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
