@@ -121,11 +121,6 @@
         }
 </style>
 
-
-
-
-
-
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Back Office</h1>
@@ -155,6 +150,20 @@
                         <div class="alert alert-danger">
                             <strong>Failed !</strong> @TempData["CancelError"]
                         </div>
+                    }
+
+                    @if (TempData["UnAuthorized"] != null)
+                    {
+                        <script type="text/javascript">
+                            document.addEventListener('DOMContentLoaded', function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title:'Error!',
+                                    text: '@TempData["UnAuthorized"]',
+                                    confirmButtonColor: '#FF0000',
+                                })
+                            });
+                        </script>
                     }
 
                     <div class="ibox-tools">

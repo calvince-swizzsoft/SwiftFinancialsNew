@@ -152,7 +152,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Reference")]
-        [Required]
         public string Reference { get; set; }
 
         [DataMember]

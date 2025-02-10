@@ -140,7 +140,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h1>Dashboard Module</h1>
+        <h1>Command Hub</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -303,9 +303,7 @@
                                         <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
                                             <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                                 <tr>
-                                                    <th>Guarantor Name</th>
-                                                    <th>Employer</th>
-                                                    <th>Account Number</th>
+                                                    <th>Customer</th>
                                                     <th>Appraisal Factor</th>
                                                     <th>Total Shares</th>
                                                     <th>Committed Shares</th>
@@ -319,9 +317,7 @@
                                                     foreach (var guarantors in ViewBag.LoanGuarantors)
                                                     {
                                                         <tr>
-                                                            <td>@guarantors.Customer.FullName</td>
-                                                            <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
-                                                            <td>@guarantors.Customer.Reference1</td>
+                                                            <td>@guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
                                                             <td>@guarantors.AppraisalFactor</td>
                                                             <td style="text-align: right;">@guarantors.TotalShares</td>
                                                             <td style="text-align: right;">@guarantors.CommittedShares</td>

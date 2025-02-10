@@ -120,7 +120,56 @@
         background-color: #e0f0ff;
     }
 
+    #dataTableEntries {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
+        #dataTableEntries th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #dataTableEntries th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        #dataTableEntries tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #dataTableEntries td {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        #dataTableEntries tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
+
+        #dataTableEntries tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        #dataTableEntries tr:last-child td {
+            border-bottom: none;
+        }
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -142,17 +191,6 @@
         </ol>
     </div>
 </div>
-
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -197,190 +235,165 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-dark">
-                    <div class="main">
-                        @using (Html.BeginForm("Add", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "Addform" }))
-                        {
-
-                            <div class="row custom-style">
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg spacing-form-group">
-                                        @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.Type)
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-group-lg spacing-form-group">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control", placeholder = "Enter space to autofill .." } })
-                                    </div>
-                                    <div class="form-group form-group-lg spacing-form-group">
-                                        @Html.LabelFor(model => model.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                        @Html.ValidationMessageFor(model => model.SecondaryDescription, "", new { @class = "" })
-                                    </div>
-
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg spacing-form-group">
-                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                    </div>
-
-                                    <div class="form-group spacing-form-group" id="data_3">
-                                        @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-group-lg spacing-form-group">
-                                        @Html.LabelFor(model => model.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                        @Html.ValidationMessageFor(model => model.PrimaryDescription, "", new { @class = "" })
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Add", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "Addform" }))
+                    {
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg spacing-form-group">
+                                    @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.Type)
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg spacing-form-group">
-                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.PostingPeriodId)
-                                        @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Enter space to autofill.." } })
-                                    </div>
-                                    <div class="form-group form-group-lg spacing-form-group">
-                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                    </div>
-
-
+                                <div class="form-group form-group-lg spacing-form-group">
+                                    @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.ChartOfAccountId)
+                                    @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control", placeholder = "Enter space to autofill .." } })
                                 </div>
-
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg spacing-form-group">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter space to autofill.." } })
-                                    </div>
-                                    <div class="form-group form-group-lg spacing-form-group">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "" })
-                                    </div>
+                                <div class="form-group form-group-lg spacing-form-group">
+                                    @Html.LabelFor(model => model.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                    @Html.ValidationMessageFor(model => model.SecondaryDescription, "", new { @class = "" })
                                 </div>
 
                             </div>
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg spacing-form-group">
+                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group spacing-form-group" id="data_3">
+                                    @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-lg spacing-form-group">
+                                    @Html.LabelFor(model => model.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                    @Html.ValidationMessageFor(model => model.PrimaryDescription, "", new { @class = "" })
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg spacing-form-group">
+                                    @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.PostingPeriodId)
+                                    @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Enter space to autofill.." } })
+                                </div>
+                                <div class="form-group form-group-lg spacing-form-group">
+                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                </div>
 
 
+                            </div>
 
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg spacing-form-group">
+                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.BranchId)
+                                    @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter space to autofill.." } })
+                                </div>
+                                <div class="form-group form-group-lg spacing-form-group">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <div class="journal-voucher-container">
+                            <h2>Add Journal Voucher Entry</h2>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.JournalVoucherEntries[0].EntryType, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.JournalVoucherEntries[0].EntryType, journalVoucherEntryTypes, new { @class = "form-control input-md entry-field" })
+                                            @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].EntryType)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.JournalVoucherEntries[0].ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.JournalVoucherEntries[0].ChartOfAccountId, new { @id = "JournalVoucherEntriesChartOfAccountId" })
+                                        @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.JournalVoucherEntries[0].ChartOfAccountAccountName, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "Enter space to autofill.." } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.JournalVoucherEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.JournalVoucherEntries[0].Reference, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                        @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].Reference, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.JournalVoucherEntries[0].Amount, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.JournalVoucherEntries[0].Amount, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "Ksh", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].Amount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div style="text-align: right; margin: 20px 20px;">
+                                    <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                </div>
+
+                            </div>
 
                             <br />
 
-                            <div class="journal-voucher-container">
-                                <h2>Add Journal Voucher Entry</h2>
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.JournalVoucherEntries[0].EntryType, new { @class = "control-label" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.JournalVoucherEntries[0].EntryType, journalVoucherEntryTypes, new { @class = "form-control input-md entry-field" })
-                                                @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].EntryType)
-                                            </div>
-                                        </div>
-                                    </div>
+                            <row>
+                                <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                        <tr>
+                                            <th style="width: 15%;">Entry Type</th>
+                                            <th style="width: 15%;">Chart of Account</th>
+                                            <th style="width: 5%;">Reference</th>
+                                            <th style="width: 10%;">Amount</th>
+                                            <th style="width: 5%;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </row>
+                        </div>
+                    }
 
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.JournalVoucherEntries[0].ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.JournalVoucherEntries[0].ChartOfAccountId, new { @id = "JournalVoucherEntriesChartOfAccountId" })
-                                            @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.JournalVoucherEntries[0].ChartOfAccountAccountName, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "Enter space to autofill.." } })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.JournalVoucherEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.JournalVoucherEntries[0].Reference, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
-                                            @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].Reference, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.JournalVoucherEntries[0].Amount, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.JournalVoucherEntries[0].Amount, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "Ksh", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].Amount, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-
-                                </div>
-
-
-
-
-                                <div class="row">
-                                    <!-- Center the Submit button -->
-                                    <div style="text-align: right; margin: 20px 20px;">
-                                        <input type="submit" value="Add" class="btn btn-primary"  style="width: 150px; border-radius: 4px;" />
-                                    </div>
-
-                                </div>
-
-                                <br />
-
-                                <row>
-
-                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
-                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                            <tr>
-                                                <th style="width: 15%;">Entry Type</th>
-                                                <th style="width: 15%;">Chart of Account</th>
-                                                <th style="width: 5%;">Reference</th>
-                                                <th style="width: 10%;">Amount</th>
-                                                <th style="width: 5%;">Action</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </row>
-                            </div>
-
-
-
-
-
-                        }
-
-
-                        @using (Html.BeginForm("Create", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", id = "voucherForm" }))
-                        {
-                            <div class="bottom-button">
-                                <div class="row">
-                                    <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
-                                        <div class="form-group form-group-sm">
-                                            <input type="submit" value="Create" class="btn btn-primary" />
-                                        </div>
+                    @using (Html.BeginForm("Create", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", id = "voucherForm" }))
+                    {
+                        <div class="blue-section">
+                            <div class="row">
+                                <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Create" class="btn btn-primary" style="width: 150px;"/>
                                     </div>
                                 </div>
                             </div>
-                        }
-
-
-                    </div>
-
+                        </div>
+                    }
                 </div>
-
             </div>
         </div>
     </div>
@@ -433,6 +446,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
     <script>
          //Create form submission
 
@@ -485,7 +499,7 @@
 
 
 
-    
+
 
 
 
@@ -493,7 +507,7 @@
 
     <script>
 
-       
+
     $(document).ready(function () {
         $('#Addform').submit(function (event) {
             event.preventDefault(); // Prevent the form from submitting normally
@@ -537,7 +551,7 @@
 
 
         function updateEntriesTable(entries) {
-            var tableBody = $("#ChargeSplits tbody");
+            var tableBody = $("#dataTableEntries tbody");
             tableBody.empty(); // Clear existing entries
 
             $.each(entries, function (index, entry) {

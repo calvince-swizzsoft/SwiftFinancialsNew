@@ -24,36 +24,47 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
-
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel,int status, DateTime startDate, DateTime endDate)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindJournalVouchersByStatusAndFilterInPageAsync(status,startDate,endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindJournalVouchersByStatusAndFilterInPageAsync(status, startDate, endDate, jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                /*pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(journalVoucher => journalVoucher.CreatedDate).ToList();*/
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(k => k.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<JournalVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<JournalVoucherDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
-
-
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -69,11 +80,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.JournalVoucherEntryDTOs = voucherBatches;
             return View(journalVoucherDTO);
         }
-
-
-
-
-
         
         [HttpPost]
         public async Task<ActionResult> Add(JournalVoucherDTO journalVoucherDTO)
@@ -191,7 +197,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View("Create", journalVoucherDTO);
         }
 
-
         [HttpPost]
         public async Task<ActionResult> removeJournalEntryEdit(Guid? id, JournalVoucherDTO  journalVoucherDTO)
         {
@@ -221,7 +226,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View("Edit", JournalVoucherEntryDTOs);
         }
 
-
         public async Task<ActionResult> Create()
         {
 
@@ -235,10 +239,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View();
         }
-
-
-        
-
 
         [HttpPost]
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
@@ -319,9 +319,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-
-
-
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
@@ -342,7 +339,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(journalVoacherDTO);
         }
-
 
         [HttpPost]
 
@@ -450,8 +446,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View("Edit",journalVoucherDTO);
         }
 
-
-
         public async Task<ActionResult> JournalVoucherEdit(JournalVoucherDTO journalVoucherDTO)
         {
             Session["TypeDescription"] = journalVoucherDTO.TypeDescription;
@@ -466,7 +460,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View("edit", journalVoucherDTO);
         }
-
 
         [HttpPost]
        
@@ -522,104 +515,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
 
             return RedirectToAction("view");
-        }
-
-               
-    
-
-        
-
-        public async Task<ActionResult> Verify(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(string.Empty);
-
-            var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
-
-            var voucherBatches = await _channelService.FindJournalVoucherEntriesByJournalVoucherIdAsync(id, GetServiceHeader());
-
-            ViewBag.JournalVoucherEntryDTOs = voucherBatches;
-
-            return View(journalVoucherDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(Guid id, JournalVoucherDTO journalVoucherDTO)
-        {
-            journalVoucherDTO.ValidateAll();
-            int AuthOption = journalVoucherDTO.AuthOption;
-            if (!journalVoucherDTO.HasErrors)
-            {
-                await _channelService.AuditJournalVoucherAsync(journalVoucherDTO, AuthOption, GetServiceHeader());
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-
-                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
-                TempData["verifySuccess"] = "Journal batches have been verified succesifully";
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = journalVoucherDTO.ErrorMessages;
-
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-
-                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
-                return View(journalVoucherDTO);
-            }
-        }
-
-        public async Task<ActionResult> Authorize(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(string.Empty);
-
-            var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
-
-            var voucherBatches = await _channelService.FindJournalVoucherEntriesByJournalVoucherIdAsync(id, GetServiceHeader());
-
-            ViewBag.JournalVoucherEntryDTOs = voucherBatches;
-
-            return View(journalVoucherDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Authorize(Guid id, JournalVoucherDTO journalVoucherDTO)
-        {
-
-            var journalVoucherAuthOption = journalVoucherDTO.AuthOption;
-
-
-            journalVoucherDTO.ValidateAll();
-
-            if (!journalVoucherDTO.HasErrors)
-            {
-                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO, journalVoucherAuthOption, 1, GetServiceHeader());
-
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-
-                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
-
-                TempData["AuthSucess"] = "Authorization Successiful";
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = journalVoucherDTO.ErrorMessages;
-
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-
-                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
-
-                return View(journalVoucherDTO);
-            }
         }
 
         [HttpGet]

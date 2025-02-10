@@ -11,6 +11,13 @@
     var StandingOrderTriggers = ViewBag.loanRegistrationStandingOrderTriggers as List<SelectListItem>;
     //// Setting values in session
     ///  if (Session["beneficiaryAccounts"] != null)
+    ///
+    var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+    var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
+
+    var RecordStatus2 = ViewBag.RecordStatus2 as List<SelectListItem>;
+    var ProductCode2 = ViewBag.ProductCode2 as List<SelectListItem>;
+
     {
 
         Session["beneficiaryAccounts"] = Model?.Beneficiary;
@@ -63,11 +70,16 @@
 
 
 <style>
-    .select-btn.active {
-        background-color: #007bff; /* Blue background color */
-        color: #fff; /* White text color */
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
     }
 </style>
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -82,7 +94,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("Create", "CustomerAccountstandingorder", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -97,32 +109,28 @@
                                         <!-- Benefactor -->
                                         <div class="row">
                                             <div class="col-md-4">
-                                                @Html.LabelFor(model => model.benefactor.FullAccountNumber, new { @class = "control-label" })
+                                                @Html.LabelFor(model => model.benefactor.FullAccountNumber, "Benefactor Full Account Number", new { @class = "control-label" })
                                                 <div class="input-group" data-autoclose="true">
-                                                    @Html.HiddenFor(model => model.benefactor.CustomerId)
-                                                    @Html.TextBoxFor(model => model.benefactor.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                    @Html.HiddenFor(model => model.benefactor.Id, new { @Id = "BenefactorCustomerAccountId" })
+                                                    @Html.TextBoxFor(model => model.BenefactorCustomerAccountCustomerReference1, new { @Id = "BenefactorFullAccountNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                     <span class="input-group-addon">
                                                         <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
                                                     </span>
                                                 </div>
                                             </div>
 
-
-
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    @Html.LabelFor(model => model.benefactor.CustomerFullName, htmlAttributes: new { @class = "" })
+                                                    @Html.LabelFor(model => model.benefactor.CustomerFullName, "Benefactor Full Name", htmlAttributes: new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.benefactor.CustomerId)
-                                                    @Html.EditorFor(model => model.benefactor.CustomerFullName, new { htmlAttributes = new { @id = "BenefactorCustomerAccountCustomerFullName", @class = "form-control", @placeholder = "FullName", disabled = "disabled" } })
-                                                    @Html.ValidationMessageFor(model => model.benefactor.CustomerId, "", new { @class = "text-danger" })
+                                                    @Html.EditorFor(model => model.benefactor.CustomerFullName, new { htmlAttributes = new { @id = "BenefactorCustomerFullName", @class = "form-control", disabled = "disabled" } })
                                                 </div>
                                             </div>
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    @Html.LabelFor(model => model.benefactor.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.benefactor.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @id = "BenefactorProductDescription", @class = "form-control", @placeholder = "BenefactorProductDescription", disabled = "disabled" } })
-                                                    @Html.ValidationMessageFor(model => model.benefactor.CustomerAccountTypeProductCodeDescription, "", new { @id = "BenefactorProductDescription", @class = "text-danger" })
+                                                    @Html.LabelFor(model => model.benefactor.CustomerAccountTypeTargetProductDescription, "Benefactor Product Name", htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.benefactor.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "BenefactorProductDescription", @class = "form-control", disabled = "disabled" } })
                                                 </div>
                                             </div>
                                         </div>
@@ -132,67 +140,33 @@
 
 
                                 <!-- Beneficiary -->
-
                                 <div class="row">
                                     <div class="col-md-4">
-                                        @Html.LabelFor(model => model.Beneficiary.FullAccountNumber, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.Beneficiary.FullAccountNumber, "Beneficiary Full Account Number", new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.Beneficiary.CustomerId)
-                                            @Html.TextBoxFor(model => model.Beneficiary.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            @Html.HiddenFor(model => model.Beneficiary.Id, new { @Id = "BeneficiaryCustomerAccountId" })
+                                            @Html.TextBoxFor(model => model.Beneficiary.FullAccountNumber, new { @Id = "BeneficiaryFullAccountNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                             <span class="input-group-addon">
                                                 <a data-toggle="modal" data-target="#BeneficiarycustomerLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
                                         </div>
                                     </div>
 
-                                    @*<script>
-                                            document.addEventListener("DOMContentLoaded", function () {
-                                                // Select the search button element
-                                                var searchButton = document.getElementById("searchButton");
-
-                                                // Add event listener to the search button
-                                                searchButton.addEventListener("click", function () {
-                                                    // Call your function here if needed
-                                                    captureDetails2();
-                                                });
-                                            });
-                                        </script>
-                                        <script>
-                                            document.addEventListener("DOMContentLoaded", function () {
-                                                // Select the search button element
-                                                var searchButton = document.getElementById("searchButton2");
-
-                                                // Add event listener to the search button
-                                                searchButton.addEventListener("click", function () {
-                                                    // Call your function here if needed
-                                                    captureDetails3();
-                                                });
-                                            });
-                                        </script>*@
-
-
-
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.Beneficiary.CustomerFullName, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.Beneficiary.CustomerFullName, "Beneficiary Full Name", htmlAttributes: new { @class = "" })
                                             @Html.HiddenFor(model => model.Beneficiary.CustomerId)
-                                            @Html.EditorFor(model => model.Beneficiary.CustomerFullName, new { htmlAttributes = new { @id = "BenefactorCustomerAccountCustomerFullName", @class = "form-control", @placeholder = "Beneficiary FullName", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.Beneficiary.CustomerId, "", new { @class = "text-danger" })
-
+                                            @Html.EditorFor(model => model.Beneficiary.CustomerFullName, new { htmlAttributes = new { @id = "BeneficiaryCustomerFullName", @class = "form-control", disabled = "disabled" } })
                                         </div>
                                     </div>
 
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.Beneficiary.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Beneficiary.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @id = "BeneficiaryProductDescription", @class = "form-control", @placeholder = "FullName", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.Beneficiary.CustomerAccountTypeProductCodeDescription, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.Beneficiary.CustomerAccountTypeTargetProductDescription, "Beneficiary Product Name", htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Beneficiary.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "BeneficiaryProductDescription", @class = "form-control", disabled = "disabled" } })
                                         </div>
                                     </div>
-
-
-
                                 </div>
 
 
@@ -348,48 +322,93 @@
             </div>
         </div>
     </div>
-
-
-
-
-    <!-- BenefactorCustomerLookupModal.cshtml -->
-    <div class="modal fade" id="BenefactorcustomerLookupModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h3 class="font-bold">Benefactor Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-                </div>
-                <table id="BenefactorCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                    <tbody>
-                        <tr>
-                            <td class="dataTables_empty">
-                                Loading data from server
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-
-
-
 </div>
 
 
-
-<div class="modal  fade" id="BeneficiarycustomerLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="BenefactorcustomerLookupModal" role="dialog" aria-hidden="true" style="width: auto;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Beneficiary Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Benefactor Customer Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
+
+            <div class="blue-section">
+                <form id="modalFilterForm2">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.CustomerAccountTypeProductCode)
+                                @Html.DropDownListFor(m => m.CustomerAccountTypeProductCode, ProductCode2, new { @class = "form-control", id = "productCode" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.RecordStatus)
+                                @Html.DropDownListFor(m => m.RecordStatus, RecordStatus2, new { @class = "form-control", id = "recordStatus" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1" style="margin-top: 20px;">
+                            <div class="form-group col-md-4" style="align-content:center;">
+                                <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <table id="BenefactorCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="BeneficiarycustomerLookupModal" role="dialog" aria-hidden="true" style="width: auto;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Beneficiary Customer Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+
+            <div class="blue-section">
+                <form id="modalFilterForm3">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.CustomerAccountTypeProductCode)
+                                @Html.DropDownListFor(m => m.CustomerAccountTypeProductCode, ProductCode2, new { @class = "form-control", id = "productCode2" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.RecordStatus)
+                                @Html.DropDownListFor(m => m.RecordStatus, RecordStatus2, new { @class = "form-control", id = "recordStatus2" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1" style="margin-top: 20px;">
+                            <div class="form-group col-md-4" style="align-content:center;">
+                                <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
             <table id="BeneficiaryCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
@@ -406,6 +425,9 @@
         </div>
     </div>
 </div>
+
+
+
 <input type='hidden' id='h' name='h' />
 <!-- Add these scripts in your HTML file -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -455,362 +477,158 @@
     @Scripts.Render("~/plugins/duallist")
 
 
+    <script>
+         //Customers Accounts Lookup - Customer Details Tab
+            var defaultProductCode2 = $('#productCode2').val();
+            var defaultRecordStatus2 = $('#recordStatus2').val();
+        $('#BenefactorCustomerAccountsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                //Ensure to include the filters in the Ajax request
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "productCode", "value": $('#productCode').val() || defaultProductCode2 },
+                        { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus2 }
+
+                    );
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectBenefactorCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "25%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "25%" },
+                    { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "5%" },
+                    { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Code", "sWidth": "10%" },
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                //Refresh button for reloading the Datable after Applying the filters
+                $('#modalFilterForm2').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#BenefactorCustomerAccountsGrid').DataTable().ajax.reload();
+                });
+
+        function selectBenefactorCustomerAccounts(id) {
+            $.ajax({
+                url: '/Accounts/CustomerAccountstandingorder/BenefactorCustomerAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        $('#BenefactorCustomerAccountId').val(response.data.BenefactorCustomerAccountId);
+                        $('#BenefactorFullAccountNumber').val(response.data.BenefactorFullAccountNumber);
+                        $('#BenefactorCustomerFullName').val(response.data.BenefactorCustomerAccountCustomerFullName);
+                        $('#BenefactorProductDescription').val(response.data.BenefactorProductDescription);
+
+                        $('#BenefactorcustomerLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
 
 
 
     <script>
+         //Customers Accounts Lookup - Customer Details Tab
+            var defaultProductCode2 = $('#productCode2').val();
+            var defaultRecordStatus2 = $('#recordStatus2').val();
+        $('#BeneficiaryCustomerAccountsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("BeneficiaryIndex", "CustomerAccountstandingorder", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                //Ensure to include the filters in the Ajax request
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "productCode2", "value": $('#productCode2').val() || defaultProductCode2 },
+                        { "name": "recordStatus2", "value": $('#recordStatus2').val() || defaultRecordStatus2 }
 
+                    );
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
 
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
 
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectBeneficiaryCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
 
-    // Benefactor Customer Accounts lookup
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(selectUrl);
 
-    $('#BenefactorCustomerAccountsGrid').DataTable({
-       // Ajax settings
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
-        "sServerMethod": "POST",
-        // Callback settings
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-            var h = ("0" + createdDate.getHours()).slice(-2);
-            var m = ("0" + createdDate.getMinutes()).slice(-2);
-            var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-            aData.CreatedDate = dt_Created;
-
-            // var selectButton = '<button type="button" data-id="' + aData.Id + '" class="btn btn-outline-info select-btn">Select</button>';
-            var selectButton = '<a href="/Accounts/CustomerAccountstandingorder/Create/' + aData.Id + '" class="btn btn-outline-info select-link">' + 'Select</a>';
-
-            // Assuming you are using jQuery
-            $(document).ready(function () {
-                // Attach click event handler to the link
-                $('.select-link').click(function (event) {
-                    // Prevent default action (page reload)
-                    event.preventDefault();
-                    // You can add additional logic here if needed
-
-                    // Optionally, if you want to navigate programmatically after preventing default action:
-                    window.location.href = $(this).attr('href');
-                });
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "25%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "25%" },
+                    { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "5%" },
+                    { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Code", "sWidth": "10%" },
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
             });
 
-            $('td:eq(4)', nRow).html(dt_Created);
-            $('td:eq(5)', nRow).html(selectButton);
-
-            return nRow;
-        },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-            { "mDataProp": "CustomerId", "sTitle": "Customer Id", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CustomerReference1", "sTitle": "customer number", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
-        ],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    //// Click event handler for Beneficiary select button
-    //$('#BenefactorCustomerAccountsGrid').on('click', '.select-btn', function (event) {
-    //    event.isDefaultPrevented();
-    //    var id = $(this).data('id');
-    //    console.log("BeneBenefactor Button clicked. ID: " + id);
-    //}).on("click", "tr", function () {
-    //    var data = $('#BenefactorCustomerAccountsGrid').DataTable().row(this).data();
-
-    //    // Populate fields with selected data
-    //    $('#BenefactorCustomerAccountCustomerId').val(data.Id);
-    //    $('#BenefactorCustomerAccountCustomerId').val(data.BenefactorCustomerAccountCustomerId);
-    //    $('#BenefactorCustomerAccountId').val(data.BenefactorCustomerAccountId);
-    //    $('input[name=BenefactorCustomerAccountCustomerFullName]').val(data.BenefactorCustomerAccountCustomerFullName);
-    //    $('input[name=BenefactorCustomerAccountCustomerId]').val(data.BenefactorCustomerAccountCustomerId);
-
-    //    // Assuming CustomersMap is defined and contains appropriate data
-    //    if (CustomersMap[data.Id]) {
-    //        $('#BenefactorCustomerAccountId').val(CustomersMap[data.Id].BenefactorCustomerAccountId);
-    //        $('#BenefactorCustomerAccountCustomerFullName').val(CustomersMap[data.Id].BenefactorCustomerAccountCustomerFullName);
-    //    }
-
-    //    $('#BenefactorProductDescription').val(data.BenefactorProductDescription);
-
-    //    // Hide modal
-    //    $('#BenefactorcustomerLookupModal').modal('hide');
-    //});
-    //$('#BenefactorCustomerAccountsGrid').on('click', '.select-btn', function (event) {
-    //    event.preventDefault();
-    //    var id = $(this).data('id');
-    //    console.log("Benefactor Button clicked. ID: " + id);
-
-    //    // Modify the URL to navigate to the specified path
-    //    var selectButton = '/Accounts/CustomerAccountstandingorder/create/' + id;
-    //    window.location.href = selectButton;
-    //});
-
-
-
-
-
-    // Beneficiary Customer Accounts lookup
-    $('#BeneficiaryCustomerAccountsGrid').DataTable({
-        // Ajax settings
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
-        "sServerMethod": "POST",
-        // Callback settings
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-            var h = ("0" + createdDate.getHours()).slice(-2);
-            var m = ("0" + createdDate.getMinutes()).slice(-2);
-            var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-            aData.CreatedDate = dt_Created;
-
-            var selectButton = '<a href=  "/Accounts/CustomerAccountstandingorder/Search/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-            $('td:eq(4)', nRow).html(dt_Created);
-            $('td:eq(5)', nRow).html(selectButton);
-
-            return nRow;
-        },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-            { "mDataProp": "CustomerId", "sTitle": "Customer Id", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CustomerReference1", "sTitle": "customer number", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
-        ],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    // Click event handler for Beneficiary select button
-    //$('#BeneficiaryCustomerAccountsGrid').on('click', '.select-btn', function(event) {
-    //    event.isDefaultPrevented();
-    //    var id = $(this).data('id');
-    //    console.log("Beneficiary Button clicked. ID: " + id);
-    //}).on("click", "tr", function () {
-    //    var data = $('#BeneficiaryCustomerAccountsGrid').DataTable().row(this).data();
-
-    //    // Populate fields with selected data
-    //    $('#BeneficiaryCustomerAccountCustomerId').val(data.Id);
-    //    $('#BeneficiaryCustomerAccountCustomerId').val(data.BeneficiaryCustomerAccountId);
-    //    $('#BeneficiaryCustomerAccountId').val(data.BeneficiaryCustomerAccountId);
-    //    $('input[name=BeneficiaryCustomerAccountCustomerFullName]').val(data.BeneficiaryCustomerAccountCustomerFullName);
-    //    $('input[name=BeneficiaryCustomerAccountCustomerId]').val(data.BeneficiaryCustomerAccountId);
-
-    //    // Assuming CustomersMap is defined and contains appropriate data
-    //    if (CustomersMap[data.Id]) {
-    //        $('#BeneficiaryCustomerAccountId').val(CustomersMap[data.Id].BeneficiaryCustomerAccountId);
-    //        $('#BeneficiaryCustomerAccountCustomerFullName').val(CustomersMap[data.Id].BeneficiaryCustomerAccountCustomerFullName);
-    //    }
-
-    //    $('#BeneficiaryProductDescription').val(data.BeneficiaryProductDescription);
-
-    //    // Hide modal
-    //    $('#BeneficiarycustomerLookupModal').modal('hide');
-    //});
-    //$('#BeneficiaryCustomerAccountsGrid').on('click', '.select-btn', function (event) {
-    //    event.isDefaultPrevented();
-    //    var id = $(this).data('id');
-    //    console.log("Beneficiary Button clicked. ID: " + id);
-
-    //    // Modify the URL to navigate to the specified path
-    //    var selectButton = '/Accounts/CustomerAccountstandingorder/Search/' + id;
-    //    window.location.href = selectButton;
-    //});
-    // Prevent form submission reload
-
-
-
-
-                $('#data_3 .input-group.date').datepicker({
-                    startView: 2,
-                    todayBtn: "linked",
-                    keyboardNavigation: false,
-                    forceParse: false,
-                    autoclose: true,
+                //Refresh button for reloading the Datable after Applying the filters
+                $('#modalFilterForm3').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#BeneficiaryCustomerAccountsGrid').DataTable().ajax.reload();
                 });
 
-
-        //$(document).ready(function () {
-        //    // Make an AJAX request to your Create action
-        //    $.ajax({
-        //        url: '/CustomerAccountstandingorder/Create',
-        //        type: 'GET',
-        //        success: function (data) {
-        //            // Check if there is an error in the response
-        //            if (data.error) {
-        //                // Display the error message to the user
-        //                alert(data.error); // You can use a more sophisticated UI for showing errors
-        //            } else {
-        //                // Render the received data on the page
-        //                // Assuming you have a function to render the data in the appropriate HTML elements
-        //                renderData(data);
-        //            }
-        //        },
-        //        error: function () {
-        //            // Handle errors if the AJAX request fails
-        //            alert('Error occurred while fetching data');
-        //        }
-        //    });
-        //});
-
-
-
-        //document.addEventListener("BenefactorcustomerLookupModal", function () {
-        //    var inputField = document.getElementById('benefactorCustomerFullName');
-
-        //    // Retrieve the value from localStorage if available
-        //    try {
-        //        var benefactorCustomerFullName = localStorage.getItem('benefactorCustomerFullName');
-        //        if (benefactorCustomerFullName) {
-        //            inputField.value = benefactorCustomerFullName;
-        //            // Alert that data has been retrieved from localStorage
-        //            alert('Data has been retrieved from localStorage.');
-        //        }
-        //    } catch (error) {
-        //        // Alert if data retrieval fails
-        //        alert('Failed to retrieve data from localStorage.');
-        //        console.error(error);
-        //    }
-
-        //    // Listen for changes in the input field
-        //    inputField.addEventListener('input', function () {
-        //        // Save the value to localStorage
-        //        try {
-        //            localStorage.setItem('benefactorCustomerFullName', this.value);
-        //            alert('Data has been saved to localStorage.');
-        //        } catch (error) {
-        //            // Alert if data saving fails
-        //            alert('Failed to save data to localStorage.');
-        //            console.error(error);
-        //        }
-        //    });
-
-        //    // Call captureDetails2 function
-        //    captureDetails2();
-        //});
-
-        @*function captureDetails2() {
-            var BenefactorCustomerAccountCustomerFullName = BenefactorCustomerAccountId.localStorage; // Replace with actual value obtained from lookup
-            var BenefactorCustomerAccountId = "BenefactorCustomerAccountId"; // Replace with actual value obtained from lookup
-
-            // Assign captured data to the appropriate input fields
-            document.getElementById('BenefactorCustomerAccountCustomerFullName').value = BenefactorCustomerAccountCustomerFullName;
-            document.getElementById('BenefactorCustomerAccountId').value = BenefactorCustomerAccountId;
-
-            // Save data to session storage
-            sessionStorage.setItem('BenefactorCustomerAccountCustomerFullName', BenefactorCustomerAccountCustomerFullName);
-            sessionStorage.setItem('BenefactorCustomerAccountId', BenefactorCustomerAccountId);
-
-            // Save data to local storage
-            localStorage.setItem('BenefactorCustomerAccountCustomerFullName', BenefactorCustomerAccountCustomerFullName);
-            localStorage.setItem('BenefactorCustomerAccountId', BenefactorCustomerAccountId);
-            cache.setItem["BenefactorCustomerAccountId"] = BenefactorCustomerAccountId;
-            // Perform AJAX request to load partial view and pass data to controller
+        function selectBeneficiaryCustomerAccounts(id) {
             $.ajax({
-                url: "/CustomerAccountstandingorder/AssignText",
-                type: "POST",
-                data: { "BenefactorCustomerAccountCustomerFullName": BenefactorCustomerAccountCustomerFullName, "BenefactorCustomerAccountId": BenefactorCustomerAccountId },
+                url: '/Accounts/CustomerAccountstandingorder/BeneficiaryCustomerAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
                 success: function (response) {
-                    // Load the partial view content to your desired location
-                    alert("Saved");
-                },
-                error: function (error) {
-                    alert('Failed to save');
-                    console.error(error);
-                }
-            });
-        }
+                    if (response.success) {
+                        $('#BeneficiaryCustomerAccountId').val(response.data.BeneficiaryCustomerAccountId);
+                        $('#BeneficiaryFullAccountNumber').val(response.data.BeneficiaryFullAccountNumber);
+                        $('#BeneficiaryCustomerFullName').val(response.data.BeneficiaryCustomerAccountCustomerFullName);
+                        $('#BeneficiaryProductDescription').val(response.data.BeneficiaryProductDescription);
 
-
-        function captureDetails3() {
-            var BeneficiaryCustomerAccountCustomerFullName = "BeneficiaryCustomerAccountCustomerFullName".preventDefault(arguments.BeneficiaryCustomerAccountId); // Replace with actual value obtained from lookup
-            var BeneficiaryCustomerAccountId = "BeneficiaryCustomerAccountId"; // Replace with actual value obtained from lookup
-
-            // Assign captured data to the appropriate input fields
-            document.getElementById('BeneficiaryCustomerAccountCustomerFullName').value = BeneficiaryCustomerAccountCustomerFullName;
-            document.getElementById('BeneficiaryCustomerAccountId').value = BeneficiaryCustomerAccountId;
-
-            // Save data to session storage
-            sessionStorage.setItem('BeneficiaryCustomerAccountCustomerFullName', BeneficiaryCustomerAccountCustomerFullName);
-            sessionStorage.setItem('BeneficiaryCustomerAccountId', BeneficiaryCustomerAccountId);
-
-            // Save data to local storage
-            localStorage.setItem('BeneficiaryCustomerAccountCustomerFullName', BeneficiaryCustomerAccountCustomerFullName);
-            localStorage.setItem('BeneficiaryCustomerAccountId', BeneficiaryCustomerAccountId);
-            cache.setItem["BeneficiaryCustomerAccountId"] = BeneficiaryCustomerAccountId;
-            // Perform AJAX request to load partial view and pass data to controller
-            $.ajax({
-                url: "/CustomerAccountstandingorder/AssignText2",
-                type: "POST",
-                data: { "BeneficiaryCustomerAccountCustomerFullName": BeneficiaryCustomerAccountCustomerFullName, "BeneficiaryCustomerAccountId": BeneficiaryCustomerAccountId },
-                success: function (response) {
-                    // Load the partial view content to your desired location
-                    alert("Saved");
-                },
-                error: function (error) {
-                    alert('Failed to save');
-                    console.error(error);
-                }
-            });
-        }
-
-
-
-
-          //Company typehead starts here
-    $('.BeneficiaryGrid').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetLoanProductsAsync", "CustomerAccountstandingorder", new { Area = "Accounts" })',
-                        { query: query },
-                        function (Companies) {
-                            var newCompaniesData = [];
-                            CompaniesMap = {};
-                            $.each(Companies, function (i, Company) {
-                                newCompaniesData.push(Company.Description);
-                                CompaniesMap[Company.Description] = Company;
-                            });
-                            process(newCompaniesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
+                        $('#BeneficiarycustomerLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
                     }
                 },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var CompanyId = "";
-                    CompanyId = CompaniesMap[item].Id;
-                    $('#BeneficiaryCustomerAccountCustomerId').val(data.Id);
-                    $('#BeneficiaryCustomerAccountCustomerId').val(data.BeneficiaryCustomerAccountId);
-                    $('#BeneficiaryCustomerAccountId').val(data.BeneficiaryCustomerAccountId);
-                    $('input[name=BeneficiaryCustomerAccountCustomerFullName]').val(data.BeneficiaryCustomerAccountCustomerFullName);
-                    $('input[name=BeneficiaryCustomerAccountCustomerId]').val(data.BeneficiaryCustomerAccountId);
-
-                    //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
-                    return item;
+                error: function () {
+                    alert('An error occurred while processing your request.');
                 }
-            });*@
-
-
-
-
+            });
+        }
     </script>
+
 }

@@ -12,6 +12,7 @@ using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.List;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Microsoft.AspNet.Identity;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -77,7 +78,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             );
         }
 
-        public async Task<ActionResult> IncomeAdjustmentsLookUp(Guid? id, IncomeAdjustmentDTO model)
+        public async Task<ActionResult> IncomeAdjustmentsLookUp(Guid? id, LoanAppraisalFactorDTO model)
         {
             await ServeNavigationMenus();
 
@@ -126,13 +127,24 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
-            var attachedLoans = await _channelService.FindAttachedLoansByLoanCaseIdAsync(parseId, GetServiceHeader());
-
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
             var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
 
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
+
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            var userEmail = userDTO.Email;
+            if (userEmail == loaneeCustomer.CreatedBy)
+            {
+                await ServeNavigationMenus();
+                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
+                ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
+                ViewBag.LoanCaseStatusSelectList = GetLoanCaseStatusSelectList(string.Empty);
+                TempData["UnAuthorized"] = "Unauthorized Access!\nYou are not Authorized to Appraise Loans.";
+                return View("Index");
+            }
+
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
 
@@ -145,11 +157,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 var products = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(loanCaseDTO.CustomerId, new[] { (int)ProductCode.Savings, (int)ProductCode.Loan, (int)ProductCode.Investment },
                    true, true, true, true, GetServiceHeader());
                 var investmentProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Investment).ToList();
+                var savingsProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Savings).ToList();
                 List<decimal> iBalance = new List<decimal>();
                 foreach (var investmentsBalances in investmentProducts)
                 {
                     iBalance.Add(investmentsBalances.BookBalance);
                 }
+
                 var investmentsBalance = iBalance.Sum();
                 loanCaseDTO.LoanProductInvestmentsBalance = investmentsBalance;
                 loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loanProductDetails.LoanRegistrationInvestmentsMultiplier;
@@ -170,6 +184,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanRegistrationLoanPlusInterest = loanCaseDTO.LoanRegistrationLoanPart + loanCaseDTO.LoanRegistrationInterestPart;
                 loanCaseDTO.LoanQualificationLoanAmount = (double)loanCaseDTO.AmountApplied;
 
+                List<decimal> sBalance = new List<decimal>();
+                foreach (var savingsBalances in savingsProducts)
+                {
+                    sBalance.Add(savingsBalances.BookBalance);
+                }
+                var totalShares = iBalance.Sum() + sBalance.Sum();
+                loanCaseDTO.LoanQualificationSecurityQualification = Convert.ToDouble((double)totalShares * loanCaseDTO.LoanRegistrationInvestmentsMultiplier);
+                loanCaseDTO.LoanQualificationInvestmentsQualification = (double)totalShares;
+
                 var monthlyInterestRate = loanCaseDTO.LoanInterestAnnualPercentageRate / (12 * 100);
                 var totalNumberOfPeriods = loanCaseDTO.LoanRegistrationTermInMonths;
                 loanCaseDTO.PaymentPerPeriod = Math.Round((double)loanCaseDTO.AmountApplied * (monthlyInterestRate * Math.Pow(1 + monthlyInterestRate, totalNumberOfPeriods)) /
@@ -189,7 +212,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
                     if (standingOrders != null && standingOrders.Any())
                     {
-                        allStandingOrders.AddRange(standingOrders); // Add standing orders to the collection
+                        allStandingOrders.AddRange(standingOrders);
                     }
                     else
                     {
@@ -205,7 +228,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 }
 
                 ////Salary...
-
+                var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
+                var isEmployee = employees.Where(e => e.CustomerId == loaneeCustomer.CustomerId);
+                if (isEmployee != null)
+                {
+                    var findCustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(loaneeCustomer.CustomerId, true, true, true, true, GetServiceHeader());
+                    foreach (var accts in findCustomerAccounts)
+                    {
+                    }
+                }
 
                 var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(loaneeCustomer.CustomerId, GetServiceHeader());
                 if (loanApplications != null)
@@ -261,12 +292,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var loanAppraisalFactors = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
+            var loanAppraisalFactors = Session["loanAppraisalFactors"] as ObservableCollection<LoanAppraisalFactorDTO>;
 
             if (loanAppraisalFactors == null)
             {
-                loanAppraisalFactors = new ObservableCollection<IncomeAdjustmentDTO>();
+                loanAppraisalFactors = new ObservableCollection<LoanAppraisalFactorDTO>();
             }
+
+            var fullDetails = await _channelService.FindIncomeAdjustmentAsync(loanCaseDTO.incomeAdjustmentDTO[0].Id, GetServiceHeader());
 
             foreach (var incomeadjustment in loanCaseDTO.incomeAdjustmentDTO)
             {
@@ -282,6 +315,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     });
                 }
 
+                incomeadjustment.Description = fullDetails.Description;
                 loanAppraisalFactors.Add(incomeadjustment);
             }
 
@@ -295,7 +329,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var loanAppraisalFactors = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
+            var loanAppraisalFactors = Session["loanAppraisalFactors"] as ObservableCollection<LoanAppraisalFactorDTO>;
 
             if (loanAppraisalFactors != null)
             {
@@ -326,15 +360,25 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO)
         {
             loanCaseDTO = Session["Form"] as LoanCaseDTO;
-            var incomeAdjustments = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
+            var incomeAdjustments = Session["loanAppraisalFactors"] as ObservableCollection<LoanAppraisalFactorDTO>;
 
             try
             {
+                if (loanCaseDTO.LoanRegistrationMaximumEntitled < loanCaseDTO.AmountApplied)
+                {
+                    TempData["Unqualified"] = $"The selected Loanee does not qualify to get the total sum of Kshs. {loanCaseDTO.AmountApplied}";
+                    return View(loanCaseDTO);
+                }
+                var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+                var userEmail = userDTO.Email;
                 loanCaseDTO.AppraisedDate = DateTime.Now;
+                loanCaseDTO.AppraisedBy = userDTO.Email;
                 var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
                 Session["loanCaseId"] = loanCaseDTO.Id;
                 Session["printCustomerId"] = loanCaseDTO.CustomerId;
-                //await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
+
+                if (incomeAdjustments.Any())
+                    await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
 
                 TempData["Success"] = "Operation Successful";
                 return RedirectToAction("Print");
@@ -431,13 +475,24 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         public async Task<ActionResult> AppraiseNoPrint(LoanCaseDTO loanCaseDTO)
         {
             loanCaseDTO = Session["Form"] as LoanCaseDTO;
-            var incomeAdjustments = Session["loanAppraisalFactors"] as ObservableCollection<IncomeAdjustmentDTO>;
+            var incomeAdjustments = Session["loanAppraisalFactors"] as ObservableCollection<LoanAppraisalFactorDTO>;
 
             try
             {
+                if (loanCaseDTO.LoanRegistrationMaximumEntitled < loanCaseDTO.AmountApplied)
+                {
+                    TempData["Unqualified"] = $"The selected Loanee does not qualify to get the total sum of Kshs. {loanCaseDTO.AmountApplied}";
+                    return View(loanCaseDTO);
+                }
+
+                var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+                var userEmail = userDTO.Email;
+                loanCaseDTO.AppraisedDate = DateTime.Now;
+                loanCaseDTO.AppraisedBy = userDTO.Email;
                 var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
 
-                //await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
+                if (incomeAdjustments.Any())
+                    await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
 
                 TempData["Success"] = "Operation Successful";
                 return RedirectToAction("Index");

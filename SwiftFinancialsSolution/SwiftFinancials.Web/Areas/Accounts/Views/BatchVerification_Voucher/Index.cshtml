@@ -1,0 +1,226 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.JournalVoucherDTO
+
+
+
+@{
+    ViewBag.Title = "Journal Voucher";
+    var status = ViewBag.BatchStatus as List<SelectListItem>;
+}
+
+<style>
+    .col-lg-2 {
+        display: flex;
+        align-items: center; /* Center the title vertically */
+        justify-content: center; /* Center the title horizontally if needed */
+        padding: 0; /* Remove default padding if necessary */
+        border-radius: 4px; /* Rounded corners */
+        @*border: 1px solid black;*@ /* Border color and style */
+
+
+    }
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #e0f0ff;
+    }
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Accounts</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Vouchers</h2>
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Success",
+                                    text: "@TempData["SuccessMessage"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="sk-spinner sk-spinner-double-bounce">
+                        <div class="sk-double-bounce1"></div>
+                        <div class="sk-double-bounce2"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="journalVouchersGrid" class="table table-striped table-bordered table-hover" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td colspan="8" class="dataTables_empty">
+                                        Loading data from server
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                language: 'en-GB'  // Use British English locale to ensure dd/mm/yyyy format
+            });
+
+            // Function to convert date from dd/mm/yyyy to yyyy-mm-dd
+            function formatDate(dateString) {
+                var parts = dateString.split("/");
+                return parts[2] + "-" + parts[1] + "-" + parts[0];
+            }
+
+
+
+            $('#journalVouchersGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "BatchVerfication_Voucher", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var verifyButton = `<a class="btn btn-primary" href="/Accounts/BatchVerification_Voucher/Verify/${aData.Id}">Verify</a>`;
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(verifyButton);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%", "bSearchable": false },  // Not searchable
+                    { "mDataProp": "VoucherNumber", "sTitle": "Voucher Number", "sWidth": "15%", "bSearchable": true }, // Searchable
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15%", "bSearchable": false },  // Not searchable
+                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "15%", "bSearchable": false },  // Not searchable
+                    { "mDataProp": "ChartOfAccountAccountType", "sTitle": "Type", "sWidth": "10%", "bSearchable": false },  // Not searchable
+                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "12%", "bSearchable": false }, // Not searchable
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "12%", "bSearchable": false },  // Not searchable
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "10%", "bSearchable": false, "bSortable": false }  // Not searchable and not sortable
+                ],
+                "aaSorting": [[0, "desc"]],
+                "searchCols": [
+                    null,            // Branch (not searchable)
+                    { "search": "" }, // Voucher Number (searchable)
+                    null,            // Status (not searchable)
+                    null,            // Remarks (not searchable)
+                    null,            // Type (not searchable)
+                    null,            // G/L Account Name (not searchable)
+                    null,            // Created Date (not searchable)
+                    null             // Actions (not searchable)
+                ]
+            });
+            // Refresh button click handler
+            $('#form').on('submit', function (e) {
+                e.preventDefault();
+                $('#journalVouchersGrid').DataTable().ajax.reload();
+            });
+        });
+
+        $(document).ajaxStart(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+
+        $(document).ajaxStop(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+    </script>
+}

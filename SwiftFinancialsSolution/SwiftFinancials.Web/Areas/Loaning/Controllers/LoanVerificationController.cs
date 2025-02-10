@@ -11,6 +11,7 @@ using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Microsoft.AspNet.Identity;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -97,6 +98,17 @@ namespace SwiftFinancials.Web.Areas.Loaning
             ViewBag.LoanAuditOptionSelectList = GetLoanAuditOptionSelectList(string.Empty);
 
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            var userEmail = userDTO.Email;
+            //if (userEmail == loaneeCustomer.CreatedBy || userEmail == loaneeCustomer.AppraisedBy || userEmail == loaneeCustomer.ApprovedBy)
+            //{
+            //    await ServeNavigationMenus();
+            //    ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
+
+            //    TempData["UnAuthorized"] = "Unauthorized Access!\nYou are not Authorized to Appraise Loans.";
+            //    return RedirectToAction("Index");
+            //}
+
             if (loaneeCustomer != null)
             {
                 var loanProduct = await _channelService.FindLoanProductAsync(loaneeCustomer.LoanProductId, GetServiceHeader());
@@ -246,7 +258,9 @@ namespace SwiftFinancials.Web.Areas.Loaning
 
             if (!loanCaseDTO.HasErrors)
             {
-
+                var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+                var userEmail = userDTO.Email;
+                loanCaseDTO.AuditedBy = userDTO.Email;
                 await _channelService.AuditLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAuditOption, GetServiceHeader());
 
                 TempData["Success"] = "Operation Completed Successfully";

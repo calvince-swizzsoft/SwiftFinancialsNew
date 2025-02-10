@@ -13,6 +13,7 @@ using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Microsoft.AspNet.Identity;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -79,7 +80,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             );
         }
 
-
         public async Task<ActionResult> Details(Guid id, JQueryDataTablesModel jQueryDataTablesModel)
         {
             await ServeNavigationMenus();
@@ -93,9 +93,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(loanCaseDTO);
         }
 
-
-
-
         public async Task<ActionResult> Approve(Guid id, LoanCaseDTO loanCaseDTO)
         {
             await ServeNavigationMenus();
@@ -103,6 +100,17 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(string.Empty);
 
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            var userEmail = userDTO.Email;
+            //if (userEmail == loaneeCustomer.AppraisedBy || userEmail == loaneeCustomer.CreatedBy)
+            //{
+            //    await ServeNavigationMenus();
+            //    ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
+
+            //    TempData["UnAuthorized"] = "Unauthorized Access!\nYou are not Authorized to Approve Loans.";
+            //    return RedirectToAction("Index");
+            //}
+
             if (loaneeCustomer != null)
             {
                 var loanProduct = await _channelService.FindLoanProductAsync(loaneeCustomer.LoanProductId, GetServiceHeader());
@@ -252,8 +260,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(loanCaseDTO);
         }
 
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Approve(LoanCaseDTO loanCaseDTO)
@@ -273,6 +279,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 if (!loanCaseDTO.HasErrors)
                 {
+                    var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+                    var userEmail = userDTO.Email;
+                    loanCaseDTO.ApprovedBy = userDTO.Email;
                     await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
 
                     TempData["Success"] = "Operation Completed Successfully";

@@ -179,51 +179,9 @@ namespace SwiftFinancials.Web.Controllers
 
                 userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
 
-                ViewBag.NavigationItems = userNavigationItems.OrderBy(item => item.Description).ToList();
+                ViewBag.NavigationItems = userNavigationItems.ToList();
             }
         }
-
-
-        //[NonAction]
-        //public async Task ServeNavigationMenus()
-        //{
-        //    if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
-        //    {
-        //        var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-        //        ViewBag.NavigationItems = navigationItems.OrderBy(item => item.Description).ToList();
-        //    }
-        //    else
-        //    {
-        //        var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
-
-        //        var roles = await _applicationUserManager.GetRolesAsync(user.Id);
-
-        //        var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO>
-        //            ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
-
-        //        var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-
-        //        var parentsInNavigationItems = navigationItems
-        //            .Where(x => x.ControllerName == null && x.ActionName == null)
-        //            .ToList();
-
-        //        var userNavigationItems = navigationItems
-        //            .Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId))
-        //            .ToList();
-
-        //        userNavigationItems.AddRange(parentsInNavigationItems);
-
-        //        userNavigationItems.ForEach(item => item.Child = userNavigationItems
-        //            .Where(child => child.AreaCode == item.Code)
-        //            .ToList());
-
-        //        userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
-
-        //        ViewBag.NavigationItems = userNavigationItems.OrderBy(item => item.Description).ToList();
-        //    }
-        //}
-
-
 
 
         [NonAction]

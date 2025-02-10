@@ -54,7 +54,7 @@
                                     @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(Model => Model.EmployeeId)
-                                        @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @Placeholder = "Search Employee..." })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#employeeLookUpModal">
                                                 <span class="fa fa-search"></span>
@@ -88,7 +88,7 @@
                             <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.UserName, new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Username MUST be Lowercase...", oninput = "validateUsername(this)" } })
+                                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control required", oninput = "validateUsername(this)" } })
                                     <span id="username-warning" class="text-danger" style="display: none;">Username must be lowercase</span>
                                     @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
                                 </div>
@@ -288,6 +288,20 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    @if (TempData["BR"] != null)
+    {
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '@TempData["BR"]',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+        </script>
+    }
 
     <script src="~/Scripts/js/navlink.js"></script>
 

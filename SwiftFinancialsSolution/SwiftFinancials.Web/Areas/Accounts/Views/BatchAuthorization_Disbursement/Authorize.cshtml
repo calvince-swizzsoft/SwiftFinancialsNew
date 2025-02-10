@@ -1,0 +1,407 @@
+﻿@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanDisbursementBatchDTO
+
+@{
+    ViewBag.Title = "Disbursement Batch | Authorize";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var authOption = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
+}
+
+
+<style>
+    .section-container {
+        border: 1px solid #00000080;
+        border-radius: 5px;
+        padding: 20px;
+        background-color: #fff;
+        width: 100%;
+        margin: auto;
+        position: relative;
+    }
+
+    .section-title {
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background-color: #fff;
+        padding: 0 10px;
+        font-weight: bold;
+        color: black;
+    }
+
+    #dataTableEntries {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #dataTableEntries th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #dataTableEntries th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        #dataTableEntries tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #dataTableEntries td {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        #dataTableEntries tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
+
+        #dataTableEntries tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        #dataTableEntries tr:last-child td {
+            border-bottom: none;
+        }
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "BatchOrigination_Disbursement", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Authorize Loan Disbursement Batch</h2>
+
+                    @if (TempData["Fail"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error!",
+                                    text: "@TempData["Fail"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Authorize", "BatchAuthorization_Disbursement", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BatchNumber, "Batch Number", htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.BatchNumber, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "", @disabled = "" } })
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.TypeDescription, "Type", htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.TypeDescription, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "", @disabled = "" } })
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.PriorityDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.PriorityDescription, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "", @disabled = "" } })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanProductCategoryDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.LoanProductCategoryDescription, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "", @disabled = "" } })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "", @disabled = "" } })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "", @disabled = "" } })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BatchTotal, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.BatchTotal, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "", @disabled = "" } })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "", @disabled = "" } })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "", @disabled = "" } })
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <div class="section-container">
+                            <div class="section-title">Batch Entries</div>
+                            <div class="table-container">
+                                <h3 style="font-size: 1.9rem; text-align: center;">Loan Disbursement Batch Entries</h3>
+
+                                <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Loan Number</th>
+                                            <th>Loan Status</th>
+                                            <th>Customer Name</th>
+                                            <th>Personal File Number</th>
+                                            <th>Loan Product</th>
+                                            <th>Loan Purpose</th>
+                                            <th>Annual Percentage Rate</th>
+                                            <th>Term (Months)</th>
+                                            <th>Amount Approved</th>
+                                            <th>Received Date</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.BatchEntries != null)
+                                        {
+                                            foreach (var entries in ViewBag.BatchEntries)
+                                            {
+                                                <tr>
+                                                    <td>@entries.LoanCaseCaseNumber</td>
+                                                    <td>@entries.LoanCaseStatusDescription</td>
+                                                    <td>@entries.CustomerFullName</td>
+                                                    <td>@entries.LoanCaseCustomerReference3</td>
+                                                    <td>@entries.LoanCaseLoanProductDescription</td>
+                                                    <td>@entries.LoanCaseLoanPurposeDescription</td>
+                                                    <td>@entries.LoanCaseLoanInterestAnnualPercentageRate</td>
+                                                    <td>@entries.LoanCaseLoanRegistrationTermInMonths</td>
+                                                    <td style="text-align: right;">@entries.LoanCaseApprovedAmount</td>
+                                                    <td>@entries.LoanCaseReceivedDate</td>
+
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="blue-section">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AuditRemarks, "Verification Remarks", htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control custom-border-radius", @disabled = "", @placeholder = "Enter text..." } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AuthorizationRemarks, "Authorization Remarks", htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.AuthorizationRemarks, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "Enter text...", @required = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2" style="margin-top: 25px;">
+                                    <div class="form-group form-group-lg">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Auth, authOption,
+                                            new { @class = "form-control input-md", @id = "authOption" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4" style="margin-top: 25px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Update" class="btn btn-primary" style="width: 150px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
+
+    @if (TempData["required"] != null)
+    {
+        <script>
+        Swal.fire({
+            title: "Warning!",
+            text: "@TempData["required"]",
+            icon: "warning",
+            confirmButtonText: "OK"
+        });
+        </script>
+    }
+
+    @if (TempData["Fail"] != null)
+    {
+        <script>
+        Swal.fire({
+            title: "Error!",
+            text: "@TempData["Fail"]",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+        </script>
+    }
+
+
+    <!-- JavaScript -->
+    <script>
+        $(document).ready(function () {
+            var selectedIds = [];
+            $('#headerCheckbox').on('change', function () {
+                var isChecked = $(this).is(':checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+
+                selectedIds = isChecked ? $('.rowCheckbox').map(function () { return this.value; }).get() : [];
+                $('#selectedIds').val(selectedIds.join(','));
+            });
+
+            $('.rowCheckbox').on('change', function () {
+                var value = $(this).val();
+                if ($(this).is(':checked')) {
+                    if (!selectedIds.includes(value)) {
+                        selectedIds.push(value);
+                    }
+                } else {
+                    selectedIds = selectedIds.filter(id => id !== value);
+                }
+
+                $('#headerCheckbox').prop('checked', $('.rowCheckbox:checked').length === $('.rowCheckbox').length);
+
+                $('#selectedIds').val(selectedIds.join(','));
+            });
+
+            $('#submitForm').on('submit', function () {
+                $('<input />').attr('type', 'hidden')
+                    .attr('name', 'selectedIds')
+                    .attr('value', selectedIds.join(','))
+                    .appendTo('#submitForm');
+            });
+        });
+    </script>
+}
+
+

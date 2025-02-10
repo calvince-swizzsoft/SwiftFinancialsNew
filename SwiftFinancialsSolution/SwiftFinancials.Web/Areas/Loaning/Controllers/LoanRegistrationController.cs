@@ -73,6 +73,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
+
+
             ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
             ViewBag.LoanCaseStatusSelectList = GetLoanCaseStatusSelectList(string.Empty);
 
@@ -1279,6 +1281,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         return View("Create");
                     }
 
+                    loanCaseDTO.CreatedBy = userDTO.Email;
                     var loanCase = await _channelService.AddLoanCaseAsync(loanCaseDTO, GetServiceHeader());
 
                     if (loanCase.ErrorMessageResult != null)
