@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "General Ledger";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
     var status = ViewBag.BatchStatus as List<SelectListItem>;
 }
 
@@ -35,7 +37,7 @@
         padding: 10px; /* Padding inside the border */
         border-radius: 5px; /* Rounded corners (optional) */
 
-        
+
         font-size: 16px;
         font-weight: bold;
         background-color: #00e0ff;
@@ -49,9 +51,22 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                  <h2>General Ledger Batches</h2>
-                    <hr />
-                    @Html.ActionLink("Create General Ledger Batch", "Create", "AddGeneralLedger", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    <h2>General Ledger Batches</h2>
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Success",
+                                    text: "@TempData["Success"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -76,53 +91,7 @@
                                 </tr>
                             </tbody>
                         </table>
-
                     </div>
-                    @using (Html.BeginForm("Index", "AddGeneralLedger", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        <div class="bottom-button">
-
-                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Status, new { @class = "control-label" })
-
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Status, status,
-                                            new { @class = "form-control input-md", @id = "status" })
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group spacing-form-group" id="data_3">
-                                        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="valuedate" class="form-control" id="startDate" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group spacing-form-group" id="data_3">
-                                        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="valuedate" class="form-control" id="endDate" value="@DateTime.Today.ToString("dd/MM/yyyy")">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
-                                    <div class="form-group form-group-sm">
-                                        <input type="submit" value="Refresh" class="btn btn-primary" />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    }
                 </div>
             </div>
         </div>
@@ -185,12 +154,7 @@
                 format: 'dd/mm/yyyy',
                 language: 'en-GB'  // Use British English locale to ensure dd/mm/yyyy format
             });
-        
 
-            // Set default values
-            var defaultStatus = $('#status').val();
-            var defaultStartDate = $('#startDate').val();
-            var defaultEndDate = $('#endDate').val();
 
             // Function to convert date from dd/mm/yyyy to yyyy-mm-dd
             function formatDate(dateString) {
@@ -202,15 +166,8 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@Url.Action("Index", "AddGeneralLedger", new { Area = "Accounts" })",
+                "sAjaxSource": "@Url.Action("Index", "BatchVerification_GeneralLedger", new { Area = "Accounts" })",
                 "sServerMethod": "POST",
-                "fnServerParams": function (aoData) {
-                    aoData.push(
-                        { "name": "status", "value": $('#status').val() || defaultStatus },
-                        { "name": "startDate", "value": formatDate($('#startDate').val() || defaultStartDate) },
-                        { "name": "endDate", "value": formatDate($('#endDate').val() || defaultEndDate) }
-                    );
-                },
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
@@ -228,11 +185,11 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
                     var viewButton = `<a class="btn btn-primary" href="/Accounts/AddGeneralLedger/details/${aData.Id}">View</a>`;
-                    var verifyButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/Verify/${aData.Id}">Verify</a>`;
+                    var verifyButton = `<a class="btn btn-primary" href="/Accounts/BatchVerification_GeneralLedger/Verify/${aData.Id}">Verify</a>`;
                     var authorizeButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/Authorize/${aData.Id}">Authorize</a>`;
 
                     $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewButton);
+                    $('td:eq(6)', nRow).html(verifyButton);
 
                     return nRow;
                 },
@@ -261,10 +218,7 @@
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
-
-
-
     </script>
-
 }
+
 

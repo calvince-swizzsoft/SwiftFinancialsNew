@@ -26,17 +26,34 @@
 
                     @if (TempData["create"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["create"]
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Success",
+                                    text: "@TempData["create"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
                     }
-                    
+
+
+
                     @if (TempData["edit"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["edit"]
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Success",
+                                    text: "@TempData["edit"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
                     }
+
                     <hr />
                     @Html.ActionLink("Create Loan Purpose", "Create", "LoanPurpose", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">

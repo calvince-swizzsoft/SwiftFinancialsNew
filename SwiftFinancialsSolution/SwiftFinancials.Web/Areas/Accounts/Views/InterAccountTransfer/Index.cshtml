@@ -11,7 +11,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-       
+
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -24,46 +24,6 @@
 </div>
 
 <style>
-    .nav {
-        display: flex;
-        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
-        padding: 0;
-        margin: 5px;
-        margin-bottom: 0;
-        border: 2px solid Black;
-        border-radius: 8px;
-        margin-top: 20px;
-        gap: 10px; /* Space between links */
-        text-align: center; /* Centers the text inside links */
-        padding: 10px;
-    }
-
-    .nav-link {
-        display: flex;
-        text-decoration: none;
-        color: #007bff; /* Default text color */
-        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
-        border-radius: 4px; /* Rounded corners */
-        font-size: 14px; /* Adjust font size for better fit */
-        white-space: nowrap; /* Prevents text from wrapping inside the link */
-    }
-
-        .nav-link:hover {
-            color: #fff; /* Text color on hover */
-            background-color: #0056b3; /* Background color on hover */
-        }
-
-        .nav-link i {
-            margin-right: 8px; /* Space between icon and text */
-            font-size: 16px; /* Adjust icon size */
-        }
-
-        .nav-link.disabled {
-            pointer-events: none;
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
     .col-lg-2 {
         display: flex;
         align-items: center; /* Center the title vertically */
@@ -83,6 +43,7 @@
     .dropdown-item {
         white-space: nowrap; /* Prevent text from wrapping */
     }
+
     .bottom-button {
         border: 2px solid gray; /* Border color set to gray */
         padding: 10px; /* Padding inside the border */
@@ -94,41 +55,6 @@
         background-color: #00e0ff;
     }
 </style>
-
-<div class="row row-center">
-    <div class="col-lg-12">
-        <div class="nav1">
-            <div class="col-lg-12">
-                <nav class="nav">
-                    <a href="@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Voucher
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Credit Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Debit Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Refund Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Disbursement Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Wire Transfer Batch
-                    </a>
-                    <a href="@Url.Action("Index", "AddGeneralLedger", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> General Ledger Batch
-                    </a>
-                    <a href="@Url.Action("Index", "InterAccountTransfer", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Inter Account Transfer Batch
-                    </a>
-                </nav>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -155,8 +81,9 @@
                             <strong>Success !</strong> @TempData["AuthorizationSuccess"]
                         </div>
                     }
-                    @Html.ActionLink("Inter Account Transfer", "Create", "InterAccountTransfer", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
-
+                    <h2>Inter Account Transfers</h2>
+                    <hr />
+                    @Html.ActionLink("Create Inter Account Transfer", "Create", "InterAccountTransfer", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -329,29 +256,12 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    var viewButton = `<a class="dropdown-item" href="/Accounts/InterAccountTransfer/details/${aData.Id}">View</a>`;
+                    var viewButton = `<a class="btn btn-primary" href="/Accounts/InterAccountTransfer/details/${aData.Id}">View</a>`;
                     var verifyButton = `<a class="dropdown-item" href="/Accounts/InterAccountTransfer/Verify/${aData.Id}">Verify</a>`;
                     var authorizeButton = `<a class="dropdown-item" href="/Accounts/InterAccountTransfer/Authorize/${aData.Id}">Authorize</a>`;
 
-                    switch (aData.Status) {
-                        case 1:
-                            dropdownHtml += viewButton + verifyButton;
-                            break;
-                        case 8:
-                            dropdownHtml += viewButton + authorizeButton;
-                            break;
-                        case 2:
-                            dropdownHtml += viewButton;
-                            break;
-                        default:
-                            dropdownHtml += viewButton;
-                            break;
-                    }
-
-                    dropdownHtml += `</div></div>`;
-
                     $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(dropdownHtml);
+                    $('td:eq(7)', nRow).html(viewButton);
 
                     return nRow;
                 },
@@ -359,7 +269,7 @@
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
                     { "mDataProp": "BatchNumber", "sTitle": "Batch Number", "sWidth": "5%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15%" },
-                    { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "Posting Period", "sWidth": "15%" },
+                    { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "Full Account Number", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "15%" },
                     { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },

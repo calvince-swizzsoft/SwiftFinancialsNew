@@ -31,46 +31,7 @@
         </ol>
     </div>
 </div>
-<div class="row row-center">
-    
-    <div class="col-lg-12">
-        <div class="nav1">
-            <div class="col-lg-12">
-                <nav class="nav">
-                    <a href="@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Voucher
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Credit Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Debit Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Refund Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Disbursement Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Wire Transfer Batch
-                    </a>
-                    <a href="@Url.Action("Index", "AddGeneralLedger", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> General Ledger Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Reversal", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Reversal Batch
-                    </a>
-                    <a href="@Url.Action("Index", "InterAccountTransfer", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Inter Account Transfer Batch
-                    </a>
 
-                </nav>
-            </div>
-
-        </div>
-    </div>
-</div>
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -161,58 +122,6 @@
                 "aaSorting": [[0, "desc"]]
 
             });
-
-
-
-        @*$(document).ready(function () {
-            $('#debitBatchesGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "DebitBatch", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var editUrl = '<a  href="/accounts/DebitBatch/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/DebitBatch/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var verifyUrl = '<a  href="/accounts/DebitBatch/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var authorizeUrl = '<a  href="/accounts/DebitBatch/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
-
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;' + authorizeUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "DebitTypeDescription", "sTitle": "Debit Type", "sWidth": "15%"  },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "3%" },
-                    { "mDataProp": "PriorityDescription", "sTitle": "Priority", "sWidth": "2%" },
-                    { "mDataProp": "BatchNumber", "sTitle": "Batch Number", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "30%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
-        });
-        });
-
-        $(document).ajaxStart(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
-        $(document).ajaxStop(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });*@
     </script>
-
 }
 

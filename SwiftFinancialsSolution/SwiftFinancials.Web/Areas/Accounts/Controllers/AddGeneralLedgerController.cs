@@ -21,11 +21,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.BatchStatus = GetBatchStatusTypeSelectList(string.Empty);
 
-
             return View();
         }
 
-       
 
         [HttpPost]
         public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int status, DateTime startDate, DateTime endDate)
@@ -33,28 +31,48 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             int totalRecordCount = 0;
             int searchRecordCount = 0;
 
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-            int pageSize = jQueryDataTablesModel.iDisplayLength;
-
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindGeneralLedgersByStatusAndFilterInPageAsync(status, startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, pageSize, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindGeneralLedgersByStatusAndFilterInPageAsync(
+                status, 
+                startDate, 
+                endDate, 
+                jQueryDataTablesModel.sSearch,
+                0, 
+                int.MaxValue,
+                GetServiceHeader()
+                );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(k => k.CreatedDate)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else
-            {
-                return this.DataTablesJson(items: new List<GeneralLedgerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
+
+            return this.DataTablesJson(
+                items: new List<GeneralLedgerDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
-
-
 
 
         public async Task<ActionResult> Details(Guid id)
@@ -66,12 +84,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.GeneralLedgerEntries = batchentries;
             return View(generalLedgerDTO);
         }
-
-
-        
-
-
-
 
 
         [HttpPost]
@@ -211,10 +223,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return Json(new { success = true, data = generalLedgerBatchEntryDTOs });
         }
 
-
-
-
-
         [HttpPost]
         public async Task<JsonResult> Remove(Guid id)
         {
@@ -242,10 +250,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return Json(new { success = true, data = generalLedgerBatchEntryDTOs });
         }
-
-
-
-
 
         public async Task<ActionResult> Create()
         {

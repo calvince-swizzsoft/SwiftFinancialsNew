@@ -264,51 +264,40 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Approve(LoanCaseDTO loanCaseDTO)
         {
-            try
+            var loanApprovalOption = loanCaseDTO.LoanApprovalOption;
+
+            var findLoanCaseDetails = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
+
+            loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
+            loanCaseDTO.LoanPurposeId = findLoanCaseDetails.LoanPurposeId;
+            loanCaseDTO.SavingsProductId = findLoanCaseDetails.SavingsProductId;
+            loanCaseDTO.ApprovedDate = DateTime.Now;
+
+            loanCaseDTO.ValidateAll();
+
+            if (!loanCaseDTO.HasErrors)
             {
-                var loanApprovalOption = loanCaseDTO.LoanApprovalOption;
+                var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+                var userEmail = userDTO.Email;
+                loanCaseDTO.ApprovedBy = userDTO.Email;
+                await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
 
-                var findLoanCaseDetails = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
-
-                loanCaseDTO.LoanProductId = findLoanCaseDetails.LoanProductId;
-                loanCaseDTO.LoanPurposeId = findLoanCaseDetails.LoanPurposeId;
-                loanCaseDTO.SavingsProductId = findLoanCaseDetails.SavingsProductId;
-                loanCaseDTO.ApprovedDate = DateTime.Now;
-
-                loanCaseDTO.ValidateAll();
-
-                if (!loanCaseDTO.HasErrors)
-                {
-                    var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-                    var userEmail = userDTO.Email;
-                    loanCaseDTO.ApprovedBy = userDTO.Email;
-                    await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
-
-                    TempData["Success"] = "Operation Completed Successfully";
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    await ServeNavigationMenus();
-
-                    var errorMessages = loanCaseDTO.ErrorMessages;
-                    string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
-
-                    ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
-
-                    TempData["Fail"] = "Operation Failed";
-
-                    return View(loanCaseDTO);
-                }
+                TempData["Success"] = "Operation Completed Successfully";
+                return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(Form.ActiveForm, $"An unexpected error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                await ServeNavigationMenus();
 
-                Console.WriteLine($"Exception in Approve action: {ex}");
+                var errorMessages = loanCaseDTO.ErrorMessages;
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+
+                ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
+
+                TempData["Fail"] = "Operation Failed";
+
                 return View(loanCaseDTO);
             }
         }
-
     }
 }
