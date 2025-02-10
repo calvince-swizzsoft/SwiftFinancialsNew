@@ -506,6 +506,7 @@
     <Compile Include="Areas\Accounts\Controllers\BackOfficeTransfersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankReconciliation_PeriodsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_DisbursementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
@@ -515,6 +516,7 @@
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_ReversalController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_DisbursementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
@@ -1254,8 +1256,8 @@
     <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Verify.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Credit\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Credit\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Create.cshtml" />
@@ -1552,6 +1554,8 @@
     <Content Include="Areas\Accounts\Views\BatchVerification_Voucher\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchAuthorization_Voucher\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchAuthorization_Voucher\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Credit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Credit\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

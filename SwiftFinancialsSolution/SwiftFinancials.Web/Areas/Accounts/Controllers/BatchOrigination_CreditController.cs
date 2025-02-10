@@ -26,29 +26,91 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int status, DateTime startDate, DateTime endDate)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindCreditBatchesByStatusAndFilterInPageAsync(status, startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCreditBatchesByStatusAndFilterInPageAsync(
+                status, 
+                startDate, 
+                endDate, 
+                jQueryDataTablesModel.sSearch, 
+                0, 
+                int.MaxValue, 
+                GetServiceHeader()
+                );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                /*pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(creditBatch => creditBatch.CreatedDate).ToList();*/
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(k => k.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<CreditBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<CreditBatchDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
+
+        public async Task<ActionResult> CreditTypeLookup(Guid? id)
+        {
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View("create");
+            }
+
+            CreditBatchDTO creditBatch = new CreditBatchDTO();
+
+            var creditType = await _channelService.FindCreditTypeAsync(parseId, GetServiceHeader());
+            if (creditType != null)
+            {
+                creditBatch.CreditTypeId = creditType.Id;
+                creditBatch.CreditTypeDescription = creditType.Description;
+                
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        CreditTypeId = creditBatch.CreditTypeId,
+                        CreditTypeDescription = creditBatch.CreditTypeDescription
+                    }
+                });
+            }
+            return Json(new { success = false, message = "Credit Type not found" });
+        }
+
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -76,12 +138,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             
             
         }
-
-
-
-
-
-       
 
         [HttpPost]
         public async Task<JsonResult> CreditCustomerAccountLookUp(Guid id)
@@ -147,8 +203,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return Json(new { success = false, message = "Customer account not found" });
         }
-
-
 
 
         [HttpPost]
@@ -242,12 +296,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             return View();
         }
-
-
-        
-
-
-
 
         [HttpPost]
         public async Task<ActionResult> Create(CreditBatchDTO creditBatchDTO)
