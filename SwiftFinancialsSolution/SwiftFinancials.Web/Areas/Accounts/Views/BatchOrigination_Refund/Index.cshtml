@@ -45,50 +45,13 @@
     </div>
 </div>
 
-<div class="row row-center">
-
-    <div class="col-lg-12">
-        <div class="nav1">
-            <div class="col-lg-12">
-                <nav class="nav">
-                    <a href="@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Voucher
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Credit Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Debit Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Refund Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Disbursement Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Wire Transfer Batch
-                    </a>
-                    <a href="@Url.Action("Index", "AddGeneralLedger", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> General Ledger Batch
-                    </a>
-
-                    <a href="@Url.Action("Index", "InterAccountTransfer", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Inter Account Transfer Batch
-                    </a>
-
-                </nav>
-            </div>
-
-        </div>
-    </div>
-</div>
-
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Refund Batch</h2>
+                    <hr />
                     @if (TempData["SuccessMessage"] != null)
                     {
                         <div class="alert alert-success">
@@ -281,30 +244,13 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    var viewButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/details/${aData.Id}">View</a>`;
+                    var viewButton = `<a class="btn btn-primary" style="width: 150px;" href="/Accounts/BatchOrigination_Refund/details/${aData.Id}">View</a>`;
                     @*var editButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/edit/${aData.Id}">Edit</a>`;*@
                     var verifyButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/Verify/${aData.Id}">Verify</a>`;
                     var authorizeButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/Authorize/${aData.Id}">Authorize</a>`;
 
-                    switch (aData.Status) {
-                        case 1:
-                            dropdownHtml += viewButton + verifyButton ;
-                            break;
-                        case 8:
-                            dropdownHtml += viewButton + authorizeButton;
-                            break;
-                        case 2:
-                            dropdownHtml += viewButton;
-                            break;
-                        default:
-                            dropdownHtml += viewButton;
-                            break;
-                    }
-
-                    dropdownHtml += `</div></div>`;
-
-                    $('td:eq(8)', nRow).html(dt_Created);
-                    $('td:eq(9)', nRow).html(dropdownHtml);
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(viewButton);
 
                     return nRow;
                 },
@@ -314,11 +260,8 @@
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "3%" },
                     { "mDataProp": "TotalValue", "sTitle": "Total Value", "sWidth": "2%" },
                     { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "2%" },
-                    { "mDataProp": "AuditRemarks", "sTitle": "Verification/Rejection Remarks", "sWidth": "2%" },
-                    { "mDataProp": "AuditedBy", "sTitle": "Verified/Rejected by", "sWidth": "2%" },
-                    { "mDataProp": "AuditedDate", "sTitle": "Verification/Rejection Date", "sWidth": "2%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "4%", "bSortable": false }
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "4%", "bSortable": false }
                 ],
                 "aaSorting": [[0, "desc"]]
             });

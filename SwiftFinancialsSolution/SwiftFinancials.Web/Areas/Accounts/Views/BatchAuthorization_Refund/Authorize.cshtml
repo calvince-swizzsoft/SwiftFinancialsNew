@@ -174,7 +174,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "BatchOrigination_Credit", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "BatchAuthorization_Credit", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Authorize</strong>
@@ -199,15 +199,19 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @if (TempData["VerificationFail"] != null)
+
+                    @if (TempData["Fail"] != null)
                     {
-                        <div class="alert alert-danger fade in">
-                            <button class="close" data-dismiss="alert">
-                                ×
-                            </button>
-                            <i class="fa-fw fa fa-times"></i>
-                            <strong>Error!</strong> @TempData["VerificationFail"]
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error!",
+                                    text: "@TempData["Fail"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
                     }
 
                     <div class="ibox-tools">
@@ -220,7 +224,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-dark">
-                    @using (Html.BeginForm("Authorize", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Authorize", "BatchAuthorization_Refund", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 

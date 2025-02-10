@@ -129,7 +129,7 @@
             margin: 0;
         }
 
-        
+
     input.form-control {
         color: #007bff; /* Replace with your desired color */
     }
@@ -157,6 +157,58 @@
         font-weight: bold;
         background-color: #00e0ff;
     }
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+
+    #dataTableEntries {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #dataTableEntries th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #dataTableEntries th {
+            background: linear-gradient(to bottom, #4a90e2, #003366);
+            color: white;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        #dataTableEntries tr:hover td {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #dataTableEntries td {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        #dataTableEntries tr:nth-child(even) td {
+            background: #f2f2f2;
+        }
+
+        #dataTableEntries tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        #dataTableEntries tr:last-child td {
+            border-bottom: none;
+        }
 </style>
 
 
@@ -198,9 +250,6 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    
-                    <hr />
-
                     @if (TempData["tPercentage"] != null)
                     {
                         <div class="alert alert-danger">
@@ -242,291 +291,288 @@
                 </div>
 
                 <div class="ibox-content bg-white text-dark">
-                    <div class="main">
+                    @using (Html.BeginForm("Add", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { id = "addCreditBatchForm" }))
 
-                        @using (Html.BeginForm("Add", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { id = "addCreditBatchForm" }))
-
-                        {
-                            @Html.AntiForgeryToken()
+                    {
+                        @Html.AntiForgeryToken()
 
 
 
-                            <div class="combined-container">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.PostingPeriodId)
-                                            @* @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })*@
-                                            @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Enter Space to autofill..." } })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ConcessionFixedAmount, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.ConcessionFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.ConcessionFixedAmount, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditTypeId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.CreditTypeId)
-                                            @*@Html.ValidationMessageFor(model => model.CreditTypeId, "", new { @class = "text-danger" })*@
-                                            @Html.EditorFor(model => model.CreditTypeDescription, new { htmlAttributes = new { @class = "CreditTypesLookup form-control required", placeholder = "Enter Space to autofill..." } })
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Type, new { @class = "control-label" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.Type, creditBatchType, new { @class = "form-control input-md" })
-                                                @Html.ValidationMessageFor(model => model.Type)
-                                            </div>
-                                        </div>
+                        <div class="combined-container">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId)
+                                        @* @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })*@
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Enter Space to autofill..." } })
                                     </div>
                                 </div>
-
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            @*@Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })*@
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter Space to autofill..." } })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                            @*@Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })*@
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Month, new { @class = "control-label" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.Month, Monthtype, new { @class = "form-control input-md" })
-                                                @*@Html.ValidationMessageFor(model => model.Month)*@
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ConcessionType, new { @class = "control-label" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.ConcessionType, ChargeType, new { @class = "form-control input-md" })
-                                                @*@Html.ValidationMessageFor(model => model.ConcessionType)*@
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-
-
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.Priority, QueuePriority, new { @class = "form-control input-md" })
-                                                @*@Html.ValidationMessageFor(model => model.Priority)*@
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                            @*@Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })*@
-                                        </div>
-                                    </div>
-
-                                </div>
-
-
-                            </div>
-
-
-                            <div class="journal-voucher-container">
-                                <h2>Entries</h2>
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @*@Html.HiddenFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber)*@
-                                                @Html.TextBoxFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "CreditCustomerAccountFullAccountNumber" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
-                                            @*@Html.HiddenFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription)*@
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].ProductDescription, htmlAttributes: new { @class = "control-label" })
-                                            @* @Html.HiddenFor(model => model.CreditBatchEntries[0].ProductDescription)*@
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].ProductDescription, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", @id = "ProductDescription" } })
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.CreditBatchEntries[0].ProductDescription)
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @readonly = "readonly", @id = "CreditCustomerAccountFullName" } })
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerId, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                </div>
-
-
-                                <div class="row">
-
-
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CustomerAccountCustomerIndividualPayrollNumbers" } })
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @readonly = "readonly", @id = "CreditCustomerAccountIdentificationNumber" } })
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CustomerAccountCustomerReference2" } })
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CustomerAccountCustomerReference3" } })
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].Principal, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].Principal, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "Principal" } })
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Principal, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].Beneficiary, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].Beneficiary, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Beneficiary, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].Interest, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].Interest, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Interest" } })
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Interest, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].Reference, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Reference, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CreditBatchEntries[0].FullAccountNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CreditBatchEntries[0].FullAccountNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].FullAccountNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-9">
-                                        <div style="text-align: right; margin: 20px 20px;">
-                                            <button type="submit" id="addEntryBtn" class="btn btn-primary">Add Entry</button>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-
-
-
-                                <row>
-
-                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
-                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                            <tr>
-
-                                                <th style="width: 10%;">Account Number</th>
-                                                <th style="width: 10%;">Status Description</th>
-                                                <th style="width: 10%;">Product Description</th>
-                                                <th style="width: 10%;">Principal</th>
-                                                <th style="width: 10%;">Interest</th>
-                                                <th style="width: 5%;">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-
-
-                                </row>
-                            </div>
-
-
-
-                        }
-
-
-
-                        @using (Html.BeginForm("Create", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { @id = "creditForm" }))
-                        {
-                            <div class=" row custom-container">
-                                
 
                                 <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ConcessionFixedAmount, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.ConcessionFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.ConcessionFixedAmount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    @Html.LabelFor(model => model.CreditTypeId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.CreditTypeId)
+                                        @Html.TextBoxFor(model => model.CreditTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Search Credit Type...", @required = "" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#creditTypeLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Type, creditBatchType, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.Type)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @*@Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })*@
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter Space to autofill..." } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                        @*@Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })*@
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Month, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Month, Monthtype, new { @class = "form-control input-md" })
+                                            @*@Html.ValidationMessageFor(model => model.Month)*@
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ConcessionType, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.ConcessionType, ChargeType, new { @class = "form-control input-md" })
+                                            @*@Html.ValidationMessageFor(model => model.ConcessionType)*@
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Priority, QueuePriority, new { @class = "form-control input-md" })
+                                            @*@Html.ValidationMessageFor(model => model.Priority)*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                        @*@Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })*@
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="journal-voucher-container">
+                            <h2>Credit Batch Entries</h2>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @*@Html.HiddenFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber)*@
+                                            @Html.TextBoxFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "CreditCustomerAccountFullAccountNumber" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
+                                        @*@Html.HiddenFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription)*@
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].ProductDescription, htmlAttributes: new { @class = "control-label" })
+                                        @* @Html.HiddenFor(model => model.CreditBatchEntries[0].ProductDescription)*@
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].ProductDescription, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", @id = "ProductDescription" } })
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CreditBatchEntries[0].ProductDescription)
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @readonly = "readonly", @id = "CreditCustomerAccountFullName" } })
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerId, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="row">
+
+
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CustomerAccountCustomerIndividualPayrollNumbers" } })
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @readonly = "readonly", @id = "CreditCustomerAccountIdentificationNumber" } })
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CustomerAccountCustomerReference2" } })
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CustomerAccountCustomerReference3" } })
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].Principal, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].Principal, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "Principal" } })
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Principal, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].Beneficiary, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].Beneficiary, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Beneficiary, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].Interest, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].Interest, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Interest" } })
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Interest, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].Reference, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Reference, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreditBatchEntries[0].FullAccountNumber, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreditBatchEntries[0].FullAccountNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].FullAccountNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div style="text-align: right; margin: 20px 20px;">
+                                        <button type="submit" id="addEntryBtn" class="btn btn-primary" style="width: 150px;">Add</button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <row>
+                                <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                        <tr>
+                                            <th style="width: 10%;">Account Number</th>
+                                            <th style="width: 10%;">Status Description</th>
+                                            <th style="width: 10%;">Product Description</th>
+                                            <th style="width: 10%;">Principal</th>
+                                            <th style="width: 10%;">Interest</th>
+                                            <th style="width: 5%;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+
+
+                            </row>
+                        </div>
+
+
+
+                    }
+
+
+
+                    @using (Html.BeginForm("Create", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { @id = "creditForm" }))
+                    {
+                        <div class="blue-section">
+                            <div class="row">
+                                <div class="col-lg-2">
                                     <div class="form-group form-group-sm">
                                         @Html.CheckBoxFor(model => model.PreserveAccountBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Preserve Account Balance?" } })
                                         @Html.LabelFor(model => model.PreserveAccountBalance, htmlAttributes: new { @class = "" })
@@ -534,7 +580,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-3">
+                                <div class="col-lg-2">
                                     <div class="form-group form-group-sm">
                                         @Html.CheckBoxFor(model => model.RecoverArrearages, new { htmlAttributes = new { @class = "form-control", @placeholder = "Recover Arrearages?" } })
                                         @Html.LabelFor(model => model.RecoverArrearages, htmlAttributes: new { @class = "" })
@@ -550,8 +596,8 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-1">
-                                    <div class="form-group form-group-sm">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.RecoverCarryForwards, new { htmlAttributes = new { @class = "form-control", @placeholder = "Recover Carry Forwards?" } })
                                         @Html.LabelFor(model => model.RecoverCarryForwards, htmlAttributes: new { @class = "" })
                                         @Html.ValidationMessageFor(model => model.RecoverCarryForwards, "", new { @class = "text-danger" })
@@ -559,18 +605,13 @@
                                 </div>
 
                                 <div class="col-lg-1">
-                                    <div class="form-group" style="text-align:center;">
-                                        <input type="submit" value="Create" class="btn btn-primary" style=" margin-left: 10px; border-radius: 4px; " />
+                                    <div class="form-group">
+                                        <input type="submit" value="Create" class="btn btn-primary" style=" margin-left: 10px; border-radius: 4px; width: 150px;" />
                                     </div>
                                 </div>
-                                
                             </div>
-                        }
-
-
-
-                    </div>
-
+                        </div>
+                    }
 
                 </div>
             </div>
@@ -621,6 +662,40 @@
     </div>
 </div>
 
+
+
+<div class="modal  fade" id="creditTypeLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Credit Type Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <br />
+
+            <style>
+                #creditTypesGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+            <table id="creditTypesGrid" class="table table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -664,7 +739,60 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    <script>
+        $('#creditTypesGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "CreditType", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
 
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectPurpose(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+                    { "mDataProp": "TransactionOwnershipDescription", "sTitle": "Transaction Ownership", "sWidth": "10%" },
+                    { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+        function selectPurpose(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Accounts/BatchOrigination_Credit/CreditTypeLookup',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        $('#CreditTypeId').val(response.data.CreditTypeId);
+                        $('#CreditTypeDescription').val(response.data.CreditTypeDescription);
+
+                        $('#creditTypeLookupModal').modal('hide');
+                    } else {
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
 
 
     <script>
@@ -717,7 +845,7 @@
 
 
 
-    
+
 
 
 
@@ -768,7 +896,7 @@
 });
 
         function updateEntriesTable(entries) {
-            var tableBody = $("#ChargeSplits tbody");
+            var tableBody = $("#dataTableEntries tbody");
             tableBody.empty(); // Clear existing entries
 
             $.each(entries, function (index, entry) {
@@ -1039,13 +1167,10 @@
                     var CreditTyped = "";
                     CreditTypeId = CreditTypesMap[item].Id;
                     $('#CreditTypeId').val(CreditTypeId);
-                    //console.log(PostingPeriodId)
+                    console.log(CreditTypeId)
                     return item;
                 }
             });
-
-
-
     </script>
 }
 

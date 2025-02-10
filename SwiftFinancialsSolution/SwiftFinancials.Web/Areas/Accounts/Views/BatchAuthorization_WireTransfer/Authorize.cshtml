@@ -1,17 +1,14 @@
-﻿@model Application.MainBoundedContext.DTO.AccountsModule.DebitBatchDTO
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.WireTransferBatchDTO
 
 @{
-    ViewBag.Title = "Verify Debit Batch";
-    var debitBatchType = ViewBag.DebitBatchTypeSelectList as List<SelectListItem>;
-    var queuePriority = ViewBag.QueuePrioritySelectList as List<SelectListItem>;
+    ViewBag.Title = "Authorize WireTransfer Batch";
 
-    var batchAuthOptions = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
+    var priority = ViewBag.Priority as List<SelectListItem>;
+    var batchType = ViewBag.BatchType as List<SelectListItem>;
+    var batchAuth = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
 }
 
 <style>
-
-
-
 
     .big-box {
         border: 1px solid gray;
@@ -66,7 +63,7 @@
         text-align: center; /* Center text within elements */
         margin: 20px;
         font-weight: bold;
-        background-color: #e0f0ff;
+        background-color: #00e0ff;
     }
 
     /* Ensure that any child elements that need to be centered don't affect the container alignment */
@@ -75,7 +72,9 @@
             font-size: 16px;
         }
 
-
+    .form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
 
     .row {
         margin-bottom: 20px; /* Space between rows */
@@ -191,7 +190,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "BatchOrigination_Debit", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Verify</strong>
@@ -200,24 +199,27 @@
     </div>
 </div>
 
-@if (TempData["Error"] != null)
-{
-<div class="alert alert-danger fade in">
-    <button class="close" data-dismiss="alert">
-        ×
-    </button>
-    <i class="fa-fw fa fa-times"></i>
-    <strong>Error!</strong> @TempData["Error"]
-</div>
-}
-
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                   
-                    
+                    <h2>Wire Transfer Batch</h2>
+
+                    @if (TempData["Fail"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error!",
+                                    text: "@TempData["Fail"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -227,100 +229,104 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-dark">
-                    @using (Html.BeginForm("Verify", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post))
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Authorize", "BatchAuthorization_WireTransfer", new { Area = "Accounts" }, FormMethod.Post))
                     {
-                    @Html.AntiForgeryToken()
+                        @Html.AntiForgeryToken()
 
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                            
+
                             <div class="main1">
                                 <div class="combined-container">
                                     <div class="row">
-                                        <div class="col-lg-3">
+
+
+                                        <div class="col-md-4 form-group">
+                                            @Html.LabelFor(model => model.WireTransferTypeDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.WireTransferTypeId)
+                                            @Html.EditorFor(model => model.WireTransferTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" }, @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DebitTypeId, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.DebitTypeDescription, new { htmlAttributes = new { @class = "form-control input-md", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.DebitTypeDescription, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(model => model.PriorityDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.PriorityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                             </div>
+
                                         </div>
 
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-4">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.PriorityDescription, new { @class = "control-label" })
-                                                <div class="input-group">
-                                                    <span class="input-group-addon input-md"><i class="fa fa-bars fa-fw"></i></span>
-                                                    @Html.DropDownListFor(model => model.PriorityDescription, queuePriority, new { @class = "form-control input-md", @readonly = "readonly" })
-                                                    @Html.ValidationMessageFor(model => model.PriorityDescription)
-                                                </div>
+                                                @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.TypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                             </div>
+
                                         </div>
 
-                                        <div class="col-lg-3">
-                                            <div class="form-group form-group-lg">
+                                    </div>
+
+                                    <div class="row">
+
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-sm">
+                                                @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-sm">
                                                 @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control input-md", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+
                                             </div>
                                         </div>
-
-
                                         <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control input-md", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                                @Html.HiddenFor(model => model.BranchId)
                                                 @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
                                             </div>
                                         </div>
                                     </div>
 
 
-
-                                        
-
-                                    
                                 </div>
-                                <br/>
-                                <br/>
-
-
+                                <br />
                                 <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
-                                    <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Debit Batch Entries</h2>
+                                    <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Wire Transfer Batch Entries</h2>
 
                                     <row>
-                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
-                                            <thead style="font-style: italic; color: #333; text-align: center;">
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                                 <tr>
-                                                    <th style="width: 1%;"></th> <!-- New ID column -->
-                                                    <th style="width: 5%;">Reference</th>
-                                                    <th style="width: 10%;">Multiplier</th>
-                                                    <th style="width: 10%;">Status</th>
+                                                    <th style="width: 5%;">Batch NO</th>
+                                                    <th style="width: 15%;">Name</th>
+                                                    <th style="width: 15%;">Account No</th>
+                                                    <th style="width: 10%;">Amount</th>
+
                                                 </tr>
                                             </thead>
-                                            <tbody style="color: #007bff;">
-                                                @if (ViewBag.DebitBatchEntryDTOs != null)
+                                            <tbody>
+                                                @if (ViewBag.WireTransferEntryDTOs != null)
                                                 {
-                                                    int id = 1; // Initialize an ID counter
-                                                    foreach (var debitBatchEntries in ViewBag.DebitBatchEntryDTOs)
+                                                    int id = 1;
+                                                    foreach (var wireTransferBatchEntries in ViewBag.WireTransferEntryDTOs)
                                                     {
-                                                        <tr data-id="@debitBatchEntries.Id">
-                                                            <td style="color: black;">@id</td> <!-- Display the current ID -->
-                                                            <td>@debitBatchEntries.Reference</td>
-                                                            <td>@debitBatchEntries.Multiplier</td>
-                                                            <td>@debitBatchEntries.Status</td>
+                                                        <tr data-id="@wireTransferBatchEntries.Id">
+                                                            <td>@wireTransferBatchEntries.WireTransferBatchBatchNumber</td>
+                                                            <td>@wireTransferBatchEntries.CustomerFullName</td>
+                                                            <td>@wireTransferBatchEntries.FullAccountNumber</td>
+                                                            <td>@wireTransferBatchEntries.Amount</td>
                                                         </tr>
-                                                        id++; // Increment the ID for the next entry
                                                     }
                                                 }
                                             </tbody>
                                         </table>
-
                                     </row>
                                 </div>
-
-
-
 
 
                                 <div class="custom-container">
@@ -341,7 +347,7 @@
                                                     <div class="form-group form-group-lg">
                                                         <div class="button-container">
                                                             <div class="custom-dropdown">
-                                                                @Html.DropDownListFor(model => model.BatchAuthOption, batchAuthOptions, new { @class = "custom-select" })
+                                                                @Html.DropDownListFor(model => model.BatchAuthOption, batchAuth, new { @class = "custom-select" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -358,7 +364,7 @@
 
                                                 <div class="col-lg-12">
                                                     <div class="style-button" style="text-align: right;">
-                                                        <input type="submit" value="Verify" style="width: 150px;" class="btn btn-primary" />
+                                                        <input type="submit" value="Authorize" style="width: 150px;" class="btn btn-primary" />
                                                     </div>
 
 
@@ -369,9 +375,10 @@
 
                                     </div>
                                 </div>
+
                             </div>
-                            
                         </div>
+
                     }
                 </div>
             </div>

@@ -209,22 +209,26 @@
     </div>
 </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
-
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+
+                    @if (TempData["Fail"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Success",
+                                    text: "@TempData["Fail"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
+                    }
+
                     <h2 style="font-weight: bold;">Authorize Batch</h2>
                     <hr />
                     <div class="ibox-tools">
@@ -237,7 +241,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Authorize", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Authorize", "BatchAuthorization_Credit", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 

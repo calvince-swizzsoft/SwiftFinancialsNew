@@ -197,24 +197,26 @@
     </div>
 </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
-
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    
-                    
+                    <h2>Debit Batch Authorization</h2>
+
+                    @if (TempData["Fail"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error!",
+                                    text: "@TempData["Fail"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
+                    }
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -225,7 +227,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-dark">
-                    @using (Html.BeginForm("Authorize", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Authorize", "BatchAuthorization_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -294,7 +296,7 @@
                                     <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
                                         <thead style="font-style: italic; color: #333; text-align: center;">
                                             <tr>
-                                                <th style="width: 10%;">Customer Account</th>
+                                                <th style="width: 10%;">Customer Account Number</th>
                                                 <th style="width: 5%;">Multiplier</th>
                                                 <th style="width: 10%;">Reference</th>
                                                 <th style="width: 10%;">Status</th>
@@ -306,7 +308,7 @@
                                                 foreach (var debitBatchEntries in ViewBag.DebitBatchEntryDTOs)
                                                 {
                                                     <tr data-id="@debitBatchEntries.Id">
-                                                        <td>@debitBatchEntries.CustomerAccountId</td>
+                                                        <td>@debitBatchEntries.CustomerAccountCustomerReference1</td>
                                                         <td>@debitBatchEntries.Multiplier</td>
                                                         <td>@debitBatchEntries.Reference</td>
                                                         <td>@debitBatchEntries.Status</td>

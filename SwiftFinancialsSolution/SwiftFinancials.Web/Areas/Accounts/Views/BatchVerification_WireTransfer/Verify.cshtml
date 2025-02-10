@@ -1,8 +1,8 @@
 ﻿@model Application.MainBoundedContext.DTO.AccountsModule.WireTransferBatchDTO
 
 @{
-    ViewBag.Title = "Authorize WireTransfer Batch";
-
+    ViewBag.Title = "Verify WireTransfer Batch";
+   
     var priority = ViewBag.Priority as List<SelectListItem>;
     var batchType = ViewBag.BatchType as List<SelectListItem>;
     var batchAuth = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
@@ -190,7 +190,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "BatchVerification_WireTransfer", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Verify</strong>
@@ -199,23 +199,26 @@
     </div>
 </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
-
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Wire Transfer Batch</h2>
 
+                    @if (TempData["Fail"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error!",
+                                    text: "@TempData["Fail"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
+                    }
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -227,7 +230,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Authorize", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Verify", "BatchVerification_WireTransfer", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
@@ -237,8 +240,6 @@
                             <div class="main1">
                                 <div class="combined-container">
                                     <div class="row">
-
-
                                         <div class="col-md-4 form-group">
                                             @Html.LabelFor(model => model.WireTransferTypeDescription, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.WireTransferTypeId)
@@ -249,7 +250,7 @@
                                                 @Html.LabelFor(model => model.PriorityDescription, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.PriorityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                             </div>
-
+                                            
                                         </div>
 
                                         <div class="col-lg-4">
@@ -257,7 +258,7 @@
                                                 @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.TypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                             </div>
-
+                                            
                                         </div>
 
                                     </div>
@@ -299,7 +300,6 @@
                                         <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
                                             <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                                 <tr>
-                                                    <th style="width: 1%;"></th> <!-- New ID column -->
                                                     <th style="width: 5%;">Batch NO</th>
                                                     <th style="width: 15%;">Name</th>
                                                     <th style="width: 15%;">Account No</th>
@@ -310,24 +310,21 @@
                                             <tbody>
                                                 @if (ViewBag.WireTransferEntryDTOs != null)
                                                 {
-                                                    int id = 1;
                                                     foreach (var wireTransferBatchEntries in ViewBag.WireTransferEntryDTOs)
                                                     {
                                                         <tr data-id="@wireTransferBatchEntries.Id">
-                                                            <td style="color: black;">@id</td> <!-- Display the current ID -->
                                                             <td>@wireTransferBatchEntries.WireTransferBatchBatchNumber</td>
                                                             <td>@wireTransferBatchEntries.CustomerFullName</td>
                                                             <td>@wireTransferBatchEntries.FullAccountNumber</td>
                                                             <td>@wireTransferBatchEntries.Amount</td>
                                                         </tr>
-                                                        id++; // Increment the ID for the next entry
                                                     }
                                                 }
                                             </tbody>
                                         </table>
                                     </row>
                                 </div>
-
+                                
 
                                 <div class="custom-container">
                                     <div class="row" id="policies">
@@ -337,9 +334,9 @@
                                                     <div class="form-group form-group-lg">
                                                         <div class="form-group-container">
                                                             Remarks:
-                                                            @Html.EditorFor(model => model.AuthorizationRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                                            @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
                                                         </div>
-                                                        @Html.ValidationMessageFor(model => model.AuthorizationRemarks, "", new { @class = "text-danger" })
+                                                        @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
 
@@ -364,7 +361,7 @@
 
                                                 <div class="col-lg-12">
                                                     <div class="style-button" style="text-align: right;">
-                                                        <input type="submit" value="Authorize" style="width: 150px;" class="btn btn-primary" />
+                                                        <input type="submit" value="Verify" style="width: 150px;" class="btn btn-primary" />
                                                     </div>
 
 
@@ -375,10 +372,10 @@
 
                                     </div>
                                 </div>
-
+                            
                             </div>
                         </div>
-
+                        
                     }
                 </div>
             </div>
