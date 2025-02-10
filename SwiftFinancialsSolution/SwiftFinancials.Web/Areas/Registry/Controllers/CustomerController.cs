@@ -23,6 +23,9 @@ using System.Data;
 using System.Linq;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Text;
 
 namespace SwiftFinancials.Web.Areas.Registry.Controllers
 {
@@ -461,7 +464,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
 
             //TempData["WithdrawalNotificationDTOs"] = withdrawalNotificationDTO;
-            
+
             return View("Create", customer.MapTo<CustomerBindingModel>());
         }
 
@@ -549,7 +552,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 customerBindingModel.BranchId = (Guid)userDTO.BranchId;
             }
-            //var companies = await _channelService.FindBranchAsync(customerBindingModel.BranchId, GetServiceHeader());
             //var j = await _channelService.FindCompanyAsync(companies.CompanyId, GetServiceHeader());
             //var mandatorydebitTypes = await _channelService.FindDebitTypesByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
             //var attached = await _channelService.FindAttachedProductsByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
@@ -566,6 +568,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (userDTO.BranchId != null)
             {
                 customerBindingModel.BranchId = (Guid)userDTO.BranchId;
+
             }
 
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
@@ -595,6 +598,57 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
      1,
      GetServiceHeader()
  );
+                    var companies = await _channelService.FindBranchAsync(customerBindingModel.BranchId, GetServiceHeader());
+
+
+                    // Define the SMS API endpoint
+                    string url = "http://138.201.58.10:8093/SendMessageFON";
+
+                    string message = "Dear " + result.FullName + ",\n\n"
+                                   + "You have been successfully registered to " + result.BranchDescription + ".for Sacco "+ companies.CompanyDescription + "Your Sacco member number is " + result.Reference2 + ".\n\n"
+                                   + "Thank you.";
+
+                    var phonenumber = result.AddressMobileLine;
+
+                    // Replace +245 or any country code with 0
+
+
+                    // Create the request payload
+                    var payload = new
+                    {
+                        Phonenumber = result.AddressMobileLine,
+                        OrgCode = "58",
+                        Message = message
+                    };
+
+                    // Convert payload to JSON
+                    string jsonPayload = JsonConvert.SerializeObject(payload);
+
+                    using (HttpClient client = new HttpClient())
+                    {
+                        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                        try
+                        {
+                            // Send the POST request
+                            HttpResponseMessage response = await client.PostAsync(url, content);
+
+                            // Read response
+                            string responseString = await response.Content.ReadAsStringAsync();
+                            Console.WriteLine($"Server Response: {responseString}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error: {ex.Message}");
+                        }
+                    }
+
+
+
+
+
+
+
                     if (signaturePhoto != null && idCardBackPhoto != null && passportPhotoDataUrl != null)
                     {
                         if (passportPhotoDataUrl == null)
@@ -795,7 +849,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 // Process the passport photo from the data URL
                 if (!string.IsNullOrEmpty(passportFile))
                 {
-                        var base64Data = passportFile.Split(',')[1];
+                    var base64Data = passportFile.Split(',')[1];
                     document.PassportPhoto = Convert.FromBase64String(base64Data);
                 }
                 else

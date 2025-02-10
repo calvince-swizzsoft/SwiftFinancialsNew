@@ -115,6 +115,18 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (NextOfKinDTOs == null)
                 NextOfKinDTOs = new ObservableCollection<NextOfKinDTO>();
 
+            if (nextOfKinDTO.NominatedPercentage == 100.1 || nextOfKinDTO.NominatedPercentage == -0)
+            {
+                try
+                {
+                    return RedirectToAction("Create");
+
+                }
+                catch
+                {
+
+                }
+            }
             NextOfKinDTOs.Add(nextOfKinDTO);
             TempData["NextOfKinDTOs"] = NextOfKinDTOs as ObservableCollection<NextOfKinDTO>;
 
@@ -123,14 +135,41 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 success = true,
                 data = new
-                {                  
-                  k
+                {
+                    k
                 }
             }, JsonRequestBehavior.AllowGet);
 
         }
 
 
+        [HttpPost]
+        public async Task<ActionResult> RemoveNextOfKin(string firstname)
+        {
+
+            await ServeNavigationMenus();
+            var k = Session["customer"] as CustomerDTO;
+            NextOfKinDTOs = TempData["NextOfKinDTOs"] as ObservableCollection<NextOfKinDTO>;
+            if (NextOfKinDTOs == null)
+                NextOfKinDTOs = new ObservableCollection<NextOfKinDTO>();
+            foreach(var nextofkin in NextOfKinDTOs)
+            {
+                if(nextofkin.FirstName==firstname)
+                NextOfKinDTOs.Remove(nextofkin);
+            }
+            TempData["NextOfKinDTOs"] = NextOfKinDTOs as ObservableCollection<NextOfKinDTO>;
+
+            // For simplicity, let's return the data back as a JSON response
+            return Json(new
+            {
+                success = true,
+                data = new
+                {
+                    k
+                }
+            }, JsonRequestBehavior.AllowGet);
+
+        }
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -147,7 +186,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(NextOfKinDTO nextOfKinDTO, ObservableCollection<NextOfKinDTO> nextOfKinCollection)
         {
-            
+
             var customerDTO = Session["customer"] as CustomerDTO;
             var customer = await _channelService.FindCustomerAsync(customerDTO.Id, GetServiceHeader());
 
@@ -158,7 +197,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 var result1 = await _channelService.UpdateNextOfKinCollectionAsync(customer, NextOfKinDTOs, GetServiceHeader());
 
 
-                if (result1==true)
+                if (result1 == true)
                 {
                     TempData["NextOfKinDTOs"] = "";
                     Session["customer"] = "";

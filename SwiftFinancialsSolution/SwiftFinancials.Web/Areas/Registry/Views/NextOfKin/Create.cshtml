@@ -121,7 +121,7 @@
                                         <input type="text" id="CustomerDTO_IndividualPayrollNumbers" class="form-control" readonly />
                                     </div>
 
-                                   
+
                                 </div>
                             </div>
 
@@ -248,14 +248,12 @@
                             </div>
                         </div>
                         <button type="button" id="addDetailsButton" class="btn btn-secondary">Add Details</button>
-
                         <!-- Data Table for Next of Kin Details -->
                         <table class="table table-bordered" id="nextOfKinTable">
                             <thead>
                                 <tr>
                                     <th>First Name</th>
                                     <th>Last Name</th>
-
                                     <th>Identity Card Number</th>
                                     <th>Address</th>
                                     <th>City</th>
@@ -264,6 +262,7 @@
                                     <th>Mobile</th>
                                     <th>Remarks</th>
                                     <th>Nominated Percentage</th>
+                                    <th>Action</th> <!-- Added Action column for the Remove button -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -271,57 +270,65 @@
                             </tbody>
                         </table>
 
-                    }
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                        <script>
+                            $(document).ready(function () {
+                                $("#addDetailsButton").click(function () {
+                                    const formData = {
+                                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                                        SalutationDescription: $("#SalutationDescription").val(),
+                                        FirstName: $("#FirstName").val(),
+                                        LastName: $("#LastName").val(),
+                                        GenderDescription: $("#GenderDescription").val(),
+                                        RelationshipDescription: $("#RelationshipDescription").val(),
+                                        IdentityCardType: $("#IdentityCardType").val(),
+                                        IdentityCardNumber: $("#IdentityCardNumber").val(),
+                                        AddressStreet: $("#AddressStreet").val(),
+                                        AddressCity: $("#AddressCity").val(),
+                                        AddressPostalCode: $("#AddressPostalCode").val(),
+                                        AddressEmail: $("#AddressEmail").val(),
+                                        AddressMobileLine: $("#AddressMobileLine").val(),
+                                        Remarks: $("#Remarks").val(),
+                                        NominatedPercentage: $("#NominatedPercentage").val()
+                                    };
 
-                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                    <script>
-                        $(document).ready(function () {
-                            $("#addDetailsButton").click(function () {
-                                const formData = {
-                                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
-                                    SalutationDescription: $("#SalutationDescription").val(),
-                                    FirstName: $("#FirstName").val(),
-                                    LastName: $("#LastName").val(),
-                                    GenderDescription: $("#GenderDescription").val(),
-                                    RelationshipDescription: $("#RelationshipDescription").val(),
-                                    IdentityCardType: $("#IdentityCardType").val(),
-                                    IdentityCardNumber: $("#IdentityCardNumber").val(),
-                                    AddressStreet: $("#AddressStreet").val(),
-                                    AddressCity: $("#AddressCity").val(),
-                                    AddressPostalCode: $("#AddressPostalCode").val(),
-                                    AddressEmail: $("#AddressEmail").val(),
-                                    AddressMobileLine: $("#AddressMobileLine").val(),
-                                    Remarks: $("#Remarks").val(),
-                                    NominatedPercentage: $("#NominatedPercentage").val()
-                                };
+                                    $.ajax({
+                                        url: '/Registry/Nextofkin/SaveNextOfKin',
+                                        type: 'POST',
+                                        data: formData,
+                                        success: function (response) {
+                                            const newRow = $(`
+                                                <tr data-firstname="${formData.FirstName}"> <!-- Storing the FirstName -->
+                                                    <td>${formData.FirstName}</td>
+                                                    <td>${formData.LastName}</td>
+                                                    <td>${formData.IdentityCardNumber}</td>
+                                                    <td>${formData.AddressStreet}</td>
+                                                    <td>${formData.AddressCity}</td>
+                                                    <td>${formData.AddressPostalCode}</td>
+                                                    <td>${formData.AddressEmail}</td>
+                                                    <td>${formData.AddressMobileLine}</td>
+                                                    <td>${formData.Remarks}</td>
+                                                    <td>${formData.NominatedPercentage}</td>
+                                                    <td>
+                                                        <a href="/Registry/Nextofkin/RemoveNextOfKin" class="removeButton btn btn-danger">Remove</a>
+                                                    </td> <!-- Remove button -->
+                                                </tr>
+                                            `);
+                                            $("#nextOfKinTable tbody").append(newRow);
 
-                                $.ajax({
-                                    url: '/Registry/Nextofkin/SaveNextOfKin',
-                                    type: 'POST',
-                                    data: formData,
-                                    success: function () {
-                                        $("#nextOfKinTable tbody").append(`
-                                                                                                                                                                                                                                                                                                                <tr>
-                                                                                                                                                                                                                                                                                                                    <td>${formData.FirstName}</td>
-                                                                                                                                                                                                                                                                                                                    <td>${formData.LastName}</td>
-                                                                                                                                                                                                                                                                                                                    <td>${formData.IdentityCardNumber}</td>
-                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressStreet}</td>
-                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressCity}</td>
-                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressPostalCode}</td>
-                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressEmail}</td>
-                                                                                                                                                                                                                                                                                                                    <td>${formData.AddressMobileLine}</td>
-                                                                                                                                                                                                                                                                                                                    <td>${formData.Remarks}</td>
-                                                                                                                                                                                                                                                                                                                    <td>${formData.NominatedPercentage}</td>
-                                                                                                                                                                                                                                                                                                                </tr>
-                                                                                                                                                                                                                                                                                                            `);
-                                        $('form')[0].reset();
-                                    },
-                                    error: function () {
-                                    }
+                                            // Reset the form
+                                            $('form')[0].reset();
+                                        },
+                                        error: function () {
+                                            // Handle error if necessary
+                                        }
+                                    });
                                 });
                             });
-                        });
-                    </script>
+                        </script>
+
+
+                    }
 
                     <button type="submit" id="create" class="btn btn-primary">Create</button>
 

@@ -4172,7 +4172,6 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
-
         public Task<bool> AddSystemPermissionTypeToBranchesAsync(int systemPermissionType, ObservableCollection<BranchDTO> branches, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();

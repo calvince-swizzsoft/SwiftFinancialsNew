@@ -83,11 +83,10 @@ namespace SwiftFinancials.TextAlertDispatcher.Celcom.Configuration
 
                                     var request = new request
                                     {
-                                        apikey = queueDTO.BulkTextPassword,
-                                        partnerID = queueDTO.BulkTextUsername,
-                                        message = textMessage,
-                                        shortcode = queueDTO.BulkTextSenderId,
-                                        mobile = msisdn.Replace("+", string.Empty)
+                                        PhoneNumber = msisdn.Replace("+", string.Empty),
+                                        OrgCode = queueDTO.BulkTextSenderId,
+                                        message = textMessage
+
                                     };
 
                                     var serializer = new JavaScriptSerializer();
@@ -232,6 +231,8 @@ namespace SwiftFinancials.TextAlertDispatcher.Celcom.Configuration
         public string shortcode { get; set; }
         public string mobile { get; set; }
         public string timeToSend { get; set; }
+        public string OrgCode { get; set; }
+        public string PhoneNumber { get; set; }
     }
 
     public class response

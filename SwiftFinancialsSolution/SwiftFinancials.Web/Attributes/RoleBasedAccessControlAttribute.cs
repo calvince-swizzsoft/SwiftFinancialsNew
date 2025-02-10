@@ -116,7 +116,9 @@ namespace SwiftFinancials.Web.Attributes
                         var role = _applicationRoleManager.FindByNameAsync(accessRight.RoleName);
                         if (role != null)
                         {
-                            foundRoles.Add(new RoleDTO { Id = role.Id.ToString(), Name = role.ToString() });
+                            foundRoles.Add(new RoleDTO { Id = role.Result.Id.ToString(), Name = role.Result.Name.ToString() });
+                            var test = role.Result.Name.ToString();
+
                         }
                         if (accessRight.NavigationItemControllerName.ToLower() == controllerName.ToLower())
                         {
