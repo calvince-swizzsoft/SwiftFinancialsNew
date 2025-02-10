@@ -598,54 +598,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
      1,
      GetServiceHeader()
  );
-                    var companies = await _channelService.FindBranchAsync(customerBindingModel.BranchId, GetServiceHeader());
-
-
-                    // Define the SMS API endpoint
-                    string url = "http://138.201.58.10:8093/SendMessageFON";
-
-                    string message = "Dear " + result.FullName + ",\n\n"
-                                   + "You have been successfully registered to " + result.BranchDescription + ".for Sacco "+ companies.CompanyDescription + "Your Sacco member number is " + result.Reference2 + ".\n\n"
-                                   + "Thank you.";
-
-                    var phonenumber = result.AddressMobileLine;
-
-                    // Replace +245 or any country code with 0
-
-
-                    // Create the request payload
-                    var payload = new
-                    {
-                        Phonenumber = result.AddressMobileLine,
-                        OrgCode = "58",
-                        Message = message
-                    };
-
-                    // Convert payload to JSON
-                    string jsonPayload = JsonConvert.SerializeObject(payload);
-
-                    using (HttpClient client = new HttpClient())
-                    {
-                        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-                        try
-                        {
-                            // Send the POST request
-                            HttpResponseMessage response = await client.PostAsync(url, content);
-
-                            // Read response
-                            string responseString = await response.Content.ReadAsStringAsync();
-                            Console.WriteLine($"Server Response: {responseString}");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error: {ex.Message}");
-                        }
-                    }
-
-
-
-
 
 
 
