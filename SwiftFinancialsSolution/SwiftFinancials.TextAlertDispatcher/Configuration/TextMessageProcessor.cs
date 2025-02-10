@@ -50,8 +50,7 @@ namespace SwiftFinancials.TextAlertDispatcher.Celcom.Configuration
                 if (textDispatcherSettingsElement.UniqueId == queueDTO.AppDomainName)
                 {
                     queueDTO.BulkTextUrl = textDispatcherSettingsElement.BulkTextUrl;
-                    queueDTO.BulkTextUsername = textDispatcherSettingsElement.BulkTextUsername;
-                    queueDTO.BulkTextPassword = textDispatcherSettingsElement.BulkTextPassword;
+                   
                     queueDTO.BulkTextSenderId = textDispatcherSettingsElement.BulkTextSenderId;
 
                     var serviceHeader = new ServiceHeader { ApplicationDomainName = queueDTO.AppDomainName };
