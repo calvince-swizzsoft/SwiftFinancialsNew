@@ -55,8 +55,9 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-
                 <div class="ibox-title">
+                    <h2>Vouchers</h2>
+                    <hr />
                     @Html.ActionLink("Create Journal Voucher", "Create", "BatchOrigination_Voucher", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
                     @if (TempData["SuccessMessage"] != null)
@@ -273,7 +274,7 @@
 
                     var viewButton = `<a class="btn btn-primary" href="/Accounts/BatchOrigination_Voucher/details/${aData.Id}">View</a>`;
                     var editButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Voucher/edit/${aData.Id}">Edit</a>`;
-                    
+
                     dropdownHtml += viewButton + editButton;
                     dropdownHtml += `</div></div>`;
 

@@ -1549,6 +1549,9 @@
     <Content Include="Areas\Accounts\Views\BatchAuthorization_Disbursement\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchAuthorization_Disbursement\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchVerification_Voucher\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Voucher\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Voucher\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Voucher\Authorize.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2071,7 +2074,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Alternatechannel\" />
-    <Folder Include="Areas\Accounts\Views\BatchAuthorization_Voucher\" />
     <Folder Include="Areas\Accounts\Views\Credit\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />

@@ -2,6 +2,7 @@
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.JournalVoucherAgg;
 using Domain.MainBoundedContext.ValueObjects;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
@@ -25,31 +26,53 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int status, DateTime startDate, DateTime endDate)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindJournalVouchersByStatusAndFilterInPageAsync(status, startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindJournalVouchersByStatusAndFilterInPageAsync(
+                (int)BatchStatus.Pending,
+                DateTime.Now.AddDays(-1000),
+                DateTime.Now,
+                jQueryDataTablesModel.sSearch,
+                0,
+                int.MaxValue,
+                GetServiceHeader()
+                );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                /*pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(journalVoucher => journalVoucher.CreatedDate).ToList();*/
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(k => k.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<JournalVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<JournalVoucherDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -95,14 +118,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
 
                 ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
-                TempData["verifySuccess"] = "Journal batches have been verified succesifully";
+                TempData["verifySuccess"] = "Operation Completed Successfully";
 
                 return RedirectToAction("Index");
             }
             else
             {
+                await ServeNavigationMenus();
                 var errorMessages = journalVoucherDTO.ErrorMessages;
-
+                string errorMessage = string.Join("\n", errorMessages.Where(msg => !string.IsNullOrWhiteSpace(msg)));
+                TempData["Fail"] = $"Operation Failed\n{errorMessage}";
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
 
                 ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());

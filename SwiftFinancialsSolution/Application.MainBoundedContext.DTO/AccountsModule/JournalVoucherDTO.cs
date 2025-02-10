@@ -250,17 +250,14 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Primary Description")]
-        [Required]
         public string PrimaryDescription { get; set; }
 
         [DataMember]
         [Display(Name = "Secondary Description")]
-        [Required]
         public string SecondaryDescription { get; set; }
 
         [DataMember]
         [Display(Name = "Reference")]
-        [Required]
         public string Reference { get; set; }
 
         [DataMember]

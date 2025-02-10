@@ -1,8 +1,7 @@
 ﻿@model  Application.MainBoundedContext.DTO.AccountsModule.JournalVoucherDTO
 
-
-
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Journal Voucher";
     var status = ViewBag.BatchStatus as List<SelectListItem>;
 }
@@ -58,14 +57,14 @@
                 <div class="ibox-title">
                     <h2>Vouchers</h2>
 
-                    @if (TempData["SuccessMessage"] != null)
+                    @if (TempData["AuthSucess"] != null)
                     {
                         <script>
                             document.addEventListener("DOMContentLoaded", function () {
                                 Swal.fire({
                                     icon: "success",
                                     title: "Success",
-                                    text: "@TempData["SuccessMessage"]",
+                                    text: "@TempData["AuthSucess"]",
                                     confirmButtonColor: "#007bff"
                                 });
                             });
@@ -170,7 +169,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "BatchVerfication_Voucher", new { Area = "Accounts" }))",
+                "sAjaxSource": "@(Url.Action("Index", "BatchAuthorization_Voucher", new { Area = "Accounts" }))",
                 "sServerMethod": "POST",
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -180,7 +179,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var verifyButton = `<a class="btn btn-primary" href="/Accounts/BatchVerification_Voucher/Verify/${aData.Id}">Verify</a>`;
+                    var verifyButton = `<a class="btn btn-primary" href="/Accounts/BatchAuthorization_Voucher/Authorize/${aData.Id}">Authorize</a>`;
                     $('td:eq(6)', nRow).html(dt_Created);
                     $('td:eq(7)', nRow).html(verifyButton);
 
