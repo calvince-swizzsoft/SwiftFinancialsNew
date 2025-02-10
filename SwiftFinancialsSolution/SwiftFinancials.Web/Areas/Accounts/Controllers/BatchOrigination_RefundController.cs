@@ -28,29 +28,50 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int status, DateTime startDate, DateTime endDate)
         {
             int totalRecordCount = 0;
-            
-
             int searchRecordCount = 0;
-            
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindOverDeductionBatchesByStatusAndFilterInPageAsync(status, startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindOverDeductionBatchesByStatusAndFilterInPageAsync(
+                status, 
+                startDate, 
+                endDate,
+                jQueryDataTablesModel.sSearch, 
+                0, 
+                int.MaxValue, 
+                GetServiceHeader()
+                );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                /*pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(debitBatch => debitBatch.CreatedDate).ToList();*/
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(k => k.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<OverDeductionBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<OverDeductionBatchDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -411,98 +432,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(overDeductionBatchDTO);
             }
         }
-
-        public async Task<ActionResult> Verify(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-            var overDeductionBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
-
-            var overdeductionEntries = await _channelService.FindOverDeductionBatchEntriesByOverDeductionBatchIdAsync(id, true, GetServiceHeader());
-
-
-            TempData["overDeductionBatchDTO"] = overDeductionBatchDTO;
-
-            ViewBag.OverDeductionBatchEntryDTOs = overdeductionEntries;
-            TempData["overdeductionEntries"] = overdeductionEntries;
-
-            return View(overDeductionBatchDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(Guid id, OverDeductionBatchDTO  overDeductionBatchDTO)
-        {
-            overDeductionBatchDTO.ValidateAll();
-
-
-            var auth = overDeductionBatchDTO.RefundAuthOption;
-
-
-            if (!overDeductionBatchDTO.HasErrors)
-            {
-                await _channelService.AuditOverDeductionBatchAsync(overDeductionBatchDTO, auth, GetServiceHeader());
-
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(overDeductionBatchDTO.RefundAuthOption.ToString());
-
-                TempData["VerifySuccess"] = "Verification Successiful";
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                TempData["VerificationFail"] = "Verification Failed!. Review all conditions.";
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-                var errorMessages = overDeductionBatchDTO.ErrorMessages;
-
-                return View(overDeductionBatchDTO);
-            }
-        }
-
-        public async Task<ActionResult> Authorize(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-            var debitBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
-            var overdeductionEntries = await _channelService.FindOverDeductionBatchEntriesByOverDeductionBatchIdAsync(id, true, GetServiceHeader());
-            ViewBag.OverDeductionBatchEntryDTOs = overdeductionEntries;
-
-            return View(debitBatchDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Authorize(Guid id, OverDeductionBatchDTO  overDeductionBatchDTO)
-        {
-            var batchAuthOption = overDeductionBatchDTO.RefundAuthOption;
-            overDeductionBatchDTO.ValidateAll();
-
-            if (!overDeductionBatchDTO.HasErrors)
-            {
-                await _channelService.AuthorizeOverDeductionBatchAsync(overDeductionBatchDTO, batchAuthOption, 1, GetServiceHeader());
-               
-
-                    ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(overDeductionBatchDTO.RefundAuthOption.ToString());
-
-                
-
-                TempData["AuthorizationSuccess"] = "Authorization Successiful";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = overDeductionBatchDTO.ErrorMessages;
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(overDeductionBatchDTO.RefundAuthOption.ToString());
-                TempData["AuthorizationFail"] = "Authorization Failed!. Review all conditions.";
-
-                return View(overDeductionBatchDTO);
-            }
-        }
-
 
 
 
