@@ -216,8 +216,22 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                   
-                    
+                    <h2>Debit Batch Verification</h2>
+
+                    @if (TempData["Fail"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error!",
+                                    text: "@TempData["Fail"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -228,7 +242,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-dark">
-                    @using (Html.BeginForm("Verify", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Verify", "BatchVerification_Debit", new { Area = "Accounts" }, FormMethod.Post))
                     {
                     @Html.AntiForgeryToken()
 
