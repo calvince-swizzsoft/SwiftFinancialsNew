@@ -511,6 +511,7 @@
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_DisbursementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_RefundController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_VoucherController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DisbursementController.cs" />
@@ -523,6 +524,7 @@
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_DisbursementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_RefundController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_VoucherController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChargesController.cs" />
@@ -1415,8 +1417,8 @@
     <Content Include="Areas\Reports\Views\StoredProcedure\Create.cshtml" />
     <Content Include="Areas\Reports\Views\spDynamicReporting\Index.cshtml" />
     <Content Include="Areas\Reports\Views\spDynamicReporting\_StoredProcedureParameters.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Verify.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_WireTransfer\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_WireTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\Report.cshtml" />
     <Content Include="Areas\Admin\Views\ReportSetting\Create.cshtml" />
     <Content Include="Areas\Admin\Views\ReportSetting\Index.cshtml" />
@@ -1564,6 +1566,8 @@
     <Content Include="Areas\Accounts\Views\BatchAuthorization_Debit\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchVerification_Refund\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchAuthorization_Refund\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_WireTransfer\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_WireTransfer\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

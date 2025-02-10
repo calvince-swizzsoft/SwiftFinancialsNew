@@ -26,29 +26,50 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int status, DateTime startDate, DateTime endDate)
         {
             int totalRecordCount = 0;
-
-
             int searchRecordCount = 0;
-            
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var pageCollectionInfo = await _channelService.FindWireTransferBatchesByStatusAndFilterInPageAsync(status, startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindWireTransferBatchesByStatusAndFilterInPageAsync(
+                status, 
+                startDate, 
+                endDate, 
+                jQueryDataTablesModel.sSearch, 
+                0, 
+                int.MaxValue, 
+                GetServiceHeader()
+                );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                /*pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(x => x.CreatedDate).ToList();*/
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(k => k.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<WireTransferBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<WireTransferBatchDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
 
@@ -376,117 +397,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        public async Task<ActionResult> Verify(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
-            ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
-            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-            var wireTransferBatchDTO = await _channelService.FindWireTransferBatchAsync(id, GetServiceHeader());
-
-            TempData["wireTransferBatchDTO"] = wireTransferBatchDTO;
-
-            var wireTransferEntries = await _channelService.FindWireTransferBatchEntriesByWireTransferBatchIdAsync(id, true, GetServiceHeader());
-
-
-            ViewBag.WireTransferEntryDTOs = wireTransferEntries;
-
-
-            return View(wireTransferBatchDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(Guid id, WireTransferBatchDTO wireTransferBatchDTO)
-        {
-            var Auth = wireTransferBatchDTO.BatchAuthOption;
-            wireTransferBatchDTO.ValidateAll();
-
-            if (!wireTransferBatchDTO.HasErrors)
-            {
-                await _channelService.AuditWireTransferBatchAsync(wireTransferBatchDTO, Auth, GetServiceHeader());
-
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(wireTransferBatchDTO.BatchAuthOption.ToString());
-                ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.WireTransferTypeDescription.ToString());
-                ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
-
-                TempData["VerifySuccess"] = "Verification Successful";
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = wireTransferBatchDTO.ErrorMessages;
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(wireTransferBatchDTO.BatchAuthOption.ToString());
-                ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
-                ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
-
-                return View(wireTransferBatchDTO);
-            }
-        }
-
-
-
-        public async Task<ActionResult> Authorize(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
-            ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
-            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-            var wireTranferBatchDTO = await _channelService.FindWireTransferBatchAsync(id, GetServiceHeader());
-            var wireTransferEntries = await _channelService.FindWireTransferBatchEntriesByWireTransferBatchIdAsync(id, true, GetServiceHeader());
-
-
-            ViewBag.WireTransferEntryDTOs = wireTransferEntries;
-
-
-            return View(wireTranferBatchDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Authorize(Guid id, WireTransferBatchDTO wireTransferBatchDTO)
-        {
-            var Auth = wireTransferBatchDTO.BatchAuthOption;
-            wireTransferBatchDTO.ValidateAll();
-
-
-
-            if (!wireTransferBatchDTO.HasErrors)
-            {
-                await _channelService.AuthorizeWireTransferBatchAsync(wireTransferBatchDTO, Auth, 1, GetServiceHeader());
-
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(wireTransferBatchDTO.BatchAuthOption.ToString());
-                ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
-                ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
-
-                TempData["Authorize"] = "Authorization Successful";
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = wireTransferBatchDTO.ErrorMessages;
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(wireTransferBatchDTO.BatchAuthOption.ToString());
-                ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
-                ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
-
-                return View(wireTransferBatchDTO);
-            }
-        }
-
-
-
-        /*[HttpGet]
-        public async Task<JsonResult> GetWireTransferBatchesAsync()
-        {
-            var debitBatchDTOs = await _channelService.FindDebitBatchesAsync(GetServiceHeader());
-
-            return Json(debitBatchDTOs, JsonRequestBehavior.AllowGet);
-        }*/
     }
 
 }

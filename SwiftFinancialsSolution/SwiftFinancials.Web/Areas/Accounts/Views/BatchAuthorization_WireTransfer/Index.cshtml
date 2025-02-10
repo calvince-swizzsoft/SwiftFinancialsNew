@@ -2,12 +2,14 @@
 
 @{
     ViewBag.Title = "Wire Transfer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
     var status = ViewBag.BatchStatus as List<SelectListItem>;
 }
 
 <style>
 
-    
+
     .col-lg-2 {
         display: flex;
         align-items: center; /* Center the title vertically */
@@ -48,32 +50,19 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Wire Transfer Batch</h2>
-                    <hr />
-                    @Html.ActionLink("Create Wire-Transfer Batch", "Create", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
-                    @if (TempData["SuccessMessage"] != null)
+                    @if (TempData["Success"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["SuccessMessage"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
-                    }
-                    @if (TempData["verifySuccess"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Success"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Success",
+                                    text: "@TempData["Success"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
                     }
 
                     <div class="ibox-tools">
@@ -102,51 +91,6 @@
                             </tbody>
                         </table>
                     </div>
-                    @using (Html.BeginForm("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        <div class="bottom-button">
-
-                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Status, new { @class = "control-label" })
-
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Status, status,
-                                            new { @class = "form-control input-md", @id = "status" })
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group spacing-form-group" id="data_3">
-                                        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="valuedate" class="form-control" id="startDate" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group spacing-form-group" id="data_3">
-                                        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="valuedate" class="form-control" id="endDate" value="@DateTime.Today.ToString("dd/MM/yyyy")">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
-                                    <div class="form-group form-group-sm">
-                                        <input type="submit" value="Refresh" class="btn btn-primary" />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    }
                 </div>
             </div>
         </div>
@@ -208,11 +152,6 @@
                 language: 'en-GB'  // Use British English locale to ensure dd/mm/yyyy format
             });
 
-            // Set default values
-            var defaultStatus = $('#status').val();
-            var defaultStartDate = $('#startDate').val();
-            var defaultEndDate = $('#endDate').val();
-
             // Function to convert date from dd/mm/yyyy to yyyy-mm-dd
             function formatDate(dateString) {
                 var parts = dateString.split("/");
@@ -223,15 +162,9 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" }))",
+                "sAjaxSource": "@(Url.Action("Index", "BatchAuthorization_WireTransfer", new { Area = "Accounts" }))",
                 "sServerMethod": "POST",
-                "fnServerParams": function (aoData) {
-                    aoData.push(
-                        { "name": "status", "value": $('#status').val() || defaultStatus },
-                        { "name": "startDate", "value": formatDate($('#startDate').val() || defaultStartDate) },
-                        { "name": "endDate", "value": formatDate($('#endDate').val() || defaultEndDate) }
-                    );
-                },
+
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
@@ -250,11 +183,11 @@
 
                     var viewButton = `<a class="btn btn-primary" style="width: 150px;" href="/Accounts/BatchOrigination_WireTransfer/details/${aData.Id}">View</a>`;
                     @*var editButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/edit/${aData.Id}">Edit</a>`;*@
-                    var verifyButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_WireTransfer/Verify/${aData.Id}">Verify</a>`;
-                    var authorizeButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_WireTransfer/Authorize/${aData.Id}">Authorize</a>`;
+                    var verifyButton = `<a class="btn btn-primary" style="width: 150px;" href="/Accounts/BatchVerification_WireTransfer/Verify/${aData.Id}">Verify</a>`;
+                    var authorizeButton = `<a class="btn btn-primary" href="/Accounts/BatchAuthorization_WireTransfer/Authorize/${aData.Id}">Authorize</a>`;
 
                     $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewButton);
+                    $('td:eq(8)', nRow).html(authorizeButton);
 
                     return nRow;
                 },
@@ -285,5 +218,6 @@
         });
     </script>
 }
+
 
 
