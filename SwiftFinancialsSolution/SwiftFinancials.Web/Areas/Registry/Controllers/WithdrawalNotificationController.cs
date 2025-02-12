@@ -40,19 +40,41 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindWithdrawalNotificationsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindWithdrawalNotificationsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
+
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(creditBatch => creditBatch.CreatedDate).ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<WithdrawalNotificationDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            else return this.DataTablesJson(
+                 items: new List<WithdrawalNotificationDTO>(),
+                 totalRecords: totalRecordCount,
+                 totalDisplayRecords: searchRecordCount,
+                 sEcho: jQueryDataTablesModel.sEcho
+         );
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -107,6 +129,29 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (!withdrawalNotificationDTO.HasErrors)
             {
                 var result = await _channelService.AddWithdrawalNotificationAsync(withdrawalNotificationDTO, GetServiceHeader());
+
+                bool includeInterestBalanceForLoanAccounts = false;
+                bool includeBalances = false;
+                bool includeProductDescription = false;
+                bool considerMaturityPeriodForInvestmentAccounts = false;
+                int[] Savingsproductcode = { 1 };
+                int[] loansproductcode = { 2 };
+                int[] investmentssproductcode = { 3 };
+
+
+                var customeraccountsSavings = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(withdrawalNotificationDTO.CustomerId, Savingsproductcode, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+                var customeraccountsloans = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(withdrawalNotificationDTO.CustomerId, loansproductcode, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+                var customeraccountsInvestment = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(withdrawalNotificationDTO.CustomerId, investmentssproductcode, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+                ViewBag.SavingsAccounts = Savingsproductcode;
+                ViewBag.loansAccounts = loansproductcode;
+                ViewBag.InvestmentAccounts = investmentssproductcode;
+
+
+
+
+
+
+
                 if (result.ErrorMessageResult != null)
                 {
                     TempData["ErrorMsg"] = result.ErrorMessageResult;
@@ -143,7 +188,21 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool includeBalances = false;
+            bool includeProductDescription = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+            int[] Savingsproductcode = { 1 };
+            int[] loansproductcode = { 2 };
+            int[] investmentssproductcode = { 3 };
 
+
+            var customeraccountsSavings = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(customer.Id, Savingsproductcode, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            var customeraccountsloans = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(customer.Id, loansproductcode, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            var customeraccountsInvestment = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(customer.Id, investmentssproductcode, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            ViewBag.SavingsAccounts = customeraccountsSavings;
+            ViewBag.loansAccounts = customeraccountsloans;
+            ViewBag.InvestmentAccounts = customeraccountsInvestment;
 
             WithdrawalNotificationDTO withdrawalNotificationDTO = new WithdrawalNotificationDTO();
 
@@ -427,13 +486,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     // Build the SMS body message
                     var smsBody = new StringBuilder();
                     smsBody.AppendFormat("Dear {0},\nDear member, you have withdrawn from {1} on {2}.",
-                        withdrawalNotificationDTO.CustomerFullName,  // Index {0}
+                        customer.FullName,  // Index {0}
                         withdrawalNotificationDTO.BranchDescription,                               // Index {1}
                         DateTime.Now.ToString("MMMM dd, yyyy"));     // Index {2}
 
                     smsBody.Append(!string.IsNullOrWhiteSpace(withdrawalNotificationDTO.CustomerReference2)
-                        ? $"\nYour membership number is {withdrawalNotificationDTO.CustomerReference2}."
-                        : $"\nYour serial number is {withdrawalNotificationDTO.CustomerSerialNumber}.");
+                        ? $"\nYour membership number is {customer.Reference2}."
+                        : $"\nYour serial number is {customer.SerialNumber}.");
 
 
                     // Create the text alert DTO
