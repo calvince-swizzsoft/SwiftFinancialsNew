@@ -135,17 +135,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             var userEmail = userDTO.Email;
-            if (userEmail == loaneeCustomer.CreatedBy)
-            {
-                await ServeNavigationMenus();
-                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
-                ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
-                ViewBag.LoanCaseStatusSelectList = GetLoanCaseStatusSelectList(string.Empty);
-                TempData["UnAuthorized"] = "Unauthorized Access!\nYou are not Authorized to Appraise Loans.";
-                return View("Index");
-            }
-
-
+          
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
 
             if (loaneeCustomer != null)
@@ -364,11 +354,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             try
             {
-                if (loanCaseDTO.LoanRegistrationMaximumEntitled < loanCaseDTO.AmountApplied)
-                {
-                    TempData["Unqualified"] = $"The selected Loanee does not qualify to get the total sum of Kshs. {loanCaseDTO.AmountApplied}";
-                    return View(loanCaseDTO);
-                }
                 var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
                 var userEmail = userDTO.Email;
                 loanCaseDTO.AppraisedDate = DateTime.Now;
@@ -479,12 +464,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             try
             {
-                if (loanCaseDTO.LoanRegistrationMaximumEntitled < loanCaseDTO.AmountApplied)
-                {
-                    TempData["Unqualified"] = $"The selected Loanee does not qualify to get the total sum of Kshs. {loanCaseDTO.AmountApplied}";
-                    return View(loanCaseDTO);
-                }
-
                 var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
                 var userEmail = userDTO.Email;
                 loanCaseDTO.AppraisedDate = DateTime.Now;

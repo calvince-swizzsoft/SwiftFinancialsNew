@@ -509,6 +509,7 @@
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_DebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_DisbursementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_GeneralLedgerController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_RefundController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_WireTransferController.cs" />
@@ -522,6 +523,8 @@
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_DebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_DisbursementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_GeneralLedgerController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_InterAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_RefundController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchVerification_WireTransferController.cs" />
@@ -1426,7 +1429,7 @@
     <Content Include="Areas\Reports\Views\ReportSetting\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Authorize.cshtml" />
-    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_GeneralLedger\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
@@ -1568,6 +1571,7 @@
     <Content Include="Areas\Accounts\Views\BatchAuthorization_Refund\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchVerification_WireTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchAuthorization_WireTransfer\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_GeneralLedger\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2090,6 +2094,8 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Alternatechannel\" />
+    <Folder Include="Areas\Accounts\Views\BatchAuthorization_GeneralLedger\" />
+    <Folder Include="Areas\Accounts\Views\BatchVerification_InterAccountTransfer\" />
     <Folder Include="Areas\Accounts\Views\Credit\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />

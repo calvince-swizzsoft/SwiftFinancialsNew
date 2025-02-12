@@ -183,31 +183,24 @@
     </div>
 </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
-
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @if (TempData["VerificationFail"] != null)
+
+                    @if (TempData["Fail"] != null)
                     {
-                        <div class="alert alert-danger fade in">
-                            <button class="close" data-dismiss="alert">
-                                ×
-                            </button>
-                            <i class="fa-fw fa fa-times"></i>
-                            <strong>Error!</strong> @TempData["VerificationFail"]
-                        </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error!",
+                                    text: "@TempData["Fail"]",
+                                    confirmButtonColor: "#007bff"
+                                });
+                            });
+                        </script>
                     }
 
                     <div class="ibox-tools">
@@ -220,7 +213,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Verify", "AddGeneralLedger", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Verify", "BatchVerification_GeneralLedger", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 

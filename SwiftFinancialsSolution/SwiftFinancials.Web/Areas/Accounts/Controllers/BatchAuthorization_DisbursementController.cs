@@ -1,6 +1,7 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.MessagingModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
@@ -8,7 +9,10 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -103,6 +107,43 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!loanDisbursementBatchDTO.HasErrors)
             {
+                var findLoanDisbursementBatch = await _channelService.FindLoanDisbursementBatchAsync(loanDisbursementBatchDTO.Id, GetServiceHeader());
+
+                var loanDisbursementBatchEntryDTO = await _channelService.FindLoanDisbursementBatchEntriesByLoanDisbursementBatchIdAsync(
+                    findLoanDisbursementBatch.Id,
+                    GetServiceHeader());
+
+                foreach (var entries in loanDisbursementBatchEntryDTO)
+                {
+                    var findLoanCase = await _channelService.FindLoanCaseAsync(entries.LoanCaseId, GetServiceHeader());
+                    var customer = await _channelService.FindCustomerAsync(findLoanCase.CustomerId, GetServiceHeader());
+
+                    #region Send Text Notification
+                    if (loanDisbursementBatchDTO != null)
+                    {
+                        var smsBody = new StringBuilder();
+                        smsBody.AppendFormat("Dear {0}\n Your loan application of Kshs. {1} for product {2} has been processed on {3} and will be deposited to your bank account.",
+                            customer.FullName,
+                            findLoanCase.ApprovedAmount,
+                            findLoanCase.LoanProductDescription,
+                            DateTime.Now.ToString("MMMM dd, yyyy"));
+
+                        var textAlertDTO = new TextAlertDTO
+                        {
+                            BranchId = loanDisbursementBatchDTO.BranchId,
+                            TextMessageOrigin = (int)MessageOrigin.Within,
+                            TextMessageRecipient = customer.AddressMobileLine, 
+                            TextMessageBody = smsBody.ToString(),
+                            MessageCategory = (int)MessageCategory.SMSAlert,
+                            AppendSignature = false,
+                            TextMessagePriority = (int)QueuePriority.Highest,
+                        };
+
+                        var textAlertDTOs = new ObservableCollection<TextAlertDTO> { textAlertDTO };
+                        await _channelService.AddTextAlertsAsync(textAlertDTOs, GetServiceHeader());
+                    }
+                    #endregion
+                }
                 await _channelService.AuthorizeLoanDisbursementBatchAsync(loanDisbursementBatchDTO, batchAuthOption, 1, GetServiceHeader());
 
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());

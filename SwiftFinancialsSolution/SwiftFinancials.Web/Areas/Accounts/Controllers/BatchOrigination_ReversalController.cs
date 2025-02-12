@@ -1,6 +1,7 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
@@ -25,30 +26,50 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate, DateTime endDate)
         {
             int totalRecordCount = 0;
-
-            int status = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var pageCollectionInfo = await _channelService.FindJournalReversalBatchesByStatusAndFilterInPageAsync(
+                (int)BatchStatus.Pending, 
+                startDate, 
+                endDate, 
+                jQueryDataTablesModel.sSearch, 
+                0, 
+                int.MaxValue, 
+                GetServiceHeader()
+                );
 
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindJournalReversalBatchesByStatusAndFilterInPageAsync(status, startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(k => k.CreatedDate)
+                    .ToList();
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(debitBatch => debitBatch.CreatedDate).ToList();
+                totalRecordCount = sortedData.Count;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<JournalReversalBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<JournalReversalBatchDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -96,43 +117,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        //public async Task<ActionResult> Edit(Guid id)
-        //{
-        //    await ServeNavigationMenus();
-
-        //    ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
-        //    ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(string.Empty);
-        //    ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-
-
-        //    var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
-
-        //    return View(debitBatchDTO);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Edit(Guid id, WireTransferBatchDTO wireTransferBatchDTO)
-        //{
-        //    wireTransferBatchDTO.ValidateAll();
-
-        //    if (!wireTransferBatchDTO.HasErrors)
-        //    {
-        //        await _channelService.UpdateWireTransferBatchAsync(wireTransferBatchDTO, GetServiceHeader());
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        var errorMessages = wireTransferBatchDTO.ErrorMessages;
-
-        //        ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
-        //        ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
-
-        //        return View(wireTransferBatchDTO);
-        //    }
-        //}
-
+       
         public async Task<ActionResult> Verify(Guid id)
         {
             await ServeNavigationMenus();

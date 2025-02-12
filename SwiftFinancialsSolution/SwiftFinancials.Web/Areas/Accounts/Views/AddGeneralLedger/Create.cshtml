@@ -129,10 +129,6 @@
         background-color: #00e0ff;
     }
 
-</style>
-
-<!-- CSS Styling -->
-<style>
     .bordered-container {
         border: 2px solid gray;
         border-radius: 12px;
@@ -187,7 +183,7 @@
 
 <div class="row wrapper border-bottom bg-white page-heading">
     <div class="col-lg-10">
-
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -201,25 +197,14 @@
         </ol>
     </div>
 </div>
-
+<br />
 <div class="wrapper wrapper-content white-bg">
     <div class="row">
         <div class="col-md-12">
             <div class="ibox ">
                 <div class="ibox-title">
+                    <h2>General Ledger Batch</h2>
                     <div class="ibox-tools">
-                        @if (TempData["ErrorMsg"] != null)
-                        {
-                            <div class="alert alert-success">
-                                <strong>Error!</strong> @TempData["ErrorMsg"]
-
-                                <button type="button" class="close" data-dismiss="alert">
-                                    <span>
-                                        &times;
-                                    </span>
-                                </button>
-                            </div>
-                        }
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
                         </a>
@@ -227,7 +212,6 @@
                             <i class="fa fa-times"></i>
                         </a>
                     </div>
-                    <h2 style="font-style: italic; margin-bottom: 0;">General Ledger Batch</h2>
                 </div>
                 <div class="ibox-content bg-white text-info">
 
@@ -302,15 +286,15 @@
                                                 <div id="chartFields1" class="col-lg-6" style="display:none;">
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, new { @id = "ChartOfAccountIdDebit" ,@class = "entry-field" })
-                                                        @Html.EditorFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountName, new { htmlAttributes = new {@id = "ChartOfAccountNameDebit", @class = "ChartOfAccountsLookupDebit form-control required entry-field", @placeholder = "Enter space to autofill" } })
+                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, new { @id = "ChartOfAccountIdDebit", @class = "entry-field" })
+                                                        @Html.EditorFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountName, new { htmlAttributes = new { @id = "ChartOfAccountNameDebit", @class = "ChartOfAccountsLookupDebit form-control required entry-field", @placeholder = "Enter space to autofill" } })
                                                     </div>
                                                 </div>
                                                 <div id="customerFields11" class="col-lg-6" style="display:none;">
                                                     <div class="col-md-13 form-group">
                                                         @Html.LabelFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerId, new { @class = "control-label" })
                                                         <div class="input-group" data-autoclose="true">
-                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerId, new { @id = "DebitCustomerAccountId" ,@class = "entry-field" })
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerId, new { @id = "DebitCustomerAccountId", @class = "entry-field" })
                                                             @Html.TextBoxFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "ContraCustomerAccountCustomerFullName" })
                                                             <span class="input-group-addon">
                                                                 <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
@@ -329,7 +313,7 @@
                                                 <div id="customerFields13" class="col-lg-6" style="display:none;">
                                                     <div class="form-group form-group-lg">
                                                         @Html.LabelFor(model => model.GeneralLedgerEntries[0].DebitFullAccountNumber, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountId, new { @id = "DebitContraCustomerAccountId",@class = "entry-field" })
+                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountId, new { @id = "DebitContraCustomerAccountId", @class = "entry-field" })
                                                         @Html.EditorFor(model => model.GeneralLedgerEntries[0].DebitFullAccountNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "ContraCustomerAccountFullAccountNumber", @readonly = "readonly" } })
                                                         @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].DebitFullAccountNumber, "", new { @class = "text-danger" })
                                                     </div>
@@ -359,8 +343,8 @@
                                                     <div class="form-group form-group-lg">
                                                         <div class="form-group form-group-lg">
                                                             @Html.LabelFor(model => model.GeneralLedgerEntries[0].ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ChartOfAccountId, new {@class= "entry-field", @id = "ChartOfAccountId" })
-                                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].ChartOfAccountName, new { htmlAttributes = new { @id = "ChartOfAccountName"  , @class = "ChartOfAccountsLookup form-control required entry-field ", @placeholder = "Enter space to autofill" } })
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ChartOfAccountId, new { @class = "entry-field", @id = "ChartOfAccountId" })
+                                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].ChartOfAccountName, new { htmlAttributes = new { @id = "ChartOfAccountName", @class = "ChartOfAccountsLookup form-control required entry-field ", @placeholder = "Enter space to autofill" } })
                                                             @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].ChartOfAccountName, "", new { @class = "text-danger" })
                                                         </div>
                                                     </div>
@@ -382,7 +366,7 @@
                                                     <div class="form-group form-group-lg">
                                                         <div class="form-group form-group-lg">
                                                             @Html.LabelFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountId, new { @id = "CreditCustomerAccountId",@class = "entry-field" })
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountId, new { @id = "CreditCustomerAccountId", @class = "entry-field" })
                                                             @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerAccountTypeTargetProductId, new { @id = "CustomerAccountCustomerAccountTypeTargetProductId" })
                                                             @Html.EditorFor(model => model.GeneralLedgerEntries[0].CustomerAccountAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "CustomerAccountAccountTypeTargetProductDescription", @readonly = "readonly" } })
                                                             @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].CustomerAccountAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
@@ -446,7 +430,7 @@
                                     </div>
 
                                 </div>
-                                
+
                                 <div class="row">
                                     <!-- Center the Submit button -->
                                     <div style="text-align: right; margin: 20px 20px;">
