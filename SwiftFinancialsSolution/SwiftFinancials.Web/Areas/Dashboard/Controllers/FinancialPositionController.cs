@@ -22,13 +22,11 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 {
     public class FinancialPositionController : MasterController
     {
-
         private readonly string _connectionString;
         public FinancialPositionController()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
         }
-
 
         private async Task<List<Document>> GetDocumentsAsync(Guid id)
         {
@@ -61,9 +59,6 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
             return documents;
         }
-
-
-
 
         public async Task<ActionResult> CustomerLookUp(Guid? id)
         {
@@ -207,10 +202,6 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
             return Json(new { success = false, message = "Customer account not found" });
         }
 
-
-
-
-
         public async Task<ActionResult> CustomerAccountLookUp(Guid? id, DataAttachmentEntryDTO dataAttachmentEntryDTO)
         {
             await ServeNavigationMenus();
@@ -270,8 +261,6 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
             return Json(new { success = false, message = "Customer account not found" });
         }
 
-
-
         [HttpPost]
         public async Task<JsonResult> CustomerIndex(JQueryDataTablesModel jQueryDataTablesModel, int recordStatus, string text, int customerFilter)
         {
@@ -314,9 +303,6 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                 );
             }
         }
-
-
-
 
         public async Task<ActionResult> Index()
         {
