@@ -233,6 +233,113 @@
                                 </div>
 
                             </fieldset>
+                            <ul class="nav nav-tabs d-flex flex-nowrap animated-tabs w-100 justify-content-between" style="margin-bottom: 20px;">
+                                <li class="nav-item flex-fill">
+                                    <a class="nav-link active text-center" data-bs-toggle="tab" href="#address">Savings Accounts</a>
+                                </li>
+                                <li class="nav-item flex-fill">
+                                    <a class="nav-link text-center" data-bs-toggle="tab" href="#mandatoryDebitTypes">Loan Accounts</a>
+                                </li>
+                                <li class="nav-item flex-fill">
+                                    <a class="nav-link text-center" data-bs-toggle="tab" href="#mandatoryInvestmentProducts">Investment Accounts</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content w-100">
+                                <div id="address" class="tab-pane fade show active w-100">
+                                    <div class="ibox-content m-b-sm border-bottom text-dark">
+                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">Full Name</th>
+                                                    <th data-hide="phone">Full Acc Number</th>
+                                                    <th data-hide="phone">ID Number</th>
+                                                    <th data-hide="phone">Mobile Number</th>
+                                                    <th data-hide="phone">Record Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.SavingsAccounts != null)
+                                                {
+                                                    foreach (var SavingsAccount in ViewBag.SavingsAccounts)
+                                                    {
+                                                        <tr>
+                                                            <td>@SavingsAccount.CustomerFullName</td>
+                                                            <td>@SavingsAccount.FullAccountNumber</td>
+                                                            <td>@SavingsAccount.CustomerIdentificationNumber</td>
+                                                            <td>@SavingsAccount.CustomerAddressMobileLine</td>
+                                                            <td>@SavingsAccount.RecordStatusDescription</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div id="mandatoryDebitTypes" class="tab-pane fade w-100">
+                                    <div class="ibox-content m-b-sm border-bottom text-dark">
+                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">Full Name</th>
+                                                    <th data-hide="phone">Full Acc Number</th>
+                                                    <th data-hide="phone">ID Number</th>
+                                                    <th data-hide="phone">Mobile Number</th>
+                                                    <th data-hide="phone">Record Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.loansAccounts != null)
+                                                {
+                                                    foreach (var LoansAccounts in ViewBag.loansAccounts)
+                                                    {
+                                                        <tr>
+                                                            <td>@LoansAccounts.CustomerFullName</td>
+                                                            <td>@LoansAccounts.FullAccountNumber</td>
+                                                            <td>@LoansAccounts.CustomerIdentificationNumber</td>
+                                                            <td>@LoansAccounts.CustomerAddressMobileLine</td>
+                                                            <td>@LoansAccounts.RecordStatusDescription</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div id="mandatoryInvestmentProducts" class="tab-pane fade w-100">
+                                    <div class="ibox-content m-b-sm border-bottom text-dark">
+                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">Full Name</th>
+                                                    <th data-hide="phone">Full Acc Number</th>
+                                                    <th data-hide="phone">ID Number</th>
+                                                    <th data-hide="phone">Mobile Number</th>
+                                                    <th data-hide="phone">Record Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.InvestmentAccounts != null)
+                                                {
+                                                    foreach (var InvestmentAccounts in ViewBag.InvestmentAccounts)
+                                                    {
+                                                        <tr>
+                                                            <td>@InvestmentAccounts.CustomerFullName</td>
+                                                            <td>@InvestmentAccounts.FullAccountNumber</td>
+                                                            <td>@InvestmentAccounts.CustomerIdentificationNumber</td>
+                                                            <td>@InvestmentAccounts.CustomerAddressMobileLine</td>
+                                                            <td>@InvestmentAccounts.RecordStatusDescription</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     }
                 </div>
@@ -342,7 +449,7 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
-
+    <script src="~/Scripts/js/navlink.js"></script>
     <script>
 $(document).ready(function () {
     var table = $('#CustomersGrid').DataTable({

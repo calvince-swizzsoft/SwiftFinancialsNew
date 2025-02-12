@@ -639,7 +639,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     {
                         TempData["DefaultError"] = result?.ErrorMessageResult ?? "An error occurred while creating the customer.";
                         await ServeNavigationMenus();
-                        return View("Create", customerBindingModel);
+                        return View("Index", customerBindingModel);
                     }
 
                     return RedirectToAction("Index");
