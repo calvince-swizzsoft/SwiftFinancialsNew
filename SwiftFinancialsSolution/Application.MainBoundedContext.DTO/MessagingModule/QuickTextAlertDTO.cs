@@ -22,7 +22,6 @@ namespace Application.MainBoundedContext.DTO.MessagingModule
         public string CompanyDescription { get; set; }
         [DataMember]
         [Display(Name = "Branch")]
-        [ValidGuid]
         public Guid BranchId { get; set; }
 
         [Required]

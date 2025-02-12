@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -23,6 +25,31 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 {
     public class ApplicationsController : MasterController
     {
+        string connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+
+        public async Task<List<Guid>> GetLoans()
+        {
+            var loans = new List<Guid>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                await conn.OpenAsync();
+                var query = @"SELECT * FROM swiftFin_LoanDisbursementBatchEntries";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        loans.Add((Guid)reader["LoanCaseId"]);
+                    }
+                }
+            }
+
+            return loans;
+        }
+
+
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -38,30 +65,69 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int loanCaseStatus, string filterValue, int filterType)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            var pageCollectionInfo = new PageCollectionInfo<LoanCaseDTO>();
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            if (loanCaseStatus == 48829)
+            {
+                pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(
+                    48829,
+                    filterValue,
+                    filterType,
+                    0,
+                    int.MaxValue,
+                    includeBatchStatus: true,
+                    GetServiceHeader()
+                );
+            }
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            else
+            {
+                pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(
+                    loanCaseStatus,
+                    filterValue,
+                    filterType,
+                    0,
+                    int.MaxValue,
+                    includeBatchStatus: true,
+                    GetServiceHeader()
+                );
+            }
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(loanCaseStatus, filterValue, filterType, pageIndex, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
-
-            var page = pageCollectionInfo.PageCollection;
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(LoanCase => LoanCase.CreatedDate).ToList();
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .ToList();
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = sortedData.Count;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(
+                items: new List<LoanCaseDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
 

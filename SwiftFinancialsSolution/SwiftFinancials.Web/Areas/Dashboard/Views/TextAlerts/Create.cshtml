@@ -1,4 +1,4 @@
-﻿@model  Application.MainBoundedContext.DTO.MessagingModule.TextAlertDTO
+﻿@model  Application.MainBoundedContext.DTO.MessagingModule.QuickTextAlertDTO
 
 @{
     ViewBag.Title = "Create";
@@ -114,7 +114,7 @@
 
 
                         <div class="mb-3">
-                            @Html.LabelFor(m => m.TextMessageBody, new { @class = "form-label fw-bold fs-5" }) 
+                            @Html.LabelFor(m => m.TextMessageBody, new { @class = "form-label fw-bold fs-5", @style = "font-size: normal;" }) 
                             @Html.TextAreaFor(m => m.TextMessageBody,
                                 new
                                     {

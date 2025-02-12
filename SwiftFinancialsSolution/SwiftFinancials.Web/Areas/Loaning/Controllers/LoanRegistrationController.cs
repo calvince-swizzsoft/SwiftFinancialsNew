@@ -82,13 +82,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int loanCaseStatus, string filterValue, int filterType)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, string filterValue, int filterType)
         {
             int totalRecordCount = 0;
             int searchRecordCount = 0;
 
             var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(
-                loanCaseStatus,
+                (int)LoanCaseStatus.Registered,
                 filterValue,
                 filterType,
                 0,

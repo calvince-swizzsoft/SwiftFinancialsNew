@@ -40,16 +40,14 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
         {
             int totalRecordCount = 0;
             int searchRecordCount = 0;
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-            bool sortAscending = jQueryDataTablesModel.sSortDir_.FirstOrDefault() == "asc";
 
             var pageCollectionInfo = new PageCollectionInfo<TextAlertDTO>();
 
             if (startDate == null && endDate == null && string.IsNullOrWhiteSpace(filterValue) && !status.HasValue)
             {
                 pageCollectionInfo = await _channelService.FindTextAlertsInPageAsync(
-                    pageIndex,
-                    jQueryDataTablesModel.iDisplayLength,
+                    0,
+                    int.MaxValue,
                     GetServiceHeader()
                 );
             }
@@ -60,34 +58,45 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                     startDate ?? DateTime.MinValue,
                     endDate ?? DateTime.MaxValue,
                     filterValue,
-                    pageIndex,
-                    jQueryDataTablesModel.iDisplayLength,
+                    0,
+                    int.MaxValue,
                     GetServiceHeader()
                 );
             }
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection
-                    .OrderBy(alert => sortAscending ? alert.CreatedDate : alert.CreatedDate)
+
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(t => t.CreatedDate)
                     .ToList();
-                searchRecordCount = string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
-                    ? totalRecordCount
-                    : pageCollectionInfo.PageCollection.Count;
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
 
-            return Json(new
-            {
-                sEcho = jQueryDataTablesModel.sEcho,
-                iTotalRecords = totalRecordCount,
-                iTotalDisplayRecords = searchRecordCount,
-                aaData = pageCollectionInfo.PageCollection
-            });
+            return this.DataTablesJson(
+                items: new List<TextAlertDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
-
-
-
 
         public async Task<ActionResult> Create()
         {
@@ -95,17 +104,33 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
             return View();
         }
 
-
         [HttpPost]
-        public async Task<ActionResult> Create(TextAlertDTO textAlertDTO)
+        public async Task<ActionResult> Create(QuickTextAlertDTO quickTextAlertDTO, string recipient1, string recipient2, string recipient3)
         {
             await ServeNavigationMenus();
 
-            textAlertDTO.ValidateAll();
-
-            if (!textAlertDTO.HasErrors)
+            quickTextAlertDTO.ValidateAll();
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (userDTO.BranchId != null)
             {
-                //await _channelService.
+                quickTextAlertDTO.BranchId = (Guid)userDTO.BranchId;
+            }
+
+            var companyBranch = await _channelService.FindBranchAsync(quickTextAlertDTO.BranchId, GetServiceHeader());
+            var company = await _channelService.FindCompanyAsync(companyBranch.CompanyId, GetServiceHeader());
+            quickTextAlertDTO.CompanyDescription = company.Description;
+            quickTextAlertDTO.CompanyId = company.Id;
+
+            if (recipient1 != string.Empty && recipient2 != string.Empty && recipient3 != string.Empty)
+            {
+                string recipients = recipient1 + "," + recipient2 + "," + recipient3;
+            }
+
+            if (!quickTextAlertDTO.HasErrors)
+            {
+                await _channelService.AddQuickTextAlertAsync(quickTextAlertDTO, GetServiceHeader());
+                TempData["Success"] = "Operation Completed Successfully";
+                return RedirectToAction("Index");
             }
 
             return View();

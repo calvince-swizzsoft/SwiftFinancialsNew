@@ -1075,7 +1075,6 @@
                                            htmlAttributes = new
                                            {
                                                @id = "AmountApplied",
-                                               @style = "text-align: right;",
                                                @class = "form-control required",
                                                @placeholder = "Kshs.0.00",
                                                @Type = "Number",
@@ -1324,7 +1323,7 @@
                                                 @Html.EditorFor(model => model.Guarantor[0].AmountGuaranteed, new
                                                 {
                                                     htmlAttributes = new
-                                                    { @id = "AmountGuaranteed", @class = "form-control required entry-field", @placeholder = "Kshs 0.00", @style = "text-align: right;" }
+                                                    { @id = "AmountGuaranteed", @class = "form-control required entry-field", @placeholder = "Kshs 0.00" }
                                                 })
                                                 <span id="guarantee-error" class="text-danger" style="display:none;">Amount Guaranteed must be less than or equal to Total Shares minus Committed Shares!</span>
                                             </div>

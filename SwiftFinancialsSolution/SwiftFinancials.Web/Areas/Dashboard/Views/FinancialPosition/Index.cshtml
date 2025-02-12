@@ -923,7 +923,7 @@
                                 <div class="col-lg-3">
                                     <div class="summary-item">
                                         <label for="net-worth">Net Worth:</label>
-                                        <input type="text" id="net-worth" class="summary-input" readonly>
+                                        <input type="text" id="networth" class="summary-input" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -1360,6 +1360,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         $('#AddressEmail').val(response.data.AddressEmail);
                         $('#AddressLandLine').val(response.data.AddressLandLine);
                         $('#AddressMobileLine').val(response.data.AddressMobileLine);
+
+                        $('#savings').val(response.data.SavingsBalance);
+                        $('#investments').val(response.data.InvestmentBalance);
+                        $('#loans').val(response.data.LoanBalance);
+                        $('#networth').val(response.data.Networth);
 
                         if (response.data.PassportPhoto) {
                             document.getElementById('passportPhoto').src = `data:image;base64,${response.data.PassportPhoto}`;

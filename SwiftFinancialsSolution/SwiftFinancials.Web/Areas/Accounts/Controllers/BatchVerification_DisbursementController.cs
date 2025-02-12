@@ -10,6 +10,8 @@ using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +22,27 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class BatchVerification_DisbursementController : MasterController
     {
+        string connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+
+        public async Task<ActionResult> UpdateLoanCaseBatchNumber(int CaseNumber, int BatchNumber, int status = 48829)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                await conn.OpenAsync();
+                var updateQuery = "UPDATE swiftFin_LoanCases SET BatchNumber=@BatchNumber, Status=@status Where CaseNumber=@CaseNumber";
+
+                using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@BatchNumber", BatchNumber);
+                    cmd.Parameters.AddWithValue("@CaseNumber", CaseNumber);
+                    cmd.Parameters.AddWithValue("@status", status);
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+            return RedirectToAction("");
+        }
+
+
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -135,7 +158,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     // Calculate Batch Total
                     List<LoanCaseDTO> LCDTO = new List<LoanCaseDTO>();
                     decimal batchTotal = 0;
+
                     var loanCase = await _channelService.FindLoanCaseAsync(loanCaseId, GetServiceHeader());
+                    await UpdateLoanCaseBatchNumber(loanCase.CaseNumber, loanDisbursementBatchDTO.BatchNumber);
+
                     if (loanCase != null)
                     {
                         LCDTO.Add(loanCase);
@@ -145,6 +171,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     var mainBatchDetails = await _channelService.FindLoanDisbursementBatchAsync(loanDisbursementBatchDTO.Id, GetServiceHeader());
                     mainBatchDetails.BatchTotal = batchTotal;
                     await _channelService.UpdateLoanDisbursementBatchAsync(mainBatchDetails, GetServiceHeader());
+                    await UpdateLoanCaseBatchNumber(loanCase.CaseNumber, mainBatchDetails.BatchNumber);
+
                 }
 
                 var submit = await _channelService.AuditLoanDisbursementBatchAsync(loanDisbursementBatchDTO, batchAuthOption, GetServiceHeader());

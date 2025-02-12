@@ -123,15 +123,20 @@
     </div>
 </div>
 
+ @if (TempData["Success"] != null)
+  {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "@TempData["Success"]",
+            confirmButtonColor: "#007bff"
+            });
+        });
+     </script>
+  }
 
-<br />
-<nav class="navbar">
-    <ul class="nav-menu">
-        <li>@Html.ActionLink("Text Alerts", "Index", "TextAlerts", new { area = "Loaning" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("E-Mail Alert", "Index", "EmailAlerts", new { area = "Loaning" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Instant Messaging", "Index", "InstantMessaging", new { area = "Loaning" }, new { @class = "nav-link" })</li>
-    </ul>
-</nav>
 
 
 <div class="wrapper wrapper-content">
@@ -159,13 +164,13 @@
                     <div class="blue-section">
                         <form id="filterForm">
                             <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
-                                <div class="col-lg-2">
+                                <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         <label for="filterType">Status</label>
 
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.TextMessageDLRStatus, status,"-- Select Delivery Status --",
+                                            @Html.DropDownListFor(model => model.TextMessageDLRStatus, status, "-- Select Delivery Status --",
                                             new { @class = "form-control input-md", @id = "status" })
                                         </div>
                                     </div>
@@ -208,12 +213,6 @@
                                 <div class="col-lg-1" style="margin-top:20px;">
                                     <div class="form-group form-group-sm">
                                         @Html.ActionLink("Create", "Create", "TextAlerts", new { Area = "Dashboard" }, new { @class = "btn btn-primary" })
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-1" style="margin-top:20px;">
-                                    <div class="form-group form-group-sm">
-                                        <input type="submit" value="Quick Text" id="quickText" class="btn btn-primary" />
                                     </div>
                                 </div>
                             </div>
@@ -294,7 +293,7 @@
             forceParse: false,
             autoclose: true,
             format: 'dd/mm/yyyy',
-            language: 'en-GB'  
+            language: 'en-GB'
         });
     </script>
 

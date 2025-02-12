@@ -135,7 +135,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             var userEmail = userDTO.Email;
-          
+
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
 
             if (loaneeCustomer != null)
@@ -470,7 +470,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.AppraisedBy = userDTO.Email;
                 var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanCaseDTO.LoanAppraisalOption, 1234, GetServiceHeader());
 
-                if (incomeAdjustments.Any())
+                if (incomeAdjustments != null)
                     await _channelService.UpdateLoanAppraisalFactorsAsync(loanCaseDTO.Id, incomeAdjustments, GetServiceHeader());
 
                 TempData["Success"] = "Operation Successful";
@@ -483,7 +483,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
 
                 TempData["Error"] = $"Operation Failed!\n{ex.ToString()}";
-                return View(loanCaseDTO);
+                return View("Appraise", loanCaseDTO);
             }
         }
 

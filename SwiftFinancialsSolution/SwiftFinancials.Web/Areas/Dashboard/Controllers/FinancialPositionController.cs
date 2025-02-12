@@ -127,20 +127,38 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
                 var CustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(customer.Id, true, true, true, true, GetServiceHeader());
 
-                var savingsBookBalance = CustomerAccounts.Where(w => w.CustomerAccountTypeProductCode == (int)ProductCode.Savings).Sum(e => e.BookBalance);
-                var savingsCarryForward = CustomerAccounts.Where(w => w.CustomerAccountTypeProductCode == (int)ProductCode.Savings).Sum(e => e.AvailableBalance);
-                var savingsBalance = (savingsBookBalance + savingsCarryForward);
+                var products = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(customer.Id, new[] { (int)ProductCode.Savings, (int)ProductCode.Loan, (int)ProductCode.Investment },
+                  true, true, true, true, GetServiceHeader());
+                var investmentProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Investment).ToList();
+                var savingsProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Savings).ToList();
+                var loanProducts = products.Where(p => p.CustomerAccountTypeProductCode == (int)ProductCode.Loan).ToList();
 
-                List<Tuple<decimal, int>> investmentsBalance = new List<Tuple<decimal, int>>();
-
-                var loanAccounts = CustomerAccounts.Where(w => w.CustomerAccountTypeProductCode == (int)ProductCode.Loan);
-
-                foreach (var Ids in loanAccounts)
+                // Investments
+                List<decimal> iBalance = new List<decimal>();
+                foreach (var investmentsBalances in investmentProducts)
                 {
-                    var xFactor = await _channelService.ComputeEligibleLoanAppraisalInvestmentsBalanceAsync(parseId, Ids.CustomerAccountTypeTargetProductId);
-
-                    investmentsBalance.Add(new Tuple<decimal, int>(xFactor, 0));
+                    iBalance.Add(investmentsBalances.BookBalance);
                 }
+                var investmentsBalance = iBalance.Sum();
+
+                //Savings
+                List<decimal> sBalance = new List<decimal>();
+                foreach (var savingsBalances in savingsProducts)
+                {
+                    sBalance.Add(savingsBalances.BookBalance);
+                }
+                var savingsBalance = sBalance.Sum();
+                var totalShares = iBalance.Sum() + sBalance.Sum();
+
+                //Loans
+                List<decimal> lBookBalance = new List<decimal>();
+                List<decimal> lCarryForwardBalance = new List<decimal>();
+                foreach (var loanBalances in loanProducts)
+                {
+                    lBookBalance.Add(loanBalances.BookBalance);
+                    lCarryForwardBalance.Add(loanBalances.CarryForwardsBalance);
+                }
+                var loanBalance = lBookBalance.Sum() + lCarryForwardBalance.Sum();
 
                 return Json(new
                 {
@@ -172,6 +190,11 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
                         AddressMobileLine = dataAttachmentEntryDTO.AddressMobileLine,
 
                         CustomerAccounts = CustomerAccounts,
+
+                        SavingsBalance = savingsBalance,
+                        InvestmentBalance = investmentsBalance,
+                        LoanBalance = loanBalance,
+                        Networth = totalShares,
 
                         PassportPhoto = dataAttachmentEntryDTO.PassportPhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.PassportPhoto) : null,
                         SignaturePhoto = dataAttachmentEntryDTO.SignaturePhoto != null ? Convert.ToBase64String(dataAttachmentEntryDTO.SignaturePhoto) : null,

@@ -24,9 +24,7 @@ namespace SwiftFinancials.Web.Controllers
         public async Task<ActionResult> IndexPage()
         {
             //admin
-
             await ServeNavigationMenus();
-
             return View();
         }
 

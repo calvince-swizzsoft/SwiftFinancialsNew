@@ -10,6 +10,8 @@ using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -122,7 +124,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     if (loanDisbursementBatchDTO != null)
                     {
                         var smsBody = new StringBuilder();
-                        smsBody.AppendFormat("Dear {0}\n Your loan application of Kshs. {1} for product {2} has been processed on {3} and will be deposited to your bank account.",
+                        smsBody.AppendFormat("Dear {0}. Your loan application of Kshs. {1} for product {2} has been processed on {3} and will be deposited to your bank account.",
                             customer.FullName,
                             findLoanCase.ApprovedAmount,
                             findLoanCase.LoanProductDescription,
@@ -132,7 +134,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         {
                             BranchId = loanDisbursementBatchDTO.BranchId,
                             TextMessageOrigin = (int)MessageOrigin.Within,
-                            TextMessageRecipient = customer.AddressMobileLine, 
+                            TextMessageRecipient = customer.AddressMobileLine,
                             TextMessageBody = smsBody.ToString(),
                             MessageCategory = (int)MessageCategory.SMSAlert,
                             AppendSignature = false,
@@ -143,6 +145,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         await _channelService.AddTextAlertsAsync(textAlertDTOs, GetServiceHeader());
                     }
                     #endregion
+                    var loanCaseDTO = findLoanCase as LoanCaseDTO;
+                    loanCaseDTO.Status = (int)LoanCaseStatus.Disbursed;
+
                 }
                 await _channelService.AuthorizeLoanDisbursementBatchAsync(loanDisbursementBatchDTO, batchAuthOption, 1, GetServiceHeader());
 
