@@ -659,6 +659,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 return View("Create", customerBindingModel);
             }
         }
+        
         public byte[] SafeConvertFromBase64String(string base64String)
         {
             try

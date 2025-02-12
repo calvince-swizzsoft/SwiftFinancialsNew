@@ -256,7 +256,7 @@ namespace SwiftFinancials.Web.Areas.Loaning
 
             loanCaseDTO.ValidateAll();
 
-            if (!loanCaseDTO.HasErrors)
+            if (loanCaseDTO.AuditRemarks != null)
             {
                 var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
                 var userEmail = userDTO.Email;

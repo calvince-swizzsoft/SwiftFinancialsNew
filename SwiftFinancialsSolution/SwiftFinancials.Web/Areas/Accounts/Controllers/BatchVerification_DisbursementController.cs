@@ -1,6 +1,7 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.MessagingModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
@@ -8,7 +9,9 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -143,6 +146,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     mainBatchDetails.BatchTotal = batchTotal;
                     await _channelService.UpdateLoanDisbursementBatchAsync(mainBatchDetails, GetServiceHeader());
                 }
+
                 var submit = await _channelService.AuditLoanDisbursementBatchAsync(loanDisbursementBatchDTO, batchAuthOption, GetServiceHeader());
 
                 TempData["Success"] = "Operation Completed Successfully";

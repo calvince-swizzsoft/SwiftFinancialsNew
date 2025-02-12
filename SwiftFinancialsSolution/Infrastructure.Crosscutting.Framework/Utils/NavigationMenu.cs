@@ -104,7 +104,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                     Code = 0x000059D8 + 19 },
                 new NavigationMenu { AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Treasuries", Icon = "fa fa-users", ControllerName = "Treasuries", ActionName = "Index", AreaName = "Accounts",
                     Code = 0x000059D8 + 20 },
-                new NavigationMenu { AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Tellers", Icon = "fa fa-users", ControllerName = "Controller", ActionName = "Index", AreaName = "Accounts",
+                new NavigationMenu { AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Tellers", Icon = "fa fa-users", ControllerName = "Teller", ActionName = "Index", AreaName = "FrontOffice",
                     Code = 0x000059D8 + 21 },
                 new NavigationMenu { AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Bank Linkages", Icon = "fa fa-university", ControllerName = "BankLinkage", ActionName = "Index", AreaName = "Accounts",
                     Code = 0x000059D8 + 22 },
@@ -560,42 +560,42 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 //    Code =  0x000061A8 + 48},
                 #endregion
 
-                #region Command Hub Module
-                // Command Hub Module...
-                new NavigationMenu { Description = "Command Hub", IsArea = true, Code = 0x00006590 },
-                new NavigationMenu { AreaCode = 0x00006590, IsArea = true, Description = "Setup", Icon = "fa fa-bars", Code = 0x00006590 + 1 },
-                new NavigationMenu { AreaCode = 0x00006590, IsArea = true, Description = "Operations", Icon = "fa fa-bars", Code = 0x00006590 + 2 },
+                //#region Command Hub Module
+                //// Command Hub Module...
+                //new NavigationMenu { Description = "Command Hub", IsArea = true, Code = 0x00006590 },
+                //new NavigationMenu { AreaCode = 0x00006590, IsArea = true, Description = "Setup", Icon = "fa fa-bars", Code = 0x00006590 + 1 },
+                //new NavigationMenu { AreaCode = 0x00006590, IsArea = true, Description = "Operations", Icon = "fa fa-bars", Code = 0x00006590 + 2 },
 
-                // Setup
-                new NavigationMenu { AreaCode = 0x00006590 + 1, IsArea = false, Description = "Messaging Groups", Icon = "fa fa-users", ControllerName = "MessagingGroups", ActionName = "Index", AreaName = "Dashboard",
-                    Code =  0x00006590 + 3},
+                //// Setup
+                //new NavigationMenu { AreaCode = 0x00006590 + 1, IsArea = false, Description = "Messaging Groups", Icon = "fa fa-users", ControllerName = "MessagingGroups", ActionName = "Index", AreaName = "Dashboard",
+                //    Code =  0x00006590 + 3},
 
-                // Operations
-                //..Loaning
-                new NavigationMenu { AreaCode = 0x00006590 + 2, IsArea = true, Description = "Loaning", Icon = "", Code = 0x00006590 + 4 },
-                new NavigationMenu { AreaCode = 0x00006590 + 4, IsArea = false, Description = "Applications", Icon = "fa fa-clipboard", ControllerName = "Applications", ActionName = "Index", AreaName = "Dashboard",
-                    Code =  0x00006590 + 5},
-                new NavigationMenu { AreaCode = 0x00006590 + 4, IsArea = false, Description = "Pre-qualifications", Icon = "fa fa-cogs", ControllerName = "Pre_Qualification", ActionName = "Appraise", AreaName = "Dashboard",
-                    Code =  0x00006590 + 6},
+                //// Operations
+                ////..Loaning
+                //new NavigationMenu { AreaCode = 0x00006590 + 2, IsArea = true, Description = "Loaning", Icon = "", Code = 0x00006590 + 4 },
+                //new NavigationMenu { AreaCode = 0x00006590 + 4, IsArea = false, Description = "Applications", Icon = "fa fa-clipboard", ControllerName = "Applications", ActionName = "Index", AreaName = "Dashboard",
+                //    Code =  0x00006590 + 5},
+                //new NavigationMenu { AreaCode = 0x00006590 + 4, IsArea = false, Description = "Pre-qualifications", Icon = "fa fa-cogs", ControllerName = "Pre_Qualification", ActionName = "Appraise", AreaName = "Dashboard",
+                //    Code =  0x00006590 + 6},
 
-                //..Messaging
-                new NavigationMenu { AreaCode = 0x00006590 + 2, IsArea = true, Description = "Messaging", Icon = "", Code = 0x00006590 + 7 },
-                new NavigationMenu { AreaCode = 0x00006590 + 7, IsArea = false, Description = "Text Alerts", Icon = "fa fa-comment", ControllerName = "TextAlerts", ActionName = "Index", AreaName = "Dashboard",
-                    Code =  0x00006590 + 8},
-                new NavigationMenu { AreaCode = 0x00006590 + 7, IsArea = false, Description = "E-mail Alerts", Icon = "fa fa-envelope", ControllerName = "EmailAlerts", ActionName = "Index", AreaName = "Dashboard",
-                    Code =  0x00006590 + 9},
-                new NavigationMenu { AreaCode = 0x00006590 + 7, IsArea = false, Description = "Instant Messaging", Icon = "fa fa-comment", ControllerName = "InstantMessaging", ActionName = "Index", AreaName = "Dashboard",
-                    Code =  0x00006590 + 10},
+                ////..Messaging
+                //new NavigationMenu { AreaCode = 0x00006590 + 2, IsArea = true, Description = "Messaging", Icon = "", Code = 0x00006590 + 7 },
+                //new NavigationMenu { AreaCode = 0x00006590 + 7, IsArea = false, Description = "Text Alerts", Icon = "fa fa-comment", ControllerName = "TextAlerts", ActionName = "Index", AreaName = "Dashboard",
+                //    Code =  0x00006590 + 8},
+                //new NavigationMenu { AreaCode = 0x00006590 + 7, IsArea = false, Description = "E-mail Alerts", Icon = "fa fa-envelope", ControllerName = "EmailAlerts", ActionName = "Index", AreaName = "Dashboard",
+                //    Code =  0x00006590 + 9},
+                //new NavigationMenu { AreaCode = 0x00006590 + 7, IsArea = false, Description = "Instant Messaging", Icon = "fa fa-comment", ControllerName = "InstantMessaging", ActionName = "Index", AreaName = "Dashboard",
+                //    Code =  0x00006590 + 10},
 
-                //..Utilities
-                new NavigationMenu { AreaCode = 0x00006590 + 2, IsArea = true, Description = "Utilities", Icon = "", Code = 0x00006590 + 11 },
-                new NavigationMenu { AreaCode = 0x00006590 + 11, IsArea = false, Description = "Financial Position", Icon = "fa fa-money", ControllerName = "FinancialPosition", ActionName = "Index", AreaName = "Dashboard",
-                    Code =  0x00006590 + 12},
-                new NavigationMenu { AreaCode = 0x00006590 + 11, IsArea = false, Description = "Account Statuses", Icon = "fa fa-user", ControllerName = "AccountStatuses", ActionName = "Index", AreaName = "Dashboard",
-                    Code =  0x00006590 + 13},
-                new NavigationMenu { AreaCode = 0x00006590 + 11, IsArea = false, Description = "User-Defined Reports", Icon = "fa fa-table", ControllerName = "SSRSReports", ActionName = "Index", AreaName = "Reports",
-                    Code =  0x00006590 + 14},
-                #endregion
+                ////..Utilities
+                //new NavigationMenu { AreaCode = 0x00006590 + 2, IsArea = true, Description = "Utilities", Icon = "", Code = 0x00006590 + 11 },
+                //new NavigationMenu { AreaCode = 0x00006590 + 11, IsArea = false, Description = "Financial Position", Icon = "fa fa-money", ControllerName = "FinancialPosition", ActionName = "Index", AreaName = "Dashboard",
+                //    Code =  0x00006590 + 12},
+                //new NavigationMenu { AreaCode = 0x00006590 + 11, IsArea = false, Description = "Account Statuses", Icon = "fa fa-user", ControllerName = "AccountStatuses", ActionName = "Index", AreaName = "Dashboard",
+                //    Code =  0x00006590 + 13},
+                //new NavigationMenu { AreaCode = 0x00006590 + 11, IsArea = false, Description = "User-Defined Reports", Icon = "fa fa-table", ControllerName = "SSRSReports", ActionName = "Index", AreaName = "Reports",
+                //    Code =  0x00006590 + 14},
+                //#endregion
 
                 #region Control Module
                 // Control Module...
