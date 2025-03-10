@@ -588,7 +588,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu { AreaCode = 0x00006590 + 11, IsArea = false, Description = "User-Defined Reports", Icon = "fa fa-table", ControllerName = "SSRSReports", ActionName = "Index", AreaName = "Reports",
                     Code =  0x00006590 + 14},
                 #endregion
-
+                //
                 #region Control Module
                 // Control Module...
                 new NavigationMenu { Description = "Control(Procurement)", IsArea = true, Code = 0x00007530 },
