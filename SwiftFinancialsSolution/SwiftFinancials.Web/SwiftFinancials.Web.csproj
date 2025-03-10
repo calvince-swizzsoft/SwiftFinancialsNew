@@ -1572,6 +1572,8 @@
     <Content Include="Areas\Accounts\Views\BatchVerification_WireTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchAuthorization_WireTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchVerification_GeneralLedger\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Registry\Views\NextOfKin\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using ServiceStack;
 using SwiftFinancials.Presentation.Infrastructure.Services;
 using SwiftFinancials.Web.Controllers;
@@ -23,39 +24,138 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             _channelService = channelService;
         }
 
-        public async Task<ActionResult> Index(Guid customerId)
+        public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
 
-            // Fetch next of kin collection by customer ID
-            var nextOfKinCollection = await _channelService.FindNextOfKinCollectionByCustomerIdAsync(customerId, GetServiceHeader());
-
-            return View(nextOfKinCollection);
+            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int? recordStatus, int? customerFilter, int? customerType, string filterValue)
         {
             int totalRecordCount = 0;
+
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            //var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
-            var pageCollectionInfo = await _channelService.FindDelegatesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            //var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
+            //int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var pageCollectionInfo = new PageCollectionInfo<CustomerDTO>();
+
+            if (recordStatus != null && customerFilter != null)
+            {
+                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, filterValue, (int)customerFilter, 0, int.MaxValue, GetServiceHeader());
+            }
+            else if (recordStatus == null && customerFilter != null)
+            {
+                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(filterValue, (int)customerFilter, 0, int.MaxValue, GetServiceHeader());
+            }
+            else if (customerType != null && customerFilter == null)
+            {
+
+                if (customerType == 0)
+                {
+                    pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)recordStatus, filterValue, (int)CustomerFilter.FirstName, 0, int.MaxValue, GetServiceHeader());
+                }
+
+                if (customerType == 1)
+                {
+                    pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, 0, int.MaxValue, GetServiceHeader());
+                }
+                if (customerType == 2)
+                {
+                    pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, 0, int.MaxValue, GetServiceHeader());
+                }
+                if (customerType == 3)
+                {
+                    pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, 0, int.MaxValue, GetServiceHeader());
+                }
+            }
+            else if (recordStatus != null && customerFilter == null)
+            {
+                pageCollectionInfo = await _channelService.FindCustomersByTypeAndFilterInPageAsync((int)customerType, jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, 0, int.MaxValue, GetServiceHeader());
+            }
+            else if (recordStatus == null && customerFilter == null)
+            {
+                pageCollectionInfo = await _channelService.FindCustomersByRecordStatusAndFilterInPageAsync((int)RecordStatus.New, jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, 0, int.MaxValue, GetServiceHeader());
+
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+
+                    var sortedData = pageCollectionInfo.PageCollection
+                        .OrderByDescending(loanCase => loanCase.CreatedDate)
+                        .ToList();
+
+                    totalRecordCount = sortedData.Count;
+
+                    var paginatedData = sortedData
+                        .Skip(jQueryDataTablesModel.iDisplayStart)
+                        .Take(jQueryDataTablesModel.iDisplayLength)
+                        .ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                        ? sortedData.Count
+                        : totalRecordCount;
+
+                    return this.DataTablesJson(
+                        items: paginatedData,
+                        totalRecords: totalRecordCount,
+                        totalDisplayRecords: searchRecordCount,
+                        sEcho: jQueryDataTablesModel.sEcho
+                    );
+                }
+
+                return this.DataTablesJson(
+                    items: new List<CustomerDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+            );
+            }
+            if (filterValue != null)
+            {
+                pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(filterValue, (int)CustomerFilter.IdentityCardNumber, 0, int.MaxValue, GetServiceHeader());
+            }
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderByDescending(loanCase => loanCase.CreatedDate)
+                    .ToList();
+
+                totalRecordCount = sortedData.Count;
+
+                var paginatedData = sortedData
+                    .Skip(jQueryDataTablesModel.iDisplayStart)
+                    .Take(jQueryDataTablesModel.iDisplayLength)
+                    .ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                    ? sortedData.Count
+                    : totalRecordCount;
+
+                return this.DataTablesJson(
+                    items: paginatedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else
-            {
-                return this.DataTablesJson(items: new List<CustomerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
+
+            return this.DataTablesJson(
+                items: new List<CustomerDTO>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho);
         }
+
 
         [HttpGet]
         public async Task<ActionResult> GetCustomerDetails(Guid customerId)
@@ -152,10 +252,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             NextOfKinDTOs = TempData["NextOfKinDTOs"] as ObservableCollection<NextOfKinDTO>;
             if (NextOfKinDTOs == null)
                 NextOfKinDTOs = new ObservableCollection<NextOfKinDTO>();
-            foreach(var nextofkin in NextOfKinDTOs)
+            foreach (var nextofkin in NextOfKinDTOs)
             {
-                if(nextofkin.FirstName==firstname)
-                NextOfKinDTOs.Remove(nextofkin);
+                if (nextofkin.FirstName == firstname)
+                    NextOfKinDTOs.Remove(nextofkin);
             }
             TempData["NextOfKinDTOs"] = NextOfKinDTOs as ObservableCollection<NextOfKinDTO>;
 
