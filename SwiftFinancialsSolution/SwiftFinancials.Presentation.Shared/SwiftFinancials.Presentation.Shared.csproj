@@ -563,6 +563,9 @@
     <Compile Include="..\Application.MainBoundedContext.DTO\ApportionmentWrapper.cs">
       <Link>Application.MainBoundedContext.DTO\ApportionmentWrapper.cs</Link>
     </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\AssetTypeDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\AssetTypeDTO.cs</Link>
+    </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\AuditLogDTO.cs">
       <Link>Application.MainBoundedContext.DTO\AuditLogDTO.cs</Link>
     </Compile>
@@ -842,6 +845,9 @@
     <Compile Include="..\Application.MainBoundedContext.DTO\HumanResourcesModule\TransactionThresholdDTOEqualityComparer.cs">
       <Link>Application.MainBoundedContext.DTO\HumanResourcesModule\TransactionThresholdDTOEqualityComparer.cs</Link>
     </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\InventoryDTO.cs</Link>
+    </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\JQueryDataTablesModel.cs">
       <Link>Application.MainBoundedContext.DTO\JQueryDataTablesModel.cs</Link>
     </Compile>
@@ -907,6 +913,9 @@
     </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\MonthlySummaryValuesDTO.cs">
       <Link>Application.MainBoundedContext.DTO\MonthlySummaryValuesDTO.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\PackageTypeDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\PackageTypeDTO.cs</Link>
     </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\PasswordSettings.cs">
       <Link>Application.MainBoundedContext.DTO\PasswordSettings.cs</Link>
@@ -1049,8 +1058,14 @@
     <Compile Include="..\Application.MainBoundedContext.DTO\RegistryModule\ZoneDTO.cs">
       <Link>Application.MainBoundedContext.DTO\RegistryModule\ZoneDTO.cs</Link>
     </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\SupplierDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\SupplierDTO.cs</Link>
+    </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\TariffWrapper.cs">
       <Link>Application.MainBoundedContext.DTO\TariffWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\UnitOfMeasurementDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\UnitOfMeasurementDTO.cs</Link>
     </Compile>
     <Compile Include="..\Application.MainBoundedContext\Services\IMessageQueueService.cs">
       <Link>Application.MainBoundedContext\Services\IMessageQueueService.cs</Link>

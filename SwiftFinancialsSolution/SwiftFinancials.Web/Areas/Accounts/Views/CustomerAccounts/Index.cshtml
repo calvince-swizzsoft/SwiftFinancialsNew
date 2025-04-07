@@ -56,7 +56,23 @@
             });
         });
                         </script>
-                    }                    <div class="ibox-tools">
+                    }
+
+
+                    @if (TempData["Edit"] != null)
+                    {
+                        <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '@TempData["Edit"]',
+                confirmButtonText: 'OK'
+            });
+        });
+                        </script>
+                    }
+                    <div class="ibox-tools">
 
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -147,6 +163,8 @@
     @Styles.Render("~/plugins/touchSpinStyles")
     @Styles.Render("~/plugins/tagInputsStyles")
     @Styles.Render("~/plugins/duallistStyles")
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+
 }
 
 @section Scripts{
@@ -213,7 +231,7 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-                                    <a class="dropdown-item" href="/Accounts/CoA_Register/Edit/${aData.Id}">Verify</a>
+                                    <a class="dropdown-item" href="/Accounts/CoA_Register/Edit/${aData.Id}">Update Account</a>
 
                             </div>
                         </div>`;

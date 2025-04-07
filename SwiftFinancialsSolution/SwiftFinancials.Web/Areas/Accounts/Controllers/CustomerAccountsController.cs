@@ -54,7 +54,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = new PageCollectionInfo<CustomerAccountDTO>();
+            var pageCollectionInfo = new PageCollectionInfo<Application.MainBoundedContext.DTO.AccountsModule.CustomerAccountDTO>();
 
             if (productCode != null && recordStatus != null)
             {

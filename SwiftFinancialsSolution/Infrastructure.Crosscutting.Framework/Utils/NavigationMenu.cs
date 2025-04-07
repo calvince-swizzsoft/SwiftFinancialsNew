@@ -155,7 +155,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                 //Customer Accounts
                 new NavigationMenu { AreaCode = 0x000059D8 + 2, IsArea = true, Description = "Customer Accounts", Icon = "", Code = 0x000059D8 + 43 },
-                new NavigationMenu { AreaCode = 0x000059D8 + 43, IsArea = false, Description = "Register", Icon = "fa fa-clipboard", ControllerName = "CoA_Register", ActionName = "Index", AreaName = "Accounts",
+                new NavigationMenu { AreaCode = 0x000059D8 + 43, IsArea = false, Description = "Register", Icon = "fa fa-clipboard", ControllerName = "CustomerAccounts", ActionName = "Index", AreaName = "Accounts",
                     Code = 0x000059D8 + 44 },
                 new NavigationMenu { AreaCode = 0x000059D8 + 43, IsArea = false, Description = "Management", Icon = "fa fa-cogs", ControllerName = "CoA_Management", ActionName = "Index", AreaName = "Accounts",
                     Code = 0x000059D8 + 45 },
@@ -596,15 +596,15 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu { AreaCode = 0x00007530, IsArea = true, Description = "Operations", Icon = "fa fa-bars", Code = 0x00007530 + 2 },
 
                 //Setup
-                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Suppliers", Icon = "fa fa-users", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
+                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Suppliers", Icon = "fa fa-users", ControllerName = "Supplier", ActionName = "Index", AreaName = "Control",
                     Code =  0x00007530 + 3},
-                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Asset Types", Icon = "fa fa-car", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
+                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Asset Types", Icon = "fa fa-car", ControllerName = "AssetTypes", ActionName = "Index", AreaName = "Control",
                     Code =  0x00007530 + 4},
-                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Inventory Categories", Icon = "fa fa-shopping-cart", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
+                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Inventory Categories", Icon = "fa fa-shopping-cart", ControllerName = "InventoryCategory", ActionName = "Index", AreaName = "Control",
                     Code =  0x00007530 + 5},
-                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Package Types", Icon = "fa fa-shopping-basket", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
+                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Package Types", Icon = "fa fa-shopping-basket", ControllerName = "PackageType", ActionName = "Index", AreaName = "Control",
                     Code =  0x00007530 + 6},
-                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Unit Of Measure", Icon = "fa fa-balance-scale", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
+                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Unit Of Measure", Icon = "fa fa-balance-scale", ControllerName = "UnitOfMeasurement", ActionName = "Index", AreaName = "Control",
                     Code =  0x00007530 + 7},
 
                 //Operations
