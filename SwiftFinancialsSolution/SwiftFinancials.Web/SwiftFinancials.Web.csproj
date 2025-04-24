@@ -2146,10 +2146,6 @@
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Application.MainBoundedContext.DTO\Application.MainBoundedContext.DTO.csproj">
-      <Project>{BC316B5E-4FB5-416D-A256-388E72FB14CC}</Project>
-      <Name>Application.MainBoundedContext.DTO</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DistributedServices.Seedwork\DistributedServices.Seedwork.csproj">
       <Project>{160BF576-ED6F-4B54-864B-D8A0FCC7D43C}</Project>
       <Name>DistributedServices.Seedwork</Name>

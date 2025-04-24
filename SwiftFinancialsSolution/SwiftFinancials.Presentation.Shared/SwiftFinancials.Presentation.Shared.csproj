@@ -1110,10 +1110,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Application.MainBoundedContext.DTO\Application.MainBoundedContext.DTO.csproj">
-      <Project>{BC316B5E-4FB5-416D-A256-388E72FB14CC}</Project>
-      <Name>Application.MainBoundedContext.DTO</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Infrastructure.Crosscutting.Framework\Infrastructure.Crosscutting.Framework.csproj">
       <Project>{E839A387-3A87-49A7-9039-D114D02F05B1}</Project>
       <Name>Infrastructure.Crosscutting.Framework</Name>
