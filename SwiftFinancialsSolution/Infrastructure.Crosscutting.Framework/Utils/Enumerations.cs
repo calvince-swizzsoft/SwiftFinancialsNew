@@ -2932,7 +2932,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         [Description("Eligible Income Deduction")]
         EligibleIncomeDeduction = 3
     }
-
+    
     public enum RecordStatus
     {
         [Description("New")]

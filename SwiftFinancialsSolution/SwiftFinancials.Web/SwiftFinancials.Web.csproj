@@ -50,6 +50,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
@@ -594,6 +595,8 @@
     <Compile Include="Areas\Dashboard\Controllers\MessagingGroupsController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\Pre_QualificationController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\TextAlertsController.cs" />
+    <Compile Include="Areas\DataImport\Controllers\MemberBalancesController.cs" />
+    <Compile Include="Areas\DataImport\DataImportAreaRegistration.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AutomatedClearingController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
@@ -1578,7 +1581,6 @@
     <Content Include="Areas\Accounts\Views\BatchVerification_WireTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchAuthorization_WireTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchVerification_GeneralLedger\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\NextOfKin\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCategory\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\Shared\_Layout.cshtml" />
@@ -1586,6 +1588,8 @@
     <Content Include="Areas\Procurement\Views\PackageType\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\Supplier\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Index.cshtml" />
+    <Content Include="Areas\DataImport\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\DataImport\Views\MemberBalances\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2129,6 +2133,7 @@
     <Folder Include="File\" />
     <Folder Include="Views\Control\" />
     <Folder Include="Views\Lookup\" />
+    <Folder Include="Views\MemberStatements\" />
     <Folder Include="Views\Reporting\" />
   </ItemGroup>
   <ItemGroup>

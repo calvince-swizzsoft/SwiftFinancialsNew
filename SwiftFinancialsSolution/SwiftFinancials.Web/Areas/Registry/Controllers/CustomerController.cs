@@ -97,6 +97,11 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
             else if (recordStatus != null && customerFilter == null)
             {
+                if (customerType == null)
+                {
+
+                    customerType = 0;
+                }
                 pageCollectionInfo = await _channelService.FindCustomersByTypeAndFilterInPageAsync((int)customerType, jQueryDataTablesModel.sSearch, (int)CustomerFilter.NonIndividual_Description, 0, int.MaxValue, GetServiceHeader());
             }
             else if (recordStatus == null && customerFilter == null)

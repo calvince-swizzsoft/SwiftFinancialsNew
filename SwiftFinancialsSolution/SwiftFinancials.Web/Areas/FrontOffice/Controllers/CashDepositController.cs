@@ -229,10 +229,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<JsonResult> FetchCustomerAccountsTable(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int customerFilter)
         {
-            bool includeBalances = false;
+            bool includeBalances = true;
             bool includeProductDescription = true;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
+            bool includeInterestBalanceForLoanAccounts = true;
+            bool considerMaturityPeriodForInvestmentAccounts = true;
 
             int totalRecordCount = 0;
 

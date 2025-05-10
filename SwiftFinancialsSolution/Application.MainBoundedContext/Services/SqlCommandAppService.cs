@@ -551,7 +551,8 @@ namespace Application.MainBoundedContext.Services
                 }
             }
 
-            return balance;
+            return Math.Abs(balance);
+            //return balance
         }
 
         public decimal FindCustomerAccountAvailableBalance(CustomerAccountDTO customerAccountDTO, DateTime cutOffDate, ServiceHeader serviceHeader)
@@ -573,7 +574,7 @@ namespace Application.MainBoundedContext.Services
                 }
             }
 
-            return balance;
+            return Math.Abs(balance);
         }
 
         public decimal FindGlAccountBalance(Guid chartOfAccountId, DateTime cutOffDate, int transactionDateFilter, ServiceHeader serviceHeader)
