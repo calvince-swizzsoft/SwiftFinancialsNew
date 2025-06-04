@@ -64,42 +64,151 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Type,"Type", new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Type, disbursementType, new { @class = "form-control input-md custom-border-radius" })
-                                        @Html.ValidationMessageFor(model => model.Type)
-                                    </div>
+                                    @Html.LabelFor(model => model.BatchNumber, "Batch Number", htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.BatchNumber, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "" } })
                                 </div>
                             </div>
                             <div class="col-lg-4">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Priority, priority, new { @class = "form-control input-md custom-border-radius" })
-                                        @Html.ValidationMessageFor(model => model.Priority)
-                                    </div>
+                                @Html.LabelFor(model => model.Type, "Type", new { @class = "control-label" })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.Type, disbursementType, new { @class = "form-control input-md custom-border-radius" })
+                                    @Html.ValidationMessageFor(model => model.Type)
                                 </div>
                             </div>
-
                             <div class="col-lg-4">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.LoanProductCategory, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.LoanProductCategory, category, new { @class = "form-control input-md custom-border-radius" })
-                                        @Html.ValidationMessageFor(model => model.LoanProductCategory)
-                                    </div>
+                                @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.Priority, priority, new { @class = "form-control input-md custom-border-radius" })
+                                    @Html.ValidationMessageFor(model => model.Priority)
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-12">
+                            <div class="col-lg-4">
+                                @Html.LabelFor(model => model.LoanProductCategory, new { @class = "control-label" })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.LoanProductCategory, category, new { @class = "form-control input-md custom-border-radius" })
+                                    @Html.ValidationMessageFor(model => model.LoanProductCategory)
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "", @required = "" } })
+                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.BranchId)
+                                    @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "" } })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BatchTotal, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.BatchTotal, new { htmlAttributes = new { @class = "form-control custom-border-radius", @id = "BatchTotal", @placeholder = "" } })
+                                </div>
+                            </div>
+
+                            @*<div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "" } })
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control custom-border-radius", @placeholder = "" } })
+                                </div>
+                            </div>*@
+                        </div>
+
+                        <br />
+
+                        <div class="section-container">
+                            <div class="section-title">Batch Entries</div>
+                            <div class="table-container">
+                                <h3 style="font-size: 1.9rem; text-align: center;">Loan Disbursement Batch Entries</h3>
+
+                                <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Select?</th>
+                                            <th>Loan Number</th>
+                                            <th>Loan Status</th>
+                                            <th>Customer Name</th>
+                                            <th>Personal File Number</th>
+                                            <th>Loan Product</th>
+                                            <th>Loan Purpose</th>
+                                            <th>Annual Percentage Rate</th>
+                                            <th>Term (Months)</th>
+                                            <th>Amount Approved</th>
+                                            <th>Received Date</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.BatchEntries != null)
+                                        {
+                                            foreach (var entries in ViewBag.BatchEntries)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" class="rowCheckbox" name="BatchEntries" value="@entries.Id">
+                                                    </td>
+                                                    <td>@entries.CaseNumber</td>
+                                                    <td>@entries.StatusDescription</td>
+                                                    <td>@entries.CustomerFullName</td>
+                                                    <td>@entries.CustomerReference3</td>
+                                                    <td>@entries.LoanProductDescription</td>
+                                                    <td>@entries.LoanPurposeDescription</td>
+                                                    <td>@entries.LoanInterestAnnualPercentageRate</td>
+                                                    <td>@entries.LoanRegistrationTermInMonths</td>
+                                                    <td style="text-align: right;">@entries.ApprovedAmount</td>
+                                                    <td>@entries.ReceivedDate</td>
+
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <br />
+                            <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
+                            <label for="headerCheckbox" style="font-weight: bold;">Select All</label>
+
+                            <!-- Hidden Input to Store Selected IDs -->
+                            <input type="hidden" name="selectedIds" id="selectedIds">
+                        </div>
+                        <br />
+
+                        <div class="blue-section">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AuditRemarks, "Remarks", htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control custom-border-radius", @required = "", @placeholder = "Enter text..." } })
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-4" style="margin-top: 25px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Update" class="btn btn-primary" style="width: 150px;" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -163,6 +272,44 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+    <script>
+  //Branch typehead starts here
+                            $('.BranchesLookup').typeahead({
+                                source: function (query, process) {
+                                    return $.getJSON(
+                                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                                        { query: query },
+                                        function (Branches) {
+                                            var newBranchesData = [];
+                                            BranchesMap = {};
+                                            $.each(Branches, function (i, Branch) {
+                                                newBranchesData.push(Branch.Description);
+                                                BranchesMap[Branch.Description] = Branch;
+                                            });
+                                            process(newBranchesData); return;
+                                        });
+                                },
+                                matcher: function (item) {
+                                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                                        return true;
+                                    }
+                                },
+                                sorter: function (items) {
+                                    return items.sort();
+                                },
+                                highlighter: function (item) {
+                                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                                    return item.replace(regex, "<strong>$1</strong>");
+                                },
+                                updater: function (item) {
+                                    var branchId = "";
+                                    BranchId = BranchesMap[item].Id;
+                                    $('#BranchId').val(BranchId);
+                                    //console.log(BranchId)
+                                    return item;
+                                }
+                            });
+    </script>
 
 }
 

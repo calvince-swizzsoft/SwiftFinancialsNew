@@ -8,11 +8,12 @@ using System.Web;
 using System.Web.Mvc;
 using SwiftFinancials.Apis.Identity;
 using SwiftFinancials.Apis.Models;
+using SwiftFinancials.Apis.Controllers;
 
 namespace SwiftFinancials.Apis.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : MasterController
     {
         private readonly ApplicationUserManager _userManager;
         private readonly ApplicationSignInManager _signInManager;

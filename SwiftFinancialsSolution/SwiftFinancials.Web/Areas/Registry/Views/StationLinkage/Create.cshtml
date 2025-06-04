@@ -1,0 +1,36 @@
+﻿@model  Application.MainBoundedContext.DTO.RegistryModule.CustomerDTO
+
+@{
+    ViewBag.Title = "station Linkage";
+}
+
+<h2>Create Customer Linkage</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Select</th>
+            <th>customers Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewBag.customerlinkage != null)
+        {
+            foreach (var customers in ViewBag.customerlinkage)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="commisionIds" value="@customers.Id" />
+                    </td>
+                    <td>@customers.IndividualFirstName</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2">No customers available</td>
+            </tr>
+        }
+    </tbody>
+</table>
