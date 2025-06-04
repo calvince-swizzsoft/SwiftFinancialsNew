@@ -210,6 +210,7 @@
                                 <table id="dataTableEntries" class="footable table table-striped toggle-arrow-tiny grey-table">
                                     <thead>
                                         <tr>
+                                            <th>Select?</th>
                                             <th>Loan Number</th>
                                             <th>Loan Status</th>
                                             <th>Customer Name</th>
@@ -229,16 +230,19 @@
                                             foreach (var entries in ViewBag.BatchEntries)
                                             {
                                                 <tr>
-                                                    <td>@entries.LoanCaseCaseNumber</td>
-                                                    <td>@entries.LoanCaseStatusDescription</td>
+                                                    <td>
+                                                        <input type="checkbox" class="rowCheckbox" value="@entries.Id" checked>
+                                                    </td>
+                                                    <td>@entries.CaseNumber</td>
+                                                    <td>@entries.StatusDescription</td>
                                                     <td>@entries.CustomerFullName</td>
-                                                    <td>@entries.LoanCaseCustomerReference3</td>
-                                                    <td>@entries.LoanCaseLoanProductDescription</td>
-                                                    <td>@entries.LoanCaseLoanPurposeDescription</td>
-                                                    <td>@entries.LoanCaseLoanInterestAnnualPercentageRate</td>
-                                                    <td>@entries.LoanCaseLoanRegistrationTermInMonths</td>
-                                                    <td style="text-align: right;">@entries.LoanCaseApprovedAmount</td>
-                                                    <td>@entries.LoanCaseReceivedDate</td>
+                                                    <td>@entries.CustomerReference3</td>
+                                                    <td>@entries.LoanProductDescription</td>
+                                                    <td>@entries.LoanPurposeDescription</td>
+                                                    <td>@entries.LoanInterestAnnualPercentageRate</td>
+                                                    <td>@entries.LoanRegistrationTermInMonths</td>
+                                                    <td style="text-align: right;">@entries.ApprovedAmount</td>
+                                                    <td>@entries.ReceivedDate</td>
 
                                                 </tr>
                                             }
@@ -246,7 +250,16 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <br />
+
+                            <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
+                            <label for="headerCheckbox" style="font-weight: bold;">Select All</label>
+
+                            <!-- Hidden Input to Store Selected IDs -->
+                            <input type="hidden" name="selectedIds" id="selectedIds">
                         </div>
+
                         <br />
 
                         <div class="blue-section">

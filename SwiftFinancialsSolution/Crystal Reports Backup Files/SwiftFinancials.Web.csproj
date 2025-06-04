@@ -50,6 +50,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
@@ -506,6 +507,13 @@
     <Compile Include="Areas\Accounts\Controllers\BackOfficeTransfersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankReconciliation_PeriodsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_CreditController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_DebitController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_DisbursementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_GeneralLedgerController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_RefundController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_VoucherController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchAuthorization_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DisbursementController.cs" />
@@ -513,6 +521,14 @@
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_ReversalController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_CreditController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_DebitController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_DisbursementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_GeneralLedgerController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_InterAccountTransferController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_RefundController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_VoucherController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChargesController.cs" />
@@ -540,8 +556,6 @@
     <Compile Include="Areas\Accounts\Controllers\GLAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\IndefiniteChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InterAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\IntraAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
@@ -562,6 +576,7 @@
     <Compile Include="Areas\Accounts\Controllers\TreasuriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
+    <Compile Include="Areas\Admin\Controllers\AuditLogsController.cs" />
     <Compile Include="Areas\Admin\Controllers\DynamicReportingController.cs" />
     <Compile Include="Areas\Admin\Controllers\SSRSReportSettingController.cs" />
     <Compile Include="Areas\Admin\Controllers\SSRSReportSettingLoginController.cs" />
@@ -580,6 +595,8 @@
     <Compile Include="Areas\Dashboard\Controllers\MessagingGroupsController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\Pre_QualificationController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\TextAlertsController.cs" />
+    <Compile Include="Areas\DataImport\Controllers\MemberBalancesController.cs" />
+    <Compile Include="Areas\DataImport\DataImportAreaRegistration.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AutomatedClearingController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
@@ -672,6 +689,12 @@
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditGroupsController.cs" />
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
+    <Compile Include="Areas\Procurement\ProcurementAreaRegistration.cs" />
+    <Compile Include="Areas\Procurement\Controllers\AssetTypesController.cs" />
+    <Compile Include="Areas\Procurement\Controllers\InventoryCategoryController.cs" />
+    <Compile Include="Areas\Procurement\Controllers\PackageTypeController.cs" />
+    <Compile Include="Areas\Procurement\Controllers\SupplierController.cs" />
+    <Compile Include="Areas\Procurement\Controllers\UnitOfMeasurementController.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\BindingModelBase.cs" />
     <Compile Include="Areas\Registry\Controllers\BranchLinkageController.cs" />
@@ -1126,9 +1149,6 @@
     <Content Include="Areas\Accounts\Views\UnPayReason\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\UnPayReason\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\UnPayReason\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Create.cshtml" />
@@ -1137,7 +1157,6 @@
     <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
@@ -1255,14 +1274,14 @@
     <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Verify.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Credit\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Credit\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Verify.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Debit\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Debit\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Create.cshtml" />
@@ -1337,7 +1356,6 @@
     <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Edit.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Register\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Index.cshtml" />
@@ -1368,12 +1386,12 @@
     <Content Include="Areas\Loaning\Views\Closing\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\Catalogue\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\Catalogue\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Refund\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Refund\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Verify.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashWithdrawalRequest\Create.cshtml" />
@@ -1411,8 +1429,8 @@
     <Content Include="Areas\Reports\Views\StoredProcedure\Create.cshtml" />
     <Content Include="Areas\Reports\Views\spDynamicReporting\Index.cshtml" />
     <Content Include="Areas\Reports\Views\spDynamicReporting\_StoredProcedureParameters.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Verify.cshtml" />
-    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_WireTransfer\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_WireTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\Report.cshtml" />
     <Content Include="Areas\Admin\Views\ReportSetting\Create.cshtml" />
     <Content Include="Areas\Admin\Views\ReportSetting\Index.cshtml" />
@@ -1420,7 +1438,7 @@
     <Content Include="Areas\Reports\Views\ReportSetting\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Authorize.cshtml" />
-    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_GeneralLedger\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
@@ -1520,7 +1538,7 @@
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\ProcessSalary.cshtml" />
     <Content Include="Areas\Registry\Views\ChargeExemptions\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryCards\Edit.cshtml" />
-    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryProcessing\ProcessSalary.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryGroups\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryGroups\Details.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Settle.cshtml" />
@@ -1528,7 +1546,6 @@
     <Content Include="Areas\Registry\Views\ChargeExemptions\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\ChargeExemptions\Details.cshtml" />
     <Content Include="Areas\Registry\Views\NextOfKin\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_ChequeBooks\Index.cshtml" />
     <Content Include="Areas\Dashboard\Views\InstantMessaging\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Index.cshtml" />
@@ -1537,12 +1554,56 @@
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\PeriodClosing\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\PeriodClosing\Close.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslip.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\_PaySlipEntries.cshtml" />
+    <Content Include="Areas\Admin\Views\AuditLogs\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\ViewPayslipEntries.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryPeriods\ViewPayroll.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\GuarantorManagement\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\TransactionJournals\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Disbursement\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Disbursement\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Disbursement\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Disbursement\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Voucher\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Voucher\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Voucher\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Voucher\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Credit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Credit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Debit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Debit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Refund\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_Refund\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_WireTransfer\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchAuthorization_WireTransfer\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_GeneralLedger\Index.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
+=======
+>>>>>>> 503bcb348dc752dd8a44a68eefdc8fec2d8ed7ba
+    <Content Include="Areas\Registry\Views\NextOfKin\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCategory\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Procurement\Views\AssetTypes\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\PackageType\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\Supplier\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Index.cshtml" />
+<<<<<<< HEAD
+=======
+    <Content Include="Areas\DataImport\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\DataImport\Views\MemberBalances\Create.cshtml" />
+>>>>>>> 503bcb348dc752dd8a44a68eefdc8fec2d8ed7ba
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\ActionDropDown.css" />
     <Content Include="Scripts\css\BackOfficeNavigationMenu.css" />
     <Content Include="Scripts\css\CaptureSpecimenForm.css" />
+    <Content Include="Scripts\css\customersGrid.css" />
     <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\MainTabs.css" />
     <Content Include="Scripts\css\Marquee.css" />
@@ -1976,12 +2037,8 @@
     <Content Include="calculator.html" />
     <Content Include="loan-calculator.html" />
     <Content Include="SqlServerTypes\readme.htm" />
-    <Content Include="SqlServerTypes\x64\msvcr120.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SqlServerTypes\x64\SqlServerSpatial140.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="SqlServerTypes\x64\msvcr120.dll" />
+    <Content Include="SqlServerTypes\x64\SqlServerSpatial140.dll" />
     <Content Include="SqlServerTypes\x86\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2058,9 +2115,9 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Alternatechannel\" />
+    <Folder Include="Areas\Accounts\Views\BatchAuthorization_GeneralLedger\" />
+    <Folder Include="Areas\Accounts\Views\BatchVerification_InterAccountTransfer\" />
     <Folder Include="Areas\Accounts\Views\Credit\" />
-    <Folder Include="Areas\Accounts\Views\Default1\" />
-    <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\EmailAlerts\" />
@@ -2079,6 +2136,7 @@
     <Folder Include="File\" />
     <Folder Include="Views\Control\" />
     <Folder Include="Views\Lookup\" />
+    <Folder Include="Views\MemberStatements\" />
     <Folder Include="Views\Reporting\" />
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,8 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -16,6 +18,25 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class BatchOrigination_DisbursementController : MasterController
     {
+        string connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+
+        public async Task<ActionResult> UpdateLoanCaseBatchNumber(int CaseNumber, int BatchNumber, int status = 48829)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                await conn.OpenAsync();
+                var updateQuery = "UPDATE swiftFin_LoanCases SET BatchNumber=@BatchNumber, Status=@status Where CaseNumber=@CaseNumber";
+
+                using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@BatchNumber", BatchNumber);
+                    cmd.Parameters.AddWithValue("@CaseNumber", CaseNumber);
+                    cmd.Parameters.AddWithValue("@status", status);
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+            return RedirectToAction("");
+        }
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -96,25 +117,69 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
 
+            var verifiedLoanCasesList = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Audited, string.Empty, (int)LoanCaseFilter.CaseNumber, 0, 200, false, GetServiceHeader());
+            var verifiedLoanCases = verifiedLoanCasesList.PageCollection.Where(x => x.IsBatched == false);
 
+            ViewBag.BatchEntries = verifiedLoanCases;
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(LoanDisbursementBatchDTO loanDisbursementBatchDTO)
+        public async Task<ActionResult> Create(LoanDisbursementBatchDTO loanDisbursementBatchDTO, string[] BatchEntries)
         {
+          
+            LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
+            LoanDisbursementBatchEntryDTO loanDisbursementBatchEntryDTO = new LoanDisbursementBatchEntryDTO();
+
             loanDisbursementBatchDTO.ValidateAll();
 
-            if (!loanDisbursementBatchDTO.HasErrors)
-            {
-                var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-                if (userDTO.BranchId != null)
-                {
-                    loanDisbursementBatchDTO.BranchId = (Guid)userDTO.BranchId;
-                }
-                var loanDisbursement = await _channelService.AddLoanDisbursementBatchAsync(loanDisbursementBatchDTO, GetServiceHeader());
 
-                TempData["SuccessMessage"] = "Operation Completed Successfully";
+
+            int batchAuthOption = loanDisbursementBatchDTO.Auth;
+            if (BatchEntries != null && BatchEntries.Any())
+            {
+                var selectedBatchIds = BatchEntries.Select(Guid.Parse).ToList();
+
+            
+            loanDisbursementBatchDTO.ValidateAll();
+
+                if (!loanDisbursementBatchDTO.HasErrors)
+                {
+
+              var k=  await _channelService.AddLoanDisbursementBatchAsync(loanDisbursementBatchDTO, GetServiceHeader());
+                    List<LoanDisbursementBatchEntryDTO> batchEntryDTO = new List<LoanDisbursementBatchEntryDTO>();
+
+                    foreach (var loanCaseId in selectedBatchIds)
+                    {
+                        loanDisbursementBatchEntryDTO.LoanCaseId = loanCaseId;
+                        loanDisbursementBatchEntryDTO.LoanDisbursementBatchId = k.Id;
+
+                        await _channelService.AddLoanDisbursementBatchEntryAsync(loanDisbursementBatchEntryDTO, GetServiceHeader());
+
+                        // Calculate Batch Total
+                        List<LoanCaseDTO> LCDTO = new List<LoanCaseDTO>();
+                        decimal batchTotal = 0;
+
+                        var loanCase = await _channelService.FindLoanCaseAsync(loanCaseId, GetServiceHeader());
+                        await UpdateLoanCaseBatchNumber(loanCase.CaseNumber, k.BatchNumber);
+
+                        if (loanCase != null)
+                        {
+                            LCDTO.Add(loanCase);
+                            batchTotal += loanCase.ApprovedAmount;
+                        }
+                        //Update LoanDisbursement with the Batch Total
+                        var mainBatchDetails = await _channelService.FindLoanDisbursementBatchAsync(k.Id, GetServiceHeader());
+                        mainBatchDetails.BatchTotal = batchTotal;
+                        await _channelService.UpdateLoanDisbursementBatchAsync(mainBatchDetails, GetServiceHeader());
+                        await UpdateLoanCaseBatchNumber(loanCase.CaseNumber, mainBatchDetails.BatchNumber);
+
+                    }
+                }
+                var submit = await _channelService.AuditLoanDisbursementBatchAsync(loanDisbursementBatchDTO, batchAuthOption, GetServiceHeader());
+
+                TempData["Success"] = "Operation Completed Successfully";
+
                 return RedirectToAction("Index");
             }
             else
