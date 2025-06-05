@@ -109,17 +109,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
             var loanDisbursementBatchDTO = await _channelService.FindLoanDisbursementBatchAsync(id, GetServiceHeader());
+            var loan = await _channelService.FindLoanDisbursementBatchEntriesByLoanDisbursementBatchIdAsync(loanDisbursementBatchDTO.Id, GetServiceHeader());
             if (loanDisbursementBatchDTO.Status == (int)BatchStatus.Audited)
             {
                 TempData["Audited"] = "The selected Batch is already Verified";
                 return RedirectToAction("Index");
             }
+            List<LoanCaseDTO> loanCaseDTO = new List<LoanCaseDTO>();
+            foreach(var loancasess in loan)
+            {
+                var verifiedLoanCases = await _channelService.FindLoanCaseAsync(loancasess.LoanCaseId, GetServiceHeader());
+                loanCaseDTO.Add(verifiedLoanCases);
 
-            var verifiedLoanCasesList = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Audited,
-                string.Empty, (int)LoanCaseFilter.CaseNumber, 0, 200, false, GetServiceHeader());
-            var verifiedLoanCases = verifiedLoanCasesList.PageCollection.Where(x => x.IsBatched == false);
+            }
+      
 
-            ViewBag.BatchEntries = verifiedLoanCases;
+            ViewBag.BatchEntries = loanCaseDTO;
             return View(loanDisbursementBatchDTO);
         }
 
@@ -147,13 +152,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 .Select(id => Guid.Parse(id.Trim())).ToList();
 
                 List<LoanDisbursementBatchEntryDTO> batchEntryDTO = new List<LoanDisbursementBatchEntryDTO>();
+                var loan = await _channelService.UpdateLoanDisbursementBatchAsync(loanDisbursementBatchDTO, GetServiceHeader());
 
                 foreach (var loanCaseId in selectedBatchIds)
                 {
                     loanDisbursementBatchEntryDTO.LoanCaseId = loanCaseId;
                     loanDisbursementBatchEntryDTO.LoanDisbursementBatchId = loanDisbursementBatchDTO.Id;
+                    batchEntryDTO.Add(loanDisbursementBatchEntryDTO);
 
-                    await _channelService.AddLoanDisbursementBatchEntryAsync(loanDisbursementBatchEntryDTO, GetServiceHeader());
+                    await _channelService.UpdateLoanDisbursementBatchEntriesAsync(loanDisbursementBatchDTO.Id,batchEntryDTO, GetServiceHeader());
 
                     // Calculate Batch Total
                     List<LoanCaseDTO> LCDTO = new List<LoanCaseDTO>();

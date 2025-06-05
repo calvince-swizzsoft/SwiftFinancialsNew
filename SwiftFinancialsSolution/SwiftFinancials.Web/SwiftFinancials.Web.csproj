@@ -165,6 +165,9 @@
     <Reference Include="Microsoft.AspNetCore.WebUtilities, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.WebUtilities.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.5\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.DotNet.PlatformAbstractions.2.1.0\lib\net45\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
@@ -298,6 +301,9 @@
     <Reference Include="System.IO.Packaging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Packaging.6.0.0\lib\net461\System.IO.Packaging.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Pipelines, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.9.0.5\lib\net462\System.IO.Pipelines.dll</HintPath>
+    </Reference>
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -362,16 +368,19 @@
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Text.Encodings.Web, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encodings.Web.4.5.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
+    <Reference Include="System.Text.Encodings.Web, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.9.0.5\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.9.0.5\lib\net462\System.Text.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -565,6 +574,7 @@
     <Compile Include="Areas\Accounts\Controllers\LoanInterestCapitalizationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\MpesaHelper.cs" />
     <Compile Include="Areas\Accounts\Controllers\periodsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SavingsDynamicFeesController.cs" />
@@ -713,6 +723,7 @@
     <Compile Include="Areas\Registry\Controllers\NextOfKinController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
+    <Compile Include="Areas\Registry\Controllers\StationLinkageController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\DocumentsModel\Document.cs" />
@@ -1475,7 +1486,6 @@
     <Content Include="ElectronicJournalDTO\bank_7f75a036-a622-482c-874e-efc3bae3f184.pdf" />
     <Content Include="ElectronicJournalDTO\bank_9bd09654-0371-4920-89a8-f93f19e7d69b.pdf" />
     <Content Include="ElectronicJournalDTO\bank_ff172d8c-d502-43d2-9af0-5056a7a13be2.pdf" />
-    <Content Include="bin.rar" />
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Print.cshtml" />
     <Content Include="Areas\Loaning\Views\DataProcessing\_DocumentUploadPartial.cshtml" />
     <Content Include="Areas\Loaning\Views\DataCapture\Edit.cshtml" />
@@ -1590,7 +1600,6 @@
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Index.cshtml" />
     <Content Include="Areas\DataImport\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\DataImport\Views\MemberBalances\Create.cshtml" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\ActionDropDown.css" />
@@ -2127,6 +2136,7 @@
     <Folder Include="Areas\MicroCredit\Models\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="File\" />
+    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\Control\" />
     <Folder Include="Views\Lookup\" />
     <Folder Include="Views\MemberStatements\" />
@@ -2143,6 +2153,8 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Areas\Dashboard\Views\MessagingGroups\Index.cshtml" />
     <Content Include="Areas\Dashboard\Views\MessagingGroups\Create.cshtml" />
+    <Content Include="bin.rar" />
+    <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>

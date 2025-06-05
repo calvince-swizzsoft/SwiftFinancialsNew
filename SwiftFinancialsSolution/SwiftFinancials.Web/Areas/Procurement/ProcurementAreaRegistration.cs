@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace SwiftFinancials.Web.Areas.Registry
+namespace SwiftFinancials.Web.Areas.Procurement
 {
     public class ProcurementAreaRegistration : AreaRegistration
     {

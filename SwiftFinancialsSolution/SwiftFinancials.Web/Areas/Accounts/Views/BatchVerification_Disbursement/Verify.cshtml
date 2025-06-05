@@ -245,7 +245,7 @@
                                             {
                                                 <tr>
                                                     <td>
-                                                        <input type="checkbox" class="rowCheckbox" value="@entries.Id">
+                                                        <input type="checkbox" class="rowCheckbox" value="@entries.Id" checked>
                                                     </td>
                                                     <td>@entries.CaseNumber</td>
                                                     <td>@entries.StatusDescription</td>
@@ -266,6 +266,7 @@
                             </div>
 
                             <br />
+
                             <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
                             <label for="headerCheckbox" style="font-weight: bold;">Select All</label>
 
@@ -307,6 +308,30 @@
         </div>
     </div>
 </div>
+<script>
+    function updateSelectedIds() {
+        const selected = [];
+        document.querySelectorAll(".rowCheckbox:checked").forEach(cb => {
+            selected.push(cb.value);
+        });
+        document.getElementById("selectedIds").value = selected.join(",");
+    }
+
+    // Run on page load to capture default checked boxes
+    window.addEventListener("DOMContentLoaded", updateSelectedIds);
+
+    // Run when any checkbox is clicked
+    document.querySelectorAll(".rowCheckbox").forEach(cb => {
+        cb.addEventListener("change", updateSelectedIds);
+    });
+
+    // Optional: update when form is submitted
+    const form = document.querySelector("form");
+    if (form) {
+        form.addEventListener("submit", updateSelectedIds);
+    }
+</script>
+
 
 
 

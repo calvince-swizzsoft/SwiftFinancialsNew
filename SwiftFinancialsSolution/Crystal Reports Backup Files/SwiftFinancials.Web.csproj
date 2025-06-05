@@ -1581,6 +1581,10 @@
     <Content Include="Areas\Accounts\Views\BatchVerification_WireTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchAuthorization_WireTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchVerification_GeneralLedger\Index.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
+=======
+>>>>>>> 503bcb348dc752dd8a44a68eefdc8fec2d8ed7ba
     <Content Include="Areas\Registry\Views\NextOfKin\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCategory\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\Shared\_Layout.cshtml" />
@@ -1588,8 +1592,11 @@
     <Content Include="Areas\Procurement\Views\PackageType\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\Supplier\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Index.cshtml" />
+<<<<<<< HEAD
+=======
     <Content Include="Areas\DataImport\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\DataImport\Views\MemberBalances\Create.cshtml" />
+>>>>>>> 503bcb348dc752dd8a44a68eefdc8fec2d8ed7ba
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

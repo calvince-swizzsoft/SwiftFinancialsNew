@@ -201,6 +201,8 @@
 
         <div id="schedule" class="scrollable-table" style="margin-bottom: 50px;">
             <h3 style="margin-top: 40px; text-align: center;">Repayment Schedule</h3>
+            <button onclick="downloadScheduleCSV()" style="margin-bottom: 20px;">Download Schedule</button>
+
             <table>
                 <thead>
                     <tr>
@@ -358,17 +360,44 @@
             schedule.forEach(row => {
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-                            <td>${row.paymentNumber}</td>
-                            <td>${row.date}</td>
-                            <td>${row.beginningBalance}</td>
-                            <td>${row.payment}</td>
-                            <td>${row.principal}</td>
-                            <td>${row.interest}</td>
-                            <td>${row.endingBalance}</td>
-                        `;
+                                        <td>${row.paymentNumber}</td>
+                                        <td>${row.date}</td>
+                                        <td>${row.beginningBalance}</td>
+                                        <td>${row.payment}</td>
+                                        <td>${row.principal}</td>
+                                        <td>${row.interest}</td>
+                                        <td>${row.endingBalance}</td>
+                                    `;
                 tableBody.appendChild(newRow);
             });
         }
     </script>
+    <script>
+        function downloadScheduleCSV() {
+            const headers = ['Payment #', 'Date', 'Beginning Balance', 'Payment', 'Principal', 'Interest', 'Ending Balance'];
+            const rows = [];
+            const tableBody = document.getElementById('repaymentSchedule');
+            const trs = tableBody.querySelectorAll('tr');
+
+            trs.forEach(tr => {
+                const cells = tr.querySelectorAll('td');
+                const row = Array.from(cells).map(cell => `"${cell.innerText}"`);
+                rows.push(row.join(','));
+            });
+
+            const csvContent = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+
+            link.setAttribute("href", URL.createObjectURL(blob));
+            link.setAttribute("download", "repayment_schedule.csv");
+            link.style.display = "none";
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+
 </body>
 </html>
