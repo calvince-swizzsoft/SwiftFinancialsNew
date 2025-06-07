@@ -1,36 +1,403 @@
 ﻿@model  Application.MainBoundedContext.DTO.RegistryModule.CustomerDTO
 
+
 @{
-    ViewBag.Title = "station Linkage";
+    ViewBag.Title = "Create station Linkage";
+    var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
+    var customerFilter = ViewBag.CustomerFilters as List<SelectListItem>;
+    var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 }
 
-<h2>Create Customer Linkage</h2>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Select</th>
-            <th>customers Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (ViewBag.customerlinkage != null)
-        {
-            foreach (var customers in ViewBag.customerlinkage)
-            {
-                <tr>
-                    <td>
-                        <input type="checkbox" name="commisionIds" value="@customers.Id" />
-                    </td>
-                    <td>@customers.IndividualFirstName</td>
-                </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td colspan="2">No customers available</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Station Linkage</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "StationLinkage", new { Area = "Registry" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "stationlinkage", new { Area = "Registry" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.StationZoneDivisionEmployerId, new { id = "StationZoneDivisionEmployerId" })
+                        @Html.HiddenFor(model => model.StationId, new { id = "StationId" })
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <!-- Upper row with one column -->
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.StationId)
+                                        @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Description.." } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.StationZoneDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.StationZoneDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.StationZoneDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.StationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.StationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.StationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3>Customer Details</h3>
+
+                            <!-- Lower row with three columns -->
+                            <div class="row">
+                                <div class="col-lg-3">
+
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.FullName, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.Id)
+                                            @Html.TextBoxFor(model => model.FullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.IndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.IndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-lg-3">
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.SerialNumber, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.SerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.SerialNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.IndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.IndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.IndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.IndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.IndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @id = "Remark", @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group form-group-sm">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Customers Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <table id="CustomersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">Loading data from server</td>
+                    </tr>
+                </tbody>
+            </table>
+            <form id="modalFilterForm" style="background-color: #E0f0ff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                <div class="form-row" style="display: flex; justify-content: space-between; align-items: center; gap: 30px;">
+                    <!-- Status Filter -->
+                    <div class="col-lg-3 form-group">
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <label for="recordStatus" style="white-space: nowrap; font-weight: bold;">Status</label>
+                            @Html.DropDownList("recordStatus", recordStatus, "Filter by Status",
+                                new { @class = "form-control", @id = "recordStatus", style = "width: 200px;" })
+                        </div>
+                    </div>
+
+                    <!-- Advanced Filter -->
+                    <div class="col-lg-3 form-group">
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <label for="customerFilter" style="white-space: nowrap; font-weight: bold;">Advanced</label>
+                            @Html.DropDownList("customerFilter", customerFilter, "Search",
+                                new { @class = "form-control", @id = "customerFilter", style = "width: 150px;" })
+                        </div>
+                    </div>
+
+                    <!-- Refresh and Reset Buttons -->
+                    <div class="col-lg-4 form-group" style="display: flex; align-items: center; gap: 5px;">
+                        <input type="submit" value="Refresh" class="btn btn-primary"
+                               style="min-width: 50px; background-color: #008080; border-color: #0056b3;" />
+
+                        <button type="button" class="btn btn-secondary" id="resetFilters"
+                                style="min-width: 120px;">
+                            Reset
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type='hidden' id='h' name='h' />
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+    <script src="~/Scripts/js/navlink.js"></script>
+    <script>
+//Station typehead starts here
+            $('.StationsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                        { query: query },
+                        function (Stations) {
+                            var newStationsData = [];
+                            StationsMap = {};
+                            $.each(Stations, function (i, Station) {
+                                newStationsData.push(Station.Description);
+                                StationsMap[Station.Description] = Station;
+                            });
+                            process(newStationsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var stationId = "";
+                    StationId = StationsMap[item].Id;
+                    $('#StationId').val(StationId);
+                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
+                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
+                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
+                    //console.log(StationId)
+                    return item;
+                }
+            });</script>
+    <script>
+$(document).ready(function () {
+    var table = $('#CustomersGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))", // URL to the controller
+        "sServerMethod": "POST",
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "recordStatus", "value": $('#recordStatus').val() || null },
+                { "name": "customerFilter", "value": $('#customerFilter').val() || null },
+                { "name": "customerType", "value": $('#customerType').val() || null } // Ensure the element exists in your form if used
+            );
+        },
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+
+            var selectUrl = '<a href="/Registry/stationlinkage/Search/' + aData.Id +
+                '" class="btn btn-outline-info">Select</a>';
+
+            $('td:eq(4)', nRow).html(dt_Created);
+            $('td:eq(5)', nRow).html(selectUrl);
+
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
+            { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+            { "mDataProp": "Reference2", "sTitle": "Membership Number", "sWidth": "10%" },
+            { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    // Refresh DataTable on form submission
+    $('#modalFilterForm').on('submit', function (e) {
+        e.preventDefault();
+        table.ajax.reload(null, false); // Reload the table
+    });
+
+    // Optional: Reset filters
+    $('#resetFilters').on('click', function () {
+        $('#recordStatus').val('');
+        $('#customerFilter').val('');
+        $('#customerType').val(''); // Include if needed
+        table.ajax.reload(null, false);
+    });
+});
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Bind the form submit event
+            $('form').on('submit', function (e) {
+                e.preventDefault(); // Prevent full page reload
+
+                var form = $(this);
+                var url = form.attr('action');
+                var formData = form.serialize();
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: formData,
+                    success: function (response) {
+                        // Handle success response (you can display a message or update part of the page)
+                        toastr.success("Station Linkage created successfully!");
+
+                        // Optionally, reset form or redirect
+                        form.trigger("reset");
+                        // window.location.href = '/Registry/StationLinkage/Index'; // if redirect is needed
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                        var message = xhr.responseText || "An error occurred. Please try again.";
+                        toastr.error(message);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+}

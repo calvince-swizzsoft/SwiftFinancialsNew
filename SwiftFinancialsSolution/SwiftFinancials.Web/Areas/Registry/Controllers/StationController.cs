@@ -109,7 +109,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
         [HttpGet]
         public async Task<JsonResult> GetStationsAsync()
-        {
+          {
             var stationsDTOs = await _channelService.FindStationsAsync(GetServiceHeader());
 
             return Json(stationsDTOs, JsonRequestBehavior.AllowGet);

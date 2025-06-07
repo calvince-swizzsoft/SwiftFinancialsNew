@@ -1,15 +1,6 @@
 {
   "ExpandedNodes": [
-<<<<<<< HEAD
     ""
   ],
-=======
-    "",
-    "\\SwiftFinancialsSolution",
-    "\\SwiftFinancialsSolution\\Infrastructure.Crosscutting.Framework",
-    "\\SwiftFinancialsSolution\\Infrastructure.Crosscutting.Framework\\Utils"
-  ],
-  "SelectedNode": "\\SwiftFinancialsSolution\\Infrastructure.Crosscutting.Framework\\Utils\\NavigationMenu.cs",
->>>>>>> adc5ccd30f2313d01741d6019e5f1f3d9da93c9e
   "PreviewInSolutionExplorer": false
 }
