@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
-namespace SwiftFinancials.Web.Areas.Loaning.Controllers
+namespace SwiftFinancials.Web.Areas.Registry.Controllers
 {
     public class MultiDestinationController : MasterController
     {

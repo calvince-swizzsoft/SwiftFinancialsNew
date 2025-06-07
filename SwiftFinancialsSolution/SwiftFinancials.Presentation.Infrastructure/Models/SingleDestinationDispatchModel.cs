@@ -2,6 +2,7 @@
 using Application.Seedwork;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace SwiftFinancials.Presentation.Infrastructure.Models
 {
@@ -11,6 +12,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         {
             AddAllAttributeValidators();
         }
+        [DataMember]
+        [Display(Name = "Dept Description")]
+        public string SourceDepartment { get; set; }
 
         Guid _sourceDepartmentId;
         [Display(Name = "Source Department")]
