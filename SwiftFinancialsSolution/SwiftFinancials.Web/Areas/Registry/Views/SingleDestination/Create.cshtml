@@ -1,0 +1,319 @@
+﻿@model Application.MainBoundedContext.DTO.RegistryModule.FileMovementHistoryDTO
+
+@{
+    ViewBag.Title = "Create SingleDestination File";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>File Dispatch</h2>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Dispatch Details</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+
+                <div class="ibox-content bg-white">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Remarks:</label>
+                                @Html.TextAreaFor(m => m.Remarks, new { @class = "form-control", placeholder = "Enter Text...", rows = 3 })
+                            </div>
+
+                            <div class="form-group">
+                                <label>Carrier:</label>
+                                @Html.TextBoxFor(m => m.Carrier, new { @class = "form-control", placeholder = "Enter Carrier Name..." })
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.DestinationDepartmentDescription, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    @Html.HiddenFor(m => m.DestinationDepartmentId, new { @id = "DepartmentId" })
+                                    @Html.TextBoxFor(m => m.DestinationDepartmentDescription, new
+                                    {
+                                        @class = "form-control",
+                                        @readonly = "readonly",
+                                        @placeholder = "Select Department",
+                                        @id = "DepartmentName"
+                                    })
+                                    <span class="input-group-addon">
+                                        <a data-toggle="modal" data-target="#departmentLookupModal"><i class="fa fa-search"></i></a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>Search:</label>
+                            <input type="text" id="searchInput" class="form-control" placeholder="Enter Text..." />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Show entries:</label>
+                            <select id="entriesSelector" class="form-control d-inline w-auto">
+                                <option value="15">15</option>
+                                <option value="30">30</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table id="customerTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th width="50px">Select</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.customers != null)
+                            {
+                                foreach (var customer in ViewBag.customers)
+                                {
+                                    <tr>
+                                        <td><input type="checkbox" name="commisionIds" value="@customer.Id" /></td>
+                                        <td>@customer.IndividualFirstName</td>
+                                        <td>@customer.IndividualLastName</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center">No customers available</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="text-center mt-3">
+                        <nav>
+                            <ul id="paginationControls" class="pagination justify-content-center"></ul>
+                        </nav>
+                    </div>
+
+                    <div class="text-right">
+                        <button class="btn btn-primary">Dispatch</button>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4>File Movement History</h4>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Destination</th>
+                                    <th>Remarks</th>
+                                    <th>Carrier</th>
+                                    <th>Dispatch Date</th>
+                                    <th>Recipient</th>
+                                    <th>Receive Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="7" class="text-center">No history available</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="departmentLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Destination Lookup</h3>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <table id="departmentGrid" class="table table-hover w-100">
+                    <thead>
+                        <tr>
+                            <th>Account Code</th>
+                            <th>Account Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="3" class="text-center">Loading data from server...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        $(function () {
+            const $departmentGrid = $('#departmentGrid');
+            if ($departmentGrid.length) {
+                $departmentGrid.DataTable({
+                    sPaginationType: "full_numbers",
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: '@Url.Action("Index", "Department", new { Area = "HumanResource" })',
+                        type: 'POST'
+                    },
+                    rowCallback: function (nRow, aData) {
+                        const createdDate = new Date(parseInt(aData.CreatedDate.replace(/\D/g, ''), 10));
+                        $('td:eq(3)', nRow).text(createdDate.toLocaleString());
+                        $('td:eq(4)', nRow).html(`<button class="btn btn-outline-info btn-sm" onclick="selectCoA('${aData.Id}')">Select</button>`);
+                        return nRow;
+                    },
+                    columns: [
+                        { data: "Description", title: "Name", width: "15%" },
+                        { data: "IsLocked", title: "Is Locked", width: "10%" },
+                        { data: "IsRegistry", title: "Is Registry", width: "10%" },
+                        { data: "CreatedDate", title: "Created Date", width: "15%" },
+                        { data: "Id", title: "", width: "10%", orderable: false }
+                    ],
+                    order: [[0, "desc"]]
+                });
+            }
+        });
+
+        function selectCoA(id) {
+            $.post('/Registry/SingleDestination/ChartOfAccountLookUp', { Id: id }, function (response) {
+                if (response.success) {
+                    $('#ChartOfAccountId').val(response.data.ChartOfAccountId);
+                    $('#ChartOfAccountAccountName').val(response.data.ChartOfAccountAccountName);
+                    $('#chartofAccountLookupModal').modal('hide');
+                } else {
+                    alert(response.message || 'Unable to select department.');
+                }
+            }).fail(function () {
+                alert('An error occurred while processing your request.');
+            });
+        }
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const table = document.getElementById("customerTable");
+            const tbody = table.querySelector("tbody");
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+            const entriesSelector = document.getElementById("entriesSelector");
+            const searchInput = document.getElementById("searchInput");
+            let rowsPerPage = parseInt(entriesSelector.value);
+            let currentPage = 1;
+
+            function renderTable() {
+                const filteredRows = rows.filter(row =>
+                    row.innerText.toLowerCase().includes(searchInput.value.toLowerCase())
+                );
+
+                rows.forEach(row => row.style.display = "none");
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                filteredRows.slice(start, end).forEach(row => row.style.display = "");
+                renderPagination(filteredRows.length);
+            }
+
+            function renderPagination(total) {
+                const totalPages = Math.ceil(total / rowsPerPage);
+                const pagination = document.getElementById("paginationControls");
+                pagination.innerHTML = "";
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.className = "page-item" + (i === currentPage ? " active" : "");
+
+                    const a = document.createElement("a");
+                    a.className = "page-link";
+                    a.href = "#";
+                    a.textContent = i;
+
+                    a.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        currentPage = i;
+                        renderTable();
+                    });
+
+                    li.appendChild(a);
+                    pagination.appendChild(li);
+                }
+            }
+
+            entriesSelector.addEventListener("change", function () {
+                rowsPerPage = parseInt(this.value);
+                currentPage = 1;
+                renderTable();
+            });
+
+            searchInput.addEventListener("input", function () {
+                currentPage = 1;
+                renderTable();
+            });
+
+            if (rows.length > 0) {
+                renderTable();
+            }
+        });
+    </script>
+}

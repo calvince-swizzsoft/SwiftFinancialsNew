@@ -722,6 +722,7 @@
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\NextOfKinController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
+    <Compile Include="Areas\Registry\Controllers\SingleDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationLinkageController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
@@ -2155,6 +2156,7 @@
     <Content Include="Areas\Dashboard\Views\MessagingGroups\Create.cshtml" />
     <Content Include="bin.rar" />
     <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\SingleDestination\Create.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
