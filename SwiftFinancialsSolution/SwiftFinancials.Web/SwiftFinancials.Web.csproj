@@ -2155,6 +2155,10 @@
     <Content Include="Areas\Dashboard\Views\MessagingGroups\Create.cshtml" />
     <Content Include="bin.rar" />
     <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Details.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>

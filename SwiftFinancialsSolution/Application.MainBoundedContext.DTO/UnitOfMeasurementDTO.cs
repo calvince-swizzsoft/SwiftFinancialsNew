@@ -16,5 +16,7 @@ namespace Application.MainBoundedContext.DTO
         [DataMember]
         [Display(Name = "Abbreviation")]
         public string Abbreviation { get; set; }
+        public string Symbol { get; set; }
+        public string Description { get; set; }
     }
 }

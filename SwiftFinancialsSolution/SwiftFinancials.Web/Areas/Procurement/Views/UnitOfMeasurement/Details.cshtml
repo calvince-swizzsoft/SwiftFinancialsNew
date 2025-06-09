@@ -1,0 +1,16 @@
+﻿@model Application.MainBoundedContext.DTO.UnitOfMeasurementDTO
+
+<h2>View Unit</h2>
+
+<dl class="dl-horizontal">
+    <dt>Symbol</dt>
+    <dd>@Model.Symbol</dd>
+
+    <dt>Description</dt>
+    <dd>@Model.Description</dd>
+</dl>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
