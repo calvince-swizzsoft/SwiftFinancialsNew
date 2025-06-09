@@ -2123,7 +2123,6 @@
     <Folder Include="Areas\Accounts\Views\Credit\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
-    <Folder Include="Areas\Dashboard\Views\EmailAlerts\" />
     <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
@@ -2157,6 +2156,9 @@
     <Content Include="bin.rar" />
     <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
     <Content Include="Areas\Registry\Views\SingleDestination\Create.cshtml" />
+    <Content Include="Areas\Dashboard\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Dashboard\Views\EmailAlerts\Index.cshtml" />
+    <Content Include="Areas\Dashboard\Views\EmailAlerts\Create.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>

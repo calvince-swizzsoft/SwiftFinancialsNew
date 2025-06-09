@@ -2109,6 +2109,32 @@ namespace SwiftFinancials.Web.Controllers
 
         }
 
+
+
+        [NonAction]
+        protected List<SelectListItem> GetEmailAlertStatusFilterSelectList(string selectedValue)
+        {
+
+            List<SelectListItem> textalertStatusFilterSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(DLRStatus)).Cast<DLRStatus>().Select(v => new SelectListItem
+            {
+
+
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+
+            textalertStatusFilterSelectList.AddRange(items);
+
+            return textalertStatusFilterSelectList;
+
+
+        }
+
+
         [NonAction]
         protected List<SelectListItem> GetMicroCreditGroupTypeSelectList(string selectedValue)
         {

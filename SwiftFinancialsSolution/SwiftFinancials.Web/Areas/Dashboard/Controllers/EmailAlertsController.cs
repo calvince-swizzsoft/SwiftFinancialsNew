@@ -29,7 +29,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
         {
             await ServeNavigationMenus();
 
-            ViewBag.TextAlertStatusFilterSelectList = GetTextAlertStatusFilterSelectList(string.Empty);
+            ViewBag.EmailalertStatusFilterSelectList = GetEmailAlertStatusFilterSelectList(string.Empty);
 
             return View();
         }
@@ -43,27 +43,18 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
             bool sortAscending = jQueryDataTablesModel.sSortDir_.FirstOrDefault() == "asc";
 
-            var pageCollectionInfo = new PageCollectionInfo<TextAlertDTO>();
+            var pageCollectionInfo = new PageCollectionInfo<EmailAlertDTO>();
 
-            if (startDate == null && endDate == null && string.IsNullOrWhiteSpace(filterValue) && !status.HasValue)
+            if (startDate == null && endDate == null && string.IsNullOrWhiteSpace(filterValue))
             {
-                pageCollectionInfo = await _channelService.FindTextAlertsInPageAsync(
-                    pageIndex,
-                    jQueryDataTablesModel.iDisplayLength,
+                pageCollectionInfo = await _channelService.FindEmailAlertsByFilterInPageAsync(1, filterValue,
+                    pageIndex, int.MaxValue, 1,
                     GetServiceHeader()
                 );
             }
             else
             {
-                pageCollectionInfo = await _channelService.FindTextAlertsByDateRangeAndFilterInPageAsync(
-                    status ?? 0,
-                    startDate ?? DateTime.MinValue,
-                    endDate ?? DateTime.MaxValue,
-                    filterValue,
-                    pageIndex,
-                    jQueryDataTablesModel.iDisplayLength,
-                    GetServiceHeader()
-                );
+                pageCollectionInfo = await _channelService.FindEmailAlertsByDateRangeAndFilterInPageAsync((int)status, (DateTime)startDate, (DateTime)endDate, filterValue, pageIndex, int.MaxValue, GetServiceHeader());
             }
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
@@ -97,15 +88,15 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(TextAlertDTO textAlertDTO)
+        public async Task<ActionResult> Create(EmailAlertDTO emailAlertDTO)
         {
             await ServeNavigationMenus();
 
-            textAlertDTO.ValidateAll();
+            emailAlertDTO.ValidateAll();
 
-            if (!textAlertDTO.HasErrors)
+            if (!emailAlertDTO.HasErrors)
             {
-                //await _channelService.
+                await _channelService.AddEmailAlertAsync(emailAlertDTO, GetServiceHeader());
             }
 
             return View();
