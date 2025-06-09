@@ -1,0 +1,364 @@
+﻿@model Application.MainBoundedContext.DTO.MessagingModule.EmailAlertDTO
+
+@{
+    ViewBag.Title = "Email Alerts";
+
+    var status = ViewBag.EmailalertStatusFilterSelectList as List<SelectListItem>;
+}
+
+
+
+
+<style>
+    #tabs-container {
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        overflow-x: auto;
+    }
+
+    .nav-tabs {
+        padding: 10px 0;
+        list-style: none;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+        .nav-tabs li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .nav-tabs a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+        }
+
+            .nav-tabs a:hover {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .form-group {
+        border-radius: 10px;
+    }
+
+
+
+
+
+    .navbar {
+        background-color: rgba(255, 255, 255, 0.9); /* White with transparency */
+        padding: 15px 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+        .nav-menu li {
+            position: relative;
+            margin: 0 15px;
+        }
+
+    .nav-link {
+        text-decoration: none;
+        color: #333; /* Dark gray for text */
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        background-color: transparent; /* Clear background for default state */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        .nav-link:hover {
+            color: #007bff; /* Blue for active link */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+</style>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1>Command Hub</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "@TempData["Success"]",
+            confirmButtonColor: "#007bff"
+            });
+        });
+    </script>
+}
+
+
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Email Alerts</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="sk-spinner sk-spinner-double-bounce">
+                        <div class="sk-double-bounce1"></div>
+                        <div class="sk-double-bounce2"></div>
+                    </div>
+
+
+                    <div class="blue-section">
+                        <form id="filterForm">
+                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        <label for="filterType">Status</label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.MailMessageDLRStatus, status, "-- Select Delivery Status --",
+                                            new { @class = "form-control input-md", @id = "status" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <div class="form-group spacing-form-group" id="data_3">
+                                        <label class="control-label" for="startDate">Start Date</label>
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="startDate" class="form-control" id="startDate" placeholder="dd/mm/yyyy">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <div class="form-group spacing-form-group" id="data_3">
+                                        <label class="control-label" for="endDate">End Date</label>
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="endDate" class="form-control" id="endDate" placeholder="dd/mm/yyyy">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3" style="margin-top: 27px;">
+                                    <div class="form-group spacing-form-group">
+                                        <div class="input-group text-box">
+                                            @Html.TextBox("filterValue", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "filterValue" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1" style="margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" />
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1" style="margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        @Html.ActionLink("Create", "Create", "EmailAlerts", new { Area = "Dashboard" }, new { @class = "btn btn-primary" })
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <br />
+
+
+                    <div class="table-responsive">
+                        <table id="EmailAlertsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td colspan="7" class="dataTables_empty">
+                                        Loading data from server
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section scripts {
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        $('#data_3 .input-group.date').datepicker({
+            startView: 2,
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            language: 'en-GB'
+        });
+    </script>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+          const table = $('#EmailAlertsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@Url.Action("Index", "EmailAlerts", new { Area = "Dashboard" })",
+        "sServerMethod": "POST",
+        "language": {
+            "emptyTable": "No data available in table"
+        },
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "status", "value": $('#status').val() },
+                { "name": "filterValue", "value": $('#filterValue').val() },
+                { "name": "startDate", "value": $('#startDate').val() },
+                { "name": "endDate", "value": $('#endDate').val() }
+            );
+        },
+        "aoColumns": [
+            { "mDataProp": "MailMessageFrom", "sTitle": "Origin", "sWidth": "10%" },
+            { "mDataProp": "MailMessageTo", "sTitle": "Recipient", "sWidth": "15%" },
+            { "mDataProp": "MailMessageBody", "sTitle": "Message", "sWidth": "20%" },
+            { "mDataProp": "MailMessagePriorityDescription", "sTitle": "Priority", "sWidth": "10%" },
+            { "mDataProp": "MailMessageSendRetry", "sTitle": "Send Retry", "sWidth": "5%" },
+            { "mDataProp": "MailMessageDLRStatusDescription", "sTitle": "Delivery Status", "sWidth": "10%" },
+            { "mDataProp": "MailMessageSubject", "sTitle": "MailMessageSubject", "sWidth": "10%" },
+            { "mDataProp": "CreatedBy", "sTitle": "Created By", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" }
+            //,
+            //{
+            //    "mDataProp": "Actions",
+            //    "sTitle": "Action",
+            //    "sWidth": "10%",
+            //    "bSortable": false,
+            //    "mRender": function (data, type, row) {
+            //        return '<button class="btn btn-primary">Details</button>';
+            //    }
+            //}
+        ],
+        "aaSorting": [[8, "desc"]],
+        "fnRowCallback": function (nRow, aData) {
+            const createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            const formattedDate = $.datepicker.formatDate('dd/mm/yy', createdDate);
+            $('td:eq(8)', nRow).html(formattedDate);
+            return nRow;
+        },
+
+        "fnPreDrawCallback": function () {
+            $('.ibox-content').addClass('sk-loading');
+        },
+        "fnDrawCallback": function () {
+            $('.ibox-content').removeClass('sk-loading');
+        }
+    });
+
+    $('#filterForm').on('submit', function (e) {
+        e.preventDefault();
+        table.ajax.reload();
+    });
+});
+
+    </script>
+}
+
