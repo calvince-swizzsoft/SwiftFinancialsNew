@@ -27,7 +27,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, Guid microCreditGroupId)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, Guid? microCreditGroupId)
         {
             int totalRecordCount = 0;
             int searchRecordCount = 0;
@@ -39,7 +39,7 @@ namespace SwiftFinancials.Web.Areas.MicroCredit.Controllers
             int pageSize = jQueryDataTablesModel.iDisplayLength;
 
            var pageCollectionInfo = await _channelService.FindMicroCreditGroupMembersByMicroCreditGroupIdInPageAsync(
-               microCreditGroupId,  // Ensure the group ID is passed
+               (Guid)microCreditGroupId,  // Ensure the group ID is passed
                jQueryDataTablesModel.sSearch,
                0,
                int.MaxValue,
