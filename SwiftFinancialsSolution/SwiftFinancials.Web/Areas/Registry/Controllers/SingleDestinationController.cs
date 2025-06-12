@@ -86,7 +86,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 singleDestinationDispatchModel.DestinationDepartmentId = designation.Id;
                 singleDestinationDispatchModel.SourceDepartment = designation.Description;
 
-              
+
 
 
                 return Json(new
@@ -136,25 +136,37 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             return View(fileMovementHistoryDTO);
         }
         [HttpPost]
-        public async Task<ActionResult> Create(FileMovementHistoryDTO fileMovementHistoryDTO, SingleDestinationDispatchModel singleDestinationDispatchModel)
+        public async Task<ActionResult> Create(FileMovementHistoryDTO fileMovementHistoryDTO, string[] customerIds)
         {
-            fileMovementHistoryDTO.ValidateAll();
+            SingleDestinationDispatchModel singleDestinationDispatch = new SingleDestinationDispatchModel();
+            singleDestinationDispatch.Carrier = fileMovementHistoryDTO.Carrier;
+            singleDestinationDispatch.DestinationDepartmentId = fileMovementHistoryDTO.DestinationDepartmentId;
+            singleDestinationDispatch.SourceDepartment = fileMovementHistoryDTO.SourceDepartmentId.ToString();
 
-            if (!fileMovementHistoryDTO.HasErrors)
+
+            singleDestinationDispatch.ValidateAll();
+
+            if (!singleDestinationDispatch.HasErrors)
             {
-                await _channelService.SingleDestinationDispatchAsync(singleDestinationDispatchModel, new System.Collections.ObjectModel.ObservableCollection<FileRegisterDTO> { }, GetServiceHeader());
 
-                ViewBag.IncomeAdjustmentTypeSelectList = GetIncomeAdjustmentTypeSelectList(fileMovementHistoryDTO.Carrier.ToString());
+                var selectedIds = customerIds.Select(Guid.Parse).ToList();
+                foreach (var customer in selectedIds)
+                {
 
+                    await _channelService.SingleDestinationDispatchAsync(singleDestinationDispatch, new System.Collections.ObjectModel.ObservableCollection<FileRegisterDTO> { }, GetServiceHeader());
 
+                    ViewBag.IncomeAdjustmentTypeSelectList = GetIncomeAdjustmentTypeSelectList(singleDestinationDispatch.Carrier.ToString());
+                }
                 return RedirectToAction("Index");
             }
+
             else
             {
-                var errorMessages = fileMovementHistoryDTO.ErrorMessages;
+                var errorMessages = singleDestinationDispatch.ErrorMessages;
 
                 return View("index");
             }
+
         }
 
 

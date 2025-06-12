@@ -721,6 +721,7 @@
     <Compile Include="Areas\Registry\Controllers\FindEducationRegisterAsync.cs" />
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\NextOfKinController.cs" />
+    <Compile Include="Areas\Registry\Controllers\ReceiveController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\SingleDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
@@ -2157,6 +2158,7 @@
     <Content Include="bin.rar" />
     <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
     <Content Include="Areas\Registry\Views\SingleDestination\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Receive\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
