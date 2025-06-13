@@ -1,0 +1,159 @@
+﻿@model  Application.MainBoundedContext.DTO.MessagingModule.EmailAlertDTO
+@{
+    /**/
+    ViewBag.Title = "Email Alert";
+    var AuthOptions = ViewBag.AuditOption as List<SelectListItem>;
+    var batchAuthOptions = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
+    var creditBatchType = ViewBag.CreditBatchTypeTypeSelectList as List<SelectListItem>;
+    var QueuePriority = ViewBag.QueuePriorityTypeSelectList as List<SelectListItem>;
+    var Monthtype = ViewBag.MonthsSelectList as List<SelectListItem>;
+    var Months = ViewBag.MonthsSelectList as List<SelectListItem>;
+    var ChargeType = ViewBag.ChargeTypeSelectList as List<SelectListItem>;
+    var ConcessionType = ViewBag.ConcessionTypeSelectList as List<SelectListItem>;
+    var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Email Alerts</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "EmailAlerts", new { Area = "Dashboard" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "EmailAlerts", new { Area = "Dashboard" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                    <h1> Email Alerts</h1>
+
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.MailMessageSubject, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.MailMessageSubject, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.MailMessageSubject, "", new { @class = "text-danger" })
+                                    </div>
+
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.MailMessageFrom, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.MailMessageFrom, new { htmlAttributes = new { @class = "form-control", @placeholder = "CategoryDescription", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.MailMessageFrom, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.MailMessageCC, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.MailMessageCC, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.MailMessageCC, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.MailMessageTo, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.MailMessageTo, new { htmlAttributes = new { @class = "form-control", @placeholder = "CategoryDescription", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.MailMessageTo, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.MailMessageBody, htmlAttributes: new { @class = "" })
+                                        @Html.TextAreaFor(model => model.MailMessageBody, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.MailMessageBody, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <div class="col-md-offset-2">
+                                            <input type="submit" value="Approval" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </fieldset>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+}

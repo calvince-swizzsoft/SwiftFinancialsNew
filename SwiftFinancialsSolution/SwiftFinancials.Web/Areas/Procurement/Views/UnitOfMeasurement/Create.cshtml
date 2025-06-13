@@ -1,0 +1,16 @@
+﻿@model Application.MainBoundedContext.DTO.UnitOfMeasurementDTO
+
+<h2>Create Unit</h2>
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Symbol)
+        @Html.TextBoxFor(m => m.Symbol, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Description)
+        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+}

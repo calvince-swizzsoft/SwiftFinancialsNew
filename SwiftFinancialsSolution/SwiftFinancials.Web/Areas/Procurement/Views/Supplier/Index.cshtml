@@ -1,7 +1,43 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.SupplierDTO
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Suppliers";
 }
 
-<h2>Index</h2>
+<h2>Suppliers</h2>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var supplier in ViewBag.BatchStatus)
+        {
+            <tr>
+                <td>@supplier.Name</td>
+                <td>@supplier.Email</td>
+                <td>@supplier.Phone</td>
+                <td>@supplier.Address</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = supplier.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = supplier.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = supplier.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<link rel="stylesheet" href="~/Content/DataTables/css/jquery.dataTables.min.css" />
+<script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.table').DataTable();
+    });
+</script>
 
