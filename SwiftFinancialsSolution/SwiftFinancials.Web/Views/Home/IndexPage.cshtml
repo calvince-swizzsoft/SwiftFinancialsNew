@@ -1,6 +1,7 @@
 ﻿@using Infrastructure.Crosscutting.Framework.Utils;
-@{ ViewBag.Title = "Home"; }
-
+@{
+    ViewBag.Title = "Home";
+}
 
 <style>
     .ibox {
@@ -50,11 +51,7 @@
     .label-primary {
         background-color: #007bff;
     }
-
 </style>
-
-
-
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -69,10 +66,11 @@
                 </div>
             </div>
         </div>
+
         <div class="col-lg-4">
             <div class="ibox shadow-lg rounded">
                 <div class="ibox-title">
-                    <span class="label">Companies</span>
+                    <span class="label label-primary">Companies</span>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins"><span id="Companies"></span></h1>
@@ -80,6 +78,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-lg-4">
             <div class="ibox shadow-lg rounded">
                 <div class="ibox-title">
@@ -93,28 +92,100 @@
         </div>
     </div>
 
-
     <div class="row">
-        <div class="col-lg-12">
+
+        <!-- Chart -->
+        <div class="col-lg-4">
             <div class="ibox shadow-lg rounded">
                 <div class="ibox-title">
-                    <h5>
-                        Messaging
-                        <small>Email vs text alerts.</small>
-                    </h5>
+                    <h5>Messaging <small>Email vs text alerts.</small></h5>
                 </div>
                 <div class="ibox-content">
-                    <div style="height: 500px;">
+                    <div style="height: 250px;">
                         <canvas id="lineChart" height="200"></canvas>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- LoanCases -->
+        <div class="col-lg-4">
+            <div class="ibox shadow-lg rounded">
+                <div class="ibox-title">
+                    <span class="label label-info">Loan Cases</span>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Customer Name</th>
+                                    <th>Amount Applied</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.loancases != null)
+                                {
+                                    foreach (var commission in ViewBag.loancases)
+                                    {
+                                        <tr>
+                                            <td><input type="checkbox" name="commissionIds" value="@commission.Id" /></td>
+                                            <td>@commission.CustomerFullname</td>
+                                            <td>@commission.AmountApplied.ToString("N2")</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3">No loan cases available</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="col-lg-4">
+            <div class="ibox shadow-lg rounded mb-3">
+                <div class="ibox-title">
+                    <span class="label label-primary">Investment Products</span>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="InvestmentProducts"></span></h1>
+                    <h4>Total number of Investment Products</h4>
+                </div>
+            </div>
+
+            <div class="ibox shadow-lg rounded mb-3">
+                <div class="ibox-title">
+                    <span class="label label-primary">Loan Products</span>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="LoanProducts"></span></h1>
+                    <h4>Total number of Loan Products</h4>
+                </div>
+            </div>
+
+            <div class="ibox shadow-lg rounded">
+                <div class="ibox-title">
+                    <span class="label label-primary">Savings Products</span>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><span id="SavingsProducts"></span></h1>
+                    <h4>Total number of Savings Products</h4>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
 @section Scripts {
-
     @Scripts.Render("~/plugins/chartjs")
 
     <script type="text/javascript">
@@ -123,143 +194,97 @@
         var textData = [];
 
         $(document).ready(function () {
-            // Load email statistics
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("FindMonthlyEmailAlertsStatistics", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        dataLabels.push(val.Month);
-                        emailData.push(val.Total);
-                    });
-                }
+
+            // Load messaging stats
+            $.when(
+                $.post('@Url.Action("FindMonthlyEmailAlertsStatistics", "Dashboard", new { Area = "Dashboard" })'),
+                $.post('@Url.Action("FindMonthlyTextAlertsStatistics", "Dashboard", new { Area = "Dashboard" })')
+            ).done(function (emailResponse, textResponse) {
+
+                $(emailResponse[0]).each(function (key, val) {
+                    dataLabels.push(val.Month);
+                    emailData.push(val.Total);
+                });
+
+                $(textResponse[0]).each(function (key, val) {
+                    textData.push(val.Total);
+                });
+
+                loadChart();
             });
 
-            // Load text statistics
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("FindMonthlyTextAlertsStatistics", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        textData.push(val.Total);
-                    });
-                }
-            });
-
-            // Load Companies
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("Companies", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $('#Companies').empty();
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        $('#Companies').append((val.Companies).toLocaleString("en"));
-                    });
-                }
-            });
-
-            // Load Users
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("Users", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $('#users').empty();
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        $('#users').append((val.Users).toLocaleString("en"));
-                    });
-                }
-            });
-
-            // Load Customers
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("Customers", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $('#customers').empty();
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        $('#customers').append((val.Customers).toLocaleString("en"));
-                    });
-                }
-            });
+            // Load other stats
+            loadCounter('@Url.Action("Companies", "Dashboard", new { Area = "Dashboard" })', '#Companies', 'Companies');
+            loadCounter('@Url.Action("Users", "Dashboard", new { Area = "Dashboard" })', '#users', 'Users');
+            loadCounter('@Url.Action("Customers", "Dashboard", new { Area = "Dashboard" })', '#customers', 'Customers');
+            loadCounter('@Url.Action("InvestmentProducts", "Dashboard", new { Area = "Dashboard" })', '#InvestmentProducts', 'InvestmentProducts');
+            loadCounter('@Url.Action("LoanProducts", "Dashboard", new { Area = "Dashboard" })', '#LoanProducts', 'LoanProducts');
+            loadCounter('@Url.Action("SavingsProducts", "Dashboard", new { Area = "Dashboard" })', '#SavingsProducts', 'SavingsProducts');
         });
 
-        // Load chart after all AJAX requests are done
-        $(document).ajaxStop(function () {
-            var lineData = {
-                labels: dataLabels,
-                datasets: [
-                    {
-                        label: "Email Alerts",
-                        backgroundColor: 'rgba(0, 123, 255, 0.3)',
-                        borderColor: "#007bff",
-                        borderWidth: 2,
-                        pointBackgroundColor: "#007bff",
-                        pointBorderColor: "#fff",
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
-                        data: emailData
-                    },
-                    {
-                        label: "Text Alerts",
-                        backgroundColor: 'rgba(40, 167, 69, 0.3)',
-                        borderColor: "#28a745",
-                        borderWidth: 2,
-                        pointBackgroundColor: "#28a745",
-                        pointBorderColor: "#fff",
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
-                        data: textData
-                    }
-                ]
-            };
+        function loadCounter(url, elementId, property) {
+            $.post(url, function (data) {
+                $(elementId).text(data[0][property].toLocaleString("en"));
+            });
+        }
 
-            var lineOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                tooltips: {
-                    mode: 'index',
-                    intersect: false,
-                    backgroundColor: 'rgba(0,0,0,0.7)',
-                    titleFontColor: '#fff',
-                    bodyFontColor: '#fff',
-                    borderWidth: 1,
-                    borderColor: '#ccc'
-                },
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        fontColor: '#333',
-                        fontSize: 14,
-                        usePointStyle: true,
-                    }
-                },
-                scales: {
-                    xAxes: [{
-                        gridLines: {
-                            display: false
-                        },
-                        ticks: {
-                            fontColor: '#333',
-                            fontSize: 12
-                        }
-                    }],
-                    yAxes: [{
-                        gridLines: {
-                            color: '#f3f3f3',
-                            lineWidth: 1,
-                        },
-                        ticks: {
-                            fontColor: '#333',
-                            fontSize: 12,
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            };
-
+        function loadChart() {
             var ctx = document.getElementById("lineChart").getContext("2d");
-            new Chart(ctx, { type: 'line', data: lineData, options: lineOptions });
-        });
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dataLabels,
+                    datasets: [
+                        {
+                            label: "Email Alerts",
+                            backgroundColor: 'rgba(0, 123, 255, 0.3)',
+                            borderColor: "#007bff",
+                            borderWidth: 2,
+                            pointBackgroundColor: "#007bff",
+                            pointBorderColor: "#fff",
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            data: emailData
+                        },
+                        {
+                            label: "Text Alerts",
+                            backgroundColor: 'rgba(40, 167, 69, 0.3)',
+                            borderColor: "#28a745",
+                            borderWidth: 2,
+                            pointBackgroundColor: "#28a745",
+                            pointBorderColor: "#fff",
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            data: textData
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: { size: 14 },
+                                color: '#333'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0,0,0,0.7)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff'
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#333' }, grid: { display: false } },
+                        y: { ticks: { color: '#333', beginAtZero: true }, grid: { color: '#f3f3f3' } }
+                    }
+                }
+            });
+        }
     </script>
 }

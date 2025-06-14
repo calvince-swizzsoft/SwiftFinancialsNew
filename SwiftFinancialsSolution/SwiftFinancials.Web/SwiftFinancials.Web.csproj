@@ -2157,10 +2157,8 @@
     <Content Include="bin.rar" />
     <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
     <Content Include="Areas\Registry\Views\SingleDestination\Create.cshtml" />
-    <Content Include="Areas\Dashboard\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Dashboard\Views\EmailAlerts\Index.cshtml" />
     <Content Include="Areas\Dashboard\Views\EmailAlerts\Create.cshtml" />
-    <Content Include="Areas\Procurement\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Create.cshtml" />
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Edit.cshtml" />
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Details.cshtml" />

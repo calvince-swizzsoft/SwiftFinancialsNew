@@ -30,7 +30,54 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
         public async Task<JsonResult> Users()
         {
+
             return Json(new { success = true, Users = await _channelService.GetApplicationUsersCountAsync(GetServiceHeader()) });
+        }
+        public async Task<JsonResult> EmployeeDisplinarycases()
+        {
+            var results = Json(await _channelService.FindEmployeeDisciplinaryCasesAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
+
+            return results;
+        }
+        public async Task<JsonResult> LoanCases()
+        {
+            var results = await _channelService.FindLoanCasesAsync(GetServiceHeader());
+            ViewBag.loancases = results;
+            var loans = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            ViewBag.loancases = loans;
+
+            var savings = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            ViewBag.loancases = savings;
+
+            var Investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+            ViewBag.loancases = Investment;
+
+            var result = Json(await _channelService.FindInvestmentProductsAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
+            return result;
+        }
+        public async Task<JsonResult> LoanProducts()
+        {
+            var results = Json(await _channelService.FindLoanProductsAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
+
+            return results;
+        }
+        public async Task<JsonResult> InvestmentProducts()
+        {
+            var results = Json(await _channelService.FindInvestmentProductsAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
+
+            return results;
+        }
+        public async Task<JsonResult> SavingsProductsProducts()
+        {
+            var results = Json(await _channelService.FindSavingsProductsAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
+
+            return results;
+        }
+        public async Task<JsonResult> Charges()
+        {
+            var results = Json(await _channelService.FindDynamicChargesAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
+
+            return results;
         }
 
         public async Task<JsonResult> Customers()
