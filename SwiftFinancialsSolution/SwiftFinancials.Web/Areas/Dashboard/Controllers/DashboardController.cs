@@ -12,11 +12,9 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
     [Authorize]
     public class DashboardController : MasterController
     {
-        // private readonly ICustomerInterfaceService _customerInterfaceService;
         private readonly IAppCache _appCache;
 
-        public DashboardController(ILogger logger,
-            IAppCache appCache)
+        public DashboardController(ILogger logger, IAppCache appCache)
         {
             _appCache = appCache;
         }
@@ -30,54 +28,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
         public async Task<JsonResult> Users()
         {
-
             return Json(new { success = true, Users = await _channelService.GetApplicationUsersCountAsync(GetServiceHeader()) });
-        }
-        public async Task<JsonResult> EmployeeDisplinarycases()
-        {
-            var results = Json(await _channelService.FindEmployeeDisciplinaryCasesAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
-
-            return results;
-        }
-        public async Task<JsonResult> LoanCases()
-        {
-            var results = await _channelService.FindLoanCasesAsync(GetServiceHeader());
-            ViewBag.loancases = results;
-            var loans = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
-            ViewBag.loancases = loans;
-
-            var savings = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
-            ViewBag.loancases = savings;
-
-            var Investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
-            ViewBag.loancases = Investment;
-
-            var result = Json(await _channelService.FindInvestmentProductsAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
-            return result;
-        }
-        public async Task<JsonResult> LoanProducts()
-        {
-            var results = Json(await _channelService.FindLoanProductsAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
-
-            return results;
-        }
-        public async Task<JsonResult> InvestmentProducts()
-        {
-            var results = Json(await _channelService.FindInvestmentProductsAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
-
-            return results;
-        }
-        public async Task<JsonResult> SavingsProductsProducts()
-        {
-            var results = Json(await _channelService.FindSavingsProductsAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
-
-            return results;
-        }
-        public async Task<JsonResult> Charges()
-        {
-            var results = Json(await _channelService.FindDynamicChargesAsync(GetServiceHeader()), JsonRequestBehavior.AllowGet);
-
-            return results;
         }
 
         public async Task<JsonResult> Customers()
@@ -85,27 +36,41 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
             return Json(new { success = true, Customers = await _channelService.GetCustomersCountAsync(GetServiceHeader()) });
         }
 
-        //public JsonResult AssetRegisters()
-        //{
-        //    return Json(new { success = true, AssetRegisters = _channelService.FindClaimsAsync(GetServiceHeader()).Result.Count });
-        //}
-
-        public async Task<JsonResult> FindMonthlyEmailAlertsStatistics()
+        public async Task<JsonResult> Branches()
         {
-            var monthsCap = Convert.ToInt32(ConfigurationManager.AppSettings["MessagingSummaryMonthCap"]) * -1;
-
-            var results = Json(await _channelService.FindEmailAlertsMonthlyStatisticsAsync(User.Identity.GetCompanyId(), DateTime.Today.AddMonths(monthsCap), DateTime.Now, GetServiceHeader()), JsonRequestBehavior.AllowGet);
-
-            return results;
+            return Json(new { success = true, Branches = await _channelService.FindBranchesAsync(GetServiceHeader()) });
         }
 
-        public async Task<JsonResult> FindMonthlyTextAlertsStatistics()
+        public async Task<JsonResult> TotalSavings()
+        {
+            return Json(new { success = true, Savings = await _channelService.FindSavingsProductsAsync(GetServiceHeader()) });
+        }
+
+        public async Task<JsonResult> LoanPortfolio()
+        {
+            return Json(new { success = true, Loans = await _channelService.FindLoanProductsAsync(GetServiceHeader()) });
+        }
+
+
+        public async Task<JsonResult> ShareCapital()
+        {
+            return Json(new { success = true, Shares = await _channelService.FindInvestmentProductsAsync(GetServiceHeader()) });
+        }
+
+        public async Task<JsonResult> LoanCases()
+        {
+            var loanCases = await _channelService.FindLoanCasesAsync(GetServiceHeader());
+            return Json(new { success = true, LoanCases = loanCases }, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<JsonResult> FindMonthlyLoanDisbursement()
         {
             var monthsCap = Convert.ToInt32(ConfigurationManager.AppSettings["MessagingSummaryMonthCap"]) * -1;
+            var startDate = DateTime.Today.AddMonths(monthsCap);
+            var endDate = DateTime.Now;
 
-            var results = Json(await _channelService.FindTextAlertsMonthlyStatisticsAsync(User.Identity.GetCompanyId(), DateTime.Today.AddMonths(monthsCap), DateTime.Now, GetServiceHeader()), JsonRequestBehavior.AllowGet);
-
-            return results;
+            var result = await _channelService.FindLoanDisbursementBatchesByStatusAndFilterInPageAsync(2, startDate, endDate,null,int.MaxValue,int.MaxValue, GetServiceHeader());
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         #endregion
@@ -115,15 +80,9 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
             await ServeNavigationMenus();
 
             var companyDTO = await _channelService.FindCompanyAsync(id, GetServiceHeader());
-
             var customerId = User.Identity.GetCustomerId();
 
             ViewBag.SaccoName = companyDTO?.Description;
-
-            //Items are only removed from TempData at the end of a request if they have been tagged for removal.
-            //Items are only tagged for removal when they are read.
-            //Items may be untagged(for deletion) by calling TempData.Keep(key).
-            //After reading a value call keep:
             TempData["CompanyDTO"] = companyDTO;
 
             return View();
