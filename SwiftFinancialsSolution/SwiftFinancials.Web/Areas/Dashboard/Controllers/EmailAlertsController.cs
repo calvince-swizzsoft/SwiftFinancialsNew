@@ -47,8 +47,8 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
             if (startDate == null && endDate == null && string.IsNullOrWhiteSpace(filterValue))
             {
-                pageCollectionInfo = await _channelService.FindEmailAlertsByFilterInPageAsync(1, filterValue,
-                    pageIndex, int.MaxValue, 1,
+                pageCollectionInfo = await _channelService.FindEmailAlertsByFilterInPageAsync(8, filterValue,
+                    pageIndex, int.MaxValue, int.MaxValue,
                     GetServiceHeader()
                 );
             }

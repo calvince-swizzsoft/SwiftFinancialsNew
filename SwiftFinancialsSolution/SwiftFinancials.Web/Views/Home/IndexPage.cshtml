@@ -1,265 +1,294 @@
-﻿@using Infrastructure.Crosscutting.Framework.Utils;
-@{ ViewBag.Title = "Home"; }
-
+﻿@{
+    ViewBag.Title = "ERP Executive Dashboard";
+}
 
 <style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .dashboard-header {
+        margin: 40px 0 20px;
+        text-align: center;
+    }
+
     .ibox {
-        background: #ffffff;
+        background: #fff;
         border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.05);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+        transition: 0.3s ease;
+        text-decoration: none;
     }
 
         .ibox:hover {
+            cursor: pointer;
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
     .ibox-title {
-        background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-        border-bottom: 1px solid #ddd;
-        padding: 15px;
-        border-radius: 10px 10px 0 0;
+        padding: 20px;
+        border-bottom: 1px solid #e1e5eb;
+        font-weight: 600;
+        font-size: 18px;
+        color: #333;
     }
 
     .ibox-content {
-        padding: 20px;
-        background: #f9f9f9;
-        border-radius: 0 0 10px 10px;
+        padding: 25px;
     }
 
-    .ibox-title .label {
-        font-size: 14px;
+    .counter-number {
+        font-size: 36px;
         font-weight: bold;
-        padding: 5px 10px;
-        border-radius: 15px;
+        color: #007bff;
     }
 
-    .no-margins {
-        margin: 0;
+    .description {
+        font-size: 14px;
+        color: #999;
     }
 
-    .label-success {
-        background-color: #28a745;
+    .chart-container {
+        height: 280px;
     }
 
-    .label-info {
-        background-color: #17a2b8;
+    .table thead th {
+        background: #007bff;
+        color: #fff;
+        border: none;
     }
 
-    .label-primary {
-        background-color: #007bff;
+    .list-group-item {
+        font-size: 14px;
     }
-
 </style>
 
+<div class="container-fluid">
+    <div class="row mb-0>
 
+    </div>
+    <!-- KPI Summary -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <a href="@Url.Action("Index", "Customer", new { area = "Registry" })" style="text-decoration:none;">
+                <div class="ibox">
+                    <div class="ibox-title">Total Members</div>
+                    <div class="ibox-content text-center">
+                        <div class="counter-number" id="members">0</div>
+                        <div class="description">SACCO Membership</div>
+                    </div>
+                </div>
+            </a>
+        </div>
 
+        <div class="col-md-3 mb-3">
+            <a href="@Url.Action("Index", "Savings", new { area = "Accounts" })" style="text-decoration:none;">
+                <div class="ibox">
+                    <div class="ibox-title">Savings Accounts</div>
+                    <div class="ibox-content text-center">
+                        <div class="counter-number" id="savings">0</div>
+                        <div class="description">Active Savings</div>
+                    </div>
+                </div>
+            </a>
+        </div>
 
-<div class="wrapper wrapper-content">
+        <div class="col-md-3 mb-3">
+            <a href="@Url.Action("Index", "Loans", new { area = "Credit" })" style="text-decoration:none;">
+                <div class="ibox">
+                    <div class="ibox-title">Loan Portfolio</div>
+                    <div class="ibox-content text-center">
+                        <div class="counter-number" id="loans">0</div>
+                        <div class="description">Disbursed Loans</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="@Url.Action("Index", "Dividends", new { area = "Finance" })" style="text-decoration:none;">
+                <div class="ibox">
+                    <div class="ibox-title">Dividends Paid</div>
+                    <div class="ibox-content text-center">
+                        <div class="counter-number" id="dividends">0</div>
+                        <div class="description">Total Paid (KES)</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
     <div class="row">
-        <div class="col-lg-4">
-            <div class="ibox shadow-lg rounded">
-                <div class="ibox-title">
-                    <span class="label label-success">System users</span>
-                </div>
+        <div class="col-md-6 mb-3">@ChartBox("Monthly Savings Trends", "savingsChart")</div>
+        <div class="col-md-6 mb-3">@ChartBox("Loan Repayment Status", "repaymentChart")</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">@ChartBox("Revenue Performance", "revenueChart")</div>
+        <div class="col-md-6 mb-3">@ChartBox("Expense Allocation", "expenseChart")</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">@ChartBox("Profitability Analysis", "profitChart")</div>
+        <div class="col-md-6 mb-3">@ChartBox("Risk Heatmap", "riskChart")</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">@ChartBox("Branch Performance", "branchChart")</div>
+
+        <div class="col-md-6 mb-3">
+            <div class="ibox">
+                <div class="ibox-title">Notifications & Alerts</div>
                 <div class="ibox-content">
-                    <h1 class="no-margins"><span id="users"></span></h1>
-                    <h4>Total number of System Users</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="ibox shadow-lg rounded">
-                <div class="ibox-title">
-                    <span class="label">Companies</span>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="Companies"></span></h1>
-                    <h4>Total number of Companies</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="ibox shadow-lg rounded">
-                <div class="ibox-title">
-                    <span class="label label-primary">Customers</span>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><span id="customers"></span></h1>
-                    <h4>Total number of Customers</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item">🔔 New Loan Application Submitted</li>
+                        <li class="list-group-item">⚠️ Compliance Alert: KYC Pending</li>
+                        <li class="list-group-item">📢 AGM Scheduled for 15th July</li>
+                        <li class="list-group-item">💼 3 Positions Open for Recruitment</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
-
+    <!-- Extended Modules -->
     <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox shadow-lg rounded">
-                <div class="ibox-title">
-                    <h5>
-                        Messaging
-                        <small>Email vs text alerts.</small>
-                    </h5>
-                </div>
+        <div class="col-md-6 mb-3">
+            <div class="ibox">
+                <div class="ibox-title">Cashflow Summary</div>
                 <div class="ibox-content">
-                    <div style="height: 500px;">
-                        <canvas id="lineChart" height="200"></canvas>
-                    </div>
+                    <table class="table table-bordered">
+                        <thead><tr><th>Month</th><th>Inflows</th><th>Outflows</th><th>Net</th></tr></thead>
+                        <tbody>
+                            <tr><td>May</td><td>KES 5M</td><td>KES 3M</td><td>KES 2M</td></tr>
+                            <tr><td>Jun</td><td>KES 6M</td><td>KES 4.5M</td><td>KES 1.5M</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="ibox">
+                <div class="ibox-title">Task & Approvals</div>
+                <div class="ibox-content">
+                    <ul class="list-group">
+                        <li class="list-group-item">Approve Loan: John K. (KES 500K)</li>
+                        <li class="list-group-item">Verify Member: Mary W.</li>
+                        <li class="list-group-item">Authorize Dividend Payout</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+@helper ChartBox(string title, string chartId)
+{
+    <div class="ibox">
+        <div class="ibox-title">@title</div>
+        <div class="ibox-content">
+            <div class="chart-container">
+                <canvas id="@chartId"></canvas>
+            </div>
+        </div>
+    </div>
+}
+
 @section Scripts {
-
     @Scripts.Render("~/plugins/chartjs")
-
-    <script type="text/javascript">
-        var dataLabels = [];
-        var emailData = [];
-        var textData = [];
-
+    <script>
         $(document).ready(function () {
-            // Load email statistics
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("FindMonthlyEmailAlertsStatistics", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        dataLabels.push(val.Month);
-                        emailData.push(val.Total);
-                    });
-                }
-            });
-
-            // Load text statistics
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("FindMonthlyTextAlertsStatistics", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        textData.push(val.Total);
-                    });
-                }
-            });
-
-            // Load Companies
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("Companies", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $('#Companies').empty();
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        $('#Companies').append((val.Companies).toLocaleString("en"));
-                    });
-                }
-            });
-
-            // Load Users
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("Users", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $('#users').empty();
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        $('#users').append((val.Users).toLocaleString("en"));
-                    });
-                }
-            });
-
-            // Load Customers
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("Customers", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $('#customers').empty();
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        $('#customers').append((val.Customers).toLocaleString("en"));
-                    });
-                }
-            });
+            $('#members').text('2,345');
+            $('#savings').text('1,205');
+            $('#loans').text('895');
+            $('#dividends').text('5.3M');
+            initCharts();
         });
 
-        // Load chart after all AJAX requests are done
-        $(document).ajaxStop(function () {
-            var lineData = {
-                labels: dataLabels,
-                datasets: [
-                    {
-                        label: "Email Alerts",
-                        backgroundColor: 'rgba(0, 123, 255, 0.3)',
-                        borderColor: "#007bff",
-                        borderWidth: 2,
-                        pointBackgroundColor: "#007bff",
-                        pointBorderColor: "#fff",
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
-                        data: emailData
-                    },
-                    {
-                        label: "Text Alerts",
-                        backgroundColor: 'rgba(40, 167, 69, 0.3)',
-                        borderColor: "#28a745",
-                        borderWidth: 2,
-                        pointBackgroundColor: "#28a745",
-                        pointBorderColor: "#fff",
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
-                        data: textData
-                    }
-                ]
-            };
-
-            var lineOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                tooltips: {
-                    mode: 'index',
-                    intersect: false,
-                    backgroundColor: 'rgba(0,0,0,0.7)',
-                    titleFontColor: '#fff',
-                    bodyFontColor: '#fff',
-                    borderWidth: 1,
-                    borderColor: '#ccc'
-                },
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        fontColor: '#333',
-                        fontSize: 14,
-                        usePointStyle: true,
-                    }
-                },
-                scales: {
-                    xAxes: [{
-                        gridLines: {
-                            display: false
-                        },
-                        ticks: {
-                            fontColor: '#333',
-                            fontSize: 12
-                        }
-                    }],
-                    yAxes: [{
-                        gridLines: {
-                            color: '#f3f3f3',
-                            lineWidth: 1,
-                        },
-                        ticks: {
-                            fontColor: '#333',
-                            fontSize: 12,
-                            beginAtZero: true
-                        }
+        function initCharts() {
+            new Chart($('#savingsChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Savings (KES)',
+                        data: [150000, 180000, 200000, 220000, 240000, 260000],
+                        backgroundColor: 'rgba(0,123,255,0.2)',
+                        borderColor: '#007bff',
+                        fill: true
                     }]
                 }
-            };
+            });
 
-            var ctx = document.getElementById("lineChart").getContext("2d");
-            new Chart(ctx, { type: 'line', data: lineData, options: lineOptions });
-        });
+            new Chart($('#repaymentChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Paid', 'Overdue', 'Pending'],
+                    datasets: [{
+                        data: [65, 20, 15],
+                        backgroundColor: ['#28a745', '#dc3545', '#ffc107']
+                    }]
+                }
+            });
+
+            new Chart($('#revenueChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [{
+                        data: [1.2, 2.0, 1.5, 2.5],
+                        backgroundColor: '#007bff'
+                    }]
+                }
+            });
+
+            new Chart($('#expenseChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Salaries', 'Office Rent', 'Marketing', 'Utilities'],
+                    datasets: [{
+                        data: [400000, 150000, 80000, 70000],
+                        backgroundColor: ['#ffc107', '#007bff', '#28a745', '#dc3545']
+                    }]
+                }
+            });
+
+            new Chart($('#profitChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        data: [200000, 250000, 300000, 320000, 350000, 400000],
+                        backgroundColor: '#17a2b8'
+                    }]
+                }
+            });
+
+            new Chart($('#riskChart'), {
+                type: 'polarArea',
+                data: {
+                    labels: ['Credit Risk', 'Liquidity Risk', 'Operational Risk', 'Compliance Risk'],
+                    datasets: [{
+                        data: [50, 40, 30, 20],
+                        backgroundColor: ['#dc3545', '#ffc107', '#007bff', '#28a745']
+                    }]
+                }
+            });
+
+            new Chart($('#branchChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Nairobi', 'Mombasa', 'Kisumu', 'Eldoret'],
+                    datasets: [{
+                        data: [10, 7, 5, 3],
+                        backgroundColor: '#007bff'
+                    }]
+                }
+            });
+        }
     </script>
 }
