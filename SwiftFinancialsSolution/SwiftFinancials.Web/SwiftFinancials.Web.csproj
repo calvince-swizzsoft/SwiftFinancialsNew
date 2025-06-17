@@ -705,6 +705,7 @@
     <Compile Include="Areas\Procurement\Controllers\PackageTypeController.cs" />
     <Compile Include="Areas\Procurement\Controllers\SupplierController.cs" />
     <Compile Include="Areas\Procurement\Controllers\UnitOfMeasurementController.cs" />
+    <Compile Include="Areas\Registry\Controllers\AccountAlertsController.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\BindingModelBase.cs" />
     <Compile Include="Areas\Registry\Controllers\BranchLinkageController.cs" />
@@ -2163,6 +2164,9 @@
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Edit.cshtml" />
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Receive\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Registry\Views\AccountAlerts\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\AccountAlerts\Create.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>

@@ -1,0 +1,350 @@
+﻿@model  Application.MainBoundedContext.DTO.RegistryModule.AccountAlertDTO
+@using System.Linq
+
+@{
+    ViewBag.Title = "Create Account Alerts";
+    var commissions = ViewBag.Commisions;
+    var queuePriorities = ViewBag.SystemTransactionType as List<SelectListItem>;
+    var type = ViewBag.type as List<SelectListItem>;
+    var Alternate = ViewBag.AlternateChannelType as List<SelectListItem>;
+    var priority = ViewBag.RecoveryPriority as List<SelectListItem>;
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "AccountAlerts", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Account Alerts</h2>
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Failed!',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (TempData["BackEnd"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Operation Successful.',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+                </div>
+
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Create", "AccountAlerts", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+
+
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.CustomerIndividualLastName, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerIndividualLastName, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerAddressAddressLine1, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CustomerAddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address Line1", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine1, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerAddressAddressLine2, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CustomerAddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address Line2", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAddressAddressLine2, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerAddressMobileLine, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CustomerAddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address Mobile Line", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerAddressMobileLine, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerSerialNumber, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Serial Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CustomerSerialNumber, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Operating Balance", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.MaskTransactionValue, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.MaskTransactionValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.ValidationMessageFor(model => model.MaskTransactionValue, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ReceiveTextAlert, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ReceiveTextAlert, new { htmlAttributes = new { @class = "form-control", @placeholder = "Withdrawal Notice Amount", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.ReceiveTextAlert, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ReceiveEmailAlert, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ReceiveEmailAlert, new { htmlAttributes = new { @class = "form-control", @placeholder = "Withdrawal Notice Period", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.ReceiveEmailAlert, "", new { @class = "text-danger" })
+                                </div>
+                                @*<div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.WithdrawalInterval, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.WithdrawalInterval, new { htmlAttributes = new { @class = "form-control", @placeholder = "Withdrawal Interval", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.WithdrawalInterval, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsMandatory, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsMandatory, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Mandatory?" } })
+                                    @Html.ValidationMessageFor(model => model.IsMandatory, "", new { @class = "text-danger" })
+                                </div>*@
+
+                            </div>
+
+                           
+                        </div>
+
+
+
+                        <div class="tabs-container">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#tab-product">Charges</a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                <div id="tab-product" class="tab-pane active">
+                                    <div class="row">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Priority, priority, "-- Select Recovery Priority --", new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.Priority)
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                                @Html.DropDownListFor(model => model.Type, type, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.Type)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Select</th>
+                                                <th>Commission Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (commissions != null)
+                                            {
+                                                foreach (var commission in commissions)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <input type="checkbox" name="commisionIds" value="@commission.Id" />
+                                                        </td>
+                                                        <td>@commission.Description</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="2">No commissions available</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                                
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        $('#chartsofAccountGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("ChartOfAccountsIndex", "CreditType", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCoA(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "AccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
+                    { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+                    { "mDataProp": "AccountCode", "sTitle": "Code", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+         function selectCoA(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Accounts/SavingsProduct/ChartOfAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response);
+                        $('#ChartOfAccountId').val(response.data.ChartOfAccountId);
+                        $('#ChartOfAccountAccountName').val(response.data.ChartOfAccountAccountName);
+
+                        $('#chartofAccountLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData);
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartOfAccountId').val(chartOfAccountId);
+                    return item;
+                }
+            });
+        });
+    </script>
+}
