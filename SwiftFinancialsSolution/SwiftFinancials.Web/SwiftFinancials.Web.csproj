@@ -2189,6 +2189,9 @@
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Create.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Edit.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Create.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
