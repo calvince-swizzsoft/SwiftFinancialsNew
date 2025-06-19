@@ -722,6 +722,7 @@
     <Compile Include="Areas\Registry\Controllers\FindEducationRegisterAsync.cs" />
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\NextOfKinController.cs" />
+    <Compile Include="Areas\Registry\Controllers\RecallController.cs" />
     <Compile Include="Areas\Registry\Controllers\ReceiveController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\SingleDestinationController.cs" />
@@ -2164,9 +2165,9 @@
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Edit.cshtml" />
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Receive\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\AccountAlerts\Index.cshtml" />
     <Content Include="Areas\Registry\Views\AccountAlerts\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Recall\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
