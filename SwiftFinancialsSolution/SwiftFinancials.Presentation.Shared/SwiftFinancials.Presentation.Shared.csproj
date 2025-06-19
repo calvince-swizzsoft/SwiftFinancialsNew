@@ -563,6 +563,9 @@
     <Compile Include="..\Application.MainBoundedContext.DTO\ApportionmentWrapper.cs">
       <Link>Application.MainBoundedContext.DTO\ApportionmentWrapper.cs</Link>
     </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\AssetDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\AssetDTO.cs</Link>
+    </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\AssetTypeDTO.cs">
       <Link>Application.MainBoundedContext.DTO\AssetTypeDTO.cs</Link>
     </Compile>
@@ -847,6 +850,9 @@
     </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\HumanResourcesModule\TransactionThresholdDTOEqualityComparer.cs">
       <Link>Application.MainBoundedContext.DTO\HumanResourcesModule\TransactionThresholdDTOEqualityComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryCatalogDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\InventoryCatalogDTO.cs</Link>
     </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\InventoryDTO.cs">
       <Link>Application.MainBoundedContext.DTO\InventoryDTO.cs</Link>

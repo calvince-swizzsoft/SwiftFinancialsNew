@@ -700,6 +700,8 @@
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditGroupsController.cs" />
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
+    <Compile Include="Areas\Procurement\Controllers\CatalogueController.cs" />
+    <Compile Include="Areas\Procurement\Controllers\InventoryCatalogController.cs" />
     <Compile Include="Areas\Procurement\ProcurementAreaRegistration.cs" />
     <Compile Include="Areas\Procurement\Controllers\AssetTypesController.cs" />
     <Compile Include="Areas\Procurement\Controllers\InventoryCategoryController.cs" />
@@ -2172,6 +2174,20 @@
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\AssetTypes\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\AssetTypes\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCategory\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\PackageType\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\Supplier\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\Supplier\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\Catalogue\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\Catalogue\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\Catalogue\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\Catalogue\Details.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\Details.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
