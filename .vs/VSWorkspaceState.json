@@ -1,10 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\SwiftFinancialsSolution",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.TextAlertDispatcher",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.TextAlertDispatcher\\Configuration"
   ],
-<<<<<<< HEAD
-=======
-  "SelectedNode": "\\SwiftFinancialsSolution.sln",
->>>>>>> 1f64fe9cc3cda973d03023111c18e2631c02cfc8
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.TextAlertDispatcher\\Configuration\\TextDispatcherConfigSection.cs",
   "PreviewInSolutionExplorer": false
 }

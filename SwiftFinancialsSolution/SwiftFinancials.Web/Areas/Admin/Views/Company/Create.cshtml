@@ -5,7 +5,6 @@
     var InvestmentProducts = ViewBag.InvestmentProducts;
     var SavingsProducts = ViewBag.SavingsProducts;
 }
-
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h1>Companies</h1>
@@ -23,29 +22,29 @@
     </div>
 </div>
 <style>
+    .animated-tabs {
+        font-size: 0.75rem; /* Smaller font size */
+    }
+
     h {
         text-decoration: underline;
         text-underline-offset: 4px; /* Adjust the offset value as desired */
         font-size: large;
     }
 
-    .animated-tabs {
-        font-size: 0.75rem; /* Smaller font size */
+    .animated-tabs .nav-link {
+        transition: all 0.3s ease-in-out; /* Smooth transition for hover effect */
+        padding: 8px 12px; /* Adjust padding for a compact look */
     }
 
-        .animated-tabs .nav-link {
-            transition: all 0.3s ease-in-out; /* Smooth transition for hover effect */
-            padding: 8px 12px; /* Adjust padding for a compact look */
+        /* Hover effect for the tabs */
+        .animated-tabs .nav-link:hover {
+            color: #ffffff; /* Text color on hover */
+            background-color: #007bff; /* Background color change */
+            transform: scale(1.1); /* Slightly scale up */
+            border-radius: 5px; /* Rounded corners for a smooth look */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
         }
-
-    /* Hover effect for the tabs */
-    /*.animated-tabs .nav-link:hover {
-                color: #ffffff;*/ /* Text color on hover */
-    /*background-color: #007bff;*/ /* Background color change */
-    /*transform: scale(1.1);*/ /* Slightly scale up */
-    /*border-radius: 5px;*/ /* Rounded corners for a smooth look */
-    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/ /* Subtle shadow for depth */
-    /*}*/
 </style>
 <div class="wrapper wrapper-content" style="padding: 20px;">
     <div class="row">
@@ -87,7 +86,7 @@
                                     @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.MembershipTerminationNoticePeriod,"Termination Notice Period", htmlAttributes: new { @class = "font-bold" })
+                                    @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, "Termination Notice Period", htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.MembershipTerminationNoticePeriod, "", new { @class = "text-danger" })
                                 </div>

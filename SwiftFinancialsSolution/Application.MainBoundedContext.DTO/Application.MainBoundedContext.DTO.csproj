@@ -290,6 +290,7 @@
     <Compile Include="FrontOfficeModule\TruncatedChequeDTO.cs" />
     <Compile Include="GeneralLedgerAccount.cs" />
     <Compile Include="GeneralLedgerTransaction.cs" />
+    <Compile Include="HumanResourcesModule\Attendancelog.cs" />
     <Compile Include="HumanResourcesModule\DepartmentDTO.cs" />
     <Compile Include="HumanResourcesModule\DesignationDTO.cs" />
     <Compile Include="HumanResourcesModule\EmployeeAppraisalDTO.cs" />

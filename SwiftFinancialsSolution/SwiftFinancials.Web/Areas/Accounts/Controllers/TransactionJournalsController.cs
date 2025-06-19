@@ -4,6 +4,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -24,49 +25,25 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             int totalRecordCount = 0;
 
-          
-            DateTime start = startDate ?? DateTime.Now.AddDays(-30);
-            DateTime end = endDate ?? DateTime.Now;
-            if (filter == 2)
+            int searchRecordCount = 0;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByDateRangeAndFilterInPageAsync(int.MaxValue, int.MaxValue, new DateTime(1998, 1, 1), DateTime.Today, jQueryDataTablesModel.sSearch, 1, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByDateRangeAndFilterInPageAsync(
-                0, int.MaxValue,
-                start,
-                end,
-                reference,
-                2, GetServiceHeader()
-            );
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                if (pageCollectionInfo == null || !pageCollectionInfo.PageCollection.Any())
-                {
-                    return Json(new
-                    {
-                        sEcho = 1,
-                        iTotalRecords = 0,
-                        iTotalDisplayRecords = 0,
-                        aaData = new object[] { },
-                        message = "No records found for the selected filters."
-                    }, JsonRequestBehavior.AllowGet);
-                }
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(GeneralLedgerTransaction => GeneralLedgerTransaction.JournalCreatedDate).ToList();
 
-                // Prepare data for DataTable
-                var result = pageCollectionInfo.PageCollection.Select(t => new
-                {
-                    BranchDescription = t.BranchDescription,
-                    TransactionDate = t.JournalCreatedDate.ToString("dd/MM/yyyy"),
-                    PrimaryDescription = t.JournalPrimaryDescription,
-                    Debit = t.Debit.ToString("N2"),
-                    Credit = t.Credit.ToString("N2"),
-                    RunningBalance = t.RunningBalance.ToString("N2"),
-                    ContraGLAccountName = t.ContraGLAccountName,
-                    Secondary = t.JournalSecondaryDescription
-                });
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            return Json(new
-            {
-                sEcho = 2,
-            }, JsonRequestBehavior.AllowGet);
-
+            else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
