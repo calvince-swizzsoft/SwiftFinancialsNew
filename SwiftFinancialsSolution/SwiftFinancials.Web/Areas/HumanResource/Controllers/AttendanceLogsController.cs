@@ -1,55 +1,138 @@
 ﻿using SwiftFinancials.Web.Controllers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Web.Mvc;
-using System.Threading.Tasks;
-using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
-using SwiftFinancials.Web.Helpers;
-using System.Windows.Forms;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
     public class AttendanceLogsController : MasterController
     {
-        private static List<Attendancelog> Attendancelogs = new List<Attendancelog>();
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
+        // GET: HumanResource/AttendanceLogs
         public ActionResult Index()
         {
-            return View(Attendancelogs);
+            var logs = new List<Attendancelog>();
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("SELECT * FROM AttendanceLogs", conn))
+            {
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        logs.Add(MapReaderToAttendanceLog(reader));
+                    }
+                }
+            }
+
+            return View(logs);
         }
 
+        // GET: HumanResource/AttendanceLogs/Create
         public ActionResult Create()
         {
             return View();
         }
 
+        // POST: HumanResource/AttendanceLogs/Create
         [HttpPost]
-        public ActionResult Create(Attendancelog attendancelog)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(Attendancelog model)
         {
-            attendancelog.Id = Guid.NewGuid();
-            Attendancelogs.Add(attendancelog);
+            model.Id = Guid.NewGuid();
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand(@"
+                INSERT INTO AttendanceLogs (Id, EmployeeName, Date, TimeIn, TimeOut, Remarks)
+                VALUES (@Id, @EmployeeName, @Date, @TimeIn, @TimeOut, @Remarks)", conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", model.Id);
+                cmd.Parameters.AddWithValue("@EmployeeName", (object)model.EmployeeName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Date", model.Date);
+                cmd.Parameters.AddWithValue("@TimeIn", (object)model.TimeIn ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@TimeOut", (object)model.TimeOut ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Remarks", (object)model.Remarks ?? DBNull.Value);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+
             return RedirectToAction("Index");
         }
+
+        // GET: HumanResource/AttendanceLogs/Edit/Guid
         public ActionResult Edit(Guid id)
         {
-            var Assets = Attendancelogs.FirstOrDefault(s => s.Id == id);
-            return View(Assets);
+            Attendancelog log = null;
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("SELECT * FROM AttendanceLogs WHERE Id = @Id", conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", id);
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        log = MapReaderToAttendanceLog(reader);
+                    }
+                }
+            }
+
+            if (log == null)
+                return HttpNotFound();
+
+            return View(log);
         }
 
+        // POST: HumanResource/AttendanceLogs/Edit
         [HttpPost]
-        public ActionResult Edit(Attendancelog attendancelog)
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Attendancelog model)
         {
-            var existing = Attendancelogs.FirstOrDefault(s => s.Id == attendancelog.Id);
-            if (existing != null)
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand(@"
+                UPDATE AttendanceLogs 
+                SET EmployeeName = @EmployeeName, 
+                    Date = @Date, 
+                    TimeIn = @TimeIn, 
+                    TimeOut = @TimeOut, 
+                    Remarks = @Remarks 
+                WHERE Id = @Id", conn))
             {
-                Attendancelogs.Remove(existing);
-                Attendancelogs.Add(attendancelog);
+                cmd.Parameters.AddWithValue("@Id", model.Id);
+                cmd.Parameters.AddWithValue("@EmployeeName", (object)model.EmployeeName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Date", model.Date);
+                cmd.Parameters.AddWithValue("@TimeIn", (object)model.TimeIn ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@TimeOut", (object)model.TimeOut ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Remarks", (object)model.Remarks ?? DBNull.Value);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
             }
+
             return RedirectToAction("Index");
         }
 
+        // Helper method to map SqlDataReader to Attendancelog
+        private Attendancelog MapReaderToAttendanceLog(SqlDataReader reader)
+        {
+            return new Attendancelog
+            {
+                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                EmployeeName = reader["EmployeeName"]?.ToString(),
+                Date = reader.GetDateTime(reader.GetOrdinal("Date")),
+                TimeIn = reader["TimeIn"] as string,
+                TimeOut = reader["TimeOut"] as string,
+                Remarks = reader["Remarks"] as string
+            };
+        }
     }
 }
