@@ -1,7 +1,39 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.Attendancelog
+
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create Attendance Log";
 }
 
-<h2>Create</h2>
+<h2>Create Attendance Log</h2>
 
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.EmployeeName)
+        @Html.TextBoxFor(m => m.EmployeeName, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Date)
+        @Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.TimeIn)
+        @Html.TextBoxFor(m => m.TimeIn, new { @class = "form-control", type = "time" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.TimeOut)
+        @Html.TextBoxFor(m => m.TimeOut, new { @class = "form-control", type = "time" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Remarks)
+        @Html.TextAreaFor(m => m.Remarks, new { @class = "form-control", rows = 3 })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+}

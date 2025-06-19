@@ -2172,9 +2172,6 @@
     <Content Include="Areas\Registry\Views\AccountAlerts\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Recall\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Create.cshtml" />
-    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Edit.cshtml" />
     <Content Include="Areas\Procurement\Views\AssetTypes\Create.cshtml" />
     <Content Include="Areas\Procurement\Views\AssetTypes\Edit.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCategory\Create.cshtml" />
@@ -2190,8 +2187,8 @@
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Edit.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
