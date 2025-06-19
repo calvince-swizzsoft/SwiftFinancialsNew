@@ -14,11 +14,11 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
     public class AttendanceLogsController : MasterController
     {
-        private static List<AssetTypeDTO> assetTypes = new List<AssetTypeDTO>();
+        private static List<Attendancelog> Attendancelogs = new List<Attendancelog>();
 
         public ActionResult Index()
         {
-            return View(assetTypes);
+            return View(Attendancelogs);
         }
 
         public ActionResult Create()
@@ -27,26 +27,26 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(AssetTypeDTO assetType)
+        public ActionResult Create(Attendancelog attendancelog)
         {
-            assetType.Id = Guid.NewGuid();
-            assetTypes.Add(assetType);
+            attendancelog.Id = Guid.NewGuid();
+            Attendancelogs.Add(attendancelog);
             return RedirectToAction("Index");
         }
         public ActionResult Edit(Guid id)
         {
-            var Assets = assetTypes.FirstOrDefault(s => s.Id == id);
+            var Assets = Attendancelogs.FirstOrDefault(s => s.Id == id);
             return View(Assets);
         }
 
         [HttpPost]
-        public ActionResult Edit(AssetTypeDTO assetType)
+        public ActionResult Edit(Attendancelog attendancelog)
         {
-            var existing = assetTypes.FirstOrDefault(s => s.Id == assetType.Id);
+            var existing = Attendancelogs.FirstOrDefault(s => s.Id == attendancelog.Id);
             if (existing != null)
             {
-                assetTypes.Remove(existing);
-                assetTypes.Add(assetType);
+                Attendancelogs.Remove(existing);
+                Attendancelogs.Add(attendancelog);
             }
             return RedirectToAction("Index");
         }

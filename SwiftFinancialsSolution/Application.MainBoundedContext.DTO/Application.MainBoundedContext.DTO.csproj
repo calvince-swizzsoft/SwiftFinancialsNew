@@ -234,6 +234,7 @@
     <Compile Include="ApplicationDomainWrapper.cs" />
     <Compile Include="ApplicationProfile.cs" />
     <Compile Include="ApportionmentWrapper.cs" />
+    <Compile Include="AssetDTO.cs" />
     <Compile Include="AssetTypeDTO.cs" />
     <Compile Include="AuditLogDTO.cs" />
     <Compile Include="AuditTrailDTO.cs" />
@@ -332,6 +333,7 @@
     <Compile Include="HumanResourcesModule\TrainingPeriodEntryDTO.cs" />
     <Compile Include="HumanResourcesModule\TransactionThresholdDTO.cs" />
     <Compile Include="HumanResourcesModule\TransactionThresholdDTOEqualityComparer.cs" />
+    <Compile Include="InventoryCatalogDTO.cs" />
     <Compile Include="InventoryDTO.cs" />
     <Compile Include="JQueryDataTablesModel.cs" />
     <Compile Include="JQueryDataTablesResponse.cs" />

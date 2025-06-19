@@ -63,7 +63,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<ActionResult> EditAsync(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
