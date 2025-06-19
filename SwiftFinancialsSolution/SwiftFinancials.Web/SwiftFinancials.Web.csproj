@@ -2130,7 +2130,6 @@
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
     <Folder Include="Areas\HumanResource\Data\" />
-    <Folder Include="Areas\HumanResource\Views\AttendanceLogs\" />
     <Folder Include="Areas\HumanResource\Views\Default\" />
     <Folder Include="Areas\HumanResource\Views\Delegate\" />
     <Folder Include="Areas\Loaning\Data\" />
@@ -2169,6 +2168,10 @@
     <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\AccountAlerts\Index.cshtml" />
     <Content Include="Areas\Registry\Views\AccountAlerts\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Edit.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>

@@ -725,6 +725,9 @@
     <Compile Include="..\Application.MainBoundedContext.DTO\GeneralLedgerTransaction.cs">
       <Link>Application.MainBoundedContext.DTO\GeneralLedgerTransaction.cs</Link>
     </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\HumanResourcesModule\Attendancelog.cs">
+      <Link>Application.MainBoundedContext.DTO\HumanResourcesModule\Attendancelog.cs</Link>
+    </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\HumanResourcesModule\DepartmentDTO.cs">
       <Link>Application.MainBoundedContext.DTO\HumanResourcesModule\DepartmentDTO.cs</Link>
     </Compile>
