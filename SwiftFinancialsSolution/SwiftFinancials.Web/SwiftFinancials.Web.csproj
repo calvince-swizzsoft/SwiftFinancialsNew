@@ -621,6 +621,7 @@
     <Compile Include="Areas\FrontOffice\Controllers\InHouseController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\SundryPaymentsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\AttendanceLogsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeDocumentsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PaySlipsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PeriodClosingController.cs" />
@@ -2129,6 +2130,7 @@
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
     <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\AttendanceLogs\" />
     <Folder Include="Areas\HumanResource\Views\Default\" />
     <Folder Include="Areas\HumanResource\Views\Delegate\" />
     <Folder Include="Areas\Loaning\Data\" />
