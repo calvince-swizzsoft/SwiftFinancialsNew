@@ -35,7 +35,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<ObservableCollection<EmployeeDTO>> GetUserInfoCollectionAsync(ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<EmployeeDTO>> GetUserInfoCollectionInRoleAsync(string roleName, ServiceHeader serviceHeader = null);
-
+        //Task FindFileMovementHistoryByIdAsync(Guid value, ServiceHeader serviceHeader);
         Task<PageCollectionInfo<EmployeeDTO>> GetUserInfoCollectionInPageAsync(int pageIndex, int pageSize, string filter, ServiceHeader serviceHeader = null);
 
         Task<int> CreateUserAsync(EmployeeDTO employeeDTO, ServiceHeader serviceHeader = null);

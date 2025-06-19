@@ -67,7 +67,7 @@
                                             @Html.LabelFor(model => model.FileRegisterCustomerId, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
                                                 @Html.HiddenFor(model => model.FileRegisterCustomerId)
-                                                @Html.TextBoxFor(model => model.FileRegisterCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                @Html.TextBoxFor(model => model.FileRegisterCustomerIndividualLastName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
                                                     <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
 
@@ -83,6 +83,12 @@
                                             @Html.ValidationMessageFor(model => model.SendDate, "", new { @class = "text-danger" })
                                         </div>
 
+
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.Carrier, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Carrier, new { htmlAttributes = new { @id = "Remark", @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Carrier, "", new { @class = "text-danger" })
+                                        </div>
 
                                         <div class="form-group form-group-sm">
                                             <div class="col-md-offset-2">
@@ -102,12 +108,18 @@
                                             @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.DestinationDepartmentId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.DestinationDepartmentId, htmlAttributes: new { @class = "control-label col-md-2" })
                                             @Html.HiddenFor(model => model.DestinationDepartmentId)
-                                            @Html.ValidationMessageFor(model => model.DestinationDepartmentId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.DestinationDepartmentDescription, new { htmlAttributes = new { @id = "Departments", @class = "DepartmentsLookup form-control required", placeholder = "Description.." } })
+                                            @Html.ValidationMessageFor(model => model.DestinationDepartmentDescription, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.DestinationDepartmentDescription, new { htmlAttributes = new { @class = "DepartmentsLookup form-control required", placeholder = "Description.." } })
                                         </div>
 
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.SourceDepartmentDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.HiddenFor(model => model.SourceDepartmentId)
+                                            @Html.ValidationMessageFor(model => model.SourceDepartmentDescription, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.SourceDepartmentDescription, new { htmlAttributes = new { @class = "SourceDepartment form-control required", placeholder = "Description.." } })
+                                        </div>
                                     </div>
                                 </div>
                             </fieldset>
@@ -146,6 +158,8 @@
 <input type='hidden' id='h' name='h' />
 
 @section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
@@ -188,6 +202,50 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+
+    <script>
+        ////////
+
+        $('.SourceDepartment').typeahead({
+    source: function (query, process) {
+        return $.getJSON(
+            '@Url.Action("GetDepartmentsAsync", "Department", new { Area = "HumanResource" })',
+            { query: query },
+            function (Departments) {
+                var newDepartmentsData = [];
+                DepartmentsMap = {};
+                $.each(Departments, function (i, Department) {
+                    newDepartmentsData.push(Department.Description);
+                    DepartmentsMap[Department.Description] = Department;
+                });
+                process(newDepartmentsData);
+                return;
+            });
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp('(' + this.query + ')', 'gi');
+        return item.replace(regex, "<strong>$1</strong>");
+    },
+    updater: function (item) {
+        var departmentId = "";
+        SourceDepartmentId = DepartmentsMap[item].Id;
+        $('#SourceDepartmentId').val(SourceDepartmentId);
+        //console.log(DepartmentId)
+        return item;
+    }
+        });
+    </script>
+
+
+
     <script>
         ////////
 
@@ -221,20 +279,14 @@
     },
     updater: function (item) {
         var departmentId = "";
-        DepartmentId = DepartmentsMap[item].Id;
+        DestinationDepartmentId = DepartmentsMap[item].Id;
         $('#DestinationDepartmentId').val(DestinationDepartmentId);
-        $('#DestinationDepartmentDescription').val(DepartmentsMap[item].Departments);
-        $('#DepartmentZoneDescription').val(DepartmentsMap[item].ZoneDescription);
-        $('#DepartmentZoneDivisionDescription').val(DepartmentsMap[item].ZoneDivisionDescription);
         //console.log(DepartmentId)
         return item;
     }
-});
-
-
-
-
-
+        });
+    </script>
+    <script>
              //Station typehead starts here
 
             $('.StationsLookup').typeahead({
