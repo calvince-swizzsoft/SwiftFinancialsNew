@@ -712,6 +712,7 @@
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\BindingModelBase.cs" />
     <Compile Include="Areas\Registry\Controllers\BranchLinkageController.cs" />
+    <Compile Include="Areas\Registry\Controllers\CatalogueController.cs" />
     <Compile Include="Areas\Registry\Controllers\ChargeExemptionsController.cs" />
     <Compile Include="Areas\Registry\Controllers\ConditionalLendingController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
@@ -2189,6 +2190,8 @@
     <Content Include="Areas\HumanResource\Views\_ViewStart.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Registry\Views\Catalogue\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
