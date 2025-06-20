@@ -24,22 +24,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime? startDate, DateTime? endDate, string reference, int? filter)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
-            int filterValue = (int)JournalEntryFilter.JournalReference;  // == 4
 
+            int filterValue = (int)JournalEntryFilter.JournalReference;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByDateRangeAndFilterInPageAsync(int.MaxValue, int.MaxValue, new DateTime(1998, 1, 1), DateTime.Today, "0000097~00001142", filterValue, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByDateRangeAndFilterInPageAsync(
+                int.MaxValue,
+                int.MaxValue,
+                startDate ?? new DateTime(1998, 1, 1),
+                endDate ?? DateTime.Today,
+                string.IsNullOrWhiteSpace(reference) ? "0000097~00001142" : reference,
+                filterValue,
+                GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-
                 var sortedData = pageCollectionInfo.PageCollection
-                    .OrderByDescending(loanCase => loanCase.JournalCreatedDate)
+                    .OrderByDescending(x => x.JournalCreatedDate)
                     .ToList();
 
                 totalRecordCount = sortedData.Count;
@@ -61,8 +62,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 );
             }
 
-
-            else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            return this.DataTablesJson(
+                items: new List<GeneralLedgerTransaction>(),
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
         public async Task<ActionResult> Details(Guid id)
