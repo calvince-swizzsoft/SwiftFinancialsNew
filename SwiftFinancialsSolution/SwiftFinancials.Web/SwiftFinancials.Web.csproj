@@ -2119,7 +2119,6 @@
     <Content Include="UploadedCheques\bank_a7f1f13c-c986-42f4-b98e-b1e76ce97878.pdf" />
     <Content Include="UploadedCheques\bank_b3d58210-93a3-4327-b4cf-a61f4a81570b.pdf" />
     <Content Include="UploadedCheques\bank_be37d048-64b2-4d9b-ba0f-5af34d7fa986.pdf" />
-    <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2186,14 +2185,18 @@
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Create.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Edit.cshtml" />
-    <Content Include="Areas\Procurement\Views\InventoryCatalog\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\_ViewStart.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
     <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\Catalogue\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\PackageType\Details.cshtml" />
+    <Content Include="Areas\Procurement\Views\PackageType\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\Details.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCategory\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCategory\Details.cshtml" />
     <None Include="packages.config" />
-    <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DistributedServices.Seedwork\DistributedServices.Seedwork.csproj">

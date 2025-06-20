@@ -1,7 +1,43 @@
-﻿
+﻿@model IEnumerable<Application.MainBoundedContext.DTO.InventoryCategoryDTO>
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Inventory Categories";
 }
 
-<h2>Index</h2>
+<h2>Inventory Categories</h2>
 
+<p>
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Remarks</th>
+            <th style="width: 150px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Remarks)</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-sm btn-warning" }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-sm btn-info" })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center text-muted">No inventory categories found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
