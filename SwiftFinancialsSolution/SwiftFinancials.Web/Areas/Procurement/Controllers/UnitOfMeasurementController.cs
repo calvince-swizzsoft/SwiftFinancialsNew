@@ -3,16 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using SwiftFinancials.Presentation.Infrastructure.Util;
+using SwiftFinancials.Web.Controllers;
+using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 {
-    public class UnitOfMeasurementController : Controller
+    public class UnitOfMeasurementController : MasterController
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
         // INDEX
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var list = new List<UnitOfMeasurementDTO>();
 
@@ -32,20 +36,22 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                     });
                 }
             }
-
+            await ServeNavigationMenus();
             return View(list);
         }
 
         // CREATE (GET)
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            await ServeNavigationMenus();
             return View();
         }
 
         // CREATE (POST)
         [HttpPost]
-        public ActionResult Create(UnitOfMeasurementDTO unitOfMeasurement)
+        public async Task<ActionResult> Create(UnitOfMeasurementDTO unitOfMeasurement)
         {
+            await ServeNavigationMenus();
             unitOfMeasurement.Id = Guid.NewGuid();
 
             using (var conn = new SqlConnection(_connectionString))
@@ -67,8 +73,9 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
         // DETAILS / VIEW
-        public ActionResult Details(Guid id)
+        public async Task<ActionResult> Details(Guid id)
         {
+            await ServeNavigationMenus();
             UnitOfMeasurementDTO unit = null;
 
             using (var conn = new SqlConnection(_connectionString))
@@ -96,8 +103,9 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
         // EDIT (GET)
-        public ActionResult Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
+            await ServeNavigationMenus();
             UnitOfMeasurementDTO unit = null;
 
             using (var conn = new SqlConnection(_connectionString))
@@ -126,8 +134,9 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
         // EDIT (POST)
         [HttpPost]
-        public ActionResult Edit(UnitOfMeasurementDTO unit)
+        public async Task<ActionResult> Edit(UnitOfMeasurementDTO unit)
         {
+            await ServeNavigationMenus();
             using (var conn = new SqlConnection(_connectionString))
             {
                 var cmd = new SqlCommand("UPDATE UnitOfMeasurement SET Symbol = @Symbol, Description = @Description WHERE Id = @Id", conn);
