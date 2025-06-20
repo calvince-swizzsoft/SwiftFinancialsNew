@@ -2192,6 +2192,7 @@
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
     <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\Catalogue\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\Supplier\Details.cshtml" />
     <None Include="packages.config" />
     <Content Include="_ViewStart.cshtml" />
   </ItemGroup>

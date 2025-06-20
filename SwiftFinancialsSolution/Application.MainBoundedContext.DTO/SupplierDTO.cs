@@ -46,5 +46,7 @@ namespace Application.MainBoundedContext.DTO
         [Display(Name = "G/L Account")]
         [ValidGuid]
         public Guid ChartOfAccountId { get; set; }
+        public string ChartofAccountName { get; set; }
+
     }
 }

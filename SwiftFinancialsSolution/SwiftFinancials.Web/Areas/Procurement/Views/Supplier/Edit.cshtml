@@ -1,7 +1,276 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.SupplierDTO
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit Supplier";
 }
 
-<h2>Edit</h2>
+<div class="container-fluid">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="m-0 font-weight-bold">
+                <i class="fas fa-edit mr-2"></i>Edit Supplier
+            </h4>
+        </div>
 
+        <div class="card-body">
+            @using (Html.BeginForm("Edit", "Supplier", FormMethod.Post, new { id = "editSupplierForm", @class = "form-horizontal" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.Id)
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, new { @class = "control-label font-weight-bold" })
+                            @Html.TextBoxFor(model => model.Name, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter supplier name...",
+                                required = "required"
+                            })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ChartOfAccountId, "G/L Account", new { @class = "control-label font-weight-bold" })
+                            @Html.HiddenFor(model => model.ChartOfAccountId)
+                            @Html.TextBox("ChartOfAccountLookup", null, new
+                            {
+                                @class = "ChartOfAccountsLookup form-control",
+                                placeholder = "Type to search G/L Account..."
+                            })
+                            @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AddressLine1, new { @class = "control-label font-weight-bold" })
+                            @Html.TextBoxFor(model => model.AddressLine1, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter address line 1..."
+                            })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Street, new { @class = "control-label font-weight-bold" })
+                            @Html.TextBoxFor(model => model.Street, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter street..."
+                            })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AddressLine2, new { @class = "control-label font-weight-bold" })
+                            @Html.TextBoxFor(model => model.AddressLine2, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter address line 2..."
+                            })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PostalCode, new { @class = "control-label font-weight-bold" })
+                            @Html.TextBoxFor(model => model.PostalCode, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter postal code..."
+                            })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email, new { @class = "control-label font-weight-bold" })
+                            @Html.TextBoxFor(model => model.Email, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter email...",
+                                type = "email"
+                            })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.LandLine, new { @class = "control-label font-weight-bold" })
+                            @Html.TextBoxFor(model => model.LandLine, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter landline...",
+                            })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.MobileLine, new { @class = "control-label font-weight-bold" })
+                            @Html.TextBoxFor(model => model.MobileLine, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter mobile number...",
+                            })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4 border-top pt-3">
+                    <div class="float-right">
+                        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-outline-secondary mr-2" })
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save mr-1"></i> Save Changes
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: none;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .card-header {
+            padding: 1rem 1.35rem;
+        }
+
+        .form-control {
+            border-radius: 0.35rem;
+        }
+
+        .control-label {
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .twitter-typeahead {
+            width: 100%;
+        }
+
+        .tt-menu {
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 0.35rem;
+            box-shadow: 0 6px 12px rgba(0,0,0,.175);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .tt-suggestion {
+            padding: 8px 15px;
+        }
+
+            .tt-suggestion:hover {
+                background-color: #f8f9fa;
+                cursor: pointer;
+            }
+
+        .tt-highlight {
+            font-weight: bold;
+        }
+    </style>
+
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        // ChartOfAccount typeahead initialization
+        $('.ChartOfAccountsLookup').typeahead({
+            source: function (query, process) {
+                return $.getJSON(
+                    '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                    { query: query },
+                    function (ChartOfAccounts) {
+                        var newChartOfAccountsData = [];
+                        ChartOfAccountsMap = {};
+                        $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                            newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                            ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                        });
+                        process(newChartOfAccountsData);
+                        return;
+                    });
+            },
+            matcher: function (item) {
+                if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                    return true;
+                }
+            },
+            sorter: function (items) {
+                return items.sort();
+            },
+            highlighter: function (item) {
+                var regex = new RegExp('(' + this.query + ')', 'gi');
+                return item.replace(regex, "<strong>$1</strong>");
+            },
+            updater: function (item) {
+                var chartOfAccountId = "";
+                ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                $('#ChartOfAccountId').val(ChartOfAccountId);
+                return item;
+            }
+        });
+    </script>
+}

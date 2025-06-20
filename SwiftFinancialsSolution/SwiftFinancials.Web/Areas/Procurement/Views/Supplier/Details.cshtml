@@ -1,0 +1,93 @@
+﻿@model Application.MainBoundedContext.DTO.SupplierDTO
+
+@{
+    ViewBag.Title = "Supplier Details";
+}
+
+<div class="container-fluid">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="m-0 font-weight-bold">
+                <i class="fas fa-info-circle mr-2"></i>Supplier Details
+            </h4>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Name</label>
+                        <p class="form-control-plaintext">@Model.Name</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">G/L Account</label>
+                        <p class="form-control-plaintext">@Model.ChartofAccountName</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Address Line 1</label>
+                        <p class="form-control-plaintext">@Model.AddressLine1</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Street</label>
+                        <p class="form-control-plaintext">@Model.Street</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Address Line 2</label>
+                        <p class="form-control-plaintext">@Model.AddressLine2</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Postal Code</label>
+                        <p class="form-control-plaintext">@Model.PostalCode</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Email</label>
+                        <p class="form-control-plaintext">@Model.Email</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Landline</label>
+                        <p class="form-control-plaintext">@Model.LandLine</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Mobile</label>
+                        <p class="form-control-plaintext">@Model.MobileLine</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-4 border-top pt-3">
+                <div class="float-right">
+                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-outline-secondary" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
