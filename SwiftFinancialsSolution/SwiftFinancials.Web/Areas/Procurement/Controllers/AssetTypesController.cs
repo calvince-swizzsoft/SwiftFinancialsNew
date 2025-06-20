@@ -18,7 +18,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand("SELECT Id, Name, Description FROM AssetTypes", conn);
+                var cmd = new SqlCommand("SELECT Id, Name, DepreciationMethod, UsefulLife, IsTangible, CreatedDate FROM AssetTypes", conn);
                 conn.Open();
                 var reader = cmd.ExecuteReader();
 
@@ -27,7 +27,11 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                     assetTypes.Add(new AssetTypeDTO
                     {
                         Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                        Name = reader["Name"] as string
+                        Name = reader["Name"] as string,
+                        DepreciationMethod = reader["DepreciationMethod"] as string,
+                        UsefulLife = Convert.ToInt32(reader["UsefulLife"]),
+                        IsTangible = Convert.ToBoolean(reader["IsTangible"]),
+                        CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
                     });
                 }
             }
@@ -44,16 +48,20 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         public ActionResult Create(AssetTypeDTO assetType)
         {
             assetType.Id = Guid.NewGuid();
+            assetType.CreatedDate = DateTime.Now;
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand(
-                    "INSERT INTO AssetTypes (Id, Name, Description, CreatedDate) VALUES (@Id, @Name, @Description, GETDATE())",
-                    conn
-                );
+                var cmd = new SqlCommand(@"
+                    INSERT INTO AssetTypes (Id, Name, DepreciationMethod, UsefulLife, IsTangible, CreatedDate)
+                    VALUES (@Id, @Name, @DepreciationMethod, @UsefulLife, @IsTangible, @CreatedDate)", conn);
 
                 cmd.Parameters.AddWithValue("@Id", assetType.Id);
                 cmd.Parameters.AddWithValue("@Name", assetType.Name ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@DepreciationMethod", assetType.DepreciationMethod ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@UsefulLife", assetType.UsefulLife);
+                cmd.Parameters.AddWithValue("@IsTangible", assetType.IsTangible);
+                cmd.Parameters.AddWithValue("@CreatedDate", assetType.CreatedDate);
 
                 conn.Open();
                 cmd.ExecuteNonQuery();
@@ -68,7 +76,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand("SELECT Id, Name, Description FROM AssetTypes WHERE Id = @Id", conn);
+                var cmd = new SqlCommand("SELECT Id, Name, DepreciationMethod, UsefulLife, IsTangible, CreatedDate FROM AssetTypes WHERE Id = @Id", conn);
                 cmd.Parameters.AddWithValue("@Id", id);
 
                 conn.Open();
@@ -80,6 +88,10 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                     {
                         Id = reader.GetGuid(reader.GetOrdinal("Id")),
                         Name = reader["Name"] as string,
+                        DepreciationMethod = reader["DepreciationMethod"] as string,
+                        UsefulLife = Convert.ToInt32(reader["UsefulLife"]),
+                        IsTangible = Convert.ToBoolean(reader["IsTangible"]),
+                        CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
                     };
                 }
             }
@@ -95,13 +107,19 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         {
             using (var conn = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand(
-                    "UPDATE AssetTypes SET Name = @Name, Description = @Description WHERE Id = @Id",
-                    conn
-                );
+                var cmd = new SqlCommand(@"
+                    UPDATE AssetTypes 
+                    SET Name = @Name, 
+                        DepreciationMethod = @DepreciationMethod, 
+                        UsefulLife = @UsefulLife, 
+                        IsTangible = @IsTangible
+                    WHERE Id = @Id", conn);
 
                 cmd.Parameters.AddWithValue("@Id", assetType.Id);
                 cmd.Parameters.AddWithValue("@Name", assetType.Name ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@DepreciationMethod", assetType.DepreciationMethod ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@UsefulLife", assetType.UsefulLife);
+                cmd.Parameters.AddWithValue("@IsTangible", assetType.IsTangible);
 
                 conn.Open();
                 cmd.ExecuteNonQuery();
