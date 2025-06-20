@@ -1,17 +1,74 @@
 ﻿@model Application.MainBoundedContext.DTO.UnitOfMeasurementDTO
 
-<h2>Edit Unit</h2>
+@{
+    ViewBag.Title = "Edit Unit of Measurement";
+}
 
-@using (Html.BeginForm())
-{
-    @Html.HiddenFor(m => m.Id)
-    <div class="form-group">
-        @Html.LabelFor(m => m.Symbol)
-        @Html.TextBoxFor(m => m.Symbol, new { @class = "form-control" })
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Edit Unit</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Units", "Index", "UnitOfMeasurement", new { Area = "Procurement" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Edit</strong>
+            </li>
+        </ol>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Description)
-        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+</div>
+
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Edit Unit Details</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+
+                        <div class="form-group row">
+                            @Html.LabelFor(m => m.Symbol, htmlAttributes: new { @class = "col-sm-3 col-form-label text-right font-weight-bold" })
+                            <div class="col-sm-9">
+                                @Html.TextBoxFor(m => m.Symbol, new { @class = "form-control", placeholder = "e.g. Kg, Ltr" })
+                                @Html.ValidationMessageFor(m => m.Symbol, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "col-sm-3 col-form-label text-right font-weight-bold" })
+                            <div class="col-sm-9">
+                                @Html.TextBoxFor(m => m.Description, new { @class = "form-control", placeholder = "e.g. Kilogram, Litre" })
+                                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mt-4">
+                            <div class="col-sm-9 offset-sm-3">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-save"></i> Update
+                                </button>
+                                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary ml-2" })
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-success">Update</button>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
 }

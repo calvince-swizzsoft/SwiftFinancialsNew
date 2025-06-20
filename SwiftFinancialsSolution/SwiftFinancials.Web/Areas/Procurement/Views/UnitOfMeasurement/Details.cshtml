@@ -1,16 +1,52 @@
 ﻿@model Application.MainBoundedContext.DTO.UnitOfMeasurementDTO
 
-<h2>View Unit</h2>
+@{
+    ViewBag.Title = "View Unit of Measurement";
+}
 
-<dl class="dl-horizontal">
-    <dt>Symbol</dt>
-    <dd>@Model.Symbol</dd>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>View Unit</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Units", "Index", "UnitOfMeasurement", new { Area = "Procurement" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Details</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
-    <dt>Description</dt>
-    <dd>@Model.Description</dd>
-</dl>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Unit Information</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <dl class="row">
+                        <dt class="col-sm-3 text-right font-weight-bold">Symbol</dt>
+                        <dd class="col-sm-9">@Model.Symbol</dd>
 
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+                        <dt class="col-sm-3 text-right font-weight-bold">Description</dt>
+                        <dd class="col-sm-9">@Model.Description</dd>
+                    </dl>
+
+                    <div class="mt-4">
+                        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary ml-2" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
