@@ -1,7 +1,63 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.AssetTypeDTO
+
+
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit Asset Type";
 }
 
-<h2>Edit</h2>
+<div class="content-header">
+    <h1>Edit Asset Type</h1>
+</div>
 
+<div class="content">
+    <div class="box">
+        <div class="box-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.CreatedDate)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name)
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DepreciationMethod)
+                    @Html.DropDownListFor(model => model.DepreciationMethod,
+                        new SelectList(new[] { "Straight Line", "Declining Balance", "Double Declining Balance", "Sum of Years Digits" }),
+                        new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.DepreciationMethod)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.UsefulLife)
+                    @Html.TextBoxFor(model => model.UsefulLife, new { @class = "form-control", type = "number" })
+                    @Html.ValidationMessageFor(model => model.UsefulLife)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IsTangible)
+                    <div class="checkbox">
+                        <label>
+                            @Html.CheckBoxFor(model => model.IsTangible) Yes
+                        </label>
+                    </div>
+                </div>
+
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-default">Cancel</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

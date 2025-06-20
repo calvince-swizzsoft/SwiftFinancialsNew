@@ -1,7 +1,85 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.AssetTypeDTO
+
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create Asset Type";
 }
 
-<h2>Create</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Create Asset Type</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("assettype", "Index", "AssetsType", new { Area = "Procurement" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- Full width -->
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>New Unit Details</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.DepreciationMethod)
+                            @Html.DropDownListFor(model => model.DepreciationMethod,
+                                new SelectList(new[] { "Straight Line", "Declining Balance", "Double Declining Balance", "Sum of Years Digits" }),
+                                "Select Depreciation Method",
+                                new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.DepreciationMethod)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UsefulLife)
+                            @Html.TextBoxFor(model => model.UsefulLife, new { @class = "form-control", type = "number" })
+                            @Html.ValidationMessageFor(model => model.UsefulLife)
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name)
+                            @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "Enter Text..." })
+                            @Html.ValidationMessageFor(model => model.Name)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IsTangible)
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(model => model.IsTangible) Yes
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-save"></i> Create
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-default">Cancel</a>
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
