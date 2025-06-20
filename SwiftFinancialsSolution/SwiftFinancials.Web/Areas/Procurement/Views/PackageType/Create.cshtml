@@ -1,7 +1,58 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.PackageTypeDTO
+
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create Package Type";
 }
 
-<h2>Create</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Create Package Type</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { area = "procurement" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Package Types", "Index", "PackageType", new { area = "Procurement" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>New Package Type</h5>
+                </div>
+                <div class="ibox-content">
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label" })
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Enter package type name" })
+                            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label" })
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 3, placeholder = "Enter description (optional)" })
+                            @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary ms-2" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

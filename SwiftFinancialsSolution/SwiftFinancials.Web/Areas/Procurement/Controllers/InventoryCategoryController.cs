@@ -63,5 +63,76 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public ActionResult Edit(Guid id)
+        {
+            InventoryCategoryDTO category = null;
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var cmd = new SqlCommand("SELECT Id, Name, Remarks FROM InventoryCategory WHERE Id = @Id", conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+                conn.Open();
+                var reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    category = new InventoryCategoryDTO
+                    {
+                        Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                        Name = reader["Name"] as string,
+                        Remarks = reader["Remarks"] as string
+                    };
+                }
+            }
+
+            return View(category);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(InventoryCategoryDTO inventoryCategory)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var cmd = new SqlCommand(
+                    "UPDATE InventoryCategory SET Name = @Name, Remarks = @Remarks WHERE Id = @Id",
+                    conn
+                );
+
+                cmd.Parameters.AddWithValue("@Id", inventoryCategory.Id);
+                cmd.Parameters.AddWithValue("@Name", inventoryCategory.Name ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Remarks", inventoryCategory.Remarks ?? (object)DBNull.Value);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Details(Guid? id)
+        {
+            InventoryCategoryDTO category = null;
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var cmd = new SqlCommand("SELECT Id, Name, Remarks FROM InventoryCategory WHERE Id = @Id", conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+                conn.Open();
+                var reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    category = new InventoryCategoryDTO
+                    {
+                        Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                        Name = reader["Name"] as string,
+                        Remarks = reader["Remarks"] as string
+                    };
+                }
+            }
+
+            return View(category);
+        }
     }
 }

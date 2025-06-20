@@ -1,0 +1,27 @@
+﻿@model Application.MainBoundedContext.DTO.InventoryCatalogDTO
+
+@{
+    ViewBag.Title = "Inventory Item Details";
+}
+
+<h2>Inventory Item Details</h2>
+
+<div class="form-horizontal">
+    <hr />
+    <dl class="dl-horizontal">
+
+        @foreach (var prop in typeof(Application.MainBoundedContext.DTO.InventoryCatalogDTO).GetProperties())
+        {
+            <dt>@prop.Name</dt>
+            <dd>@Html.DisplayFor(m => prop.GetValue(Model))</dd>
+        }
+
+    </dl>
+
+    <div class="form-group">
+        <div class="col-md-offset-0 col-md-10">
+            @Html.ActionLink("Edit", "Edit", "InventoryCatalog", new { id = Model.Id, area = "Procurement" }, new { @class = "btn btn-primary" }) |
+            @Html.ActionLink("Back to List", "Index", "InventoryCatalog", new { area = "Procurement" }, new { @class = "btn btn-default" })
+        </div>
+    </div>
+</div>

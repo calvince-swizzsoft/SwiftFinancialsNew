@@ -60,13 +60,13 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Details(Guid id)
+        public ActionResult Details(Guid ?id)
         {
             PackageTypeDTO packageType = null;
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand("SELECT Id, Name, Description FROM PackageType WHERE Id = @Id", conn);
+                var cmd = new SqlCommand("select * from packageType WHERE Id = @Id", conn);
                 cmd.Parameters.AddWithValue("@Id", id);
 
                 conn.Open();

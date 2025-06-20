@@ -1,7 +1,71 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.AssetDTO
+
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Asset Details";
 }
 
-<h2>Details</h2>
+<h2>Asset Details</h2>
 
+<div class="form-horizontal">
+    <hr />
+
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(m => m.Name)</dt>
+        <dd>@Html.DisplayFor(m => m.Name)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.Remarks)</dt>
+        <dd>@Html.DisplayFor(m => m.Remarks)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.AssetType)</dt>
+        <dd>@Html.DisplayFor(m => m.AssetType)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.Supplier)</dt>
+        <dd>@Html.DisplayFor(m => m.Supplier)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.Department)</dt>
+        <dd>@Html.DisplayFor(m => m.Department)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.PicturePath)</dt>
+        <dd>
+            @if (!string.IsNullOrEmpty(Model.PicturePath))
+            {
+                <img src="@Url.Content(Model.PicturePath)" alt="Asset Image" style="max-width: 200px; height: auto;" />
+            }
+            else
+            {
+                <span>No image available</span>
+            }
+        </dd>
+
+        <dt>@Html.DisplayNameFor(m => m.GLAccount)</dt>
+        <dd>@Html.DisplayFor(m => m.GLAccount)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.SerialNumber)</dt>
+        <dd>@Html.DisplayFor(m => m.SerialNumber)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.Manufacturer)</dt>
+        <dd>@Html.DisplayFor(m => m.Manufacturer)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.Model)</dt>
+        <dd>@Html.DisplayFor(m => m.Model)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.TagNumber)</dt>
+        <dd>@Html.DisplayFor(m => m.TagNumber)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.Location)</dt>
+        <dd>@Html.DisplayFor(m => m.Location)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.PurchasePrice)</dt>
+        <dd>@Html.DisplayFor(m => m.PurchasePrice)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.ResidualValue)</dt>
+        <dd>@Html.DisplayFor(m => m.ResidualValue)</dd>
+    </dl>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+        </div>
+    </div>
+</div>

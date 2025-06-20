@@ -1,7 +1,137 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.AssetDTO
+
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit Asset";
 }
 
-<h2>Edit</h2>
+<h2>Edit Asset</h2>
 
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="form-horizontal">
+        <hr />
+        @* Asset Name *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Remarks *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Remarks, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* Asset Type *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.AssetType, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.AssetType, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* Supplier *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Supplier, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Supplier, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* Department *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Department, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Department, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* Picture Path *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.PicturePath, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PicturePath, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* GL Account *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.GLAccount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.GLAccount, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* Serial Number *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.SerialNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.SerialNumber, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* Manufacturer *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Manufacturer, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Manufacturer, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* Model *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Model, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Model, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* Tag Number *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.TagNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.TagNumber, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* Location *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Location, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @* Purchase Price *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.PurchasePrice, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PurchasePrice, new { @class = "form-control", type = "number", step = "0.01" })
+            </div>
+        </div>
+
+        @* Residual Value *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.ResidualValue, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.ResidualValue, new { @class = "form-control", type = "number", step = "0.01" })
+            </div>
+        </div>
+
+        @* Submit Button *@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+}
