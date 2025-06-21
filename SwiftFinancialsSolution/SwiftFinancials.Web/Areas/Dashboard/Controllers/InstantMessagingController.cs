@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
@@ -16,6 +17,7 @@ using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
 using OfficeOpenXml;
+using SwiftFinancials.TextAlertDispatcher.Celcom.Configuration;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using SwiftFinancials.Web.PDF;
@@ -25,25 +27,39 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
     public class InstantMessagingController : MasterController
     {
 
-        public async Task<ActionResult> Index()
+        [HttpPost]
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int? status, DateTime? startDate, DateTime? endDate, string filterValue)
         {
             await ServeNavigationMenus();
-            return View();
+
+            var result = await _channelService.FindTextAlertsByDateRangeAndFilterInPageAsync(
+                status ?? 0,
+                startDate ?? DateTime.MinValue,
+                endDate ?? DateTime.MaxValue,
+                filterValue,
+                0,
+                int.MaxValue,
+                GetServiceHeader()
+            );
+
+            var messages = result?.PageCollection?.OrderByDescending(x => x.CreatedDate).ToList()
+                           ?? new List<TextAlertDTO>();
+
+            return Json(messages, JsonRequestBehavior.AllowGet);
         }
 
 
+
+
         [HttpPost]
-        public async Task<JsonResult> InstantMessagesIndex(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> InstantMessagesIndex(JQueryDataTablesModel jQueryDataTablesModel,int?dlrstatus,string search,int?dayscap)
         {
 
             int totalRecordCount = 0;
             int searchRecordCount = 0;
-            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
-            int pageSize = jQueryDataTablesModel.iDisplayLength;
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            
 
-            var pageCollectionInfo = await _channelService.FindLoaningRemarksByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, pageSize, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindTextAlertsByFilterInPageAsync((int)dlrstatus, search, int.MaxValue, int.MaxValue,(int)dayscap, GetServiceHeader());
 
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
@@ -77,11 +93,24 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Index(QuickTextAlertDTO quickTextAlertDTO)
         {
             await ServeNavigationMenus();
 
-            return View();
+            if (ModelState.IsValid)
+            {
+                await _channelService.AddQuickTextAlertAsync(quickTextAlertDTO, GetServiceHeader());
+                TempData["Success"] = "Message sent successfully.";
+                return RedirectToAction("Index");
+            }
+
+            // Reload messages if validation fails
+            var result = await _channelService.FindTextAlertsByFilterInPageAsync(0, "", int.MaxValue, int.MaxValue, 7, GetServiceHeader());
+            ViewBag.FilteredMessages = result?.PageCollection?.ToList() ?? new List<TextAlertDTO>();
+
+            return View(quickTextAlertDTO);
         }
+
+
     }
 }
