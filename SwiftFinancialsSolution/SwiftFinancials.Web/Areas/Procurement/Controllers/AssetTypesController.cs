@@ -42,31 +42,30 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
         public async Task<ActionResult> Details(Guid ?id)
         {
-            await ServeNavigationMenus();
             AssetTypeDTO assetType = null;
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand("Select * FROM Assettypes WHERE Id = @Id", conn);
+                var cmd = new SqlCommand("SELECT Id, Name, DepreciationMethod, UsefulLife, IsTangible, CreatedDate FROM AssetTypes WHERE Id = @Id", conn);
                 cmd.Parameters.AddWithValue("@Id", id);
 
                 conn.Open();
                 var reader = cmd.ExecuteReader();
+
                 if (reader.Read())
                 {
                     assetType = new AssetTypeDTO
                     {
-                        Id = reader.GetGuid(0),
-                        DepreciationMethod = reader.GetString(1),
-                        Name = reader.IsDBNull(2) ? null : reader.GetString(2),
-                        IsTangible = reader.GetBoolean(3),
-                        UsefulLife =  reader.GetInt32(4),                       
-                        CreatedDate =  reader.GetDateTime(5)
-
-
+                        Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                        Name = reader["Name"] as string,
+                        DepreciationMethod = reader["DepreciationMethod"] as string,
+                        UsefulLife = Convert.ToInt32(reader["UsefulLife"]),
+                        IsTangible = Convert.ToBoolean(reader["IsTangible"]),
+                        CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
                     };
                 }
             }
+            await ServeNavigationMenus();
 
             if (assetType == null)
                 return HttpNotFound();

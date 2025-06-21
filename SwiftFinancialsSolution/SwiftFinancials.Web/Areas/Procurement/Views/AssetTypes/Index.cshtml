@@ -1,35 +1,96 @@
 ﻿@model IEnumerable<Application.MainBoundedContext.DTO.AssetTypeDTO>
 
-<h2>Assets Type</h2>
+@{
+    ViewBag.Title = "Asset Types";
+}
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Asset Types</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">@Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)</li>
+            <li class="breadcrumb-item active"><strong>List</strong></li>
+        </ol>
+    </div>
+</div>
 
-<table class="table table-bordered">
-    <tr>
-        <th>Name</th>
-        <th>DepreciationMethod</th>
-        <th>IsTangible</th>
-        <th>UsefulLife</th>
-        <th>Action</th>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Manage Asset Types</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content">
 
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
 
-    </tr>
+                    <div class="mb-3 text-right">
+                        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-success btn-lg" })
+                    </div>
 
-    @foreach (var item in Model)
-    {
-<tr>
-    <td>@item.Name</td>
-    <td>@item.DepreciationMethod</td>
-    <td>@item.IsTangible</td>
-    <td>@item.UsefulLife</td>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover" id="assetTypeTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Depreciation Method</th>
+                                    <th>Is Tangible</th>
+                                    <th>Useful Life</th>
+                                    <th style="width: 150px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.DepreciationMethod</td>
+                                        <td>@item.IsTangible</td>
+                                        <td>@item.UsefulLife</td>
+                                        <td>
+                                            @Html.ActionLink("View", "Details", new { id = item.Id }, new { @class = "btn btn-sm btn-info" })
+                                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-sm btn-warning ml-2" })
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <td>
-        @Html.ActionLink("View", "Details", new { id = item.Id }) |
-        @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-    </td>
-</tr>
-    }
-</table>
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#assetTypeTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                dom: 'lfrtip', // length, filter, pagination
+                language: {
+                    search: "Search Assets:",
+                    lengthMenu: "Show _MENU_ entries"
+                }
+            });
+        });
+    </script>
+}

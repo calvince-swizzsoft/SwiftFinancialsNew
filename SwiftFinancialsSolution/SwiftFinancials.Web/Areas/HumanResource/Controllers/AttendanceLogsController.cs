@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using System.Threading.Tasks;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -14,8 +15,10 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
         // GET: HumanResource/AttendanceLogs
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+            await ServeNavigationMenus();
+
             var logs = new List<Attendancelog>();
 
             using (var conn = new SqlConnection(_connectionString))
@@ -35,16 +38,20 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         // GET: HumanResource/AttendanceLogs/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            await ServeNavigationMenus();
+
             return View();
         }
 
         // POST: HumanResource/AttendanceLogs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Attendancelog model)
+        public async Task<ActionResult> Create(Attendancelog model)
         {
+            await ServeNavigationMenus();
+
             model.Id = Guid.NewGuid();
 
             using (var conn = new SqlConnection(_connectionString))
@@ -65,10 +72,37 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             return RedirectToAction("Index");
         }
-
-        // GET: HumanResource/AttendanceLogs/Edit/Guid
-        public ActionResult Edit(Guid id)
+        public async Task<ActionResult> Details(Guid? id)
         {
+            await ServeNavigationMenus();
+
+            Attendancelog log = null;
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("SELECT * FROM AttendanceLogs WHERE Id = @Id", conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", id);
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        log = MapReaderToAttendanceLog(reader);
+                    }
+                }
+            }
+
+            if (log == null)
+                return HttpNotFound();
+
+            return View(log);
+        }
+        // GET: HumanResource/AttendanceLogs/Edit/Guid
+        public async Task<ActionResult> Edit(Guid? id)
+        {
+            await ServeNavigationMenus();
+
             Attendancelog log = null;
 
             using (var conn = new SqlConnection(_connectionString))
@@ -95,8 +129,10 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         // POST: HumanResource/AttendanceLogs/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Attendancelog model)
+        public async Task<ActionResult> Edit(Attendancelog model)
         {
+            await ServeNavigationMenus();
+
             using (var conn = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand(@"
                 UPDATE AttendanceLogs 
@@ -129,9 +165,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 Id = reader.GetGuid(reader.GetOrdinal("Id")),
                 EmployeeName = reader["EmployeeName"]?.ToString(),
                 Date = reader.GetDateTime(reader.GetOrdinal("Date")),
-                TimeIn = reader["TimeIn"] as string,
-                TimeOut = reader["TimeOut"] as string,
-                Remarks = reader["Remarks"] as string
+                TimeIn = reader["TimeIn"].ToString(),
+                TimeOut = reader["TimeOut"].ToString(),
+                Remarks = reader["Remarks"].ToString()
             };
         }
     }

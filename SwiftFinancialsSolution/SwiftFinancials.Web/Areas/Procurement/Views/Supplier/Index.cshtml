@@ -16,7 +16,6 @@
             </li>
         </ol>
     </div>
-
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -31,14 +30,16 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-
                     @if (TempData["SuccessMessage"] != null)
                     {
                         <div class="alert alert-success">
                             @TempData["SuccessMessage"]
                         </div>
                     }
-                    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+
+                    <div class="mb-3 text-right">
+                        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-success btn-lg" })
+                    </div>
 
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover" id="unitsTable">
@@ -46,6 +47,10 @@
                                 <tr>
                                     <th>Chart of Account</th>
                                     <th>Supplier</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Street</th>
+                                    <th>Address Line 1</th>
                                     <th style="width: 120px;">Actions</th>
                                 </tr>
                             </thead>
@@ -55,6 +60,10 @@
                                     <tr>
                                         <td>@item.ChartofAccountName</td>
                                         <td>@item.Name</td>
+                                        <td>@item.Email</td>
+                                        <td>@item.MobileLine</td>
+                                        <td>@item.Street</td>
+                                        <td>@item.AddressLine1</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -95,6 +104,11 @@
                 background-color: #007bff;
                 color: white;
             }
+
+        .btn-lg {
+            font-size: 16px;
+            padding: 10px 24px;
+        }
     </style>
 }
 

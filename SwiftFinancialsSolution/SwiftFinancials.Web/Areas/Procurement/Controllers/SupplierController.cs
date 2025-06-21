@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Web.Mvc;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 {
@@ -21,15 +21,20 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             using (var conn = new SqlConnection(_connectionString))
             {
                 var cmd = new SqlCommand(@"
-    SELECT 
-        Id, 
-        Name, 
-        Email, 
-        ChartOfAccountId, 
-        ChartofAccountName, 
-        PhoneNumber, 
-        Address
-    FROM Suppliers", conn);
+                    SELECT 
+                        Id, 
+                        Name, 
+                        Email, 
+                        ChartOfAccountId, 
+                        ChartofAccountName, 
+                        PhoneNumber, 
+                        Address,
+                        AddressLine2,
+                        Street,
+                        PostalCode,
+                        LandLine
+                    FROM Suppliers", conn);
+
                 await conn.OpenAsync();
                 var reader = await cmd.ExecuteReaderAsync();
 
@@ -43,10 +48,13 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                         ChartOfAccountId = reader["ChartOfAccountId"] != DBNull.Value ? (Guid)reader["ChartOfAccountId"] : Guid.Empty,
                         ChartofAccountName = reader["ChartofAccountName"]?.ToString(),
                         LandLine = reader["PhoneNumber"]?.ToString(),
-                        AddressLine1 = reader["Address"]?.ToString()
+                        AddressLine1 = reader["Address"]?.ToString(),
+                        AddressLine2 = reader["AddressLine2"]?.ToString(),
+                        Street = reader["Street"]?.ToString(),
+                        PostalCode = reader["PostalCode"]?.ToString(),
+                        MobileLine = reader["LandLine"]?.ToString()
                     });
                 }
-
             }
 
             ViewBag.BatchStatus = suppliers;
@@ -56,7 +64,6 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
             return View();
         }
 
@@ -68,13 +75,45 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             supplier.Id = Guid.NewGuid();
             using (var conn = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand("INSERT INTO Suppliers (Id, Name, Email,ChartofAccountName,ChartofAccountId) VALUES (@Id, @Name, @Email,@ChartofAccountName,@ChartofAccountId)", conn);
-                cmd.Parameters.AddWithValue("@Id", supplier.Id);
-                cmd.Parameters.AddWithValue("@Name", supplier.Name);
-                cmd.Parameters.AddWithValue("@Email", supplier.Email);
-                cmd.Parameters.AddWithValue("@ChartofAccountName", supplier.ChartofAccountName);
+                var cmd = new SqlCommand(@"
+                    INSERT INTO Suppliers (
+                        Id, 
+                        Name, 
+                        Email,
+                        ChartOfAccountId, 
+                        ChartofAccountName, 
+                        PhoneNumber, 
+                        Address,
+                        AddressLine2,
+                        Street,
+                        PostalCode,
+                        LandLine
+                    ) 
+                    VALUES (
+                        @Id, 
+                        @Name, 
+                        @Email,
+                        @ChartOfAccountId, 
+                        @ChartofAccountName, 
+                        @PhoneNumber, 
+                        @Address,
+                        @AddressLine2,
+                        @Street,
+                        @PostalCode,
+                        @LandLine
+                    )", conn);
 
+                cmd.Parameters.AddWithValue("@Id", supplier.Id);
+                cmd.Parameters.AddWithValue("@Name", supplier.Name ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Email", supplier.Email ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@ChartOfAccountId", supplier.ChartOfAccountId);
+                cmd.Parameters.AddWithValue("@ChartofAccountName", supplier.ChartofAccountName ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@PhoneNumber", supplier.LandLine ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Address", supplier.AddressLine1 ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@AddressLine2", supplier.AddressLine2 ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Street", supplier.Street ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@PostalCode", supplier.PostalCode ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@LandLine", supplier.MobileLine ?? (object)DBNull.Value);
 
                 await conn.OpenAsync();
                 await cmd.ExecuteNonQueryAsync();
@@ -82,6 +121,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
             return RedirectToAction("Index");
         }
+
         public async Task<ActionResult> Edit(Guid? id)
         {
             await ServeNavigationMenus();
@@ -93,20 +133,20 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             using (var conn = new SqlConnection(_connectionString))
             {
                 var cmd = new SqlCommand(@"
-            SELECT 
-                Id, 
-                Name, 
-                Email, 
-                ChartOfAccountId, 
-                ChartofAccountName, 
-                PhoneNumber, 
-                Address,
-                AddressLine2,
-                Street,
-                PostalCode,
-                LandLine
-            FROM Suppliers 
-            WHERE Id = @Id", conn);
+                    SELECT 
+                        Id, 
+                        Name, 
+                        Email, 
+                        ChartOfAccountId, 
+                        ChartofAccountName, 
+                        PhoneNumber, 
+                        Address,
+                        AddressLine2,
+                        Street,
+                        PostalCode,
+                        LandLine
+                    FROM Suppliers 
+                    WHERE Id = @Id", conn);
 
                 cmd.Parameters.AddWithValue("@Id", id.Value);
                 await conn.OpenAsync();
@@ -126,7 +166,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                         AddressLine2 = reader["AddressLine2"]?.ToString(),
                         Street = reader["Street"]?.ToString(),
                         PostalCode = reader["PostalCode"]?.ToString(),
-                        MobileLine = reader["LandLine"]?.ToString(),
+                        MobileLine = reader["LandLine"]?.ToString()
                     };
                 }
             }
@@ -137,6 +177,45 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return View(supplier);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> Edit(SupplierDTO supplier)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var cmd = new SqlCommand(@"
+                    UPDATE Suppliers 
+                    SET 
+                        Name = @Name, 
+                        Email = @Email,
+                        ChartOfAccountId = @ChartOfAccountId,
+                        ChartofAccountName = @ChartofAccountName,
+                        PhoneNumber = @PhoneNumber,
+                        Address = @Address,
+                        AddressLine2 = @AddressLine2,
+                        Street = @Street,
+                        PostalCode = @PostalCode,
+                        LandLine = @LandLine
+                    WHERE Id = @Id", conn);
+
+                cmd.Parameters.AddWithValue("@Id", supplier.Id);
+                cmd.Parameters.AddWithValue("@Name", supplier.Name ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Email", supplier.Email ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ChartOfAccountId", supplier.ChartOfAccountId);
+                cmd.Parameters.AddWithValue("@ChartofAccountName", supplier.ChartofAccountName ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@PhoneNumber", supplier.LandLine ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Address", supplier.AddressLine1 ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@AddressLine2", supplier.AddressLine2 ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Street", supplier.Street ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@PostalCode", supplier.PostalCode ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@LandLine", supplier.MobileLine ?? (object)DBNull.Value);
+
+                await conn.OpenAsync();
+                await cmd.ExecuteNonQueryAsync();
+            }
+
+            await ServeNavigationMenus();
+            return RedirectToAction("Index");
+        }
 
         public async Task<ActionResult> Details(Guid? id)
         {
@@ -149,20 +228,20 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             using (var conn = new SqlConnection(_connectionString))
             {
                 var cmd = new SqlCommand(@"
-            SELECT 
-                Id, 
-                Name, 
-                Email, 
-                ChartOfAccountId, 
-                ChartofAccountName, 
-                PhoneNumber, 
-                Address,
-                AddressLine2,
-                Street,
-                PostalCode,
-                LandLine
-            FROM Suppliers 
-            WHERE Id = @Id", conn);
+                    SELECT 
+                        Id, 
+                        Name, 
+                        Email, 
+                        ChartOfAccountId, 
+                        ChartofAccountName, 
+                        PhoneNumber, 
+                        Address,
+                        AddressLine2,
+                        Street,
+                        PostalCode,
+                        LandLine
+                    FROM Suppliers 
+                    WHERE Id = @Id", conn);
 
                 cmd.Parameters.AddWithValue("@Id", id.Value);
                 await conn.OpenAsync();
@@ -182,33 +261,15 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                         AddressLine2 = reader["AddressLine2"]?.ToString(),
                         Street = reader["Street"]?.ToString(),
                         PostalCode = reader["PostalCode"]?.ToString(),
-                        MobileLine = reader["LandLine"]?.ToString(),
+                        MobileLine = reader["LandLine"]?.ToString()
                     };
                 }
             }
 
             if (supplier == null)
                 return HttpNotFound();
-            await ServeNavigationMenus();
 
             return View(supplier);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Edit(SupplierDTO supplier)
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                var cmd = new SqlCommand("UPDATE Suppliers SET Name = @Name, Email = @Email WHERE Id = @Id", conn);
-                cmd.Parameters.AddWithValue("@Id", supplier.Id);
-                cmd.Parameters.AddWithValue("@Name", supplier.Name);
-                cmd.Parameters.AddWithValue("@Email", supplier.Email);
-                await conn.OpenAsync();
-                await cmd.ExecuteNonQueryAsync();
-            }
-            await ServeNavigationMenus();
-
-            return RedirectToAction("Index");
         }
     }
 }
