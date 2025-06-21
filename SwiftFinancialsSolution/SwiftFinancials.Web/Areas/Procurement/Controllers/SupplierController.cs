@@ -53,8 +53,10 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return View(suppliers);
         }
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            await ServeNavigationMenus();
+
             return View();
         }
 
@@ -171,6 +173,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
             if (supplier == null)
                 return HttpNotFound();
+            await ServeNavigationMenus();
 
             return View(supplier);
         }
@@ -187,6 +190,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 await conn.OpenAsync();
                 await cmd.ExecuteNonQueryAsync();
             }
+            await ServeNavigationMenus();
 
             return RedirectToAction("Index");
         }

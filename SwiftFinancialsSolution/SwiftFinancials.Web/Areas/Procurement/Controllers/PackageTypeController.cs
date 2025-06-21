@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Procurement.Controllers
@@ -12,8 +13,10 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+            await ServeNavigationMenus();
+
             var packageTypes = new List<PackageTypeDTO>();
 
             using (var conn = new SqlConnection(_connectionString))
@@ -36,13 +39,15 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return View(packageTypes);
         }
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            await ServeNavigationMenus();
+
             return View();
         }
 
         [HttpPost]
-        public ActionResult Create(PackageTypeDTO packageType)
+        public async Task<ActionResult> Create(PackageTypeDTO packageType)
         {
             packageType.Id = Guid.NewGuid();
 
@@ -56,12 +61,15 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+            await ServeNavigationMenus();
 
             return RedirectToAction("Index");
         }
 
-        public ActionResult Details(Guid ?id)
+        public async Task<ActionResult> Details(Guid ?id)
         {
+            await ServeNavigationMenus();
+
             PackageTypeDTO packageType = null;
 
             using (var conn = new SqlConnection(_connectionString))
@@ -88,8 +96,10 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return View(packageType);
         }
 
-        public ActionResult Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
+            await ServeNavigationMenus();
+
             PackageTypeDTO packageType = null;
 
             using (var conn = new SqlConnection(_connectionString))
@@ -117,7 +127,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(PackageTypeDTO packageType)
+        public async Task<ActionResult> Edit(PackageTypeDTO packageType)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -129,6 +139,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+            await ServeNavigationMenus();
 
             return RedirectToAction("Index");
         }

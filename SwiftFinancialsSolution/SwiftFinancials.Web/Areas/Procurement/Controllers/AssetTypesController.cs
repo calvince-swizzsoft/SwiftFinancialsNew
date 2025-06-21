@@ -13,7 +13,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var assetTypes = new List<AssetTypeDTO>();
 
@@ -36,6 +36,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                     });
                 }
             }
+            await ServeNavigationMenus();
 
             return View(assetTypes);
         }
@@ -72,13 +73,15 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
             return View(assetType);
         }
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            await ServeNavigationMenus();
+
             return View();
         }
 
         [HttpPost]
-        public ActionResult Create(AssetTypeDTO assetType)
+        public async Task<ActionResult> Create(AssetTypeDTO assetType)
         {
             assetType.Id = Guid.NewGuid();
             assetType.CreatedDate = DateTime.Now;
@@ -99,11 +102,12 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+            await ServeNavigationMenus();
 
             return RedirectToAction("Index");
         }
 
-        public ActionResult Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
             AssetTypeDTO assetType = null;
 
@@ -128,6 +132,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                     };
                 }
             }
+            await ServeNavigationMenus();
 
             if (assetType == null)
                 return HttpNotFound();
@@ -136,7 +141,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(AssetTypeDTO assetType)
+        public async Task<ActionResult> Edit(AssetTypeDTO assetType)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -157,6 +162,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+            await ServeNavigationMenus();
 
             return RedirectToAction("Index");
         }

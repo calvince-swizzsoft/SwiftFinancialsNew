@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Procurement.Controllers
@@ -12,8 +13,10 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
-        public ActionResult Index()
+        public async Task<ActionResult> IndexAsync()
         {
+            await ServeNavigationMenus();
+
             var inventoryCategories = new List<InventoryCategoryDTO>();
 
             using (var conn = new SqlConnection(_connectionString))
@@ -36,14 +39,18 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return View(inventoryCategories);
         }
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            await ServeNavigationMenus();
+
             return View();
         }
 
         [HttpPost]
-        public ActionResult Create(InventoryCategoryDTO inventoryCategory)
+        public async Task<ActionResult> Create(InventoryCategoryDTO inventoryCategory)
         {
+            await ServeNavigationMenus();
+
             inventoryCategory.Id = Guid.NewGuid();
 
             using (var conn = new SqlConnection(_connectionString))
@@ -64,8 +71,10 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
+            await ServeNavigationMenus();
+
             InventoryCategoryDTO category = null;
 
             using (var conn = new SqlConnection(_connectionString))
@@ -90,8 +99,10 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(InventoryCategoryDTO inventoryCategory)
+        public async Task<ActionResult> EditAsync(InventoryCategoryDTO inventoryCategory)
         {
+            await ServeNavigationMenus();
+
             using (var conn = new SqlConnection(_connectionString))
             {
                 var cmd = new SqlCommand(
@@ -110,8 +121,10 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Details(Guid? id)
+        public async Task<ActionResult> Details(Guid? id)
         {
+            await ServeNavigationMenus();
+
             InventoryCategoryDTO category = null;
 
             using (var conn = new SqlConnection(_connectionString))

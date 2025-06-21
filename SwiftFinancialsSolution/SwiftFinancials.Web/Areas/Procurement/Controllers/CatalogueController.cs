@@ -15,7 +15,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var assets = new List<AssetDTO>();
 
@@ -47,6 +47,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                     });
                 }
             }
+            await ServeNavigationMenus();
 
             return View(assets);
         }
@@ -58,7 +59,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(AssetDTO asset)
+        public async Task<ActionResult> Create(AssetDTO asset)
         {
             asset.Id = Guid.NewGuid();
 
@@ -94,11 +95,12 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+            await ServeNavigationMenus();
 
             return RedirectToAction("Index");
         }
 
-        public ActionResult Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
             AssetDTO asset = null;
 
@@ -135,12 +137,13 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
             if (asset == null)
                 return HttpNotFound();
+            await ServeNavigationMenus();
 
             return View(asset);
         }
 
         [HttpPost]
-        public ActionResult Edit(AssetDTO asset)
+        public async Task<ActionResult> Edit(AssetDTO asset)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -181,13 +184,15 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+            await ServeNavigationMenus();
 
             return RedirectToAction("Index");
         }
 
-        public ActionResult Details(Guid id)
+        public async Task<ActionResult> Details(Guid id)
         {
             AssetDTO asset = null;
+            await ServeNavigationMenus();
 
             using (var conn = new SqlConnection(_connectionString))
             {

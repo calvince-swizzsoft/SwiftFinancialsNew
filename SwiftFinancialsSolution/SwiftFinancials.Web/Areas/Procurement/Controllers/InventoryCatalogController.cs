@@ -59,14 +59,18 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return View(items);
         }
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            await ServeNavigationMenus();
+
             return View();
         }
 
         [HttpPost]
-        public ActionResult Create(InventoryCatalogDTO item)
+        public async Task<ActionResult> Create(InventoryCatalogDTO item)
         {
+            await ServeNavigationMenus();
+
             item.Id = Guid.NewGuid();
 
             using (var conn = new SqlConnection(_connectionString))
@@ -117,9 +121,10 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
 
-        public ActionResult Details(Guid? id)
+        public async Task<ActionResult> DetailsAsync(Guid? id)
         {
             InventoryCatalogDTO item = null;
+            await ServeNavigationMenus();
 
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -168,9 +173,10 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
 
-        public ActionResult Edit(Guid? id)
+        public async Task<ActionResult> EditAsync(Guid? id)
         {
             InventoryCatalogDTO item = null;
+            await ServeNavigationMenus();
 
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -219,7 +225,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(InventoryCatalogDTO item)
+        public async Task<ActionResult> Edit(InventoryCatalogDTO item)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -273,6 +279,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+            await ServeNavigationMenus();
 
             return RedirectToAction("Index");
         }

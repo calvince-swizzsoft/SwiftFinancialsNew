@@ -1,27 +1,46 @@
-﻿@model Application.MainBoundedContext.DTO.InventoryCatalogDTO
+﻿@model Application.MainBoundedContext.DTO.InventoryCategoryDTO
 
 @{
-    ViewBag.Title = "Inventory Item Details";
+    ViewBag.Title = "View Inventory Category";
 }
 
-<h2>Inventory Item Details</h2>
+<h2>View Inventory Category</h2>
 
-<div class="form-horizontal">
-    <hr />
-    <dl class="dl-horizontal">
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
 
-        @foreach (var prop in typeof(Application.MainBoundedContext.DTO.InventoryCatalogDTO).GetProperties())
-        {
-            <dt>@prop.Name</dt>
-            <dd>@Html.DisplayFor(m => prop.GetValue(Model))</dd>
-        }
+    <div class="form-horizontal">
+        <hr />
 
-    </dl>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-    <div class="form-group">
-        <div class="col-md-offset-0 col-md-10">
-            @Html.ActionLink("Edit", "Edit", "InventoryCatalog", new { id = Model.Id, area = "Procurement" }, new { @class = "btn btn-primary" }) |
-            @Html.ActionLink("Back to List", "Index", "InventoryCatalog", new { area = "Procurement" }, new { @class = "btn btn-default" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control", rows = 4 })
+                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+            </div>
         </div>
     </div>
-</div>
+}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[type="text"]').forEach(textbox => {
+            textbox.disabled = true;
+        });
+    });
+</script>
