@@ -1,7 +1,35 @@
-﻿
-@{
-    ViewBag.Title = "Index";
-}
+﻿@model IEnumerable<Application.MainBoundedContext.DTO.AssetTypeDTO>
 
-<h2>Index</h2>
+<h2>Assets Type</h2>
 
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>DepreciationMethod</th>
+        <th>IsTangible</th>
+        <th>UsefulLife</th>
+        <th>Action</th>
+
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>@item.Name</td>
+    <td>@item.DepreciationMethod</td>
+    <td>@item.IsTangible</td>
+    <td>@item.UsefulLife</td>
+
+
+    <td>
+        @Html.ActionLink("View", "Details", new { id = item.Id }) |
+        @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+    </td>
+</tr>
+    }
+</table>

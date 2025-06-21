@@ -1,7 +1,150 @@
-﻿
+﻿@model IEnumerable<Application.MainBoundedContext.DTO.AssetDTO>
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Asset Catalogue";
 }
 
-<h2>Index</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Asset Catalogue</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Manage Assets</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Success"]
+                        </div>
+                    }
+
+                    @Html.ActionLink("Create New Asset", "Create", null, new { @class = "btn btn-primary mb-3" })
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover" id="assetsTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Supplier</th>
+                                    <th>Department</th>
+                                    <th>Location</th>
+                                    <th>Purchase Price</th>
+                                    <th>Residual Value</th>
+                                    <th style="width: 120px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (!Model.Any())
+                                {
+                                    <tr>
+                                        <td colspan="8" class="text-center">No assets found.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Name</td>
+                                            <td>@item.AssetType</td>
+                                            <td>@item.Supplier</td>
+                                            <td>@item.Department</td>
+                                            <td>@item.Location</td>
+                                            <td>@item.PurchasePrice.ToString("C")</td>
+                                            <td>@item.ResidualValue.ToString("C")</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        Actions
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="@Url.Action("Details", new { id = item.Id })">View</a>
+                                                        <a class="dropdown-item" href="@Url.Action("Edit", new { id = item.Id })">Edit</a>
+                                                        @* Optional: Add delete link when implemented *@
+                                                        @* <a class="dropdown-item text-danger" href="@Url.Action("Delete", new { id = item.Id })" onclick="return confirm('Are you sure you want to delete this asset?');">Delete</a> *@
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    <style>
+        .dropdown-item {
+            display: block;
+            padding: 8px 15px;
+            color: #333;
+            text-decoration: none;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#assetsTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'copy' },
+                    { extend: 'csv' },
+                    { extend: 'excel', title: 'AssetsCatalogue' },
+                    { extend: 'pdf', title: 'AssetsCatalogue' },
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+}

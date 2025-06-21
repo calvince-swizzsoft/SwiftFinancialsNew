@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 {
@@ -50,8 +51,9 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             return View(assets);
         }
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            await ServeNavigationMenus();
             return View();
         }
 

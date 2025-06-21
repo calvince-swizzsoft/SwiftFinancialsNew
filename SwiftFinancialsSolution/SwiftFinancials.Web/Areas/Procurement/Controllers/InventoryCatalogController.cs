@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Procurement.Controllers
@@ -12,8 +13,9 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+            await ServeNavigationMenus();
             var items = new List<InventoryCatalogDTO>();
 
             using (var conn = new SqlConnection(_connectionString))
@@ -115,7 +117,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
 
-        public ActionResult Details(Guid id)
+        public ActionResult Details(Guid? id)
         {
             InventoryCatalogDTO item = null;
 
@@ -166,7 +168,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
 
-        public ActionResult Edit(Guid id)
+        public ActionResult Edit(Guid? id)
         {
             InventoryCatalogDTO item = null;
 

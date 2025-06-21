@@ -1,7 +1,270 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.SupplierDTO
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create Supplier";
 }
 
-<h2>Create</h2>
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Create New Supplier</h4>
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary btn-sm" })
+        </div>
 
+        <div class="card-body">
+            @using (Html.BeginForm("Create", "Supplier", FormMethod.Post, new { id = "createSupplierForm", @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3">Basic Information</h5>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, new { @class = "font-weight-bold" })
+                            @Html.TextBoxFor(model => model.Name, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter supplier name...",
+                                required = "required"
+                            })
+                            <div class="invalid-feedback">
+                                Please provide a supplier name.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email, new { @class = "font-weight-bold" })
+                            @Html.TextBoxFor(model => model.Email, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter email address...",
+                                type = "email"
+                            })
+                            <div class="invalid-feedback">
+                                Please provide a valid email address.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3">G/L Account</h5>
+
+                        <div class="col-md-6 form-group">
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.ChartofAccountName, htmlAttributes: new { @class = "control-label" })
+                                @Html.HiddenFor(model => model.ChartOfAccountId)
+                                @Html.EditorFor(model => model.ChartofAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", @placeholder = "Enter space to autofill G/L Account" } })
+                                @Html.ValidationMessageFor(model => model.ChartofAccountName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3">Address Information</h5>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AddressLine1, new { @class = "font-weight-bold" })
+                            @Html.TextBoxFor(model => model.AddressLine1, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter address line 1..."
+                            })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AddressLine2, new { @class = "font-weight-bold" })
+                            @Html.TextBoxFor(model => model.AddressLine2, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter address line 2..."
+                            })
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.Street, new { @class = "font-weight-bold" })
+                                @Html.TextBoxFor(model => model.Street, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Enter street..."
+                                })
+                            </div>
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.PostalCode, new { @class = "font-weight-bold" })
+                                @Html.TextBoxFor(model => model.PostalCode, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Enter postal code..."
+                                })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3">Contact Information</h5>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.LandLine, new { @class = "font-weight-bold" })
+                                @Html.TextBoxFor(model => model.LandLine, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Enter landline number..."
+                                })
+                            </div>
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.MobileLine, new { @class = "font-weight-bold" })
+                                @Html.TextBoxFor(model => model.MobileLine, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Enter mobile number..."
+                                })
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="form-actions text-right border-top pt-3">
+                    <button type="reset" class="btn btn-light mr-2">
+                        <i class="fas fa-undo mr-1"></i> Reset
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save mr-1"></i> Save
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="glAccountLookupModal" tabindex="-1" role="dialog" aria-labelledby="glAccountLookupLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="glAccountLookupLabel">G/L Account Lookup</h5>
+                <button type="button" class="close text-white" onclick="closeGLAccountLookup()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" id="glAccountSearch" class="form-control" placeholder="Search G/L Accounts..." aria-label="Search G/L Accounts">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" onclick="searchGLAccounts()">
+                            <i class="fas fa-search mr-1"></i> Search
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th width="20%">Account Code</th>
+                                <th width="50%">Account Name</th>
+                                <th width="30%">Cost Center</th>
+                            </tr>
+                        </thead>
+                        <tbody id="glAccountResults">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeGLAccountLookup()">
+                    <i class="fas fa-times mr-1"></i> Cancel
+                </button>
+                <button type="button" class="btn btn-primary" onclick="selectGLAccount()">
+                    <i class="fas fa-check mr-1"></i> Select
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+            //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });</script>
+}

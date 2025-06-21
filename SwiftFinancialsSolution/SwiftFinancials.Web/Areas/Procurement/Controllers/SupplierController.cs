@@ -20,7 +20,16 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             var suppliers = new List<SupplierDTO>();
             using (var conn = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand("SELECT Id, Name, Email FROM Suppliers", conn); // Adjust columns accordingly
+                var cmd = new SqlCommand(@"
+    SELECT 
+        Id, 
+        Name, 
+        Email, 
+        ChartOfAccountId, 
+        ChartofAccountName, 
+        PhoneNumber, 
+        Address
+    FROM Suppliers", conn);
                 await conn.OpenAsync();
                 var reader = await cmd.ExecuteReaderAsync();
 
@@ -28,15 +37,20 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 {
                     suppliers.Add(new SupplierDTO
                     {
-                        Id = reader.GetGuid(0),
-                        Name = reader.GetString(1),
-                        Email = reader.GetString(2)
+                        Id = reader["Id"] != DBNull.Value ? (Guid)reader["Id"] : Guid.Empty,
+                        Name = reader["Name"]?.ToString(),
+                        Email = reader["Email"]?.ToString(),
+                        ChartOfAccountId = reader["ChartOfAccountId"] != DBNull.Value ? (Guid)reader["ChartOfAccountId"] : Guid.Empty,
+                        ChartofAccountName = reader["ChartofAccountName"]?.ToString(),
+                        LandLine = reader["PhoneNumber"]?.ToString(),
+                        AddressLine1 = reader["Address"]?.ToString()
                     });
                 }
+
             }
 
             ViewBag.BatchStatus = suppliers;
-            return View();
+            return View(suppliers);
         }
 
         public ActionResult Create()
@@ -45,45 +59,118 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAsync(SupplierDTO supplier)
+        public async Task<ActionResult> Create(SupplierDTO supplier)
         {
             await ServeNavigationMenus();
 
             supplier.Id = Guid.NewGuid();
             using (var conn = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand("INSERT INTO Suppliers (Id, Name, Email) VALUES (@Id, @Name, @Email)", conn);
+                var cmd = new SqlCommand("INSERT INTO Suppliers (Id, Name, Email,ChartofAccountName,ChartofAccountId) VALUES (@Id, @Name, @Email,@ChartofAccountName,@ChartofAccountId)", conn);
                 cmd.Parameters.AddWithValue("@Id", supplier.Id);
                 cmd.Parameters.AddWithValue("@Name", supplier.Name);
                 cmd.Parameters.AddWithValue("@Email", supplier.Email);
+                cmd.Parameters.AddWithValue("@ChartofAccountName", supplier.ChartofAccountName);
+
+                cmd.Parameters.AddWithValue("@ChartOfAccountId", supplier.ChartOfAccountId);
+
                 await conn.OpenAsync();
                 await cmd.ExecuteNonQueryAsync();
             }
 
             return RedirectToAction("Index");
         }
-
-        public async Task<ActionResult> Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid? id)
         {
             await ServeNavigationMenus();
+
+            if (id == null)
+                return HttpNotFound();
 
             SupplierDTO supplier = null;
             using (var conn = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand("SELECT Id, Name, Email FROM Suppliers WHERE Id = @Id", conn);
-                cmd.Parameters.AddWithValue("@Id", id);
+                var cmd = new SqlCommand(@"
+            SELECT 
+                Id, 
+                Name, 
+                Email, 
+                ChartOfAccountId, 
+                ChartofAccountName, 
+                PhoneNumber, 
+                Address
+            FROM Suppliers 
+            WHERE Id = @Id", conn);
+
+                cmd.Parameters.AddWithValue("@Id", id.Value);
                 await conn.OpenAsync();
                 var reader = await cmd.ExecuteReaderAsync();
+
                 if (await reader.ReadAsync())
                 {
                     supplier = new SupplierDTO
                     {
-                        Id = reader.GetGuid(0),
-                        Name = reader.GetString(1),
-                        Email = reader.GetString(2)
+                        Id = (Guid)reader["Id"],
+                        Name = reader["Name"]?.ToString(),
+                        Email = reader["Email"]?.ToString(),
+                        ChartOfAccountId = reader["ChartOfAccountId"] != DBNull.Value ? (Guid)reader["ChartOfAccountId"] : Guid.Empty,
+                        ChartofAccountName = reader["ChartofAccountName"]?.ToString(),
+                        LandLine = reader["PhoneNumber"]?.ToString(),
+                        AddressLine1 = reader["Address"]?.ToString()
                     };
                 }
             }
+
+            if (supplier == null)
+                return HttpNotFound();
+
+            return View(supplier);
+        }
+
+
+        public async Task<ActionResult> Details(Guid? id)
+        {
+            await ServeNavigationMenus();
+
+            if (id == null)
+                return HttpNotFound();
+
+            SupplierDTO supplier = null;
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var cmd = new SqlCommand(@"
+            SELECT 
+                Id, 
+                Name, 
+                Email, 
+                ChartOfAccountId, 
+                ChartofAccountName, 
+                PhoneNumber, 
+                Address
+            FROM Suppliers 
+            WHERE Id = @Id", conn);
+
+                cmd.Parameters.AddWithValue("@Id", id.Value);
+                await conn.OpenAsync();
+                var reader = await cmd.ExecuteReaderAsync();
+
+                if (await reader.ReadAsync())
+                {
+                    supplier = new SupplierDTO
+                    {
+                        Id = (Guid)reader["Id"],
+                        Name = reader["Name"]?.ToString(),
+                        Email = reader["Email"]?.ToString(),
+                        ChartOfAccountId = reader["ChartOfAccountId"] != DBNull.Value ? (Guid)reader["ChartOfAccountId"] : Guid.Empty,
+                        ChartofAccountName = reader["ChartofAccountName"]?.ToString(),
+                        LandLine = reader["PhoneNumber"]?.ToString(),
+                        AddressLine1 = reader["Address"]?.ToString()
+                    };
+                }
+            }
+
+            if (supplier == null)
+                return HttpNotFound();
 
             return View(supplier);
         }

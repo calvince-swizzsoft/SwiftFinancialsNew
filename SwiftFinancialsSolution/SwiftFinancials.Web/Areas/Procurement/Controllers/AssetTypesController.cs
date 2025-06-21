@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Procurement.Controllers
@@ -38,7 +39,39 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
             return View(assetTypes);
         }
+        public async Task<ActionResult> Details(Guid ?id)
+        {
+            await ServeNavigationMenus();
+            AssetTypeDTO assetType = null;
 
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var cmd = new SqlCommand("Select * FROM Assettypes WHERE Id = @Id", conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                conn.Open();
+                var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    assetType = new AssetTypeDTO
+                    {
+                        Id = reader.GetGuid(0),
+                        DepreciationMethod = reader.GetString(1),
+                        Name = reader.IsDBNull(2) ? null : reader.GetString(2),
+                        IsTangible = reader.GetBoolean(3),
+                        UsefulLife =  reader.GetInt32(4),                       
+                        CreatedDate =  reader.GetDateTime(5)
+
+
+                    };
+                }
+            }
+
+            if (assetType == null)
+                return HttpNotFound();
+
+            return View(assetType);
+        }
         public ActionResult Create()
         {
             return View();
