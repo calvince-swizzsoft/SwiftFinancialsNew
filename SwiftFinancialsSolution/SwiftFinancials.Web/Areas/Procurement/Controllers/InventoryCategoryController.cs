@@ -13,7 +13,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
-        public async Task<ActionResult> IndexAsync()
+        public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
 
