@@ -100,7 +100,11 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 ChartOfAccountId, 
                 ChartofAccountName, 
                 PhoneNumber, 
-                Address
+                Address,
+                AddressLine2,
+                Street,
+                PostalCode,
+                LandLine
             FROM Suppliers 
             WHERE Id = @Id", conn);
 
@@ -118,7 +122,11 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                         ChartOfAccountId = reader["ChartOfAccountId"] != DBNull.Value ? (Guid)reader["ChartOfAccountId"] : Guid.Empty,
                         ChartofAccountName = reader["ChartofAccountName"]?.ToString(),
                         LandLine = reader["PhoneNumber"]?.ToString(),
-                        AddressLine1 = reader["Address"]?.ToString()
+                        AddressLine1 = reader["Address"]?.ToString(),
+                        AddressLine2 = reader["AddressLine2"]?.ToString(),
+                        Street = reader["Street"]?.ToString(),
+                        PostalCode = reader["PostalCode"]?.ToString(),
+                        MobileLine = reader["LandLine"]?.ToString(),
                     };
                 }
             }
@@ -148,7 +156,11 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                 ChartOfAccountId, 
                 ChartofAccountName, 
                 PhoneNumber, 
-                Address
+                Address,
+                AddressLine2,
+                Street,
+                PostalCode,
+                LandLine
             FROM Suppliers 
             WHERE Id = @Id", conn);
 
@@ -166,7 +178,11 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
                         ChartOfAccountId = reader["ChartOfAccountId"] != DBNull.Value ? (Guid)reader["ChartOfAccountId"] : Guid.Empty,
                         ChartofAccountName = reader["ChartofAccountName"]?.ToString(),
                         LandLine = reader["PhoneNumber"]?.ToString(),
-                        AddressLine1 = reader["Address"]?.ToString()
+                        AddressLine1 = reader["Address"]?.ToString(),
+                        AddressLine2 = reader["AddressLine2"]?.ToString(),
+                        Street = reader["Street"]?.ToString(),
+                        PostalCode = reader["PostalCode"]?.ToString(),
+                        MobileLine = reader["LandLine"]?.ToString(),
                     };
                 }
             }
