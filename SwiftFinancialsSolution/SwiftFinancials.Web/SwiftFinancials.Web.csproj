@@ -2216,6 +2216,10 @@
       <Project>{B1EA34BF-3885-466F-AACE-568AD3F24938}</Project>
       <Name>SwiftFinancials.Presentation.Shared</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SwiftFinancials.TextAlertDispatcher\SwiftFinancials.TextAlertDispatcher.Celcom.csproj">
+      <Project>{660BAE5C-4432-4B7C-8CB0-E860B8B3465D}</Project>
+      <Name>SwiftFinancials.TextAlertDispatcher.Celcom</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.BannedApiAnalyzers.dll" />
