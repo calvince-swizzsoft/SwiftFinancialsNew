@@ -1760,6 +1760,21 @@ namespace SwiftFinancials.Web.Controllers
 
             return journalVoucherAuthOptions;
         }
+        protected List<SelectListItem> journalEntryFilterSelectList(string selectedValue)
+        {
+            List<SelectListItem> journalEntryFilter = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(JournalEntryFilter)).Cast<JournalEntryFilter>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            journalEntryFilter.AddRange(items);
+
+            return journalEntryFilter;
+        }
 
 
         [NonAction]

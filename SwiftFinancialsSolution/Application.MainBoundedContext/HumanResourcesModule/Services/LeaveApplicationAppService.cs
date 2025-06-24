@@ -275,7 +275,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
                 if (persisted != null)
                 {
-                    persisted.Status = (byte)leaveApplicationDTO.Status;
+                    persisted.Status = (byte)LeaveApplicationStatus.Recalled;
                     persisted.RecallRemarks = leaveApplicationDTO.RecallRemarks;
                     persisted.RecalledBy = serviceHeader.ApplicationUserName;
                     persisted.RecalledDate = DateTime.Now;

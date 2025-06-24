@@ -4,6 +4,7 @@
             <a class="navbar-minimalize minimalize-styl-2 btn btn-outline-info" href="#"><i class="fa fa-bars"></i> </a>
         </div>
         <ul class="nav navbar-top-links navbar-right">
+            <!-- Tools Dropdown -->
             <li style="margin-right: 40px;">
                 <div class="dropdown hyper-realistic-dropdown">
                     <button class="btn btn-outline-info dropdown-toggle stunning-3d-button" type="button" id="dropdownMenuButton" style="color: black;">
@@ -16,16 +17,25 @@
                     </div>
                 </div>
             </li>
+
+            <!-- Chat Dropdown -->
+            <li class="dropdown hyper-realistic-dropdown" style="margin-right: 30px;">
+                <form id="logoutForm" method="post" action="@Url.Action("Index", "Chat", new { Area = ""})">
+                    <a href='#' onclick='this.parentNode.submit(); return false;'><i class="fa fa-sign-out"></i> Ask</a>
+                </form>
+            </li>
+
+            <!-- Logout -->
             <li>
                 <form id="logoutForm" method="post" action="@Url.Action("LogOff", "Account", new { Area = ""})">
-                    <a href='#' onclick='this.parentNode.submit(); return false;'><i class="fa fa-sign-out"></i>Log out</a>
+                    <a href='#' onclick='this.parentNode.submit(); return false;'><i class="fa fa-sign-out"></i> Log out</a>
                 </form>
             </li>
         </ul>
     </nav>
 </div>
 
-
+<!-- 🌈 Style Block -->
 <style>
     .stunning-3d-button {
         background: linear-gradient(145deg, #e6e6e6, #ffffff);
@@ -50,6 +60,7 @@
         border-radius: 12px;
         padding: 10px;
         transition: all 0.3s ease;
+        z-index: 9999;
     }
 
         .stunning-3d-dropdown .dropdown-item {
@@ -62,4 +73,15 @@
                 color: white;
                 border-radius: 8px;
             }
+
+    #chat-output::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #chat-output::-webkit-scrollbar-thumb {
+        background-color: #007bff;
+        border-radius: 10px;
+    }
 </style>
+
+

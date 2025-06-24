@@ -16,7 +16,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
-            ViewBag.CustomerTypeSelectList = GetJournalfielterSelectList(string.Empty);
+            var j = journalEntryFilterSelectList(string.Empty);
+            ViewBag.Journalfielter = j;
             return View();
         }
 
@@ -26,7 +27,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             int totalRecordCount = 0;
             int searchRecordCount = 0;
 
-            int filterValue = (int)JournalEntryFilter.JournalReference;
 
             var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByDateRangeAndFilterInPageAsync(
                 int.MaxValue,
@@ -34,7 +34,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 startDate ?? new DateTime(1998, 1, 1),
                 endDate ?? DateTime.Today,
                 string.IsNullOrWhiteSpace(reference) ? "0000097~00001142" : reference,
-                filterValue,
+                (int)filter,
                 GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
