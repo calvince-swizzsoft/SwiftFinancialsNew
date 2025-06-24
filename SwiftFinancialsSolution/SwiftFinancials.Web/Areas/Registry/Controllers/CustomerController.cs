@@ -20,8 +20,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Data;
-using System.Linq;
-using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using System.Net.Http;
@@ -248,7 +246,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 ViewBag.IDCardBackPhoto = document.IDCardBackPhoto != null ? Convert.ToBase64String(document.IDCardBackPhoto) : null;
             }
 
-            return View(customerDTO.MapTo<AccountAlertDTO>());
+            return View(customerDTO.MapTo<CustomerBindingModel>());
         }
         //[HttpGet]
         //public async Task<JsonResult> GetImage(string imageType)
@@ -334,58 +332,73 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
             ViewBag.PartnershipRelationships = GetPartnershipRelationshipsSelectList(string.Empty);
 
-            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
-            var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
-            var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
-            var investment = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
-            var debitypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+            var serviceHeader = GetServiceHeader();
 
+            var debitTypes = await _channelService.FindDebitTypesAsync(serviceHeader);
+            var creditTypes = await _channelService.FindCreditTypesAsync(serviceHeader);
+            var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(serviceHeader);
+            var investmentProducts = await _channelService.FindInvestmentProductsAsync(serviceHeader);
+            var allDebitTypes = await _channelService.FindDebitTypesAsync(serviceHeader);
             CustomerDTO customerDTO = new CustomerDTO();
-            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (userDTO.BranchId != null)
-            {
-                customerDTO.BranchId = (Guid)userDTO.BranchId;
-            }
-            var companies = await _channelService.FindBranchAsync(customerDTO.BranchId, GetServiceHeader());
-            var j = await _channelService.FindCompanyAsync(companies.CompanyId, GetServiceHeader());
-            var attached = await _channelService.FindAttachedProductsByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
-            var mandatorydebitTypes = await _channelService.FindDebitTypesByCompanyIdAsync(companies.CompanyId, GetServiceHeader());
 
-            if (attached == null || mandatorydebitTypes == null)
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            if (userDTO?.BranchId == null)
             {
-                TempData["NoAttachedProducts"] = "Company does not contain Mandatory Products. Setup to proceed!";
+                TempData["Error"] = "Branch not found for current user.";
                 return RedirectToAction("Index");
             }
 
+            customerDTO.BranchId = (Guid)userDTO.BranchId;
 
-            var mandatoryinvestmentProducts = attached.InvestmentProductCollection;
-            var mandatorysavingsProducts = attached.SavingsProductCollection;
+            var branch = await _channelService.FindBranchAsync(customerDTO.BranchId, serviceHeader);
+            if (branch == null)
+            {
+                TempData["Error"] = "Branch information not found.";
+                return RedirectToAction("Index");
+            }
 
+            var company = await _channelService.FindCompanyAsync(branch.CompanyId, serviceHeader);
+            if (company == null)
+            {
+                TempData["Error"] = "Company information not found.";
+                return RedirectToAction("Index");
+            }
 
-            var investmentsProductsIds = new HashSet<Guid>(mandatoryinvestmentProducts.Select(ac => ac.Id));
-            ViewBag.CheckedInvestmentsStates = investment.ToDictionary(
-                c => c.Id,
-                c => investmentsProductsIds.Contains(c.Id)
+            var attachedProducts = await _channelService.FindAttachedProductsByCompanyIdAsync(company.Id, serviceHeader);
+            var mandatoryDebitTypes = await _channelService.FindDebitTypesByCompanyIdAsync(company.Id, serviceHeader);
+
+            if (attachedProducts?.InvestmentProductCollection == null ||
+                attachedProducts.SavingsProductCollection == null ||
+                mandatoryDebitTypes == null)
+            {
+                TempData["NoAttachedProducts"] = "Company does not contain mandatory products. Setup is required to proceed.";
+                return RedirectToAction("Index");
+            }
+
+            // Investment Products
+            var investmentProductIds = new HashSet<Guid>(attachedProducts.InvestmentProductCollection.Select(p => p.Id));
+            ViewBag.CheckedInvestmentsStates = investmentProducts.ToDictionary(
+                p => p.Id,
+                p => investmentProductIds.Contains(p.Id)
             );
-            ViewBag.InvestmentsProducts = investment;
+            ViewBag.InvestmentsProducts = investmentProducts;
 
-
-            var savingssProductsIds = new HashSet<Guid>(mandatorysavingsProducts.Select(ac => ac.Id));
+            // Savings Products
+            var savingsProductIds = new HashSet<Guid>(attachedProducts.SavingsProductCollection.Select(p => p.Id));
             ViewBag.CheckedsavingssStates = savingsProductDTOs.ToDictionary(
-                c => c.Id,
-                c => savingssProductsIds.Contains(c.Id)
+                p => p.Id,
+                p => savingsProductIds.Contains(p.Id)
             );
             ViewBag.SavingsProducts = savingsProductDTOs;
 
-
-
-
-            var debittypesIds = new HashSet<Guid>(mandatorydebitTypes.Select(ac => ac.Id));
-            ViewBag.CheckeddebittypesStates = mandatorydebitTypes.ToDictionary(
-                c => c.Id,
-                c => debittypesIds.Contains(c.Id)
+            // Debit Types
+            var debitTypeIds = new HashSet<Guid>(mandatoryDebitTypes.Select(p => p.Id));
+            ViewBag.CheckeddebittypesStates = allDebitTypes.ToDictionary(
+                p => p.Id,
+                p => debitTypeIds.Contains(p.Id)
             );
-            ViewBag.debit = debitypes;
+            ViewBag.debit = allDebitTypes;
 
             return View();
         }
@@ -664,7 +677,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 return View("Create", customerBindingModel);
             }
         }
-        
+
         public byte[] SafeConvertFromBase64String(string base64String)
         {
             try

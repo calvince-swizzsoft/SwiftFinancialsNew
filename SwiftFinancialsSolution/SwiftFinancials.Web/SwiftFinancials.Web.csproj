@@ -2186,17 +2186,20 @@
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\Catalogue\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\Supplier\Details.cshtml" />
     <Content Include="Areas\Procurement\Views\PackageType\Details.cshtml" />
     <Content Include="Areas\Procurement\Views\PackageType\Edit.cshtml" />
-    <Content Include="Areas\Procurement\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Details.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCategory\Edit.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCategory\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Details.cshtml" />
     <Content Include="Areas\Procurement\Views\AssetTypes\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Registry\Views\Registereducationvenue\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Registereducationvenue\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Registereducationvenue\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Registereducationvenue\Index.cshtml" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -114,6 +114,20 @@
                     </script>
                 }
 
+                @if (TempData["Error"] != null)
+                {
+                    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '@TempData["Error"]',
+                confirmButtonText: 'OK'
+            });
+        });
+                    </script>
+                }
+
 
                 @if (TempData["NoAttachedProducts"] != null)
                 {

@@ -4,39 +4,33 @@
 
 <style>
     body {
-        background-color: #f8f9fa;
+        background-color: #f4f6f9;
         font-family: 'Segoe UI', sans-serif;
-    }
-
-    .dashboard-header {
-        margin: 40px 0 20px;
-        text-align: center;
     }
 
     .ibox {
         background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
-        transition: 0.3s ease;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease-in-out;
         text-decoration: none;
     }
 
         .ibox:hover {
-            cursor: pointer;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
         }
 
     .ibox-title {
-        padding: 20px;
+        padding: 18px 24px;
         border-bottom: 1px solid #e1e5eb;
         font-weight: 600;
-        font-size: 18px;
+        font-size: 17px;
         color: #333;
     }
 
     .ibox-content {
-        padding: 25px;
+        padding: 25px 24px;
     }
 
     .counter-number {
@@ -47,7 +41,7 @@
 
     .description {
         font-size: 14px;
-        color: #999;
+        color: #6c757d;
     }
 
     .chart-container {
@@ -62,65 +56,84 @@
 
     .list-group-item {
         font-size: 14px;
+        border-left: 4px solid #007bff;
+        background-color: #f9fbff;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .form-select, .form-control {
+        height: 45px;
+        font-size: 15px;
     }
 </style>
 
 <div class="container-fluid">
-    <div class="row mb-0>
 
-    </div>
     <!-- KPI Summary -->
     <div class="row mb-4">
         <div class="col-md-3 mb-3">
-            <a href="@Url.Action("Index", "Customer", new { area = "Registry" })" style="text-decoration:none;">
-                <div class="ibox">
-                    <div class="ibox-title">Total Members</div>
-                    <div class="ibox-content text-center">
-                        <div class="counter-number" id="members">0</div>
-                        <div class="description">SACCO Membership</div>
-                    </div>
+            <div class="ibox">
+                <div class="ibox-title">Total Members</div>
+                <div class="ibox-content text-center">
+                    <div class="counter-number" id="customers">0</div>
+                    <div class="description">SACCO Membership</div>
                 </div>
-            </a>
+            </div>
         </div>
 
         <div class="col-md-3 mb-3">
-            <a href="@Url.Action("Index", "Savings", new { area = "Accounts" })" style="text-decoration:none;">
-                <div class="ibox">
-                    <div class="ibox-title">Savings Accounts</div>
-                    <div class="ibox-content text-center">
-                        <div class="counter-number" id="savings">0</div>
-                        <div class="description">Active Savings</div>
-                    </div>
+            <div class="ibox">
+                <div class="ibox-title">Savings Accounts</div>
+                <div class="ibox-content text-center">
+                    <div class="counter-number" id="savings">Loading...</div>
+                    <div class="description">Active Savings</div>
                 </div>
-            </a>
+            </div>
         </div>
 
         <div class="col-md-3 mb-3">
-            <a href="@Url.Action("Index", "Loans", new { area = "Credit" })" style="text-decoration:none;">
-                <div class="ibox">
-                    <div class="ibox-title">Loan Portfolio</div>
-                    <div class="ibox-content text-center">
-                        <div class="counter-number" id="loans">0</div>
-                        <div class="description">Disbursed Loans</div>
-                    </div>
+            <div class="ibox">
+                <div class="ibox-title">Loan Portfolio</div>
+                <div class="ibox-content text-center">
+                    <div class="counter-number" id="loans">0</div>
+                    <div class="description">Disbursed Loans</div>
                 </div>
-            </a>
+            </div>
         </div>
 
         <div class="col-md-3 mb-3">
-            <a href="@Url.Action("Index", "Dividends", new { area = "Finance" })" style="text-decoration:none;">
-                <div class="ibox">
-                    <div class="ibox-title">Dividends Paid</div>
-                    <div class="ibox-content text-center">
-                        <div class="counter-number" id="dividends">0</div>
-                        <div class="description">Total Paid (KES)</div>
-                    </div>
+            <div class="ibox">
+                <div class="ibox-title">Dividends Paid</div>
+                <div class="ibox-content text-center">
+                    <div class="counter-number" id="dividends">0</div>
+                    <div class="description">Total Paid (KES)</div>
                 </div>
-            </a>
+            </div>
         </div>
     </div>
 
-    <!-- Charts Section -->
+    <!-- Filter Section -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <label for="savingsProductSelect" class="form-label">Savings Product</label>
+            <select id="savingsProductSelect" class="form-select">
+                <option value="">-- Select Product --</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="endDateInput" class="form-label">End Date</label>
+            <input type="date" id="endDateInput" class="form-control" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button id="fetchBalanceBtn" class="btn btn-primary w-100">Get Balance</button>
+        </div>
+    </div>
+
+    <!-- Charts -->
     <div class="row">
         <div class="col-md-6 mb-3">@ChartBox("Monthly Savings Trends", "savingsChart")</div>
         <div class="col-md-6 mb-3">@ChartBox("Loan Repayment Status", "repaymentChart")</div>
@@ -138,7 +151,6 @@
 
     <div class="row">
         <div class="col-md-6 mb-3">@ChartBox("Branch Performance", "branchChart")</div>
-
         <div class="col-md-6 mb-3">
             <div class="ibox">
                 <div class="ibox-title">Notifications & Alerts</div>
@@ -148,37 +160,6 @@
                         <li class="list-group-item">⚠️ Compliance Alert: KYC Pending</li>
                         <li class="list-group-item">📢 AGM Scheduled for 15th July</li>
                         <li class="list-group-item">💼 3 Positions Open for Recruitment</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Extended Modules -->
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <div class="ibox">
-                <div class="ibox-title">Cashflow Summary</div>
-                <div class="ibox-content">
-                    <table class="table table-bordered">
-                        <thead><tr><th>Month</th><th>Inflows</th><th>Outflows</th><th>Net</th></tr></thead>
-                        <tbody>
-                            <tr><td>May</td><td>KES 5M</td><td>KES 3M</td><td>KES 2M</td></tr>
-                            <tr><td>Jun</td><td>KES 6M</td><td>KES 4.5M</td><td>KES 1.5M</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <div class="ibox">
-                <div class="ibox-title">Task & Approvals</div>
-                <div class="ibox-content">
-                    <ul class="list-group">
-                        <li class="list-group-item">Approve Loan: John K. (KES 500K)</li>
-                        <li class="list-group-item">Verify Member: Mary W.</li>
-                        <li class="list-group-item">Authorize Dividend Payout</li>
                     </ul>
                 </div>
             </div>
@@ -200,12 +181,60 @@
 
 @section Scripts {
     @Scripts.Render("~/plugins/chartjs")
-    <script>
+<script>
         $(document).ready(function () {
+            // Populate dropdown
+            $.get('/Dashboard/Dashboard/GetSavingsProducts', function (products) {
+                const $select = $('#savingsProductSelect');
+                products.forEach(p => {
+                    $select.append(`<option value="${p.ID}">${p.Name}</option>`);
+                });
+            });
+            $(document).ready(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Customers", "Dashboard", new { Area = "Dashboard" })',
+                success: function (data) {
+                    $('#customers').empty();
+                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
+                        $('#customers').append((val.Customers).toLocaleString("en"));
+                    });
+                }
+            });
+        });
+            // Fetch balance on button click
+            $('#fetchBalanceBtn').click(function () {
+                const productId = $('#savingsProductSelect').val();
+                const endDate = $('#endDateInput').val();
+
+                if (!productId || !endDate) {
+                    alert("Please select both product and end date.");
+                    return;
+                }
+
+                $.get('/Dashboard/Dashboard/GetSavingsProductBalanceByDate', {
+                    productId: productId,
+                    endDate: endDate
+                }).done(function (data) {
+                    let total = 0;
+                    data.forEach(row => total += row.Balance);
+
+                    $('#savings').text(total.toLocaleString('en-KE', {
+                        style: 'currency',
+                        currency: 'KES',
+                        minimumFractionDigits: 0
+                    }));
+                }).fail(function () {
+                    $('#savings').text("Failed to load");
+                });
+            });
+
+            // Static KPI values
             $('#members').text('2,345');
-            $('#savings').text('1,205');
             $('#loans').text('895');
-            $('#dividends').text('5.3M');
+            $('#dividends').text('KES 5.3M');
+
+            // Charts
             initCharts();
         });
 
@@ -290,5 +319,5 @@
                 }
             });
         }
-    </script>
+</script>
 }

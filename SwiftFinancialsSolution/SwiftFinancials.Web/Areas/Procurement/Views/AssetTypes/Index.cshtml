@@ -40,7 +40,7 @@
 
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover" id="assetTypeTable">
-                            <thead>
+                            <thead class="thead-light">
                                 <tr>
                                     <th>Name</th>
                                     <th>Depreciation Method</th>
@@ -50,17 +50,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Name</td>
+                                            <td>@item.DepreciationMethod</td>
+                                            <td>@(item.IsTangible ? "Yes" : "No")</td>
+                                            <td>@item.UsefulLife</td>
+                                            <td>
+                                                <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-sm btn-info">View</a>
+                                                <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-sm btn-warning ml-2">Edit</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
                                 {
                                     <tr>
-                                        <td>@item.Name</td>
-                                        <td>@item.DepreciationMethod</td>
-                                        <td>@item.IsTangible</td>
-                                        <td>@item.UsefulLife</td>
-                                        <td>
-                                            @Html.ActionLink("View", "Details", new { id = item.Id }, new { @class = "btn btn-sm btn-info" })
-                                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-sm btn-warning ml-2" })
-                                        </td>
+                                        <td colspan="5" class="text-center text-muted">No asset types found.</td>
                                     </tr>
                                 }
                             </tbody>
@@ -75,6 +84,11 @@
 
 @section Styles {
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    <style>
+        .btn-sm + .btn-sm {
+            margin-left: 5px;
+        }
+    </style>
 }
 
 @section Scripts {
@@ -85,7 +99,23 @@
             $('#assetTypeTable').DataTable({
                 pageLength: 10,
                 responsive: true,
-                dom: 'lfrtip', // length, filter, pagination
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'copy' },
+                    { extend: 'csv' },
+                    { extend: 'excel', title: 'AssetTypes' },
+                    { extend: 'pdf', title: 'AssetTypes' },
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ],
                 language: {
                     search: "Search Assets:",
                     lengthMenu: "Show _MENU_ entries"
