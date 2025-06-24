@@ -43,7 +43,7 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<BankBranchDTO> bankBranches;
         public ObservableCollection<NextOfKinDTO> NextOfKinDTOs;
 
-        
+
 
         public ObservableCollection<OverDeductionBatchEntryDTO> OverDeductionBatchEntryDTOs;
 
@@ -78,8 +78,8 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<IncomeAdjustmentDTO> IncomeAdjustmentsDTOs;
 
-       public ObservableCollection<PartnershipMemberDTO> partnershipMemberCollection;
-       public ObservableCollection<CustomerDTO> CustomerDTOs;
+        public ObservableCollection<PartnershipMemberDTO> partnershipMemberCollection;
+        public ObservableCollection<CustomerDTO> CustomerDTOs;
         public ObservableCollection<Guid> customerAccountsIds;
 
         private IChannelService channelService;
@@ -158,30 +158,65 @@ namespace SwiftFinancials.Web.Controllers
             if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
             {
                 ViewBag.NavigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
+                return;
             }
-            else
+
+            var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
+            var roles = await _applicationUserManager.GetRolesAsync(user.Id);
+
+            var roleName = roles.FirstOrDefault();
+            var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO>
+                ?? await _channelService.GetNavigationItemsInRoleAsync(roleName, GetServiceHeader());
+
+            var allItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
+
+            // Step 1: Get allowed action/menu items
+            var allowedItems = allItems
+                .Where(item => navigationItemsInRole.Any(r => r.NavigationItemId == item.Id))
+                .ToList();
+
+            // Step 2: Recursively add parents (via AreaCode/Code)
+            var fullSet = new List<NavigationItemDTO>(allowedItems);
+
+            void AddParentRecursive(NavigationItemDTO item)
             {
-                var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
+                if (item.AreaCode == 0)
+                    return;
 
-                var roles = await _applicationUserManager.GetRolesAsync(user.Id);
-
-                var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO> ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
-
-                var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-
-                var parentsInNavigationItems = navigationItems.Where(x => x.ControllerName == null && x.ActionName == null).ToList();
-
-                var userNavigationItems = navigationItems.Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId)).ToList();
-
-                userNavigationItems.AddRange(parentsInNavigationItems);
-
-                userNavigationItems.ForEach(item => item.Child = userNavigationItems.Where(child => child.AreaCode == item.Code).ToList());
-
-                userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
-
-                ViewBag.NavigationItems = userNavigationItems.ToList();
+                var parent = allItems.FirstOrDefault(p => p.Code == item.AreaCode);
+                if (parent != null && !fullSet.Any(x => x.Id == parent.Id))
+                {
+                    fullSet.Add(parent);
+                    AddParentRecursive(parent); // keep going up
+                }
             }
+
+            foreach (var item in allowedItems)
+            {
+                AddParentRecursive(item);
+            }
+
+            // Step 3: Build runtime hierarchy (Child list)
+            foreach (var parent in fullSet)
+            {
+                parent.Child = fullSet
+                    .Where(child => child.AreaCode == parent.Code)
+                    .ToList();
+            }
+
+            // Step 4: Remove empty containers (no controller/action, no children)
+            fullSet.RemoveAll(x =>
+                x.ControllerName == null &&
+                x.ActionName == null &&
+                (x.Child == null || x.Child.Count == 0)
+            );
+
+            ViewBag.NavigationItems = fullSet
+                .GroupBy(x => x.Id)
+                .Select(g => g.First())
+                .ToList();
         }
+
 
 
         [NonAction]
@@ -250,7 +285,7 @@ namespace SwiftFinancials.Web.Controllers
 
             return cashRequestTypeSelectList;
 
-           
+
         }
 
         [NonAction]
@@ -488,7 +523,7 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
-        protected List<SelectListItem> GetGeneralTransactionTypeSelectList (string selectedValue)
+        protected List<SelectListItem> GetGeneralTransactionTypeSelectList(string selectedValue)
         {
 
             List<SelectListItem> generalTransactionType = new List<SelectListItem>();
@@ -750,7 +785,7 @@ namespace SwiftFinancials.Web.Controllers
         [NonAction]
         protected List<SelectListItem> GetSalaryHeadCategorySelectList(string selectedValue)
         {
-            List<SelectListItem> salaryHeadCategory= new List<SelectListItem>();
+            List<SelectListItem> salaryHeadCategory = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(SalaryHeadCategory)).Cast<SalaryHeadCategory>().Select(v => new SelectListItem
             {
@@ -1044,7 +1079,7 @@ namespace SwiftFinancials.Web.Controllers
 
 
 
-        
+
         [NonAction]
         protected List<SelectListItem> GetLoanPaymentFrequencyPerYearSelectList(string selectedValue)
         {
@@ -1418,7 +1453,7 @@ namespace SwiftFinancials.Web.Controllers
             return withdrawalNotificationStatus;
         }
 
-        
+
 
         [NonAction]
         protected List<SelectListItem> GetmembershipWithdrawalAuditOptionSelectList(string selectedValue)
@@ -1799,7 +1834,7 @@ namespace SwiftFinancials.Web.Controllers
 
             return alternateChannelKnownChargeType;
         }
-        
+
         [NonAction]
         protected List<SelectListItem> GetAlternateChannelTypeSelectList(string selectedValue)
         {
@@ -1885,7 +1920,7 @@ namespace SwiftFinancials.Web.Controllers
 
         [NonAction]
         protected List<SelectListItem> GetLoanDisbursementTypeBatchTypeSelectList(string selectedValue)
-        { 
+        {
             List<SelectListItem> disbursementType = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(DisbursementType)).Cast<DisbursementType>().Select(v => new SelectListItem
@@ -1899,7 +1934,7 @@ namespace SwiftFinancials.Web.Controllers
 
             return disbursementType;
         }
-       
+
 
         [NonAction]
         protected List<SelectListItem> GetBatchStatusTypeSelectList(string selectedValue)
@@ -1916,9 +1951,9 @@ namespace SwiftFinancials.Web.Controllers
             BatchStatus.AddRange(items);
 
             return BatchStatus;
-        } 
-        
-        
+        }
+
+
         [NonAction]
         protected List<SelectListItem> GetLoanCaseFilterTypeSelectList(string selectedValue)
         {
@@ -1934,9 +1969,9 @@ namespace SwiftFinancials.Web.Controllers
             LoanCaseFilter.AddRange(items);
 
             return LoanCaseFilter;
-        } 
-        
-        
+        }
+
+
         [NonAction]
         protected List<SelectListItem> GetDataAttachmentTransactionTypeTypeSelectList(string selectedValue)
         {
@@ -1953,8 +1988,8 @@ namespace SwiftFinancials.Web.Controllers
 
             return dataAttachmentTransactionType;
         }
-        
-        
+
+
         [NonAction]
         protected List<SelectListItem> GetImageTypeSelectList(string selectedValue)
         {
@@ -1971,8 +2006,8 @@ namespace SwiftFinancials.Web.Controllers
 
             return imageType;
         }
-        
-        
+
+
         [NonAction]
         protected List<SelectListItem> GetImageSourceTypeSelectList(string selectedValue)
         {
@@ -1989,8 +2024,8 @@ namespace SwiftFinancials.Web.Controllers
 
             return imageSource;
         }
-        
-        
+
+
         [NonAction]
         protected List<SelectListItem> GetDebitBatchesAsync(string selectedValue)
         {
@@ -2043,8 +2078,8 @@ namespace SwiftFinancials.Web.Controllers
             loancaseStatus.AddRange(items);
 
             return loancaseStatus;
-        } 
-        
+        }
+
         protected List<SelectListItem> GetMessagingGroupTargetSelectList(string selectedValue)
         {
             List<SelectListItem> messageGroupTarget = new List<SelectListItem>();
@@ -2083,9 +2118,9 @@ namespace SwiftFinancials.Web.Controllers
             return creditBatchEntryFilterSelectList;
 
 
-        } 
-        
-        
+        }
+
+
         [NonAction]
         protected List<SelectListItem> GetTextAlertStatusFilterSelectList(string selectedValue)
         {
@@ -2203,8 +2238,8 @@ namespace SwiftFinancials.Web.Controllers
 
             return microCreditGroupMemberDesignationSelectList;
         }
-        
-        
+
+
         [NonAction]
         protected List<SelectListItem> GetCustomerAccountStatementTypeSelectList(string selectedValue)
         {
@@ -2307,8 +2342,8 @@ namespace SwiftFinancials.Web.Controllers
 
             return KnownChargeType;
         }
-        
-        
+
+
         [NonAction]
         protected List<SelectListItem> GetLoanGuarantorStatusTypeSelectList(string selectedValue)
         {
