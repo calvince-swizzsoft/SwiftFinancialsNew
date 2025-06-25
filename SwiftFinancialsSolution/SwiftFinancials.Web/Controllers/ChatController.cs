@@ -8,9 +8,6 @@ using System.Web.Mvc;
 using SwiftFinancials.Web.Models;
 using Newtonsoft.Json;
 using Infrastructure.Crosscutting.Framework.Utils;
-using Infrastructure.Crosscutting.Framework.Utils;
-using System.Threading.Tasks;
-using System.Web.Mvc;
 using SwiftFinancials.Web.Attributes;
 using SwiftFinancials.Web.Identity;
 
