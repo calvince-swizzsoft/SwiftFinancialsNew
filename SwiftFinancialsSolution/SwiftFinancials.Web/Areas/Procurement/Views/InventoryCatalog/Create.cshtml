@@ -4,176 +4,181 @@
     ViewBag.Title = "Create Inventory Item";
 }
 
-<h2>Create Inventory Item</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Create Inventory Item</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Inventory", "Index", "InventoryCatalog", new { Area = "Inventory" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>New Inventory Item Details</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "col-form-label font-weight-bold" })
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Item Name" })
+                                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
 
-    <div class="form-horizontal">
-        <hr />
+                                @Html.LabelFor(m => m.BaseUOM, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.BaseUOM, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.BaseUOM, "", new { @class = "text-danger" })
 
-        @* Text Fields *@
-        <div class="form-group">
-            @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Name)
-            </div>
-        </div>
+                                @Html.LabelFor(model => model.GLAccount, htmlAttributes: new { @class = "control-label" })
+                                @Html.HiddenFor(model => model.GLAccount)
+                                @Html.EditorFor(model => model.GLAccount, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control", placeholder = "Parent Account Name" } })
+                                @Html.ValidationMessageFor(model => model.GLAccount, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Category, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Category, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Category)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.ReorderPoint, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.ReorderPoint, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.ReorderPoint, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.BaseUOM, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.BaseUOM, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.BaseUOM)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.UnitsPerPack, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.UnitsPerPack, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UnitsPerPack, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.PackageType, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.PackageType, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.PackageType)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.PaletteHI, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.PaletteHI, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.PaletteHI, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.GLAccount, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.GLAccount, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.GLAccount)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.UnitGrossWeight, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.UnitGrossWeight, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UnitGrossWeight, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.MainSupplier, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.MainSupplier, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.MainSupplier)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.EconomicOrder, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.EconomicOrder, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.EconomicOrder, "", new { @class = "text-danger" })
 
-        @* Numeric Fields *@
-        <div class="form-group">
-            @Html.LabelFor(m => m.ReorderPoint, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.ReorderPoint, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.ReorderPoint)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.UnitPrice, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.UnitPrice, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UnitPrice, "", new { @class = "text-danger" })
+                            </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.MaximumOrder, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.MaximumOrder, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.MaximumOrder)
-            </div>
-        </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.Category, htmlAttributes: new { @class = "col-form-label font-weight-bold" })
+                                @Html.TextBoxFor(m => m.Category, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Category, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.UnitsPerPack, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.UnitsPerPack, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.UnitsPerPack)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.PackageType, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.PackageType, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.PackageType, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.PaletteTI, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.PaletteTI, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.PaletteTI)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.MainSupplier, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.MainSupplier, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.MainSupplier, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.PaletteHI, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.PaletteHI, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.PaletteHI)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.MaximumOrder, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.MaximumOrder, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.MaximumOrder, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.UnitNetWeight, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.UnitNetWeight, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.UnitNetWeight)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.PaletteTI, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.PaletteTI, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.PaletteTI, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.UnitGrossWeight, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.UnitGrossWeight, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.UnitGrossWeight)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.UnitNetWeight, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.UnitNetWeight, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UnitNetWeight, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.LeadDays, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.LeadDays, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.LeadDays)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.LeadDays, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.LeadDays, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.LeadDays, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.EconomicOrder, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.EconomicOrder, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.EconomicOrder)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.UnitCost, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.UnitCost, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UnitCost, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.UnitCost, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.UnitCost, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.UnitCost)
-            </div>
-        </div>
+                                @Html.LabelFor(m => m.MonthlyDemand, htmlAttributes: new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.MonthlyDemand, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.MonthlyDemand, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.UnitPrice, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.UnitPrice, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.UnitPrice)
-            </div>
-        </div>
+                        <div class="form-group row mt-4">
+                            @Html.LabelFor(m => m.Remarks, htmlAttributes: new { @class = "col-sm-2 col-form-label text-right font-weight-bold" })
+                            <div class="col-sm-10">
+                                @Html.TextAreaFor(m => m.Remarks, new { @class = "form-control", rows = 3 })
+                                @Html.ValidationMessageFor(m => m.Remarks, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.MonthlyDemand, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.MonthlyDemand, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.MonthlyDemand)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(m => m.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextAreaFor(m => m.Remarks, new { @class = "form-control", rows = 3 })
-                @Html.ValidationMessageFor(m => m.Remarks)
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+                        <div class="form-group row">
+                            <div class="col-sm-10 offset-sm-2">
+                                <button type="submit" class="btn btn-primary">Create</button>
+                                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary ml-2" })
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+
+    <script>
+
+            //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#GLAccount').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+        });</script>
 }
-
-

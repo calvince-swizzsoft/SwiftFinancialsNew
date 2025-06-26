@@ -76,6 +76,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
             using (var conn = new SqlConnection(_connectionString))
             {
                 var cmd = new SqlCommand(@"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     INSERT INTO InventoryCatalog (
                         Id, Name, Category, BaseUOM, PackageType, GLAccount, MainSupplier,
                         ReorderPoint, MaximumOrder, UnitsPerPack, PaletteTI, PaletteHI,
@@ -121,7 +122,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
 
-        public async Task<ActionResult> DetailsAsync(Guid? id)
+        public async Task<ActionResult> Details(Guid? id)
         {
             InventoryCatalogDTO item = null;
             await ServeNavigationMenus();
@@ -173,7 +174,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
 
-        public async Task<ActionResult> EditAsync(Guid? id)
+        public async Task<ActionResult> Edit(Guid? id)
         {
             InventoryCatalogDTO item = null;
             await ServeNavigationMenus();

@@ -1,155 +1,124 @@
 ﻿@model Application.MainBoundedContext.DTO.InventoryCatalogDTO
 
 @{
-    ViewBag.Title = "View Inventory Item";
+    ViewBag.Title = "Inventory Item Details";
 }
 
-<h2>Inventory Item Details</h2>
-
-<div class="form-horizontal">
-    <hr />
-
-    @* Text fields *@
-    <div class="form-group">
-        @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.Name</p>
-        </div>
+<!-- Page Heading -->
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Inventory Item Details</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Inventory", "Index", "InventoryCatalog", new { Area = "Inventory" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Details</strong>
+            </li>
+        </ol>
     </div>
+</div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Category, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.Category</p>
-        </div>
-    </div>
+<!-- Content -->
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Inventory Item Information</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content">
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.BaseUOM, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.BaseUOM</p>
-        </div>
-    </div>
+                    <div class="row">
+                        <!-- LEFT COLUMN -->
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Name</dt>
+                                <dd class="col-sm-7">@Model.Name</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.PackageType, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.PackageType</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Base UOM</dt>
+                                <dd class="col-sm-7">@Model.BaseUOM</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.GLAccount, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.GLAccount</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">GL Account</dt>
+                                <dd class="col-sm-7">@Model.GLAccount</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.MainSupplier, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.MainSupplier</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Reorder Point</dt>
+                                <dd class="col-sm-7">@Model.ReorderPoint</dd>
 
-    @* Integer fields *@
-    <div class="form-group">
-        @Html.LabelFor(m => m.ReorderPoint, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.ReorderPoint</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Units Per Pack</dt>
+                                <dd class="col-sm-7">@Model.UnitsPerPack</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.MaximumOrder, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.MaximumOrder</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Palette HI</dt>
+                                <dd class="col-sm-7">@Model.PaletteHI</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.UnitsPerPack, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.UnitsPerPack</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Gross Weight</dt>
+                                <dd class="col-sm-7">@Model.UnitGrossWeight</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.PaletteTI, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.PaletteTI</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Economic Order</dt>
+                                <dd class="col-sm-7">@Model.EconomicOrder</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.PaletteHI, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.PaletteHI</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Unit Price</dt>
+                                <dd class="col-sm-7">@Model.UnitPrice.ToString("C")</dd>
+                            </dl>
+                        </div>
 
-    @* Decimal fields *@
-    <div class="form-group">
-        @Html.LabelFor(m => m.UnitNetWeight, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.UnitNetWeight</p>
-        </div>
-    </div>
+                        <!-- RIGHT COLUMN -->
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Category</dt>
+                                <dd class="col-sm-7">@Model.Category</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.UnitGrossWeight, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.UnitGrossWeight</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Package Type</dt>
+                                <dd class="col-sm-7">@Model.PackageType</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.LeadDays, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.LeadDays</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Main Supplier</dt>
+                                <dd class="col-sm-7">@Model.MainSupplier</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.EconomicOrder, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.EconomicOrder</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Max Order</dt>
+                                <dd class="col-sm-7">@Model.MaximumOrder</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.UnitCost, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.UnitCost</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Palette TI</dt>
+                                <dd class="col-sm-7">@Model.PaletteTI</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.UnitPrice, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.UnitPrice</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Net Weight</dt>
+                                <dd class="col-sm-7">@Model.UnitNetWeight</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.MonthlyDemand, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.MonthlyDemand</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Lead Days</dt>
+                                <dd class="col-sm-7">@Model.LeadDays</dd>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <p class="form-control-static">@Model.Remarks</p>
-        </div>
-    </div>
+                                <dt class="col-sm-5">Unit Cost</dt>
+                                <dd class="col-sm-7">@Model.UnitCost.ToString("C")</dd>
 
-    @* Navigation Buttons *@
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
-            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+                                <dt class="col-sm-5">Monthly Demand</dt>
+                                <dd class="col-sm-7">@Model.MonthlyDemand</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <!-- Remarks -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h5 class="font-weight-bold">Remarks</h5>
+                            <p class="text-muted">@Model.Remarks</p>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="form-group row mt-4">
+                        <div class="col-sm-12">
+                            @Html.ActionLink("Back to list", "Index", null, new { @class = "btn btn-secondary ml-2" })
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 </div>

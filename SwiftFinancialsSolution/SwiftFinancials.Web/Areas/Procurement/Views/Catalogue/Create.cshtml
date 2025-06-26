@@ -4,132 +4,157 @@
     ViewBag.Title = "Create Asset";
 }
 
-<h2>create a Catalogue</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Create Asset</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Asset Catalogue", "Index", "Catalogue", new { Area = "Asset" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
-@using (Html.BeginForm("Create", "Catalogue", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Asset Details</h5>
+                </div>
+                <div class="ibox-content">
+                    @using (Html.BeginForm("Create", "Catalogue", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Name, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Name)
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.Name, new { @class = "col-form-label font-weight-bold" })
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(m => m.Supplier, new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.Supplier, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Supplier, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(m => m.Location, new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Location, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(m => m.Manufacturer, new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.Manufacturer, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Manufacturer, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(m => m.TagNumber, new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.TagNumber, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.TagNumber, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(model => model.GLAccount, htmlAttributes: new { @class = "control-label" })
+                                @Html.HiddenFor(model => model.GLAccount)
+                                @Html.EditorFor(model => model.GLAccount, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control", placeholder = "G/L Lookup" } })
+                                @Html.ValidationMessageFor(model => model.GLAccount, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.AssetType, new { @class = "col-form-label font-weight-bold" })
+                                @Html.TextBoxFor(m => m.AssetType, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.AssetType, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(m => m.Department, new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.Department, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Department, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(m => m.SerialNumber, new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.SerialNumber, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.SerialNumber, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(m => m.Model, new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.Model, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Model, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(m => m.PicturePath, new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.PicturePath, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.PicturePath, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(m => m.PurchasePrice, new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.PurchasePrice, new { @class = "form-control", type = "number", step = "0.01" })
+                                @Html.ValidationMessageFor(m => m.PurchasePrice, "", new { @class = "text-danger" })
+
+                                @Html.LabelFor(m => m.ResidualValue, new { @class = "col-form-label font-weight-bold mt-3" })
+                                @Html.TextBoxFor(m => m.ResidualValue, new { @class = "form-control", type = "number", step = "0.01" })
+                                @Html.ValidationMessageFor(m => m.ResidualValue, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mt-4">
+                            @Html.LabelFor(m => m.Remarks, new { @class = "col-sm-2 col-form-label font-weight-bold" })
+                            <div class="col-sm-10">
+                                @Html.TextAreaFor(m => m.Remarks, new { @class = "form-control", rows = 3 })
+                                @Html.ValidationMessageFor(m => m.Remarks, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-10 offset-sm-2">
+                                <button type="submit" class="btn btn-primary">Create</button>
+                                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary ml-2" })
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.AssetType, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.AssetType, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.AssetType)
-        </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Supplier, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Supplier, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Supplier)
-        </div>
-    </div>
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Department, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Department, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Department)
-        </div>
-    </div>
+    <script>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Location, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Location)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.SerialNumber, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.SerialNumber, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.SerialNumber)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Manufacturer, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Manufacturer, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Manufacturer)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Model, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Model, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Model)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.TagNumber, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.TagNumber, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.TagNumber)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.PicturePath, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.PicturePath, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.PicturePath)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.GLAccount, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.GLAccount, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.GLAccount)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.PurchasePrice, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.PurchasePrice, new { @class = "form-control", type = "number", step = "0.01" })
-            @Html.ValidationMessageFor(m => m.PurchasePrice)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.ResidualValue, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.ResidualValue, new { @class = "form-control", type = "number", step = "0.01" })
-            @Html.ValidationMessageFor(m => m.ResidualValue)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Remarks, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextAreaFor(m => m.Remarks, 3, 50, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Remarks)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-success" />
-            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
-        </div>
-    </div>
-}
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+            //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#GLAccount').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+        });</script>
 }

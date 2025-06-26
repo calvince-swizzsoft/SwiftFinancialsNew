@@ -1,59 +1,96 @@
 ﻿@model Application.MainBoundedContext.DTO.AssetTypeDTO
 
-
 @{
     ViewBag.Title = "Edit Asset Type";
 }
 
-<div class="content-header">
-    <h1>Edit Asset Type</h1>
+<!-- Page Heading -->
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Edit Asset Type</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Asset Types", "Index", "AssetType", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Edit</strong>
+            </li>
+        </ol>
+    </div>
 </div>
 
-<div class="content">
-    <div class="box">
-        <div class="box-body">
-            @using (Html.BeginForm())
-            {
-                @Html.AntiForgeryToken()
-                @Html.HiddenFor(model => model.Id)
-                @Html.HiddenFor(model => model.CreatedDate)
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Name)
-                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.Name)
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.DepreciationMethod)
-                    @Html.DropDownListFor(model => model.DepreciationMethod,
-                        new SelectList(new[] { "Straight Line", "Declining Balance", "Double Declining Balance", "Sum of Years Digits" }),
-                        new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.DepreciationMethod)
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.UsefulLife)
-                    @Html.TextBoxFor(model => model.UsefulLife, new { @class = "form-control", type = "number" })
-                    @Html.ValidationMessageFor(model => model.UsefulLife)
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.IsTangible)
-                    <div class="checkbox">
-                        <label>
-                            @Html.CheckBoxFor(model => model.IsTangible) Yes
-                        </label>
+<!-- Main Form Content -->
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Edit Asset Type Details</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
                     </div>
                 </div>
 
-                <div class="box-footer">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-save"></i> Save
-                    </button>
-                    <a href="@Url.Action("Index")" class="btn btn-default">Cancel</a>
+                <div class="ibox-content">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.CreatedDate)
+
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.DepreciationMethod, htmlAttributes: new { @class = "font-weight-bold" })
+                                    @Html.DropDownListFor(model => model.DepreciationMethod,
+                                        new SelectList(new[] { "Straight Line", "Declining Balance", "Double Declining Balance", "Sum of Years Digits" }),
+                                        new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.DepreciationMethod, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.UsefulLife, htmlAttributes: new { @class = "font-weight-bold" })
+                                    @Html.TextBoxFor(model => model.UsefulLife, new { @class = "form-control", type = "number" })
+                                    @Html.ValidationMessageFor(model => model.UsefulLife, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="font-weight-bold">@Html.DisplayNameFor(model => model.IsTangible)</label>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            @Html.CheckBoxFor(model => model.IsTangible, new { @class = "form-check-input" }) Tangible
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="form-group row mt-4">
+                            <div class="col-sm-12 text-right">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
+                                <a href="@Url.Action("Index")" class="btn btn-secondary ml-2">Cancel</a>
+                            </div>
+                        </div>
+                    }
                 </div>
-            }
+            </div>
         </div>
     </div>
 </div>

@@ -2187,14 +2187,12 @@
     <Content Include="Areas\Procurement\Views\Catalogue\Details.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCatalog\Create.cshtml" />
-    <Content Include="Areas\Procurement\Views\InventoryCatalog\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
     <Content Include="Areas\Registry\Views\Catalogue\Index.cshtml" />
     <Content Include="Areas\Procurement\Views\Supplier\Details.cshtml" />
     <Content Include="Areas\Procurement\Views\PackageType\Details.cshtml" />
     <Content Include="Areas\Procurement\Views\PackageType\Edit.cshtml" />
-    <Content Include="Areas\Procurement\Views\InventoryCatalog\Details.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCategory\Edit.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCategory\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Details.cshtml" />
@@ -2204,6 +2202,9 @@
     <Content Include="Areas\Registry\Views\Registereducationvenue\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Registereducationvenue\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\Registereducationvenue\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\details.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Chat\Index.cshtml" />
   </ItemGroup>

@@ -4,68 +4,114 @@
     ViewBag.Title = "Asset Details";
 }
 
-<h2>Asset Details</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Asset Details</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Assets", "Index", "Catalogue", new { Area = "Asset" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Details</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
-<div class="form-horizontal">
-    <hr />
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Asset Information</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Name</label>
+                                <p>@Html.DisplayFor(m => m.Name)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Asset Type</label>
+                                <p>@Html.DisplayFor(m => m.AssetType)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Supplier</label>
+                                <p>@Html.DisplayFor(m => m.Supplier)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Department</label>
+                                <p>@Html.DisplayFor(m => m.Department)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Location</label>
+                                <p>@Html.DisplayFor(m => m.Location)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Serial Number</label>
+                                <p>@Html.DisplayFor(m => m.SerialNumber)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Manufacturer</label>
+                                <p>@Html.DisplayFor(m => m.Manufacturer)</p>
+                            </div>
+                        </div>
 
-    <dl class="dl-horizontal">
-        <dt>@Html.DisplayNameFor(m => m.Name)</dt>
-        <dd>@Html.DisplayFor(m => m.Name)</dd>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Model</label>
+                                <p>@Html.DisplayFor(m => m.Model)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Tag Number</label>
+                                <p>@Html.DisplayFor(m => m.TagNumber)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Picture</label>
+                                <p>
+                                    @if (!string.IsNullOrEmpty(Model.PicturePath))
+                                    {
+                                        <img src="@Url.Content(Model.PicturePath)" alt="Asset Image" style="max-width: 100%; height: auto;" />
+                                    }
+                                    else
+                                    {
+                                        <span>No image available</span>
+                                    }
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">GL Account</label>
+                                <p>@Html.DisplayFor(m => m.GLAccount)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Purchase Price</label>
+                                <p>@Html.DisplayFor(m => m.PurchasePrice)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Residual Value</label>
+                                <p>@Html.DisplayFor(m => m.ResidualValue)</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="font-weight-bold">Remarks</label>
+                                <p>@Html.DisplayFor(m => m.Remarks)</p>
+                            </div>
+                        </div>
+                    </div>
 
-        <dt>@Html.DisplayNameFor(m => m.Remarks)</dt>
-        <dd>@Html.DisplayFor(m => m.Remarks)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.AssetType)</dt>
-        <dd>@Html.DisplayFor(m => m.AssetType)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.Supplier)</dt>
-        <dd>@Html.DisplayFor(m => m.Supplier)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.Department)</dt>
-        <dd>@Html.DisplayFor(m => m.Department)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.PicturePath)</dt>
-        <dd>
-            @if (!string.IsNullOrEmpty(Model.PicturePath))
-            {
-                <img src="@Url.Content(Model.PicturePath)" alt="Asset Image" style="max-width: 200px; height: auto;" />
-            }
-            else
-            {
-                <span>No image available</span>
-            }
-        </dd>
-
-        <dt>@Html.DisplayNameFor(m => m.GLAccount)</dt>
-        <dd>@Html.DisplayFor(m => m.GLAccount)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.SerialNumber)</dt>
-        <dd>@Html.DisplayFor(m => m.SerialNumber)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.Manufacturer)</dt>
-        <dd>@Html.DisplayFor(m => m.Manufacturer)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.Model)</dt>
-        <dd>@Html.DisplayFor(m => m.Model)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.TagNumber)</dt>
-        <dd>@Html.DisplayFor(m => m.TagNumber)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.Location)</dt>
-        <dd>@Html.DisplayFor(m => m.Location)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.PurchasePrice)</dt>
-        <dd>@Html.DisplayFor(m => m.PurchasePrice)</dd>
-
-        <dt>@Html.DisplayNameFor(m => m.ResidualValue)</dt>
-        <dd>@Html.DisplayFor(m => m.ResidualValue)</dd>
-    </dl>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
-            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+                    <div class="mt-4 text-center">
+                        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary ml-2" })
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
