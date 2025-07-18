@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swift Financials - To-Do List</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -12,186 +14,150 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(120deg, #e0e5ec, #f9f9f9);
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            height: 100vh;
-            background: linear-gradient(135deg, #e0e0e0, #f8f9fa);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #2c3e50;
         }
 
         .container {
-            width: 70%;
+            width: 90%;
+            max-width: 1400px;
             display: flex;
             flex-direction: row;
-            gap: 20px;
+            gap: 30px;
             margin-top: 30px;
         }
 
         .todo-section, .task-categories {
-            background: linear-gradient(145deg, #ffffff, #e0e0e0);
+            background: rgba(255, 255, 255, 0.7);
             border-radius: 20px;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.7);
-            padding: 20px;
-            width: 50%;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(255, 255, 255, 0.3) inset;
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            flex: 1;
+            transition: all 0.4s ease;
         }
 
             .todo-section:hover, .task-categories:hover {
-                transform: translateY(-10px);
-                box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.2), -10px -10px 30px rgba(255, 255, 255, 0.7);
+                transform: scale(1.02);
+                box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15), 0 6px 10px rgba(255, 255, 255, 0.3) inset;
             }
 
         h1, h2, h3 {
             text-align: center;
-            color: #007bff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        input[type="text"] {
-            width: 70%;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 10px;
-            border: none;
-            background: #f9f9f9;
-            box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.2), inset -5px -5px 10px rgba(255, 255, 255, 0.7);
+            color: #0056d2;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
 
-            button.add-task:active {
-                transform: scale(0.95);
-                box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.7);
+        input[type="text"],
+        textarea#taskInput {
+            width: 70%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.05), inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #007bff, #0056d2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            }
+
+            button:active {
+                transform: scale(0.98);
+            }
+
+            button.delete {
+                background-color: #dc3545;
+                background-image: linear-gradient(135deg, #dc3545, #a71d2a);
+            }
+
+            button.clear-tasks {
+                background-color: #ffc107;
+                color: black;
+                font-weight: bold;
             }
 
         ul {
-            list-style-type: none;
-            margin-top: 20px;
+            list-style: none;
             padding-left: 0;
+            max-height: 600px;
+            overflow-y: auto;
         }
 
         li {
+            background: rgba(255,255,255,0.8);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            margin-bottom: 10px;
-            background: linear-gradient(145deg, #ffffff, #e0e0e0);
-            border-radius: 15px;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.7);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
             li:hover {
-                transform: translateY(-10px);
-                box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.2), -10px -10px 30px rgba(255, 255, 255, 0.7);
+                transform: translateY(-5px);
+                background-color: #f0f8ff;
             }
 
             li.completed {
                 text-decoration: line-through;
-                opacity: 0.6;
+                opacity: 0.5;
             }
+
+        .datetime {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
 
         .buttons {
             display: flex;
             gap: 10px;
         }
 
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 7px;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1), -3px -3px 8px rgba(255, 255, 255, 0.6);
-            transition: transform 0.3s ease;
-        }
-
-            button:hover {
-                transform: scale(1.1);
-            }
-
-            button:active {
-                transform: scale(0.9);
-            }
-
-        .delete {
-            background-color: red;
-        }
-
-        .datetime {
-            font-size: 12px;
-            color: #888;
-        }
-
-        .category {
-            margin-bottom: 20px;
-        }
-
-            .category ul {
-                max-height: 200px; 
-                overflow-y: auto;
-            }
-
-                .category ul::-webkit-scrollbar {
-                    width: 8px;
-                }
-
-                .category ul::-webkit-scrollbar-thumb {
-                    background-color: #007bff;
-                    border-radius: 10px;
-                }
-
-                .category ul::-webkit-scrollbar-track {
-                    background-color: #f1f1f1;
-                }
-
         .task-count {
+            color: #2b6cb0;
+            font-weight: bold;
             font-size: 14px;
-            color: #007bff;
         }
 
-        button.add-task {
-            width: 50px;
-            padding: 10px;
+        .category ul::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .category ul::-webkit-scrollbar-thumb {
             background-color: #007bff;
-            color: white;
-            border: none;
             border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.7);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        button.clear-tasks {
-            background-color: #dc3545; 
-            width: 100px;
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.7);
-            color: white;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        .category ul::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
         }
-
-            button.clear-tasks:active {
-                transform: scale(0.95);
-                box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.7);
-            }
-
-        textarea#taskInput {
-            width: /*calc(100% - 70px)*/ 40%;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 10px;
-            border: none;
-            background: #f9f9f9;
-            box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.2), inset -5px -5px 10px rgba(255, 255, 255, 0.7);
-            margin-bottom: 20px;
-            resize: vertical; 
-        }
-
     </style>
 </head>
 <body>
@@ -256,14 +222,14 @@
         function createTaskElement(task, showButtons = false) {
             let li = document.createElement("li");
             li.innerHTML = `
-                            <span class="task">${task.text}</span>
-                            <span class="datetime">Created Date: ${task.datetime}</span>
-                            <div class="buttons">
-                                <button onclick="toggleComplete(this)">✔</button>
-                                <button onclick="editTask(this)">✏️</button>
-                                <button class="delete" onclick="deleteTask(this)">✖</button>
-                            </div>
-                        `;
+                                <span class="task">${task.text}</span>
+                                <span class="datetime">Created Date: ${task.datetime}</span>
+                                <div class="buttons">
+                                    <button onclick="toggleComplete(this)">✔</button>
+                                    <button onclick="editTask(this)">✏️</button>
+                                    <button class="delete" onclick="deleteTask(this)">✖</button>
+                                </div>
+                            `;
             if (task.completed) {
                 li.classList.add("completed");
             }
@@ -372,7 +338,7 @@
             taskList.innerHTML = "";
 
             let tasks = getTasksFromLocalStorage();
-            tasks = []; 
+            tasks = [];
             saveTasksToLocalStorage(tasks);
 
             updateTaskCategories();

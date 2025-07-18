@@ -30,7 +30,7 @@
                 Swift Financials
             </div>
             <div class="col-md-6 text-right">
-                <small>© 2023></small>
+                <small>© <span id="year"></span></small>
             </div>
         </div>
     </div>
@@ -45,5 +45,9 @@
             $("input:text,form").attr("autocomplete", "off");
         })
     </script>
+    <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+
 </body>
 </html>

@@ -253,7 +253,7 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
                 dataAttachmentEntryDTO.BirthDate = (DateTime)customer.IndividualBirthDate;
                 dataAttachmentEntryDTO.DesignationDescription = customer.IndividualEmploymentDesignation;
-                dataAttachmentEntryDTO.EmploymentDate = (DateTime)customer.IndividualEmploymentDate;
+                dataAttachmentEntryDTO.EmploymentDate = (DateTime)customer.IndividualBirthDate;
 
 
                 dataAttachmentEntryDTO.IndividualTypeDescription = customer.IndividualTypeDescription;

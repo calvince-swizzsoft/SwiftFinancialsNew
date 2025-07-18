@@ -621,6 +621,7 @@
     <Compile Include="Areas\FrontOffice\Controllers\InHouseController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\SundryPaymentsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\AttendanceLogsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeDocumentsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PaySlipsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PeriodClosingController.cs" />
@@ -699,6 +700,8 @@
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditGroupsController.cs" />
     <Compile Include="Areas\MicroCredit\Controllers\MicroCreditOfficersController.cs" />
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
+    <Compile Include="Areas\Procurement\Controllers\CatalogueController.cs" />
+    <Compile Include="Areas\Procurement\Controllers\InventoryCatalogController.cs" />
     <Compile Include="Areas\Procurement\ProcurementAreaRegistration.cs" />
     <Compile Include="Areas\Procurement\Controllers\AssetTypesController.cs" />
     <Compile Include="Areas\Procurement\Controllers\InventoryCategoryController.cs" />
@@ -709,6 +712,7 @@
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\BindingModelBase.cs" />
     <Compile Include="Areas\Registry\Controllers\BranchLinkageController.cs" />
+    <Compile Include="Areas\Registry\Controllers\CatalogueController.cs" />
     <Compile Include="Areas\Registry\Controllers\ChargeExemptionsController.cs" />
     <Compile Include="Areas\Registry\Controllers\ConditionalLendingController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
@@ -722,6 +726,7 @@
     <Compile Include="Areas\Registry\Controllers\FindEducationRegisterAsync.cs" />
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\NextOfKinController.cs" />
+    <Compile Include="Areas\Registry\Controllers\RecallController.cs" />
     <Compile Include="Areas\Registry\Controllers\ReceiveController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\SingleDestinationController.cs" />
@@ -749,6 +754,7 @@
     <Compile Include="Configuration\DashboardAppSettingsCollection.cs" />
     <Compile Include="Configuration\DashboardAppSettingsElement.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ChatController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -767,6 +773,8 @@
     <Compile Include="Identity\SmsService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\OpenAIRequest.cs" />
+    <Compile Include="Models\OpenAIResponse.cs" />
     <Compile Include="PDF\CreatePdf.cs" />
     <Compile Include="PDF\PdfHeaderFooter.cs" />
     <Compile Include="PDF\RegisteredLoans.cs" />
@@ -2114,7 +2122,6 @@
     <Content Include="UploadedCheques\bank_a7f1f13c-c986-42f4-b98e-b1e76ce97878.pdf" />
     <Content Include="UploadedCheques\bank_b3d58210-93a3-4327-b4cf-a61f4a81570b.pdf" />
     <Content Include="UploadedCheques\bank_be37d048-64b2-4d9b-ba0f-5af34d7fa986.pdf" />
-    <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2140,6 +2147,7 @@
     <Folder Include="File\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\Control\" />
+    <Folder Include="Views\Default\" />
     <Folder Include="Views\Lookup\" />
     <Folder Include="Views\MemberStatements\" />
     <Folder Include="Views\Reporting\" />
@@ -2164,11 +2172,41 @@
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Edit.cshtml" />
     <Content Include="Areas\Procurement\Views\UnitOfMeasurement\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Receive\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\AccountAlerts\Index.cshtml" />
     <Content Include="Areas\Registry\Views\AccountAlerts\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Recall\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\AssetTypes\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\AssetTypes\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCategory\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\PackageType\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\Supplier\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\Supplier\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\Catalogue\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\Catalogue\Create.cshtml" />
+    <Content Include="Areas\Procurement\Views\Catalogue\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\Catalogue\Details.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Catalogue\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\Supplier\Details.cshtml" />
+    <Content Include="Areas\Procurement\Views\PackageType\Details.cshtml" />
+    <Content Include="Areas\Procurement\Views\PackageType\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCategory\Edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCategory\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\AttendanceLogs\Details.cshtml" />
+    <Content Include="Areas\Procurement\Views\AssetTypes\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Registry\Views\Registereducationvenue\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Registereducationvenue\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Registereducationvenue\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Registereducationvenue\Index.cshtml" />
+    <Content Include="Areas\Procurement\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\edit.cshtml" />
+    <Content Include="Areas\Procurement\Views\InventoryCatalog\details.cshtml" />
     <None Include="packages.config" />
-    <Content Include="_ViewStart.cshtml" />
+    <Content Include="Views\Chat\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DistributedServices.Seedwork\DistributedServices.Seedwork.csproj">
@@ -2190,6 +2228,10 @@
     <ProjectReference Include="..\SwiftFinancials.Presentation.Shared\SwiftFinancials.Presentation.Shared.csproj">
       <Project>{B1EA34BF-3885-466F-AACE-568AD3F24938}</Project>
       <Name>SwiftFinancials.Presentation.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SwiftFinancials.TextAlertDispatcher\SwiftFinancials.TextAlertDispatcher.Celcom.csproj">
+      <Project>{660BAE5C-4432-4B7C-8CB0-E860B8B3465D}</Project>
+      <Name>SwiftFinancials.TextAlertDispatcher.Celcom</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

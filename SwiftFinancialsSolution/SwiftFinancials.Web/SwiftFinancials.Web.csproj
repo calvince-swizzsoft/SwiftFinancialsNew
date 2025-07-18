@@ -759,6 +759,7 @@
     <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MasterController.cs" />
+    <Compile Include="Controllers\MTransactionController.cs" />
     <Compile Include="EXCEL\createExcel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -773,6 +774,7 @@
     <Compile Include="Identity\SmsService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\MTransaction.cs" />
     <Compile Include="Models\OpenAIRequest.cs" />
     <Compile Include="Models\OpenAIResponse.cs" />
     <Compile Include="PDF\CreatePdf.cs" />
@@ -935,7 +937,10 @@
     <Content Include="Global.asax" />
     <Content Include="Images\bank.jpg" />
     <Content Include="Images\idDemo_Front.jpg" />
+    <Content Include="Images\Login.jpg" />
     <Content Include="Images\lockscreenPadlock.png" />
+    <Content Include="Images\LogoSwiftFinancials.png" />
+    <Content Include="Images\Logoimage.jpg" />
     <Content Include="Images\MIA.JPG" />
     <Content Include="Images\padlock.jpg" />
     <Content Include="Images\passportDemo.jpg" />
@@ -2197,16 +2202,19 @@
     <Content Include="Areas\Procurement\Views\InventoryCategory\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\AttendanceLogs\Details.cshtml" />
     <Content Include="Areas\Procurement\Views\AssetTypes\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\Registereducationvenue\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Registereducationvenue\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Registereducationvenue\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\Registereducationvenue\Index.cshtml" />
-    <Content Include="Areas\Procurement\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCatalog\edit.cshtml" />
     <Content Include="Areas\Procurement\Views\InventoryCatalog\details.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Chat\Index.cshtml" />
+    <Content Include="Views\MTransaction\Index.cshtml" />
+    <Content Include="Views\MTransaction\Details.cshtml" />
+    <Content Include="Views\MTransaction\Create.cshtml" />
+    <Content Include="Views\MTransaction\Edit.cshtml" />
+    <Content Include="Views\MTransaction\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DistributedServices.Seedwork\DistributedServices.Seedwork.csproj">

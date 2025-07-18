@@ -256,7 +256,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return Json(new { success = true, entries = creditBatchEntryDTOs });
         }
 
-
         [HttpPost]
         public async Task<JsonResult> Remove(Guid id)
         {

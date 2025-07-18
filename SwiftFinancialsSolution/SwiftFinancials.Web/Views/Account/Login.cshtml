@@ -26,7 +26,7 @@
         {
             <div class="widget-head-color-box p-lg text-center">
                 <div class="logo-container">
-                    <img alt="Swift Financials" class="rounded" src="~/Images/MIA.jpg">
+                    <img alt="Swift Financials" src="@Url.Content("~/Images/Login.jpg")" width="350" class="rounded shadow">
                 </div>
                 @Html.AntiForgeryToken()
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -44,7 +44,10 @@
                 <p class="m-t">
                     @Html.ActionLink("Forgot your password?", "ForgotPassword", new { @class = "text-primary" })
                 </p>
-                <p class="font-weight-bold text-primary"> Copyright &copy; 2024 | Swift Financials. </p>
+                <p class="font-weight-bold text-primary">
+                    Copyright &copy; <span id="copyright-year"></span> | Swift Financials.
+                </p>
+
             </div>
         }
     </div>
@@ -55,6 +58,9 @@
     @Scripts.Render("~/bundles/inspinia")
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        document.getElementById("copyright-year").textContent = new Date().getFullYear();
+    </script>
     <script>
         particlesJS("particles-js", {
             "particles": {

@@ -1,0 +1,59 @@
+﻿@model SwiftFinancials.Web.Models.MTransaction
+@{
+    ViewBag.Title = "Create Transaction";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">Create New Transaction</h4>
+        </div>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ClientCode)
+                    @Html.TextBoxFor(m => m.ClientCode, new { @class = "form-control", placeholder = "Enter client code" })
+                    @Html.ValidationMessageFor(m => m.ClientCode, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.AccountNo)
+                    @Html.TextBoxFor(m => m.AccountNo, new { @class = "form-control", placeholder = "Enter account number" })
+                    @Html.ValidationMessageFor(m => m.AccountNo, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Amount)
+                    @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", placeholder = "Enter amount", type = "number", step = "0.01" })
+                    @Html.ValidationMessageFor(m => m.Amount, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="card-footer text-right">
+                <button type="submit" class="btn btn-primary">Create</button>
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-outline-secondary ml-2" })
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <!-- ensure jQuery validation & unobtrusive plugins are loaded -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        // Enhance Bootstrap-style validation using MVC's unobtrusive approach
+        (function ($) {
+            var defaultOpts = {
+                highlight: function (e) { $(e).closest('.form-group').addClass('has-error').removeClass('has-success'); },
+                unhighlight: function (e) { $(e).closest('.form-group').removeClass('has-error').addClass('has-success'); }
+            };
+            $.validator.setDefaults(defaultOpts);
+        })(jQuery);
+    </script>
+}

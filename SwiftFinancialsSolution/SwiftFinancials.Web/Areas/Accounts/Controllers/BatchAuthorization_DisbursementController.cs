@@ -160,7 +160,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         #region B2C Transfer
                         if (!string.IsNullOrWhiteSpace(customer.AddressMobileLine))
                         {
-                            var formattedPhone = "254700000001";
+                            var formattedPhone = "";
                             var response = await mpesaHelper.SendB2CAsync(formattedPhone, findLoanCase.ApprovedAmount);
                             // Optional: log or handle response
                         }

@@ -69,6 +69,13 @@
                 </a>
             </li>
 
+            <li class="@Html.IsSelected("Home")">
+                <a href="@Url.Action("Index", "MTransaction", new { Area = ""})" style="color: #a7b1c2;">
+                    <i class="fa fa-money"></i>
+                    <span class="nav-label">Mobile Transactions</span>
+                </a>
+            </li>
+
             @* Dynamic Menu Rendering *@
             @{
                 var menuList = ViewBag.NavigationItems as List<Application.MainBoundedContext.DTO.AdministrationModule.NavigationItemDTO>;
@@ -78,6 +85,8 @@
                     @RenderDynamicMenu(menuList)
                 }
             }
+
+            
         </ul>
     </div>
 </nav>
