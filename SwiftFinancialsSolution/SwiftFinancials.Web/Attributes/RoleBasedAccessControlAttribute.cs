@@ -72,7 +72,7 @@ namespace SwiftFinancials.Web.Attributes
             set { webConfigurationService = value; }
         }
 
-        [NonAction]
+
         public ServiceHeader GetServiceHeader()
         {
             return _webConfigurationService.GetServiceHeader();

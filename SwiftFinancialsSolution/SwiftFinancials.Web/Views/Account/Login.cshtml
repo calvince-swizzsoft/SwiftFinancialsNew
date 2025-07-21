@@ -6,169 +6,366 @@
 }
 
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Login</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Secure Login - Swift Financials</title>
 
     @Styles.Render("~/font-awesome/css")
     @Styles.Render("~/Content/css")
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
     <link href="~/Scripts/css/login.css" rel="stylesheet" />
-</head>
 
-<body class="bg-transparent">
-    <div id="particles-js"></div>
-    <div class="panel-body center-orientation text-center animated fadeInDown">
-        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "m-t", role = "form" }))
-        {
-            <div class="widget-head-color-box p-lg text-center">
-                <div class="logo-container">
-                    <img alt="Swift Financials" src="@Url.Content("~/Images/Login.jpg")" width="350" class="rounded shadow">
-                </div>
-                @Html.AntiForgeryToken()
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="middle-box form-group form-group-lg">
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control text-dark rounded", @placeholder = "Enter email", @required = "" })
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                </div>
-                <div class="middle-box form-group form-group-lg">
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-control text-dark rounded", @placeholder = "Password", @required = "" })
-                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                </div>
-                <div class="middle-box form-group form-group-lg">
-                    <button type="submit" class="btn btn-rounded block full-width m-b font-bold">Log in</button>
-                </div>
-                <p class="m-t">
-                    @Html.ActionLink("Forgot your password?", "ForgotPassword", new { @class = "text-primary" })
-                </p>
-                <p class="font-weight-bold text-primary">
-                    Copyright &copy; <span id="copyright-year"></span> | Swift Financials.
-                </p>
-
-            </div>
+    <style>
+        * {
+            box-sizing: border-box;
         }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.5s ease, color 0.3s ease;
+        }
+
+        #particles-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-wrapper {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            max-width: 940px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-out;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-image {
+            flex: 1;
+            background: url('/Images/Login.jpg') center center / cover no-repeat;
+        }
+
+        .login-form {
+            flex: 1;
+            padding: 60px 50px;
+            background: rgba(255, 255, 255, 0.96);
+            transition: background 0.3s ease;
+        }
+
+            .login-form h2 {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 10px;
+                color: #0d2545;
+            }
+
+            .login-form p {
+                font-size: 0.95rem;
+                color: #666;
+                margin-bottom: 30px;
+            }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+            .form-group i {
+                position: absolute;
+                top: 50%;
+                left: 14px;
+                transform: translateY(-50%);
+                color: #0074D9;
+                font-size: 1rem;
+            }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1px solid #ddd;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            background-color: #fdfdfd;
+        }
+
+            .form-control:focus {
+                border-color: #0074D9;
+                outline: none;
+                box-shadow: 0 0 8px rgba(0, 116, 217, 0.25);
+            }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 30px;
+            background: linear-gradient(to right, #0074D9, #00c6ff);
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+            .btn:hover {
+                background: linear-gradient(to right, #005fa3, #00a0e3);
+                transform: scale(1.02);
+                box-shadow: 0 6px 20px rgba(0, 116, 217, 0.4);
+            }
+
+        .text-end {
+            margin-top: 12px;
+            text-align: right;
+        }
+
+            .text-end a {
+                font-size: 0.9rem;
+                color: #0074D9;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+
+                .text-end a:hover {
+                    color: #004b8e;
+                }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: #777;
+        }
+
+        /* Theme Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 26px;
+            margin-bottom: 20px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+
+        input:checked + .slider {
+            background-color: #0074D9;
+        }
+
+            input:checked + .slider:before {
+                transform: translateX(20px);
+            }
+
+        body.light-mode {
+            background: #ffffff !important;
+            color: #111 !important;
+        }
+
+            body.light-mode .login-form {
+                background: rgba(255, 255, 255, 0.98);
+            }
+
+            body.light-mode .form-control {
+                background-color: #f6f6f6;
+                border-color: #ccc;
+            }
+
+            body.light-mode .btn {
+                background: linear-gradient(to right, #0066cc, #00aaff);
+            }
+
+            body.light-mode .text-end a {
+                color: #0066cc;
+            }
+
+            body.light-mode .footer {
+                color: #555;
+            }
+
+        @@media (max-width: 768px) {
+            .login-wrapper {
+                flex-direction: column;
+                margin-top: 1rem;
+            }
+
+            .login-image {
+                display: none;
+            }
+
+            .login-form {
+                padding: 40px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+
+    <div class="container">
+        <div class="login-wrapper">
+            <div class="login-image"></div>
+
+            <div class="login-form">
+                <!-- Theme toggle -->
+                <div style="text-align: right;">
+                    <label class="switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <h2>Welcome Back</h2>
+                <p>Login to your Swift Financials account</p>
+
+                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        <i class="fa fa-user"></i>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email address", required = "" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <i class="fa fa-lock"></i>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password", required = "" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn">Log In</button>
+                    </div>
+
+                    <div class="text-end">
+                        @Html.ActionLink("Forgot your password?", "ForgotPassword", null, new { @class = "text-primary" })
+                    </div>
+
+                    <div class="footer text-center mt-4">
+                        &copy; <span id="year"></span> Swift Financials · All rights reserved.
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/plugins/slimScroll")
-    @Scripts.Render("~/bundles/inspinia")
-
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
     <script>
-        document.getElementById("copyright-year").textContent = new Date().getFullYear();
-    </script>
-    <script>
-        particlesJS("particles-js", {
-            "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
-                    }
-                },
-                "color": {
-                    "value": "#007bff"
-                },
-                "shape": {
-                    "type": "circle",
-                    "stroke": {
-                        "width": 0,
-                        "color": "#000000"
-                    },
-                    "polygon": {
-                        "nb_sides": 5
-                    }
-                },
-                "opacity": {
-                    "value": 0.5,
-                    "random": false,
-                    "anim": {
-                        "enable": false,
-                        "speed": 1,
-                        "opacity_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "size": {
-                    "value": 3,
-                    "random": true,
-                    "anim": {
-                        "enable": false,
-                        "speed": 40,
-                        "size_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#007bff",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 6,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "bounce": false,
-                    "attract": {
-                        "enable": false,
-                        "rotateX": 600,
-                        "rotateY": 1200
-                    }
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "repulse"
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push"
-                    },
-                    "resize": true
-                },
-                "modes": {
-                    "grab": {
-                        "distance": 400,
-                        "line_linked": {
-                            "opacity": 1
-                        }
-                    },
-                    "bubble": {
-                        "distance": 400,
-                        "size": 40,
-                        "duration": 2,
-                        "opacity": 8,
-                        "speed": 3
-                    },
-                    "repulse": {
-                        "distance": 200,
-                        "duration": 0.4
-                    },
-                    "push": {
-                        "particles_nb": 4
-                    },
-                    "remove": {
-                        "particles_nb": 2
-                    }
-                }
-            },
-            "retina_detect": true
+        // Update year
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        // Theme toggle
+        document.getElementById("themeToggle").addEventListener("change", function () {
+            document.body.classList.toggle("light-mode");
         });
 
+        // Particles.js
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 40 },
+                color: { value: "#00bfff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.4 },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 120,
+                    color: "#00bfff",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" }
+                },
+                modes: {
+                    repulse: { distance: 100, duration: 0.4 },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
     </script>
 </body>
-
 </html>

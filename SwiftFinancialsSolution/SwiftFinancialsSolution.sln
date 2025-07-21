@@ -153,6 +153,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.Apis", "Swi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.WebApi", "SwiftFinancilas.WebApi\SwiftFinancials.WebApi.csproj", "{F156BEC9-E542-4D0E-9492-34FB840E59F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApis", "TestApis\TestApis.csproj", "{4E12EE41-622D-48CC-A2FD-11F2AD0E2BFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -422,6 +424,12 @@ Global
 		{F156BEC9-E542-4D0E-9492-34FB840E59F1}.DebugLocal|Any CPU.Build.0 = Debug|Any CPU
 		{F156BEC9-E542-4D0E-9492-34FB840E59F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F156BEC9-E542-4D0E-9492-34FB840E59F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E12EE41-622D-48CC-A2FD-11F2AD0E2BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E12EE41-622D-48CC-A2FD-11F2AD0E2BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E12EE41-622D-48CC-A2FD-11F2AD0E2BFD}.DebugLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E12EE41-622D-48CC-A2FD-11F2AD0E2BFD}.DebugLocal|Any CPU.Build.0 = Debug|Any CPU
+		{4E12EE41-622D-48CC-A2FD-11F2AD0E2BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E12EE41-622D-48CC-A2FD-11F2AD0E2BFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -496,6 +504,7 @@ Global
 		{46E9CAB3-91A9-4224-852E-08447AD1F78D} = {4C488AA7-E8C4-4A53-BFEB-05C87752FAE1}
 		{7F428B8E-7E21-493A-9B95-985A81A72ECE} = {BF256B4A-AB6B-4D1E-A335-E9D6D377016E}
 		{F156BEC9-E542-4D0E-9492-34FB840E59F1} = {BF256B4A-AB6B-4D1E-A335-E9D6D377016E}
+		{4E12EE41-622D-48CC-A2FD-11F2AD0E2BFD} = {BF256B4A-AB6B-4D1E-A335-E9D6D377016E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24D31609-C5B7-4C31-9618-B4E7669C4305}

@@ -1,6 +1,4 @@
 ﻿using DistributedServices.MainBoundedContext.Identity;
-using Infrastructure.Crosscutting.Framework.Utils;
-using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,11 +8,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using SwiftFinancials.Web.Attributes;
-using SwiftFinancials.Web.Configuration;
-using SwiftFinancials.Web.Helpers;
-using SwiftFinancials.Web.Services;
-using SwiftFinancials.Presentation.Infrastructure.Services;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using System.Collections.ObjectModel;
 using Application.MainBoundedContext.DTO.AccountsModule;
@@ -22,17 +15,22 @@ using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using Infrastructure.Crosscutting.Framework.Utils;
+using TestApis.Configuration;
+using Microsoft.AspNet.Identity;
+using TestApis.Helpers;
+using TestApis.Services;
 using SwiftFinancials.Presentation.Infrastructure.Models;
-using Domain.MainBoundedContext.AdministrationModule.Aggregates.BankBranchAgg;
+using SwiftFinancials.Presentation.Infrastructure.Services;
+using System.Web.Http;
 //using Application.MainBoundedContext.FrontOfficeModule.Services;
 
-namespace SwiftFinancials.Web.Controllers
+namespace TestApis.Controllers
 {
     /// <summary>
     /// Master controller that does setup of things that should always be done.
     /// </summary>
-    [CustomErrorHandling]
-    public class MasterController : Controller
+    public class MasterController : ApiController
     {
         public ObservableCollection<LevySplitDTO> LevySplitDTOs;
         public ObservableCollection<CustomerAccountSignatoryDTO> customerAccountSignatoryDTOs;
@@ -157,8 +155,7 @@ namespace SwiftFinancials.Web.Controllers
         {
             if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
             {
-                ViewBag.NavigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-                return;
+               
             }
 
             var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
@@ -211,10 +208,7 @@ namespace SwiftFinancials.Web.Controllers
                 (x.Child == null || x.Child.Count == 0)
             );
 
-            ViewBag.NavigationItems = fullSet
-                .GroupBy(x => x.Id)
-                .Select(g => g.First())
-                .ToList();
+           
         }
 
 
