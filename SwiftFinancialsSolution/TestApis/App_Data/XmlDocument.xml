@@ -486,11 +486,5 @@
             Master controller that does setup of things that should always be done.
             </summary>
         </member>
-        <member name="M:TestApis.Controllers.ValuesController.Get">
-            <summary>
-            Test Apis 
-            </summary>
-            <returns></returns>
-        </member>
     </members>
 </doc>

@@ -214,6 +214,7 @@
     <Compile Include="Identity\EmailService.cs" />
     <Compile Include="Identity\IdentityExtensions.cs" />
     <Compile Include="Identity\SmsService.cs" />
+    <Compile Include="Models\ApiResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IWebConfigurationService.cs" />
     <Compile Include="Services\WebConfigurationService.cs" />
@@ -271,7 +272,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

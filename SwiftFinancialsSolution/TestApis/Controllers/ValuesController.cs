@@ -1,85 +1,86 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Web.Http;
+using TestApis.Services;
 using Application.MainBoundedContext.DTO.AdministrationModule;
-using DistributedServices.MainBoundedContext.Identity;
+using SwiftFinancials.Presentation.Infrastructure.Services;
+using TestApis.Models;
+using Application.MainBoundedContext.DTO.RegistryModule;
 
 namespace TestApis.Controllers
 {
-    [RoutePrefix("api/values")] // Base path: /api/values
-    public class ValuesController : MasterController
+    [RoutePrefix("api/values")]
+    public class ValuesController : ApiController
     {
-        /// <summary>
-        /// Test Apis 
-        /// </summary>
-        /// <returns></returns>
-        // GET: api/values
-        [HttpGet]
-        [Route("{id:guid}")]
-        public IHttpActionResult Get()
+        private readonly MasterController master;
+        private IChannelService _channelService;
+
+        public IChannelService ChannelService
         {
-            var values = new string[] { "value1", "value2" };
-            return Ok(values);
+            get { return _channelService; }
+            set { _channelService = value; }
         }
-        
-        // GET: api/values/{id}
+
+
+        public ValuesController()
+        {
+            master = new MasterController();
+            var channelService = master._channelService;
+        }
+
         [HttpGet]
         [Route("")]
-        public async Task<IHttpActionResult> GetAsync(Guid id)
+        public async Task<IHttpActionResult> Get()
         {
             try
             {
-                await ServeNavigationMenus();
-
-                var generalLedgerDTO = await _channelService.FindCustomersAsync( GetServiceHeader());
-                if (generalLedgerDTO == null)
-                    return NotFound();
-
-                var batchEntries = await _channelService.FindGeneralLedgerEntriesByGeneralLedgerIdAsync(id, GetServiceHeader());
-
-                var result = new
+                var serviceHeader = master.GetServiceHeader();
+                var channelService = master._channelService;
+                if (channelService == null)
                 {
-                    GeneralLedger = generalLedgerDTO,
-                    Entries = batchEntries
-                };
+                    return Json(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "ChannelService is not initialized.",
+                        Data = null
+                    });
+                }
 
-                return Ok(result);
+
+                var customers = await channelService.FindCustomersAsync(serviceHeader);
+
+                return Json(new ApiResponse<ObservableCollection<CustomerDTO>>
+                {
+                    Success = true,
+                    Message = (customers != null && customers.Count > 0)
+                        ? $"{customers.Count} customers retrieved."
+                        : "No customers found.",
+                    Data = customers ?? new ObservableCollection<CustomerDTO>()
+                });
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "An error occurred while retrieving customers.",
+                    Data = ex.Message
+                });
             }
         }
 
-        // POST: api/values
-        [HttpPost]
-        [Route("")]
-        public IHttpActionResult Post([FromBody] string value)
+        [HttpGet]
+        [Route("test")]
+        public IHttpActionResult Test()
         {
-            if (string.IsNullOrWhiteSpace(value))
-                return BadRequest("Value cannot be empty.");
-
-            return Ok(new { Message = "Value received", Value = value });
+            return Ok(new
+            {
+                Success = true,
+                Message = "Test GET endpoint is working!",
+                Timestamp = DateTime.UtcNow
+            });
         }
 
-        // PUT: api/values/{id}
-        [HttpPut]
-        [Route("{id:int}")]
-        public IHttpActionResult Put(int id, [FromBody] string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                return BadRequest("Value cannot be empty.");
-
-            return Ok(new { Message = $"Value with ID {id} updated.", Value = value });
-        }
-
-        // DELETE: api/values/{id}
-        [HttpDelete]
-        [Route("{id:int}")]
-        public IHttpActionResult Delete(int id)
-        {
-            return Ok(new { Message = $"Value with ID {id} deleted." });
-        }
     }
 }

@@ -67,6 +67,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             _logger = logger;
             _channelFactoryHashtable = new Dictionary<string, object>();
         }
+
+        public ChannelService()
+        {
+        }
 #endif
 
         #region Membership
@@ -15652,12 +15656,43 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+        public Task<ObservableCollection<CustomerDTO>> FindCustomersnewAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<CustomerDTO>>();
+
+            ICustomerService service = GetService<ICustomerService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<CustomerDTO> response = ((ICustomerService)result.AsyncState).EndFindCustomers(result);
+
+                    tcs.TrySetResult(new ObservableCollection<CustomerDTO>(response ?? new List<CustomerDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCustomers(asyncCallback, service);
+
+            return tcs.Task;
+        }
 
         public Task<ObservableCollection<CustomerDTO>> FindCustomersAsync(ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<CustomerDTO>>();
 
-            ICustomerService service = GetService<ICustomerService>(serviceHeader);
+            ICustomerService service = GetService2<ICustomerService>(serviceHeader);
 
             AsyncCallback asyncCallback = (result =>
             {
@@ -40498,6 +40533,42 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
 #endif
+
+        private TChannel GetService2<TChannel>(ServiceHeader serviceHeader, double timeoutMinutes = 10d)
+        {
+            if (SyncRoot == null)
+                throw new InvalidOperationException("SyncRoot is null");
+
+            lock (SyncRoot)
+            {
+                // Use hardcoded service header if null
+                if (serviceHeader == null)
+                {
+                    serviceHeader = new ServiceHeader
+                    {
+                        ApplicationDomainName = "SwiftFinancials", // Hardcoded fallback
+                        ApplicationUserName = "admin"              // Hardcoded fallback
+                    };
+                }
+
+                var endpointConfigurationName = typeof(TChannel).ToString();
+
+                ChannelFactory<TChannel> factory = null;
+                var configurationName = endpointConfigurationName.Substring(endpointConfigurationName.LastIndexOf('.') + 1);
+                factory = new ChannelFactory<TChannel>(configurationName);
+                _channelFactoryHashtable[endpointConfigurationName] = factory;
+
+                var channel = factory.CreateChannel();
+
+                var contextChannel = channel as IContextChannel;
+                if (contextChannel != null)
+                {
+                    contextChannel.OperationTimeout = TimeSpan.FromMinutes(timeoutMinutes);
+                }
+
+                return channel;
+            }
+        }
 
         private TChannel GetService<TChannel>(ServiceHeader serviceHeader, double timeoutMinutes = 10d)
         {

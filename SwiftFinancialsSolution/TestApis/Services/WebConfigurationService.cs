@@ -1,5 +1,7 @@
 ﻿using Infrastructure.Crosscutting.Framework.Utils;
+using System;
 using System.Configuration;
+using System.Web;
 using TestApis.Configuration;
 
 namespace TestApis.Services
@@ -8,21 +10,19 @@ namespace TestApis.Services
     {
         public ServiceHeader GetServiceHeader()
         {
-            ServiceHeader serviceHeader = null;
-
-            var dashboardAppConfigSection = (DashboardAppConfigSection)ConfigurationManager.GetSection("dashboardAppConfiguration");
-
-            foreach (var settingsItem in dashboardAppConfigSection.DashboardAppSettingsItems)
+            var serviceHeader = new ServiceHeader
             {
-                var dashboardAppSettingsElement = (DashboardAppSettingsElement)settingsItem;
-
-                if (dashboardAppSettingsElement != null && dashboardAppSettingsElement.Enabled == 1)
-                {
-                    serviceHeader = new ServiceHeader { ApplicationDomainName = dashboardAppSettingsElement.UniqueId };
-
-                    break;
-                }
-            }
+                ApplicationUserName = "TestUser",
+                ApplicationDomainName = "TestDomain",
+                EnvironmentUserName = "JohnDoe",
+                EnvironmentProcessorId = "john",
+                EnvironmentMachineName = Environment.MachineName,
+                EnvironmentMACAddress = "000000",
+                EnvironmentMotherboardSerialNumber = "000000",
+                EnvironmentDomainName = Environment.UserDomainName,
+                EnvironmentOSVersion = Environment.OSVersion.ToString(),
+                EnvironmentIPAddress = HttpContext.Current?.Request?.UserHostAddress ?? "127.0.0.1"
+            };
 
             return serviceHeader;
         }

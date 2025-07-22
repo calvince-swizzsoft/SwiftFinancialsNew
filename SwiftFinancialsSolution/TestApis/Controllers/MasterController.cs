@@ -30,7 +30,7 @@ namespace TestApis.Controllers
     /// <summary>
     /// Master controller that does setup of things that should always be done.
     /// </summary>
-    public class MasterController : ApiController
+    public class MasterController : Controller
     {
         public ObservableCollection<LevySplitDTO> LevySplitDTOs;
         public ObservableCollection<CustomerAccountSignatoryDTO> customerAccountSignatoryDTOs;
@@ -81,19 +81,20 @@ namespace TestApis.Controllers
         public ObservableCollection<Guid> customerAccountsIds;
 
         private IChannelService channelService;
+
         public IChannelService _channelService
         {
             get
             {
                 if (channelService == null)
                 {
-                    channelService = DependencyResolver.Current.GetService<IChannelService>();
+                    // Hard-coded fallback instead of using DependencyResolver
+                    channelService = new ChannelService();
                 }
                 return channelService;
             }
             set { channelService = value; }
         }
-
 
         private ApplicationRoleManager applicationRoleManager;
         public ApplicationRoleManager _applicationRoleManager
@@ -140,9 +141,10 @@ namespace TestApis.Controllers
 
         public ServiceHeader GetServiceHeader()
         {
-            return _webConfigurationService.GetServiceHeader();
+            // TEMPORARY TEST CODE
+            var configService = new WebConfigurationService(); // Manually instantiate
+            return configService.GetServiceHeader();
         }
-
 
         public async Task<ApplicationUser> GetCurrentUser()
         {
@@ -155,7 +157,7 @@ namespace TestApis.Controllers
         {
             if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
             {
-               
+
             }
 
             var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
@@ -208,7 +210,7 @@ namespace TestApis.Controllers
                 (x.Child == null || x.Child.Count == 0)
             );
 
-           
+
         }
 
 
