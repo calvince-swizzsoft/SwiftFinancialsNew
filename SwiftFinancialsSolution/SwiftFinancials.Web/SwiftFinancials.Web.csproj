@@ -702,6 +702,11 @@
     <Compile Include="Areas\MicroCredit\MicroCreditAreaRegistration.cs" />
     <Compile Include="Areas\Procurement\Controllers\CatalogueController.cs" />
     <Compile Include="Areas\Procurement\Controllers\InventoryCatalogController.cs" />
+    <Compile Include="Areas\Procurement\Model\PurchaseRequisitionDTO.cs" />
+    <Compile Include="Areas\Procurement\Model\RequestForQuotationDTO.cs" />
+    <Compile Include="Areas\Procurement\Model\RequisitionApprovalDTO.cs" />
+    <Compile Include="Areas\Procurement\Model\RequisitionItemDTO.cs" />
+    <Compile Include="Areas\Procurement\Model\VendorDTO.cs" />
     <Compile Include="Areas\Procurement\ProcurementAreaRegistration.cs" />
     <Compile Include="Areas\Procurement\Controllers\AssetTypesController.cs" />
     <Compile Include="Areas\Procurement\Controllers\InventoryCategoryController.cs" />

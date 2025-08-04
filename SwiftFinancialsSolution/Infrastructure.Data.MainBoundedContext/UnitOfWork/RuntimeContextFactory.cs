@@ -31,6 +31,18 @@ namespace Infrastructure.Data.MainBoundedContext.UnitOfWork
 
         string GetCachedConnectionString(ServiceHeader serviceHeader)
         {
+            serviceHeader = new ServiceHeader
+            {
+                ApplicationUserName = "SYSTEM",
+                ApplicationDomainName = "SwiftFin_Dev",
+                EnvironmentUserName = "SYSTEM",
+                EnvironmentProcessorId = "BFEBFBFF000506E3",
+                EnvironmentMachineName = Environment.MachineName,
+                EnvironmentMACAddress = "192.168.1.77,fe80::51d9:b7a7:83e0:63e1",
+                EnvironmentMotherboardSerialNumber = "192.168.1.77,fe80::51d9:b7a7:83e0:63e1",
+                EnvironmentDomainName = Environment.UserDomainName,
+                EnvironmentOSVersion = Environment.OSVersion.ToString(),
+            };
             if (serviceHeader == null)
                 throw new ArgumentNullException("serviceHeader");
 

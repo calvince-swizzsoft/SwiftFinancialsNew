@@ -154,7 +154,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Pool G/L Account")]
-       
+
         public Guid? PoolChartOfAccountId { get; set; }
 
         [DataMember]
@@ -197,7 +197,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Id")]
         public Guid ProductId { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Product")]
         public string ProductName { get; set; }

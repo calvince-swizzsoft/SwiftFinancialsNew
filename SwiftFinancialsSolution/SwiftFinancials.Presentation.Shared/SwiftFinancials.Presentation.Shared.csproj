@@ -857,6 +857,9 @@
     <Compile Include="..\Application.MainBoundedContext.DTO\InventoryDTO.cs">
       <Link>Application.MainBoundedContext.DTO\InventoryDTO.cs</Link>
     </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\CategoryBindingModel.cs">
+      <Link>Application.MainBoundedContext.DTO\CategoryBindingModel.cs</Link>
+    </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\JQueryDataTablesModel.cs">
       <Link>Application.MainBoundedContext.DTO\JQueryDataTablesModel.cs</Link>
     </Compile>

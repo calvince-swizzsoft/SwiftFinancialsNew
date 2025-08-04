@@ -66,5 +66,6 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
 
         [DataMember]
         public ObservableCollection<BankBranchDTO> BankBranchesDTO { get; set; }
+        public string ErrorMessageResult { get; set; }
     }
 }

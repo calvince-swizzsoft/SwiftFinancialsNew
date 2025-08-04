@@ -207,7 +207,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #region BankBranchDTO
 
         Task<ObservableCollection<BankBranchDTO>> FindBankBranchesByBankIdAsync(Guid bankId, ServiceHeader serviceHeader = null);
-
+        //Task AddJournalAsync(TransactionModel journalDTO, bool v, ServiceHeader serviceHeader);
         Task<bool> UpdateBankBranchesByBankIdAsync(Guid bankId, ObservableCollection<BankBranchDTO> bankBranches, ServiceHeader serviceHeader = null);
 
         #endregion

@@ -116,7 +116,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public List<GeneralLedgerDTO> generalLedgerDTOs;
         public GeneralLedgerDTO LedgerDTO { get; set; }
 
-
+        [DataMember]
         public ObservableCollection<GeneralLedgerEntryDTO> GeneralLedgerEntries { get; set; }
 
 

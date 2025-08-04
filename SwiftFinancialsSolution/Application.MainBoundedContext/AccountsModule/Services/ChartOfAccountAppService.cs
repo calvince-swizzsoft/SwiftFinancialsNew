@@ -96,6 +96,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         {
             if (chartOfAccountDTO != null)
             {
+                
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                     //get the specification

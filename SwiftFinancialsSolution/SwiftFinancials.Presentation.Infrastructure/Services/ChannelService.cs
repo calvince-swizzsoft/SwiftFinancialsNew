@@ -42,7 +42,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
     {
         private static readonly object SyncRoot = new object();
 
-        private readonly Dictionary<string, object> _channelFactoryHashtable;
+        private readonly Dictionary<string, object> _channelFactoryHashtable = new Dictionary<string, object>();
 
 #if SILVERLIGHT
         private readonly SwiftFinancials.Common.Notification.IMessageService _messageService;
@@ -40574,33 +40574,47 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         {
             lock (SyncRoot)
             {
-                serviceHeader = serviceHeader ?? new ServiceHeader { ApplicationDomainName = DefaultSettings.Instance.CurrentAppDomainName, ApplicationUserName = DefaultSettings.Instance.CurrentAppUserName };
+                // Ensure DefaultSettings.Instance is not null
+                var defaultSettings = DefaultSettings.Instance ?? throw new InvalidOperationException("DefaultSettings.Instance is null");
+                // Use hardcoded service header if null
+                if (serviceHeader == null)
+                {
+                    serviceHeader = new ServiceHeader
+                    {
+                        ApplicationDomainName = "SwiftFinancials", // Hardcoded fallback
+                        ApplicationUserName = "admin"              // Hardcoded fallback
+                    };
+                }
+                string endpointConfigurationName = typeof(TChannel).ToString();
 
-                var endpointConfigurationName = string.Format("{0}", typeof(TChannel));
+                // Validate presence of a dot to safely get configurationName
+                int lastDot = endpointConfigurationName.LastIndexOf('.');
+                if (lastDot == -1)
+                    throw new InvalidOperationException($"Invalid endpoint configuration name: {endpointConfigurationName}");
 
-                ChannelFactory<TChannel> factory = null;
+                string configurationName = endpointConfigurationName.Substring(lastDot + 1);
 
+                // Ensure hashtable is initialized
+                if (_channelFactoryHashtable == null)
+                    throw new InvalidOperationException("_channelFactoryHashtable is not initialized.");
+
+                ChannelFactory<TChannel> factory;
                 if (_channelFactoryHashtable.ContainsKey(endpointConfigurationName))
                 {
                     factory = (ChannelFactory<TChannel>)_channelFactoryHashtable[endpointConfigurationName];
                 }
                 else
                 {
-                    var configurationName = endpointConfigurationName.Substring(endpointConfigurationName.LastIndexOf('.') + 1);
-
                     factory = new ChannelFactory<TChannel>(configurationName);
-
-                    _channelFactoryHashtable.Add(endpointConfigurationName, factory);
+                    _channelFactoryHashtable[endpointConfigurationName] = factory;
                 }
 
-                if (factory.Endpoint.Behaviors.Any())
-                    factory.Endpoint.Behaviors.Clear();
+                TChannel channel = factory.CreateChannel();
 
-                factory.Endpoint.Behaviors.Add(new CustomBehavior(serviceHeader));
-
-                var channel = factory.CreateChannel();
-
-                ((IContextChannel)channel).OperationTimeout = TimeSpan.FromMinutes(timeoutMinutes);
+                if (channel is IContextChannel contextChannel)
+                {
+                    contextChannel.OperationTimeout = TimeSpan.FromMinutes(timeoutMinutes);
+                }
 
                 return channel;
             }

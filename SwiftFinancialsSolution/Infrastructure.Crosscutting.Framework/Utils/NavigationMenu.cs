@@ -607,7 +607,14 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                     Code =  0x00007530 + 6},
                 new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Unit Of Measure", Icon = "fa fa-balance-scale", ControllerName = "UnitOfMeasurement", ActionName = "Index", AreaName = "Control",
                     Code =  0x00007530 + 7},
-
+                 new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Tenders", Icon = "fa-solid fa-file-contract", ControllerName = "Tenders", ActionName = "Index", AreaName = "Control",
+                    Code =  0x00007530 + 8},
+                  new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Evaluation", Icon = "fa-solid fa-file-contract", ControllerName = "Evaluation", ActionName = "Index", AreaName = "Control",
+                    Code =  0x00007530 + 9},
+                      new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Bidings", Icon = "fa-solid fa-file-contract", ControllerName = "Bidings", ActionName = "Index", AreaName = "Control",
+                    Code =  0x00007530 + 10},
+                        new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Contracts", Icon = "fa-solid fa-file-contract", ControllerName = "Contracts", ActionName = "Index", AreaName = "Control",
+                    Code =  0x00007530 + 11},
                 //Operations
                 //..Assets
                 new NavigationMenu { AreaCode = 0x00007530 + 2, IsArea = true, Description = "Assets", Icon = "", Code = 0x00007530 + 8 },
