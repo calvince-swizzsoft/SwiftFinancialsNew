@@ -3708,4 +3708,107 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         [Description("Email Code")]
         EmailCode
     }
+
+
+
+
+
+
+
+    //added enums
+
+    public enum SalesOrderType
+    {
+        [Description("CASH")]
+        Cash = 0,
+        [Description("PREMIUM FINANCING")]
+        PREMIUMFINANCING = 1,
+    }
+
+    public enum PaymentFrequency
+    {
+        [Description("Monthly")]
+        Monthly = 1,
+        [Description("Weekly")]
+        Weekly = 2,
+        [Description("Daily")]
+        Daily = 3
+    }
+
+    public enum C2BTransactionCategory
+    {
+        [Description("Customer")]
+        Customer
+    }
+
+    public enum C2BTransactionStatus
+    {
+        [Description("Pending")]
+        Pending = 0,
+
+        [Description("Approved")]
+        Approved = 1,
+
+        [Description("Processed")]
+        Processed = 2,
+
+        [Description("Rejected")]
+        Rejected = 3,
+
+        [Description("Unknown")]
+        Unknown = 4,
+
+        [Description("Queued")]
+        Queued = 5,
+
+        [Description("Suspense")]
+        Suspense = 6,
+
+        [Description("Reversed")]
+        Reversed = 7,
+
+        [Description("Pending Reconciliation")]
+        PendingReconciliation = 8,
+
+        [Description("Waiting Customer Creation")]
+        Waiting = 9,
+
+        [Description("Reconciled")]
+        Reconciled = 10
+    }
+
+    public enum InventoryRecordStatus
+    {
+        [Description("Active")]
+        Active = 0,
+
+        [Description("Inactive")]
+        Inactive = 1,
+
+        [Description("Discontinued")]
+        Discontinued = 2,
+
+        [Description("Rejected")]
+        Rejected = 3,
+
+        [Description("Low Stock")]
+        LowStock = 4
+    }
+
+
+
+    public enum PurchaseOrderStatus
+    {
+        [Description("Pending")]
+        Pending = 0,
+
+        [Description("Approved")]
+        Approved = 1,
+
+        [Description("Rejected")]
+        Rejected = 2,
+
+        [Description("Completed")]
+        Completed = 3
+    }
 }

@@ -4,6 +4,7 @@ using Application.MainBoundedContext.DTO.AdministrationModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using Application.MainBoundedContext.DTO.InventoryModule;
 using Application.MainBoundedContext.DTO.MessagingModule;
 using Application.MainBoundedContext.DTO.MicroCreditModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
@@ -3038,6 +3039,90 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> MapSystemGeneralLedgerAccountCodeToChartOfAccountAsync(int systemGeneralLedgerAccountCode, Guid chartOfAccountId, ServiceHeader serviceHeader = null);
 
 
+
+        #endregion
+
+
+        //Added DTO
+        #region CategoryDTO
+
+        Task<PageCollectionInfo<CategoryDTO>> FindCategoriesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<CategoryDTO>> FindCategoryInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<CategoryDTO> AddCategoryAsync(CategoryDTO categoryDTO, ServiceHeader serviceHeader = null);
+
+        Task<bool> UpdateCategoryAsync(CategoryDTO categoryDTO, ServiceHeader serviceHeader = null);
+
+        Task<CategoryDTO> FindCategoryAsync(Guid categoryId, ServiceHeader serviceHeader = null);
+
+        Task<List<CategoryDTO>> FindCategoriesAsync(ServiceHeader serviceHeader = null);
+
+        #endregion
+
+        #region InventoryDTO
+
+        Task<PageCollectionInfo<InventoryDTO>> FindInventoriesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<InventoryDTO>> FindInventoriesInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<InventoryDTO> AddInventoryAsync(InventoryDTO InventoryDTO, ServiceHeader serviceHeader = null);
+
+        Task<bool> UpdateInventoryAsync(InventoryDTO InventoryDTO, ServiceHeader serviceHeader = null);
+
+        Task<InventoryDTO> FindInventoryAsync(Guid InventoryId, ServiceHeader serviceHeader = null);
+
+        Task<List<InventoryDTO>> FindInventoriesAsync(ServiceHeader serviceHeader = null);
+
+        #endregion
+
+        #region PurchaseOrderDTO
+
+        Task<PageCollectionInfo<PurchaseOrderDTO>> FindPurchaseOrderByFilterInPageAsync(int itemType, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<PurchaseOrderDTO>> FindPurchaseOrderInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<PurchaseOrderDTO> AddPurchaseOrderAsync(PurchaseOrderDTO purchaseOrderDTO, ServiceHeader serviceHeader = null);
+
+        Task<bool> UpdatePurchaseOrderAsync(PurchaseOrderDTO purchaseOrderDTO, ServiceHeader serviceHeader = null);
+
+        Task<PurchaseOrderDTO> FindPurchaseOrderAsync(Guid policyId, ServiceHeader serviceHeader = null);
+
+        Task<List<PurchaseOrderDTO>> FindPurchaseOrderByCodeAsync(string code, ServiceHeader serviceHeader = null);
+
+        Task<List<PurchaseOrderDTO>> FindPurchaseOrdersAsync(ServiceHeader serviceHeader = null);
+
+        Task<PurchaseOrderEntryDTO> AddPurchaseOrderEntryAsync(PurchaseOrderEntryDTO purchaseOrderEntryDTO, ServiceHeader serviceHeader = null);
+
+        Task<List<PurchaseOrderEntryDTO>> FindPurchaseOrderEntriesByPurchaseOrderIdAsync(Guid policyId, ServiceHeader serviceHeader = null);
+
+
+
+
+
+
+
+        #endregion
+
+        #region SalesOrderDTO
+
+        Task<PageCollectionInfo<SalesOrderDTO>> FindSalesOrdersByFilterInPageAsync(int itemType, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<SalesOrderDTO>> FindSalesOrdersInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<SalesOrderDTO> AddSalesOrderAsync(SalesOrderDTO salesOrderDTO, ServiceHeader serviceHeader = null);
+
+        Task<bool> UpdateSalesOrderAsync(SalesOrderDTO salesOrderDTO, ServiceHeader serviceHeader = null);
+
+        Task<SalesOrderDTO> FindSalesOrderAsync(Guid salesOrderId, ServiceHeader serviceHeader = null);
+
+        Task<List<SalesOrderDTO>> FindSalesOrderByCodeAsync(string code, ServiceHeader serviceHeader = null);
+
+        Task<List<SalesOrderDTO>> FindSalesOrdersAsync(ServiceHeader serviceHeader = null);
+
+        Task<SalesOrderEntryDTO> AddSalesOrderEntryAsync(SalesOrderEntryDTO salesOrderEntryDTO, ServiceHeader serviceHeader = null);
+
+        Task<List<SalesOrderEntryDTO>> FindSalesOrderEntriesBySalesOrderIdAsync(Guid salesOrderId, ServiceHeader serviceHeader = null);
 
         #endregion
 
