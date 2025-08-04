@@ -854,8 +854,41 @@
     <Compile Include="..\Application.MainBoundedContext.DTO\InventoryCatalogDTO.cs">
       <Link>Application.MainBoundedContext.DTO\InventoryCatalogDTO.cs</Link>
     </Compile>
-    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryDTO.cs">
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\CategoryBindingModel.cs">
+      <Link>Application.MainBoundedContext.DTO\CategoryBindingModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\CategoryDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\CategoryDTO.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\InventoryBindingModel.cs">
+      <Link>Application.MainBoundedContext.DTO\InventoryBindingModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\InventoryDTO.cs">
       <Link>Application.MainBoundedContext.DTO\InventoryDTO.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\PurchaseOrderBindingModel.cs">
+      <Link>Application.MainBoundedContext.DTO\PurchaseOrderBindingModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\PurchaseOrderDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\PurchaseOrderDTO.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\PurchaseOrderEntryBindingModel.cs">
+      <Link>Application.MainBoundedContext.DTO\PurchaseOrderEntryBindingModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\PurchaseOrderEntryDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\PurchaseOrderEntryDTO.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\SalesOrderBindingModel.cs">
+      <Link>Application.MainBoundedContext.DTO\SalesOrderBindingModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\SalesOrderDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\SalesOrderDTO.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\SalesOrderEntryBindingModel.cs">
+      <Link>Application.MainBoundedContext.DTO\SalesOrderEntryBindingModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\SalesOrderEntryDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\SalesOrderEntryDTO.cs</Link>
     </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\InventoryModule\CategoryBindingModel.cs">
       <Link>Application.MainBoundedContext.DTO\CategoryBindingModel.cs</Link>

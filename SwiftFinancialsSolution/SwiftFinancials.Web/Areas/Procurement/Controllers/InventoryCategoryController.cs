@@ -1,4 +1,5 @@
 ﻿using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.InventoryModule;
 using SwiftFinancials.Web.Controllers;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         {
             await ServeNavigationMenus();
 
-            var inventoryCategories = new List<InventoryCategoryDTO>();
+            var inventoryCategories = new List<InventoryDTO>();
 
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -27,7 +28,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
                 while (reader.Read())
                 {
-                    inventoryCategories.Add(new InventoryCategoryDTO
+                    inventoryCategories.Add(new InventoryDTO
                     {
                         Id = reader.GetGuid(reader.GetOrdinal("Id")),
                         Name = reader["Name"] as string,
@@ -47,7 +48,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(InventoryCategoryDTO inventoryCategory)
+        public async Task<ActionResult> Create(InventoryDTO inventoryCategory)
         {
             await ServeNavigationMenus();
 
@@ -75,7 +76,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         {
             await ServeNavigationMenus();
 
-            InventoryCategoryDTO category = null;
+            InventoryDTO category = null;
 
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -86,7 +87,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
                 if (reader.Read())
                 {
-                    category = new InventoryCategoryDTO
+                    category = new InventoryDTO
                     {
                         Id = reader.GetGuid(reader.GetOrdinal("Id")),
                         Name = reader["Name"] as string,
@@ -99,7 +100,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> EditAsync(InventoryCategoryDTO inventoryCategory)
+        public async Task<ActionResult> EditAsync(InventoryDTO inventoryCategory)
         {
             await ServeNavigationMenus();
 
@@ -125,7 +126,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
         {
             await ServeNavigationMenus();
 
-            InventoryCategoryDTO category = null;
+            InventoryDTO category = null;
 
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -136,7 +137,7 @@ namespace SwiftFinancials.Web.Areas.Procurement.Controllers
 
                 if (reader.Read())
                 {
-                    category = new InventoryCategoryDTO
+                    category = new InventoryDTO
                     {
                         Id = reader.GetGuid(reader.GetOrdinal("Id")),
                         Name = reader["Name"] as string,

@@ -34,6 +34,8 @@ using DistributedServices.Seedwork.ErrorHandlers;
 using SwiftFinancials.Presentation.Infrastructure.Disposable;
 using DistributedServices.Seedwork.EndpointBehaviors;
 using System.Runtime.Remoting.Channels;
+using Application.MainBoundedContext.DTO.InventoryModule;
+using SwiftFinancials.Presentation.Contracts.InventoryModule;
 
 namespace SwiftFinancials.Presentation.Infrastructure.Services
 {
@@ -40481,6 +40483,988 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
+        #endregion
+
+
+        //ADDED
+
+        #region CategoryDTO
+
+        public Task<PageCollectionInfo<CategoryDTO>> FindCategoriesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<CategoryDTO>>();
+
+            ICategoryService service = GetService<ICategoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<CategoryDTO> response = ((ICategoryService)result.AsyncState).EndFindCategoriesByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCategoriesByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<CategoryDTO>> FindCategoryInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<CategoryDTO>>();
+
+            ICategoryService service = GetService<ICategoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<CategoryDTO> response = ((ICategoryService)result.AsyncState).EndFindCategoriesInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCategoriesInPage(pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<CategoryDTO> AddCategoryAsync(CategoryDTO categoryDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<CategoryDTO>();
+
+            ICategoryService service = GetService<ICategoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    CategoryDTO response = ((ICategoryService)result.AsyncState).EndAddCategory(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddCategory(categoryDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> UpdateCategoryAsync(CategoryDTO categoryDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            ICategoryService service = GetService<ICategoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((ICategoryService)result.AsyncState).EndUpdateCategory(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateCategory(categoryDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<CategoryDTO> FindCategoryAsync(Guid categoryId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<CategoryDTO>();
+
+            ICategoryService service = GetService<ICategoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    CategoryDTO response = ((ICategoryService)result.AsyncState).EndFindCategory(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCategory(categoryId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<CategoryDTO>> FindCategoriesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<CategoryDTO>>();
+
+            ICategoryService service = GetService<ICategoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<CategoryDTO> response = ((ICategoryService)result.AsyncState).EndFindCategories(result);
+
+                    tcs.TrySetResult(new List<CategoryDTO>(response ?? new List<CategoryDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCategories(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        #endregion
+
+
+        #region InventoryDTO
+
+        public Task<List<InventoryDTO>> FindInventoriesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<InventoryDTO>>();
+
+            IInventoryService service = GetService<IInventoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<InventoryDTO> response = ((IInventoryService)result.AsyncState).EndFindInventories(result);
+
+                    tcs.TrySetResult(new List<InventoryDTO>(response ?? new List<InventoryDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindInventories(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<InventoryDTO>> FindInventoriesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<InventoryDTO>>();
+
+            IInventoryService service = GetService<IInventoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<InventoryDTO> response = ((IInventoryService)result.AsyncState).EndFindInventoriesByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindInventoriesByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<InventoryDTO>> FindInventoriesInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<InventoryDTO>>();
+
+            IInventoryService service = GetService<IInventoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<InventoryDTO> response = ((IInventoryService)result.AsyncState).EndFindInventoriesInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindInventoriesInPage(pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<InventoryDTO> AddInventoryAsync(InventoryDTO inventoryDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<InventoryDTO>();
+
+            IInventoryService service = GetService<IInventoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    InventoryDTO response = ((IInventoryService)result.AsyncState).EndAddInventory(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddInventory(inventoryDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> UpdateInventoryAsync(InventoryDTO inventoryDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            IInventoryService service = GetService<IInventoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IInventoryService)result.AsyncState).EndUpdateInventory(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateInventory(inventoryDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<InventoryDTO> FindInventoryAsync(Guid policyTypeId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<InventoryDTO>();
+
+            IInventoryService service = GetService<IInventoryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    InventoryDTO response = ((IInventoryService)result.AsyncState).EndFindInventory(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindInventory(policyTypeId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        #endregion
+
+
+        #region PurchaseOrderDTO
+
+        public Task<PageCollectionInfo<PurchaseOrderDTO>> FindPurchaseOrderByFilterInPageAsync(int itemType, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<PurchaseOrderDTO>>();
+
+            IPurchaseOrderService service = GetService<IPurchaseOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<PurchaseOrderDTO> response = ((IPurchaseOrderService)result.AsyncState).EndFindPurchaseOrdersByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindPurchaseOrdersByFilterInPage(itemType, text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<PurchaseOrderDTO>> FindPurchaseOrderInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<PurchaseOrderDTO>>();
+
+            IPurchaseOrderService service = GetService<IPurchaseOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<PurchaseOrderDTO> response = ((IPurchaseOrderService)result.AsyncState).EndFindPurchaseOrderInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindPurchaseOrderInPage(pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PurchaseOrderDTO> AddPurchaseOrderAsync(PurchaseOrderDTO purchaseOrderDTO, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<PurchaseOrderDTO>();
+
+            IPurchaseOrderService service = GetService<IPurchaseOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PurchaseOrderDTO response = ((IPurchaseOrderService)result.AsyncState).EndAddPurchaseOrder(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddPurchaseOrder(purchaseOrderDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> UpdatePurchaseOrderAsync(PurchaseOrderDTO purchaseOrderDTO, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            IPurchaseOrderService service = GetService<IPurchaseOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IPurchaseOrderService)result.AsyncState).EndUpdatePurchaseOrder(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdatePurchaseOrder(purchaseOrderDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PurchaseOrderDTO> FindPurchaseOrderAsync(Guid policyId, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<PurchaseOrderDTO>();
+
+            IPurchaseOrderService service = GetService<IPurchaseOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PurchaseOrderDTO response = ((IPurchaseOrderService)result.AsyncState).EndFindPurchaseOrder(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindPurchaseOrder(policyId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<PurchaseOrderDTO>> FindPurchaseOrderByCodeAsync(string code, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<List<PurchaseOrderDTO>>();
+
+            IPurchaseOrderService service = GetService<IPurchaseOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<PurchaseOrderDTO> response = ((IPurchaseOrderService)result.AsyncState).EndFindPurchaseOrderByCode(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindPurchaseOrderByCode(code, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<PurchaseOrderDTO>> FindPurchaseOrdersAsync(ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<List<PurchaseOrderDTO>>();
+
+            IPurchaseOrderService service = GetService<IPurchaseOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<PurchaseOrderDTO> response = ((IPurchaseOrderService)result.AsyncState).EndFindPolicies(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindPolicies(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PurchaseOrderEntryDTO> AddPurchaseOrderEntryAsync(PurchaseOrderEntryDTO purchaseOrderEntryDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PurchaseOrderEntryDTO>();
+
+            IPurchaseOrderService service = GetService<IPurchaseOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PurchaseOrderEntryDTO response = ((IPurchaseOrderService)result.AsyncState).EndAddPurchaseOrderEntry(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddPurchaseOrderEntry(purchaseOrderEntryDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<PurchaseOrderEntryDTO>> FindPurchaseOrderEntriesByPurchaseOrderIdAsync(Guid policyId, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<List<PurchaseOrderEntryDTO>>();
+
+            IPurchaseOrderService service = GetService<IPurchaseOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<PurchaseOrderEntryDTO> response = ((IPurchaseOrderService)result.AsyncState).EndFindPurchaseOrderEntriesBypurchaseOrderId(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindPurchaseOrderEntriesBypurchaseOrderId(policyId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+        #endregion
+
+
+        #region SalesOrderDTO
+
+        public Task<PageCollectionInfo<SalesOrderDTO>> FindSalesOrdersByFilterInPageAsync(int itemType, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<SalesOrderDTO>>();
+
+            ISalesOrderService service = GetService<ISalesOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<SalesOrderDTO> response = ((ISalesOrderService)result.AsyncState).EndFindSalesOrdersByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSalesOrdersByFilterInPage(itemType, text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<SalesOrderDTO>> FindSalesOrdersInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<SalesOrderDTO>>();
+
+            ISalesOrderService service = GetService<ISalesOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<SalesOrderDTO> response = ((ISalesOrderService)result.AsyncState).EndFindSalesOrdersInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSalesOrdersInPage(pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<SalesOrderDTO> AddSalesOrderAsync(SalesOrderDTO salesOrderDTO, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<SalesOrderDTO>();
+
+            ISalesOrderService service = GetService<ISalesOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    SalesOrderDTO response = ((ISalesOrderService)result.AsyncState).EndAddSalesOrder(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddSalesOrder(salesOrderDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> UpdateSalesOrderAsync(SalesOrderDTO salesOrderDTO, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            ISalesOrderService service = GetService<ISalesOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((ISalesOrderService)result.AsyncState).EndUpdateSalesOrder(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateSalesOrder(salesOrderDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<SalesOrderDTO> FindSalesOrderAsync(Guid salesOrderId, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<SalesOrderDTO>();
+
+            ISalesOrderService service = GetService<ISalesOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    SalesOrderDTO response = ((ISalesOrderService)result.AsyncState).EndFindSalesOrder(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSalesOrder(salesOrderId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<SalesOrderDTO>> FindSalesOrderByCodeAsync(string code, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<List<SalesOrderDTO>>();
+
+            ISalesOrderService service = GetService<ISalesOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<SalesOrderDTO> response = ((ISalesOrderService)result.AsyncState).EndFindSalesOrderByCode(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSalesOrderByCode(code, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<SalesOrderDTO>> FindSalesOrdersAsync(ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<List<SalesOrderDTO>>();
+
+            ISalesOrderService service = GetService<ISalesOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<SalesOrderDTO> response = ((ISalesOrderService)result.AsyncState).EndFindSalesOrders(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSalesOrders(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<SalesOrderEntryDTO> AddSalesOrderEntryAsync(SalesOrderEntryDTO salesOrderEntryDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<SalesOrderEntryDTO>();
+
+            ISalesOrderService service = GetService<ISalesOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    SalesOrderEntryDTO response = ((ISalesOrderService)result.AsyncState).EndAddSalesOrderEntry(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddSalesOrderEntry(salesOrderEntryDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
+        public Task<List<SalesOrderEntryDTO>> FindSalesOrderEntriesBySalesOrderIdAsync(Guid salesOrderId, ServiceHeader serviceHeader = null)
+        {
+            var tcs = new TaskCompletionSource<List<SalesOrderEntryDTO>>();
+
+            ISalesOrderService service = GetService<ISalesOrderService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<SalesOrderEntryDTO> response = ((ISalesOrderService)result.AsyncState).EndFindSalesOrderEntriesBySalesOrderId(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSalesOrderEntriesBySalesOrderId(salesOrderId, asyncCallback, service);
+
+            return tcs.Task;
+        }
 
         #endregion
 

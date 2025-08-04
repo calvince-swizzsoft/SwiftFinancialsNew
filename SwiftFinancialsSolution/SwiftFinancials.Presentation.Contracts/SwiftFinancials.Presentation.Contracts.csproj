@@ -141,8 +141,13 @@
     <Compile Include="HumanResourcesModule\ISalaryPeriodService.cs" />
     <Compile Include="HumanResourcesModule\ITrainingPeriodService.cs" />
     <Compile Include="IAuditLogService.cs" />
+    <Compile Include="ICategoryService.cs" />
     <Compile Include="IFileUploadService.cs" />
     <Compile Include="IMediaService.cs" />
+    <Compile Include="InventoryModule\ICategoryService.cs" />
+    <Compile Include="InventoryModule\IInventoryService.cs" />
+    <Compile Include="InventoryModule\IPurchaseOrderService.cs" />
+    <Compile Include="InventoryModule\ISalesOrderService.cs" />
     <Compile Include="IUtilityService.cs" />
     <Compile Include="MembershipModule\IMembershipManagerService.cs" />
     <Compile Include="MembershipModule\IPasswordManagerService.cs" />
@@ -180,5 +185,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

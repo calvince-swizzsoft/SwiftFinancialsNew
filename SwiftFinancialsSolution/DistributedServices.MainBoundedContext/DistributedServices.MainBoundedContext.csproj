@@ -254,6 +254,7 @@
     <Content Include="CashDepositRequestService.svc" />
     <Content Include="CashTransferRequestService.svc" />
     <Content Include="CashWithdrawalRequestService.svc" />
+    <Content Include="CategoryService.svc" />
     <Content Include="ChartOfAccountService.svc" />
     <Content Include="ChequeBookService.svc" />
     <Content Include="ChequeTypeService.svc" />
@@ -262,6 +263,9 @@
     <Content Include="CommissionService.svc" />
     <Content Include="CompanyService.svc" />
     <Content Include="ConditionalLendingService.svc" />
+    <Content Include="InventoryService.svc" />
+    <Content Include="PurchaseOrderService.svc" />
+    <Content Include="SalesOrderService.svc" />
     <Content Include="SystemGeneralLedgerAccountMappingService.svc" />
     <Content Include="CostCenterService.svc" />
     <Content Include="CreditBatchService.svc" />
@@ -347,7 +351,6 @@
     <Content Include="SalaryHeadService.svc" />
     <Content Include="SalaryPeriodService.svc" />
     <Content Include="SavingsProductService.svc" />
-    <Content Include="Service1.svc" />
     <Content Include="StandingOrderService.svc" />
     <Content Include="SuperSaverPayableService.svc" />
     <Content Include="TellerService.svc" />
@@ -412,6 +415,9 @@
     </Compile>
     <Compile Include="CashWithdrawalRequestService.svc.cs">
       <DependentUpon>CashWithdrawalRequestService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="CategoryService.svc.cs">
+      <DependentUpon>CategoryService.svc</DependentUpon>
     </Compile>
     <Compile Include="ChartOfAccountService.svc.cs">
       <DependentUpon>ChartOfAccountService.svc</DependentUpon>
@@ -479,8 +485,21 @@
     <Compile Include="Contracts\AccountsModule\IUnPayReasonService.cs" />
     <Compile Include="Contracts\AccountsModule\IWireTransferBatchService.cs" />
     <Compile Include="Contracts\AccountsModule\IWireTransferTypeService.cs" />
+    <Compile Include="ICategoryService.cs" />
+    <Compile Include="IInventoryService.cs" />
+    <Compile Include="InventoryService.svc.cs">
+      <DependentUpon>InventoryService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="IPurchaseOrderService.cs" />
+    <Compile Include="ISalesOrderService.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\MigrationsContextFactory.cs" />
+    <Compile Include="PurchaseOrderService.svc.cs">
+      <DependentUpon>PurchaseOrderService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="SalesOrderService.svc.cs">
+      <DependentUpon>SalesOrderService.svc</DependentUpon>
+    </Compile>
     <Compile Include="SystemGeneralLedgerAccountMappingService.svc.cs">
       <DependentUpon>SystemGeneralLedgerAccountMappingService.svc</DependentUpon>
     </Compile>
@@ -814,10 +833,6 @@
     <Compile Include="SavingsProductService.svc.cs">
       <DependentUpon>SavingsProductService.svc</DependentUpon>
     </Compile>
-    <Compile Include="Service1.svc.cs">
-      <DependentUpon>Service1.svc</DependentUpon>
-    </Compile>
-    <Compile Include="IService1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StandingOrderService.svc.cs">
       <DependentUpon>StandingOrderService.svc</DependentUpon>
