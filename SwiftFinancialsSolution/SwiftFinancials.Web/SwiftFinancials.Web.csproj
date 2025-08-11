@@ -604,6 +604,7 @@
     <Compile Include="Areas\Dashboard\Controllers\MessagingController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\MessagingGroupsController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\Pre_QualificationController.cs" />
+    <Compile Include="Areas\Dashboard\Controllers\SELECT.cs" />
     <Compile Include="Areas\Dashboard\Controllers\TextAlertsController.cs" />
     <Compile Include="Areas\DataImport\Controllers\MemberBalancesController.cs" />
     <Compile Include="Areas\DataImport\DataImportAreaRegistration.cs" />
