@@ -1,10 +1,9 @@
 ﻿@{
     ViewBag.Title = "ERP Executive Dashboard";
 }
-
 <style>
     body {
-        background-color: #f4f6f9;
+        background-color: #F4F6F9;
         font-family: 'Segoe UI', sans-serif;
     }
 
@@ -13,7 +12,6 @@
         border-radius: 12px;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
         transition: all 0.3s ease-in-out;
-        text-decoration: none;
     }
 
         .ibox:hover {
@@ -23,7 +21,7 @@
 
     .ibox-title {
         padding: 18px 24px;
-        border-bottom: 1px solid #e1e5eb;
+        border-bottom: 1px solid #E1E5EB;
         font-weight: 600;
         font-size: 17px;
         color: #333;
@@ -36,43 +34,26 @@
     .counter-number {
         font-size: 36px;
         font-weight: bold;
-        color: #007bff;
+        color: #007BFF;
     }
 
     .description {
         font-size: 14px;
-        color: #6c757d;
+        color: #6C757D;
     }
 
     .chart-container {
         height: 280px;
     }
 
-    .table thead th {
-        background: #007bff;
-        color: #fff;
-        border: none;
-    }
-
     .list-group-item {
         font-size: 14px;
-        border-left: 4px solid #007bff;
-        background-color: #f9fbff;
-    }
-
-    .form-label {
-        font-weight: 600;
-        margin-bottom: 6px;
-    }
-
-    .form-select, .form-control {
-        height: 45px;
-        font-size: 15px;
+        border-left: 4px solid #007BFF;
+        background-color: #F9FBFF;
     }
 </style>
 
 <div class="container-fluid">
-
     <!-- KPI Summary -->
     <div class="row mb-4">
         <div class="col-md-3 mb-3">
@@ -84,71 +65,47 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-3 mb-3">
             <div class="ibox">
                 <div class="ibox-title">Savings Accounts</div>
                 <div class="ibox-content text-center">
-                    <div class="counter-number" id="savings">345M</div>
-                    <div class="description">Active Savings</div>
+                    <div class="counter-number" id="totalSavingsAmount">KES 0</div>                    <div class="description">Active Savings</div>
                 </div>
             </div>
         </div>
-
         <div class="col-md-3 mb-3">
             <div class="ibox">
                 <div class="ibox-title">Loan Portfolio</div>
                 <div class="ibox-content text-center">
-                    <div class="counter-number" id="loans">0</div>
+                    <div class="counter-number" id="loans">KES 0</div>
                     <div class="description">Disbursed Loans</div>
                 </div>
             </div>
         </div>
-
         <div class="col-md-3 mb-3">
             <div class="ibox">
                 <div class="ibox-title">Dividends Paid</div>
                 <div class="ibox-content text-center">
-                    <div class="counter-number" id="dividends">0</div>
+                    <div class="counter-number" id="dividends">KES 5.3M</div>
                     <div class="description">Total Paid (KES)</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Filter Section -->
-    <!--<div class="row mb-4">
-        <div class="col-md-6">
-            <label for="savingsProductSelect" class="form-label">Savings Product</label>
-            <select id="savingsProductSelect" class="form-select">
-                <option value="">-- Select Product --</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label for="endDateInput" class="form-label">End Date</label>
-            <input type="date" id="endDateInput" class="form-control" />
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button id="fetchBalanceBtn" class="btn btn-primary w-100">Get Balance</button>
-        </div>
-    </div>-->
-
     <!-- Charts -->
     <div class="row">
         <div class="col-md-6 mb-3">@ChartBox("Monthly Savings Trends", "savingsChart")</div>
         <div class="col-md-6 mb-3">@ChartBox("Loan Repayment Status", "repaymentChart")</div>
     </div>
-
     <div class="row">
         <div class="col-md-6 mb-3">@ChartBox("Revenue Performance", "revenueChart")</div>
         <div class="col-md-6 mb-3">@ChartBox("Expense Allocation", "expenseChart")</div>
     </div>
-
     <div class="row">
         <div class="col-md-6 mb-3">@ChartBox("Profitability Analysis", "profitChart")</div>
         <div class="col-md-6 mb-3">@ChartBox("Risk Heatmap", "riskChart")</div>
     </div>
-
     <div class="row">
         <div class="col-md-6 mb-3">@ChartBox("Branch Performance", "branchChart")</div>
         <div class="col-md-6 mb-3">
@@ -183,71 +140,89 @@
     @Scripts.Render("~/plugins/chartjs")
 <script>
         $(document).ready(function () {
-            // Populate dropdown
-            $.get('/Dashboard/Dashboard/GetSavingsProducts', function (products) {
-                const $select = $('#savingsProductSelect');
-                products.forEach(p => {
-                    $select.append(`<option value="${p.ID}">${p.Name}</option>`);
-                });
+            loadKPIs();
+            loadBranchPerformance();
+            // Refresh KPIs every 10 seconds
+            setInterval(loadKPIs, 10000);
+        });
+
+        function loadKPIs() {
+            // Load Total Members
+            $.get('@Url.Action("Customers", "Dashboard", new { Area = "Dashboard" })', function (data) {
+                if (data.success) {
+                    $('#customers').text(data.Customers.toLocaleString());
+                }
             });
-            $(document).ready(function () {
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("Customers", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $('#customers').empty();
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        $('#customers').append((val.Customers).toLocaleString("en"));
+                // Load Total Savings Amount
+            $.get('@Url.Action("TotalsavingsAccounts", "Dashboard", new { Area = "Dashboard" })', function (data) {
+                if (data.success) {
+                    // Assuming your controller returns TotalSavingsAmount property
+                    let total = data.TotalSavingsAmount || 0;
+                    let display = total > 0
+                        ? total.toLocaleString('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 })
+                        : "KES 0";
+                    $('#totalSavingsAmount').text(display);
+                }
+            });
+
+            // Load Total Savings Amount
+            $.get('@Url.Action("TotalSavings", "Dashboard", new { Area = "Dashboard" })', function (data) {
+                console.log("TotalSavings response:", data); // Debug log
+                if (data.success && data.TotalJournalAmount != null) {
+                    let total = data.TotalJournalAmount;
+                    let display = total > 0
+                        ? total.toLocaleString('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 })
+                        : "KES 0";
+                    $('#savingscard').text(display);
+                } else {
+                    $('#savingscard').text("KES 0");
+                }
+            });
+
+            // Load Loan Portfolio Amount
+            $.get('@Url.Action("LoanPortfolio", "Dashboard", new { Area = "Dashboard" })', function (data) {
+                if (data.success) {
+                    let loanAmount = data.Loans?.TotalAmount || 0;
+                    let display = loanAmount > 0
+                        ? loanAmount.toLocaleString('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 })
+                        : "KES 0";
+                    $('#loans').text(display);
+                }
+            });
+        }
+
+        function loadBranchPerformance() {
+            $.get('@Url.Action("BranchPerformance", "Dashboard", new { Area = "Dashboard" })', function (data) {
+                if (data && data.length > 0) {
+                    let labels = data.map(b => b.Branch);
+                    let values = data.map(b => b.TotalValue);
+                    new Chart($('#branchChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: values,
+                                backgroundColor: '#007BFF'
+                            }]
+                        }
                     });
                 }
             });
-        });
-            // Fetch balance on button click
-            $('#fetchBalanceBtn').click(function () {
-                const productId = $('#savingsProductSelect').val();
-                const endDate = $('#endDateInput').val();
 
-                if (!productId || !endDate) {
-                    alert("Please select both product and end date.");
-                    return;
-                }
+            // Initialize other static charts
+            initStaticCharts();
+        }
 
-                $.get('/Dashboard/Dashboard/GetSavingsProductBalanceByDate', {
-                    productId: productId,
-                    endDate: endDate
-                }).done(function (data) {
-                    let total = 0;
-                    data.forEach(row => total += row.Balance);
-
-                    $('#savings').text(total.toLocaleString('en-KE', {
-                        style: 'currency',
-                        currency: 'KES',
-                        minimumFractionDigits: 0
-                    }));
-                }).fail(function () {
-                    $('#savings').text("Failed to load");
-                });
-            });
-
-            // Static KPI values
-            $('#members').text('2,345');
-            $('#loans').text('895');
-            $('#dividends').text('KES 5.3M');
-
-            // Charts
-            initCharts();
-        });
-
-        function initCharts() {
+        function initStaticCharts() {
             new Chart($('#savingsChart'), {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [{
                         label: 'Savings (KES)',
                         data: [150000, 180000, 200000, 220000, 240000, 260000],
                         backgroundColor: 'rgba(0,123,255,0.2)',
-                        borderColor: '#007bff',
+                        borderColor: '#007BFF',
                         fill: true
                     }]
                 }
@@ -259,7 +234,7 @@
                     labels: ['Paid', 'Overdue', 'Pending'],
                     datasets: [{
                         data: [65, 20, 15],
-                        backgroundColor: ['#28a745', '#dc3545', '#ffc107']
+                        backgroundColor: ['#28A745', '#DC3545', '#FFC107']
                     }]
                 }
             });
@@ -270,7 +245,7 @@
                     labels: ['Q1', 'Q2', 'Q3', 'Q4'],
                     datasets: [{
                         data: [1.2, 2.0, 1.5, 2.5],
-                        backgroundColor: '#007bff'
+                        backgroundColor: '#007BFF'
                     }]
                 }
             });
@@ -281,7 +256,7 @@
                     labels: ['Salaries', 'Office Rent', 'Marketing', 'Utilities'],
                     datasets: [{
                         data: [400000, 150000, 80000, 70000],
-                        backgroundColor: ['#ffc107', '#007bff', '#28a745', '#dc3545']
+                        backgroundColor: ['#FFC107', '#007BFF', '#28A745', '#DC3545']
                     }]
                 }
             });
@@ -292,7 +267,7 @@
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                     datasets: [{
                         data: [200000, 250000, 300000, 320000, 350000, 400000],
-                        backgroundColor: '#17a2b8'
+                        backgroundColor: '#17A2B8'
                     }]
                 }
             });
@@ -303,18 +278,7 @@
                     labels: ['Credit Risk', 'Liquidity Risk', 'Operational Risk', 'Compliance Risk'],
                     datasets: [{
                         data: [50, 40, 30, 20],
-                        backgroundColor: ['#dc3545', '#ffc107', '#007bff', '#28a745']
-                    }]
-                }
-            });
-
-            new Chart($('#branchChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Nairobi', 'Mombasa', 'Kisumu', 'Eldoret'],
-                    datasets: [{
-                        data: [10, 7, 5, 3],
-                        backgroundColor: '#007bff'
+                        backgroundColor: ['#DC3545', '#FFC107', '#007BFF', '#28A745']
                     }]
                 }
             });
