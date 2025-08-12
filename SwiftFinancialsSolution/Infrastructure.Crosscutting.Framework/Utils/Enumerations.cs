@@ -3721,13 +3721,6 @@ namespace Infrastructure.Crosscutting.Framework.Utils
     }
 
 
-
-
-
-
-
-
-
     public enum SalesOrderType
     {
         [Description("CASH")]

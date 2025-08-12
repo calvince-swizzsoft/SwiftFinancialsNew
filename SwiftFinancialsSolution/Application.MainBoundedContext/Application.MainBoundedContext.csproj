@@ -377,7 +377,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Application.MainBoundedContext.DTO\Application.MainBoundedContext.DTO.csproj">
-      <Project>{bc316b5e-4fb5-416d-a256-388e72fb14cc}</Project>
+      <Project>{BC316B5E-4FB5-416D-A256-388E72FB14CC}</Project>
       <Name>Application.MainBoundedContext.DTO</Name>
     </ProjectReference>
     <ProjectReference Include="..\Application.Seedwork\Application.Seedwork.csproj">

@@ -176,15 +176,14 @@
     <Compile Include="RegistryModule\IZoneService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\SwiftFinancials.Presentation.Shared\SwiftFinancials.Presentation.Shared.csproj">
       <Project>{B1EA34BF-3885-466F-AACE-568AD3F24938}</Project>
       <Name>SwiftFinancials.Presentation.Shared</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

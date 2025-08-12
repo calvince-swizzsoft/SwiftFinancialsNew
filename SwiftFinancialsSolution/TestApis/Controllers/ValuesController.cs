@@ -481,16 +481,14 @@ namespace TestApis.Controllers
         public async Task<IHttpActionResult> addJournals([FromBody] JournalDTO journalDTO)
         {
             var serviceHeader = master.GetServiceHeader();
-            CustomerTransactionModel transactionModel = new CustomerTransactionModel();
+            TransactionModel transactionModel = new TransactionModel();
+            
             journalDTO.MapTo<TransactionModel>();
             transactionModel.CreditChartOfAccountId = new Guid("8E87F619-592A-C077-EDE8-08D38C554F2E");
             transactionModel.CreditCustomerAccountId = new Guid("CC04EC57-A535-E911-A2B8-000C2914209C");
             transactionModel.DebitCustomerAccountId = new Guid("15C4DA29-BF35-E911-A2B8-000C2914209C");
             transactionModel.DebitChartOfAccountId = new Guid("ADEC18B6-6EB9-C271-1501-08D38C554F2F");
-            transactionModel.CreditCustomerAccount = await master._channelService.FindCustomerAccountAsync(transactionModel.CreditCustomerAccountId, true, true, true, true, serviceHeader);
-            transactionModel.DebitCustomerAccount = await master._channelService.FindCustomerAccountAsync(transactionModel.DebitCustomerAccountId, true, true, true, true, serviceHeader);
-            transactionModel.DebitCustomerAccount = await master._channelService.FindCustomerAccountAsync(transactionModel.DebitCustomerAccountId, true, true, true, true, serviceHeader);
-            transactionModel.Teller = await master._channelService.FindTellerAsync(new Guid("708BDB05-F5BF-E811-8357-08D40C76F50B"), true, serviceHeader);
+            transactionModel.Teller = await master._channelService.FindTellerAsync(new Guid("708BDx3B05-F5BF-E811-8357-08D40C76F50B"), true, serviceHeader);
             transactionModel.BranchId = new Guid("143570C6-48BB-E811-A814-000C29142092");
             ObservableCollection<TariffWrapper> tariffWrappers = new ObservableCollection<TariffWrapper>();
             TariffWrapper tariffWrapper = new TariffWrapper();
@@ -503,7 +501,7 @@ namespace TestApis.Controllers
             transactionModel.TransactionCode = (int)SystemTransactionCode.CashDeposit;
 
             tariffWrappers.Add(tariffWrapper);
-            var result = await master._channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffWrappers, serviceHeader);
+            var result = await master._channelService.AddJournalAsync(transactionModel, tariffWrappers, serviceHeader);
 
             return Json(new ApiResponse<object>
             {
