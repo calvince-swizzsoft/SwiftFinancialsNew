@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -25,11 +29,83 @@ namespace TestApis.Controllers
     public class ValuesController : ApiController
     {
         private readonly MasterController master;
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
         public ValuesController()
         {
             master = new MasterController();
-        } 
+        }
+
+
+        [HttpGet]
+        [Route("GetCustomerJournal/{mobileNumber}")]
+        public async Task<IHttpActionResult> GetCustomerJournal(string mobileNumber)
+        {
+            // Keep only digits
+            mobileNumber = new string(mobileNumber.Where(char.IsDigit).ToArray());
+
+            // Convert local format to international (+254...)
+            if (mobileNumber.StartsWith("0"))
+            {
+                mobileNumber = "+254" + mobileNumber.Substring(1);
+            }
+
+            CustomerJournalDTO result = null;
+
+            string query = @"
+        SELECT 
+            c.Individual_FirstName + ' ' + c.Individual_LastName AS FullName,
+            c.Address_MobileLine,
+            c.Address_Email,
+            ca.Status,
+            SUM(je.Amount) AS TotalAmount
+        FROM swiftfin_Customers c
+        INNER JOIN swiftfin_CustomerAccounts ca
+            ON ca.CustomerId = c.Id
+        INNER JOIN swiftFin_JournalEntries je
+            ON je.CustomerAccountId = ca.Id
+        WHERE c.Address_MobileLine = @MobileNumber
+        GROUP BY 
+            c.Individual_FirstName, 
+            c.Individual_LastName, 
+            c.Address_MobileLine,
+            c.Address_Email,
+            ca.Status;";
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.Add("@MobileNumber", SqlDbType.VarChar).Value = mobileNumber;
+
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        result = new CustomerJournalDTO
+                        {
+                            FullName = reader["FullName"].ToString(),
+                            Address_MobileLine = reader["Address_MobileLine"].ToString(),
+                            Address_Email = reader["Address_Email"].ToString(),
+                            Status = reader["Status"].ToString(),
+                            Amount = reader.GetDecimal(reader.GetOrdinal("TotalAmount"))
+                        };
+                    }
+                }
+            }
+
+            // Return wrapped JSON response
+            return Json(new ApiResponse<object>
+            {
+                Success = result != null,
+                Message = result != null
+                    ? "Customer journal retrieved successfully."
+                    : "No records found for the given mobile number.",
+                Data = result
+            });
+        }
+
+
 
         [HttpGet]
         [Route("GetChartOfAccount")]
@@ -203,7 +279,7 @@ namespace TestApis.Controllers
 
         [HttpGet]
         [Route("GetGeneralLeadgers")]
-        public async Task<IHttpActionResult> GetGeneralLeadgers(int?pagesize,int?pageindex)
+        public async Task<IHttpActionResult> GetGeneralLeadgers(int? pagesize, int? pageindex)
         {
             try
             {
@@ -404,11 +480,79 @@ namespace TestApis.Controllers
 
         [HttpPost]
         [Route("add-customer")]
-        public async Task<IHttpActionResult> AddCustomer([FromBody] CustomerDTO customer)
+        public async Task<IHttpActionResult> AddCustomer([FromBody] CustomerBindingModel customerBindingModel)
         {
             var serviceHeader = master.GetServiceHeader();
-            await master._channelService.AddCustomerAsync(customer, serviceHeader);
-            var result = await master._channelService.FindCustomersByIDNumberAsync(customer.IdentificationNumber, serviceHeader);
+
+            // Mandatory collections
+            var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();
+            var mandatorySavingsProducts = new List<SavingsProductDTO>();
+            var mandatoryDebitTypes = new ObservableCollection<DebitTypeDTO>();
+            var mandatoryProducts = new ProductCollectionInfo();
+
+            //  Get all savings products and find mandatory one
+            var savingsDTO = await master._channelService.FindSavingsProductsAsync(serviceHeader);
+
+            string mandatoryDescription = "M-WALLETACCOUNT";
+            var savingsProductDTO = savingsDTO.FirstOrDefault(s => string.Equals(s.Description, mandatoryDescription, StringComparison.OrdinalIgnoreCase));
+
+            if (savingsProductDTO == null)
+            {
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = $"Mandatory savings product '{mandatoryDescription}' not found.",
+                    Data = null
+                });
+            }
+
+            mandatorySavingsProducts.Add(savingsProductDTO);
+            mandatoryProducts.SavingsProductCollection = mandatorySavingsProducts;
+
+            var investmentDTO = await master._channelService.FindInvestmentProductsAsync(serviceHeader);
+            string investmentDescription = "ENTRANCEFEE";
+
+            var invest = investmentDTO.FirstOrDefault(s => string.Equals(s.Description, investmentDescription, StringComparison.OrdinalIgnoreCase));
+            if (investmentDTO == null)
+            {
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Mandatory investment product not found.",
+                    Data = null
+                });
+            }
+
+            mandatoryInvestmentProducts.Add(invest);
+            mandatoryProducts.InvestmentProductCollection = mandatoryInvestmentProducts;
+
+            var debitTypeDTO = await master._channelService.FindDebitTypesAsync(serviceHeader);
+            string debitTypeDTODescription = "Entrance Fees";
+
+            var debitType = debitTypeDTO.FirstOrDefault(s => string.Equals(s.Description, debitTypeDTODescription, StringComparison.OrdinalIgnoreCase));
+            if (debitTypeDTO == null)
+            {
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Mandatory debit type not found.",
+                    Data = null
+                });
+            }
+
+            mandatoryDebitTypes.Add(debitType);
+
+            var customerDTO = customerBindingModel.MapTo<CustomerDTO>();
+
+            var result = await master._channelService.AddCustomerAsync(
+                customerDTO,
+                mandatoryDebitTypes.ToList(),
+                mandatoryInvestmentProducts,
+                mandatorySavingsProducts,
+                mandatoryProducts,
+                1,
+                serviceHeader
+            );
 
             return Json(new ApiResponse<object>
             {
@@ -417,6 +561,7 @@ namespace TestApis.Controllers
                 Data = result
             });
         }
+
 
         [HttpPost]
         [Route("add-product")]
@@ -476,24 +621,28 @@ namespace TestApis.Controllers
                 Data = result
             });
         }
+
         [HttpPost]
         [Route("addJournals")]
         public async Task<IHttpActionResult> addJournals([FromBody] JournalDTO journalDTO)
         {
             var serviceHeader = master.GetServiceHeader();
-            TransactionModel transactionModel = new TransactionModel();
-            
+            CustomerTransactionModel transactionModel = new CustomerTransactionModel();
+
             journalDTO.MapTo<TransactionModel>();
             transactionModel.CreditChartOfAccountId = new Guid("8E87F619-592A-C077-EDE8-08D38C554F2E");
             transactionModel.CreditCustomerAccountId = new Guid("CC04EC57-A535-E911-A2B8-000C2914209C");
             transactionModel.DebitCustomerAccountId = new Guid("15C4DA29-BF35-E911-A2B8-000C2914209C");
             transactionModel.DebitChartOfAccountId = new Guid("ADEC18B6-6EB9-C271-1501-08D38C554F2F");
-            transactionModel.Teller = await master._channelService.FindTellerAsync(new Guid("708BDx3B05-F5BF-E811-8357-08D40C76F50B"), true, serviceHeader);
-            transactionModel.BranchId = new Guid("143570C6-48BB-E811-A814-000C29142092");
+            transactionModel.CreditCustomerAccount = await master._channelService.FindCustomerAccountAsync(transactionModel.CreditCustomerAccountId, true, true, true, true, serviceHeader);
+            transactionModel.DebitCustomerAccount = await master._channelService.FindCustomerAccountAsync(transactionModel.DebitCustomerAccountId, true, true, true, true, serviceHeader);
+            transactionModel.TotalValue = journalDTO.TotalValue;
+            transactionModel.BranchId = journalDTO.BranchId;
             ObservableCollection<TariffWrapper> tariffWrappers = new ObservableCollection<TariffWrapper>();
             TariffWrapper tariffWrapper = new TariffWrapper();
             transactionModel.MapTo<TariffWrapper>();
             tariffWrapper.Amount = journalDTO.TotalValue;
+
             tariffWrapper.DebitCustomerAccount = transactionModel.DebitCustomerAccount;
             tariffWrapper.CreditCustomerAccount = transactionModel.CreditCustomerAccount;
             tariffWrapper.CreditGLAccountId = transactionModel.CreditChartOfAccountId;
@@ -501,7 +650,7 @@ namespace TestApis.Controllers
             transactionModel.TransactionCode = (int)SystemTransactionCode.CashDeposit;
 
             tariffWrappers.Add(tariffWrapper);
-            var result = await master._channelService.AddJournalAsync(transactionModel, tariffWrappers, serviceHeader);
+            var result = await master._channelService.AddJournalWithCustomerAccountAsync(transactionModel, serviceHeader);
 
             return Json(new ApiResponse<object>
             {
@@ -530,7 +679,7 @@ namespace TestApis.Controllers
             if (generalLedgerDTO.GeneralLedgerEntries == null || !generalLedgerDTO.GeneralLedgerEntries.Any())
             {
 
-                
+
 
                 return Json(new
                 {

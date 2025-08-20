@@ -4,7 +4,7 @@ namespace SwiftFinancials.Web.Models
 {
     public class OpenAIRequest
     {
-        public string Model { get; set; } = "gpt-4o"; // <-- updated
+        public string Model { get; set; } = "gpt-5"; // <-- updated
         public List<Message> Messages { get; set; }
         public double Temperature { get; set; } = 0.7;
     }

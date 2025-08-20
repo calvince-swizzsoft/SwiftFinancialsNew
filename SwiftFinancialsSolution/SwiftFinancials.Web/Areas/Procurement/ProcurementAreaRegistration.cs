@@ -8,15 +8,15 @@ namespace SwiftFinancials.Web.Areas.Procurement
         {
             get
             {
-                return "Procurement";
+                return "Control";
             }
         }
 
         public override void RegisterArea(AreaRegistrationContext context)
         {
             context.MapRoute(
-                "Procurement_default",
-                "Procurement/{controller}/{action}/{id}",
+                "Control_default",
+                "Control/{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional }
             );
         }

@@ -31,7 +31,7 @@ namespace SwiftFinancials.Web.Controllers
         {
             var request = new OpenAIRequest
             {
-                Model = "gpt-4o",
+                Model = "gpt-5",
                 Temperature = 0.7,
                 Messages = new List<Message>
         {

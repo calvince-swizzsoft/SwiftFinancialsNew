@@ -470,6 +470,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
 
 
+
         [Display(Name = "Guarantor")]
         public string GuarantorDesc { get; set; }
         //// Additional Document DTO

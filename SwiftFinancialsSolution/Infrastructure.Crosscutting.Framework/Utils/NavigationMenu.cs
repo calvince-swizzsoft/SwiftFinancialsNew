@@ -192,13 +192,13 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                 //Bank Reconciliation
                 new NavigationMenu { AreaCode = 0x000059D8 + 2, IsArea = true, Description = "Bank Reconciliation", Icon = "", Code = 0x000059D8 + 60 },
-                new NavigationMenu { AreaCode = 0x000059D8 + 60, IsArea = false, Description = "Periods", Icon = "fa fa-calendar-o", ControllerName = "Controller", ActionName = "Index", AreaName = "Accounts",
+                new NavigationMenu { AreaCode = 0x000059D8 + 60, IsArea = false, Description = "Periods", Icon = "fa fa-calendar-o", ControllerName = "BankReconciliation_Periods", ActionName = "Index", AreaName = "Accounts",
                     Code = 0x000059D8 + 61 },
-                new NavigationMenu { AreaCode = 0x000059D8 + 60, IsArea = false, Description = "Processing", Icon = "fa fa-cogs", ControllerName = "Controller", ActionName = "Index", AreaName = "Accounts",
+                new NavigationMenu { AreaCode = 0x000059D8 + 60, IsArea = false, Description = "Processing", Icon = "fa fa-cogs", ControllerName = "BankReconciliation_Periods", ActionName = "Processing", AreaName = "Accounts",
                     Code = 0x000059D8 + 62 },
-                new NavigationMenu { AreaCode = 0x000059D8 + 60, IsArea = false, Description = "Closing", Icon = "fa fa-calendar-times-o", ControllerName = "Controller", ActionName = "Index", AreaName = "Accounts",
+                new NavigationMenu { AreaCode = 0x000059D8 + 60, IsArea = false, Description = "Closing", Icon = "fa fa-calendar-times-o", ControllerName = "BankReconciliation_Periods", ActionName = "Closing", AreaName = "Accounts",
                     Code = 0x000059D8 + 63 },
-                new NavigationMenu { AreaCode = 0x000059D8 + 60, IsArea = false, Description = "Catalogue", Icon = "fa fa-table", ControllerName = "Controller", ActionName = "Index", AreaName = "Accounts",
+                new NavigationMenu { AreaCode = 0x000059D8 + 60, IsArea = false, Description = "Catalogue", Icon = "fa fa-table", ControllerName = "BankReconciliation_Periods", ActionName = "Index", AreaName = "Accounts",
                     Code = 0x000059D8 + 64 },
 
                 //Budget Management
@@ -590,44 +590,48 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                     Code =  0x00006590 + 14},
                 #endregion
                 //
-                #region Control Module
-                // Control Module...
-                new NavigationMenu { Description = "Control(Procurement)", IsArea = true, Code = 0x00007530 },
-                new NavigationMenu { AreaCode = 0x00007530, IsArea = true, Description = "Setup", Icon = "fa fa-bars", Code = 0x00007530 + 1 },
-                new NavigationMenu { AreaCode = 0x00007530, IsArea = true, Description = "Operations", Icon = "fa fa-bars", Code = 0x00007530 + 2 },
+            #region Control Module
+// Control Module...
+new NavigationMenu { Description = "Control (Procurement)", IsArea = true, Code = 0x00007530 },
 
-                //Setup
-                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Suppliers", Icon = "fa fa-users", ControllerName = "Supplier", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 3},
-                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Asset Types", Icon = "fa fa-car", ControllerName = "AssetTypes", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 4},
-                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Inventory Categories", Icon = "fa fa-shopping-cart", ControllerName = "InventoryCategory", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 5},
-                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Package Types", Icon = "fa fa-shopping-basket", ControllerName = "PackageType", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 6},
-                new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Unit Of Measure", Icon = "fa fa-balance-scale", ControllerName = "UnitOfMeasurement", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 7},
-                 new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Tenders", Icon = "fa-solid fa-file-contract", ControllerName = "Tenders", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 8},
-                  new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Evaluation", Icon = "fa-solid fa-file-contract", ControllerName = "Evaluation", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 9},
-                      new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Bidings", Icon = "fa-solid fa-file-contract", ControllerName = "Bidings", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 10},
-                        new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Contracts", Icon = "fa-solid fa-file-contract", ControllerName = "Contracts", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 11},
-                //Operations
-                //..Assets
-                new NavigationMenu { AreaCode = 0x00007530 + 2, IsArea = true, Description = "Assets", Icon = "", Code = 0x00007530 + 8 },
-                new NavigationMenu { AreaCode = 0x00007530 + 8, IsArea = false, Description = "Catalogue", Icon = "fa fa-cogs", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 9},
-                new NavigationMenu { AreaCode = 0x00007530 + 8, IsArea = false, Description = "Depreciation", Icon = "fa fa-arrow-down", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 10},
+// Setup & Operations Categories
+new NavigationMenu { AreaCode = 0x00007530, IsArea = true, Description = "Setup", Icon = "fa fa-cogs", Code = 0x00007530 + 1 },
+new NavigationMenu { AreaCode = 0x00007530, IsArea = true, Description = "Operations", Icon = "fa fa-tasks", Code = 0x00007530 + 2 },
 
-                //..Inventory
-                new NavigationMenu { AreaCode = 0x00007530 + 2, IsArea = true, Description = "Inventory", Icon = "", Code = 0x00007530 + 11 },
-                new NavigationMenu { AreaCode = 0x00007530 + 11, IsArea = false, Description = "Catalogue", Icon = "fa fa-cogs", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
-                    Code =  0x00007530 + 12},
-                #endregion
+// Setup
+new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Suppliers", Icon = "fa fa-truck", ControllerName = "Supplier", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 3 },
+new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Asset Types", Icon = "fa fa-cubes", ControllerName = "AssetTypes", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 4 },
+new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Inventory Categories", Icon = "fa fa-boxes", ControllerName = "InventoryCategory", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 5 },
+new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Package Types", Icon = "fa fa-box-open", ControllerName = "PackageType", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 6 },
+new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Unit Of Measure", Icon = "fa fa-ruler-combined", ControllerName = "UnitOfMeasurement", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 7 },
+new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Tenders", Icon = "fa fa-file-signature", ControllerName = "Tenders", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 8 },
+new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Evaluation", Icon = "fa fa-clipboard-check", ControllerName = "Evaluation", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 9 },
+new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Bidings", Icon = "fa fa-gavel", ControllerName = "Bidings", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 10 },
+new NavigationMenu { AreaCode = 0x00007530 + 1, IsArea = false, Description = "Contracts", Icon = "fa fa-file-contract", ControllerName = "Contracts", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 11 },
+
+// Operations
+// Assets
+new NavigationMenu { AreaCode = 0x00007530 + 2, IsArea = true, Description = "Assets", Icon = "fa fa-landmark", Code = 0x00007530 + 8 },
+new NavigationMenu { AreaCode = 0x00007530 + 8, IsArea = false, Description = "Catalogue", Icon = "fa fa-book", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 9 },
+new NavigationMenu { AreaCode = 0x00007530 + 8, IsArea = false, Description = "Depreciation", Icon = "fa fa-percentage", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 10 },
+
+// Inventory
+new NavigationMenu { AreaCode = 0x00007530 + 2, IsArea = true, Description = "Inventory", Icon = "fa fa-warehouse", Code = 0x00007530 + 11 },
+new NavigationMenu { AreaCode = 0x00007530 + 11, IsArea = false, Description = "Catalogue", Icon = "fa fa-book-open", ControllerName = "Controller", ActionName = "Index", AreaName = "Control",
+    Code =  0x00007530 + 12 },
+#endregion
+
 
 
 

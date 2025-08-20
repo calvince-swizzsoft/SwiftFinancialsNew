@@ -190,7 +190,6 @@ namespace SwiftFinancials.Web.Controllers
                 string query = "DELETE FROM dbo.MTransaction WHERE ID = @ID";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@ID", id);
-
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }

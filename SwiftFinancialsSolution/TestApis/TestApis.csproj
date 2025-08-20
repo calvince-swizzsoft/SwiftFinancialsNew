@@ -234,6 +234,7 @@
     <Compile Include="Identity\IdentityExtensions.cs" />
     <Compile Include="Identity\SmsService.cs" />
     <Compile Include="Models\ApiResponse.cs" />
+    <Compile Include="Models\CustomerJournalDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IWebConfigurationService.cs" />
     <Compile Include="Services\WebConfigurationService.cs" />

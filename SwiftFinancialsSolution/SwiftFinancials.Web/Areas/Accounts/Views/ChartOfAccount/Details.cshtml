@@ -53,23 +53,34 @@
 
                                 @Html.TextBoxFor(model => model.AccountCode, new { @class = "form-control", @readonly = "readonly" })
                             </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)</strong>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>
+                                        <strong>@Html.DisplayNameFor(model => model.CreatedDate)</strong>
+                                        @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @readonly = "readonly" })
+                                    </p>
+                                </div>
 
-                                @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @readonly = "readonly" })
-                            </p>
+                                <div class="col-md-6">
+                                    <p>
+                                        <strong>@Html.DisplayNameFor(model => model.CostCenterDescription)</strong>
+                                        @Html.TextBoxFor(model => model.CostCenterDescription, new { @class = "form-control", @readonly = "readonly" })
+                                    </p>
+                                </div>
+                            </div>
+
 
                         </div>
                         <div class="col-lg-6">
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.AccountCategory)</strong>
+                                <strong>@Html.DisplayNameFor(model => model.AccountCategoryDescription)</strong>
 
-                                @Html.TextBoxFor(model => model.AccountCategory, new { @class = "form-control", @readonly = "readonly" })
+                                @Html.TextBoxFor(model => model.AccountCategoryDescription, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.AccountType)</strong>
+                                <strong>@Html.DisplayNameFor(model => model.AccountTypeDescription)</strong>
 
-                                @Html.TextBoxFor(model => model.AccountType, new { @class = "form-control", @readonly = "readonly" })
+                                @Html.TextBoxFor(model => model.AccountTypeDescription, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.Depth)</strong>

@@ -607,17 +607,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 try
                 {
                     var customerDTO = customerBindingModel.MapTo<CustomerDTO>();
-                    var result = await _channelService.AddCustomerAsync(
-     customerDTO,
-     mandatoryDebitTypes.ToList(),
-     mandatoryInvestmentProducts,
-    mandatorySavingsProducts,
-     mandatoryProducts,
-     1,
-     GetServiceHeader()
- );
-
-
+                    var result = await _channelService.AddCustomerAsync(customerDTO, mandatoryDebitTypes.ToList(), mandatoryInvestmentProducts, mandatorySavingsProducts, mandatoryProducts, 1, GetServiceHeader());
 
                     if (signaturePhoto != null && idCardBackPhoto != null && passportPhotoDataUrl != null)
                     {
