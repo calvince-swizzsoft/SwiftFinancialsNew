@@ -20,6 +20,11 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginAddJournalSingleEntry(Guid branchId, Guid alternateChannelLogId, decimal totalValue, string primaryDescription, string secondaryDescription, string reference, int moduleNavigationItemCode, int transactionCode, DateTime? valueDate, Guid chartOfAccountId, Guid contraChartOfAccountId, int journalType, List<TariffWrapper> tariffs, AsyncCallback callback, Object state);
+        JournalDTO EndAddJournalSingleEntry(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginAddJournalWithApportionments(Guid branchId, Guid alternateChannelLogId, decimal totalValue, string primaryDescription, string secondaryDescription, string reference, int moduleNavigationItemCode, int transactionCode, DateTime? valueDate, Guid debitChartOfAccountId, CustomerAccountDTO creditCustomerAccountDTO, CustomerAccountDTO debitCustomerAccountDTO, List<ApportionmentWrapper> apportionments, List<TariffWrapper> tariffs, List<DynamicChargeDTO> dynamicCharges, AsyncCallback callback, Object state);
         JournalDTO EndAddJournalWithApportionments(IAsyncResult result);
 

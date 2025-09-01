@@ -1602,6 +1602,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<JournalDTO> AddJournalAsync(TransactionModel transactionModel, ObservableCollection<TariffWrapper> tariffs = null, ServiceHeader serviceHeader = null);
 
+        Task<JournalDTO> AddJournalSingleEntryAsync(TransactionModel transactionModel, ObservableCollection<TariffWrapper> tariffs = null, ServiceHeader serviceHeader = null);
+
         Task<JournalDTO> AddJournalWithApportionmentsAsync(TransactionModel transactionModel, ObservableCollection<ApportionmentWrapper> apportionments, ObservableCollection<TariffWrapper> tariffs = null, ObservableCollection<DynamicChargeDTO> dynamicCharges = null, ServiceHeader serviceHeader = null);
 
         Task<JournalDTO> AddCashManagementJournalAsync(FiscalCountDTO fiscalCountDTO, TransactionModel transactionModel, ServiceHeader serviceHeader = null);

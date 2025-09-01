@@ -120,6 +120,49 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             else return null;
         }
 
+
+        public JournalDTO AddNewJournalSingleEntry(Guid branchId, Guid? alternateChannelLogId, decimal totalValue, string primaryDescription, string secondaryDescription, string reference, int moduleNavigationItemCode, int transactionCode, DateTime? valueDate, Guid chartOfAccountId, Guid contraChartOfAccountId, int journalType, ServiceHeader serviceHeader, bool useCache)
+        {
+            var postingPeriod = useCache ? _postingPeriodAppService.FindCachedCurrentPostingPeriod(serviceHeader) : _postingPeriodAppService.FindCurrentPostingPeriod(serviceHeader);
+
+            if (postingPeriod != null)
+            {
+                using (var dbContextScope = _dbContextScopeFactory.Create())
+                {
+                    var journal = JournalFactory.CreateJournal(branchId, postingPeriod.Id, branchId, alternateChannelLogId, totalValue, primaryDescription, secondaryDescription, reference, moduleNavigationItemCode, transactionCode, valueDate, serviceHeader);
+
+
+                    switch ((JournalVoucherType)journalType)
+                    {
+                        case JournalVoucherType.DebitGLAccount:
+                            _journalEntryPostingService.PerformSingleEntry(journal, chartOfAccountId, contraChartOfAccountId, totalValue * -1, serviceHeader);
+                            break;
+                        case JournalVoucherType.CreditGLAccount:
+                            _journalEntryPostingService.PerformSingleEntry(journal, chartOfAccountId, contraChartOfAccountId, totalValue, serviceHeader);
+                            break;
+                        //case JournalVoucherType.DebitCustomerAccount:
+                        //    _journalEntryPostingService.PerformSingleEntry(journal, chartOfAccountId, contraChartOfAccountId, journalVoucherDTO.CustomerAccountId.Value, totalValue * -1, serviceHeader);
+                        //    break;
+                        //case JournalVoucherType.CreditCustomerAccount:
+                        //    _journalEntryPostingService.PerformSingleEntry(journal, chartOfAccountId, chartOfAccountId, journalVoucherDTO.CustomerAccountId.Value, journalVoucherDTO.TotalValue, serviceHeader);
+                        //    break;           
+                        default:
+                            break;
+                    }
+                    //_journalEntryPostingService.PerformSingleEntry(journal, chartOfAccountId, contraChartOfAccountId, totalValue, serviceHeader);
+
+                    _journalRepository.Add(journal, serviceHeader);
+
+                    if (dbContextScope.SaveChanges(serviceHeader) >= 0)
+                    {
+                        return journal.ProjectedAs<JournalDTO>();
+                    }
+                    else return null;
+                }
+            }
+            else return null;
+        }
+
         public JournalDTO AddNewJournal(Guid? parentJournalId, Guid branchId, Guid? alternateChannelLogId, decimal totalValue, string primaryDescription, string secondaryDescription, string reference, int moduleNavigationItemCode, int transactionCode, DateTime? valueDate, Guid creditChartOfAccountId, Guid debitChartOfAccountId, CustomerAccountDTO creditCustomerAccountDTO, CustomerAccountDTO debitCustomerAccountDTO, ServiceHeader serviceHeader, bool useCache)
         {
             var postingPeriod = useCache ? _postingPeriodAppService.FindCachedCurrentPostingPeriod(serviceHeader) : _postingPeriodAppService.FindCurrentPostingPeriod(serviceHeader);

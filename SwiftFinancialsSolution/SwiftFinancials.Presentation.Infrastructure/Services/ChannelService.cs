@@ -21053,6 +21053,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
+        public Task<JournalDTO> AddJournalSingleEntryAsync(TransactionModel transactionModel, ObservableCollection<TariffWrapper> tariffs, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<JournalDTO>();
+
+            IJournalService service = GetService<IJournalService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    JournalDTO response = ((IJournalService)result.AsyncState).EndAddJournalSingleEntry(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddJournalSingleEntry(transactionModel.BranchId, transactionModel.AlternateChannelLogId, transactionModel.TotalValue, transactionModel.PrimaryDescription, transactionModel.SecondaryDescription, transactionModel.Reference, transactionModel.ModuleNavigationItemCode, transactionModel.TransactionCode, transactionModel.ValueDate, transactionModel.ChartOfAccountId, transactionModel.ContraChartOfAccountId, transactionModel.JournalType, tariffs.ExtendedToList(), asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<JournalDTO> AddJournalWithApportionmentsAsync(TransactionModel transactionModel, ObservableCollection<ApportionmentWrapper> apportionments, ObservableCollection<TariffWrapper> tariffs, ObservableCollection<DynamicChargeDTO> dynamicCharges, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<JournalDTO>();

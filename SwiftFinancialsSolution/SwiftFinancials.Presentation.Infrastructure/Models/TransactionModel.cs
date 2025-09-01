@@ -24,6 +24,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
 
 
         Guid _branchId;
+        [DataMember]
         [Display(Name = "Branch")]
         [ValidGuid]
         public Guid BranchId
@@ -55,6 +56,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         Guid _postingPeriodId;
+        [DataMember]
         [Display(Name = "Posting Period")]
         [ValidGuid]
         public Guid PostingPeriodId
@@ -71,6 +73,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         decimal _totalValue;
+        [DataMember]
         [Display(Name = "Total Value")]
         [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Total Value must be greater than zero!")]
         public decimal TotalValue
@@ -87,6 +90,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         string _primaryDescription;
+        [DataMember]
         [Display(Name = "Primary Description")]
         [Required]
         [StringLength(256)]
@@ -104,6 +108,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         string _secondaryDescription;
+        [DataMember]
         [Display(Name = "Secondary Description")]
         [StringLength(256)]
         public string SecondaryDescription
@@ -120,6 +125,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         string _reference;
+        [DataMember]
         [Display(Name = "Reference")]
         [Required]
         [StringLength(256)]
@@ -137,6 +143,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         int _moduleNavigationItemCode;
+        [DataMember]
         [Display(Name = "Module Navigation Item Code")]
         public int ModuleNavigationItemCode
         {
@@ -152,6 +159,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         Guid _creditChartOfAccountId;
+        [DataMember]
         [Display(Name = "Credit G/L Account")]
         [ValidGuid]
         public Guid CreditChartOfAccountId
@@ -168,6 +176,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         Guid _debitChartOfAccountId;
+        [DataMember]
         [Display(Name = "Debit G/L Account")]
         [ValidGuid]
         public Guid DebitChartOfAccountId
@@ -183,7 +192,43 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
             }
         }
 
+
+        Guid _chartOfAccountId;
+        [DataMember]
+        [Display(Name = "G/L Account")]
+        [ValidGuid]
+        public Guid ChartOfAccountId
+        {
+            get { return _chartOfAccountId; }
+            set
+            {
+                if (_chartOfAccountId != value)
+                {
+                    _chartOfAccountId = value;
+                    OnPropertyChanged(() => ChartOfAccountId);
+                }
+            }
+        }
+
+        Guid _contraChartOfAccountId;
+        [DataMember]
+        [Display(Name = "Contra G/L Account")]
+        [ValidGuid]
+        public Guid ContraChartOfAccountId
+        {
+            get { return _contraChartOfAccountId; }
+            set
+            {
+                if (_contraChartOfAccountId != value)
+                {
+                    _contraChartOfAccountId = value;
+                    OnPropertyChanged(() => ContraChartOfAccountId);
+                }
+            }
+        }
+
         Guid? _debitCustomerAccountId;
+        [DataMember]
         [Display(Name = "Debit Customer Account")]
         public Guid? DebitCustomerAccountId
         {
@@ -199,6 +244,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         CustomerAccountDTO _debitCustomerAccount;
+        [DataMember]
         [Display(Name = "Debit Customer Account")]
         public CustomerAccountDTO DebitCustomerAccount
         {
@@ -232,6 +278,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
             }
         }
 
+        [DataMember]
         Guid? _creditCustomerAccountId;
         [Display(Name = "Credit Customer Account")]
         public Guid? CreditCustomerAccountId
@@ -263,6 +310,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         int _transactionCode;
+        [DataMember]
         [Display(Name = "Transaction Code")]
         public int TransactionCode
         {
@@ -278,6 +326,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         DateTime? _valueDate;
+        [DataMember]
         [Display(Name = "Value Date")]
         public DateTime? ValueDate
         {
@@ -340,6 +389,20 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
             get
             {
                 return Enum.IsDefined(typeof(RecordStatus), CustomerRecordStatus) ? EnumHelper.GetDescription((RecordStatus)CustomerRecordStatus) : string.Empty;
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "JournalType")]
+        public byte JournalType { get; set; }
+
+        [DataMember]
+        [Display(Name = "JournlType")]
+        public string JournalTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(JournalVoucherType), (int)JournalType) ? EnumHelper.GetDescription((JournalVoucherType)JournalType) : string.Empty;
             }
         }
 

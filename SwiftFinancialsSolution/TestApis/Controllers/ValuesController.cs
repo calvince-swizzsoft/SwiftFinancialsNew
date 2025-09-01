@@ -9,11 +9,13 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
+//using System.Web.Http.Cors;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
+//using Microsoft.AspNetCore.Cors;
 using SwiftFinancials.Presentation.Infrastructure.Models;
 using SwiftFinancials.Presentation.Infrastructure.Services;
 using SwiftFinancials.Presentation.Infrastructure.Util;
@@ -659,6 +661,191 @@ namespace TestApis.Controllers
                 Data = result
             });
         }
+
+
+        //
+        
+        //IF ACCOUNT TYPE IS CUSTOMER, D0 THIS
+
+        //IF ACCOUNT TYPE IS GL, DO THAT
+
+        [HttpPost]
+        [Route("PostGLJournal")]
+        public async Task<IHttpActionResult> PostGLJournal([FromBody] TransactionModel transactionModel)
+        {
+            var serviceHeader = master.GetServiceHeader();
+                   
+            //transactionModel.TransactionCode = (int)SystemTransactionCode.JournalVoucher;
+
+            var result = await master._channelService.AddJournalAsync(transactionModel, null, serviceHeader);
+
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = "Journal added successfully.",
+                Data = result
+            });
+        }
+
+        [HttpPost]
+        [Route("PostJournal")]
+        public async Task<IHttpActionResult> HandleDirectPosting([FromBody] TransactionModel transactionModel)
+        {
+            var serviceHeader = master.GetServiceHeader();
+
+          
+            // Multiple entries
+            if (transactionModel.CreditChartOfAccountId != null & transactionModel.DebitChartOfAccountId != null)
+            {
+              
+                    await master._channelService.AddJournalAsync(transactionModel, null, serviceHeader);
+              
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = true,
+                    Message = "Journal added successfully.",
+                    Data = null
+                });
+            }
+            // Single entry
+            else if (transactionModel.ChartOfAccountId != null & transactionModel.ContraChartOfAccountId != null)
+            {
+              
+                if (transactionModel.TotalValue > 0)
+                {
+                    transactionModel.JournalType = (int)JournalVoucherType.DebitGLAccount;
+                }
+
+                else
+                {
+
+                    transactionModel.JournalType = (int)JournalVoucherType.CreditGLAccount;
+                }
+
+        var result = await master._channelService.AddJournalSingleEntryAsync(transactionModel, null, serviceHeader);
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = true,
+                    Message = "Journal added successfully.",
+                    Data = result
+                });
+            }
+
+            return Json(new ApiResponse<object>
+            {
+                Success = false,
+                Message = "Unexpected error occurred.",
+                Data = null
+            });
+        }
+
+        [HttpPost]
+        [Route("PostJournalVoucher")]
+        public async Task<IHttpActionResult> postJournalVoucher([FromBody] JournalVoucherDTO journalVoucherDTO)
+        {
+            try
+            {
+                var serviceHeader = master.GetServiceHeader();
+
+                // Validate that journal voucher entries balance (for batch posting)
+                if (journalVoucherDTO.JournalVoucherEntries != null && journalVoucherDTO.JournalVoucherEntries.Any())
+                {
+                    var totalDebits = journalVoucherDTO.JournalVoucherEntries.Where(e => e.Amount > 0).Sum(e => e.Amount);
+                    var totalCredits = journalVoucherDTO.JournalVoucherEntries.Where(e => e.Amount < 0).Sum(e => Math.Abs(e.Amount));
+
+                    if (Math.Abs(totalDebits - totalCredits) > 0.01m)
+                    {
+                        return BadRequest(
+                            "Journal entries are not balanced");
+                    }
+
+                    // Set total value to match entries for batch posting
+                    journalVoucherDTO.TotalValue = totalDebits;
+                }
+
+                var createdVoucher = await master._channelService.AddJournalVoucherAsync(journalVoucherDTO, serviceHeader);
+
+                if (createdVoucher != null)
+                {
+                    // If entries are provided, update the voucher entries collection
+                    if (journalVoucherDTO.JournalVoucherEntries != null && journalVoucherDTO.JournalVoucherEntries.Any())
+                    {
+                        var entriesAdded = await master._channelService.UpdateJournalVoucherEntryCollectionAsync(
+                            createdVoucher.Id, journalVoucherDTO.JournalVoucherEntries, serviceHeader);
+
+                        if (!entriesAdded)
+                        {
+                            return BadRequest("Failed to add journal entries");
+                        }
+                    }
+
+                    // Auto-audit and authorize for direct posting (bypass workflow)
+                    var auditResult = await master._channelService.AuditJournalVoucherAsync(
+                        createdVoucher, (int)JournalVoucherAuthOption.Post, serviceHeader);
+
+                    var authorizeResult = await master._channelService.AuthorizeJournalVoucherAsync(
+                        createdVoucher, (int)JournalVoucherAuthOption.Post,
+                        0, serviceHeader); // Use appropriate module code
+
+                    if (!auditResult || !authorizeResult)
+                    {
+                         return BadRequest("Failed to post journal voucher");
+                    }
+
+                    return Ok(new
+                    {
+                        Success = true,
+                        VoucherId = createdVoucher.Id,
+                        VoucherNumber = createdVoucher.VoucherNumber,
+                        Message = "Journal voucher posted successfully",
+                        TotalAmount = createdVoucher.TotalValue,
+                        EntriesCount = journalVoucherDTO.JournalVoucherEntries?.Count ?? 0
+                    });
+                }
+                else
+                {
+                    return BadRequest("Failed to create journal voucher" );
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(new Exception("Failed to post journal voucher: " + ex.Message));
+            }
+        }
+
+
+
+        //[HttpPost]
+        //[Route("AddJournalWithApportionments")]
+        //public async Task<IHttpActionResult> addJournalWithApportionments([FromBody] TransactionModel transactionModel)
+        //{
+
+        //    var serviceHeader = master.GetServiceHeader();
+
+        //    var result = await master._channelService.AddJournalWithApportionmentsAsync(transactionModel);
+
+        //    return Json(new ApiResponse<object>
+        //    {
+        //        Success = true,
+        //        Message = "Journal with apportionments added successfully.",
+        //        Data = result
+        //    });
+        //}
+
+
+        //journal posting that needs approval
+        //[HttpPost]
+        //[Route("AddJournalVoucher")]
+        // public async Task<IHttpActionResult> AddJournalVoucher([FromBody] JournalVoucherDTO)
+        //{
+
+        //    var serviceHeader = master.GetServiceHeader();
+
+        //}
+
+
 
         [HttpPost]
         [Route("AddGeneralLedgers")]

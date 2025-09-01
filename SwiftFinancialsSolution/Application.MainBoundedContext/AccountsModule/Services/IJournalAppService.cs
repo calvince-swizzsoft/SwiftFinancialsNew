@@ -41,5 +41,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         List<JournalEntryDTO> FindJournalEntries(ServiceHeader serviceHeader, params Guid[] journalIds);
 
         PageCollectionInfo<JournalEntryDTO> FindJournalEntries(int pageIndex, int pageSize, ServiceHeader serviceHeader, params Guid[] journalIds);
+
+        JournalDTO AddNewJournalSingleEntry(Guid branchId, Guid? alternateChannelLogId, decimal totalValue, string primaryDescription, string secondaryDescription, string reference, int moduleNavigationItemCode, int transactionCode, DateTime? valueDate, Guid chartOfAccountId, Guid contraChartOfAccountId, int journalType, ServiceHeader serviceHeader, bool useCache = true);
     }
 }
