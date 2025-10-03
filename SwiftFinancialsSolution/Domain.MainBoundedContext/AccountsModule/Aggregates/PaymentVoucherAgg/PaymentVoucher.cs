@@ -32,8 +32,10 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentVoucherAgg
 
         public DateTime? PaidDate { get; set; }
 
-        
+        public string PaymentMethod { get; set; }
 
-        
+
+
+
     }
 }

@@ -70,7 +70,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Voucher Number")]
-        public int VoucherNumber { get; set; }
+        public Guid VoucherNumber { get; set; }
 
         [DataMember]
         [Display(Name = "Voucher Number")]
@@ -135,6 +135,35 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Management Action")]
         public int ManagementAction { get; set; }
+
+        [DataMember]
+        [Display(Name = "InvoiceNo")]
+        public int InvoiceNo { get; set; }
+
+        [DataMember]
+        [Display(Name = "VendorNo")]
+        public int VendorNo { get; set; }
+
+        [DataMember]
+        [ValidGuid]
+        [Display(Name = "InvoiceId")]
+        public Guid InvoiceId { get; set; }
+
+
+        [DataMember]
+        [ValidGuid]
+        [Display(Name = "VendorId")]
+        public Guid VendorId { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "BankLinkageChartOfAccountId")]
+        public Guid BankLinkageChartOfAccountId { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Payment Method")]
+        public string PaymentMethod { get; set; }
 
         public static ValidationResult ValidateWriteDate(object value, ValidationContext context)
         {

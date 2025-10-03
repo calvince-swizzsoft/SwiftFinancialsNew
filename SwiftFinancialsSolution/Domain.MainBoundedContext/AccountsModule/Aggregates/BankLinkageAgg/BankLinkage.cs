@@ -11,6 +11,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.BankLinkageAgg
     {
         public Guid BranchId { get; set; }
 
+        public Guid BankId { get; set; }
+
+
         public virtual Branch Branch { get; private set; }
 
         public Guid ChartOfAccountId { get; set; }

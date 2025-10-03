@@ -28,6 +28,7 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [Display(Name = "Bank Code")]
         public int BankCode { get; set; }
 
+
         [DataMember]
         [Display(Name = "Bank Name")]
         public string BankDescription { get; set; }

@@ -20,7 +20,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalEntryAgg
                          journalEntry.Id.ToString("D"),
                          journalEntry.JournalId.ToString("D"),
                          journalEntry.ChartOfAccountId.ToString("D"),
-                         journalEntry.ContraChartOfAccountId.ToString("D"),
+                         journalEntry.ContraChartOfAccountId.HasValue ? journalEntry.ContraChartOfAccountId.Value.ToString("D") : string.Empty,
                          journalEntry.CustomerAccountId.HasValue ? journalEntry.CustomerAccountId.Value.ToString("D") : string.Empty,
                          string.Format(nfi, "{0:C}", journalEntry.Amount),
                          journalEntry.CreatedBy,

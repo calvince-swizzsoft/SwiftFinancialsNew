@@ -134,10 +134,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                     switch ((JournalVoucherType)journalType)
                     {
-                        case JournalVoucherType.DebitGLAccount:
+                        case JournalVoucherType.CreditGLAccount:
                             _journalEntryPostingService.PerformSingleEntry(journal, chartOfAccountId, contraChartOfAccountId, totalValue * -1, serviceHeader);
                             break;
-                        case JournalVoucherType.CreditGLAccount:
+                        case JournalVoucherType.DebitGLAccount:
                             _journalEntryPostingService.PerformSingleEntry(journal, chartOfAccountId, contraChartOfAccountId, totalValue, serviceHeader);
                             break;
                         //case JournalVoucherType.DebitCustomerAccount:

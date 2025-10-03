@@ -1782,14 +1782,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                  var updatedTeller = await GetCurrentTeller();
 
                 string cashWithdrawalTextTemplate = "Payment voucher of KES {0} {4}, {5} {2}.";
-                await SendTextNotificationAsync(
+           await SendTextNotificationAsync(
                     cashWithdrawalTextTemplate,
                     SelectedCustomer,
                     SelectedCustomerAccount,
                     customerTransactionModel.TotalValue,
                     customerTransactionModel.Reference,
                     customerTransactionModel.PrimaryDescription
-                );
+                );     
 
                 //PrintReceipt(authorizedJournal);
 

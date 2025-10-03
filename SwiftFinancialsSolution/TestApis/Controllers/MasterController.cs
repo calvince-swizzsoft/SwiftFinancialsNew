@@ -412,6 +412,8 @@ namespace TestApis.Controllers
             return systemPermissionType;
         }
 
+        
+
 
 
 
@@ -1554,6 +1556,21 @@ namespace TestApis.Controllers
         }
 
 
+        public List<SelectListItem> GetPurchaseInvoiceEntryTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> purchaseInvoiceSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(PurchaseInvoiceEntryType)).Cast<PurchaseInvoiceEntryType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            purchaseInvoiceSelectList.AddRange(items);
+
+            return purchaseInvoiceSelectList;
+        }
 
 
 
@@ -1561,7 +1578,9 @@ namespace TestApis.Controllers
 
 
 
-        protected List<SelectListItem> GetSystemGeneralLedgerAccountCodeSelectList(string selectedValue)
+
+
+        public List<SelectListItem> GetSystemGeneralLedgerAccountCodeSelectList(string selectedValue)
         {
             List<SelectListItem> systemGeneralLedgerAccountCodes = new List<SelectListItem>();
 

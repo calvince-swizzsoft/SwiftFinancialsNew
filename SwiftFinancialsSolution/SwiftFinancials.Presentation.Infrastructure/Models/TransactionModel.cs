@@ -8,6 +8,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -85,6 +86,40 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
                 {
                     _totalValue = value;
                     OnPropertyChanged(() => TotalValue);
+                }
+            }
+        }
+
+        decimal _creditAmount;
+        [DataMember]
+        [Display(Name = "Credit Amount")]
+        public decimal CreditAmount
+        {
+
+            get { return _creditAmount; }
+
+            set
+            {
+                if (_creditAmount != value)
+                {
+                    _creditAmount = value;
+                    OnPropertyChanged(() => CreditAmount);
+                }
+            }
+        }
+
+        decimal _debitAmount;
+        [DataMember]
+        [Display(Name = "Debit Amount")]
+        
+        public decimal DebitAmount         {
+            get { return _debitAmount; }
+            set
+            {
+                if (_debitAmount != value)
+                {
+                    _debitAmount = value;
+                    OnPropertyChanged(() => DebitAmount);
                 }
             }
         }
@@ -405,6 +440,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
                 return Enum.IsDefined(typeof(JournalVoucherType), (int)JournalType) ? EnumHelper.GetDescription((JournalVoucherType)JournalType) : string.Empty;
             }
         }
+
+        
 
 
     }

@@ -5,7 +5,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalEntryAgg
 {
     public static class JournalEntryFactory
     {
-        public static JournalEntry CreateJournalEntry(Guid journalId, Guid chartOfAccountId, Guid contraChartOfAccountId, Guid? customerAccountId, decimal amount, DateTime? valueDate, ServiceHeader serviceHeader)
+        public static JournalEntry CreateJournalEntry(Guid journalId, Guid chartOfAccountId, Guid? contraChartOfAccountId, Guid? customerAccountId, decimal amount, DateTime? valueDate, ServiceHeader serviceHeader)
         {
             var journalEntry = new JournalEntry();
 
@@ -15,7 +15,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalEntryAgg
 
             journalEntry.ChartOfAccountId = chartOfAccountId;
 
-            journalEntry.ContraChartOfAccountId = contraChartOfAccountId;
+            journalEntry.ContraChartOfAccountId = (contraChartOfAccountId != null && contraChartOfAccountId != Guid.Empty) ? contraChartOfAccountId : null;
 
             journalEntry.CustomerAccountId = (customerAccountId != null && customerAccountId != Guid.Empty) ? customerAccountId : null;
 

@@ -4,9 +4,12 @@ using Infrastructure.Crosscutting.Framework.Extensions;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 
 namespace Application.MainBoundedContext.DTO.AccountsModule
 {
+
+
     public class BankLinkageDTO : BindingModelBase<BankLinkageDTO>
     {
         public BankLinkageDTO()
@@ -17,6 +20,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Id")]
         public Guid Id { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Bank")]
+        [Required]
+        public Guid BankId { get; set; }
 
         [DataMember]
         [Display(Name = "Bank")]
@@ -88,5 +97,66 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "G/L Account Cost Center")]
         public string ChartOfAccountCostCenterDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Bank Balance")]
+        public decimal BankLinkageBalance { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Code")]
+        public int Code { get; set; }
+
+        [DataMember]
+        [Display(Name = "Padded Code")]
+        public string PaddedCode
+        {
+            get
+            {
+                return Code.ToString().PadLeft(2, '0');
+            }
+        }
+
+        //hacky
+
+        [DataMember]
+        public string Description { get; set; }
+
+        [DataMember]
+        public string Address { get; set; }
+
+        [DataMember]
+        public string City { get; set; }
+
+
+        [DataMember]
+        public string IbanNo { get; set; }
+
+
+        [DataMember]
+
+        public string SwiftCode { get; set; }
+
+
+        [DataMember]
+
+        public int No { get; set; }
+
+
     }
+
+
+    //private async Task GetRelatedBank()
+
+    //    {
+
+    //        if (BankId != Guid.Empty)
+    //        {
+
+    //            var bankDto = awa
+    //        }
+    //    }
+
+    //}
+
 }

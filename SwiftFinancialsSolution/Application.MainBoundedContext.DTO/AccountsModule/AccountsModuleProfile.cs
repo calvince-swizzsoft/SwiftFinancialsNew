@@ -78,10 +78,18 @@ using Domain.MainBoundedContext.AccountsModule.Aggregates.OverDeductionBatchAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.OverDeductionBatchEntryAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentVoucherAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.PostingPeriodAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemoAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemoLineAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceLineAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.RecurringBatchAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.RecurringBatchEntryAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.ReportTemplateAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.ReportTemplateEntryAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.SalesCreditMemoAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.SalesCreditMemoLineAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceLineAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.SavingsProductAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.SavingsProductCommissionAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.SavingsProductExemptionAgg;
@@ -605,6 +613,32 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
             //BrokerRequestDTO => BrokerRequestBindingModel
             CreateMap<BrokerRequestDTO, BrokerRequestBindingModel>();
+
+            //PurchaseInvoice => PurchaseInvoiceDTO
+            CreateMap<PurchaseInvoice, PurchaseInvoiceDTO>();
+
+
+            //PurchaseInvoiceLine => PurchaseInvoiceLineDTO
+            CreateMap<PurchaseInvoiceLine, PurchaseInvoiceLineDTO>();
+
+
+            CreateMap<PurchaseCreditMemo, PurchaseCreditMemoDTO>();
+
+
+            CreateMap<PurchaseCreditMemoLine, PurchaseCreditMemoLineDTO>();
+
+            CreateMap<SalesInvoice, SalesInvoiceDTO>();
+
+            CreateMap<SalesInvoiceLine, SalesInvoiceLineDTO>();
+
+
+            
+            CreateMap<SalesCreditMemoLine, SalesCreditMemoLineDTO>();
+
+
+          
+            CreateMap<SalesCreditMemo, SalesCreditMemoDTO>();
+
         }
 
         static bool CheckCanSuppressMakerCheckerValidation(JournalVoucher journalVoucher)

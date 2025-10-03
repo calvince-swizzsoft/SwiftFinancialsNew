@@ -171,7 +171,7 @@ namespace DistributedServices.MainBoundedContext.UnityContainers
             Current.RegisterType<ICompanyAppService, CompanyAppService>();
             Current.RegisterType<ILocationAppService, LocationAppService>();
             Current.RegisterType<IWorkflowAppService, WorkflowAppService>();
-           // Current.RegisterType<IWorkflowProcessorAppService, WorkflowProcessorAppService>();
+            // Current.RegisterType<IWorkflowProcessorAppService, WorkflowProcessorAppService>();
 
             Current.RegisterType<IEmployerAppService, EmployerAppService>();
             Current.RegisterType<IZoneAppService, ZoneAppService>();
@@ -226,6 +226,14 @@ namespace DistributedServices.MainBoundedContext.UnityContainers
 
             Current.RegisterType<IMicroCreditOfficerAppService, MicroCreditOfficerAppService>();
             Current.RegisterType<IMicroCreditGroupAppService, MicroCreditGroupAppService>();
+
+            Current.RegisterType<IPurchaseInvoiceAppService, PurchaseInvoiceAppService>();
+            
+                Current.RegisterType<IPurchaseCreditMemoAppService, PurchaseCreditMemoAppService>();
+
+            Current.RegisterType<ISalesInvoiceAppService, SalesInvoiceAppService>();
+
+            Current.RegisterType<ISalesCreditMemoAppService, SalesCreditMemoAppService>();
 
             //-> Distributed Services
         }

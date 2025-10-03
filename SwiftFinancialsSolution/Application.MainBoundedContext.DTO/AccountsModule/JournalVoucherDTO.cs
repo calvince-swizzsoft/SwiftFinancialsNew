@@ -243,7 +243,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
                 return string.Format("{0}", VoucherNumber).PadLeft(6, '0');
             }
         }
-        
+
         [DataMember]
         [Display(Name = "Principal Amount")]
         public decimal TotalValue { get; set; }
@@ -362,5 +362,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Payment Method")]
+        public DateTime PaymentMethod { get; set; }
+
     }
 }

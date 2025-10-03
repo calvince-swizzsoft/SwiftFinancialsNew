@@ -3128,5 +3128,63 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #endregion
 
+
+        #region PurchaseInvoiceDTO
+
+
+        Task<List<PurchaseInvoiceDTO>> FindPurchaseInvoicesAsync(ServiceHeader serviceHeader);
+        Task<PurchaseInvoiceDTO> AddNewPurchaseInvoiceAsync(PurchaseInvoiceDTO purchaseInvoiceDTO, ServiceHeader serviceHeader);
+
+        Task<bool> UpdatePurchaseInvoiceAsync(PurchaseInvoiceDTO purchaseInvoiceDTO, ServiceHeader serviceHeader);
+
+
+        Task<JournalDTO> PostPurchaseInvoiceAsync(PurchaseInvoiceDTO purchaseInvoiceDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
+
+        #endregion
+
+        #region PurchaseCreditMemoDTO
+
+        Task<List<PurchaseCreditMemoDTO>> FindPurchaseCreditMemosAsync(ServiceHeader serviceHeader);
+        Task<PurchaseCreditMemoDTO> AddNewPurchaseCreditMemoAsync(PurchaseCreditMemoDTO purchaseCreditMemoDTO, ServiceHeader serviceHeader);
+
+        Task<bool> UpdatePurchaseCreditMemoAsync(PurchaseCreditMemoDTO purchaseCreditMemoDTO, ServiceHeader serviceHeader);
+
+
+        Task<JournalDTO> PostPurchaseCreditMemoAsync(PurchaseCreditMemoDTO purchaseCreditMemoDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
+
+        #endregion
+
+
+        #region SalesInvoiceDTO
+
+        Task<List<SalesInvoiceDTO>> FindSalesInvoicesAsync(ServiceHeader serviceHeader);
+        Task<SalesInvoiceDTO> AddNewSalesInvoiceAsync(SalesInvoiceDTO salesInvoiceDTO, ServiceHeader serviceHeader);
+
+        Task<bool> UpdateSalesInvoiceAsync(SalesInvoiceDTO salesInvoiceDTO, ServiceHeader serviceHeader);
+
+
+        Task<JournalDTO> PostSalesInvoiceAsync(SalesInvoiceDTO salesInvoiceDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
+
+        #endregion
+
+        #region SalesCreditMemoDTO
+
+        Task<List<SalesCreditMemoDTO>> FindSalesCreditMemosAsync(ServiceHeader serviceHeader);
+        Task<SalesCreditMemoDTO> AddNewSalesCreditMemoAsync(SalesCreditMemoDTO salesCreditMemoDTO, ServiceHeader serviceHeader);
+
+        Task<bool> UpdateSalesCreditMemoAsync(SalesCreditMemoDTO salesCreditMemoDTO, ServiceHeader serviceHeader);
+
+
+        Task<JournalDTO> PostSalesCreditMemoAsync(SalesCreditMemoDTO salesCreditMemoDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
+
+        #endregion
+
+
+        //Payment Voucher payment
+
+        Task<JournalDTO> PayVendorInvoice(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
+
+        //Task<JournalDTO> PayCustomerInvoice(PaymentVoucherDTO paymentVoucherDTO, ServiceHeader serviceHeader = null);
+
     }
 }

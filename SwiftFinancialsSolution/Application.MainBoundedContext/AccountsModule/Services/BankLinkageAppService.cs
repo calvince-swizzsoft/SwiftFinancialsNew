@@ -37,7 +37,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var bankLinkage = BankLinkageFactory.CreateBankLinkage(bankLinkageDTO.BranchId, bankLinkageDTO.ChartOfAccountId, bankLinkageDTO.BankName, bankLinkageDTO.BankBranchName, bankLinkageDTO.BankAccountNumber, bankLinkageDTO.Remarks);
+                    var bankLinkage = BankLinkageFactory.CreateBankLinkage(bankLinkageDTO.BranchId, bankLinkageDTO.BankId, bankLinkageDTO.ChartOfAccountId, bankLinkageDTO.BankName, bankLinkageDTO.BankBranchName, bankLinkageDTO.BankAccountNumber, bankLinkageDTO.Remarks);
 
                     if (bankLinkageDTO.IsLocked)
                         bankLinkage.Lock();
@@ -64,7 +64,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                 if (persisted != null)
                 {
-                    var current = BankLinkageFactory.CreateBankLinkage(bankLinkageDTO.BranchId, bankLinkageDTO.ChartOfAccountId, bankLinkageDTO.BankName, bankLinkageDTO.BankBranchName, bankLinkageDTO.BankAccountNumber, bankLinkageDTO.Remarks);
+                    var current = BankLinkageFactory.CreateBankLinkage(bankLinkageDTO.BranchId, bankLinkageDTO.BankId, bankLinkageDTO.ChartOfAccountId, bankLinkageDTO.BankName, bankLinkageDTO.BankBranchName, bankLinkageDTO.BankAccountNumber, bankLinkageDTO.Remarks);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
 

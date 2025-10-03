@@ -60,8 +60,8 @@ namespace Application.MainBoundedContext.Services
             if (chartOfAccountId == null || chartOfAccountId == Guid.Empty)
                 sbErrors.Append("Chart Of Account is null or empty!");
 
-            if (contraChartOfAccountId == null || contraChartOfAccountId == Guid.Empty)
-                sbErrors.Append("Contra Chart Of Account is null or empty!");
+            //if (contraChartOfAccountId == null || contraChartOfAccountId == Guid.Empty)
+            //    sbErrors.Append("Contra Chart Of Account is null or empty!");
 
             if (sbErrors.Length != 0)
                 throw new InvalidOperationException(sbErrors.ToString());

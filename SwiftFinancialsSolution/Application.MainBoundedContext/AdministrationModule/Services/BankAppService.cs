@@ -52,7 +52,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var bank = BankFactory.CreateBank(bankDTO.Code, bankDTO.Description);
+                    var bank = BankFactory.CreateBank(bankDTO.Code, bankDTO.Description, bankDTO.Address, bankDTO.SwiftCode, bankDTO.IbanNo, bankDTO.City);
 
                     _bankRepository.Add(bank, serviceHeader);
 
@@ -75,7 +75,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
 
                 if (persisted != null)
                 {
-                    var current = BankFactory.CreateBank(bankDTO.Code, bankDTO.Description);
+                    var current = BankFactory.CreateBank(bankDTO.Code, bankDTO.Description, bankDTO.Address, bankDTO.SwiftCode, bankDTO.IbanNo, bankDTO.City);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
 
@@ -317,7 +317,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
             {
                 counter += 1;
 
-                var bank = BankFactory.CreateBank(bankDTO.Code, bankDTO.Description);
+                var bank = BankFactory.CreateBank(bankDTO.Code, bankDTO.Description, bankDTO.Address, bankDTO.SwiftCode, bankDTO.IbanNo, bankDTO.City);
 
                 newBanks.Add(bank);
 

@@ -1,41 +1,43 @@
-﻿using Infrastructure.Crosscutting.Framework.Logging;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SwiftFinancials.Presentation.Contracts.MembershipModule;
-using Infrastructure.Crosscutting.Framework.Utils;
-using System.Collections.ObjectModel;
-using Application.MainBoundedContext.DTO.AdministrationModule;
-using SwiftFinancials.Presentation.Contracts.AdministrationModule;
-using Application.MainBoundedContext.DTO;
-using SwiftFinancials.Presentation.Contracts.MicroCreditModule;
-using Application.MainBoundedContext.DTO.MicroCreditModule;
-using SwiftFinancials.Presentation.Contracts.MessagingModule;
-using Application.MainBoundedContext.DTO.MessagingModule;
-using Infrastructure.Crosscutting.Framework.Extensions;
-using Application.MainBoundedContext.DTO.RegistryModule;
-using SwiftFinancials.Presentation.Contracts.RegistryModule;
-using Application.MainBoundedContext.DTO.HumanResourcesModule;
-using SwiftFinancials.Presentation.Contracts.HumanResourcesModule;
-using System.ServiceModel;
+﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
-using SwiftFinancials.Presentation.Contracts.AccountsModule;
+using Application.MainBoundedContext.DTO.AdministrationModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.FrontOfficeModule;
+using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using Application.MainBoundedContext.DTO.InventoryModule;
+using Application.MainBoundedContext.DTO.MessagingModule;
+using Application.MainBoundedContext.DTO.MicroCreditModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
+using DistributedServices.Seedwork.EndpointBehaviors;
+using DistributedServices.Seedwork.ErrorHandlers;
+using Infrastructure.Crosscutting.Framework.Extensions;
+using Infrastructure.Crosscutting.Framework.Logging;
+using Infrastructure.Crosscutting.Framework.Utils;
+using SwiftFinancials.Presentation.Contracts;
+using SwiftFinancials.Presentation.Contracts.AccountsModule;
+using SwiftFinancials.Presentation.Contracts.AdministrationModule;
 using SwiftFinancials.Presentation.Contracts.BackOfficeModule;
 using SwiftFinancials.Presentation.Contracts.FrontOfficeModule;
-using Application.MainBoundedContext.DTO.FrontOfficeModule;
-using SwiftFinancials.Presentation.Infrastructure.Models;
-using System.ServiceModel.Description;
-using SwiftFinancials.Presentation.Contracts;
-using DistributedServices.Seedwork.ErrorHandlers;
-using SwiftFinancials.Presentation.Infrastructure.Disposable;
-using DistributedServices.Seedwork.EndpointBehaviors;
-using System.Runtime.Remoting.Channels;
-using Application.MainBoundedContext.DTO.InventoryModule;
+using SwiftFinancials.Presentation.Contracts.HumanResourcesModule;
 using SwiftFinancials.Presentation.Contracts.InventoryModule;
+using SwiftFinancials.Presentation.Contracts.MembershipModule;
+using SwiftFinancials.Presentation.Contracts.MessagingModule;
+using SwiftFinancials.Presentation.Contracts.MicroCreditModule;
+using SwiftFinancials.Presentation.Contracts.RegistryModule;
+using SwiftFinancials.Presentation.Infrastructure.Disposable;
+using SwiftFinancials.Presentation.Infrastructure.Models;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Runtime.Remoting.Channels;
+using System.ServiceModel;
+using System.ServiceModel.Configuration;
+using System.ServiceModel.Description;
+using System.Text;
+using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SwiftFinancials.Presentation.Infrastructure.Services
 {
@@ -41756,5 +41758,715 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         {
             throw new NotImplementedException();
         }
+
+
+        public Task<PurchaseInvoiceDTO> AddNewPurchaseInvoiceAsync(PurchaseInvoiceDTO purchaseInvoiceDTO, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<PurchaseInvoiceDTO>();
+
+            IPurchaseInvoiceService service = GetService<IPurchaseInvoiceService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PurchaseInvoiceDTO response = ((IPurchaseInvoiceService)result.AsyncState).EndAddPurchaseInvoice(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddPurchaseInvoice(purchaseInvoiceDTO, asyncCallback, service);
+
+            return tcs.Task;
+
+        }
+
+
+
+        public Task<bool> UpdatePurchaseInvoiceAsync(PurchaseInvoiceDTO purchaseInvoiceDTO, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            IPurchaseInvoiceService service = GetService<IPurchaseInvoiceService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IPurchaseInvoiceService)result.AsyncState).EndUpdatePurchaseInvoice(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdatePurchaseInvoice(purchaseInvoiceDTO, asyncCallback, service);
+
+            return tcs.Task;
+
+        }
+
+        public Task<List<PurchaseInvoiceDTO>> FindPurchaseInvoicesAsync (ServiceHeader serviceHeader)
+
+        {
+
+            var tcs = new TaskCompletionSource<List<PurchaseInvoiceDTO>>();
+
+            IPurchaseInvoiceService service = GetService<IPurchaseInvoiceService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+
+                    List<PurchaseInvoiceDTO> response = ((IPurchaseInvoiceService)result.AsyncState).EndFindPurchaseInvoices(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginFindPurchaseInvoices(asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+
+        public Task<JournalDTO>PostPurchaseInvoiceAsync(PurchaseInvoiceDTO purchaseInvoiceDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<JournalDTO>();
+
+            IPurchaseInvoiceService service = GetService<IPurchaseInvoiceService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+                    JournalDTO response = ((IPurchaseInvoiceService)result.AsyncState).EndPostPurchaseInvoice(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginPostPurchaseInvoice(purchaseInvoiceDTO, moduleNavigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+        public Task<JournalDTO> PayVendorInvoice(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<JournalDTO>();
+
+            IPurchaseInvoiceService service = GetService<IPurchaseInvoiceService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+                    JournalDTO response = ((IPurchaseInvoiceService)result.AsyncState).EndPayVendorInvoice(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginPayVendorInvoice(paymentVoucherDTO, moduleNavigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+
+
+        public Task<PurchaseCreditMemoDTO> AddNewPurchaseCreditMemoAsync(PurchaseCreditMemoDTO purchaseCreditMemoDTO, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<PurchaseCreditMemoDTO>();
+
+            IPurchaseCreditMemoService service = GetService<IPurchaseCreditMemoService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PurchaseCreditMemoDTO response = ((IPurchaseCreditMemoService)result.AsyncState).EndAddPurchaseCreditMemo(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddPurchaseCreditMemo(purchaseCreditMemoDTO, asyncCallback, service);
+
+            return tcs.Task;
+
+        }
+
+
+
+        public Task<bool> UpdatePurchaseCreditMemoAsync(PurchaseCreditMemoDTO purchaseCreditMemoDTO, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            IPurchaseCreditMemoService service = GetService<IPurchaseCreditMemoService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IPurchaseCreditMemoService)result.AsyncState).EndUpdatePurchaseCreditMemo(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdatePurchaseCreditMemo(purchaseCreditMemoDTO, asyncCallback, service);
+
+            return tcs.Task;
+
+        }
+
+
+        public Task<List<PurchaseCreditMemoDTO>> FindPurchaseCreditMemosAsync(ServiceHeader serviceHeader)
+
+        {
+
+            var tcs = new TaskCompletionSource<List<PurchaseCreditMemoDTO>>();
+
+            IPurchaseCreditMemoService service = GetService<IPurchaseCreditMemoService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+
+                    List<PurchaseCreditMemoDTO> response = ((IPurchaseCreditMemoService)result.AsyncState).EndFindPurchaseCreditMemos(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginFindPurchaseCreditMemos(asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+        public Task<JournalDTO> PostPurchaseCreditMemoAsync(PurchaseCreditMemoDTO purchaseCreditMemoDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<JournalDTO>();
+
+            IPurchaseCreditMemoService service = GetService<IPurchaseCreditMemoService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+                    JournalDTO response = ((IPurchaseCreditMemoService)result.AsyncState).EndPostPurchaseCreditMemo(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginPostPurchaseCreditMemo(purchaseCreditMemoDTO, moduleNavigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+
+
+
+        public Task<SalesInvoiceDTO> AddNewSalesInvoiceAsync(SalesInvoiceDTO salesInvoiceDTO, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<SalesInvoiceDTO>();
+
+            ISalesInvoiceService service = GetService<ISalesInvoiceService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    SalesInvoiceDTO response = ((ISalesInvoiceService)result.AsyncState).EndAddSalesInvoice(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddSalesInvoice(salesInvoiceDTO, asyncCallback, service);
+
+            return tcs.Task;
+
+        }
+
+
+
+        public Task<bool> UpdateSalesInvoiceAsync(SalesInvoiceDTO salesInvoiceDTO, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            ISalesInvoiceService service = GetService<ISalesInvoiceService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((ISalesInvoiceService)result.AsyncState).EndUpdateSalesInvoice(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateSalesInvoice(salesInvoiceDTO, asyncCallback, service);
+
+            return tcs.Task;
+
+        }
+
+        public Task<List<SalesInvoiceDTO>> FindSalesInvoicesAsync(ServiceHeader serviceHeader)
+
+        {
+
+            var tcs = new TaskCompletionSource<List<SalesInvoiceDTO>>();
+
+            ISalesInvoiceService service = GetService<ISalesInvoiceService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+
+                    List<SalesInvoiceDTO> response = ((ISalesInvoiceService)result.AsyncState).EndFindSalesInvoices(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginFindSalesInvoices(asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+
+        public Task<JournalDTO> PostSalesInvoiceAsync(SalesInvoiceDTO salesInvoiceDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<JournalDTO>();
+
+            ISalesInvoiceService service = GetService<ISalesInvoiceService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+                    JournalDTO response = ((ISalesInvoiceService)result.AsyncState).EndPostSalesInvoice(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginPostSalesInvoice(salesInvoiceDTO, moduleNavigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+
+        #region SalesCeditMemo
+
+
+
+        public Task<SalesCreditMemoDTO> AddNewSalesCreditMemoAsync(SalesCreditMemoDTO salesCreditMemoDTO, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<SalesCreditMemoDTO>();
+
+            ISalesCreditMemoService service = GetService<ISalesCreditMemoService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    SalesCreditMemoDTO response = ((ISalesCreditMemoService)result.AsyncState).EndAddSalesCreditMemo(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddSalesCreditMemo(salesCreditMemoDTO, asyncCallback, service);
+
+            return tcs.Task;
+
+        }
+
+
+        public Task<bool> UpdateSalesCreditMemoAsync(SalesCreditMemoDTO salesCreditMemoDTO, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            ISalesCreditMemoService service = GetService<ISalesCreditMemoService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((ISalesCreditMemoService)result.AsyncState).EndUpdateSalesCreditMemo(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateSalesCreditMemo(salesCreditMemoDTO, asyncCallback, service);
+
+            return tcs.Task;
+
+        }
+
+
+        public Task<List<SalesCreditMemoDTO>> FindSalesCreditMemosAsync(ServiceHeader serviceHeader)
+
+        {
+
+            var tcs = new TaskCompletionSource<List<SalesCreditMemoDTO>>();
+
+            ISalesCreditMemoService service = GetService<ISalesCreditMemoService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+
+                    List<SalesCreditMemoDTO> response = ((ISalesCreditMemoService)result.AsyncState).EndFindSalesCreditMemos(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginFindSalesCreditMemos(asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+        public Task<JournalDTO> PostSalesCreditMemoAsync(SalesCreditMemoDTO salesCreditMemoDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<JournalDTO>();
+
+            ISalesCreditMemoService service = GetService<ISalesCreditMemoService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+                    JournalDTO response = ((ISalesCreditMemoService)result.AsyncState).EndPostSalesCreditMemo(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginPostSalesCreditMemo(salesCreditMemoDTO, moduleNavigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+        #endregion
+
+
     }
 }

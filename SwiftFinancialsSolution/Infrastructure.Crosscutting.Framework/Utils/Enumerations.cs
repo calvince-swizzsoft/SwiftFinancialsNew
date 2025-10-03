@@ -332,6 +332,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         CustomerAccountActivationFee = 0xF0E0 + 41,
     }
 
+
+
     public enum SystemGeneralLedgerAccountCode
     {
         [Description("Payables Control")]
@@ -389,7 +391,19 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         [Description("Super Saver Interest")]
         SuperSaverInterest = 0xBEBA + 30,
         [Description("Funeral Rider Expense")]
-        FuneralRiderExpense = 0xBEBA + 31
+        FuneralRiderExpense = 0xBEBA + 31,
+
+        [Description("Account Payables")]
+        AccountPayables = 0xBEBA + 32,
+
+        [Description("Account Receivables")]
+        AccountReceivables = 0xBEBA + 33,
+
+        [Description("Internal Debtors")]
+        InternalDebtors = 0xBEBA + 34,
+
+        [Description("Inventory")]
+        Inventory = 0xBEBA + 35
     }
 
     public enum Gender
@@ -1109,6 +1123,19 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         GLAccount = 1,
         [Description("Customer")]
         Customer = 2
+    }
+
+    [Flags]
+    public enum PurchaseInvoiceEntryType
+    {
+        [Description("G/L Account")]
+        GLAccount = 1,
+
+        [Description("Fixed Asset")]
+        FixedAsset = 2,
+        
+        [Description("Items")]
+        Items = 3
     }
 
     [Flags]

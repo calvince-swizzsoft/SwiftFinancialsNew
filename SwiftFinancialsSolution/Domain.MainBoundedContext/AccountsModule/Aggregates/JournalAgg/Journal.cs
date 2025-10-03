@@ -81,7 +81,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg
             }
         }
 
-        public void PostSingleEntry(Guid chartOfAccountId, Guid contraChartOfAccountId, decimal amount, ServiceHeader serviceHeader)
+     
+
+        public void PostSingleEntry(Guid chartOfAccountId, Guid? contraChartOfAccountId, decimal amount, ServiceHeader serviceHeader)
         {
             var journalEntry = JournalEntryFactory.CreateJournalEntry(this.Id, chartOfAccountId, contraChartOfAccountId, null, amount, this.ValueDate, serviceHeader);
 

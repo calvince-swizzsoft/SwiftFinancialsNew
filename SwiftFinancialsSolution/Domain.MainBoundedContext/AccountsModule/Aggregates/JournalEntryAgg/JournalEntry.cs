@@ -15,7 +15,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalEntryAgg
 
         public virtual ChartOfAccount ChartOfAccount { get; private set; }
 
-        public Guid ContraChartOfAccountId { get; set; }
+        public Guid? ContraChartOfAccountId { get; set; }
 
         public virtual ChartOfAccount ContraChartOfAccount { get; private set; }
 

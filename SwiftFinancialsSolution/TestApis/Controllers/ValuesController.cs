@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -14,6 +17,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using DistributedServices.MainBoundedContext;
 using Infrastructure.Crosscutting.Framework.Utils;
 //using Microsoft.AspNetCore.Cors;
 using SwiftFinancials.Presentation.Infrastructure.Models;
@@ -139,12 +143,14 @@ namespace TestApis.Controllers
 
         [HttpGet]
         [Route("getBanks")]
-        public async Task<IHttpActionResult> getBanks(int? pagesize, int? pageindex)
+        public async Task<IHttpActionResult> getBanks()
         {
             try
             {
+                var effectivePageSize = 20;
+                var effectivePageIndex = 0;
                 var serviceHeader = master.GetServiceHeader();
-                var pageCollectionInfo = await master._channelService.FindBanksInPageAsync((int)pagesize, (int)pageindex, serviceHeader);
+                var pageCollectionInfo = await master._channelService.FindBanksInPageAsync((int)effectivePageSize, (int)effectivePageIndex, serviceHeader);
                 var sortedData = pageCollectionInfo.PageCollection.OrderByDescending(x => x.Id).ToList();
 
                 return Json(new ApiResponse<object>
@@ -166,89 +172,362 @@ namespace TestApis.Controllers
         }
 
 
+        [HttpGet]
+        [Route("GetSystemMapItems")]
+        public async Task<IHttpActionResult> GetSystemMapItems()
+        {
+
+            try
+            {
+
+                var serviceHeader = master.GetServiceHeader();
+
+                var mapItems = master.GetSystemGeneralLedgerAccountCodeSelectList("Account Payables");
+
+                return Json(mapItems);
+            }
+
+            catch (Exception ex)
+            {
+
+                return Json(ex.Message);
+
+
+            }
+
+
+        }
+
+
+
+        [HttpGet]
+        [Route("GetPurchaseInvoiceEntryTypes")]
+        public async Task<IHttpActionResult> GetPurchaseInvoiceTypes()
+        {
+
+            try
+            {
+
+                var serviceHeader = master.GetServiceHeader();
+
+                var items = master.GetPurchaseInvoiceEntryTypeSelectList("G/L Account");
+                return Json(items);
+            }
+
+            catch (Exception ex)
+            {
+
+                return Json(ex.Message);
+
+
+            }
+
+
+        }
+
+
+
+        [HttpGet]
+        [Route("getSystemMappings")]
+        public async Task<IHttpActionResult> getSystemMappings()
+        {
+            
+            try
+            {
+
+                var serviceHeader = master.GetServiceHeader();
+
+                var mappings = await master._channelService.FindSystemGeneralLedgerAccountMappingsAsync(serviceHeader);
+
+                var coas = await master._channelService.FindChartOfAccountsAsync(serviceHeader);
+
+                foreach (SystemGeneralLedgerAccountMappingDTO mapping in mappings)
+                {
+                    var coa = coas.FirstOrDefault(c => c.Id == mapping.ChartOfAccountId);
+
+                    if (coa != null)
+                    {
+                        mapping.ChartOfAccountAccountName = coa.AccountName;
+                    }
+                    // else: do nothing if not found
+                }
+
+
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = true,
+                    Message = mappings?.Count > 0 ? $"{mappings.Count} Mappings Found." : "No Mapping  found.",
+                    Data = mappings?.ToList()
+                });
+
+            }
+
+            catch (Exception ex)
+            {
+
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = $"Error: {ex.Message}",
+                    Data = null
+                });
+            }        
+        }
+
+
         [HttpPost]
-        [Route("AddBanks")]
-        public async Task<IHttpActionResult> AddBanks([FromBody] BankDTO bankDTO)
+        [Route("addSystemMapping")]
+        public async Task<IHttpActionResult> addSystemMapping([FromBody] SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO)
+        {
+
+            try
+            {
+
+                var serviceHeader = master.GetServiceHeader();
+
+
+                systemGeneralLedgerAccountMappingDTO.ValidateAll();
+
+                var result = master._channelService.AddSystemGeneralLedgerAccountMappingAsync(systemGeneralLedgerAccountMappingDTO, serviceHeader);
+
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = true,
+                    Message = "Mapping created successfully.",
+                    Data = result
+                });
+
+            }
+
+            catch (Exception ex)
+            {
+
+
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "An error occurred while retrieving the transactions.",
+                    Data = ex.Message
+                });
+            }
+        }
+
+
+        [HttpPut]
+        [Route("UpdateSystemMapping")]
+        public async Task<IHttpActionResult> UpdateSystemMapping([FromBody] SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO)    
+        {
+            try
+            {
+                var serviceHeader = master.GetServiceHeader();
+
+                systemGeneralLedgerAccountMappingDTO.ValidateAll();
+
+                if (systemGeneralLedgerAccountMappingDTO.ErrorMessages.Count > 0)
+                {
+
+                    return Json(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "failed, bad request"
+                    });
+                }
+
+                else
+                {
+
+
+                    var result = await master._channelService.UpdateSystemGeneralLedgerAccountMappingAsync(
+                        systemGeneralLedgerAccountMappingDTO, 
+                        serviceHeader);
+
+
+                    if (result)
+                    {
+
+                        return Json(new ApiResponse<object>
+                        {
+                            Success = true,
+                            Message = "Success updating"
+
+                        }); 
+                    }
+
+
+                    else
+                    {
+
+                        return Json(new ApiResponse<object>
+                        {
+
+                            Success = true,
+                            Message = "Failed in updating"
+                        });
+                    }
+                }
+               
+            }
+
+            catch (Exception ex)
+            {
+
+                return Json(new ApiResponse<object>
+                {
+
+                    Success = false,
+                    Message = "An error occurred"
+                }); 
+            }
+       }
+   
+
+
+
+        [HttpGet]
+        [Route("getBankWithLinkages")]
+        public async Task<IHttpActionResult> getBankWithLinkages()
+        {
+            try
+            {
+                var serviceHeader = master.GetServiceHeader();
+                var bankLinkageDTOs = await master._channelService.FindBankLinkagesAsync(serviceHeader);
+
+        
+                // Get all general ledger accounts
+                var generalLedgerAccounts = await master._channelService.FindGeneralLedgerAccountsAsync(true, true, serviceHeader);
+
+                var balanceDict = generalLedgerAccounts
+    .Where(x => x.Id != Guid.Empty)
+    .GroupBy(x => x.Id)
+    .ToDictionary(g => g.Key, g => g.First().Balance);
+
+                foreach (var linkageDTO in bankLinkageDTOs)
+                {
+
+
+                    var relatedBank = await master._channelService.FindBankAsync(linkageDTO.BankId, serviceHeader);
+
+                    if (relatedBank != null && relatedBank.Id != Guid.Empty)
+                    {
+
+                        linkageDTO.SwiftCode = relatedBank.SwiftCode;
+                        linkageDTO.Address = relatedBank.Address;
+                        linkageDTO.City = relatedBank.City;
+                        linkageDTO.IbanNo = relatedBank.IbanNo;
+                        linkageDTO.No = relatedBank.No;
+
+                    }
+
+                  
+                   
+                    if (linkageDTO.ChartOfAccountId != Guid.Empty && balanceDict.ContainsKey(linkageDTO.ChartOfAccountId))
+                    {
+                        linkageDTO.BankLinkageBalance = balanceDict[linkageDTO.ChartOfAccountId];
+                    }
+                    else
+                    {
+                        linkageDTO.BankLinkageBalance = 0m;
+                    }
+                }
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = true,
+                    Message = bankLinkageDTOs?.Count > 0 ? $"{bankLinkageDTOs.Count} Transactions Found." : "No Transaction  found.",
+                    Data = bankLinkageDTOs
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "An error occurred while retrieving the transactions.",
+                    Data = ex.Message
+                });
+            }
+        }
+
+
+        [HttpPost]
+        [Route("AddBankWithLinkages")]
+        public async Task<IHttpActionResult> AddBankWithLinkages([FromBody] BankDTO bankDTO)
         {
             var serviceHeader = master.GetServiceHeader();
 
-            if (bankDTO == null)
+            if (bankDTO == null || bankDTO == null)
                 return Json(new ApiResponse<object> { Success = false, Message = "Invalid data.", Data = null });
+
 
             bankDTO.ValidateAll();
-
-            if (!bankDTO.HasErrors)
+            if (bankDTO.HasErrors)
             {
-                var result = await master._channelService.AddBankAsync(bankDTO, serviceHeader);
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Bank validation failed.",
+                    Data = bankDTO.ErrorMessages
+                });
+            }
 
-                await master._channelService.UpdateBankBranchesByBankIdAsync(bankDTO.Id, bankDTO.BankBranchesDTO, serviceHeader);
+            var result = await master._channelService.AddBankAsync(bankDTO, serviceHeader);
+            if (result.ErrorMessageResult != null)
+            {
 
-                if (result.ErrorMessageResult != null)
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = result.ErrorMessageResult,
+                    Data = null
+                });
+            }
+
+
+            await master._channelService.UpdateBankBranchesByBankIdAsync(result.Id, bankDTO.BankBranchesDTO, serviceHeader);
+
+
+            var bankLinkageDTO = new BankLinkageDTO
+            {
+                BankAccountNumber = bankDTO.BankAccountNumber,
+                BankId = result.Id,
+                BankBranchName = bankDTO.BankBranchName,
+                BankName = bankDTO.BankName,
+                BranchDescription = bankDTO.BranchDescription,
+                BranchId = bankDTO.BranchId,
+                ChartOfAccountAccountCode = bankDTO.ChartOfAccountAccountCode,
+                ChartOfAccountAccountName = bankDTO.ChartOfAccountAccountName,
+                ChartOfAccountId = bankDTO.ChartOfAccountId,
+                ChartOfAccountAccountType = bankDTO.ChartOfAccountAccountType,
+                ChartOfAccountCostCenterId = bankDTO.ChartOfAccountCostCenterId,
+                ChartOfAccountCostCenterDescription = bankDTO.ChartOfAccountCostCenterDescription
+            };
+
+
+            var linkageResult = await master._channelService.AddBankLinkageAsync(bankLinkageDTO, serviceHeader);
+
+                if (linkageResult.ErrorMessages.Count != 0)
                 {
                     return Json(new ApiResponse<object>
                     {
                         Success = false,
-                        Message = result.ErrorMessageResult,
+                        Message = linkageResult.ErrorMessages.ToString(),
                         Data = null
                     });
                 }
-
-                return Json(new ApiResponse<object>
-                {
-                    Success = true,
-                    Message = "Chart of account created successfully.",
-                    Data = bankDTO
-                });
-            }
+            
 
             return Json(new ApiResponse<object>
             {
-                Success = false,
-                Message = "Validation failed.",
-                Data = bankDTO.ErrorMessages
+                Success = true,
+                Message = "Bank and linkages created successfully.",
+                Data = bankDTO
             });
         }
 
-        [HttpPost]
-        [Route("AddBankLinkages")]
-        public async Task<IHttpActionResult> AddBankLinkages([FromBody] BankLinkageDTO bankLinkageDTO)
-        {
-            var serviceHeader = master.GetServiceHeader();
-
-            if (bankLinkageDTO == null)
-                return Json(new ApiResponse<object> { Success = false, Message = "Invalid data.", Data = null });
-
-            bankLinkageDTO.ValidateAll();
-
-            if (!bankLinkageDTO.HasErrors)
-            {
-                var result = await master._channelService.AddBankLinkageAsync(bankLinkageDTO, serviceHeader);
-
-                if (result.ErrorMessages != null)
-                {
-                    return Json(new ApiResponse<object>
-                    {
-                        Success = false,
-                        Message = result.ErrorMessages.ToString(),
-                        Data = null
-                    });
-                }
-
-                return Json(new ApiResponse<object>
-                {
-                    Success = true,
-                    Message = "bank Linkage created successfully.",
-                    Data = bankLinkageDTO
-                });
-            }
-
-            return Json(new ApiResponse<object>
-            {
-                Success = false,
-                Message = "Validation failed.",
-                Data = bankLinkageDTO.ErrorMessages
-            });
-        }
 
 
         [HttpGet]
@@ -328,6 +607,9 @@ namespace TestApis.Controllers
             if (chartOfAccountDTO == null)
                 return Json(new ApiResponse<object> { Success = false, Message = "Invalid data.", Data = null });
 
+            chartOfAccountDTO.CostCenterId = Guid.Parse("A66AE3A0-AE25-F011-8982-28C63F4EECBE");
+
+
             chartOfAccountDTO.ValidateAll();
 
             if (!chartOfAccountDTO.HasErrors)
@@ -405,6 +687,8 @@ namespace TestApis.Controllers
             }
         }
 
+
+        //Posting Periods
         [HttpGet]
         [Route("GetPostingperiods")]
         public async Task<IHttpActionResult> GetPostingperiods()
@@ -418,6 +702,75 @@ namespace TestApis.Controllers
                 Message = reports?.Count > 0 ? $"{reports.Count} POsting Periods found." : "No Posting periods found.",
                 Data = reports
             });
+        }
+
+
+
+        [Route("AddPostingPeriod")]
+        public async Task<IHttpActionResult> addPostingPeriod([FromBody] PostingPeriodDTO postingPeriodDTO)
+        {
+            var serviceHeader = master.GetServiceHeader();
+            var result = await master._channelService.AddPostingPeriodAsync(postingPeriodDTO, serviceHeader);
+
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = "Posting period added successfully.",
+                Data = result
+            });
+        }
+
+
+        [HttpPut]
+        [Route("UpdatePostingPeriod")]
+        public async Task<IHttpActionResult> UpdatePostingPeriod([FromBody] PostingPeriodDTO postingPeriodDTO)
+        {
+            var serviceHeader = master.GetServiceHeader();
+            var result = await master._channelService.UpdatePostingPeriodAsync(postingPeriodDTO, serviceHeader);
+
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = "Posting period updated successfully.",
+                Data = result
+            });
+        }
+
+
+
+        [HttpPost]
+        [Route("ClosePostingPeriod")]
+        public async Task<IHttpActionResult> ClosePostingPeriod([FromBody] PostingPeriodDTO postingPeriodDTO)
+        {
+
+            int moduleNavigationItemCode = 1; // Assuming 1 represents the Accounts module
+
+            var serviceHeader = master.GetServiceHeader();
+
+            var result = await master._channelService.ClosePostingPeriodAsync(postingPeriodDTO, moduleNavigationItemCode, serviceHeader);
+
+
+            if (result == true)
+            {
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Successfully closed posting period.",
+                    Data = null
+                });
+            }
+
+            else
+            {
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Error closing posting period.",
+                    Data = null
+                });
+            }
+        
         }
 
         [HttpGet]
@@ -610,136 +963,123 @@ namespace TestApis.Controllers
             });
         }
 
-        [Route("addPostingPeriod")]
-        public async Task<IHttpActionResult> addPostingPeriod([FromBody] PostingPeriodDTO postingPeriodDTO)
-        {
-            var serviceHeader = master.GetServiceHeader();
-            var result = await master._channelService.AddPostingPeriodAsync(postingPeriodDTO, serviceHeader);
-
-            return Json(new ApiResponse<object>
-            {
-                Success = true,
-                Message = "Posting period added successfully.",
-                Data = result
-            });
-        }
-
-        [HttpPost]
-        [Route("addJournals")]
-        public async Task<IHttpActionResult> addJournals([FromBody] JournalDTO journalDTO)
-        {
-            var serviceHeader = master.GetServiceHeader();
-            CustomerTransactionModel transactionModel = new CustomerTransactionModel();
-
-            journalDTO.MapTo<TransactionModel>();
-            transactionModel.CreditChartOfAccountId = new Guid("8E87F619-592A-C077-EDE8-08D38C554F2E");
-            transactionModel.CreditCustomerAccountId = new Guid("CC04EC57-A535-E911-A2B8-000C2914209C");
-            transactionModel.DebitCustomerAccountId = new Guid("15C4DA29-BF35-E911-A2B8-000C2914209C");
-            transactionModel.DebitChartOfAccountId = new Guid("ADEC18B6-6EB9-C271-1501-08D38C554F2F");
-            transactionModel.CreditCustomerAccount = await master._channelService.FindCustomerAccountAsync(transactionModel.CreditCustomerAccountId, true, true, true, true, serviceHeader);
-            transactionModel.DebitCustomerAccount = await master._channelService.FindCustomerAccountAsync(transactionModel.DebitCustomerAccountId, true, true, true, true, serviceHeader);
-            transactionModel.TotalValue = journalDTO.TotalValue;
-            transactionModel.BranchId = journalDTO.BranchId;
-            ObservableCollection<TariffWrapper> tariffWrappers = new ObservableCollection<TariffWrapper>();
-            TariffWrapper tariffWrapper = new TariffWrapper();
-            transactionModel.MapTo<TariffWrapper>();
-            tariffWrapper.Amount = journalDTO.TotalValue;
-
-            tariffWrapper.DebitCustomerAccount = transactionModel.DebitCustomerAccount;
-            tariffWrapper.CreditCustomerAccount = transactionModel.CreditCustomerAccount;
-            tariffWrapper.CreditGLAccountId = transactionModel.CreditChartOfAccountId;
-            tariffWrapper.DebitGLAccountId = transactionModel.CreditChartOfAccountId;
-            transactionModel.TransactionCode = (int)SystemTransactionCode.CashDeposit;
-
-            tariffWrappers.Add(tariffWrapper);
-            var result = await master._channelService.AddJournalWithCustomerAccountAsync(transactionModel, serviceHeader);
-
-            return Json(new ApiResponse<object>
-            {
-                Success = true,
-                Message = "Journal added successfully.",
-                Data = result
-            });
-        }
-
-
         //
-        
+
         //IF ACCOUNT TYPE IS CUSTOMER, D0 THIS
 
         //IF ACCOUNT TYPE IS GL, DO THAT
 
         [HttpPost]
-        [Route("PostGLJournal")]
-        public async Task<IHttpActionResult> PostGLJournal([FromBody] TransactionModel transactionModel)
+        [Route("PostJournal")]
+        public async Task<IHttpActionResult> HandleDirectPosting([FromBody] List<TransactionModel> transactionModels)
         {
             var serviceHeader = master.GetServiceHeader();
-                   
-            //transactionModel.TransactionCode = (int)SystemTransactionCode.JournalVoucher;
 
-            var result = await master._channelService.AddJournalAsync(transactionModel, null, serviceHeader);
+            if (transactionModels == null || !transactionModels.Any())
+            {
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "No journal entries provided.",
+                    Data = null
+                });
+            }
+
+            var results = new List<object>();
+            foreach (var transactionModel in transactionModels)
+            {
+               
+                // Single entry (self-balanced)
+                if (transactionModel.ChartOfAccountId != Guid.Empty && transactionModel.ContraChartOfAccountId != Guid.Empty)
+                {
+                    if (transactionModel.DebitAmount > 0)
+                    {
+                        transactionModel.DebitChartOfAccountId = transactionModel.ChartOfAccountId;
+                        transactionModel.CreditChartOfAccountId = transactionModel.ContraChartOfAccountId;
+                    }
+                    else
+                    {
+                        transactionModel.CreditChartOfAccountId = transactionModel.ChartOfAccountId;
+                        transactionModel.DebitChartOfAccountId = transactionModel.ContraChartOfAccountId;
+                    }
+
+                    var result = await master._channelService.AddJournalAsync(transactionModel, null, serviceHeader);
+                    results.Add(result);
+                }
+
+                // Multiple entries
+                else if (transactionModel.CreditChartOfAccountId != Guid.Empty || transactionModel.DebitChartOfAccountId != Guid.Empty)
+                {
+
+                    if (transactionModel.CreditChartOfAccountId != Guid.Empty && transactionModel.CreditAmount > 0)
+                    {
+                        transactionModel.JournalType = (int)JournalVoucherType.CreditGLAccount;
+                    }
+                    else if (transactionModel.DebitChartOfAccountId != Guid.Empty && transactionModel.DebitAmount > 0)
+                    {
+                        transactionModel.JournalType = (int)JournalVoucherType.DebitGLAccount;
+                    }
+
+                    var result = await master._channelService.AddJournalSingleEntryAsync(transactionModel, null, serviceHeader);
+                    results.Add(result);
+                }
+                else
+                {
+                    // Invalid entry, skip or handle as needed
+                    continue;
+                }
+            }
 
             return Json(new ApiResponse<object>
             {
                 Success = true,
-                Message = "Journal added successfully.",
-                Data = result
+                Message = "Journal(s) added successfully.",
+                Data = results
             });
         }
 
-        [HttpPost]
-        [Route("PostJournal")]
-        public async Task<IHttpActionResult> HandleDirectPosting([FromBody] TransactionModel transactionModel)
+
+        [HttpGet]
+        [Route("GeneralLedgerTransactions")]
+        public async Task<IHttpActionResult> GetGeneralLedgerTransactions(Guid chartOfAccountId)
         {
-            var serviceHeader = master.GetServiceHeader();
 
-          
-            // Multiple entries
-            if (transactionModel.CreditChartOfAccountId != null & transactionModel.DebitChartOfAccountId != null)
+            bool tallyDebitsCredits = true;
+            int transactionDateFilter = 1;
+            int journalEntryFilter = 0;
+            string textFilter = "";
+            int pageIndex = 0;
+            int pageSize = 20;
+            try
             {
-              
-                    await master._channelService.AddJournalAsync(transactionModel, null, serviceHeader);
-              
+                var serviceHeader = master.GetServiceHeader();
 
-                return Json(new ApiResponse<object>
-                {
-                    Success = true,
-                    Message = "Journal added successfully.",
-                    Data = null
-                });
+                var effectiveStartDate =  new DateTime(1900, 1, 1);
+                                                                         
+                var effectiveEndDate = DateTime.Today;
+
+                var result = await master._channelService
+                    .FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
+                        pageIndex,
+                        pageSize,
+                        chartOfAccountId,
+                        (DateTime)effectiveStartDate,
+                        (DateTime)effectiveEndDate,
+                        textFilter,
+                        journalEntryFilter,
+                        transactionDateFilter,
+                        tallyDebitsCredits,
+                        serviceHeader);
+
+                return Ok(result);
             }
-            // Single entry
-            else if (transactionModel.ChartOfAccountId != null & transactionModel.ContraChartOfAccountId != null)
+            catch (Exception ex)
             {
-              
-                if (transactionModel.TotalValue > 0)
-                {
-                    transactionModel.JournalType = (int)JournalVoucherType.DebitGLAccount;
-                }
-
-                else
-                {
-
-                    transactionModel.JournalType = (int)JournalVoucherType.CreditGLAccount;
-                }
-
-        var result = await master._channelService.AddJournalSingleEntryAsync(transactionModel, null, serviceHeader);
-
-                return Json(new ApiResponse<object>
-                {
-                    Success = true,
-                    Message = "Journal added successfully.",
-                    Data = result
-                });
+                return InternalServerError(ex);
             }
-
-            return Json(new ApiResponse<object>
-            {
-                Success = false,
-                Message = "Unexpected error occurred.",
-                Data = null
-            });
         }
+
+
 
         [HttpPost]
         [Route("PostJournalVoucher")]
@@ -815,35 +1155,6 @@ namespace TestApis.Controllers
             }
         }
 
-
-
-        //[HttpPost]
-        //[Route("AddJournalWithApportionments")]
-        //public async Task<IHttpActionResult> addJournalWithApportionments([FromBody] TransactionModel transactionModel)
-        //{
-
-        //    var serviceHeader = master.GetServiceHeader();
-
-        //    var result = await master._channelService.AddJournalWithApportionmentsAsync(transactionModel);
-
-        //    return Json(new ApiResponse<object>
-        //    {
-        //        Success = true,
-        //        Message = "Journal with apportionments added successfully.",
-        //        Data = result
-        //    });
-        //}
-
-
-        //journal posting that needs approval
-        //[HttpPost]
-        //[Route("AddJournalVoucher")]
-        // public async Task<IHttpActionResult> AddJournalVoucher([FromBody] JournalVoucherDTO)
-        //{
-
-        //    var serviceHeader = master.GetServiceHeader();
-
-        //}
 
 
 
@@ -925,6 +1236,1085 @@ namespace TestApis.Controllers
                 message = "Successfully created refund batch."
             });
         }
+
+
+        [Route("GetPurchaseInvoices")]
+        public async Task<IHttpActionResult> GetPurchaseInvoices()
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            var invoices = await master._channelService.FindPurchaseInvoicesAsync(serviceHeader);
+    
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = invoices?.Count > 0 ? $"{invoices.Count} invoices found." : "No invoices found.",
+                Data = invoices
+            });
+        }
+
+
+        [HttpPost]
+        [Route("AddPurchaseInvoice")]
+        public async Task<IHttpActionResult> AddPurchaseInvoice([FromBody] PurchaseInvoiceDTO purchaseInvoiceDTO)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            if (purchaseInvoiceDTO != null)
+            {
+                foreach (var gl in purchaseInvoiceDTO.PurchaseInvoiceLines) {
+
+                    if (gl.DebitChartOfAccountId != Guid.Empty)
+                    { 
+
+                    var debitGl = await master._channelService.FindChartOfAccountAsync(gl.DebitChartOfAccountId);
+                     gl.No = debitGl.AccountCode;
+
+                    }
+                    else
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "YOU HAVE A LINE WITHOUT PROPERT DEBITCHARTOFAACCOUNTID"
+                        });
+                    }
+
+                }
+
+                purchaseInvoiceDTO.ValidateAll();
+
+
+                if (purchaseInvoiceDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = purchaseInvoiceDTO.ErrorMessages
+                    });
+                }
+
+                var result = await master._channelService.AddNewPurchaseInvoiceAsync(purchaseInvoiceDTO, serviceHeader);
+
+
+                if (result != null)
+                {
+
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully added Purchase header with lines."
+                    });
+                }
+
+
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to add Purchase header with lines."
+                    });
+                }
+
+            }
+
+
+            else {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Body is incomplete"
+                });
+
+            }
+
+        }
+
+
+        [HttpPut]
+        [Route("UpdatePurchaseInvoice")]
+        public async Task<IHttpActionResult> UpdatePurchaseInvoice([FromBody] PurchaseInvoiceDTO purchaseInvoiceDTO)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            if (purchaseInvoiceDTO != null)
+            {
+
+                purchaseInvoiceDTO.ValidateAll();
+
+
+                if (purchaseInvoiceDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = purchaseInvoiceDTO.ErrorMessages
+                    });
+                }
+
+                var result = await master._channelService.UpdatePurchaseInvoiceAsync(purchaseInvoiceDTO, serviceHeader);
+
+
+                if (result != null)
+                {
+
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully updated Purchase header with lines."
+                    });
+                }
+
+
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to update Purchase header with lines."
+                    });
+                }
+
+            }
+
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Body is incomplete"
+                });
+
+            }
+
+        }
+
+
+        [HttpPost]
+        [Route("PostPurchaseInvoice/{id}")]
+        public async Task<IHttpActionResult> PostPurchaseInvoice(Guid id)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            PurchaseInvoiceDTO purchaseInvoiceDTO = null;
+
+
+            var purchaseInvoiceDTOs = await master._channelService.FindPurchaseInvoicesAsync(serviceHeader);
+
+            if (purchaseInvoiceDTOs != null)
+            {
+
+                purchaseInvoiceDTO = purchaseInvoiceDTOs.FirstOrDefault(p => p.Id == id);
+            }
+
+
+            if (purchaseInvoiceDTO != null)
+            {
+
+                var banks = await master._channelService.FindBankLinkagesAsync(serviceHeader);
+
+                var bank = banks[0];
+
+
+
+                purchaseInvoiceDTO.BranchId = bank.BranchId;
+                purchaseInvoiceDTO.BankId = bank.Id;
+                purchaseInvoiceDTO.BankBranchName = bank.BankBranchName;
+
+                purchaseInvoiceDTO.ValidateAll();
+                if (purchaseInvoiceDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = purchaseInvoiceDTO.ErrorMessages
+                    });
+                }
+
+                //var transactionModel = new TransactionModel();
+
+                int moduleNavigationItemCode = 0;
+
+                var tariffs = new ObservableCollection<TariffWrapper>();
+
+                //var result = await master._channelService.AddJournalAsync(transactionModel, tariffs, serviceHeader);
+
+                var result = await master._channelService.PostPurchaseInvoiceAsync(purchaseInvoiceDTO, moduleNavigationItemCode, serviceHeader);
+
+                if (result != null)
+                {
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Succesfully posted Journal",
+                        data = result
+                    });
+                }
+
+                else
+                {
+
+
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to post journal"
+                    });
+                }
+
+
+            }
+
+            else
+            {
+
+                return Json(new
+               {
+                    success = false,
+                    message = "Request Object is empty"
+                });
+            }
+
+        }
+
+
+        [HttpPost]
+        [Route("AddVoucher")]
+        public async Task<IHttpActionResult> PayVendorInvoice(PaymentVoucherDTO paymentVoucherDTO)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            if (paymentVoucherDTO != null)
+            {
+
+                int moduleNavigationItemCode = 0;
+
+                var tariffs = new ObservableCollection<TariffWrapper>();
+
+                //var result = await master._channelService.AddJournalAsync(transactionModel, tariffs, serviceHeader);
+
+                //var result = await master._channelService.PostPurchaseInvoiceAsync(purchaseInvoiceDTO, moduleNavigationItemCode, serviceHeader);
+
+                var result = await master._channelService.PayVendorInvoice(paymentVoucherDTO, moduleNavigationItemCode, serviceHeader);
+                
+                if (result != null)
+                {
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Succesfully posted Journal",
+                        data = result
+                    });
+                }
+
+                else
+                {
+
+
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to post journal"
+                    });
+                }
+
+
+            }
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Object is empty"
+                });
+            }
+
+        }
+
+
+
+
+
+
+        [Route("GetPurchaseCreditMemos")]
+        public async Task<IHttpActionResult> GetPurchaseCreditMemos()
+        {
+            var serviceHeader = master.GetServiceHeader();
+
+            var creditMemos = await master._channelService.FindPurchaseCreditMemosAsync(serviceHeader);
+
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = creditMemos?.Count > 0 ? $"{creditMemos.Count} credit memos found." : "No credit memos found.",
+                Data = creditMemos
+            });
+        }
+
+
+
+
+        [HttpPost]
+        [Route("AddPurchaseCreditMemo")]
+        public async Task<IHttpActionResult> AddPurchaseCreditMemo([FromBody] PurchaseCreditMemoDTO purchaseCreditMemoDTO)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            if (purchaseCreditMemoDTO != null)
+            {
+
+
+                foreach (var gl in purchaseCreditMemoDTO.PurchaseCreditMemoLines)
+                {
+
+                    if (gl.CreditChartOfAccountId != Guid.Empty)
+                    {
+
+                        var debitGl = await master._channelService.FindChartOfAccountAsync(gl.CreditChartOfAccountId);
+                        gl.No = debitGl.AccountCode;
+
+                    }
+
+                    else
+                    {
+
+                        return Json(new
+                        {
+                            success = false,
+                            message = "YOU HAVE A LINE WITHOUT PROPERT CREDITCHARTOFAACCOUNTID"
+                        });
+
+
+                    }
+
+
+
+                }
+
+                purchaseCreditMemoDTO.ValidateAll();
+
+
+                if (purchaseCreditMemoDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = purchaseCreditMemoDTO.ErrorMessages
+                    });
+                }
+
+                var result = await master._channelService.AddNewPurchaseCreditMemoAsync(purchaseCreditMemoDTO, serviceHeader);
+
+
+                if (result != null)
+                {
+
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully added Purchase CREDIT MEMO with lines."
+                    });
+                }
+
+
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to add Purchase CREDIT MEMO with lines."
+                    });
+                }
+
+            }
+
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Body is incomplete"
+                });
+
+            }
+
+        }
+
+    
+
+        [HttpPut]
+        [Route("UpdatePurchaseCreditMemo")]
+        public async Task<IHttpActionResult> UpdatePurchaseCreditMemo([FromBody] PurchaseCreditMemoDTO purchaseCreditMemoDTO)
+        {
+            var serviceHeader = master.GetServiceHeader();
+
+            if (purchaseCreditMemoDTO != null)
+            {
+                purchaseCreditMemoDTO.ValidateAll();
+
+                if (purchaseCreditMemoDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = purchaseCreditMemoDTO.ErrorMessages
+                    });
+                }
+
+                var result = await master._channelService.UpdatePurchaseCreditMemoAsync(purchaseCreditMemoDTO, serviceHeader);
+
+                if (result != null)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully updated Purchase Credit Memo header with lines."
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to update Purchase Credit Memo header with lines."
+                    });
+                }
+            }
+            else
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Body is incomplete"
+                });
+            }
+        }
+
+
+
+        
+
+
+        [HttpPost]
+        [Route("PostPurchaseCreditMemo/{id}")]
+        public async Task<IHttpActionResult> PostPurchaseCreditMemo(Guid id)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            //PurchaseCreditMemoDTO purchaseCreditMemoDTO = null;
+
+
+            var purchaseCreditMemoDTOs = await master._channelService.FindPurchaseCreditMemosAsync(serviceHeader);
+
+            var purchaseCreditMemoDTO = purchaseCreditMemoDTOs.FirstOrDefault(p => p.Id == id);
+            if (purchaseCreditMemoDTO == null)
+            {
+                return Json(new { success = false, message = "Purchase Credit Memo not found" });
+            }
+
+
+            if (purchaseCreditMemoDTO != null)
+            {
+
+                var banks = await master._channelService.FindBankLinkagesAsync(serviceHeader);
+
+                var bank = banks[0];
+
+
+
+                purchaseCreditMemoDTO.BranchId = bank.BranchId;
+                purchaseCreditMemoDTO.BankId = bank.Id;
+                purchaseCreditMemoDTO.BankBranchName = bank.BankBranchName;
+
+                purchaseCreditMemoDTO.ValidateAll();
+                if (purchaseCreditMemoDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = purchaseCreditMemoDTO.ErrorMessages
+                    });
+                }
+
+                //var transactionModel = new TransactionModel();
+
+                int moduleNavigationItemCode = 0;
+
+                var tariffs = new ObservableCollection<TariffWrapper>();
+
+                //var result = await master._channelService.AddJournalAsync(transactionModel, tariffs, serviceHeader);
+
+                var result = await master._channelService.PostPurchaseCreditMemoAsync(purchaseCreditMemoDTO, moduleNavigationItemCode, serviceHeader);
+
+                if (result != null)
+                {
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Succesfully posted Journal",
+                        data = result
+                    });
+                }
+
+                else
+                {
+
+
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to post journal"
+                    });
+                }
+
+
+            }
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Object is empty"
+                });
+            }
+
+        }
+
+
+
+        [Route("GetSalesInvoices")]
+        public async Task<IHttpActionResult> GetSalesInvoices()
+        {
+            var serviceHeader = master.GetServiceHeader();
+
+            var salesInvoices = await master._channelService.FindSalesInvoicesAsync(serviceHeader);
+
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = salesInvoices?.Count > 0 ? $"{salesInvoices.Count} sales invoices found." : "No sales invoices found.",
+                Data = salesInvoices
+            });
+        }
+
+
+
+
+
+
+        [HttpPost]
+        [Route("AddSalesInvoice")]
+        public async Task<IHttpActionResult> AddSalesInvoice([FromBody] SalesInvoiceDTO salesInvoiceDTO)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            if (salesInvoiceDTO != null)
+            {
+                foreach (var gl in salesInvoiceDTO.SalesInvoiceLines)
+                {
+
+                    if (gl.CreditChartOfAccountId != Guid.Empty)
+                    {
+
+                        var debitGl = await master._channelService.FindChartOfAccountAsync(gl.CreditChartOfAccountId);
+                        gl.No = debitGl.AccountCode;
+
+                    }
+                    else
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "YOU HAVE A LINE WITHOUT PROPERT CREDITCHARTOFAACCOUNTID"
+                        });
+                    }
+
+                }
+
+                salesInvoiceDTO.ValidateAll();
+
+
+                if (salesInvoiceDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = salesInvoiceDTO.ErrorMessages
+                    });
+                }
+
+                var result = await master._channelService.AddNewSalesInvoiceAsync(salesInvoiceDTO, serviceHeader);
+
+
+                if (result != null)
+                {
+
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully added Sales header with lines."
+                    });
+                }
+
+
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to add Sales header with lines."
+                    });
+                }
+
+            }
+
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Body is incomplete"
+                });
+
+            }
+
+        }
+
+
+        [HttpPut]
+        [Route("UpdateSalesInvoice")]
+        public async Task<IHttpActionResult> UpdateSalesInvoice([FromBody] SalesInvoiceDTO salesInvoiceDTO)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            if (salesInvoiceDTO != null)
+            {
+
+                salesInvoiceDTO.ValidateAll();
+
+
+                if (salesInvoiceDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = salesInvoiceDTO.ErrorMessages
+                    });
+                }
+
+                var result = await master._channelService.UpdateSalesInvoiceAsync(salesInvoiceDTO, serviceHeader);
+
+
+                if (result != null)
+                {
+
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully updated Sales header with lines."
+                    });
+                }
+
+
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to update Sales header with lines."
+                    });
+                }
+
+            }
+
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Body is incomplete"
+                });
+
+            }
+
+        }
+
+
+        [HttpPost]
+        [Route("PostSalesInvoice/{id}")]
+        public async Task<IHttpActionResult> PostSalesInvoice(Guid id)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            SalesInvoiceDTO salesInvoiceDTO = null;
+
+
+            var salesInvoiceDTOs = await master._channelService.FindSalesInvoicesAsync(serviceHeader);
+
+            if (salesInvoiceDTOs != null)
+            {
+
+                salesInvoiceDTO = salesInvoiceDTOs.FirstOrDefault(p => p.Id == id);
+            }
+
+
+            if (salesInvoiceDTO != null)
+            {
+
+                var banks = await master._channelService.FindBankLinkagesAsync(serviceHeader);
+
+                var bank = banks[0];
+
+
+
+                salesInvoiceDTO.BranchId = bank.BranchId;
+                salesInvoiceDTO.BankId = bank.Id;
+                salesInvoiceDTO.BankBranchName = bank.BankBranchName;
+
+                salesInvoiceDTO.ValidateAll();
+                if (salesInvoiceDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = salesInvoiceDTO.ErrorMessages
+                    });
+                }
+
+                //var transactionModel = new TransactionModel();
+
+                int moduleNavigationItemCode = 0;
+
+                var tariffs = new ObservableCollection<TariffWrapper>();
+
+                //var result = await master._channelService.AddJournalAsync(transactionModel, tariffs, serviceHeader);
+
+                var result = await master._channelService.PostSalesInvoiceAsync(salesInvoiceDTO, moduleNavigationItemCode, serviceHeader);
+
+                if (result != null)
+                {
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Succesfully posted Journal",
+                        data = result
+                    });
+                }
+
+                else
+                {
+
+
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to post journal"
+                    });
+                }
+
+
+            }
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Object is empty"
+                });
+            }
+
+        }
+
+
+
+
+
+        [HttpPost]
+        [Route("AddSalesCreditMemo")]
+        public async Task<IHttpActionResult> AddSalesCreditMemo([FromBody] SalesCreditMemoDTO salesCreditMemoDTO)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            if (salesCreditMemoDTO != null)
+            {
+
+
+                foreach (var gl in salesCreditMemoDTO.SalesCreditMemoLines)
+                {
+
+                    if (gl.DebitChartOfAccountId != Guid.Empty)
+                    {
+
+                        var debitGl = await master._channelService.FindChartOfAccountAsync(gl.DebitChartOfAccountId);
+                        gl.No = debitGl.AccountCode;
+
+                    }
+
+                    else
+                    {
+
+                        return Json(new
+                        {
+                            success = false,
+                            message = "YOU HAVE A LINE WITHOUT PROPERT DEBITCHARTOFAACCOUNTID"
+                        });
+
+
+                    }
+
+
+
+                }
+
+                salesCreditMemoDTO.ValidateAll();
+
+
+                if (salesCreditMemoDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = salesCreditMemoDTO.ErrorMessages
+                    });
+                }
+
+                var result = await master._channelService.AddNewSalesCreditMemoAsync(salesCreditMemoDTO, serviceHeader);
+
+
+                if (result != null)
+                {
+
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully added Sales CREDIT MEMO with lines."
+                    });
+                }
+
+
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to add SALES CREDIT MEMO with lines."
+                    });
+                }
+
+            }
+
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Body is incomplete"
+                });
+
+            }
+
+        }
+
+
+
+        [HttpPut]
+        [Route("UpdateSalesCreditMemo")]
+        public async Task<IHttpActionResult> UpdateSalesCreditMemo([FromBody] SalesCreditMemoDTO salesCreditMemoDTO)
+        {
+            var serviceHeader = master.GetServiceHeader();
+
+            if (salesCreditMemoDTO != null)
+            {
+                salesCreditMemoDTO.ValidateAll();
+
+                if (salesCreditMemoDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = salesCreditMemoDTO.ErrorMessages
+                    });
+                }
+
+                var result = await master._channelService.UpdateSalesCreditMemoAsync(salesCreditMemoDTO, serviceHeader);
+
+                if (result)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully updated Sales Credit Memo header with lines."
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to update Sales Credit Memo header with lines."
+                    });
+                }
+            }
+            else
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Body is incomplete"
+                });
+            }
+        }
+
+
+        [Route("GetSalesCreditMemos")]
+        public async Task<IHttpActionResult> GetSalesCreditMemos()
+        {
+            var serviceHeader = master.GetServiceHeader();
+
+            var creditMemos = await master._channelService.FindSalesCreditMemosAsync(serviceHeader);
+
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = creditMemos?.Count > 0 ? $"{creditMemos.Count} credit memos found." : "No credit memos found.",
+                Data = creditMemos
+            });
+        }
+
+
+
+
+
+
+        //customer rcpt
+        [HttpPost]
+        [Route("PostSalesCreditMemo/{id}")]
+        public async Task<IHttpActionResult> PostSalesCreditMemo(Guid id)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            SalesCreditMemoDTO salesCreditMemoDTO = null;
+
+
+            var salesCreditMemoDTOs = await master._channelService.FindSalesCreditMemosAsync(serviceHeader);
+
+            if (salesCreditMemoDTOs != null)
+            {
+
+                salesCreditMemoDTO = salesCreditMemoDTOs.FirstOrDefault(p => p.Id == id);
+            }
+
+
+            if (salesCreditMemoDTO != null)
+            {
+
+                var banks = await master._channelService.FindBankLinkagesAsync(serviceHeader);
+
+                var bank = banks[0];
+
+
+
+                salesCreditMemoDTO.BranchId = bank.BranchId;
+                salesCreditMemoDTO.BankId = bank.Id;
+                salesCreditMemoDTO.BankBranchName = bank.BankBranchName;
+
+                salesCreditMemoDTO.ValidateAll();
+                if (salesCreditMemoDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = salesCreditMemoDTO.ErrorMessages
+                    });
+                }
+
+                //var transactionModel = new TransactionModel();
+
+                int moduleNavigationItemCode = 0;
+
+                var tariffs = new ObservableCollection<TariffWrapper>();
+
+                //var result = await master._channelService.AddJournalAsync(transactionModel, tariffs, serviceHeader);
+
+                var result = await master._channelService.PostSalesCreditMemoAsync(salesCreditMemoDTO, moduleNavigationItemCode, serviceHeader);
+
+                if (result != null)
+                {
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Succesfully posted Journal",
+                        data = result
+                    });
+                }
+
+                else
+                {
+
+
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to post journal"
+                    });
+                }
+
+
+            }
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Object is empty"
+                });
+            }
+
+        }
+
 
     }
 }
