@@ -78,6 +78,19 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public Boolean Posted { get; set; }
 
 
+        [DataMember]
+        [Display(Name = "TotalAmount")]
+        public Decimal TotalAmount { get; set; }
+
+        [DataMember]
+        [Display(Name = "PaidAmount")]
+        public Decimal PaidAmount { get; set; }
+
+        [DataMember]
+        [Display(Name = ("RemainingAmount"))]
+        public Decimal RemainingAmount { get; set; }
+
+
 
         //[Display(Name = "ChartOfAccountId")]
         //public string ChartOfAccountId { get; set; }

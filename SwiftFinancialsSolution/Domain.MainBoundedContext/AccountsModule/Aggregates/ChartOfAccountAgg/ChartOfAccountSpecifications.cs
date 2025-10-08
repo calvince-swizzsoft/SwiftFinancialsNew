@@ -50,6 +50,18 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ChartOfAccountAgg
             return specification;
         }
 
+
+
+        public static ISpecification<ChartOfAccount> ChartOfAccountWithAccountCategory(int chartOfAccountCategory)
+        {
+            Specification<ChartOfAccount> specification = new TrueSpecification<ChartOfAccount>();
+
+            specification &= new DirectSpecification<ChartOfAccount>(c => c.AccountCategory == chartOfAccountCategory);
+
+            return specification;
+        }
+
+
         public static ISpecification<ChartOfAccount> ChartOfAccountWithId(params Guid[] chartOfAccountIds)
         {
             Specification<ChartOfAccount> specification = new TrueSpecification<ChartOfAccount>();
@@ -80,5 +92,31 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ChartOfAccountAgg
 
             return specification;
         }
+
+        public static ISpecification<ChartOfAccount> ChartOfAccountFullTextAndCategory(string text, int? chartOfAccountCategory)
+        {
+            Specification<ChartOfAccount> specification = new TrueSpecification<ChartOfAccount>();
+
+            if (chartOfAccountCategory.HasValue)
+            {
+                specification &= new DirectSpecification<ChartOfAccount>(
+                    c => c.AccountType == chartOfAccountCategory.Value
+                );
+            }
+
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                text = text.SanitizePatIndexInput();
+
+                specification &= new DirectSpecification<ChartOfAccount>(
+                    a => SqlFunctions.PatIndex(text, a.AccountName) > 0
+                );
+            }
+
+            return specification;
+        }
+
+
+
     }
 }

@@ -76,6 +76,8 @@ using Domain.MainBoundedContext.AccountsModule.Aggregates.LoanProductDynamicChar
 using Domain.MainBoundedContext.AccountsModule.Aggregates.MobileToBankRequestAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.OverDeductionBatchAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.OverDeductionBatchEntryAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentLineAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentVoucherAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.PostingPeriodAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemoAgg;
@@ -638,6 +640,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
           
             CreateMap<SalesCreditMemo, SalesCreditMemoDTO>();
+
+            CreateMap<Payment, PaymentDTO>();
+
+            CreateMap<PaymentLine, PaymentLineDTO>();
 
         }
 

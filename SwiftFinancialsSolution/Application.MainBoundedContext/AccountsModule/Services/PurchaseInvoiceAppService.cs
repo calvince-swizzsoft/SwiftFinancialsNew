@@ -1,4 +1,5 @@
 ﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.Services;
 using Application.Seedwork;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.LevyAgg;
@@ -12,6 +13,7 @@ using Infrastructure.Crosscutting.Framework.Adapter;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Numero3.EntityFramework.Interfaces;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +29,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         private readonly IRepository<PurchaseInvoice> _purchaseInvoiceRepository;
         private readonly IRepository<PurchaseInvoiceLine> _purchaseInvoiceLineRepository;
         private readonly IChartOfAccountAppService _chartOfAccountAppService;
+        private readonly INumberSeriesGenerator _numberSeriesGenerator;
         private readonly IJournalAppService _journalAppService;
 
         public PurchaseInvoiceAppService(
@@ -34,6 +37,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
            IRepository<PurchaseInvoice> purchaseInvoiceRepository,
            IRepository<PurchaseInvoiceLine> purchaseInvoiceLineRepository,
            IChartOfAccountAppService chartOfAccountAppService,
+           INumberSeriesGenerator numberSeriesGenerator,
            IJournalAppService journalAppService
            )
         {
@@ -52,10 +56,14 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             if (chartOfAccountAppService == null)
                 throw new ArgumentNullException(nameof(chartOfAccountAppService));
 
+            if (numberSeriesGenerator == null)
+                throw new ArgumentNullException(nameof(numberSeriesGenerator));
+
             _dbContextScopeFactory = dbContextScopeFactory;
             _purchaseInvoiceRepository = purchaseInvoiceRepository;
             _purchaseInvoiceLineRepository = purchaseInvoiceLineRepository;
             _chartOfAccountAppService = chartOfAccountAppService;
+            _numberSeriesGenerator = numberSeriesGenerator;
             _journalAppService = journalAppService;
         }
 
@@ -65,10 +73,13 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         {
             if (purchaseInvoiceDTO != null)
             {
+
+                var purchaseInvoiceNo = _numberSeriesGenerator.GetNextNumber("PI", serviceHeader);
+
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                    
-                    var purchaseInvoice = PurchaseInvoiceFactory.CreatePurchaseInvoice(purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, serviceHeader);
+                    var purchaseInvoice = PurchaseInvoiceFactory.CreatePurchaseInvoice(purchaseInvoiceNo, purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, purchaseInvoiceDTO.PaidAmount, purchaseInvoiceDTO.RemainingAmount, serviceHeader);
 
                     AddLines(purchaseInvoiceDTO, purchaseInvoice, serviceHeader);
 
@@ -92,6 +103,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             if (purchaseInvoiceDTO == null || purchaseInvoiceDTO.Id == Guid.Empty)
                 return false;
 
+            var purchaseInvoiceNo = _numberSeriesGenerator.GetNextNumber("PI", serviceHeader);
+
             using (var dbContextScope = _dbContextScopeFactory.Create())
             {
                 var persisted = _purchaseInvoiceRepository.Get(purchaseInvoiceDTO.Id, serviceHeader);
@@ -99,7 +112,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 if (persisted != null)
                 {
                    
-                    var current = PurchaseInvoiceFactory.CreatePurchaseInvoice(purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, serviceHeader);
+                    var current = PurchaseInvoiceFactory.CreatePurchaseInvoice(purchaseInvoiceNo, purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, purchaseInvoiceDTO.PaidAmount, purchaseInvoiceDTO.RemainingAmount, serviceHeader);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
                     current.CreatedBy = persisted.CreatedBy;
@@ -130,15 +143,12 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 throw new InvalidOperationException(sbErrors.ToString());
             else
             {
-                // Domain Logic
-                // Process: Perform double-entry operations to in-memory Domain-Model objects
-                // 
-
+             
                 if (purchaseInvoiceDTO.PurchaseInvoiceLines != null && purchaseInvoiceDTO.PurchaseInvoiceLines.Any())
                 {
                     foreach (var item in purchaseInvoiceDTO.PurchaseInvoiceLines) {
 
-                        purchaseInvoice.AddLine(item.Type, item.No, item.Description, item.Quantity, item.TotalAmount, item.DebitChartOfAccountId, serviceHeader);
+                        purchaseInvoice.AddLine(item.Type, item.No, item.Description, item.UnitCost, item.Quantity, item.TotalAmount, item.DebitChartOfAccountId, serviceHeader);
                     }
                 }
             }
@@ -158,6 +168,43 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 else return null;
             }
         }
+
+
+        public PurchaseInvoiceDTO FindPurchaseInvoice(Guid purchaseInvoiceId, ServiceHeader serviceHeader)
+        {
+
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+
+                var purchaseInvoice = _purchaseInvoiceRepository.Get(purchaseInvoiceId, serviceHeader);
+
+                if (purchaseInvoice != null)
+                {
+                    return purchaseInvoice.ProjectedAs<PurchaseInvoiceDTO>();
+                }
+
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+
+        public List<PurchaseInvoiceLineDTO> FindPurchaseInvoiceLines(ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var purchaseInvoiceLines = _purchaseInvoiceLineRepository.GetAll(serviceHeader);
+
+                if (purchaseInvoiceLines != null && purchaseInvoiceLines.Any())
+                {
+                    return purchaseInvoiceLines.ProjectedAsCollection<PurchaseInvoiceLineDTO>();
+                }
+                else return null;
+            }
+        }
+
 
 
         public JournalDTO PostPurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
@@ -249,7 +296,11 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
             //var purchaseInvoiceLineDTOs = purchaseInvoiceDTO.PurchaseInvoiceLines;
 
-            paymentVoucherDTO.VoucherNumber = new Guid();
+            paymentVoucherDTO.VoucherNumber = Guid.NewGuid();
+           
+
+
+            //paymentVoucherDTO.VoucherNumber = new Guid();
             JournalDTO lastCreatedJournal = null;
 
             using (var dbContextScope = _dbContextScopeFactory.Create())

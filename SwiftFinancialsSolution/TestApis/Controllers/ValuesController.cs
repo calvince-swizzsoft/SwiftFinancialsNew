@@ -199,6 +199,63 @@ namespace TestApis.Controllers
         }
 
 
+        [HttpGet]
+        [Route("GetPaymentAccountTypeSelectList")]
+        public async Task<IHttpActionResult> GetPaymentAccountTypes()
+        {
+
+            try
+            {
+
+                var serviceHeader = master.GetServiceHeader();
+
+                var accountTypes = master.GetPaymentAccountTypeSelectList("Vendor");
+
+                return Json(accountTypes);
+            }
+
+            catch (Exception ex)
+            {
+
+                return Json(ex.Message);
+
+
+            }
+
+
+        }
+
+
+
+        [HttpGet]
+        [Route("GetPaymentDocumentTypeSelectList")]
+        public async Task<IHttpActionResult> GetPaymentDocumentTypes()
+        {
+
+            try
+            {
+
+                var serviceHeader = master.GetServiceHeader();
+
+                var accountTypes = master.GetPaymentDocumentTypeSelectList("Invoice");
+
+                return Json(accountTypes);
+            }
+
+            catch (Exception ex)
+            {
+
+                return Json(ex.Message);
+
+
+            }
+
+
+        }
+
+
+
+
 
         [HttpGet]
         [Route("GetPurchaseInvoiceEntryTypes")]
@@ -559,6 +616,47 @@ namespace TestApis.Controllers
 
 
         [HttpGet]
+        [Route("GetGeneralLedgers")]
+        public async Task<IHttpActionResult> GetGeneralLedgers([FromUri] string text = null, int? accountCategory = null, bool updateDepth = false)
+        {
+            try
+            {
+                var serviceHeader = master.GetServiceHeader();
+
+             
+                var gls = await master._channelService.FindGeneralLedgerAccountsWithCategoryAndTextAsync(
+                    accountCategory,
+                    text,
+            
+                    updateDepth,
+                    serviceHeader
+                );
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = true,
+                    Message = gls != null && gls.Count > 0
+                        ? $"{gls.Count} Accounts Found."
+                        : "No accounts found.",
+                    Data = gls
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "An error occurred while retrieving the accounts.",
+                    Data = ex.Message
+                });
+            }
+        }
+
+
+
+
+
+        [HttpGet]
         [Route("GetGeneralLeadgers")]
         public async Task<IHttpActionResult> GetGeneralLeadgers(int? pagesize, int? pageindex)
         {
@@ -654,6 +752,25 @@ namespace TestApis.Controllers
                 Success = true,
                 Message = customers?.Count > 0 ? $"{customers.Count} customers found." : "No customers found.",
                 Data = customers
+            });
+        }
+
+        [HttpGet]
+        [Route("invoicelines")]
+        public async Task<IHttpActionResult> GetAllInvoiceLines()
+        {
+            var serviceHeader = master.GetServiceHeader();
+            //var customers = await master._channelService.FindCustomersAsync(serviceHeader);
+
+            var invoices = await master._channelService.FindPurchaseInvoiceLinesAsync(serviceHeader);
+
+            //var invoices = await master._channelService.
+
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = invoices?.Count > 0 ? $"{invoices.Count} invoice lines found." : "No invoices found.",
+                Data = invoices
             });
         }
 
@@ -1237,15 +1354,19 @@ namespace TestApis.Controllers
             });
         }
 
-
+        [HttpGet]
         [Route("GetPurchaseInvoices")]
-        public async Task<IHttpActionResult> GetPurchaseInvoices()
+        public async Task<IHttpActionResult> GetPurchaseInvoices(bool? posted = null)
         {
-
             var serviceHeader = master.GetServiceHeader();
-
             var invoices = await master._channelService.FindPurchaseInvoicesAsync(serviceHeader);
-    
+
+            // Apply filtering if 'posted' param is provided
+            if (posted.HasValue)
+            {
+                invoices = invoices.Where(i => i.Posted == posted.Value).ToList();
+            }
+
             return Json(new ApiResponse<object>
             {
                 Success = true,
@@ -1253,6 +1374,7 @@ namespace TestApis.Controllers
                 Data = invoices
             });
         }
+
 
 
         [HttpPost]
@@ -1264,6 +1386,12 @@ namespace TestApis.Controllers
 
             if (purchaseInvoiceDTO != null)
             {
+
+                purchaseInvoiceDTO.PaidAmount = 0;
+                purchaseInvoiceDTO.RemainingAmount = purchaseInvoiceDTO.TotalAmount;
+
+                //purchaseInvoiceDTO.RemainingAmount = purchaseInvoiceDTO.
+
                 foreach (var gl in purchaseInvoiceDTO.PurchaseInvoiceLines) {
 
                     if (gl.DebitChartOfAccountId != Guid.Empty)
@@ -1490,25 +1618,35 @@ namespace TestApis.Controllers
 
 
         [HttpPost]
-        [Route("AddVoucher")]
-        public async Task<IHttpActionResult> PayVendorInvoice(PaymentVoucherDTO paymentVoucherDTO)
+        [Route("PostPaymentVoucher")]
+        public async Task<IHttpActionResult> PayVendorInvoice(PaymentDTO paymentDTO)
         {
 
             var serviceHeader = master.GetServiceHeader();
 
-            if (paymentVoucherDTO != null)
+            if (paymentDTO != null && paymentDTO.PaymentLines.Any())
             {
+
+
+             
+                decimal totalOfLines = paymentDTO.PaymentLines.Sum(x => x.Amount);
+        
+                if (paymentDTO.TotalAmount != totalOfLines)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"Total mismatch: Header TotalAmount ({paymentDTO.TotalAmount:N2}) " +
+                                  $"does not equal sum of PaymentLines ({totalOfLines:N2})."
+                    });
+                }
 
                 int moduleNavigationItemCode = 0;
 
                 var tariffs = new ObservableCollection<TariffWrapper>();
 
-                //var result = await master._channelService.AddJournalAsync(transactionModel, tariffs, serviceHeader);
+                var result = await master._channelService.PostPaymentAsync(paymentDTO, moduleNavigationItemCode, serviceHeader);
 
-                //var result = await master._channelService.PostPurchaseInvoiceAsync(purchaseInvoiceDTO, moduleNavigationItemCode, serviceHeader);
-
-                var result = await master._channelService.PayVendorInvoice(paymentVoucherDTO, moduleNavigationItemCode, serviceHeader);
-                
                 if (result != null)
                 {
 
@@ -1546,8 +1684,26 @@ namespace TestApis.Controllers
 
         }
 
+        [Route("GetPayments")]
+        public async Task<IHttpActionResult> GetPayments()
+        {
+            var serviceHeader = master.GetServiceHeader();
+
+            //var salesInvoices = await master._channelService.FindSalesInvoicesAsync(serviceHeader);
+
+            var payments = await master._channelService.FindPaymentsAsync(serviceHeader);
 
 
+
+
+
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = payments?.Count > 0 ? $"{payments.Count} payments found." : "No payments found.",
+                Data = payments
+            });
+        }
 
 
 
@@ -2314,6 +2470,9 @@ namespace TestApis.Controllers
             }
 
         }
+
+
+
 
 
     }

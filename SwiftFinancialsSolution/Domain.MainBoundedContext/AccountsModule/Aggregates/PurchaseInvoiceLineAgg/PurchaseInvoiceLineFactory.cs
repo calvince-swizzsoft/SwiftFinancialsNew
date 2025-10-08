@@ -9,7 +9,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceLin
 {
     public class PurchaseInvoiceLineFactory
     {
-        public static PurchaseInvoiceLine CreatePurchaseInvoiceLine(Guid purchaseInvoiceId, int type, int no, string description, int quantity, decimal totalAmount, Guid debitChartOfAccountId)
+        public static PurchaseInvoiceLine CreatePurchaseInvoiceLine(Guid purchaseInvoiceId, int type, int no, string description, decimal unitCost, int quantity, decimal totalAmount, Guid debitChartOfAccountId)
         {
 
             var purchaseInvoiceLine = new PurchaseInvoiceLine();
@@ -24,9 +24,10 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceLin
             purchaseInvoiceLine.Type = type;
             purchaseInvoiceLine.No = no;
             purchaseInvoiceLine.Description = description;
+            purchaseInvoiceLine.UnitCost = unitCost;
             purchaseInvoiceLine.Quantity = quantity;
             purchaseInvoiceLine.TotalAmount = totalAmount;
-
+            
             purchaseInvoiceLine.DebitChartOfAccountId = debitChartOfAccountId;
 
 

@@ -235,6 +235,13 @@ namespace DistributedServices.MainBoundedContext.UnityContainers
 
             Current.RegisterType<ISalesCreditMemoAppService, SalesCreditMemoAppService>();
 
+            Current.RegisterType<IPaymentAppService, PaymentAppService>();
+
+            Current.RegisterType<INumberSeriesGenerator, NumberSeriesGenerator>();
+
+
+
+
             //-> Distributed Services
         }
 

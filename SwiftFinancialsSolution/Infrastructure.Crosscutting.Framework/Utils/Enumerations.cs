@@ -36,6 +36,28 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         Expense = 0x1388,/*5000*/
     }
 
+
+    public enum PaymentAccountType
+    {
+        [Description("Customer")]
+        Customer = 0x3E8,/*1000*/
+        [Description("Vendor")]
+        Vendor = 0x7D0,/*2000*/
+        [Description("GL Account")]
+        GLAccount = 0xBB8,/*3000*/
+        [Description("Fixed Asset")]
+        FixedAsset = 0xFA0,/*4000*/
+    }
+
+
+    public enum PaymentDocumentType
+    {
+        [Description("Invoice")]
+        Invoice = 0x3E8,/*1000*/
+        [Description("CreditMemo")]
+        CreditMemo = 0x7D0,/*2000*/
+    }
+
     public enum ChartOfAccountCategory
     {
         [Description("Header Account (Non-Postable)")]
@@ -2372,6 +2394,15 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         [Description("Flagged")]
         Flagged = 2,
     }
+
+    //public enum PaymentType
+    //{
+    //    [Description("PurchaseInvoice")]
+    //    Invoice = 0,
+    //    [Description("PurchaseCreditMemo")]
+    //    Other = 1,
+       
+    //}
 
     public enum PaymentVoucherManagementAction
     {

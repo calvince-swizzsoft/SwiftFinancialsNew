@@ -5,6 +5,7 @@ using Domain.MainBoundedContext.AdministrationModule.Aggregates.NavigationItemAg
 using Domain.Seedwork;
 using Domain.Seedwork.Specification;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Infrastructure.Data.MainBoundedContext.Seeders;
 using Numero3.EntityFramework.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,14 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
     public class NavigationItemAppService : INavigationItemAppService
     {
         private readonly IRepository<NavigationItem> _navigationItemRepository;
+        private readonly NumberSeriesSeeder _numberSeriesSeeder;
         private readonly IDbContextScopeFactory _dbContextScopeFactory;
 
-        public NavigationItemAppService(IRepository<NavigationItem> navigationItemRepository, IDbContextScopeFactory dbContextScopeFactory)
+        public NavigationItemAppService(IRepository<NavigationItem> navigationItemRepository, IDbContextScopeFactory dbContextScopeFactory, NumberSeriesSeeder numberSeriesSeeder)
         {
             _dbContextScopeFactory = dbContextScopeFactory ?? throw new ArgumentNullException(nameof(dbContextScopeFactory));
             _navigationItemRepository = navigationItemRepository ?? throw new ArgumentNullException(nameof(navigationItemRepository));
+            _numberSeriesSeeder = numberSeriesSeeder ?? throw new ArgumentNullException(nameof(numberSeriesSeeder));
         }
 
         #region NavigationItemDTO
@@ -32,6 +35,17 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
 
             if (navigationItems == null)
                 return result;
+
+            try
+            {
+
+                _numberSeriesSeeder.SeedAsync(serviceHeader);
+            }
+            catch (Exception ex)
+            {
+                // Log the error but continue with navigation items
+                // Logger.Error("Failed to seed NumberSeries", ex);
+            }
 
             var parentNavigationItems = navigationItems.Where(x => x.IsArea).ToList();
             if (parentNavigationItems != null && parentNavigationItems.Any())

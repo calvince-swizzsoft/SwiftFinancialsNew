@@ -176,8 +176,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         moduleNavigationItemCode,
                         (int)SystemTransactionCode.InterAcccountTransfer,
                         null,
-                        payablesChartOfAccountId,
                         item.CreditChartOfAccountId,
+                        payablesChartOfAccountId,
                         serviceHeader);
 
                     if (journal == null)
@@ -203,6 +203,5 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 }
             }
         }
-
     }
 }

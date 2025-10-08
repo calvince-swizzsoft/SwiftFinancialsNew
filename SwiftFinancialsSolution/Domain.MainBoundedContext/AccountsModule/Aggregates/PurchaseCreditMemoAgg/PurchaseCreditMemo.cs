@@ -43,6 +43,12 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemo
 
         public Boolean Posted { get; set;  }
 
+        public Decimal TotalAmount { get; set; }
+
+        public Decimal PaidAmount { get; set; }
+
+        public Decimal RemainingAmount { get; set; }
+
 
         HashSet<PurchaseCreditMemoLine> _purchaseCreditMemoLines;
         public virtual ICollection<PurchaseCreditMemoLine> PurchaseCreditMemoLines

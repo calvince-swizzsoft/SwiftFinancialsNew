@@ -27,7 +27,7 @@ namespace DistributedServices.MainBoundedContext
             _chartOfAccountAppService = chartOfAccountAppService;
         }
 
-        #region Chart Of Account
+        //#region Chart Of Account
 
         public Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync(string text, int pageIndex, int pageSize)
         {
@@ -40,7 +40,7 @@ namespace DistributedServices.MainBoundedContext
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
-            return  _chartOfAccountAppService.FindChartOfAccounts(serviceHeader);
+            return _chartOfAccountAppService.FindChartOfAccounts(serviceHeader);
         }
 
         public ChartOfAccountDTO AddChartOfAccount(ChartOfAccountDTO chartOfAccountDTO)
@@ -72,6 +72,18 @@ namespace DistributedServices.MainBoundedContext
 
             if (includeBalances)
                 _chartOfAccountAppService.FetchGeneralLedgerAccountBalances(glAccounts, DateTime.Now, serviceHeader, TransactionDateFilter.CreatedDate, true);
+
+            return glAccounts;
+        }
+
+        public List<GeneralLedgerAccount> FindGeneralLedgerAccountsWithCategoryAndText(string text, int? accountCategory, bool updateDepth)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            var glAccounts = _chartOfAccountAppService.FindGeneralLedgerAccountsWithCategoryAndText(text, accountCategory, serviceHeader, updateDepth);
+
+           
+             _chartOfAccountAppService.FetchGeneralLedgerAccountBalances(glAccounts, DateTime.Now, serviceHeader, TransactionDateFilter.CreatedDate, true);
 
             return glAccounts;
         }
@@ -109,6 +121,8 @@ namespace DistributedServices.MainBoundedContext
             return _chartOfAccountAppService.FindSystemGeneralLedgerAccountMappings(pageIndex, pageSize, serviceHeader);
         }
 
-        #endregion
+
+
     }
+
 }

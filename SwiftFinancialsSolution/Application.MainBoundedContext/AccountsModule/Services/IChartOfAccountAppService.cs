@@ -54,5 +54,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         void FetchGeneralLedgerAccountBalances(Guid branchId, List<GeneralLedgerAccount> glAccounts, DateTime cutOffDate, ServiceHeader serviceHeader, TransactionDateFilter transactionDateFilter = TransactionDateFilter.CreatedDate, bool includeSubTotals = false);
 
         void FetchGeneralLedgerAccountBalances(GeneralLedgerAccount glAccount, DateTime cutOffDate, ServiceHeader serviceHeader, TransactionDateFilter transactionDateFilter = TransactionDateFilter.CreatedDate);
+
+        List<GeneralLedgerAccount> FindGeneralLedgerAccountsWithCategoryAndText(string text, int? accountCategory, ServiceHeader serviceHeader, bool updateDepth);
+  
+
     }
 }

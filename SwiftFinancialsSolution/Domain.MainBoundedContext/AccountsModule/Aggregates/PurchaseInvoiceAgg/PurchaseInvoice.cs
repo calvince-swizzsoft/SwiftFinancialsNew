@@ -19,7 +19,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceAgg
         //public Guid Id {  get; set; }
 
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        //public int No { get; set; }
+        public string No { get; set; }
+
+        //public string DocumentNo { get; set; }
 
         public int VendorNo { get; set; }
 
@@ -36,6 +38,12 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceAgg
         public string ApprovalStatus { get; set; }
 
         public Boolean Posted { get; set; }
+
+        public Decimal TotalAmount {get; set;}
+
+        public Decimal PaidAmount { get; set; }
+
+        public Decimal RemainingAmount { get; set; }
 
 
         HashSet<PurchaseInvoiceLine> _purchaseInvoiceLines;
@@ -57,9 +65,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceAgg
 
 
 
-        public void AddLine(int type, int purchaseInvoiceLnNo, string purchaseInvoiceLnDescription, int purchaseInvoiceLnQuantity, decimal purchaseInvoiceLnTotalAmount, Guid purchaseInvoiceLineDebitChartOfAccountId, ServiceHeader serviceHeader)
+        public void AddLine(int type, int purchaseInvoiceLnNo, string purchaseInvoiceLnDescription, decimal purchaseInvoiceLnUnitCost, int purchaseInvoiceLnQuantity, decimal purchaseInvoiceLnTotalAmount, Guid purchaseInvoiceLineDebitChartOfAccountId, ServiceHeader serviceHeader)
         {
-            var purchaseInvoiceLine = PurchaseInvoiceLineFactory.CreatePurchaseInvoiceLine(this.Id, type, purchaseInvoiceLnNo, purchaseInvoiceLnDescription, purchaseInvoiceLnQuantity, purchaseInvoiceLnTotalAmount, purchaseInvoiceLineDebitChartOfAccountId);
+            var purchaseInvoiceLine = PurchaseInvoiceLineFactory.CreatePurchaseInvoiceLine(this.Id, type, purchaseInvoiceLnNo, purchaseInvoiceLnDescription, purchaseInvoiceLnUnitCost, purchaseInvoiceLnQuantity, purchaseInvoiceLnTotalAmount, purchaseInvoiceLineDebitChartOfAccountId);
                 //CreateJournalEntry(this.Id, chartOfAccountId, contraChartOfAccountId, customerAccountId, amount, this.ValueDate, serviceHeader);
 
             this.PurchaseInvoiceLines.Add(purchaseInvoiceLine);

@@ -92,6 +92,34 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
         }
 
+
+
+        public PageCollectionInfo<ChartOfAccountDTO> FindChartOfAccountsWithCategoryInPage(int accountCategory, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                //var filter = ChartOfAccountSpecifications.ChartOfAccountFullText(text);
+
+                var filter = ChartOfAccountSpecifications.ChartOfAccountWithAccountCategory(accountCategory);
+
+                ISpecification<ChartOfAccount> spec = filter;
+
+                var sortFields = new List<string> { "SequentialId" };
+
+                var chartOfAccountCollection = _chartOfAccountRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+
+                if (chartOfAccountCollection != null)
+                {
+                    var pageCollection = chartOfAccountCollection.PageCollection.ProjectedAsCollection<ChartOfAccountDTO>();
+
+                    var itemsCount = chartOfAccountCollection.ItemsCount;
+
+                    return new PageCollectionInfo<ChartOfAccountDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                }
+                else return null;
+            }
+        }
+
         public ChartOfAccountDTO AddNewChartOfAccount(ChartOfAccountDTO chartOfAccountDTO, ServiceHeader serviceHeader)
         {
             if (chartOfAccountDTO != null)
@@ -286,6 +314,116 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 else return null;
             }
         }
+
+
+
+        public List<GeneralLedgerAccount> FindGeneralLedgerAccountsWithCategoryAndText(string text, int? accountCategory, ServiceHeader serviceHeader, bool updateDepth)
+        {
+            //var chartOfAccounts = FindChartOfAccounts(serviceHeader);
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+
+
+                var filter = ChartOfAccountSpecifications.ChartOfAccountFullTextAndCategory(text, accountCategory);
+
+                ISpecification<ChartOfAccount> spec = filter;
+
+
+                var chartOfAccounts = _chartOfAccountRepository.AllMatching(spec, serviceHeader, c => c.Children);
+
+
+
+                if (chartOfAccounts != null && chartOfAccounts.Any())
+                {
+                    var glAccountsList = new List<GeneralLedgerAccount>();
+
+                    Action<ChartOfAccount> traverse = null;
+
+                    /* recursive lambda */
+                    traverse = (node) =>
+                    {
+                        string tabs = string.Empty;
+                        int depth = 0;
+
+                        var tempNode = node;
+                        while (tempNode.Parent != null)
+                        {
+                            tempNode = tempNode.Parent;
+                            tabs += "\t";
+                            depth++;
+                        }
+
+                        var glAccount = new GeneralLedgerAccount();
+                        glAccount.Id = node.Id;
+                        glAccount.ParentId = node.ParentId;
+                        glAccount.Category = node.AccountCategory;
+                        glAccount.CategoryDescription = EnumHelper.GetDescription((ChartOfAccountCategory)node.AccountCategory);
+                        glAccount.Type = (int)node.AccountType;
+                        glAccount.TypeDescription = EnumHelper.GetDescription((ChartOfAccountType)node.AccountType);
+                        glAccount.Code = node.AccountCode;
+                        glAccount.Description = node.AccountName;
+                        glAccount.Name = string.Format("{0}-{1} {2}", node.AccountType, node.AccountCode, node.AccountName);
+                        glAccount.IndentedName = string.Format("{0}{1}-{2} {3}", tabs, node.AccountType, node.AccountCode, node.AccountName);
+                        glAccount.Depth = depth;
+                        glAccount.IsControlAccount = node.IsControlAccount;
+                        glAccount.IsReconciliationAccount = node.IsReconciliationAccount;
+                        glAccount.PostAutomaticallyOnly = node.PostAutomaticallyOnly;
+                        glAccount.IsLocked = node.IsLocked;
+                        glAccount.CreatedDate = node.CreatedDate;
+
+                        if (node.CostCenterId != null)
+                        {
+                            glAccount.CostCenterId = node.CostCenterId;
+                            //.CostCenterDescription = node.CostCenterDescription;
+                        }
+
+                        glAccountsList.Add(glAccount);
+
+                        if (node.Children != null)
+                        {
+                            foreach (var item in node.Children)
+                            {
+                                traverse(item);
+                            }
+                        }
+                    };
+
+                    foreach (var c in chartOfAccounts)
+                    {
+                        traverse(c);
+                    }
+
+                    #region update depth
+                    // TODO:
+                    //if (updateDepth && glAccountsList.Any())
+                    //{
+                    //    glAccountsList.ForEach(item =>
+                    //    {
+                    //        if (item != null)
+                    //        {
+                    //            var chartOfAccount = _chartOfAccountRepository.Get(item.Id);
+
+                    //            if (chartOfAccount != null)
+                    //                chartOfAccount.Depth = item.Depth;
+                    //        }
+                    //    });
+
+                    //   dbContextScope.SaveChanges(serviceHeader);
+                    //}
+
+                    #endregion
+
+                    return glAccountsList;
+                }
+                else return null;
+
+            }
+        }
+
+
+
+
+
 
         public List<GeneralLedgerAccount> FindGeneralLedgerAccounts(ServiceHeader serviceHeader, bool updateDepth)
         {

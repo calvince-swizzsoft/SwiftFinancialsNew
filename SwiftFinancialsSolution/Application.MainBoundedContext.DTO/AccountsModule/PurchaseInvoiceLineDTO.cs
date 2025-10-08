@@ -54,6 +54,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
 
         [DataMember]
+        [Display(Name = "UnitCost")]
+        public Decimal UnitCost { get; set; }
+
+
+        [DataMember]
         [Display(Name = "Quantity")]
         public int Quantity { get; set; }
 
@@ -64,6 +69,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "DebitChartOfAccountId")]
         public Guid DebitChartOfAccountId { get; set; }
+
+
 
     }
 }

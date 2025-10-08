@@ -1576,6 +1576,41 @@ namespace TestApis.Controllers
 
 
 
+        public List<SelectListItem> GetPaymentAccountTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> accountTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(PaymentAccountType)).Cast<PaymentAccountType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            accountTypes.AddRange(items);
+
+            return accountTypes;
+
+        }
+
+
+        public List<SelectListItem> GetPaymentDocumentTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> documentTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(PaymentDocumentType)).Cast<PaymentDocumentType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            documentTypes.AddRange(items);
+
+            return documentTypes;
+
+        }
+
 
 
 

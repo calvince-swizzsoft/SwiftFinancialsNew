@@ -53,6 +53,14 @@ namespace DistributedServices.MainBoundedContext
         }
 
 
+        public List<PurchaseInvoiceLineDTO> FindPurchaseInvoiceLines()
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _purchaseInvoiceAppService.FindPurchaseInvoiceLines(serviceHeader);
+        }
+
+
 
         public JournalDTO PostPurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO, int moduleNavigationItemCode)
         {

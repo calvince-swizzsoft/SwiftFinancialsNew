@@ -20,6 +20,8 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceLin
 
         public string Description { get; set; }
 
+        public decimal UnitCost { get; set;}
+
         public int Quantity { get; set; }
 
         public Decimal TotalAmount { get; set; }

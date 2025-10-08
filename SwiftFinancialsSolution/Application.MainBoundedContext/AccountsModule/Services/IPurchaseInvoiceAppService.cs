@@ -17,6 +17,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
         List<PurchaseInvoiceDTO> FindPurchaseInvoices(ServiceHeader serviceHeader);
 
+        PurchaseInvoiceDTO FindPurchaseInvoice(Guid purchaseInvoiceId, ServiceHeader serviceHeader);
+
+        List<PurchaseInvoiceLineDTO> FindPurchaseInvoiceLines(ServiceHeader serviceHeader);
+
         JournalDTO PostPurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
 
         JournalDTO PayVendorInvoice(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);

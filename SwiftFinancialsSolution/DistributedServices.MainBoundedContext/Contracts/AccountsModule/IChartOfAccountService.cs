@@ -43,6 +43,12 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        List<GeneralLedgerAccount> FindGeneralLedgerAccountsWithCategoryAndText(string text, int? accountCategory, bool updateDepth);
+
+
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         Guid GetChartOfAccountMappingForSystemGeneralLedgerAccountCode(int systemGeneralLedgerAccountCode);
 
         [OperationContract()]

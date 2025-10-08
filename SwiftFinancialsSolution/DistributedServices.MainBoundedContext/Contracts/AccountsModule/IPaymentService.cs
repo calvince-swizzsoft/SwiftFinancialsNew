@@ -8,41 +8,41 @@ using System.Web;
 
 namespace DistributedServices.MainBoundedContext
 {
-    [ServiceContract]
-    public interface IPurchaseInvoiceService
+    [ServiceContract(Name = "IPaymentService")]
+    public interface IPaymentService
     {
 
-        #region Purchase Invoice
+        #region Payment
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        PurchaseInvoiceDTO AddPurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO);
+        PaymentDTO AddPayment(PaymentDTO paymentDTO);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        bool UpdatePurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO);
+        bool UpdatePayment(PaymentDTO paymentDTO);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        List<PurchaseInvoiceDTO> FindPurchaseInvoices();
-
-
-        [OperationContract()]
-        [FaultContract(typeof(ApplicationServiceError))]
-        List<PurchaseInvoiceLineDTO> FindPurchaseInvoiceLines();
+        List<PaymentDTO> FindPayments();
 
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        JournalDTO PostPurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO, int moduleNavigationItemCode);
+        List<PaymentLineDTO> FindPaymentLines();
 
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        JournalDTO PostPayment(PaymentDTO paymentDTO, int moduleNavigationItemCode);
 
-        JournalDTO PayVendorInvoice(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode);
 
-      
+        //[OperationContract()]
+        //[FaultContract(typeof(ApplicationServiceError))]
+
+        //JournalDTO PayVendorInvoice(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode);
+
+
 
 
         #endregion
