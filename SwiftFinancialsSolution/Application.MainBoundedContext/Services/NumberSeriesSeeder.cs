@@ -30,9 +30,54 @@ namespace Infrastructure.Data.MainBoundedContext.Seeders
             {
                 var existingSeries = _numberSeriesRepository.GetAll(serviceHeader);
 
-                    // ✅ Define the default number series configurations inline
+                    //Define the default number series configurations inline
                     var defaultSeries = new List<NumberSeries>
                     {
+
+                          new NumberSeries
+                     {
+
+                    Code = "PCM", // Purchase Credit Memo
+                    Prefix = "PCM-",
+                    LastUsedNumber = 0,
+                    Padding = 5
+                },
+
+     new NumberSeries
+                     {
+
+                    Code = "SCM", // Sales Credit Memo
+                    Prefix = "SCM-",
+                    LastUsedNumber = 0,
+                    Padding = 5
+                },
+                new NumberSeries {
+
+                    Code = "RCPT", // Receipt
+                    Prefix = "RCPT-",
+                    LastUsedNumber = 0,
+                    Padding = 5
+                },
+
+                new NumberSeries
+                {
+                    
+                    Code = "SI", // Sales Invoice
+                    Prefix = "SI-",
+                    LastUsedNumber = 0,
+                    Padding = 5
+                },
+
+
+                new NumberSeries
+                {
+
+                    Code = "ARC", // AR Cystomer
+                    Prefix = "ARC-",
+                    LastUsedNumber = 0,
+                    Padding = 5
+                },
+
                 new NumberSeries
                 {
                     

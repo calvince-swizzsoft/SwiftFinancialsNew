@@ -11,12 +11,9 @@ using System.Threading.Tasks;
 namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceAgg
 {
     public class SalesInvoice : Entity
-    {
-
-        //No
-        public int SalesInvoiceNo { get; set; }
-        // allow pick from vendors
-        public int CustomerNo { get; set; }
+    {  
+        public string No { get; set; }
+        public string CustomerNo { get; set; }
 
         public string CustomerName { get; set; }
 
@@ -34,6 +31,12 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceAgg
 
 
         public Boolean Posted { get; set; }
+
+        public Decimal TotalAmount { get; set; }
+
+        public Decimal PaidAmount { get; set; }
+
+        public Decimal RemainingAmount { get; set; }
 
 
         HashSet<SalesInvoiceLine> _salesInvoiceLines;
@@ -55,9 +58,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceAgg
 
 
 
-        public void AddLine(int type, int salesInvoiceLnNo, string salesInvoiceLnDescription, int salesInvoiceLnQuantity, decimal salesInvoiceLnTotalAmount, Guid salesInvoiceLineCreditChartOfAccountId, ServiceHeader serviceHeader)
+        public void AddLine(int type, int salesInvoiceLnNo, string salesInvoiceLnDescription,  decimal salesInvoiceLnUnitCost, int salesInvoiceLnQuantity, decimal salesInvoiceLnAmount, Guid salesInvoiceLineCreditChartOfAccountId, ServiceHeader serviceHeader)
         {
-            var salesInvoiceLine = SalesInvoiceLineFactory.CreateSalesInvoiceLine(this.Id, type, salesInvoiceLnNo, salesInvoiceLnDescription, salesInvoiceLnQuantity, salesInvoiceLnTotalAmount, salesInvoiceLineCreditChartOfAccountId);
+            var salesInvoiceLine = SalesInvoiceLineFactory.CreateSalesInvoiceLine(this.Id, type, salesInvoiceLnNo, salesInvoiceLnDescription, salesInvoiceLnUnitCost, salesInvoiceLnQuantity, salesInvoiceLnAmount, salesInvoiceLineCreditChartOfAccountId);
             //CreateJournalEntry(this.Id, chartOfAccountId, contraChartOfAccountId, customerAccountId, amount, this.ValueDate, serviceHeader);
 
             this.SalesInvoiceLines.Add(salesInvoiceLine);

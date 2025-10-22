@@ -81,7 +81,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
 
-                    var voucherNo = _numberSeriesGenerator.GetNextNumber("PI", serviceHeader);
+                    var voucherNo = _numberSeriesGenerator.GetNextNumber("PV", serviceHeader);
                     
                     var payment = PaymentFactory.CreatePayment(paymentDTO.InvoiceId, paymentDTO.VendorId, paymentDTO.Description, paymentDTO.Reference, paymentDTO.TotalAmount, paymentDTO.PaymentMethod, paymentDTO.BankLinkageChartOfAccountId, voucherNo);
 
@@ -114,10 +114,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 if (persisted != null)
                 {
 
-                    //var current = PurchaseInvoiceFactory.CreatePayment(paymentDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, serviceHeader);
-
-                    var documentNo = _numberSeriesGenerator.GetNextNumber("PV", serviceHeader);
-                    var current = PaymentFactory.CreatePayment(paymentDTO.InvoiceId, paymentDTO.VendorId, paymentDTO.Description, paymentDTO.Reference, paymentDTO.TotalAmount, paymentDTO.PaymentMethod, paymentDTO.BankLinkageChartOfAccountId, documentNo);
+                    //not sure voucherNo should be changed on update
+                    var voucherNo = _numberSeriesGenerator.GetNextNumber("PV", serviceHeader);
+                    var current = PaymentFactory.CreatePayment(paymentDTO.InvoiceId, paymentDTO.VendorId, paymentDTO.Description, paymentDTO.Reference, paymentDTO.TotalAmount, paymentDTO.PaymentMethod, paymentDTO.BankLinkageChartOfAccountId, voucherNo);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
                     current.CreatedBy = persisted.CreatedBy;

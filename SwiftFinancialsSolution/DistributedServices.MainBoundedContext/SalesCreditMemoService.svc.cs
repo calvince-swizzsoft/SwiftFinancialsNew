@@ -17,36 +17,36 @@ namespace DistributedServices.MainBoundedContext
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
     public class SalesCreditMemoService : ISalesCreditMemoService
     {
-        public readonly ISalesCreditMemoAppService _iSalesCreditMemoAppService;
+        public readonly ISalesCreditMemoAppService _salesCreditMemoAppService;
 
-        public SalesCreditMemoService(ISalesCreditMemoAppService iSalesCreditMemoAppService)
+        public SalesCreditMemoService(ISalesCreditMemoAppService salesCreditMemoAppService)
         {
-            Guard.ArgumentNotNull(iSalesCreditMemoAppService, nameof(iSalesCreditMemoAppService));
-            _iSalesCreditMemoAppService = iSalesCreditMemoAppService;
+            Guard.ArgumentNotNull(salesCreditMemoAppService, nameof(salesCreditMemoAppService));
+            _salesCreditMemoAppService = salesCreditMemoAppService;
         }
 
         public SalesCreditMemoDTO AddSalesCreditMemo(SalesCreditMemoDTO salesCreditMemoDTO)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
-            return _iSalesCreditMemoAppService.AddNewSalesCreditMemo(salesCreditMemoDTO, serviceHeader);
+            return _salesCreditMemoAppService.AddNewSalesCreditMemo(salesCreditMemoDTO, serviceHeader);
         }
 
         public bool UpdateSalesCreditMemo(SalesCreditMemoDTO salesCreditMemoDTO)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
-            return _iSalesCreditMemoAppService.UpdateSalesCreditMemo(salesCreditMemoDTO, serviceHeader);
+            return _salesCreditMemoAppService.UpdateSalesCreditMemo(salesCreditMemoDTO, serviceHeader);
         }
 
         public List<SalesCreditMemoDTO> FindSalesCreditMemos()
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
-            return _iSalesCreditMemoAppService.FindSalesCreditMemos(serviceHeader);
+            return _salesCreditMemoAppService.FindSalesCreditMemos(serviceHeader);
         }
 
         public JournalDTO PostSalesCreditMemo(SalesCreditMemoDTO salesCreditMemoDTO, int moduleNavigationItemCode)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
-            return _iSalesCreditMemoAppService.PostSalesCreditMemo(salesCreditMemoDTO, moduleNavigationItemCode, serviceHeader);
+            return _salesCreditMemoAppService.PostSalesCreditMemo(salesCreditMemoDTO, moduleNavigationItemCode, serviceHeader);
         }
     }
 }

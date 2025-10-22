@@ -14,9 +14,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesCreditMemoAgg
     {
 
         //salescreditmemono
-       // public int No { get; set; }
+        public string No { get; set; }
 
-        public int CustomerNo { get; set; }
+        public string CustomerNo { get; set; }
 
         public string CustomerName { get; set; }
 
@@ -32,8 +32,13 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesCreditMemoAgg
 
         public Guid SalesInvoiceId { get; set; }
 
+        public string AppliesToDocNo { get; set; }
+
 
         public Boolean Posted { get; set; }
+
+        public Decimal TotalAmount { get; set; }
+
 
 
         HashSet<SalesCreditMemoLine> _salesCreditMemoLines;
@@ -57,9 +62,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesCreditMemoAgg
 
 
 
-        public void AddLine(int type, int salesCreditMemoLnNo, string salesCreditMemoLnDescription, int salesCreditMemoLnQuantity, decimal salesCreditMemoLnTotalAmount, Guid salesCreditMemoLineDebitChartOfAccountId, ServiceHeader serviceHeader)
+        public void AddLine(int type, int salesCreditMemoLnNo, string salesCreditMemoLnDescription, int salesCreditMemoLnQuantity, decimal salesCreditMemoLnTotalAmount, Guid salesCreditMemoLineDebitChartOfAccountId, decimal salesCreditMemoLineUnitCost, ServiceHeader serviceHeader)
         {
-            var salesCreditMemoLine = SalesCreditMemoLineFactory.CreateSalesCreditMemoLine(this.Id, type, salesCreditMemoLnNo, salesCreditMemoLnDescription, salesCreditMemoLnQuantity, salesCreditMemoLnTotalAmount, salesCreditMemoLineDebitChartOfAccountId);
+            var salesCreditMemoLine = SalesCreditMemoLineFactory.CreateSalesCreditMemoLine(this.Id, type, salesCreditMemoLnNo, salesCreditMemoLnDescription, salesCreditMemoLnQuantity, salesCreditMemoLnTotalAmount, salesCreditMemoLineDebitChartOfAccountId, salesCreditMemoLineUnitCost);
             //CreateJournalEntry(this.Id, chartOfAccountId, contraChartOfAccountId, customerAccountId, amount, this.ValueDate, serviceHeader);
 
             this.SalesCreditMemoLines.Add(salesCreditMemoLine);

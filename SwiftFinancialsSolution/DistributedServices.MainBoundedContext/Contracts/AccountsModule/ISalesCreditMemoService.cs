@@ -28,7 +28,7 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        JournalDTO PostSalesCreditMemo(SalesCreditMemoDTO creditMemoDTO, int moduleNavigationItemCode);
+        JournalDTO PostSalesCreditMemo(SalesCreditMemoDTO salesCreditMemoDTO, int moduleNavigationItemCode);
 
         #endregion
     }

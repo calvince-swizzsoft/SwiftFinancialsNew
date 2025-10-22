@@ -19,5 +19,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
         JournalDTO PostSalesInvoice(SalesInvoiceDTO salesInvoiceDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
 
+        SalesInvoiceDTO FindSalesInvoice(Guid salesInvoiceId, ServiceHeader serviceHeader);
+
     }
 }

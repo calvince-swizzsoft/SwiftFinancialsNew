@@ -45,6 +45,14 @@ namespace DistributedServices.MainBoundedContext
         }
 
 
+        public SalesInvoiceDTO FindSalesInvoice(Guid salesInvoiceId)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _salesInvoiceAppService.FindSalesInvoice(salesInvoiceId, serviceHeader);
+        }
+
+
         public List<SalesInvoiceDTO> FindSalesInvoices()
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

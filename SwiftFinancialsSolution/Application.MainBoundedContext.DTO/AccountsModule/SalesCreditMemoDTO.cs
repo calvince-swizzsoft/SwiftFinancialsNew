@@ -26,11 +26,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "No")]
-        public int No { get; set; }
+        public string No { get; set; }
 
         [DataMember]
         [Display(Name = "CustomerNo")]
-        public int CustomerNo { get; set; }
+        public string CustomerNo { get; set; }
 
         [DataMember]
         [Display(Name = "CustomerName")]
@@ -65,7 +65,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "BankId")]
         public Guid BankId { get; set; }
 
-        [Display(Name = "BrahnchId")]
+        [Display(Name = "BranchId")]
         public Guid BranchId { get; set; }
 
         [Display(Name = "BankBranchName")]
@@ -75,11 +75,21 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         //[Display(Name = "InvoiceNo")]
         //public int InvoiceNo { get; set; }
 
+        [DataMember]
         [Display(Name = "SalesInvoiceId")]
         public Guid SalesInvoiceId { get; set; }
 
+        [DataMember]
+        [Display(Name="AppliesToDocNo")]
+        public string AppliesToDocNo { get; set; }
+
         [Display(Name = ("Posted"))]
         public Boolean Posted { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "TotalAmount")]
+        public decimal TotalAmount { get; set; }
 
 
 

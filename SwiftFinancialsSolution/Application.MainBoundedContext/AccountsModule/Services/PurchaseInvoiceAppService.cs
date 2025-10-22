@@ -79,7 +79,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                    
-                    var purchaseInvoice = PurchaseInvoiceFactory.CreatePurchaseInvoice(purchaseInvoiceNo, purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, purchaseInvoiceDTO.PaidAmount, purchaseInvoiceDTO.RemainingAmount, serviceHeader);
+                    var purchaseInvoice = PurchaseInvoiceFactory.CreatePurchaseInvoice(purchaseInvoiceNo, purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, purchaseInvoiceDTO.PaidAmount, purchaseInvoiceDTO.RemainingAmount, purchaseInvoiceDTO.TotaAmount,  serviceHeader);
 
                     AddLines(purchaseInvoiceDTO, purchaseInvoice, serviceHeader);
 
@@ -103,7 +103,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             if (purchaseInvoiceDTO == null || purchaseInvoiceDTO.Id == Guid.Empty)
                 return false;
 
-            var purchaseInvoiceNo = _numberSeriesGenerator.GetNextNumber("PI", serviceHeader);
+            //var purchaseInvoiceNo = _numberSeriesGenerator.GetNextNumber("PI", serviceHeader);
 
             using (var dbContextScope = _dbContextScopeFactory.Create())
             {
@@ -112,7 +112,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 if (persisted != null)
                 {
                    
-                    var current = PurchaseInvoiceFactory.CreatePurchaseInvoice(purchaseInvoiceNo, purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, purchaseInvoiceDTO.PaidAmount, purchaseInvoiceDTO.RemainingAmount, serviceHeader);
+                    var current = PurchaseInvoiceFactory.CreatePurchaseInvoice(persisted.No, purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, purchaseInvoiceDTO.PaidAmount, purchaseInvoiceDTO.RemainingAmount, purchaseInvoiceDTO.TotaAmount, serviceHeader);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
                     current.CreatedBy = persisted.CreatedBy;

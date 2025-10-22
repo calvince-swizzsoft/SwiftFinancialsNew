@@ -27,7 +27,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "SalesInvoiceNo")]
 
-        public int SalesInvoiceNo { get; set; }
+        public string SalesInvoiceNo { get; set; }
 
         [DataMember]
         [Display(Name = "Type")]
@@ -59,8 +59,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public int Quantity { get; set; }
 
         [DataMember]
-        [Display(Name = "TotalAmount")]
-        public Decimal TotalAmount { get; set; }
+        [Display(Name = "Amount")]
+        public Decimal UnitCost { get; set; }
+
+        [DataMember]
+        [Display(Name = "Amount")]
+        public Decimal Amount { get; set; }
 
         [DataMember]
         [Display(Name = "CreditChartOfAccountId")]

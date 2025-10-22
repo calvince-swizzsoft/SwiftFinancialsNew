@@ -240,7 +240,9 @@ namespace DistributedServices.MainBoundedContext.UnityContainers
             Current.RegisterType<INumberSeriesGenerator, NumberSeriesGenerator>();
 
 
+            Current.RegisterType<IARCustomerAppService, ARCustomerAppService>();
 
+            Current.RegisterType<IReceiptAppService, ReceiptAppService>();
 
             //-> Distributed Services
         }

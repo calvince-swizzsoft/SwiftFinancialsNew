@@ -4,6 +4,7 @@ using Domain.MainBoundedContext.AccountsModule.Aggregates.AlternateChannelLogAgg
 using Domain.MainBoundedContext.AccountsModule.Aggregates.AlternateChannelReconciliationEntryAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.AlternateChannelReconciliationPeriodAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.AlternateChannelTypeCommissionAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.ARCustomerAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.BankLinkageAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.BankReconciliationEntryAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.BankReconciliationPeriodAgg;
@@ -84,6 +85,7 @@ using Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemoAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemoLineAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceLineAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.ReceiptAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.RecurringBatchAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.RecurringBatchEntryAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.ReportTemplateAgg;
@@ -644,6 +646,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             CreateMap<Payment, PaymentDTO>();
 
             CreateMap<PaymentLine, PaymentLineDTO>();
+
+            CreateMap<ARCustomer, ARCustomerDTO>();
+
+            CreateMap<Receipt, ReceiptDTO>();
 
         }
 

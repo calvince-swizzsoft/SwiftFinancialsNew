@@ -24,6 +24,10 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        SalesInvoiceDTO FindSalesInvoice(Guid salesInvoiceId);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         List<SalesInvoiceDTO> FindSalesInvoices();
 
 

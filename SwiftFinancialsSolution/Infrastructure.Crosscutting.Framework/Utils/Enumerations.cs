@@ -58,6 +58,29 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         CreditMemo = 0x7D0,/*2000*/
     }
 
+
+    public enum ReceiptAccountType
+    {
+        [Description("Customer")]
+        Customer = 0x3E8,/*1000*/
+        [Description("Vendor")]
+        Vendor = 0x7D0,/*2000*/
+        [Description("GL Account")]
+        GLAccount = 0xBB8,/*3000*/
+        [Description("Fixed Asset")]
+        FixedAsset = 0xFA0,/*4000*/
+    }
+
+
+    public enum ReceiptDocumentType
+    {
+        [Description("Invoice")]
+        Invoice = 0x3E8,/*1000*/
+        [Description("CreditMemo")]
+        CreditMemo = 0x7D0,/*2000*/
+    }
+
+
     public enum ChartOfAccountCategory
     {
         [Description("Header Account (Non-Postable)")]

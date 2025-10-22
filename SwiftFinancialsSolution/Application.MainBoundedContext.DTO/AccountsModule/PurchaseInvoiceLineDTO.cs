@@ -27,7 +27,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "PurchaseInvoiceNo")]
 
-        public int PurchaseInvoiceNo { get; set; }
+        public string PurchaseInvoiceNo { get; set; }
 
         [DataMember]
         [Display(Name = "Type")]

@@ -9,11 +9,11 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesCreditMemoLin
 {
     public class SalesCreditMemoLineFactory
     {
-        public static SalesCreditMemoLine CreateSalesCreditMemoLine(Guid salesCreditMemoId, int type, int no, string description, int quantity, decimal totalAmount, Guid debitChartOfAccountId)
+        public static SalesCreditMemoLine CreateSalesCreditMemoLine(Guid salesCreditMemoId, int type, int no, string description, int quantity, decimal amount, Guid debitChartOfAccountId, decimal unitCost)
         {
 
             var salesCreditMemoLine = new SalesCreditMemoLine();
-
+            
             salesCreditMemoLine.GenerateNewIdentity();
 
 
@@ -25,7 +25,8 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesCreditMemoLin
             salesCreditMemoLine.No = no;
             salesCreditMemoLine.Description = description;
             salesCreditMemoLine.Quantity = quantity;
-            salesCreditMemoLine.TotalAmount = totalAmount;
+            salesCreditMemoLine.Amount = amount;
+            salesCreditMemoLine.UnitCost = unitCost;
 
             salesCreditMemoLine.DebitChartOfAccountId = debitChartOfAccountId;
 

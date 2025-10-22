@@ -36,6 +36,14 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
 
+        IAsyncResult BeginFindPurchaseInvoiceLines(AsyncCallback callback, Object state);
+
+        List<PurchaseInvoiceLineDTO> EndFindPurchaseInvoiceLines(IAsyncResult result);
+
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+
         IAsyncResult BeginPostPurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO, int moduleNavigationItemCode, AsyncCallback callback, Object state);
 
         JournalDTO EndPostPurchaseInvoice(IAsyncResult result);

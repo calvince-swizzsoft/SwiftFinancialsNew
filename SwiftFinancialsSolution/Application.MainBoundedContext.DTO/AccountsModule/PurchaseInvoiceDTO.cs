@@ -78,7 +78,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "TotalAmount")]
-        public Decimal TotalAmount { get; set; }
+        public Decimal TotaAmount { get; set; }
 
 
         [DataMember]

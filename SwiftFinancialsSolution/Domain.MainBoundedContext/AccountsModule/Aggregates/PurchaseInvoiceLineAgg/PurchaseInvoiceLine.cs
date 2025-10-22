@@ -24,7 +24,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceLin
 
         public int Quantity { get; set; }
 
-        public Decimal TotalAmount { get; set; }
+        public Decimal Amount { get; set; }
 
     }
 }

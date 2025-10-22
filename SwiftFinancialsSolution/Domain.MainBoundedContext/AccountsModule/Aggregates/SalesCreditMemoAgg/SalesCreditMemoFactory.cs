@@ -12,13 +12,16 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesCreditMemoAgg
     public class SalesCreditMemoFactory
     {
 
-        public static SalesCreditMemo CreateSalesCreditMemo (int customerNo, string customerName, string customerAddress, DateTime documentDate, DateTime postingDate, DateTime dueDate, Guid salesInvoiceId, string approvalStatus, ServiceHeader serviceHeader) 
+        public static SalesCreditMemo CreateSalesCreditMemo (string salesCreditMemoNo, string customerNo, string customerName, string customerAddress, DateTime documentDate, DateTime postingDate, DateTime dueDate, Guid salesInvoiceId, string salesCreditMemoAppliesToDocNo, string approvalStatus, decimal totalAmount, ServiceHeader serviceHeader) 
         {
 
 
             var salesCreditMemo = new SalesCreditMemo();
 
             //purchaseInvoice.No = no;
+
+            salesCreditMemo.TotalAmount = totalAmount;
+            salesCreditMemo.No = salesCreditMemoNo;
             salesCreditMemo.CustomerNo = customerNo;
             salesCreditMemo.CustomerName = customerName;
             salesCreditMemo.CustomerAddress = customerAddress;
@@ -26,6 +29,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesCreditMemoAgg
             salesCreditMemo.PostingDate = postingDate;
             salesCreditMemo.DueDate = dueDate;
             salesCreditMemo.SalesInvoiceId = salesInvoiceId;
+            salesCreditMemo.AppliesToDocNo = salesCreditMemoAppliesToDocNo;
             salesCreditMemo.ApprovalStatus = approvalStatus;
             salesCreditMemo.CreatedDate = DateTime.Now;
 

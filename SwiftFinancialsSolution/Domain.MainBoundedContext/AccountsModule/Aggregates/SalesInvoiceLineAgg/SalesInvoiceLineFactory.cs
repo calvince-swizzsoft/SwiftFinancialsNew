@@ -10,7 +10,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceLineAg
     public class SalesInvoiceLineFactory
     {
 
-        public static SalesInvoiceLine CreateSalesInvoiceLine(Guid salesInvoiceId, int type, int no, string description, int quantity, decimal totalAmount, Guid creditChartOfAccountId)
+        public static SalesInvoiceLine CreateSalesInvoiceLine(Guid salesInvoiceId, int type, int no, string description, decimal unitCost, int quantity, decimal totalAmount, Guid creditChartOfAccountId)
         {
 
             var salesInvoiceLine = new SalesInvoiceLine();
@@ -25,8 +25,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceLineAg
             salesInvoiceLine.Type = type;
             salesInvoiceLine.No = no;
             salesInvoiceLine.Description = description;
+            salesInvoiceLine.UnitCost = unitCost;
             salesInvoiceLine.Quantity = quantity;
-            salesInvoiceLine.TotalAmount = totalAmount;
+            salesInvoiceLine.Amount = totalAmount;
 
             salesInvoiceLine.CreditChartOfAccountId = creditChartOfAccountId;
 

@@ -225,7 +225,7 @@ namespace TestApis.Controllers
 
         }
 
-
+        
 
         [HttpGet]
         [Route("GetPaymentDocumentTypeSelectList")]
@@ -1390,9 +1390,13 @@ namespace TestApis.Controllers
                 purchaseInvoiceDTO.PaidAmount = 0;
                 purchaseInvoiceDTO.RemainingAmount = purchaseInvoiceDTO.TotalAmount;
 
+
+                var linesTotal = 0.00m;
                 //purchaseInvoiceDTO.RemainingAmount = purchaseInvoiceDTO.
 
                 foreach (var gl in purchaseInvoiceDTO.PurchaseInvoiceLines) {
+
+                    linesTotal = linesTotal + gl.Amount;
 
                     if (gl.DebitChartOfAccountId != Guid.Empty)
                     { 
@@ -1410,6 +1414,16 @@ namespace TestApis.Controllers
                         });
                     }
 
+                }
+
+                if (purchaseInvoiceDTO.TotalAmount != linesTotal)
+                {
+
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Amounts in Lines dont add up to value of Total Amount"
+                    });
                 }
 
                 purchaseInvoiceDTO.ValidateAll();
@@ -1977,10 +1991,6 @@ namespace TestApis.Controllers
         }
 
 
-
-
-
-
         [HttpPost]
         [Route("AddSalesInvoice")]
         public async Task<IHttpActionResult> AddSalesInvoice([FromBody] SalesInvoiceDTO salesInvoiceDTO)
@@ -1988,10 +1998,21 @@ namespace TestApis.Controllers
 
             var serviceHeader = master.GetServiceHeader();
 
+            var totalLines = 0.00m;
+
             if (salesInvoiceDTO != null)
             {
+
+
+
+                salesInvoiceDTO.PaidAmount = 0;
+                salesInvoiceDTO.RemainingAmount = salesInvoiceDTO.TotalAmount;
+
+
                 foreach (var gl in salesInvoiceDTO.SalesInvoiceLines)
                 {
+
+                    totalLines += gl.Amount;
 
                     if (gl.CreditChartOfAccountId != Guid.Empty)
                     {
@@ -2011,6 +2032,16 @@ namespace TestApis.Controllers
 
                 }
 
+                if (salesInvoiceDTO.TotalAmount != totalLines)
+                {
+
+                    return Json(new
+                    {
+
+                        success = false,
+                        message = "Amounts in lines do not add up to the totala mount"
+                    });
+                }
                 salesInvoiceDTO.ValidateAll();
 
 
@@ -2146,7 +2177,7 @@ namespace TestApis.Controllers
             }
 
 
-            if (salesInvoiceDTO != null)
+            if (salesInvoiceDTO != null && !salesInvoiceDTO.Posted)
             {
 
                 var banks = await master._channelService.FindBankLinkagesAsync(serviceHeader);
@@ -2210,7 +2241,7 @@ namespace TestApis.Controllers
                 return Json(new
                 {
                     success = false,
-                    message = "Request Object is empty"
+                    message = "Target Invoice is already posted, or is missing"
                 });
             }
 
@@ -2227,12 +2258,31 @@ namespace TestApis.Controllers
 
             var serviceHeader = master.GetServiceHeader();
 
+            var totalLines = 0.00m;
+
+
+
             if (salesCreditMemoDTO != null)
             {
 
 
+                var targetSalesInvoice = await master._channelService.FindSalesInvoiceAsync(salesCreditMemoDTO.SalesInvoiceId, serviceHeader);
+
+                if (targetSalesInvoice == null)
+                {
+
+                    return Json(new
+                    {
+
+                        success = false,
+                        message = "target invoice does not exist" //or doesnt exist??
+                    });
+                }
+
                 foreach (var gl in salesCreditMemoDTO.SalesCreditMemoLines)
                 {
+
+                    totalLines += gl.Amount;
 
                     if (gl.DebitChartOfAccountId != Guid.Empty)
                     {
@@ -2253,10 +2303,22 @@ namespace TestApis.Controllers
 
 
                     }
-
-
-
                 }
+
+
+
+               
+
+                if (totalLines != salesCreditMemoDTO.TotalAmount)
+                    {
+
+                        return Json(new
+                        {
+
+                            success = false,
+                            mesSage = "amount in lines do no equal totalamount"
+                        });
+                    }
 
                 salesCreditMemoDTO.ValidateAll();
 
@@ -2380,7 +2442,6 @@ namespace TestApis.Controllers
 
 
 
-
         //customer rcpt
         [HttpPost]
         [Route("PostSalesCreditMemo/{id}")]
@@ -2401,7 +2462,7 @@ namespace TestApis.Controllers
             }
 
 
-            if (salesCreditMemoDTO != null)
+            if (salesCreditMemoDTO != null && !salesCreditMemoDTO.Posted)
             {
 
                 var banks = await master._channelService.FindBankLinkagesAsync(serviceHeader);
@@ -2465,11 +2526,231 @@ namespace TestApis.Controllers
                 return Json(new
                 {
                     success = false,
+                    message = "Target Sales Credit Memo is already posted, or is missing"
+                });
+            }
+
+        }
+
+
+
+        [Route("GetARCustomers")]
+        public async Task<IHttpActionResult> GetARCustomers()
+        {
+            var serviceHeader = master.GetServiceHeader();
+
+            var arCustomers = await master._channelService.FindARCustomersAsync(serviceHeader);
+
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = arCustomers?.Count > 0 ? $"{arCustomers.Count} customers found." : "No customers  found.",
+                Data = arCustomers
+            });
+        }
+
+
+        [HttpPut]
+        [Route("UpdateARCustomer")]
+        public async Task<IHttpActionResult> UpdateARCustomer([FromBody] ARCustomerDTO arCustomerDTO)
+        {
+            var serviceHeader = master.GetServiceHeader();
+
+            if (arCustomerDTO != null)
+            {
+                arCustomerDTO.ValidateAll();
+
+                if (arCustomerDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = arCustomerDTO.ErrorMessages
+                    });
+                }
+
+                var result = await master._channelService.UpdateARCustomerAsync(arCustomerDTO, serviceHeader);
+
+                if (result)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully updated AR Customer."
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to update AR Customer"
+                    });
+                }
+            }
+            else
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Body is incomplete"
+                });
+            }
+        }
+
+
+        [HttpPost]
+        [Route("AddARCustomer")]
+        public async Task<IHttpActionResult> AddARCustomer([FromBody] ARCustomerDTO arCustomerDTO)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+            if (arCustomerDTO != null)
+            {
+
+                arCustomerDTO.ValidateAll();
+
+
+                if (arCustomerDTO.ErrorMessages.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = arCustomerDTO.ErrorMessages
+                    });
+                }
+ 
+                var result = await master._channelService.AddARCustomerAsync(arCustomerDTO, serviceHeader);
+
+                if (result != null)
+                {
+
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully added Customer."
+                    });
+                }
+
+
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to add customer."
+                    });
+                }
+
+            }
+
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Body is incomplete"
+                });
+
+            }
+
+        }
+
+
+        [HttpPost]
+        [Route("PostReceipt")]
+        public async Task<IHttpActionResult> ReceiveCustomerPayment(ReceiptDTO receiptDTO)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+         
+
+            if (receiptDTO != null && receiptDTO.ReceiptLines.Any())
+            {
+
+
+
+                decimal totalOfLines = receiptDTO.ReceiptLines.Sum(x => x.Amount);
+
+                if (receiptDTO.TotalAmount != totalOfLines)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"Total mismatch: Header TotalAmount ({receiptDTO.TotalAmount:N2}) " +
+                                  $"does not equal sum of PaymentLines ({totalOfLines:N2})."
+                    });
+                }
+
+                int moduleNavigationItemCode = 0;
+
+                var tariffs = new ObservableCollection<TariffWrapper>();
+
+                var result = await master._channelService.PostReceiptAsync(receiptDTO, moduleNavigationItemCode, serviceHeader);
+
+                if (result != null)
+                {
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Succesfully posted Journal",
+                        data = result
+                    });
+                }
+
+                else
+                {
+
+
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to post journal"
+                    });
+                }
+
+
+            }
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
                     message = "Request Object is empty"
                 });
             }
 
         }
+
+        [Route("GetReceipts")]
+        public async Task<IHttpActionResult> GetReceipts()
+        {
+            var serviceHeader = master.GetServiceHeader();
+
+            //var salesInvoices = await master._channelService.FindSalesInvoicesAsync(serviceHeader);
+
+            var receipts = await master._channelService.FindReceiptsAsync(serviceHeader);
+
+
+
+
+
+            return Json(new ApiResponse<object>
+            {
+                Success = true,
+                Message = receipts?.Count > 0 ? $"{receipts.Count} receipts found." : "No receipts found.",
+                Data = receipts
+            });
+        }
+
 
 
 

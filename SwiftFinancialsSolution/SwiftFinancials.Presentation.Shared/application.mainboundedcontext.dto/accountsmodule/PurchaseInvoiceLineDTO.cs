@@ -62,8 +62,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public int Quantity { get; set; }
 
         [DataMember]
-        [Display(Name = "TotalAmount")]
-        public Decimal TotalAmount { get; set; }
+        [Display(Name = "Amount")]
+        public Decimal Amount { get; set; }
 
         [DataMember]
         [Display(Name = "DebitChartOfAccountId")]

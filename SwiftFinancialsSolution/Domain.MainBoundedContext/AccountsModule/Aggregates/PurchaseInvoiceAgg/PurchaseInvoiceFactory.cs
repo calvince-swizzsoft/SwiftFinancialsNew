@@ -12,7 +12,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceAgg
     public static class PurchaseInvoiceFactory
     {
 
-        public static PurchaseInvoice CreatePurchaseInvoice(string no, int vendorNo, string vendorName, string vendorAddress, DateTime documentDate, DateTime postingDate, DateTime dueDate, string approvalStatus, Decimal PaidAmount, Decimal RemainingAmount, ServiceHeader serviceHeader)
+        public static PurchaseInvoice CreatePurchaseInvoice(string no, int vendorNo, string vendorName, string vendorAddress, DateTime documentDate, DateTime postingDate, DateTime dueDate, string approvalStatus, Decimal paidAmount, Decimal remainingAmount, Decimal totalAmount, ServiceHeader serviceHeader)
         {
             var purchaseInvoice = new PurchaseInvoice();
 
@@ -24,8 +24,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceAgg
             purchaseInvoice.PostingDate = postingDate;
             purchaseInvoice.DueDate = dueDate;
             purchaseInvoice.ApprovalStatus = approvalStatus;
-            purchaseInvoice.PaidAmount = PaidAmount;
-            purchaseInvoice.RemainingAmount = RemainingAmount;
+            purchaseInvoice.PaidAmount = paidAmount;
+            purchaseInvoice.RemainingAmount = remainingAmount;
+            purchaseInvoice.TotalAmount = totalAmount;
             purchaseInvoice.CreatedDate = DateTime.Now; 
 
             purchaseInvoice.GenerateNewIdentity();

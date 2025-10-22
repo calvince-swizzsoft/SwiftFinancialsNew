@@ -2,6 +2,7 @@
 using Domain.Seedwork;
 using Domain.Seedwork.Specification;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Numero3.EntityFramework.Interfaces;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -13,6 +14,7 @@ namespace Application.MainBoundedContext.Services
     {
         private readonly string _code;
 
+      
         public NumberSeriesByCodeSpec(string code)
         {
             _code = code;
@@ -27,35 +29,39 @@ namespace Application.MainBoundedContext.Services
     public class NumberSeriesGenerator : INumberSeriesGenerator
     {
         private readonly IRepository<NumberSeries> _numberSeriesRepository;
+        private readonly IDbContextScopeFactory _dbContextScopeFactory;
 
-        public NumberSeriesGenerator(IRepository<NumberSeries> numberSeriesRepository)
+        public NumberSeriesGenerator(IRepository<NumberSeries> numberSeriesRepository, IDbContextScopeFactory dbContextScopeFactory)
         {
             _numberSeriesRepository = numberSeriesRepository;
+            _dbContextScopeFactory = dbContextScopeFactory;
         }
 
         public string GetNextNumber(string code, ServiceHeader serviceHeader)
         {
-            // Use specification to find the number series
             var spec = new NumberSeriesByCodeSpec(code);
-            var seriesList = _numberSeriesRepository.AllMatching(spec, serviceHeader);
-            var series = seriesList.FirstOrDefault();
 
-            if (series == null)
-                throw new ArgumentException($"Number series code '{code}' not found.");
 
-            // Clone the original for Merge
-            var original = CloneNumberSeries(series);
 
-            // Increment the number
-            series.LastUsedNumber += 1;
+            using (var dbContextScope = _dbContextScopeFactory.Create())
+            {
 
-            // Update using Merge
-            _numberSeriesRepository.Merge(original, series, serviceHeader);
+                var series = _numberSeriesRepository.AllMatching(spec, serviceHeader).FirstOrDefault();
 
-            // Format like PV00001
-            string nextNumber = $"{series.Prefix}{series.LastUsedNumber.ToString().PadLeft(series.Padding, '0')}";
+                if (series == null)
+                    throw new ArgumentException($"Number series code '{code}' not found.");
 
-            return nextNumber;
+                // Simply increment - EF change tracking will detect this
+                series.LastUsedNumber += 1;
+
+                dbContextScope.SaveChanges(serviceHeader);
+
+                // The change will be saved when SaveChanges is called on the context
+                // (usually handled by your Unit of Work pattern)
+
+                string nextNumber = $"{series.Prefix}{series.LastUsedNumber.ToString().PadLeft(series.Padding, '0')}";
+                return nextNumber;
+            }
         }
 
         private NumberSeries CloneNumberSeries(NumberSeries source)

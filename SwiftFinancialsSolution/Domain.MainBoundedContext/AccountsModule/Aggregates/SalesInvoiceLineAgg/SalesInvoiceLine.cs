@@ -24,7 +24,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceLineAg
 
         public int Quantity { get; set; }
 
-        public Decimal TotalAmount { get; set; }
+        public decimal UnitCost { get; set; }
+
+        public Decimal Amount { get; set; }
 
 
     }

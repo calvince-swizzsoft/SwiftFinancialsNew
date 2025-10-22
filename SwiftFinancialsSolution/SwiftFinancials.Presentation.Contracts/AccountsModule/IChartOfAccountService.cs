@@ -40,6 +40,14 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         IAsyncResult BeginFindGeneralLedgerAccounts(bool includeBalances, bool updateDepth, AsyncCallback callback, Object state);
         List<GeneralLedgerAccount> EndFindGeneralLedgerAccounts(IAsyncResult result);
 
+
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+
+        IAsyncResult BeginFindGeneralLedgerAccountsWithCategoryAndText(string text, int? accountCategory, bool updateDepth, AsyncCallback callback, Object state);
+        List<GeneralLedgerAccount> EndFindGeneralLedgerAccountsWithCategoryAndText(IAsyncResult result);
+
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindGeneralLedgerAccount(Guid chartOfAccountId, bool includeBalances, AsyncCallback callback, Object state);

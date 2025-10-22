@@ -26,7 +26,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceLin
             purchaseInvoiceLine.Description = description;
             purchaseInvoiceLine.UnitCost = unitCost;
             purchaseInvoiceLine.Quantity = quantity;
-            purchaseInvoiceLine.TotalAmount = totalAmount;
+            purchaseInvoiceLine.Amount = totalAmount;
             
             purchaseInvoiceLine.DebitChartOfAccountId = debitChartOfAccountId;
 

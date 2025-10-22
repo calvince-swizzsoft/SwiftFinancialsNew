@@ -1,4 +1,6 @@
 ﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.Services;
+using Application.Seedwork;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.LevyAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.LevySplitAgg;
@@ -6,7 +8,6 @@ using Domain.MainBoundedContext.AccountsModule.Aggregates.PostingPeriodAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceLineAgg;
 using Domain.MainBoundedContext.ValueObjects;
-using Application.Seedwork;
 using Domain.Seedwork;
 using Infrastructure.Crosscutting.Framework.Adapter;
 using Infrastructure.Crosscutting.Framework.Utils;
@@ -26,6 +27,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         private readonly IRepository<SalesInvoice> _salesInvoiceRepository;
         private readonly IRepository<SalesInvoiceLine> _salesInvoiceLineRepository;
         private readonly IChartOfAccountAppService _chartOfAccountAppService;
+        private readonly INumberSeriesGenerator _numberSeriesGenerator;
         private readonly IJournalAppService _journalAppService;
 
         public SalesInvoiceAppService(
@@ -33,6 +35,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
            IRepository<SalesInvoice> salesInvoiceRepository,
            IRepository<SalesInvoiceLine> salesInvoiceLineRepository,
            IChartOfAccountAppService chartOfAccountAppService,
+            INumberSeriesGenerator numberSeriesGenerator,
            IJournalAppService journalAppService
            )
         {
@@ -51,10 +54,14 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             if (chartOfAccountAppService == null)
                 throw new ArgumentNullException(nameof(chartOfAccountAppService));
 
+            if (numberSeriesGenerator == null)
+                throw new ArgumentNullException(nameof(numberSeriesGenerator));
+
             _dbContextScopeFactory = dbContextScopeFactory;
             _salesInvoiceRepository = salesInvoiceRepository;
             _salesInvoiceLineRepository = salesInvoiceLineRepository;
             _chartOfAccountAppService = chartOfAccountAppService;
+            _numberSeriesGenerator = numberSeriesGenerator;
             _journalAppService = journalAppService;
         }
 
@@ -64,10 +71,13 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         {
             if (salesInvoiceDTO != null)
             {
+
+                var salesInvoiceNo = _numberSeriesGenerator.GetNextNumber("SI", serviceHeader);
+
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
 
-                    var salesInvoice = SalesInvoiceFactory.CreateSalesInvoice(salesInvoiceDTO.CustomerNo, salesInvoiceDTO.CustomerName, salesInvoiceDTO.CustomerAddress, salesInvoiceDTO.DocumentDate, salesInvoiceDTO.PostingDate, salesInvoiceDTO.DueDate, salesInvoiceDTO.ApprovalStatus, serviceHeader);
+                    var salesInvoice = SalesInvoiceFactory.CreateSalesInvoice(salesInvoiceNo, salesInvoiceDTO.CustomerNo, salesInvoiceDTO.CustomerName, salesInvoiceDTO.CustomerAddress, salesInvoiceDTO.DocumentDate, salesInvoiceDTO.PostingDate, salesInvoiceDTO.DueDate, salesInvoiceDTO.ApprovalStatus, salesInvoiceDTO.PaidAmount, salesInvoiceDTO.RemainingAmount,salesInvoiceDTO.TotalAmount, serviceHeader);
 
                     AddLines(salesInvoiceDTO, salesInvoice, serviceHeader);
 
@@ -98,7 +108,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 if (persisted != null)
                 {
 
-                    var current = SalesInvoiceFactory.CreateSalesInvoice(salesInvoiceDTO.CustomerNo, salesInvoiceDTO.CustomerName, salesInvoiceDTO.CustomerAddress, salesInvoiceDTO.DocumentDate, salesInvoiceDTO.PostingDate, salesInvoiceDTO.DueDate, salesInvoiceDTO.ApprovalStatus, serviceHeader);
+                    var current = SalesInvoiceFactory.CreateSalesInvoice(persisted.No, salesInvoiceDTO.CustomerNo, salesInvoiceDTO.CustomerName, salesInvoiceDTO.CustomerAddress, salesInvoiceDTO.DocumentDate, salesInvoiceDTO.PostingDate, salesInvoiceDTO.DueDate, salesInvoiceDTO.ApprovalStatus, salesInvoiceDTO.PaidAmount, salesInvoiceDTO.RemainingAmount, salesInvoiceDTO.TotalAmount, serviceHeader);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
                     current.CreatedBy = persisted.CreatedBy;
@@ -119,10 +129,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
 
             if (salesInvoice == null || salesInvoice.IsTransient())
-                sbErrors.Append("Purchase Invoice is either null or in transient state! ");
+                sbErrors.Append("Sales Invoice is either null or in transient state! ");
 
             if (salesInvoice.Id == null || salesInvoice.Id == Guid.Empty)
-                sbErrors.Append("Purchase Invoice Id is null or empty!");
+                sbErrors.Append("Sales Invoice Id is null or empty!");
 
 
             if (sbErrors.Length != 0)
@@ -138,11 +148,33 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     foreach (var item in salesInvoiceDTO.SalesInvoiceLines)
                     {
 
-                        salesInvoice.AddLine(item.Type, item.No, item.Description, item.Quantity, item.TotalAmount, item.CreditChartOfAccountId, serviceHeader);
+                        salesInvoice.AddLine(item.Type, item.No, item.Description, item.UnitCost, item.Quantity, item.Amount, item.CreditChartOfAccountId, serviceHeader);
                     }
                 }
             }
         }
+
+
+        public SalesInvoiceDTO FindSalesInvoice(Guid salesInvoiceId, ServiceHeader serviceHeader)
+        {
+
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+
+                var salesInvoice = _salesInvoiceRepository.Get(salesInvoiceId, serviceHeader);
+
+                if (salesInvoice != null)
+                {
+                    return salesInvoice.ProjectedAs<SalesInvoiceDTO>();
+                }
+
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
 
 
         public List<SalesInvoiceDTO> FindSalesInvoices(ServiceHeader serviceHeader)
@@ -167,12 +199,12 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 throw new InvalidOperationException("Sorry, but the provided data is incorrect!");
             }
 
-            var payablesChartOfAccountId = _chartOfAccountAppService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCode(
+            var receivablesChartOfAccountId = _chartOfAccountAppService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCode(
                 (int)SystemGeneralLedgerAccountCode.AccountPayables, serviceHeader);
 
-            if (payablesChartOfAccountId == Guid.Empty)
+            if (receivablesChartOfAccountId == Guid.Empty)
             {
-                throw new InvalidOperationException("Sorry, but the requisite payables chart of account has not been setup!");
+                throw new InvalidOperationException("Sorry, but the requisite receivables chart of account has not been setup!");
             }
 
             var salesInvoiceLineDTOs = salesInvoiceDTO.SalesInvoiceLines;
@@ -184,7 +216,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 var persisted = _salesInvoiceRepository.Get(salesInvoiceDTO.Id, serviceHeader);
                 if (persisted == null)
                 {
-                    throw new InvalidOperationException("Purchase invoice not found!");
+                    throw new InvalidOperationException("Sales invoice not found!");
                 }
 
                 // Process each purchase invoice line
@@ -193,14 +225,14 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var journal = _journalAppService.AddNewJournal(
                         salesInvoiceDTO.BranchId,
                         null,
-                        item.TotalAmount,
+                        item.Amount,
                         string.Format("Sales Invoice~{0}", item.No),
                         salesInvoiceDTO.BankBranchName,
                         item.No.ToString(),
                         moduleNavigationItemCode,
                         (int)SystemTransactionCode.InterAcccountTransfer,
                         null,
-                        payablesChartOfAccountId,
+                        receivablesChartOfAccountId,
                         item.CreditChartOfAccountId,
                         serviceHeader);
 
@@ -227,7 +259,5 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 }
             }
         }
-
-
     }
 }

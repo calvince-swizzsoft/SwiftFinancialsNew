@@ -25,6 +25,12 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         IAsyncResult BeginUpdateSalesInvoice(SalesInvoiceDTO salesInvoiceDTO, AsyncCallback callback, Object state);
         bool EndUpdateSalesInvoice(IAsyncResult result);
 
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindSalesInvoice(Guid salesInvoiceId, AsyncCallback callback, Object state);
+
+        SalesInvoiceDTO EndFindSalesInvoice(IAsyncResult result);
+
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]

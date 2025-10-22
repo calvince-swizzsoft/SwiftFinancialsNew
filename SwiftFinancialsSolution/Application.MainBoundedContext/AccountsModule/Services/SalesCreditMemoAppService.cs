@@ -1,4 +1,5 @@
 ﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.Services;
 using Application.Seedwork;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.LevyAgg;
@@ -29,6 +30,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         private readonly IRepository<SalesCreditMemo> _salesCreditMemoRepository;
         private readonly IRepository<SalesCreditMemoLine> _salesCreditMemoLineRepository;
         private readonly IChartOfAccountAppService _chartOfAccountAppService;
+        private readonly INumberSeriesGenerator _numberSeriesGenerator;
         private readonly IJournalAppService _journalAppService;
 
         public SalesCreditMemoAppService(
@@ -36,6 +38,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             IRepository<SalesCreditMemo> salesCreditMemoRepository,
             IRepository<SalesCreditMemoLine> salesCreditMemoLineRepository,
             IChartOfAccountAppService chartOfAccountAppService,
+            INumberSeriesGenerator numberSeriesGenerator,
+
             IJournalAppService journalAppService
         )
         {
@@ -44,11 +48,13 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             if (salesCreditMemoLineRepository == null) throw new ArgumentNullException(nameof(salesCreditMemoLineRepository));
             if (journalAppService == null) throw new ArgumentNullException(nameof(journalAppService));
             if (chartOfAccountAppService == null) throw new ArgumentNullException(nameof(chartOfAccountAppService));
+            if (numberSeriesGenerator == null) throw new ArgumentNullException(nameof(numberSeriesGenerator));
 
             _dbContextScopeFactory = dbContextScopeFactory;
             _salesCreditMemoRepository = salesCreditMemoRepository;
             _salesCreditMemoLineRepository = salesCreditMemoLineRepository;
             _chartOfAccountAppService = chartOfAccountAppService;
+            _numberSeriesGenerator = numberSeriesGenerator;
             _journalAppService = journalAppService;
         }
 
@@ -56,11 +62,14 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         {
             if (salesCreditMemoDTO != null)
             {
+
+                var salesCreditMemoNo = _numberSeriesGenerator.GetNextNumber("SCM", serviceHeader);
+
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var salesCreditMemo = SalesCreditMemoFactory.CreateSalesCreditMemo(salesCreditMemoDTO.CustomerNo,
+                    var salesCreditMemo = SalesCreditMemoFactory.CreateSalesCreditMemo(salesCreditMemoNo, salesCreditMemoDTO.CustomerNo,
                         salesCreditMemoDTO.CustomerName, salesCreditMemoDTO.CustomerAddress, salesCreditMemoDTO.DocumentDate, salesCreditMemoDTO.PostingDate,
-                        salesCreditMemoDTO.DueDate, salesCreditMemoDTO.SalesInvoiceId, salesCreditMemoDTO.ApprovalStatus, serviceHeader);
+                        salesCreditMemoDTO.DueDate, salesCreditMemoDTO.SalesInvoiceId, salesCreditMemoDTO.AppliesToDocNo, salesCreditMemoDTO.ApprovalStatus, salesCreditMemoDTO.TotalAmount, serviceHeader);
 
                     AddLines(salesCreditMemoDTO, salesCreditMemo, serviceHeader);
                     salesCreditMemo.CreatedBy = serviceHeader.ApplicationUserName;
@@ -85,9 +94,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 var persisted = _salesCreditMemoRepository.Get(salesCreditMemoDTO.Id, serviceHeader);
                 if (persisted != null)
                 {
-                    var current = SalesCreditMemoFactory.CreateSalesCreditMemo(salesCreditMemoDTO.CustomerNo,
+                    var current = SalesCreditMemoFactory.CreateSalesCreditMemo(persisted.No, salesCreditMemoDTO.CustomerNo,
                         salesCreditMemoDTO.CustomerName, salesCreditMemoDTO.CustomerAddress, salesCreditMemoDTO.DocumentDate, salesCreditMemoDTO.PostingDate,
-                        salesCreditMemoDTO.DueDate, salesCreditMemoDTO.SalesInvoiceId, salesCreditMemoDTO.ApprovalStatus, serviceHeader);
+                        salesCreditMemoDTO.DueDate, salesCreditMemoDTO.SalesInvoiceId, salesCreditMemoDTO.AppliesToDocNo, salesCreditMemoDTO.ApprovalStatus, salesCreditMemoDTO.TotalAmount, serviceHeader);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
                     current.CreatedBy = persisted.CreatedBy;
@@ -118,7 +127,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 {
                     foreach (var item in salesCreditMemoDTO.SalesCreditMemoLines)
                     {
-                        salesCreditMemo.AddLine(item.Type, item.No, item.Description, item.Quantity, item.TotalAmount, item.DebitChartOfAccountId, serviceHeader);
+                        salesCreditMemo.AddLine(item.Type, item.No, item.Description, item.Quantity, item.Amount, item.DebitChartOfAccountId, item.UnitCost, serviceHeader);
                     }
                 }
             }
@@ -145,10 +154,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 throw new InvalidOperationException("Sorry, but the provided data is incorrect!");
             }
 
-            var payablesChartOfAccountId = _chartOfAccountAppService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCode(
+            var receivablesChartOfAccountId = _chartOfAccountAppService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCode(
                 (int)SystemGeneralLedgerAccountCode.AccountPayables, serviceHeader);
 
-            if (payablesChartOfAccountId == Guid.Empty)
+            if (receivablesChartOfAccountId == Guid.Empty)
             {
                 throw new InvalidOperationException("Sorry, but the requisite payables chart of account has not been setup!");
             }
@@ -171,15 +180,15 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var journal = _journalAppService.AddNewJournal(
                         salesCreditMemoDTO.BranchId,
                         null,
-                        item.TotalAmount,
+                        item.Amount,
                         string.Format("Sales Credit Memo~{0}", item.No),
                         salesCreditMemoDTO.BankBranchName,
                         item.No.ToString(),
                         moduleNavigationItemCode,
                         (int)SystemTransactionCode.InterAcccountTransfer,
                         null,
-                        payablesChartOfAccountId,
                         item.DebitChartOfAccountId,
+                        receivablesChartOfAccountId,
                         serviceHeader);
 
                     if (journal == null)

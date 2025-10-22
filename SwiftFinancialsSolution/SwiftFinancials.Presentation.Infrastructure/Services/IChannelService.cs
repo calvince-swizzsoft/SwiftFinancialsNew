@@ -1494,6 +1494,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<GeneralLedgerAccount>> FindGeneralLedgerAccountsAsync(bool includeBalances = false, bool updateDepth = false, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<GeneralLedgerAccount>> FindGeneralLedgerAccountsWithCategoryAndTextAsync(int? accountCategory, string text, bool updateDepth = false, ServiceHeader serviceHeader = null);
+
+        //Task<ObservableCollection<GeneralLedgerAccount>> FindGeneralLedgerAccountsWithCategoryAndTextAsync(string text, int accountCategory, bool updateDepth = false, ServiceHeader serviceHeader = null);
         Task<GeneralLedgerAccount> FindGeneralLedgerAccountAsync(Guid chartOfAccountId, bool includeBalances, ServiceHeader serviceHeader = null);
 
         Task<ChartOfAccountDTO> FindChartOfAccountAsync(Guid chartOfAccountId, ServiceHeader serviceHeader = null);
@@ -3133,6 +3136,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
 
         Task<List<PurchaseInvoiceDTO>> FindPurchaseInvoicesAsync(ServiceHeader serviceHeader);
+
+        Task<List<PurchaseInvoiceLineDTO>> FindPurchaseInvoiceLinesAsync(ServiceHeader serviceHeader);
         Task<PurchaseInvoiceDTO> AddNewPurchaseInvoiceAsync(PurchaseInvoiceDTO purchaseInvoiceDTO, ServiceHeader serviceHeader);
 
         Task<bool> UpdatePurchaseInvoiceAsync(PurchaseInvoiceDTO purchaseInvoiceDTO, ServiceHeader serviceHeader);
@@ -3157,6 +3162,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region SalesInvoiceDTO
 
+        Task<SalesInvoiceDTO> FindSalesInvoiceAsync(Guid salesInvoiceId, ServiceHeader serviceHeader);
         Task<List<SalesInvoiceDTO>> FindSalesInvoicesAsync(ServiceHeader serviceHeader);
         Task<SalesInvoiceDTO> AddNewSalesInvoiceAsync(SalesInvoiceDTO salesInvoiceDTO, ServiceHeader serviceHeader);
 
@@ -3177,14 +3183,56 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<JournalDTO> PostSalesCreditMemoAsync(SalesCreditMemoDTO salesCreditMemoDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
 
+
+        Task<JournalDTO> PayVendorInvoice(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
         #endregion
 
 
         //Payment Voucher payment
 
-        Task<JournalDTO> PayVendorInvoice(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
+
 
         //Task<JournalDTO> PayCustomerInvoice(PaymentVoucherDTO paymentVoucherDTO, ServiceHeader serviceHeader = null);
+
+
+        #region PaymentDTO
+
+        Task<List<PaymentDTO>> FindPaymentsAsync(ServiceHeader serviceHeader);
+        Task<PaymentDTO> AddNewPaymentAsync(PaymentDTO paymentDTO, ServiceHeader serviceHeader);
+
+        Task<bool> UpdatePaymentAsync(PaymentDTO paymentDTO, ServiceHeader serviceHeader);
+
+
+        Task<JournalDTO> PostPaymentAsync(PaymentDTO paymentDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
+
+        #endregion
+
+
+        #region ARCustomerDTO
+
+        Task<List<ARCustomerDTO>> FindARCustomersAsync(ServiceHeader serviceHeader);
+
+        Task<ARCustomerDTO> AddARCustomerAsync(ARCustomerDTO arCustomerDTO, ServiceHeader serviceHeader);
+
+        Task<bool> UpdateARCustomerAsync(ARCustomerDTO arCustomerDTO, ServiceHeader serviceHeader);
+
+        Task<ARCustomerDTO> FindARCustomerAsync(Guid arCustomerId, ServiceHeader serviceHeader);
+
+        #endregion
+
+
+        #region ReceiptDTO
+
+        Task<List<ReceiptDTO>> FindReceiptsAsync(ServiceHeader serviceHeader);
+        Task<ReceiptDTO> AddNewReceiptAsync(ReceiptDTO receiptDTO, ServiceHeader serviceHeader);
+
+        Task<bool> UpdateReceiptAsync(ReceiptDTO receiptDTO, ServiceHeader serviceHeader);
+
+
+        Task<JournalDTO> PostReceiptAsync(ReceiptDTO receiptDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
+
+
+        #endregion
 
     }
 }
