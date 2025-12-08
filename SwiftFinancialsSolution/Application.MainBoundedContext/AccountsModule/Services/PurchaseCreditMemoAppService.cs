@@ -1,4 +1,5 @@
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.Services;
 using Application.Seedwork;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.LevyAgg;
@@ -28,12 +29,14 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         private readonly IRepository<PurchaseCreditMemoLine> _purchaseCreditMemoLineRepository;
         private readonly IChartOfAccountAppService _chartOfAccountAppService;
         private readonly IJournalAppService _journalAppService;
+        private readonly INumberSeriesGenerator _numberSeriesGenerator;
 
         public PurchaseCreditMemoAppService(
             IDbContextScopeFactory dbContextScopeFactory,
             IRepository<PurchaseCreditMemo> purchaseCreditMemoRepository,
             IRepository<PurchaseCreditMemoLine> purchaseCreditMemoLineRepository,
             IChartOfAccountAppService chartOfAccountAppService,
+              INumberSeriesGenerator numberSeriesGenerator,
             IJournalAppService journalAppService
         )
         {
@@ -42,23 +45,29 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             if (purchaseCreditMemoLineRepository == null) throw new ArgumentNullException(nameof(purchaseCreditMemoLineRepository));
             if (journalAppService == null) throw new ArgumentNullException(nameof(journalAppService));
             if (chartOfAccountAppService == null) throw new ArgumentNullException(nameof(chartOfAccountAppService));
+            if (numberSeriesGenerator == null)
+                throw new ArgumentNullException(nameof(numberSeriesGenerator));
 
             _dbContextScopeFactory = dbContextScopeFactory;
             _purchaseCreditMemoRepository = purchaseCreditMemoRepository;
             _purchaseCreditMemoLineRepository = purchaseCreditMemoLineRepository;
             _chartOfAccountAppService = chartOfAccountAppService;
             _journalAppService = journalAppService;
+            _numberSeriesGenerator = numberSeriesGenerator;
         }
 
         public PurchaseCreditMemoDTO AddNewPurchaseCreditMemo(PurchaseCreditMemoDTO purchaseCreditMemoDTO, ServiceHeader serviceHeader)
         {
             if (purchaseCreditMemoDTO != null)
             {
+
+                var purchaseCreditMemoNo = _numberSeriesGenerator.GetNextNumber("PCM", serviceHeader);
+
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var purchaseCreditMemo = PurchaseCreditMemoFactory.CreatePurchaseCreditMemo(purchaseCreditMemoDTO.VendorNo,
+                    var purchaseCreditMemo = PurchaseCreditMemoFactory.CreatePurchaseCreditMemo(purchaseCreditMemoNo,purchaseCreditMemoDTO.VendorNo,
                         purchaseCreditMemoDTO.VendorName, purchaseCreditMemoDTO.VendorAddress, purchaseCreditMemoDTO.DocumentDate, purchaseCreditMemoDTO.PostingDate,
-                        purchaseCreditMemoDTO.DueDate, purchaseCreditMemoDTO.ApprovalStatus, purchaseCreditMemoDTO.PurchaseInvoiceId, serviceHeader);
+                        purchaseCreditMemoDTO.DueDate, purchaseCreditMemoDTO.ApprovalStatus, purchaseCreditMemoDTO.TotalAmount, purchaseCreditMemoDTO.PurchaseInvoiceId, purchaseCreditMemoDTO.PurchaseInvoiceNo, serviceHeader);
 
                     AddLines(purchaseCreditMemoDTO, purchaseCreditMemo, serviceHeader);
                     purchaseCreditMemo.CreatedBy = serviceHeader.ApplicationUserName;
@@ -83,9 +92,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 var persisted = _purchaseCreditMemoRepository.Get(purchaseCreditMemoDTO.Id, serviceHeader);
                 if (persisted != null)
                 {
-                    var current = PurchaseCreditMemoFactory.CreatePurchaseCreditMemo(purchaseCreditMemoDTO.VendorNo,
+                    var current = PurchaseCreditMemoFactory.CreatePurchaseCreditMemo(persisted.No, purchaseCreditMemoDTO.VendorNo,
                         purchaseCreditMemoDTO.VendorName, purchaseCreditMemoDTO.VendorAddress, purchaseCreditMemoDTO.DocumentDate, purchaseCreditMemoDTO.PostingDate,
-                        purchaseCreditMemoDTO.DueDate, purchaseCreditMemoDTO.ApprovalStatus, purchaseCreditMemoDTO.PurchaseInvoiceId, serviceHeader);
+                        purchaseCreditMemoDTO.DueDate, purchaseCreditMemoDTO.ApprovalStatus, purchaseCreditMemoDTO.TotalAmount, purchaseCreditMemoDTO.PurchaseInvoiceId, purchaseCreditMemoDTO.PurchaseInvoiceNo, serviceHeader);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
                     current.CreatedBy = persisted.CreatedBy;
@@ -116,7 +125,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 {
                     foreach (var item in purchaseCreditMemoDTO.PurchaseCreditMemoLines)
                     {
-                        purchaseCreditMemo.AddLine(item.Type, item.No, item.Description, item.Quantity, item.TotalAmount, item.CreditChartOfAccountId, serviceHeader);
+                        purchaseCreditMemo.AddLine(item.Type, item.No, item.Description, item.Quantity, item.UnitCost, item.Amount, item.CreditChartOfAccountId, serviceHeader);
                     }
                 }
             }
@@ -169,7 +178,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var journal = _journalAppService.AddNewJournal(
                         purchaseCreditMemoDTO.BranchId,
                         null,
-                        item.TotalAmount,
+                        item.Amount,
                         string.Format("Purchase Credit Memo~{0}", item.No),
                         purchaseCreditMemoDTO.BankBranchName,
                         item.No.ToString(),

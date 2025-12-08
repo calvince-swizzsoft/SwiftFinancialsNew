@@ -155,11 +155,11 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
 
             var receivablesChartOfAccountId = _chartOfAccountAppService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCode(
-                (int)SystemGeneralLedgerAccountCode.AccountPayables, serviceHeader);
+                (int)SystemGeneralLedgerAccountCode.AccountReceivables, serviceHeader);
 
             if (receivablesChartOfAccountId == Guid.Empty)
             {
-                throw new InvalidOperationException("Sorry, but the requisite payables chart of account has not been setup!");
+                throw new InvalidOperationException("Sorry, but the requisite receivables chart of account has not been setup!");
             }
 
             var salesCreditMemoLineDTOs = salesCreditMemoDTO.SalesCreditMemoLines;
@@ -187,8 +187,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         moduleNavigationItemCode,
                         (int)SystemTransactionCode.InterAcccountTransfer,
                         null,
-                        item.DebitChartOfAccountId,
                         receivablesChartOfAccountId,
+                        item.DebitChartOfAccountId,
                         serviceHeader);
 
                     if (journal == null)

@@ -79,7 +79,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                    
-                    var purchaseInvoice = PurchaseInvoiceFactory.CreatePurchaseInvoice(purchaseInvoiceNo, purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, purchaseInvoiceDTO.PaidAmount, purchaseInvoiceDTO.RemainingAmount, purchaseInvoiceDTO.TotaAmount,  serviceHeader);
+                    var purchaseInvoice = PurchaseInvoiceFactory.CreatePurchaseInvoice(purchaseInvoiceNo, purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, purchaseInvoiceDTO.PaidAmount, purchaseInvoiceDTO.RemainingAmount, purchaseInvoiceDTO.TotalAmount,  serviceHeader);
 
                     AddLines(purchaseInvoiceDTO, purchaseInvoice, serviceHeader);
 
@@ -112,7 +112,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 if (persisted != null)
                 {
                    
-                    var current = PurchaseInvoiceFactory.CreatePurchaseInvoice(persisted.No, purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, purchaseInvoiceDTO.PaidAmount, purchaseInvoiceDTO.RemainingAmount, purchaseInvoiceDTO.TotaAmount, serviceHeader);
+                    var current = PurchaseInvoiceFactory.CreatePurchaseInvoice(persisted.No, purchaseInvoiceDTO.VendorNo, purchaseInvoiceDTO.VendorName, purchaseInvoiceDTO.VendorAddress, purchaseInvoiceDTO.DocumentDate, purchaseInvoiceDTO.PostingDate, purchaseInvoiceDTO.DueDate, purchaseInvoiceDTO.ApprovalStatus, purchaseInvoiceDTO.PaidAmount, purchaseInvoiceDTO.RemainingAmount, purchaseInvoiceDTO.TotalAmount, serviceHeader);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
                     current.CreatedBy = persisted.CreatedBy;
@@ -148,7 +148,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 {
                     foreach (var item in purchaseInvoiceDTO.PurchaseInvoiceLines) {
 
-                        purchaseInvoice.AddLine(item.Type, item.No, item.Description, item.UnitCost, item.Quantity, item.TotalAmount, item.DebitChartOfAccountId, serviceHeader);
+                        purchaseInvoice.AddLine(item.Type, item.No, item.Description, item.UnitCost, item.Quantity, item.Amount, item.DebitChartOfAccountId, serviceHeader);
                     }
                 }
             }
@@ -240,7 +240,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var journal = _journalAppService.AddNewJournal(
                         purchaseInvoiceDTO.BranchId,
                         null,
-                        item.TotalAmount,
+                        item.Amount,
                         string.Format("Purchase Invoice~{0}", item.No),
                         purchaseInvoiceDTO.BankBranchName,
                         item.No.ToString(),

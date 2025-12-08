@@ -26,11 +26,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "No")]
-        public int No { get; set; }
+        public string No { get; set; }
 
         [DataMember]
         [Display(Name = "VendorNo")]
-        public int VendorNo { get; set; }
+        public string VendorNo { get; set; }
 
         [DataMember]
         [Display(Name = "VendorName")]
@@ -95,7 +95,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = ("RemainingAmount"))]
         public Decimal RemainingAmount { get; set; }
 
-
+        //AppliesToDocNo
+        [DataMember]
+        [Display(Name = ("PurchaseInvoiceNo"))]
+        public string PurchaseInvoiceNo { get; set; }
 
 
         //[Display(Name = "ChartOfAccountId")]

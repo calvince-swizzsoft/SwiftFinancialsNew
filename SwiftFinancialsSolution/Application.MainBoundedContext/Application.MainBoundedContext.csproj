@@ -34,14 +34,17 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.8.9\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
     <Reference Include="FileHelpers, Version=3.5.1.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
       <HintPath>..\packages\FileHelpers.3.5.1\lib\net45\FileHelpers.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.3.2.10, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.3.2\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="KBCsv, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc96fa93a217f7a1, processorArchitecture=MSIL">
       <HintPath>..\packages\KBCsv.6.0.0\lib\netstandard2.0\KBCsv.dll</HintPath>
@@ -117,6 +120,7 @@
     <Compile Include="AccountsModule\Services\AlternateChannelAppService.cs" />
     <Compile Include="AccountsModule\Services\AlternateChannelLogAppService.cs" />
     <Compile Include="AccountsModule\Services\AlternateChannelReconciliationPeriodAppService.cs" />
+    <Compile Include="AccountsModule\Services\ARCustomerAppService.cs" />
     <Compile Include="AccountsModule\Services\BankLinkageAppService.cs" />
     <Compile Include="AccountsModule\Services\BankReconciliationPeriodAppService.cs" />
     <Compile Include="AccountsModule\Services\BankToMobileRequestAppService.cs" />
@@ -128,6 +132,13 @@
     <Compile Include="AccountsModule\Services\CommissionAppService.cs" />
     <Compile Include="AccountsModule\Services\CostCenterAppService.cs" />
     <Compile Include="AccountsModule\Services\CreditBatchAppService.cs" />
+    <Compile Include="AccountsModule\Services\IARCustomerAppService.cs" />
+    <Compile Include="AccountsModule\Services\IPaymentAppService.cs" />
+    <Compile Include="AccountsModule\Services\IReceiptAppService.cs" />
+    <Compile Include="AccountsModule\Services\ISalesCreditMemoAppService.cs" />
+    <Compile Include="AccountsModule\Services\ISalesInvoiceAppService.cs" />
+    <Compile Include="AccountsModule\Services\PaymentAppService.cs" />
+    <Compile Include="AccountsModule\Services\PurchaseCreditMemoAppService.cs" />
     <Compile Include="AccountsModule\Services\CreditTypeAppService.cs" />
     <Compile Include="AccountsModule\Services\CustomerAccountAppService.cs" />
     <Compile Include="AccountsModule\Services\DebitBatchAppService.cs" />
@@ -151,6 +162,7 @@
     <Compile Include="AccountsModule\Services\ICommissionAppService.cs" />
     <Compile Include="AccountsModule\Services\ICostCenterAppService.cs" />
     <Compile Include="AccountsModule\Services\ICreditBatchAppService.cs" />
+    <Compile Include="AccountsModule\Services\IPurchaseCreditMemoAppService.cs" />
     <Compile Include="AccountsModule\Services\ICreditTypeAppService.cs" />
     <Compile Include="AccountsModule\Services\ICustomerAccountAppService.cs" />
     <Compile Include="AccountsModule\Services\IDebitBatchAppService.cs" />
@@ -175,6 +187,7 @@
     <Compile Include="AccountsModule\Services\InvestmentProductAppService.cs" />
     <Compile Include="AccountsModule\Services\IOverDeductionBatchAppService.cs" />
     <Compile Include="AccountsModule\Services\IPostingPeriodAppService.cs" />
+    <Compile Include="AccountsModule\Services\IPurchaseInvoiceAppService.cs" />
     <Compile Include="AccountsModule\Services\IRecurringBatchAppService.cs" />
     <Compile Include="AccountsModule\Services\IReportTemplateAppService.cs" />
     <Compile Include="AccountsModule\Services\ISavingsProductAppService.cs" />
@@ -194,8 +207,12 @@
     <Compile Include="AccountsModule\Services\MobileToBankRequestAppService.cs" />
     <Compile Include="AccountsModule\Services\OverDeductionBatchAppService.cs" />
     <Compile Include="AccountsModule\Services\PostingPeriodAppService.cs" />
+    <Compile Include="AccountsModule\Services\PurchaseInvoiceAppService.cs" />
+    <Compile Include="AccountsModule\Services\ReceiptAppService.cs" />
     <Compile Include="AccountsModule\Services\RecurringBatchAppService.cs" />
     <Compile Include="AccountsModule\Services\ReportTemplateAppService.cs" />
+    <Compile Include="AccountsModule\Services\SalesCreditMemoAppService.cs" />
+    <Compile Include="AccountsModule\Services\SalesInvoiceAppService.cs" />
     <Compile Include="AccountsModule\Services\SavingsProductAppService.cs" />
     <Compile Include="AccountsModule\Services\StandingOrderAppService.cs" />
     <Compile Include="AccountsModule\Services\SystemGeneralLedgerAccountMappingAppService.cs" />
@@ -363,11 +380,14 @@
     <Compile Include="Services\IJournalEntryPostingService.cs" />
     <Compile Include="Services\IMediaAppService.cs" />
     <Compile Include="Services\IMessageQueueService.cs" />
+    <Compile Include="Services\INumberSeriesGenerator.cs" />
     <Compile Include="Services\ISmtpService.cs" />
     <Compile Include="Services\ISqlCommandAppService.cs" />
     <Compile Include="Services\JournalEntryPostingService.cs" />
     <Compile Include="Services\MediaAppService.cs" />
     <Compile Include="Services\MessageQueueService.cs" />
+    <Compile Include="Services\NumberSeriesGenerator.cs" />
+    <Compile Include="Services\NumberSeriesSeeder.cs" />
     <Compile Include="Services\SmtpService.cs" />
     <Compile Include="Services\SqlCommandAppService.cs" />
   </ItemGroup>

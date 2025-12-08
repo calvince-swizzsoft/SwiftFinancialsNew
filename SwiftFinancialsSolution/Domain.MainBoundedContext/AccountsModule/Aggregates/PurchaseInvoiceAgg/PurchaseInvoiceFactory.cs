@@ -12,7 +12,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceAgg
     public static class PurchaseInvoiceFactory
     {
 
-        public static PurchaseInvoice CreatePurchaseInvoice(string no, int vendorNo, string vendorName, string vendorAddress, DateTime documentDate, DateTime postingDate, DateTime dueDate, string approvalStatus, Decimal paidAmount, Decimal remainingAmount, Decimal totalAmount, ServiceHeader serviceHeader)
+        public static PurchaseInvoice CreatePurchaseInvoice(string no, string vendorNo, string vendorName, string vendorAddress, DateTime documentDate, DateTime postingDate, DateTime dueDate, string approvalStatus, Decimal paidAmount, Decimal remainingAmount, Decimal totalAmount, ServiceHeader serviceHeader)
         {
             var purchaseInvoice = new PurchaseInvoice();
 

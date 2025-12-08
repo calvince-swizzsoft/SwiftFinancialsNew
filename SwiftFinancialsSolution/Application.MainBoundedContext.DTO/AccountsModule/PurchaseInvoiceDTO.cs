@@ -30,7 +30,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "VendorNo")]
-        public int VendorNo { get; set; }
+        public string VendorNo { get; set; }
 
         [DataMember]
         [Display(Name = "VendorName")]
@@ -78,7 +78,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "TotalAmount")]
-        public Decimal TotaAmount { get; set; }
+        public Decimal TotalAmount { get; set; }
 
 
         [DataMember]

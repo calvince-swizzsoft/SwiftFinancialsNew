@@ -103,7 +103,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg
             {
                 #region DR
 
-                var debitJournalEntry = JournalEntryFactory.CreateJournalEntry(this.Id, debitChartOfAccountId, creditChartOfAccountId, null, this.TotalValue * -1, this.ValueDate, serviceHeader);
+                var debitJournalEntry = JournalEntryFactory.CreateJournalEntry(this.Id, debitChartOfAccountId, creditChartOfAccountId, null, this.TotalValue, this.ValueDate, serviceHeader);
 
                 this.JournalEntries.Add(debitJournalEntry);
 
@@ -111,7 +111,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg
 
                 #region CR
 
-                var creditJournalEntry = JournalEntryFactory.CreateJournalEntry(this.Id, creditChartOfAccountId, debitChartOfAccountId, null, this.TotalValue, this.ValueDate, serviceHeader);
+                var creditJournalEntry = JournalEntryFactory.CreateJournalEntry(this.Id, creditChartOfAccountId, debitChartOfAccountId, null, this.TotalValue * -1, this.ValueDate, serviceHeader);
 
                 this.JournalEntries.Add(creditJournalEntry);
 
@@ -125,7 +125,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg
             {
                 #region DR
 
-                var debitJournalEntry = JournalEntryFactory.CreateJournalEntry(this.Id, debitChartOfAccountId, creditChartOfAccountId, debitCustomerAccountId, this.TotalValue * -1, this.ValueDate, serviceHeader);
+                var debitJournalEntry = JournalEntryFactory.CreateJournalEntry(this.Id, debitChartOfAccountId, creditChartOfAccountId, debitCustomerAccountId, this.TotalValue, this.ValueDate, serviceHeader);
 
                 this.JournalEntries.Add(debitJournalEntry);
 
@@ -133,7 +133,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg
 
                 #region CR
 
-                var creditJournalEntry = JournalEntryFactory.CreateJournalEntry(this.Id, creditChartOfAccountId, debitChartOfAccountId, creditCustomerAccountId, this.TotalValue, this.ValueDate, serviceHeader);
+                var creditJournalEntry = JournalEntryFactory.CreateJournalEntry(this.Id, creditChartOfAccountId, debitChartOfAccountId, creditCustomerAccountId, this.TotalValue * -1, this.ValueDate, serviceHeader);
 
                 this.JournalEntries.Add(creditJournalEntry);
 

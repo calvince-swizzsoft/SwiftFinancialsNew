@@ -47,7 +47,6 @@
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.2.1.0\lib\netstandard2.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
@@ -125,6 +124,7 @@
     <Compile Include="UnitOfWork\Mapping\AccountsModule\AlternateChannelReconciliationEntryEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\AlternateChannelReconciliationPeriodEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\AlternateChannelTypeCommissionEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\ARCustomerEnitityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\BankLinkageEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\BankReconciliationEntryEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\BankReconciliationPeriodEntityConfiguration.cs" />
@@ -200,12 +200,24 @@
     <Compile Include="UnitOfWork\Mapping\AccountsModule\OverDeductionBatchDiscrepancyEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\OverDeductionBatchEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\OverDeductionBatchEntryEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\PaymentEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\PaymentLineEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\PaymentVoucherEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\PostingPeriodEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\PurchaseCreditMemoEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\PurchaseCreditMemoLineEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\PurchaseInvoiceEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\PurchaseInvoiceLineEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\ReceiptEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\ReceiptLineEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\RecurringBatchEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\RecurringBatchEntryEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\ReportTemplateEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\ReportTemplateEntryEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\SalesCreditMemoEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\SalesCreditMemoLineEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\SalesInvoiceEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\SalesInvoiceLineEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\SavingsProductCommissionEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\SavingsProductEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\SavingsProductExemptionEntityConfiguration.cs" />
@@ -307,6 +319,7 @@
     <Compile Include="UnitOfWork\Mapping\MicroCreditModule\MicroCreditGroupEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\MicroCreditModule\MicroCreditGroupMemberEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\MicroCreditModule\MicroCreditOfficerEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\NumberSeriesEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\RegistryModule\AccountAlertEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\RegistryModule\AdministrativeDivisionEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\RegistryModule\CommissionExemptionEntityConfiguration.cs" />

@@ -22,7 +22,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemo
 
         public int Quantity { get; set; }
 
-        public Decimal TotalAmount { get; set; }
+        public int UnitCost { get; set;}
+
+        public Decimal Amount { get; set; }
 
     }
 }

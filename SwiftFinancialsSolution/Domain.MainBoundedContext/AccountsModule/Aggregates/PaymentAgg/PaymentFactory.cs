@@ -12,7 +12,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentAgg
 
         
 
-        public static Payment CreatePayment(Guid invoiceId, Guid vendorId, string description, string reference, decimal totalAmount, string paymentMethod, Guid bankLinkageChartOfAccountd, string voucherNumber)
+        public static Payment CreatePayment(Guid invoiceId, Guid vendorId, string vendorNo, string vendorName, string vendorAddress, string description, string reference, decimal totalAmount, string paymentMethod, Guid bankLinkageChartOfAccountd, string voucherNumber)
         {
             
             var payment = new Payment()
@@ -21,6 +21,12 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentAgg
             };
 
             payment.GenerateNewIdentity();
+
+            payment.VendorNo = vendorNo;
+
+            payment.VendorName = vendorName;
+
+            payment.VendorAddress = vendorAddress;
 
             //payment.VoucherNumber = voucherNumber;
 
@@ -35,7 +41,6 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentAgg
             //payment.DocumentNo = documentNo;
 
             payment.VendorId = vendorId;
-
 
             payment.TotalAmount = totalAmount;
 

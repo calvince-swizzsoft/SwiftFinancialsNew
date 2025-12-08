@@ -21,6 +21,8 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SalesInvoiceAgg
             salesInvoice.CustomerAddress = customerAddress;
             salesInvoice.CustomerName = customerName;
             salesInvoice.DueDate = dueDate;
+            salesInvoice.DocumentDate = documentDate;
+            salesInvoice.PostingDate = postingDate;
             salesInvoice.ApprovalStatus = approvalStatus;
             salesInvoice.PaidAmount = paidAmount;
             salesInvoice.RemainingAmount = remainingAmount;

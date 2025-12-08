@@ -83,7 +83,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                     var voucherNo = _numberSeriesGenerator.GetNextNumber("PV", serviceHeader);
                     
-                    var payment = PaymentFactory.CreatePayment(paymentDTO.InvoiceId, paymentDTO.VendorId, paymentDTO.Description, paymentDTO.Reference, paymentDTO.TotalAmount, paymentDTO.PaymentMethod, paymentDTO.BankLinkageChartOfAccountId, voucherNo);
+                    var payment = PaymentFactory.CreatePayment(paymentDTO.InvoiceId, paymentDTO.VendorId, paymentDTO.VendorNo, paymentDTO.VendorName, paymentDTO.VendorAddress, paymentDTO.Description, paymentDTO.Reference, paymentDTO.TotalAmount, paymentDTO.PaymentMethod, paymentDTO.BankLinkageChartOfAccountId, voucherNo);
 
                     AddLines(paymentDTO, payment, serviceHeader);
 
@@ -116,7 +116,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                     //not sure voucherNo should be changed on update
                     var voucherNo = _numberSeriesGenerator.GetNextNumber("PV", serviceHeader);
-                    var current = PaymentFactory.CreatePayment(paymentDTO.InvoiceId, paymentDTO.VendorId, paymentDTO.Description, paymentDTO.Reference, paymentDTO.TotalAmount, paymentDTO.PaymentMethod, paymentDTO.BankLinkageChartOfAccountId, voucherNo);
+                    var current = PaymentFactory.CreatePayment(paymentDTO.InvoiceId, paymentDTO.VendorId, paymentDTO.VendorNo, paymentDTO.VendorName, paymentDTO.VendorAddress, paymentDTO.Description, paymentDTO.Reference, paymentDTO.TotalAmount, paymentDTO.PaymentMethod, paymentDTO.BankLinkageChartOfAccountId, voucherNo);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
                     current.CreatedBy = persisted.CreatedBy;

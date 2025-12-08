@@ -23,7 +23,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceAgg
 
         //public string DocumentNo { get; set; }
 
-        public int VendorNo { get; set; }
+        public string VendorNo { get; set; }
 
         public string VendorName { get; set; }
 

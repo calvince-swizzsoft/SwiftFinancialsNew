@@ -9,7 +9,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemo
 {
     public class PurchaseCreditMemoLineFactory
     {
-        public static PurchaseCreditMemoLine CreatePurchaseCreditMemoLine(Guid purchaseCreditMemoId, int type, int no, string description, int quantity, decimal totalAmount, Guid creditChartOfAccountId)
+        public static PurchaseCreditMemoLine CreatePurchaseCreditMemoLine(Guid purchaseCreditMemoId, int type, int no, string description, int quantity, int unitCost, decimal totalAmount, Guid creditChartOfAccountId)
         {
 
             var purchaseCreditMemoLine = new PurchaseCreditMemoLine();
@@ -25,7 +25,8 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemo
             purchaseCreditMemoLine.No = no;
             purchaseCreditMemoLine.Description = description;
             purchaseCreditMemoLine.Quantity = quantity;
-            purchaseCreditMemoLine.TotalAmount = totalAmount;
+            purchaseCreditMemoLine.UnitCost = unitCost;
+            purchaseCreditMemoLine.Amount = totalAmount;
 
             purchaseCreditMemoLine.CreditChartOfAccountId = creditChartOfAccountId;
 

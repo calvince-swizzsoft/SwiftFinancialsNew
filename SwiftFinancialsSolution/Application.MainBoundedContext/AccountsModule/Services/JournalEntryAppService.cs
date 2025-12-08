@@ -1490,7 +1490,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     {
                         var netBookValue = 0m;
 
-                        netBookValue = (line.Credit + (line.Debit * -1));
+                        //netBookValue = (line.Credit + (line.Debit * -1));
+
+                        netBookValue = (line.Debit + (line.Credit * -1));
 
                         cumulativeBookBalance += netBookValue;
 

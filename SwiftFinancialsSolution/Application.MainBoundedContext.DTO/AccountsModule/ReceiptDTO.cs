@@ -28,6 +28,17 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "CustomerNo")]
         public string CustomerNo { get; set; }
 
+
+        [DataMember]
+        [Display(Name = "CustomerName")]
+        public string CustomerName { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "CustomerAddress")]
+        public string CustomerAddress { get; set; }
+
+
         [DataMember]
         [ValidGuid]
         [Display(Name = "InvoiceId")]

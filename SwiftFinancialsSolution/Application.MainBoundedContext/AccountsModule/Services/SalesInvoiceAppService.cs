@@ -200,7 +200,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
 
             var receivablesChartOfAccountId = _chartOfAccountAppService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCode(
-                (int)SystemGeneralLedgerAccountCode.AccountPayables, serviceHeader);
+                (int)SystemGeneralLedgerAccountCode.AccountReceivables, serviceHeader);
 
             if (receivablesChartOfAccountId == Guid.Empty)
             {
@@ -232,8 +232,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         moduleNavigationItemCode,
                         (int)SystemTransactionCode.InterAcccountTransfer,
                         null,
-                        receivablesChartOfAccountId,
                         item.CreditChartOfAccountId,
+                        receivablesChartOfAccountId,
                         serviceHeader);
 
                     if (journal == null)

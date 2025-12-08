@@ -28,7 +28,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "VendorNo")]
-        public int VendorNo { get; set; }
+        public string VendorNo { get; set; }
 
         [DataMember]
         [Display(Name = "VendorName")]
@@ -52,7 +52,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public DateTime DueDate { get; set; }
 
         [DataMember]
-        [Display(Name = "VendorNo")]
+        [Display(Name = "ApprovalStatus")]
         public string ApprovalStatus { get; set; }
 
 

@@ -41,7 +41,6 @@
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -72,6 +71,8 @@
     <Compile Include="AccountsModule\Aggregates\AlternateChannelTypeCommissionAgg\AlternateChannelTypeCommission.cs" />
     <Compile Include="AccountsModule\Aggregates\AlternateChannelTypeCommissionAgg\AlternateChannelTypeCommissionFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\AlternateChannelTypeCommissionAgg\AlternateChannelTypeCommissionSpecifications.cs" />
+    <Compile Include="AccountsModule\Aggregates\ARCustomerAgg\ARCustomer.cs" />
+    <Compile Include="AccountsModule\Aggregates\ARCustomerAgg\ARCustomerFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\BankLinkageAgg\BankLinkage.cs" />
     <Compile Include="AccountsModule\Aggregates\BankLinkageAgg\BankLinkageFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\BankLinkageAgg\BankLinkageSpecifications.cs" />
@@ -290,6 +291,8 @@
     <Compile Include="AccountsModule\Aggregates\MobileToBankRequestAgg\MobileToBankRequest.cs" />
     <Compile Include="AccountsModule\Aggregates\MobileToBankRequestAgg\MobileToBankRequestFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\MobileToBankRequestAgg\MobileToBankRequestSpecifications.cs" />
+    <Compile Include="AccountsModule\Aggregates\NumberSeriesAgg\NumberSeries.cs" />
+    <Compile Include="AccountsModule\Aggregates\NumberSeriesAgg\NumberSeriesFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\OverDeductionBatchAgg\OverDeductionBatch.cs" />
     <Compile Include="AccountsModule\Aggregates\OverDeductionBatchAgg\OverDeductionBatchFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\OverDeductionBatchAgg\OverDeductionBatchSpecifications.cs" />
@@ -299,12 +302,28 @@
     <Compile Include="AccountsModule\Aggregates\OverDeductionBatchEntryAgg\OverDeductionBatchEntry.cs" />
     <Compile Include="AccountsModule\Aggregates\OverDeductionBatchEntryAgg\OverDeductionBatchEntryFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\OverDeductionBatchEntryAgg\OverDeductionBatchEntrySpecifications.cs" />
+    <Compile Include="AccountsModule\Aggregates\PaymentAgg\Payment.cs" />
+    <Compile Include="AccountsModule\Aggregates\PaymentAgg\PaymentFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\PaymentLineAgg\PaymentLine.cs" />
+    <Compile Include="AccountsModule\Aggregates\PaymentLineAgg\PaymentLineFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\PaymentVoucherAgg\PaymentVoucher.cs" />
     <Compile Include="AccountsModule\Aggregates\PaymentVoucherAgg\PaymentVoucherFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\PaymentVoucherAgg\PaymentVoucherSpecifications.cs" />
     <Compile Include="AccountsModule\Aggregates\PostingPeriodAgg\PostingPeriod.cs" />
     <Compile Include="AccountsModule\Aggregates\PostingPeriodAgg\PostingPeriodFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\PostingPeriodAgg\PostingPeriodSpecifications.cs" />
+    <Compile Include="AccountsModule\Aggregates\PurchaseCreditMemoAgg\PurchaseCreditMemo.cs" />
+    <Compile Include="AccountsModule\Aggregates\PurchaseCreditMemoAgg\PurchaseCreditMemoFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\PurchaseCreditMemoLineAgg\PurchaseCreditMemoLine.cs" />
+    <Compile Include="AccountsModule\Aggregates\PurchaseCreditMemoLineAgg\PurchaseCreditMemoLineFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\PurchaseInvoiceAgg\PurchaseInvoice.cs" />
+    <Compile Include="AccountsModule\Aggregates\PurchaseInvoiceAgg\PurchaseInvoiceFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\PurchaseInvoiceLineAgg\PurchaseInvoiceLine.cs" />
+    <Compile Include="AccountsModule\Aggregates\PurchaseInvoiceLineAgg\PurchaseInvoiceLineFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\ReceiptAgg\Receipt.cs" />
+    <Compile Include="AccountsModule\Aggregates\ReceiptAgg\ReceiptFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\ReceiptLineAgg\ReceiptLine.cs" />
+    <Compile Include="AccountsModule\Aggregates\ReceiptLineAgg\ReceiptLineFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\RecurringBatchAgg\RecurringBatch.cs" />
     <Compile Include="AccountsModule\Aggregates\RecurringBatchAgg\RecurringBatchFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\RecurringBatchAgg\RecurringBatchSpecifications.cs" />
@@ -317,6 +336,14 @@
     <Compile Include="AccountsModule\Aggregates\ReportTemplateEntryAgg\ReportTemplateEntry.cs" />
     <Compile Include="AccountsModule\Aggregates\ReportTemplateEntryAgg\ReportTemplateEntryFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\ReportTemplateEntryAgg\ReportTemplateEntrySpecifications.cs" />
+    <Compile Include="AccountsModule\Aggregates\SalesCreditMemoAgg\SalesCreditMemo.cs" />
+    <Compile Include="AccountsModule\Aggregates\SalesCreditMemoAgg\SalesCreditMemoFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\SalesCreditMemoLineAgg\SalesCreditMemoLine.cs" />
+    <Compile Include="AccountsModule\Aggregates\SalesCreditMemoLineAgg\SalesCreditMemoLineFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\SalesInvoiceAgg\SalesInvoice.cs" />
+    <Compile Include="AccountsModule\Aggregates\SalesInvoiceAgg\SalesInvoiceFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\SalesInvoiceLineAgg\SalesInvoiceLine.cs" />
+    <Compile Include="AccountsModule\Aggregates\SalesInvoiceLineAgg\SalesInvoiceLineFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\SavingsProductAgg\SavingsProduct.cs" />
     <Compile Include="AccountsModule\Aggregates\SavingsProductAgg\SavingsProductFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\SavingsProductAgg\SavingsProductSpecifications.cs" />

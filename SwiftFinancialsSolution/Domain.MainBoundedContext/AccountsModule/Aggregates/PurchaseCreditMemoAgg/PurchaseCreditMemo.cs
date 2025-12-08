@@ -22,7 +22,12 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemo
 
         //public int No { get; set; }
 
-        public int VendorNo { get; set; }
+        public string No { get; set; }
+        public string PurchaseInvoiceNo { get; set;}
+
+        public string VendorNo { get; set; }
+
+        //public int VendorNo { get; set; }
 
         public string VendorName { get; set; }
 
@@ -69,9 +74,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseCreditMemo
 
 
 
-        public void AddLine(int type, int purchaseCreditMemoLnNo, string purchaseCreditMemoLnDescription, int purchaseCreditMemoLnQuantity, decimal purchaseCreditMemoLnTotalAmount, Guid purchaseCreditMemoLineCreditChartOfAccountId, ServiceHeader serviceHeader)
+        public void AddLine(int type, int purchaseCreditMemoLnNo, string purchaseCreditMemoLnDescription, int purchaseCreditMemoLnQuantity, int purchaseCreditMemoLnUnitCost, decimal purchaseCreditMemoLnAmount, Guid purchaseCreditMemoLineCreditChartOfAccountId, ServiceHeader serviceHeader)
         {
-            var purchaseCreditMemoLine = PurchaseCreditMemoLineFactory.CreatePurchaseCreditMemoLine(this.Id, type, purchaseCreditMemoLnNo, purchaseCreditMemoLnDescription, purchaseCreditMemoLnQuantity, purchaseCreditMemoLnTotalAmount, purchaseCreditMemoLineCreditChartOfAccountId);
+            var purchaseCreditMemoLine = PurchaseCreditMemoLineFactory.CreatePurchaseCreditMemoLine(this.Id, type, purchaseCreditMemoLnNo, purchaseCreditMemoLnDescription, purchaseCreditMemoLnQuantity, purchaseCreditMemoLnUnitCost, purchaseCreditMemoLnAmount, purchaseCreditMemoLineCreditChartOfAccountId);
             //CreateJournalEntry(this.Id, chartOfAccountId, contraChartOfAccountId, customerAccountId, amount, this.ValueDate, serviceHeader);
 
             this.PurchaseCreditMemoLines.Add(purchaseCreditMemoLine);

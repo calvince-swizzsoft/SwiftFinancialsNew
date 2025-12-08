@@ -45,7 +45,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net47\CommonServiceLocator.dll</HintPath>
+      <HintPath>..\packages\Unity.5.8.13\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=33.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.33.0.1\lib\net47\CsvHelper.dll</HintPath>
@@ -243,6 +243,7 @@
     <Content Include="AlternateChannelLogService.svc" />
     <Content Include="AlternateChannelReconciliationPeriodService.svc" />
     <Content Include="AlternateChannelService.svc" />
+    <Content Include="ARCustomerService.svc" />
     <Content Include="AuditLogService.svc" />
     <Content Include="BankLinkageService.svc" />
     <Content Include="BankReconciliationPeriodService.svc" />
@@ -263,8 +264,14 @@
     <Content Include="CommissionService.svc" />
     <Content Include="CompanyService.svc" />
     <Content Include="ConditionalLendingService.svc" />
+    <Content Include="PaymentService.svc" />
+    <Content Include="PurchaseCreditMemoService.svc" />
     <Content Include="InventoryService.svc" />
+    <Content Include="PurchaseInvoiceService.svc" />
     <Content Include="PurchaseOrderService.svc" />
+    <Content Include="ReceiptService.svc" />
+    <Content Include="SalesCreditMemoService.svc" />
+    <Content Include="SalesInvoiceService.svc" />
     <Content Include="SalesOrderService.svc" />
     <Content Include="SystemGeneralLedgerAccountMappingService.svc" />
     <Content Include="CostCenterService.svc" />
@@ -383,6 +390,9 @@
       <DependentUpon>AlternateChannelService.svc</DependentUpon>
     </Compile>
     <Compile Include="App_Start\SecurityConfig.cs" />
+    <Compile Include="ARCustomerService.svc.cs">
+      <DependentUpon>ARCustomerService.svc</DependentUpon>
+    </Compile>
     <Compile Include="AuditLogService.svc.cs">
       <DependentUpon>AuditLogService.svc</DependentUpon>
     </Compile>
@@ -443,6 +453,7 @@
     <Compile Include="Contracts\AccountsModule\IAlternateChannelLogService.cs" />
     <Compile Include="Contracts\AccountsModule\IAlternateChannelReconciliationPeriodService.cs" />
     <Compile Include="Contracts\AccountsModule\IAlternateChannelService.cs" />
+    <Compile Include="Contracts\AccountsModule\IARCustomerService.cs" />
     <Compile Include="Contracts\AccountsModule\IBankLinkageService.cs" />
     <Compile Include="Contracts\AccountsModule\IBankReconciliationPeriodService.cs" />
     <Compile Include="Contracts\AccountsModule\IBankToMobileRequestService.cs" />
@@ -454,6 +465,8 @@
     <Compile Include="Contracts\AccountsModule\ICommissionService.cs" />
     <Compile Include="Contracts\AccountsModule\ICostCenterService.cs" />
     <Compile Include="Contracts\AccountsModule\ICreditBatchService.cs" />
+    <Compile Include="Contracts\AccountsModule\IPaymentService.cs" />
+    <Compile Include="Contracts\AccountsModule\IPurchaseCreditMemoService.cs" />
     <Compile Include="Contracts\AccountsModule\ICreditTypeService.cs" />
     <Compile Include="Contracts\AccountsModule\ICustomerAccountService.cs" />
     <Compile Include="Contracts\AccountsModule\IDebitBatchService.cs" />
@@ -475,8 +488,12 @@
     <Compile Include="Contracts\AccountsModule\IMobileToBankRequestService.cs" />
     <Compile Include="Contracts\AccountsModule\IOverDeductionBatchService.cs" />
     <Compile Include="Contracts\AccountsModule\IPostingPeriodService.cs" />
+    <Compile Include="Contracts\AccountsModule\IPurchaseInvoiceService.cs" />
+    <Compile Include="Contracts\AccountsModule\IReceiptService.cs" />
     <Compile Include="Contracts\AccountsModule\IRecurringBatchService.cs" />
     <Compile Include="Contracts\AccountsModule\IReportTemplateService.cs" />
+    <Compile Include="Contracts\AccountsModule\ISalesCreditMemoService.cs" />
+    <Compile Include="Contracts\AccountsModule\ISalesInvoiceService.cs" />
     <Compile Include="Contracts\AccountsModule\ISavingsProductService.cs" />
     <Compile Include="Contracts\AccountsModule\IStandingOrderService.cs" />
     <Compile Include="Contracts\AccountsModule\ISystemGeneralLedgerAccountMappingService.cs" />
@@ -485,6 +502,12 @@
     <Compile Include="Contracts\AccountsModule\IUnPayReasonService.cs" />
     <Compile Include="Contracts\AccountsModule\IWireTransferBatchService.cs" />
     <Compile Include="Contracts\AccountsModule\IWireTransferTypeService.cs" />
+    <Compile Include="PaymentService.svc.cs">
+      <DependentUpon>PaymentService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseCreditMemoService.svc.cs">
+      <DependentUpon>PurchaseCreditMemoService.svc</DependentUpon>
+    </Compile>
     <Compile Include="ICategoryService.cs" />
     <Compile Include="IInventoryService.cs" />
     <Compile Include="InventoryService.svc.cs">
@@ -494,8 +517,20 @@
     <Compile Include="ISalesOrderService.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\MigrationsContextFactory.cs" />
+    <Compile Include="PurchaseInvoiceService.svc.cs">
+      <DependentUpon>PurchaseInvoiceService.svc</DependentUpon>
+    </Compile>
     <Compile Include="PurchaseOrderService.svc.cs">
       <DependentUpon>PurchaseOrderService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="ReceiptService.svc.cs">
+      <DependentUpon>ReceiptService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="SalesCreditMemoService.svc.cs">
+      <DependentUpon>SalesCreditMemoService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="SalesInvoiceService.svc.cs">
+      <DependentUpon>SalesInvoiceService.svc</DependentUpon>
     </Compile>
     <Compile Include="SalesOrderService.svc.cs">
       <DependentUpon>SalesOrderService.svc</DependentUpon>

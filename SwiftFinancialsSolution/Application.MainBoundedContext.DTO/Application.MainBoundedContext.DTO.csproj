@@ -37,12 +37,14 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -72,6 +74,7 @@
     <Compile Include="AccountsModule\AlternateChannelReconciliationEntryDTO.cs" />
     <Compile Include="AccountsModule\AlternateChannelReconciliationPeriodDTO.cs" />
     <Compile Include="AccountsModule\AlternateChannelTypeCommissionDTO.cs" />
+    <Compile Include="AccountsModule\ARCustomerDTO.cs" />
     <Compile Include="AccountsModule\BankLinkageDTO.cs" />
     <Compile Include="AccountsModule\BankReconciliationEntryDTO.cs" />
     <Compile Include="AccountsModule\BankReconciliationPeriodDTO.cs" />
@@ -166,13 +169,25 @@
     <Compile Include="AccountsModule\OverDeductionBatchDTO.cs" />
     <Compile Include="AccountsModule\OverDeductionBatchEntryBulkCopyDTO.cs" />
     <Compile Include="AccountsModule\OverDeductionBatchEntryDTO.cs" />
+    <Compile Include="AccountsModule\PaymentDTO.cs" />
+    <Compile Include="AccountsModule\PaymentLineDTO.cs" />
     <Compile Include="AccountsModule\PaymentVoucherDTO.cs" />
     <Compile Include="AccountsModule\PostingPeriodDTO.cs" />
+    <Compile Include="AccountsModule\PurchaseCreditMemoDTO.cs" />
+    <Compile Include="AccountsModule\PurchaseCreditMemoLineDTO.cs" />
+    <Compile Include="AccountsModule\PurchaseInvoiceDTO.cs" />
+    <Compile Include="AccountsModule\PurchaseInvoiceLineDTO.cs" />
+    <Compile Include="AccountsModule\ReceiptDTO.cs" />
+    <Compile Include="AccountsModule\ReceiptLineDTO.cs" />
     <Compile Include="AccountsModule\RecurringBatchDTO.cs" />
     <Compile Include="AccountsModule\RecurringBatchEntryBulkCopyDTO.cs" />
     <Compile Include="AccountsModule\RecurringBatchEntryDTO.cs" />
     <Compile Include="AccountsModule\ReportTemplateDTO.cs" />
     <Compile Include="AccountsModule\ReportTemplateEntryDTO.cs" />
+    <Compile Include="AccountsModule\SalesCreditMemoDTO.cs" />
+    <Compile Include="AccountsModule\SalesCreditMemoLineDTO.cs" />
+    <Compile Include="AccountsModule\SalesInvoiceDTO.cs" />
+    <Compile Include="AccountsModule\SalesInvoiceLineDTO.cs" />
     <Compile Include="AccountsModule\SavingsProductBulkCopyDTO.cs" />
     <Compile Include="AccountsModule\SavingsProductCommissionDTO.cs" />
     <Compile Include="AccountsModule\SavingsProductDTO.cs" />

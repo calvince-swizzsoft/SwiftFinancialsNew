@@ -1641,8 +1641,6 @@ namespace TestApis.Controllers
             if (paymentDTO != null && paymentDTO.PaymentLines.Any())
             {
 
-
-             
                 decimal totalOfLines = paymentDTO.PaymentLines.Sum(x => x.Amount);
         
                 if (paymentDTO.TotalAmount != totalOfLines)
@@ -1722,11 +1720,17 @@ namespace TestApis.Controllers
 
 
         [Route("GetPurchaseCreditMemos")]
-        public async Task<IHttpActionResult> GetPurchaseCreditMemos()
+        public async Task<IHttpActionResult> GetPurchaseCreditMemos(bool? posted = null)
         {
             var serviceHeader = master.GetServiceHeader();
 
             var creditMemos = await master._channelService.FindPurchaseCreditMemosAsync(serviceHeader);
+
+            // Apply filtering if 'posted' param is provided
+            if (posted.HasValue)
+            {
+                creditMemos = creditMemos.Where(i => i.Posted == posted.Value).ToList();
+            }
 
             return Json(new ApiResponse<object>
             {
@@ -1737,6 +1741,7 @@ namespace TestApis.Controllers
         }
 
 
+        
 
 
         [HttpPost]
@@ -1976,11 +1981,17 @@ namespace TestApis.Controllers
 
 
         [Route("GetSalesInvoices")]
-        public async Task<IHttpActionResult> GetSalesInvoices()
+        public async Task<IHttpActionResult> GetSalesInvoices(bool? posted = null)
         {
             var serviceHeader = master.GetServiceHeader();
 
             var salesInvoices = await master._channelService.FindSalesInvoicesAsync(serviceHeader);
+
+            // Apply filtering if 'posted' param is provided
+            if (posted.HasValue)
+            {
+                salesInvoices = salesInvoices.Where(i => i.Posted == posted.Value).ToList();
+            }
 
             return Json(new ApiResponse<object>
             {
@@ -2424,11 +2435,17 @@ namespace TestApis.Controllers
 
 
         [Route("GetSalesCreditMemos")]
-        public async Task<IHttpActionResult> GetSalesCreditMemos()
+        public async Task<IHttpActionResult> GetSalesCreditMemos(bool? posted = null)
         {
             var serviceHeader = master.GetServiceHeader();
 
             var creditMemos = await master._channelService.FindSalesCreditMemosAsync(serviceHeader);
+
+            // Apply filtering if 'posted' param is provided
+            if (posted.HasValue)
+            {
+                creditMemos = creditMemos.Where(i => i.Posted == posted.Value).ToList();
+            }
 
             return Json(new ApiResponse<object>
             {

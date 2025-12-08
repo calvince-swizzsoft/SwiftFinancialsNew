@@ -22,11 +22,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "InvoiceNo")]
-        public int InvoiceNo { get; set; }
+        public string InvoiceNo { get; set; }
 
         [DataMember]
         [Display(Name = "VendorNo")]
-        public int VendorNo { get; set; }
+        public string VendorNo { get; set; }
 
         [DataMember]
         [ValidGuid]
@@ -38,6 +38,15 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [ValidGuid]
         [Display(Name = "VendorId")]
         public Guid VendorId { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "VendorAddress")]
+        public string VendorAddress { get; set; }
+
+        [DataMember]
+        [Display(Name = "VendorName")]
+        public string VendorName { get; set; }
 
 
         [DataMember]

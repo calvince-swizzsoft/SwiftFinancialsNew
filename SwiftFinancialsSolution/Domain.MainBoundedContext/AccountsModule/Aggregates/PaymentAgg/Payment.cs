@@ -29,11 +29,15 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentAgg
 
         public Guid InvoiceId { get; set; }
 
-        public Guid VendorNo { get; set; }
+        public string VendorName { get; set; }
+
+        public string VendorAddress { get; set; }
+
+        public string VendorNo { get; set; }
 
         public Guid VendorId { get; set; }
 
-        public int InvoiceNo { get; set; }
+        public string InvoiceNo { get; set; }
 
 
         public Guid BankLinkageChartOfAccountId { get; set; }
