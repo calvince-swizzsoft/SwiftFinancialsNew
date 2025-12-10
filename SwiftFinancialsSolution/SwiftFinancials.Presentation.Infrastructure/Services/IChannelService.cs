@@ -1925,6 +1925,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<List<BankLinkageDTO>> FindBankLinkagesAsync(ServiceHeader serviceHeader = null);
 
+        Task<BankLinkageDTO> FindBankLinkageByBankAccountIdAsync(Guid bankAccountId, ServiceHeader serviceHeader = null);
+
         #endregion
 
         #region BudgetDTO

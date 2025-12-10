@@ -1,4 +1,5 @@
-﻿using Domain.Seedwork.Specification;
+﻿using Domain.MainBoundedContext.AccountsModule.Aggregates.CustomerAccountArrearageAgg;
+using Domain.Seedwork.Specification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,14 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.BankLinkageAgg
         public static Specification<BankLinkage> DefaultSpec()
         {
             Specification<BankLinkage> specification = new TrueSpecification<BankLinkage>();
+
+            return specification;
+        }
+
+
+        public static ISpecification<BankLinkage> BankLinkageWithBankAccountId(Guid BankAccountId)
+        {
+            Specification<BankLinkage> specification = new DirectSpecification<BankLinkage>(x => x.BankId == BankAccountId);
 
             return specification;
         }

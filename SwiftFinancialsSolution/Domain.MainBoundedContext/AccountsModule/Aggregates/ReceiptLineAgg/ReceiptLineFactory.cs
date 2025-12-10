@@ -1,4 +1,5 @@
 ﻿using Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentLineAgg;
+using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ReceiptLineAgg
     public static class ReceiptLineFactory
     {
 
-        public static ReceiptLine CreateReceiptLine(Guid receiptId, int type, int no, string description, decimal amount, Guid chartOfAccountId, int accounType, int documentType)
+        public static ReceiptLine CreateReceiptLine(Guid receiptId, Guid customerAccountId, string customerAccountNo, string description, decimal amount, Guid creditChartOfAccountId, int accounType, int documentType)
         {
 
             var receiptLine = new ReceiptLine();
@@ -18,13 +19,13 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ReceiptLineAgg
             receiptLine.GenerateNewIdentity();
 
             receiptLine.ReceiptId = receiptId;
-            //purchaseInvoiceLine.PurchaseInvoiceNo = purchaseInvoiceNo;
-            receiptLine.AccountType = type;
-            receiptLine.No = no;
+            receiptLine.CustomerAccountNo = customerAccountNo;
+
+            receiptLine.CustomerAccountId = customerAccountId;
+
             receiptLine.Description = description;
             receiptLine.Amount = amount;
-
-            receiptLine.ChartOfAccountId = chartOfAccountId;
+            receiptLine.CreditChartOfAccountId = creditChartOfAccountId;
 
             //paymentLine.DocumentNo = documentNO;
 
@@ -34,6 +35,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ReceiptLineAgg
 
             receiptLine.CreatedDate = DateTime.Now;
 
+          
             return receiptLine;
         }
     }

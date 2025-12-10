@@ -57,9 +57,9 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ReceiptAgg
             }
         }
 
-        public void AddLine(int type, int receiptLnNo, string receiptLnDescription, decimal receiptLnAmount, Guid receiptLineChartOfAccountId, int accountType, int documentType, ServiceHeader serviceHeader)
+        public void AddLine(int type, Guid customerAccountId, string customerAccountNo, string receiptLnDescription, decimal receiptLnAmount, Guid receiptLineChartOfAccountId, int accountType, int documentType, ServiceHeader serviceHeader)
         {
-            var receiptLine = ReceiptLineFactory.CreateReceiptLine(this.Id, type, receiptLnNo, receiptLnDescription, receiptLnAmount, receiptLineChartOfAccountId, accountType, documentType);
+            var receiptLine = ReceiptLineFactory.CreateReceiptLine(this.Id, customerAccountId, customerAccountNo, receiptLnDescription, receiptLnAmount, receiptLineChartOfAccountId, accountType, documentType);
             //CreateJournalEntry(this.Id, chartOfAccountId, contraChartOfAccountId, customerAccountId, amount, this.ValueDate, serviceHeader);
 
             this.ReceiptLines.Add(receiptLine);

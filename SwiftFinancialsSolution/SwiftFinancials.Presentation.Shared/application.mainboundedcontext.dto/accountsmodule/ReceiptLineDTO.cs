@@ -13,33 +13,43 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
     {
 
 
-        [DataMember]
-        [Display(Name = "Id")]
-        public Guid Id { get; set; }
+        //[DataMember]
+        //[Display(Name = "Id")]
+        //public Guid Id { get; set; }
 
 
         [DataMember]
+        [Display(Name = "CustomerAccountId")]
+        public Guid CustomerAccountId { get; set; }
 
-        [Display(Name = "ReceiptId")]
 
-        public Guid ReceiptId { get; set; }
+        [DataMember]
+        [Display(Name = "CustomerAccountNo")]
+        public string CustomerAccountNo { get; set; }
 
-        [Display(Name = "InvoiceId")]
 
-        public Guid InvoiceId { get; set; }
+        //[DataMember]
 
-        [Display(Name = "InvoiceNo")]
+        //[Display(Name = "ReceiptId")]
 
-        public int InvoiceNo { get; set; }
+        //public Guid ReceiptId { get; set; }
+
+        //[Display(Name = "InvoiceId")]
+
+        //public Guid InvoiceId { get; set; }
+
+        //[Display(Name = "InvoiceNo")]
+
+        //public int InvoiceNo { get; set; }
 
         //[Display(Name = "Type")]
         //public int Type { get; set; }
 
-        [Display(Name = "No")]
-        public int No { get; set; }
+        //[Display(Name = "No")]
+        //public int No { get; set; }
 
-        [Display(Name = "ChartOfAccountId")]
-        public Guid ChartOfAccountId { get; set; }
+        [Display(Name = "CreditChartOfAccountId")]
+        public Guid CreditChartOfAccountId { get; set; }
 
         [Display(Name = "Description")]
         public string Description { get; set; }

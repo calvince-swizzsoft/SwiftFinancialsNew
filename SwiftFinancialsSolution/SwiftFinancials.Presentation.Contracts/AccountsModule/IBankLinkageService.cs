@@ -39,5 +39,10 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindBankLinkage(Guid bankLinkageId, AsyncCallback callback, Object state);
         BankLinkageDTO EndFindBankLinkage(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindBankLinkageByBankAccountId(Guid bankAccountId, AsyncCallback callback, Object state);
+        BankLinkageDTO EndFindBankLinkageByBankAccountId(IAsyncResult result);
     }
 }

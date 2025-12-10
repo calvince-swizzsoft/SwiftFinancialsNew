@@ -15,9 +15,11 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ReceiptLineAgg
         public int InvoiceNo { get; set; }
         //public int Type { get; set; }
 
-        public int No { get; set; }
+        public string CustomerAccountNo { get; set; }
 
-        public Guid ChartOfAccountId { get; set; }
+        public Guid CustomerAccountId { get; set; }
+
+        public Guid CreditChartOfAccountId { get; set; }
 
         public string Description { get; set; }
 
@@ -26,5 +28,11 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ReceiptLineAgg
         public int AccountType { get; set; }
 
         public int DocumentType { get; set; }
+
+        //public DateTime CreatedDate { get; set; }
+
+        //public string CreatedBy { get; set; }
+
+
     }
 }

@@ -146,6 +146,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         {
             if (bankLinkageId != Guid.Empty)
             {
+
                 using (_dbContextScopeFactory.CreateReadOnly())
                 {
                     var bankLinkage = _bankLinkageRepository.Get(bankLinkageId, serviceHeader);
@@ -159,5 +160,30 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
             else return null;
         }
+
+
+
+        public BankLinkageDTO FindBankLinkageByBankAccountId(Guid bankAccountId, ServiceHeader serviceHeader)
+        {
+            if (bankAccountId == Guid.Empty)
+                return null;
+
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var spec = BankLinkageSpecifications.BankLinkageWithBankAccountId(bankAccountId);
+
+                var bankLinkages = _bankLinkageRepository.AllMatching(spec, serviceHeader);
+
+                if (bankLinkages != null && bankLinkages.Any())
+                {
+                    // Return just one
+                    var bankLinkage = bankLinkages.First();  // or .Single()
+                    return bankLinkage.ProjectedAs<BankLinkageDTO>();
+                }
+
+                return null;
+            }
+        }
+
     }
 }

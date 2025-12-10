@@ -70,6 +70,13 @@ namespace DistributedServices.MainBoundedContext
             return _bankLinkageAppService.FindBankLinkage(bankLinkageId, serviceHeader);
         }
 
+        public BankLinkageDTO FindBankLinkageByBankAccountId(Guid bankAccountId)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _bankLinkageAppService.FindBankLinkageByBankAccountId(bankAccountId, serviceHeader);
+        }
+
         #endregion
     }
 }

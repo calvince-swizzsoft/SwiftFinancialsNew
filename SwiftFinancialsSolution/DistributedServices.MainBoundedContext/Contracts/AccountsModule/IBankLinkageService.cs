@@ -39,6 +39,10 @@ namespace DistributedServices.MainBoundedContext
         [FaultContract(typeof(ApplicationServiceError))]
         BankLinkageDTO FindBankLinkage(Guid bankLinkageId);
 
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        BankLinkageDTO FindBankLinkageByBankAccountId(Guid bankAccountId);
+
         #endregion
     }
 }

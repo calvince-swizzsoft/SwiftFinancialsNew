@@ -19,5 +19,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         PageCollectionInfo<BankLinkageDTO> FindBankLinkages(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
         BankLinkageDTO FindBankLinkage(Guid bankLinkageId, ServiceHeader serviceHeader);
+
+        BankLinkageDTO FindBankLinkageByBankAccountId(Guid bankAccountId, ServiceHeader serviceHeader);
     }
 }

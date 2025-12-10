@@ -15,14 +15,16 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
     {
 
 
-        [DataMember]
-        [Display(Name = "Id")]
-        public Guid Id { get; set; }
+        //[DataMember]
+        //[Display(Name = "Id")]
+        //public Guid Id { get; set; }
 
 
-        [DataMember]
-        [Display(Name = "InvoiceNo")]
-        public string InvoiceNo { get; set; }
+
+
+        //[DataMember]
+        //[Display(Name = "InvoiceNo")]
+        //public string InvoiceNo { get; set; }
 
         [DataMember]
         [Display(Name = "CustomerNo")]
@@ -38,21 +40,14 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public string CustomerAddress { get; set; }
 
 
-        [DataMember]
-        [ValidGuid]
-        [Display(Name = "InvoiceId")]
-        public Guid InvoiceId { get; set; }
+        //[DataMember]
+        //[ValidGuid]
+        //[Display(Name = "InvoiceId")]
+        //public Guid InvoiceId { get; set; }
 
-
-        [DataMember]
-        [ValidGuid]
-        [Display(Name = "CustomerId")]
-        public Guid CustomerId { get; set; }
-
-
-        [DataMember]
-        [Display(Name = "BankLinkageChartOfAccountId")]
-        public Guid BankLinkageChartOfAccountId { get; set; }
+        //[DataMember]
+        //[Display(Name = "BankLinkageChartOfAccountId")]
+        //public Guid BankLinkageChartOfAccountId { get; set; }
 
 
         [DataMember]
@@ -65,9 +60,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public HashSet<ReceiptLineDTO> ReceiptLines { get; set; }
 
 
-        [DataMember]
-        [Display(Name = "ReceiptNumber")]
-        public string ReceiptNumber { get; set; }
+        //[DataMember]
+        //[Display(Name = "ReceiptNumber")]
+        //public string ReceiptNumber { get; set; }
 
         [DataMember]
         [Display(Name = "TotalAmount")]

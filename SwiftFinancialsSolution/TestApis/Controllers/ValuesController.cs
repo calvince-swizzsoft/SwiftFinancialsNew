@@ -1,4 +1,21 @@
-﻿using System;
+﻿//using System.Web.Http.Cors;
+using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.AdministrationModule;
+using Application.MainBoundedContext.DTO.FrontOfficeModule;
+using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using Application.MainBoundedContext.DTO.MessagingModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
+using DistributedServices.MainBoundedContext;
+using Infrastructure.Crosscutting.Framework.Configuration;
+using Infrastructure.Crosscutting.Framework.Utils;
+using Microsoft.Ajax.Utilities;
+//using Microsoft.AspNetCore.Cors;
+using SwiftFinancials.Presentation.Infrastructure.Models;
+using SwiftFinancials.Presentation.Infrastructure.Services;
+using SwiftFinancials.Presentation.Infrastructure.Util;
+using SwiftFinancials.TextAlertDispatcher.Celcom.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,24 +23,16 @@ using System.Configuration;
 using System.Data;
 using System.Data.Entity.Validation;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Runtime.Remoting.Channels;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
-//using System.Web.Http.Cors;
-using Application.MainBoundedContext.DTO;
-using Application.MainBoundedContext.DTO.AccountsModule;
-using Application.MainBoundedContext.DTO.AdministrationModule;
-using Application.MainBoundedContext.DTO.RegistryModule;
-using DistributedServices.MainBoundedContext;
-using Infrastructure.Crosscutting.Framework.Utils;
-//using Microsoft.AspNetCore.Cors;
-using SwiftFinancials.Presentation.Infrastructure.Models;
-using SwiftFinancials.Presentation.Infrastructure.Services;
-using SwiftFinancials.Presentation.Infrastructure.Util;
-using SwiftFinancials.TextAlertDispatcher.Celcom.Configuration;
 using TestApis.Models;
 using TestApis.Services;
 
@@ -36,6 +45,153 @@ namespace TestApis.Controllers
     {
         private readonly MasterController master;
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+
+        EmployeeDTO _selectedEmployee;
+
+        CustomerAccountDTO _selectedCustomerAccount;
+
+        BranchDTO _selectedBranch;
+
+        TellerDTO _selectedTeller;
+
+        PaymentVoucherDTO _selectedPaymentVoucher;
+
+        CustomerDTO _selectedCustomer;
+
+        PostingPeriodDTO _currentPostingPeriod;
+
+        //private readonly string _connectionString;
+
+
+
+
+        private string receiptContent;
+        decimal PreviousTellerBalance;
+        decimal NewTellerBalance;
+        private PageCollectionInfo<GeneralLedgerTransaction> TellerStatements;
+
+
+
+        private bool IsBusy { get; set; } // Property to indicate if an operation is in progress
+
+        //public CashDepositController()
+        //{
+        //    // Get connection string from Web.config
+        //    _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+        //}
+
+        public class OperationResult
+        {
+            public bool Success { get; set; }
+
+            public bool Dialog { get; set; }
+            public string Message { get; set; }
+
+            public CustomerTransactionModel TransactionData { get; set; }
+
+            public JournalDTO TransactionJournal { get; set; }
+        }
+
+        public PostingPeriodDTO CurrentPostingPeriod
+        {
+
+            get { return _currentPostingPeriod; }
+
+            set
+            {
+                if (_currentPostingPeriod != value)
+                {
+                    _currentPostingPeriod = value;
+                }
+            }
+        }
+
+        public CustomerDTO SelectedCustomer
+
+        {
+
+            get { return _selectedCustomer; }
+
+            set
+            {
+                if (_selectedCustomer != value)
+                {
+
+                    _selectedCustomer = value;
+                }
+            }
+        }
+
+
+
+        public PaymentVoucherDTO SelectedPaymentVoucher
+        {
+            get { return _selectedPaymentVoucher; }
+
+            set
+            {
+                if (_selectedPaymentVoucher != value)
+                {
+
+                    _selectedPaymentVoucher = value;
+                }
+            }
+
+        }
+
+        public EmployeeDTO SelectedEmployee
+        {
+            get { return _selectedEmployee; }
+            set
+            {
+                if (_selectedEmployee != value)
+                {
+                    _selectedEmployee = value;
+
+                }
+            }
+        }
+
+
+        public CustomerAccountDTO SelectedCustomerAccount
+        {
+            get { return _selectedCustomerAccount; }
+            set
+            {
+                if (_selectedCustomerAccount != value)
+                {
+                    _selectedCustomerAccount = value;
+
+                }
+            }
+        }
+
+        public BranchDTO SelectedBranch
+        {
+            get { return _selectedBranch; }
+            set
+            {
+                if (_selectedBranch != value)
+                {
+                    _selectedBranch = value;
+
+                }
+            }
+        }
+
+        public TellerDTO SelectedTeller
+        {
+            get { return _selectedTeller; }
+            set
+            {
+                if (_selectedTeller != value)
+                {
+                    _selectedTeller = value;
+
+                }
+            }
+        }
+
 
         public ValuesController()
         {
@@ -2678,6 +2834,80 @@ namespace TestApis.Controllers
         }
 
 
+
+
+        [HttpPost]
+        [Route("AddNewReceipt")]
+        public async Task<IHttpActionResult> AddNewReceipt(ReceiptDTO receiptDTO)
+        {
+
+            var serviceHeader = master.GetServiceHeader();
+
+
+
+            if (receiptDTO != null && receiptDTO.ReceiptLines.Any())
+            {
+
+
+
+                decimal totalOfLines = receiptDTO.ReceiptLines.Sum(x => x.Amount);
+
+                if (receiptDTO.TotalAmount != totalOfLines)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"Total mismatch: Header TotalAmount ({receiptDTO.TotalAmount:N2}) " +
+                                  $"does not equal sum of PaymentLines ({totalOfLines:N2})."
+                    });
+                }
+
+                int moduleNavigationItemCode = 0;
+
+                var tariffs = new ObservableCollection<TariffWrapper>();
+
+                //var result = await master._channelService.PostReceiptAsync(receiptDTO, moduleNavigationItemCode, serviceHeader);
+
+                var result = await master._channelService.AddNewReceiptAsync(receiptDTO, serviceHeader);
+
+                if (result != null)
+                {
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Succesfully Added New Receipt",
+                        data = result
+                    });
+                }
+
+                else
+                {
+
+
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Failed to add receipt"
+                    });
+                }
+
+
+            }
+
+            else
+            {
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Request Object is empty"
+                });
+            }
+
+        }
+
+
         [HttpPost]
         [Route("PostReceipt")]
         public async Task<IHttpActionResult> ReceiveCustomerPayment(ReceiptDTO receiptDTO)
@@ -2767,6 +2997,189 @@ namespace TestApis.Controllers
                 Data = receipts
             });
         }
+
+
+
+        // this applies for loan, investment or savings accounts
+        [HttpGet]
+        [Route("GetCustomerAccountHistory")]
+        public async Task<IHttpActionResult> GetCustomerAccountHistory(Guid CustomerAccountId)
+        {
+            try
+            {
+                var serviceHeader = master.GetServiceHeader();
+
+                var history = await master._channelService
+                    .FindCustomerAccountHistoryByCustomerAccountIdAsync(CustomerAccountId, serviceHeader);
+
+                if (history == null || history.Count == 0)
+                {
+                    return NotFound(); // 404
+                }
+
+                return Ok(history); // 200 + JSON list
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+
+        // this applies for loan, investment or savings accounts
+        [HttpGet]
+        [Route("GetCustomerAccountById")]
+        public async Task<IHttpActionResult> GetCustomerAccountById(Guid CustomerAccountId)
+        {
+            try
+            {
+                var serviceHeader = master.GetServiceHeader();
+
+                var account = await master._channelService.FindCustomerAccountAsync(CustomerAccountId, true, true, true, false, serviceHeader);
+
+                if (account == null)
+                {
+                    return NotFound(); // 404
+                }
+
+                return Ok(account); // 200 + JSON list
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        
+
+
+        [HttpPost]
+        [Route("api/CustomerReceipt/Create")]
+        public async Task<IHttpActionResult> Create(CustomerTransactionModel transactionModel)
+        {
+            try
+            {
+                var serviceHeader = master.GetServiceHeader();
+
+                bool includeBalances = true;
+                bool includeProductDescription = true;
+                bool includeInterestBalanceForLoanAccounts = true;
+                bool considerMaturityPeriodForInvestmentAccounts = true;
+
+                var selectedCustomerAccount =
+                    await master._channelService.FindCustomerAccountAsync(
+                        transactionModel.CustomerAccount.Id,
+                        includeBalances,
+                        includeProductDescription,
+                        includeInterestBalanceForLoanAccounts,
+                        considerMaturityPeriodForInvestmentAccounts,
+                        serviceHeader
+                    );
+
+                if (selectedCustomerAccount == null)
+                    return Ok(new { success = false, message = "Please select a customer account" });
+
+                if ((RecordStatus)selectedCustomerAccount.RecordStatus != RecordStatus.Approved)
+                    return Ok(new { success = false, message = "Sorry, account is not approved yet" });
+
+            
+                var selectedBankId = transactionModel.BankAccountId;
+
+                var selectedBankLinkage =
+                    await master._channelService.FindBankLinkageByBankAccountIdAsync(selectedBankId, serviceHeader);
+
+                if (selectedBankLinkage == null)
+                    return Ok(new { success = false, message = "Bank Account is missing, please select a receiving bank" });
+
+                var postingPeriod = await master._channelService.FindCurrentPostingPeriodAsync(serviceHeader);
+
+                // --- Populate model ---
+                transactionModel.PostingPeriodId = postingPeriod.Id;
+                transactionModel.PrimaryDescription = "ok";
+                transactionModel.SecondaryDescription = $"BC{selectedBankLinkage.BankName}";
+                transactionModel.Reference = $"{selectedCustomerAccount.CustomerReference1}";
+                transactionModel.DebitChartOfAccountId = selectedBankLinkage.ChartOfAccountId;
+                transactionModel.TransactionCode = (int)SystemTransactionCode.CashDeposit;
+
+                // --- VALIDATE ---
+                transactionModel.ValidateAll();
+                if (transactionModel.HasErrors)
+                {
+                    var combinedErrors = string.Join("; ", transactionModel.ErrorMessages);
+                    return Ok(new { success = false, message = $"Transaction Error: {combinedErrors}" });
+                }
+
+                // --- PROCESS TRANSACTION ---
+                var journal = await master._channelService.AddJournalWithCustomerAccountAsync(transactionModel, serviceHeader);
+
+                // update customer account balance
+                selectedCustomerAccount.NewAvailableBalance =
+                    selectedCustomerAccount.AvailableBalance + transactionModel.TotalValue;
+
+                var updateResult =
+                    await master._channelService.UpdateCustomerAccountAsync(selectedCustomerAccount, serviceHeader);
+
+                if (updateResult)
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        message = $"Operation success: Customer's new balance is {selectedCustomerAccount.NewAvailableBalance}",
+                        journal = new
+                        {
+                            id = journal.Id,
+                            sequentialId = journal.SequentialId,
+                            branchDescription = journal.BranchDescription,
+                            primaryDescription = journal.PrimaryDescription,
+                            secondaryDescription = journal.SecondaryDescription,
+                            postingPeriodDescription = journal.PostingPeriodDescription,
+                            applicationUserName = journal.ApplicationUserName,
+                            createdDate = journal.CreatedDate,
+                            totalValue = journal.TotalValue,
+                            reference = journal.Reference
+                        }
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        success = false,
+                        message = "Sorry, but the authorized cash deposit could not be posted!"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+
+    
+
+     
+        FrontOfficeTransactionType _frontOfficeTransactionType;
+        public FrontOfficeTransactionType FrontOfficeTransactionType
+        {
+            get { return _frontOfficeTransactionType; }
+            set
+            {
+                if (_frontOfficeTransactionType != value)
+                {
+                    _frontOfficeTransactionType = value;
+
+                }
+            }
+        }
+
+
+
+
+
+
+
+
 
 
 

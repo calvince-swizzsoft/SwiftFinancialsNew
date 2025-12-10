@@ -1,4 +1,5 @@
 ﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.FrontOfficeModule.Services;
 using Application.MainBoundedContext.Services;
 using Application.Seedwork;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.PaymentAgg;
@@ -30,6 +31,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         private readonly IJournalAppService _journalAppService;
         private readonly INumberSeriesGenerator _numberSeriesGenerator;
         private readonly ISalesInvoiceAppService _salesInvoiceAppService;
+        private readonly ICashDepositRequestAppService _cashDepositRequestAppService;
+        private readonly ICustomerAccountAppService _customerAccountAppService;
 
 
         public ReceiptAppService(
@@ -39,7 +42,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
          IChartOfAccountAppService chartOfAccountAppService,
          IJournalAppService journalAppService,
          INumberSeriesGenerator numberSeriesGenerator,
-         ISalesInvoiceAppService salesInvoiceAppService
+         ISalesInvoiceAppService salesInvoiceAppService,
+         ICashDepositRequestAppService cashDepositRequestAppService, 
+         ICustomerAccountAppService customerAccountAppService
          )
         {
             if (dbContextScopeFactory == null)
@@ -61,8 +66,18 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 throw new ArgumentNullException(nameof(chartOfAccountAppService));
 
 
+
+            if (cashDepositRequestAppService == null)
+                throw new ArgumentNullException(nameof(cashDepositRequestAppService));
+
+
             if (numberSeriesGenerator == null)
                 throw new ArgumentNullException(nameof(numberSeriesGenerator));
+
+            if (customerAccountAppService == null)
+                throw new ArgumentNullException(nameof(customerAccountAppService));
+
+
 
             _dbContextScopeFactory = dbContextScopeFactory;
             _receiptRepository = receiptRepository;
@@ -71,6 +86,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             _journalAppService = journalAppService;
             _numberSeriesGenerator = numberSeriesGenerator;
             _salesInvoiceAppService = salesInvoiceAppService;
+            _cashDepositRequestAppService = cashDepositRequestAppService;
+            _customerAccountAppService = customerAccountAppService;
         }
 
         public ReceiptDTO AddNewReceipt(ReceiptDTO receiptDTO, ServiceHeader serviceHeader)
@@ -157,7 +174,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     foreach (var item in receiptDTO.ReceiptLines)
                     {
 
-                        receipt.AddLine(item.AccountType, item.No, item.Description, item.Amount, item.ChartOfAccountId, item.AccountType, item.DocumentType, serviceHeader);
+                        receipt.AddLine(item.AccountType, item.CustomerAccountId, item.CustomerAccountNo, item.Description, item.Amount, item.CreditChartOfAccountId, item.AccountType, item.DocumentType, serviceHeader);
                     }
                 }
             }
@@ -192,6 +209,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 else return null;
             }
         }
+
+
+
 
 
 
@@ -239,9 +259,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                             receiptDTO.BranchId,
                             null,
                             item.Amount,
-                            string.Format("Receipt~{0}", item.No),
+                            string.Format("Receipt~{0}", receiptDTO.ReceiptNumber),
                             receiptDTO.BankBranchName,
-                            item.No.ToString(),
+                            item.CustomerAccountNo.ToString(),
                             moduleNavigationItemCode,
                             (int)SystemTransactionCode.InterAcccountTransfer,
                             null,
@@ -252,7 +272,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                         if (journal == null)
                         {
-                            throw new InvalidOperationException($"Failed to create journal for purchase invoice line {item.No}");
+                            throw new InvalidOperationException($"Failed to create journal for purchase invoice line {item.CustomerAccountNo}");
                         }
 
                         lastCreatedJournal = journal;
@@ -284,6 +304,96 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
         }
 
+
+
+        public JournalDTO PostCustomerReceipt(ReceiptDTO receiptDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        {
+            if (receiptDTO == null || !receiptDTO.ReceiptLines.Any())
+            {
+                throw new InvalidOperationException("Sorry, but the provided data is incorrect!");
+            }
+
+            //only create receipt when it is not already present
+            var CreatedReceipt = AddNewReceipt(receiptDTO, serviceHeader);
+
+
+
+            var receiptLineDTOs = receiptDTO.ReceiptLines;
+            receiptDTO.Id = CreatedReceipt.Id;
+            JournalDTO lastCreatedJournal = null;
+
+            using (var dbContextScope = _dbContextScopeFactory.Create())
+            {
+                // Fetch the persisted payment once, outside the loop
+                var persisted = _receiptRepository.Get(receiptDTO.Id, serviceHeader);
+                if (persisted == null)
+                {
+                    throw new InvalidOperationException("Receipt not found!");
+                }
+
+                // Process each purchase invoice line
+                foreach (var item in receiptLineDTOs)
+                {
+
+                    if (item.AccountType == (int)ReceiptAccountType.Customer)
+                    {
+
+                        var receivablesChartOfAccountId = _chartOfAccountAppService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCode(
+              (int)SystemGeneralLedgerAccountCode.AccountPayables, serviceHeader);
+
+
+                        CustomerAccountDTO customerAccountDTO = _customerAccountAppService.FindCustomerAccountDTO(item.CustomerAccountId, serviceHeader);
+
+
+
+                        if (customerAccountDTO == null)
+                        {
+                            throw new InvalidOperationException("Sorry, but the provided account id is not linked to an existing account!");
+                        }
+
+
+                        var journal = _journalAppService.AddNewJournal(
+                            receiptDTO.BranchId,
+                            null,
+                            item.Amount,
+                            string.Format("Receipt~{0}", item.CustomerAccountNo),
+                            item.CustomerAccountNo.ToString(),
+                            receiptDTO.Reference,
+                            moduleNavigationItemCode,
+                            (int)SystemTransactionCode.CashDeposit,
+                            DateTime.Today,
+                            item.CreditChartOfAccountId,
+                            receiptDTO.BankLinkageChartOfAccountId,
+                            customerAccountDTO,
+                            null,
+                            serviceHeader,
+                            false);
+
+      
+                        if (journal == null)
+                        {
+                            throw new InvalidOperationException($"Failed to create journal for Customer Account line {item.CustomerAccountNo}");
+                        }
+
+                        lastCreatedJournal = journal;
+
+                    }
+                }
+
+                // Mark the purchase invoice as posted in both DTO and persisted
+                receiptDTO.Posted = true;
+                persisted.Posted = true;
+
+                if (dbContextScope.SaveChanges(serviceHeader) >= 0)
+                {
+                    return lastCreatedJournal;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Failed to save journal entries to database!");
+                }
+            }
+        }
 
 
     }

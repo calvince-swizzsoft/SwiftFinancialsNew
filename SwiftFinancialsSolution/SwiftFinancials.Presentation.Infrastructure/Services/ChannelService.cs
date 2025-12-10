@@ -25491,6 +25491,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
         public Task<BankLinkageDTO> FindBankLinkageAsync(Guid bankLinkageId, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<BankLinkageDTO>();
@@ -25520,8 +25521,47 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             service.BeginFindBankLinkage(bankLinkageId, asyncCallback, service);
 
+
             return tcs.Task;
         }
+
+
+        public Task<BankLinkageDTO> FindBankLinkageByBankAccountIdAsync(Guid bankAccountId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<BankLinkageDTO>();
+
+            IBankLinkageService service = GetService<IBankLinkageService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    BankLinkageDTO response = ((IBankLinkageService)result.AsyncState).EndFindBankLinkageByBankAccountId(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindBankLinkageByBankAccountId(bankAccountId, asyncCallback, service); 
+            
+      
+            return tcs.Task;
+        }
+
+
+
+
 
         #endregion
 
