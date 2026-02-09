@@ -1,4 +1,4 @@
-﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using DistributedServices.Seedwork.ErrorHandlers;
 using System;
 using System.Collections.Generic;

@@ -27,5 +27,7 @@ namespace Application.MainBoundedContext.DTO
         public decimal TotalApportioned { get; set; }
 
         public decimal TotalShortage { get; set; }
+        public object TotalCount { get; set; }
+        public object TotalPages { get; set; }
     }
 }

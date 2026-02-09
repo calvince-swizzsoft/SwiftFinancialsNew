@@ -805,6 +805,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> ReleaseLoanGuarantorsByLoaneeCustomerAccountAsync(CustomerAccountDTO customerAccountDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<LoanCaseDTO>> FindLoanCasesAsync(ServiceHeader serviceHeader = null);
+        Task<bool> MarkLoanCaseDisbursed(LoanDisbursementBatchEntryDTO loanDisbursementBatchEntryDTO, ServiceHeader serviceHeader = null);
+
 
         #endregion
 
@@ -3164,7 +3166,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region SalesInvoiceDTO
 
-        Task<SalesInvoiceDTO> FindSalesInvoiceAsync(Guid salesInvoiceId, ServiceHeader serviceHeader);
+        //Task<SalesInvoiceDTO> FindSalesInvoiceAsync(Guid salesInvoiceId, ServiceHeader serviceHeader);
         Task<List<SalesInvoiceDTO>> FindSalesInvoicesAsync(ServiceHeader serviceHeader);
         Task<SalesInvoiceDTO> AddNewSalesInvoiceAsync(SalesInvoiceDTO salesInvoiceDTO, ServiceHeader serviceHeader);
 

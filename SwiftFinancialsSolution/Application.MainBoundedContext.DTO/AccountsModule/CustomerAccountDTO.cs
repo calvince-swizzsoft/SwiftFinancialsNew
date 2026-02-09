@@ -105,7 +105,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
                 return EnumHelper.GetDescription((IdentityCardType)CustomerIndividualIdentityCardType);
             }
         }
-        
+
         [DataMember]
         [Display(Name = "Customer Identity Card Number")]
         public string CustomerIndividualIdentityCardNumber { get; set; }
@@ -339,7 +339,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public bool BranchCompanyEnforceInvestmentProductExemptions { get; set; }
 
         [DataMember]
-       
+
         public int CustomerFilter { get; set; }
 
         [DataMember]

@@ -230,7 +230,14 @@ namespace DistributedServices.MainBoundedContext
 
             var serviceBrokerSettingsElement = ConfigurationHelper.GetServiceBrokerConfigurationSettings(serviceHeader);
 
-            return _creditBatchAppService.ParseCreditBatchImport(creditBatchId, serviceBrokerSettingsElement.FileUploadDirectory, fileName, serviceHeader);
+            //return _creditBatchAppService.ParseCreditBatchImport(creditBatchId, serviceBrokerSettingsElement.FileUploadDirectory, fileName, serviceHeader);
+
+            return _creditBatchAppService.ParseCreditBatchImport(creditBatchId,
+               @"C:\swiftfin_file_uploads\",
+               fileName,
+               serviceHeader
+           );
+
         }
 
         public CreditBatchEntryDTO FindLastCreditBatchEntryByCustomerAccountId(Guid customerAccountId, int creditBatchType)

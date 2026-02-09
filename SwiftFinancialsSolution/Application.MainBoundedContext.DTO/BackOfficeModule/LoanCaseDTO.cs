@@ -1355,8 +1355,11 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Product Category")]
         public string LoanProductCategory { get; set; }
 
+        public IList<LoanGuarantorDTO> Guarantors { get; set; }
 
         [DataMember]
         public ObservableCollection<LoanGuarantorDTO> Guarantor { get; set; }
+        public int LoanProductCode { get; set; }
+        public Guid BankAccountId { get; set; }
     }
 }

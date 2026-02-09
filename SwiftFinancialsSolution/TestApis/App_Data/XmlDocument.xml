@@ -481,9 +481,39 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="M:TestApis.Controllers.BidAnalysisController.SubmitQuotationWithLines(TestApis.Models.SupplierQuotation)">
+            <summary>
+            Submits a supplier quotation and its line items transactionally.
+            </summary>
+        </member>
+        <member name="M:TestApis.Controllers.BidAnalysisController.AwardVendor(TestApis.Models.SupplierQuotation)">
+            <summary>
+            Performs bid analysis and awards a vendor for a given RFQ.
+            </summary>
+        </member>
+        <member name="M:TestApis.Controllers.BidAnalysisController.AnalyzeRelatedRFQs(System.Int32)">
+            <summary>
+            Analyzes related RFQs within the same category.
+            </summary>
+        </member>
         <member name="T:TestApis.Controllers.MasterController">
             <summary>
             Master controller that does setup of things that should always be done.
+            </summary>
+        </member>
+        <member name="M:TestApis.Controllers.ValuesController.CreateGeneralLedger(Application.MainBoundedContext.DTO.AccountsModule.GeneralLedgerDTO)">
+            <summary>
+            Creates a new general ledger with entries
+            </summary>
+        </member>
+        <member name="M:TestApis.Controllers.ValuesController.CreateGeneralLedgerEntry(Application.MainBoundedContext.DTO.AccountsModule.GeneralLedgerEntryDTO)">
+            <summary>
+            Creates a new general ledger entry for an existing ledger
+            </summary>
+        </member>
+        <member name="M:TestApis.Controllers.ValuesController.CreateCompleteGeneralLedger(TestApis.Controllers.ValuesController.CreateCompleteGeneralLedgerRequest)">
+            <summary>
+            Creates a complete general ledger with balanced entries in one request
             </summary>
         </member>
     </members>

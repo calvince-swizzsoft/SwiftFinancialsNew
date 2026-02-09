@@ -245,7 +245,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Personal Identification Number")]
         public string CustomerPersonalIdentificationNumber { get; set; }
 
-
+        [DataMember]
         public ObservableCollection<InterAccountTransferBatchEntryDTO> interAccountBatchEntries { get; set; }
 
         

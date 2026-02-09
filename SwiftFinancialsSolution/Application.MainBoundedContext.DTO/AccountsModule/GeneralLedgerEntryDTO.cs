@@ -424,7 +424,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Amount")]
-        [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount must be greater than zero!")]
+        // Allow negative numbers for credit entries
+        [RegularExpression(@"^\s*-?\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount must be a valid number with up to 2 decimal places!")]
         public decimal Amount { get; set; }
 
         [DataMember]
@@ -461,5 +462,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Debit Account Number")]
         public string DebitFullAccountNumber { get; set; }
+        public object ErrorMessageResult { get; set; }
     }
 }

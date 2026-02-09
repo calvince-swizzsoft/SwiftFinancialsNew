@@ -221,5 +221,11 @@ namespace SwiftFinancials.Presentation.Contracts.BackOfficeModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginReleaseLoanGuarantorsByLoaneeCustomerAccount(CustomerAccountDTO customerAccountDTO, int moduleNavigationItemCode, AsyncCallback callback, Object state);
         bool EndReleaseLoanGuarantorsByLoaneeCustomerAccount(IAsyncResult result);
+
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginMarkLoanCaseDisbursed(LoanDisbursementBatchEntryDTO loanDisbursementBatchEntryDTO, AsyncCallback callback, Object state);
+        bool EndMarkLoanCaseDisbursed(IAsyncResult result);
     }
 }

@@ -10569,6 +10569,35 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
+        public Task<bool> MarkLoanCaseDisbursed(LoanDisbursementBatchEntryDTO loanDisbursementBatchEntryDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            ILoanCaseService service = GetService<ILoanCaseService>(serviceHeader);
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((ILoanCaseService)result.AsyncState).EndMarkLoanCaseDisbursed(result);
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+            service.BeginMarkLoanCaseDisbursed(loanDisbursementBatchEntryDTO, asyncCallback, service);
+            return tcs.Task;
+        }
+
+
         #endregion
 
         #region IncomeAdjustmentDTO
@@ -42330,41 +42359,41 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         }
 
-        public Task<SalesInvoiceDTO> FindSalesInvoiceAsync(Guid salesInvoiceId, ServiceHeader serviceHeader)
-        {
-            var tcs = new TaskCompletionSource<SalesInvoiceDTO>();
+        //public Task<SalesInvoiceDTO> FindSalesInvoiceAsync(Guid salesInvoiceId, ServiceHeader serviceHeader)
+        //{
+        //    var tcs = new TaskCompletionSource<SalesInvoiceDTO>();
 
-            ISalesInvoiceService service = GetService<ISalesInvoiceService>(serviceHeader);
+        //    ISalesInvoiceService service = GetService<ISalesInvoiceService>(serviceHeader);
 
-            AsyncCallback asyncCallback = (result =>
-            {
-                try
-                {
-                    SalesInvoiceDTO response = ((ISalesInvoiceService)result.AsyncState).EndFindSalesInvoice(result);
+        //    AsyncCallback asyncCallback = (result =>
+        //    {
+        //        try
+        //        {
+        //            SalesInvoiceDTO response = ((ISalesInvoiceService)result.AsyncState).EndFindSalesInvoices(result);
 
-                    tcs.SetResult(response);
-                }
+        //            tcs.SetResult(response);
+        //        }
 
-                catch (Exception ex)
-                {
-                    HandleFault(ex, (msgcb) =>
-                    {
+        //        catch (Exception ex)
+        //        {
+        //            HandleFault(ex, (msgcb) =>
+        //            {
 
-                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
-                    });
+        //                if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+        //            });
 
-                }
+        //        }
 
-                finally
-                {
+        //        finally
+        //        {
 
-                    DisposeService(service as IClientChannel);
-                }
-            });
+        //            DisposeService(service as IClientChannel);
+        //        }
+        //    });
 
-            service.BeginFindSalesInvoice(salesInvoiceId, asyncCallback, service);
-            return tcs.Task;
-        }
+        //    service.BeginFindSalesInvoices(salesInvoiceId, asyncCallback, service);
+        //    return tcs.Task;
+        //}
 
         public Task<List<SalesInvoiceDTO>> FindSalesInvoicesAsync(ServiceHeader serviceHeader)
 
@@ -43167,47 +43196,45 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         public Task<JournalDTO> PostReceiptAsync(ReceiptDTO receiptDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
         {
-
             var tcs = new TaskCompletionSource<JournalDTO>();
 
             IReceiptService service = GetService<IReceiptService>(serviceHeader);
 
             AsyncCallback asyncCallback = (result =>
             {
-
                 try
                 {
-
                     JournalDTO response = ((IReceiptService)result.AsyncState).EndPostReceipt(result);
-
                     tcs.TrySetResult(response);
                 }
-
                 catch (Exception ex)
                 {
-
+                    // Log the actual exception
+                    System.Diagnostics.Trace.TraceError($"PostReceiptAsync failed: {ex.Message}");
+                    System.Diagnostics.Trace.TraceError($"Stack Trace: {ex.StackTrace}");
 
                     HandleFault(ex, (msgcb) =>
                     {
-                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                        if (!string.IsNullOrWhiteSpace(msgcb))
+                        {
+                            // Log the fault message
+                            System.Diagnostics.Trace.TraceError($"Fault Message: {msgcb}");
+                            tcs.TrySetResult(null);
+                        }
+                        else
+                        {
+                            tcs.TrySetException(ex);
+                        }
                     });
-
-
                 }
-
                 finally
                 {
                     DisposeService(service as IClientChannel);
                 }
-
-
             });
 
             service.BeginPostReceipt(receiptDTO, moduleNavigationItemCode, asyncCallback, service);
-
             return tcs.Task;
-
-
         }
 
         #endregion

@@ -134,7 +134,7 @@ namespace DistributedServices.MainBoundedContext
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
-            return _mediaAppService.PrintLoanRepaymentSchedule(loanCaseDTO, ConfigurationManager.ConnectionStrings["BLOBStore"].ConnectionString, serviceHeader);
+            return _mediaAppService.PrintLoanRepaymentSchedule(loanCaseDTO, ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString, serviceHeader);
         }
     }
 }

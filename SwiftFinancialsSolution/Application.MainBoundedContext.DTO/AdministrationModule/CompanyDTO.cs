@@ -193,5 +193,6 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
 
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
     }
 }

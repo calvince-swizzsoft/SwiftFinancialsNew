@@ -49,6 +49,7 @@
     <Compile Include="AccountsModule\IAlternateChannelLogService.cs" />
     <Compile Include="AccountsModule\IAlternateChannelReconciliationPeriodService.cs" />
     <Compile Include="AccountsModule\IAlternateChannelService.cs" />
+    <Compile Include="AccountsModule\IARCustomerService.cs" />
     <Compile Include="AccountsModule\IBankLinkageService.cs" />
     <Compile Include="AccountsModule\IBankReconciliationPeriodService.cs" />
     <Compile Include="AccountsModule\IBankToMobileRequestService.cs" />
@@ -80,9 +81,15 @@
     <Compile Include="AccountsModule\ILoanProductService.cs" />
     <Compile Include="AccountsModule\IMobileToBankRequestService.cs" />
     <Compile Include="AccountsModule\IOverDeductionBatchService.cs" />
+    <Compile Include="AccountsModule\IPaymentService.cs" />
     <Compile Include="AccountsModule\IPostingPeriodService.cs" />
+    <Compile Include="AccountsModule\IPurchaseCreditMemoService.cs" />
+    <Compile Include="AccountsModule\IPurchaseInvoiceService.cs" />
+    <Compile Include="AccountsModule\IReceiptService.cs" />
     <Compile Include="AccountsModule\IRecurringBatchService.cs" />
     <Compile Include="AccountsModule\IReportTemplateService.cs" />
+    <Compile Include="AccountsModule\ISalesCreditMemoService.cs" />
+    <Compile Include="AccountsModule\ISalesInvoiceService.cs" />
     <Compile Include="AccountsModule\ISavingsProductService.cs" />
     <Compile Include="AccountsModule\IStandingOrderService.cs" />
     <Compile Include="AccountsModule\ITellerService.cs" />

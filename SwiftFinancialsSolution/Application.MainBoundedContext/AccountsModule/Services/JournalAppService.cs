@@ -562,7 +562,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             return result;
         }
 
-     
+
         public JournalDTO FindJournal(Guid journalId, ServiceHeader serviceHeader)
         {
             if (journalId != Guid.Empty)

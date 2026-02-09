@@ -1,4 +1,5 @@
 ﻿using Application.MainBoundedContext.AdministrationModule.Services;
+using Application.MainBoundedContext.BackOfficeModule.Services;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.Services;
@@ -9,8 +10,10 @@ using Domain.MainBoundedContext.AccountsModule.Aggregates.CreditBatchEntryAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.CustomerAccountArrearageAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.CustomerAccountCarryForwardAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.PostingPeriodAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.StandingOrderAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.StandingOrderHistoryAgg;
+using Domain.MainBoundedContext.BackOfficeModule.Aggregates.LoanCaseAgg;
 using Domain.MainBoundedContext.ValueObjects;
 using Domain.Seedwork;
 using Domain.Seedwork.Specification;
@@ -18,6 +21,7 @@ using Infrastructure.Crosscutting.Framework.Extensions;
 using Infrastructure.Crosscutting.Framework.Utils;
 using KBCsv;
 using LazyCache;
+using NPOI.SS.Formula.Functions;
 using Numero3.EntityFramework.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -35,6 +39,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         private readonly IRepository<CreditBatchEntry> _creditBatchEntryRepository;
         private readonly IRepository<CreditBatchDiscrepancy> _creditBatchDiscrepancyRepository;
         private readonly IRepository<StandingOrder> _standingOrderRepository;
+        private readonly IRepository<LoanCase> _loanCaserepository;
+
         private readonly IRepository<StandingOrderHistory> _standingOrderHistoryRepository;
         private readonly IPostingPeriodAppService _postingPeriodAppService;
         private readonly ICreditTypeAppService _creditTypeAppService;
@@ -55,6 +61,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         public CreditBatchAppService(
            IDbContextScopeFactory dbContextScopeFactory,
            IRepository<CreditBatch> creditBatchRepository,
+           IRepository<LoanCase> loancaseRepository,
            IRepository<CreditBatchEntry> creditBatchEntryRepository,
            IRepository<CreditBatchDiscrepancy> creditBatchDiscrepancyRepository,
            IRepository<StandingOrder> standingOrderRepository,
@@ -83,6 +90,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
             if (creditBatchEntryRepository == null)
                 throw new ArgumentNullException(nameof(creditBatchEntryRepository));
+
+            if (loancaseRepository == null)
+                throw new ArgumentNullException(nameof(loancaseRepository));
+
 
             if (creditBatchDiscrepancyRepository == null)
                 throw new ArgumentNullException(nameof(creditBatchDiscrepancyRepository));
@@ -159,6 +170,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             _recurringBatchAppService = recurringBatchAppService;
             _brokerService = brokerService;
             _appCache = appCache;
+            _loanCaserepository = loancaseRepository;
         }
 
         public CreditBatchDTO AddNewCreditBatch(CreditBatchDTO creditBatchDTO, ServiceHeader serviceHeader)
@@ -294,7 +306,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             {
                 var persisted = _creditBatchRepository.Get(creditBatchDTO.Id, serviceHeader);
 
-                if (persisted == null || persisted.Status != (int)BatchStatus.Audited)
+                //if (persisted == null || persisted.Status != (int)BatchStatus.Audited)
+                //    return result;
+
+                if (persisted == null)
                     return result;
 
                 switch ((BatchAuthOption)batchAuthOption)
@@ -333,8 +348,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 {
                     var query = _creditBatchRepository.DatabaseSqlQuery<Guid>(string.Format(
                           @"SELECT Id
-                            FROM  {0}CreditBatchEntries
-                            WHERE(CreditBatchId = @CreditBatchId)", DefaultSettings.Instance.TablePrefix), serviceHeader,
+                    FROM  {0}CreditBatchEntries
+                    WHERE(CreditBatchId = @CreditBatchId)", DefaultSettings.Instance.TablePrefix), serviceHeader,
                             new SqlParameter("CreditBatchId", creditBatchDTO.Id));
 
                     if (query != null)
@@ -353,7 +368,6 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
             return result;
         }
-
         public bool MatchCreditBatchDiscrepancy(CreditBatchDiscrepancyDTO creditBatchDiscrepancyDTO, Guid chartOfAccountId, int moduleNavigationItemCode, int discrepancyAuthOption, ServiceHeader serviceHeader)
         {
             var result = default(bool);
@@ -927,7 +941,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                 var secondaryDescription = string.Format("{0}~{1}", creditBatchDTO.TypeDescription, creditBatchDTO.MonthDescription);
 
-                var reference = string.Format("{0}~{1}", creditBatchDTO.PaddedBatchNumber, creditBatchEntryDTO.Reference);
+                var reference =  creditBatchEntryDTO.Reference;
 
                 var journals = new List<Journal>();
 
@@ -969,7 +983,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         {
                             var availableBalance = _sqlCommandAppService.FindCustomerAccountAvailableBalance(payoutCustomerAccount, DateTime.Now, serviceHeader);
 
-                            if (creditBatchDTO.PreserveAccountBalance) /*to mean we are only using the credit batch entry amount*/
+                            if (creditBatchDTO.PreserveAccountBalance) /*/ to mean we are only using the credit batch entry amount /*/
                             {
                                 var minimumBalance = availableBalance > targetSavingsProduct.MinimumBalance ? 0m : targetSavingsProduct.MinimumBalance;
 
@@ -978,7 +992,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                             }
 
                             // Recover dues for attached products
-                            if ((availableBalance > 0m /*Will current account balance be positive?*/))
+                            if ((availableBalance > 0m /*/ Will current account balance be positive ?/*/))
                             {
                                 // track deductions
                                 var totalRecoveryDeductions = 0m;
@@ -992,7 +1006,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                 // reset available balance
                                 availableBalance = concessionExemptTuple.Item2;
 
-                                if (creditBatchDTO.PreserveAccountBalance) /*to mean we are only using the credit batch entry amount*/
+                                if (creditBatchDTO.PreserveAccountBalance) /*/ to mean we are only using the credit batch entry amount /*/
                                 {
                                     // work out concession
                                     /* this is the maximum amount to be used for recovery - 23.06.2017
@@ -1016,7 +1030,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                     availableBalance = Math.Min(maximumAmountAvailabeForRecovery, availableBalance);
                                 }
 
-                                if ((availableBalance > 0m /*Will current account balance be positive?*/))
+                                if ((availableBalance > 0m /*/ Will current account balance be positive ?/*/))
                                 {
                                     var branchDTO = _branchAppService.FindCachedBranch(payoutCustomerAccount.BranchId, serviceHeader);
 
@@ -1125,20 +1139,27 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                                     var targetLoanProduct = _loanProductAppService.FindCachedLoanProduct(checkOffCustomerAccount.CustomerAccountTypeTargetProductId, serviceHeader);
 
-                                    secondaryDescription = string.Format("{0}~({1})", secondaryDescription, targetLoanProduct.Description);
+
+                                    var PrimaryDescriptionintrest = "Loan Interest Payment";      
+                                    var secoSecondaryDescriptionintrest = "Loan Repayment CheckOff Interest";
+
+                                    var principledescription =" Loan Principal Repayment";
+                                    var PrincipleSecondarydescription = "Check Off Principal Repayment";
+
+
 
                                     // Credit LoanProduct.InterestReceivableChartOfAccountId, Debit CreditBatchDTO.CreditTypeChartOfAccountId
-                                    var interestReceivableJournal = JournalFactory.CreateJournal(null, postingPeriodDTO.Id, transactionOwnershipBranchId, null, creditBatchEntryDTO.Interest, primaryDescription, secondaryDescription, reference, moduleNavigationItemCode, (int)SystemTransactionCode.CreditBatchCheckOff, UberUtil.GetLastDayOfMonth(creditBatchEntryDTO.CreditBatchMonth, creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year, creditBatchEntryDTO.CreditBatchEnforceMonthValueDate, creditBatchEntryDTO.CreditBatchValueDate), serviceHeader);
+                                    var interestReceivableJournal = JournalFactory.CreateJournal(null, postingPeriodDTO.Id, transactionOwnershipBranchId, null, creditBatchEntryDTO.Interest, PrimaryDescriptionintrest, secoSecondaryDescriptionintrest, reference, moduleNavigationItemCode, (int)SystemTransactionCode.CreditBatchCheckOff, UberUtil.GetLastDayOfMonth(creditBatchEntryDTO.CreditBatchMonth, creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year, creditBatchEntryDTO.CreditBatchEnforceMonthValueDate, creditBatchEntryDTO.CreditBatchValueDate), serviceHeader);
                                     _journalEntryPostingService.PerformDoubleEntry(interestReceivableJournal, targetLoanProduct.InterestReceivableChartOfAccountId, creditBatchDTO.CreditTypeChartOfAccountId, checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
                                     journals.Add(interestReceivableJournal);
 
-                                    // Credit LoanProduct.InterestReceivedChartOfAccountId, Debit LoanProduct.InterestChargedChartOfAccountId
-                                    var interestReceivedJournal = JournalFactory.CreateJournal(null, postingPeriodDTO.Id, transactionOwnershipBranchId, null, creditBatchEntryDTO.Interest, primaryDescription, secondaryDescription, reference, moduleNavigationItemCode, (int)SystemTransactionCode.CreditBatchCheckOff, UberUtil.GetLastDayOfMonth(creditBatchEntryDTO.CreditBatchMonth, creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year, creditBatchEntryDTO.CreditBatchEnforceMonthValueDate, creditBatchEntryDTO.CreditBatchValueDate), serviceHeader);
-                                    _journalEntryPostingService.PerformDoubleEntry(interestReceivedJournal, targetLoanProduct.InterestReceivedChartOfAccountId, targetLoanProduct.InterestChargedChartOfAccountId, checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
-                                    journals.Add(interestReceivedJournal);
+                                    //// Credit LoanProduct.InterestReceivedChartOfAccountId, Debit LoanProduct.InterestChargedChartOfAccountId
+                                    //var interestReceivedJournal = JournalFactory.CreateJournal(null, postingPeriodDTO.Id, transactionOwnershipBranchId, null, creditBatchEntryDTO.Interest, primaryDescription, secondaryDescription, reference, moduleNavigationItemCode, (int)SystemTransactionCode.CreditBatchCheckOff, UberUtil.GetLastDayOfMonth(creditBatchEntryDTO.CreditBatchMonth, creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year, creditBatchEntryDTO.CreditBatchEnforceMonthValueDate, creditBatchEntryDTO.CreditBatchValueDate), serviceHeader);
+                                    //_journalEntryPostingService.PerformDoubleEntry(interestReceivedJournal, targetLoanProduct.InterestReceivedChartOfAccountId, targetLoanProduct.InterestChargedChartOfAccountId, checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
+                                    //journals.Add(interestReceivedJournal);
 
                                     // Credit LoanProduct.ChartOfAccountId, Debit CreditBatchDTO.CreditTypeChartOfAccountId
-                                    var principalJournal = JournalFactory.CreateJournal(null, postingPeriodDTO.Id, transactionOwnershipBranchId, null, creditBatchEntryDTO.Principal, primaryDescription, secondaryDescription, reference, moduleNavigationItemCode, (int)SystemTransactionCode.CreditBatchCheckOff, UberUtil.GetLastDayOfMonth(creditBatchEntryDTO.CreditBatchMonth, creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year, creditBatchEntryDTO.CreditBatchEnforceMonthValueDate, creditBatchEntryDTO.CreditBatchValueDate), serviceHeader);
+                                    var principalJournal = JournalFactory.CreateJournal(null, postingPeriodDTO.Id, transactionOwnershipBranchId, null, creditBatchEntryDTO.Principal, principledescription, PrincipleSecondarydescription, reference, moduleNavigationItemCode, (int)SystemTransactionCode.CreditBatchCheckOff, UberUtil.GetLastDayOfMonth(creditBatchEntryDTO.CreditBatchMonth, creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year, creditBatchEntryDTO.CreditBatchEnforceMonthValueDate, creditBatchEntryDTO.CreditBatchValueDate), serviceHeader);
                                     _journalEntryPostingService.PerformDoubleEntry(principalJournal, targetLoanProduct.ChartOfAccountId, creditBatchDTO.CreditTypeChartOfAccountId, checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
                                     journals.Add(principalJournal);
 
@@ -1199,12 +1220,13 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                     #endregion
 
                                     break;
-                                case ProductCode.Investment:
+                                //we will use savings not investments
+                                case ProductCode.Savings:
 
                                     #region Investment Check-Off
 
-                                    var targetInvestmentProduct = _investmentProductAppService.FindCachedInvestmentProduct(checkOffCustomerAccount.CustomerAccountTypeTargetProductId, serviceHeader);
-
+                                    //var targetInvestmentProduct = _investmentProductAppService.FindCachedInvestmentProduct(checkOffCustomerAccount.CustomerAccountTypeTargetProductId, serviceHeader);
+                                    var targetInvestmentProduct = _savingsProductAppService.FindCachedSavingsProduct(checkOffCustomerAccount.CustomerAccountTypeTargetProductId, checkOffCustomerAccount.BranchId, serviceHeader);
                                     secondaryDescription = string.Format("{0} ({1})", secondaryDescription, targetInvestmentProduct.Description);
 
                                     // Investment Check-Off Journal: Credit InvestmentProduct.ChartOfAccountId, Debit SystemGeneralLedgerAccountCode.CommonControl
@@ -1224,28 +1246,28 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                                             var interestArrears = 0m;
 
-                                            if (targetInvestmentProduct.TrackArrears)
-                                            {
-                                                principalArrears = checkOffCustomerAccount.PrincipalArrearagesBalance * -1 < 0m ? checkOffCustomerAccount.PrincipalArrearagesBalance : 0m;
+                                            //if (targetInvestmentProduct.TrackArrears)
+                                            //{
+                                            //    principalArrears = checkOffCustomerAccount.PrincipalArrearagesBalance * -1 < 0m ? checkOffCustomerAccount.PrincipalArrearagesBalance : 0m;
 
-                                                interestArrears = checkOffCustomerAccount.InterestArrearagesBalance * -1 < 0m ? checkOffCustomerAccount.InterestArrearagesBalance : 0m;
+                                            //    interestArrears = checkOffCustomerAccount.InterestArrearagesBalance * -1 < 0m ? checkOffCustomerAccount.InterestArrearagesBalance : 0m;
 
-                                                if ((principalArrears + interestArrears) > 0m)
-                                                {
-                                                    // cumulate
-                                                    interestArrears += (creditBatchEntryDTO.Interest - interestArrears);
-                                                    principalArrears += (creditBatchEntryDTO.Principal - principalArrears);
-                                                }
-                                                else
-                                                {
-                                                    // track new
-                                                    interestArrears = targetInvestmentStandingOrder.Interest - creditBatchEntryDTO.Interest;
-                                                    principalArrears = targetInvestmentStandingOrder.Principal - creditBatchEntryDTO.Principal;
-                                                }
+                                            //    if ((principalArrears + interestArrears) > 0m)
+                                            //    {
+                                            //        // cumulate
+                                            //        interestArrears += (creditBatchEntryDTO.Interest - interestArrears);
+                                            //        principalArrears += (creditBatchEntryDTO.Principal - principalArrears);
+                                            //    }
+                                            //    else
+                                            //    {
+                                            //        // track new
+                                            //        interestArrears = targetInvestmentStandingOrder.Interest - creditBatchEntryDTO.Interest;
+                                            //        principalArrears = targetInvestmentStandingOrder.Principal - creditBatchEntryDTO.Principal;
+                                            //    }
 
-                                                interestArrears = interestArrears * -1 > 0m ? 0m : interestArrears;
-                                                principalArrears = principalArrears * -1 > 0m ? 0m : principalArrears;
-                                            }
+                                            //    interestArrears = interestArrears * -1 > 0m ? 0m : interestArrears;
+                                            //    principalArrears = principalArrears * -1 > 0m ? 0m : principalArrears;
+                                            //}
 
                                             var history = StandingOrderHistoryFactory.CreateStandingOrderHistory(targetInvestmentStandingOrder.Id, postingPeriodDTO.Id, targetInvestmentStandingOrder.BenefactorCustomerAccountId, targetInvestmentStandingOrder.BeneficiaryCustomerAccountId, new Duration(targetInvestmentStandingOrder.DurationStartDate, targetInvestmentStandingOrder.DurationEndDate), new Schedule(targetInvestmentStandingOrder.ScheduleFrequency, targetInvestmentStandingOrder.ScheduleExpectedRunDate, targetInvestmentStandingOrder.ScheduleActualRunDate, targetInvestmentStandingOrder.ScheduleExecuteAttemptCount, targetInvestmentStandingOrder.ScheduleForceExecute), new Charge(targetInvestmentStandingOrder.ChargeType, targetInvestmentStandingOrder.ChargePercentage, targetInvestmentStandingOrder.ChargeFixedAmount), creditBatchEntryDTO.CreditBatchMonth, targetInvestmentStandingOrder.Trigger, targetInvestmentStandingOrder.Principal, targetInvestmentStandingOrder.Interest, creditBatchEntryDTO.Principal, creditBatchEntryDTO.Interest, targetInvestmentStandingOrder.Remarks);
                                             history.CreatedBy = serviceHeader.ApplicationUserName;
@@ -1310,7 +1332,6 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
             return result;
         }
-
         public List<CreditBatchDTO> FindCreditBatches(ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
@@ -1746,18 +1767,20 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                         break;
                                     case CreditBatchType.CheckOff:
 
-                                        if (dataRecord.Count == 8)
+
+                                        //if (dataRecord.Count == 8)
+                                        if (dataRecord.Count == 6)
                                         {
                                             var checkOffEntry = new BatchImportEntryWrapper
                                             {
-                                                Column1 = dataRecord[0], //Ministry Department
-                                                Column2 = dataRecord[1], //Payroll Number
-                                                Column3 = dataRecord[2], //Contribution
-                                                Column4 = dataRecord[3], //Product Balance
-                                                Column5 = dataRecord[4], //Beneficiary
-                                                Column6 = dataRecord[5], //Loan/Investment Product Credit Code
-                                                Column7 = dataRecord[6], //Type (sInterest,sLoan,sShare,wCont)
-                                                Column8 = dataRecord[7], //YourReference
+                                                Column1 = dataRecord[0], //Ministry Department -- Payroll
+                                                Column2 = dataRecord[1], //Payroll Number -- Beneficiary 
+                                                Column3 = dataRecord[2], //Contribution -- Contribution
+                                                Column4 = dataRecord[3], //Product Balance -- Loan/Investment Product Credit Code  
+                                                Column5 = dataRecord[4], //Beneficiary -- Type (sInterest, sLoan, sShare, wCont)
+                                                Column6 = dataRecord[5], //Loan/Investment Product Credit Code --Reference
+                                                                         //Column7 = dataRecord[6], //Type (sInterest,sLoan,sShare,wCont)
+                                                                         //Column8 = dataRecord[7], //YourReference
                                             };
 
                                             importEntries.Add(checkOffEntry);
@@ -1863,7 +1886,6 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 else return null;
             }
         }
-
         private BatchImportParseInfo ParsePayout(List<BatchImportEntryWrapper> importEntries, ServiceHeader serviceHeader)
         {
             var result = new BatchImportParseInfo
@@ -1957,7 +1979,6 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
             return result;
         }
-
         private BatchImportParseInfo ParseCheckOff(CreditBatch creditBatch, List<BatchImportEntryWrapper> importEntries, ServiceHeader serviceHeader)
         {
             var result = new BatchImportParseInfo
@@ -1970,21 +1991,24 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
             var investmentProducts = _investmentProductAppService.FindInvestmentProducts(serviceHeader);
 
+            var savingProducts = _savingsProductAppService.FindSavingsProducts(serviceHeader);
+
             var count = 0;
 
-            importEntries.ForEach(item =>
+            importEntries.ForEach(async item =>
             {
                 var contributionAmount = default(decimal);
 
                 var productBalance = default(decimal);
 
-                if (decimal.TryParse(item.Column3, NumberStyles.Any, CultureInfo.InvariantCulture, out contributionAmount) && decimal.TryParse(item.Column4, NumberStyles.Any, CultureInfo.InvariantCulture, out productBalance))
+                //if (decimal.TryParse(item.Column3, NumberStyles.Any, CultureInfo.InvariantCulture, out contributionAmount) && decimal.TryParse(item.Column4, NumberStyles.Any, CultureInfo.InvariantCulture, out productBalance))
+                if (decimal.TryParse(item.Column2, NumberStyles.Any, CultureInfo.InvariantCulture, out contributionAmount))
                 {
                     var productCode = default(int);
 
-                    if (int.TryParse(item.Column6, out productCode))
+                    if (int.TryParse(item.Column4, out productCode))
                     {
-                        switch ((CheckOffEntryType)Enum.Parse(typeof(CheckOffEntryType), item.Column7))
+                        switch ((CheckOffEntryType)Enum.Parse(typeof(CheckOffEntryType), item.Column5))
                         {
                             case CheckOffEntryType.sLoan:
 
@@ -1996,7 +2020,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                 {
                                     var targetLoanPrincipalProduct = sLoan_MatchedLoanProducts.First();
 
-                                    var customerLoanPrincipalAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetLoanPrincipalProduct.Id, item.Column2, serviceHeader);
+                                    var customerLoanPrincipalAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetLoanPrincipalProduct.Id, item.Column1, serviceHeader);
 
                                     if (customerLoanPrincipalAccounts.Any())
                                     {
@@ -2024,34 +2048,87 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                             }
                                             else
                                             {
-                                                CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO();
+                                                // Get the first loan case for the customer (without await)
+                                                var loanCasesList = _loanCaserepository
+                                                    .GetAllAsync(serviceHeader)
+                                                    .Result;
 
-                                                creditBatchEntry.CustomerAccountId = targetCustomerAccount.Id;
-                                                creditBatchEntry.CustomerAccountBranchId = targetCustomerAccount.BranchId;
-                                                creditBatchEntry.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
-                                                creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
-                                                creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
-                                                creditBatchEntry.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
-                                                creditBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers = item.Column2;
-                                                creditBatchEntry.Beneficiary = item.Column5;
-                                                creditBatchEntry.ProductDescription = targetLoanPrincipalProduct.Description;
-                                                creditBatchEntry.Principal = contributionAmount;
-                                                creditBatchEntry.Balance = productBalance;
-                                                creditBatchEntry.Reference = item.Column2;
+                                                var now = DateTime.Now; // or DateTime.UtcNow if you prefer UTC
 
-                                                result.MatchedCollection1.Add(creditBatchEntry);
+                                                var loanCase = loanCasesList
+                                                    .Where(l => l.CustomerId == targetCustomerAccount.CustomerId && l.DisbursedDate.HasValue)
+                                                    .OrderBy(l => Math.Abs((l.DisbursedDate.Value - now).TotalSeconds))
+                                                    .FirstOrDefault();
+
+
+
+
+                                                if (loanCase != null && targetLoanPrincipalProduct != null)
+                                                {
+
+                                                    // ================== OPENING BALANCE ==================
+                                                    decimal principalBalance = loanCase.TotalLoansBalance;
+
+                                                    // ================== MONTHLY INTEREST RATE ==================
+                                                    decimal monthlyRate = (decimal)targetLoanPrincipalProduct.LoanInterestAnnualPercentageRate / 100m / 12m;
+
+                                                    // ================== INTEREST FOR CONTRIBUTION ==================
+                                                    decimal interestAmount = Math.Round(contributionAmount * monthlyRate, 2, MidpointRounding.AwayFromZero);
+
+                                                    // ================== PRINCIPAL PORTION ==================
+                                                    decimal principalPortion = contributionAmount - interestAmount;
+
+                                                    // ================== NEW BALANCE ==================
+                                                    decimal newBalance = principalBalance - principalPortion;
+
+                                                    // ================== CHECK FIRST MONTH / INTEREST ALREADY CHARGED ==================
+                                                    bool isFirstMonth = loanCase.DisbursedDate.HasValue &&
+                                                                        loanCase.DisbursedDate.Value.Year == now.Year &&
+                                                                        loanCase.DisbursedDate.Value.Month == now.Month;
+
+                                                    if (isFirstMonth)
+                                                    {
+                                                        // Skip interest in first month, entire payment goes to principal
+                                                        principalPortion = contributionAmount;
+                                                        interestAmount = 0;
+                                                        newBalance = principalBalance - principalPortion;
+                                                    }
+
+                                                    // ================== POPULATE DTO ==================
+                                                    CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO
+                                                    {
+                                                        CustomerAccountId = targetCustomerAccount.Id,
+                                                        CustomerAccountBranchId = targetCustomerAccount.BranchId,
+                                                        CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode,
+                                                        CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId,
+                                                        CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode,
+                                                        CustomerAccountCustomerId = targetCustomerAccount.CustomerId,
+                                                        CustomerAccountCustomerIndividualPayrollNumbers = item.Column1,
+                                                        Beneficiary = item.Column3,
+                                                        ProductDescription = targetLoanPrincipalProduct.Description,
+                                                        Principal = principalPortion,
+                                                        Interest = interestAmount,
+                                                        Balance = newBalance,
+                                                        Reference = loanCase.CaseNumber.ToString(),
+                                                    };
+
+                                                    result.MatchedCollection1.Add(creditBatchEntry);
+
+                                                }
                                             }
+
+
                                         }
                                         else
                                         {
-                                            item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanPrincipalAccounts.Count(), item.Column2);
+                                            item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanPrincipalAccounts.Count(), item.Column1);
 
                                             result.MismatchedCollection.Add(item);
                                         }
                                     }
                                     else
                                     {
-                                        item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column2);
+                                        item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column1);
 
                                         result.MismatchedCollection.Add(item);
                                     }
@@ -2077,7 +2154,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                 {
                                     var targetLoanInterestProduct = sInterest_MatchedLoanProducts.First();
 
-                                    var customerLoanInterestAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetLoanInterestProduct.Id, item.Column2, serviceHeader);
+                                    var customerLoanInterestAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetLoanInterestProduct.Id, item.Column1, serviceHeader);
 
                                     if (customerLoanInterestAccounts.Any())
                                     {
@@ -2105,6 +2182,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                             }
                                             else
                                             {
+
                                                 CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO();
 
                                                 creditBatchEntry.CustomerAccountId = targetCustomerAccount.Id;
@@ -2113,26 +2191,26 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                 creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
                                                 creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
                                                 creditBatchEntry.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
-                                                creditBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers = item.Column2;
-                                                creditBatchEntry.Beneficiary = item.Column5;
+                                                creditBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+                                                creditBatchEntry.Beneficiary = item.Column3;
                                                 creditBatchEntry.ProductDescription = targetLoanInterestProduct.Description;
                                                 creditBatchEntry.Interest = contributionAmount;
                                                 creditBatchEntry.Balance = productBalance;
-                                                creditBatchEntry.Reference = item.Column2;
+                                                creditBatchEntry.Reference = item.Column1;
 
                                                 result.MatchedCollection1.Add(creditBatchEntry);
                                             }
                                         }
                                         else
                                         {
-                                            item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanInterestAccounts.Count(), item.Column2);
+                                            item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanInterestAccounts.Count(), item.Column1);
 
                                             result.MismatchedCollection.Add(item);
                                         }
                                     }
                                     else
                                     {
-                                        item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column2);
+                                        item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column1);
 
                                         result.MismatchedCollection.Add(item);
                                     }
@@ -2156,13 +2234,19 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                                 #region sShare/wCont/sInvest/sRisk/wLoan
 
-                                var matchedInvestmentProducts = investmentProducts.Where(x => x.Code == productCode);
+                                //fix to use savingProducts not investmentProducts
+                                //var matchedInvestmentProducts = investmentProducts.Where(x => x.Code == productCode);
+
+
+                                var matchedInvestmentProducts = savingProducts.Where(x => x.Code == productCode);
+
+
 
                                 if (matchedInvestmentProducts != null && matchedInvestmentProducts.Any() && matchedInvestmentProducts.Count() == 1)
                                 {
                                     var targetInvestmentProduct = matchedInvestmentProducts.First();
 
-                                    var customerInvestmentAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetInvestmentProduct.Id, item.Column2, serviceHeader);
+                                    var customerInvestmentAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetInvestmentProduct.Id, item.Column1, serviceHeader);
 
                                     if (customerInvestmentAccounts.Any())
                                     {
@@ -2178,25 +2262,25 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                             creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
                                             creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
                                             creditBatchEntry.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
-                                            creditBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers = item.Column2;
-                                            creditBatchEntry.Beneficiary = item.Column5;
+                                            creditBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+                                            creditBatchEntry.Beneficiary = item.Column3;
                                             creditBatchEntry.ProductDescription = targetInvestmentProduct.Description;
                                             creditBatchEntry.Principal = contributionAmount;
                                             creditBatchEntry.Balance = productBalance;
-                                            creditBatchEntry.Reference = item.Column2;
+                                            creditBatchEntry.Reference = item.Column1;
 
                                             result.MatchedCollection1.Add(creditBatchEntry);
                                         }
                                         else
                                         {
-                                            item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerInvestmentAccounts.Count(), item.Column2);
+                                            item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerInvestmentAccounts.Count(), item.Column1);
 
                                             result.MismatchedCollection.Add(item);
                                         }
                                     }
                                     else
                                     {
-                                        item.Remarks = string.Format("Record #{0} ~ no match for investment product customer account by personal file number {1}", count, item.Column2);
+                                        item.Remarks = string.Format("Record #{0} ~ no match for investment product customer account by personal file number {1}", count, item.Column1);
 
                                         result.MismatchedCollection.Add(item);
                                     }
@@ -2222,7 +2306,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                 {
                                     var targetLoanProduct = matchedLoanProducts.First();
 
-                                    var customerLoanAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetLoanProduct.Id, item.Column2, serviceHeader);
+                                    var customerLoanAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetLoanProduct.Id, item.Column1, serviceHeader);
 
                                     if (customerLoanAccounts.Any())
                                     {
@@ -2259,12 +2343,12 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                             creditBatchEntryTariff_OutstandingBalance.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
                                                             creditBatchEntryTariff_OutstandingBalance.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
                                                             creditBatchEntryTariff_OutstandingBalance.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
-                                                            creditBatchEntryTariff_OutstandingBalance.CustomerAccountCustomerIndividualPayrollNumbers = item.Column2;
-                                                            creditBatchEntryTariff_OutstandingBalance.Beneficiary = item.Column5;
+                                                            creditBatchEntryTariff_OutstandingBalance.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+                                                            creditBatchEntryTariff_OutstandingBalance.Beneficiary = item.Column3;
                                                             creditBatchEntryTariff_OutstandingBalance.ProductDescription = targetLoanProduct.Description;
                                                             creditBatchEntryTariff_OutstandingBalance.Principal = tariff.Amount;
                                                             creditBatchEntryTariff_OutstandingBalance.Balance = targetCustomerAccount.BookBalance;
-                                                            creditBatchEntryTariff_OutstandingBalance.Reference = string.Format("{0}~{1}", item.Column2, tariff.Description);
+                                                            creditBatchEntryTariff_OutstandingBalance.Reference = string.Format("{0}~{1}", item.Column1, tariff.Description);
 
                                                             result.MatchedCollection1.Add(creditBatchEntryTariff_OutstandingBalance);
                                                         });
@@ -2283,13 +2367,13 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                     creditBatchEntryOutstandingBalance.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
                                                     creditBatchEntryOutstandingBalance.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
                                                     creditBatchEntryOutstandingBalance.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
-                                                    creditBatchEntryOutstandingBalance.CustomerAccountCustomerIndividualPayrollNumbers = item.Column2;
-                                                    creditBatchEntryOutstandingBalance.Beneficiary = item.Column5;
+                                                    creditBatchEntryOutstandingBalance.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+                                                    creditBatchEntryOutstandingBalance.Beneficiary = item.Column3;
                                                     creditBatchEntryOutstandingBalance.ProductDescription = targetLoanProduct.Description;
                                                     creditBatchEntryOutstandingBalance.Interest = actualLoanInterestOutstandingBalance;
                                                     creditBatchEntryOutstandingBalance.Principal = actualLoanPrincipalOutstandingBalance;
                                                     creditBatchEntryOutstandingBalance.Balance = targetCustomerAccount.BookBalance;
-                                                    creditBatchEntryOutstandingBalance.Reference = item.Column2;
+                                                    creditBatchEntryOutstandingBalance.Reference = item.Column1;
 
                                                     result.MatchedCollection1.Add(creditBatchEntryOutstandingBalance);
 
@@ -2315,12 +2399,12 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                                     creditBatchEntryTariff_StandingOrder.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
                                                                     creditBatchEntryTariff_StandingOrder.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
                                                                     creditBatchEntryTariff_StandingOrder.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
-                                                                    creditBatchEntryTariff_StandingOrder.CustomerAccountCustomerIndividualPayrollNumbers = item.Column2;
-                                                                    creditBatchEntryTariff_StandingOrder.Beneficiary = item.Column5;
+                                                                    creditBatchEntryTariff_StandingOrder.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+                                                                    creditBatchEntryTariff_StandingOrder.Beneficiary = item.Column3;
                                                                     creditBatchEntryTariff_StandingOrder.ProductDescription = targetLoanProduct.Description;
                                                                     creditBatchEntryTariff_StandingOrder.Principal = tariff.Amount;
                                                                     creditBatchEntryTariff_StandingOrder.Balance = targetCustomerAccount.BookBalance;
-                                                                    creditBatchEntryTariff_StandingOrder.Reference = string.Format("{0}~{1}", item.Column2, tariff.Description);
+                                                                    creditBatchEntryTariff_StandingOrder.Reference = string.Format("{0}~{1}", item.Column1, tariff.Description);
 
                                                                     result.MatchedCollection1.Add(creditBatchEntryTariff_StandingOrder);
                                                                 });
@@ -2341,13 +2425,13 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                             creditBatchEntryStandingOrder.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
                                                             creditBatchEntryStandingOrder.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
                                                             creditBatchEntryStandingOrder.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
-                                                            creditBatchEntryStandingOrder.CustomerAccountCustomerIndividualPayrollNumbers = item.Column2;
-                                                            creditBatchEntryStandingOrder.Beneficiary = item.Column5;
+                                                            creditBatchEntryStandingOrder.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+                                                            creditBatchEntryStandingOrder.Beneficiary = item.Column3;
                                                             creditBatchEntryStandingOrder.ProductDescription = targetLoanProduct.Description;
                                                             creditBatchEntryStandingOrder.Interest = actualLoanInterestStandingOrder;
                                                             creditBatchEntryStandingOrder.Principal = actualLoanPrincipalStandingOrder;
                                                             creditBatchEntryStandingOrder.Balance = targetCustomerAccount.BookBalance;
-                                                            creditBatchEntryStandingOrder.Reference = item.Column2;
+                                                            creditBatchEntryStandingOrder.Reference = item.Column1;
 
                                                             result.MatchedCollection1.Add(creditBatchEntryStandingOrder);
                                                         }
@@ -2377,14 +2461,14 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                         }
                                         else
                                         {
-                                            item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanAccounts.Count(), item.Column2);
+                                            item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanAccounts.Count(), item.Column1);
 
                                             result.MismatchedCollection.Add(item);
                                         }
                                     }
                                     else
                                     {
-                                        item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column2);
+                                        item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column1);
 
                                         result.MismatchedCollection.Add(item);
                                     }
@@ -2402,7 +2486,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                             default:
 
-                                item.Remarks = string.Format("Record #{0} ~ unable to parse check-off type {1}", count, item.Column7);
+                                item.Remarks = string.Format("Record #{0} ~ unable to parse check-off type {1}", count, item.Column5);
 
                                 result.MismatchedCollection.Add(item);
 
@@ -2411,14 +2495,14 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     }
                     else
                     {
-                        item.Remarks = string.Format("Record #{0} ~ unable to parse product code {1}", count, item.Column6);
+                        item.Remarks = string.Format("Record #{0} ~ unable to parse product code {1}", count, item.Column4);
 
                         result.MismatchedCollection.Add(item);
                     }
                 }
                 else
                 {
-                    item.Remarks = string.Format("Record #{0} ~ unable to parse amount(s) {1}/{2}", count, item.Column3, item.Column4);
+                    item.Remarks = string.Format("Record #{0} ~ unable to parse amount(s) {1}/{2}", count, item.Column3, item.Column2);
 
                     result.MismatchedCollection.Add(item);
                 }

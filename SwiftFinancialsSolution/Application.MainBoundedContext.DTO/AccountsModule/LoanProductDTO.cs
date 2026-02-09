@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Application.MainBoundedContext.DTO.AccountsModule
 {
@@ -542,28 +543,35 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             return ValidationResult.Success;
         }
 
+        [JsonIgnore] // BREAK CIRCULAR REFERENCE
         [DataMember]
         public LoanProductAuxilliaryAppraisalFactorDTO AuxilliaryAppraisalFactor { get; set; }
 
+        [JsonIgnore] // BREAK CIRCULAR REFERENCE
         [DataMember]
         public ObservableCollection<LoanProductAuxilliaryAppraisalFactorDTO> Tiers { get; set; }
 
+        [JsonIgnore] // BREAK CIRCULAR REFERENCE
         [DataMember]
         public ObservableCollection<LoanProductAuxiliaryConditionDTO> AuxiliaryConditions { get; set; }
 
+        [JsonIgnore] // BREAK CIRCULAR REFERENCE
         [DataMember]
         public ObservableCollection<LoanProductDeductibleDTO> Deductiles { get; set; }
 
+        [JsonIgnore] // BREAK CIRCULAR REFERENCE
         [DataMember]
         public ObservableCollection<LoanCycleDTO> Cycles { get; set; }
 
-
+        [JsonIgnore] // BREAK CIRCULAR REFERENCE
         [DataMember]
         public ObservableCollection<DynamicChargeDTO> charges { get; set; }
 
+        [JsonIgnore] // BREAK CIRCULAR REFERENCE
         [DataMember]
         public ProductCollectionInfo productCollection { get; set; }
 
+        [JsonIgnore] // BREAK CIRCULAR REFERENCE
         [DataMember]
         public ObservableCollection<CommissionDTO> commissions { get; set; }
     }

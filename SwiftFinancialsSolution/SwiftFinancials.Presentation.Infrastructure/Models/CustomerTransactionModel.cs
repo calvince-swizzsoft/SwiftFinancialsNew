@@ -13,6 +13,7 @@ using System.Runtime.Serialization;
 
 namespace SwiftFinancials.Presentation.Infrastructure.Models
 {
+    [DataContract]
     public class CustomerTransactionModel : BindingModelBase<CustomerTransactionModel>
     {
         public CustomerTransactionModel()
@@ -25,6 +26,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         Guid _branchId;
+        [DataMember]
         [Display(Name = "Branch")]
         [ValidGuid]
         public Guid BranchId
@@ -41,6 +43,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         Guid _postingPeriodId;
+        [DataMember]
         [Display(Name = "Posting Period")]
         [ValidGuid]
         public Guid PostingPeriodId
@@ -57,6 +60,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         decimal _totalValue;
+        [DataMember]
         [Display(Name = "Total Value")]
         [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Transaction amount must be greater than zero!")]
         public decimal TotalValue
@@ -73,6 +77,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         string _primaryDescription;
+        [DataMember]
         [Display(Name = "Primary Description")]
         [Required]
         [StringLength(256)]
@@ -90,8 +95,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         string _secondaryDescription;
+        [DataMember]
         [Display(Name = "Secondary Description")]
-        [StringLength(256)]                                     
+        [StringLength(256)]
         public string SecondaryDescription
         {
             get { return _secondaryDescription; }
@@ -106,6 +112,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         string _reference;
+        [DataMember]
         [Display(Name = "Reference")]
         [StringLength(256)]
         public string Reference
@@ -122,6 +129,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         int _moduleNavigationItemCode;
+        [DataMember]
         [Display(Name = "Module Navigation Item Code")]
         public int ModuleNavigationItemCode
         {
@@ -137,6 +145,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         Guid _creditChartOfAccountId;
+        [DataMember]
         [Display(Name = "Credit G/L Account Id")]
         [ValidGuid]
         public Guid CreditChartOfAccountId
@@ -153,6 +162,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         Guid _debitChartOfAccountId;
+        [DataMember]
         [Display(Name = "Debit G/L Account Id")]
         [ValidGuid]
         public Guid DebitChartOfAccountId
@@ -169,6 +179,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         Guid _creditCustomerAccountId;
+        [DataMember]
         [Display(Name = "Credit Customer Account")]
         [ValidGuid]
         public Guid CreditCustomerAccountId
@@ -185,6 +196,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         CustomerAccountDTO _creditCustomerAccount;
+        [DataMember]
         [Display(Name = "Credit Customer Account")]
         public CustomerAccountDTO CreditCustomerAccount
         {
@@ -200,6 +212,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         Guid _debitCustomerAccountId;
+        [DataMember]
         [Display(Name = "Debit Customer Account")]
         [ValidGuid]
         public Guid DebitCustomerAccountId
@@ -216,6 +229,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         CustomerAccountDTO _debitCustomerAccount;
+        [DataMember]
         [Display(Name = "Debit Customer Account")]
         public CustomerAccountDTO DebitCustomerAccount
         {
@@ -231,6 +245,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         int _transactionCode;
+        [DataMember]
         [Display(Name = "Transaction Code")]
         public int TransactionCode
         {
@@ -246,6 +261,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         DateTime? _valueDate;
+        [DataMember]
         [Display(Name = "Value Date")]
         public DateTime? ValueDate
         {
@@ -260,16 +276,17 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
             }
         }
 
-  
+        [DataMember]
         public CustomerAccountDTO CustomerAccount { get; set; }
 
-  
+        [DataMember]
         public CashDepositRequestDTO CashDepositRequest { get; set; }
 
+        [DataMember]
         public Guid CashDepositRequestId { get; set; }
 
+        [DataMember]
         public int CashDepositCategory { get; set; }
-
 
         public string CashDepositCategoryDescription
         {
@@ -282,13 +299,12 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         [DataMember]
         public CashWithdrawalRequestDTO CashWithdrawal { get; set; }
 
-
+        [DataMember]
         public Guid CashWithdrawalRequestId { get; set; }
 
-
+        [DataMember]
         public int CashWithdrawalCategory { get; set; }
 
-  
         public string CashWithdrawalCategoryDescription
         {
             get
@@ -297,70 +313,137 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
             }
         }
 
-
+        [DataMember]
         public PaymentVoucherDTO PaymentVoucher { get; set; }
 
+        [DataMember]
         public Guid PaymentVoucherId { get; set; }
 
+        [DataMember]
         public string PaymentVoucherPayee { get; set; }
 
+        [DataMember]
         public DateTime? PaymentVoucherWriteDate { get; set; }
 
+        [DataMember]
         public Guid ChequeBookId { get; set; }
 
-
+        [DataMember]
         public TellerDTO Teller { get; set; }
 
-     
+        [DataMember]
         public ExternalChequeDTO ChequeDeposit { get; set; }
 
+        [DataMember]
         public PageCollectionInfo<GeneralLedgerTransaction> TellerStatements { get; set; }
 
+        [DataMember]
         public CustomerDTO CustomerDTO { get; set; }
 
-        public List<ExternalChequeDTO>  CustomerAccountUnclearedCheques { get; set; }
+        [DataMember]
+        public List<ExternalChequeDTO> CustomerAccountUnclearedCheques { get; set; }
 
+        [DataMember]
         public List<Guid> ChequePayableCustomerAccountIds { get; set; }
 
-        public string ChequePayableCustomerAccountIdsJson {
-
+        [DataMember]
+        public string ChequePayableCustomerAccountIdsJson
+        {
             get
             {
-
                 return JsonConvert.SerializeObject(ChequePayableCustomerAccountIds);
             }
-
             set
             {
-
                 ChequePayableCustomerAccountIds = JsonConvert.DeserializeObject<List<Guid>>(value);
             }
         }
 
+        [DataMember]
         public List<CustomerAccountSignatoryDTO> CustomerAccountSignatories { get; set; }
 
+        [DataMember]
         public List<ElectronicStatementOrderDTO> CustomerAccountMiniStatement { get; set; }
 
+        [DataMember]
         public List<ApportionmentWrapper> Apportionments { get; set; }
 
+        [DataMember]
         public ApportionmentWrapper ApportionmentWrapper { get; set; }
 
+        [DataMember]
         public string DebitCustomerAccountJson
         {
-
             get
             {
-                
                 return JsonConvert.SerializeObject(DebitCustomerAccount);
             }
-
             set
             {
-                
                 DebitCustomerAccount = JsonConvert.DeserializeObject<CustomerAccountDTO>(value);
             }
         }
 
+        [DataMember]
         public Boolean DialogResult { get; set; }
+
+        [DataMember]
+        public Guid BankAccountId { get; set; }
+
+        //Added models
+
+        [DataContract]
+        public class CustomerReceiptBatchRequest
+        {
+            [DataMember]
+            public Guid BranchId { get; set; }
+
+            [DataMember]
+            public decimal TotalValue { get; set; }
+
+            [DataMember]
+            public Guid BankAccountId { get; set; }
+
+            [DataMember]
+            public Guid PostingPeriodId { get; set; }
+
+            [DataMember]
+            public CustomerAccountDTO CustomerAccount { get; set; }
+
+            [DataMember]
+            public CustomerDTO CustomerDTO { get; set; }
+
+            [DataMember]
+            public string PrimaryDescription { get; set; }
+
+            [DataMember]
+            public string Reference { get; set; }
+            public string _reference { get; set; }
+            public DateTime? PostedDate { get; set; }
+        }
+
+        [DataContract]
+        public class BatchCustomerReceiptRequest
+        {
+            [DataMember]
+            public Guid BranchId { get; set; }
+
+            [DataMember]
+            public Guid BankAccountId { get; set; }
+
+            [DataMember]
+            public Guid PostingPeriodId { get; set; }
+
+            [DataMember]
+            public string PrimaryDescription { get; set; }
+
+            [DataMember]
+            public string Reference { get; set; }
+
+            public string _reference { get; set; }
+
+            [DataMember]
+            public List<CustomerReceiptBatchRequest> Receipts { get; set; }
+        }
     }
 }

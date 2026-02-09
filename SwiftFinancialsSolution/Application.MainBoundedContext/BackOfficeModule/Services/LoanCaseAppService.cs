@@ -198,7 +198,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                     var loanCase = LoanCaseFactory.CreateLoanCase(loanCaseDTO.ParentId, loanCaseDTO.BranchId, loanCaseDTO.CustomerId, loanCaseDTO.LoanProductId, loanCaseDTO.LoanPurposeId, loanCaseDTO.SavingsProductId, loanCaseDTO.Remarks, loanCaseDTO.AmountApplied, loanCaseDTO.ReceivedDate, loanCaseDTO.LoanProductInvestmentsBalance, loanCaseDTO.LoanProductLoanBalance, loanCaseDTO.TotalLoansBalance, loanCaseDTO.LoanProductLatestIncome, loanCaseDTO.Reference, loanInterest, loanRegistration, loanCaseDTO.MaximumAmountPercentage, takeHome);
 
                     loanCase.CaseNumber = _loanCaseRepository.DatabaseSqlQuery<int>(string.Format("SELECT ISNULL(MAX(CaseNumber),0) + 1 AS Expr1 FROM {0}LoanCases", DefaultSettings.Instance.TablePrefix), serviceHeader).FirstOrDefault();
-                    loanCase.Status = (int)LoanCaseStatus.Registered;
+                    loanCase.Status = loanCaseDTO.Status;
                     loanCase.CreatedBy = serviceHeader.ApplicationUserName;
 
                     _loanCaseRepository.Add(loanCase, serviceHeader);
@@ -218,6 +218,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                     var persisted = _loanCaseRepository.Get(loanCaseDTO.Id, serviceHeader);
+                    persisted.Status = (int)LoanCaseStatus.Registered;
 
                     if (persisted != null && (persisted.Status == (int)LoanCaseStatus.Registered || persisted.Status == (int)LoanCaseStatus.Deferred))
                     {
@@ -285,6 +286,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                     var persisted = await _loanCaseRepository.GetAsync(loanCaseDTO.Id, serviceHeader);
+                    persisted.Status = (int)LoanCaseStatus.Registered;
 
                     if (persisted != null && (persisted.Status == (int)LoanCaseStatus.Registered || persisted.Status == (int)LoanCaseStatus.Deferred))
                     {
@@ -352,6 +354,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                     var persisted = _loanCaseRepository.Get(loanCaseDTO.Id, serviceHeader);
+                    persisted.Status = (int)LoanCaseStatus.Appraised;
 
                     if (persisted != null && persisted.Status == (int)LoanCaseStatus.Appraised)
                     {
@@ -420,7 +423,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                     var persisted = await _loanCaseRepository.GetAsync(loanCaseDTO.Id, serviceHeader);
-
+                    persisted.Status = (int)LoanCaseStatus.Appraised;
                     if (persisted != null && persisted.Status == (int)LoanCaseStatus.Appraised)
                     {
                         switch ((LoanApprovalOption)loanApprovalOption)
@@ -488,6 +491,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                     var persisted = _loanCaseRepository.Get(loanCaseDTO.Id, serviceHeader);
+                    persisted.Status = (int)LoanCaseStatus.Approved;
 
                     if (persisted != null && persisted.Status == (int)LoanCaseStatus.Approved)
                     {
@@ -709,6 +713,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                     var persisted = await _loanCaseRepository.GetAsync(loanCaseDTO.Id, serviceHeader);
+                    persisted.Status = (int)LoanCaseStatus.Approved;
 
                     if (persisted != null && persisted.Status == (int)LoanCaseStatus.Approved)
                     {
@@ -1881,7 +1886,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 {
                     switch ((LoanCaseStatus)persistedLoanCase.Status)
                     {
-                        case LoanCaseStatus.Audited:
+                        case LoanCaseStatus.Approved:
 
                             persistedLoanCase.Status = (int)LoanCaseStatus.Disbursed;
                             persistedLoanCase.DisbursedAmount = loanDisbursementBatchEntryDTO.LoanCaseApprovedAmount;

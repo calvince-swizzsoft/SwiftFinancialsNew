@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Crosscutting.Framework.Utils;
+using System;
 using System.IO;
 using System.ServiceModel;
 using System.Xml;
@@ -10,8 +11,19 @@ namespace DistributedServices.Seedwork.EndpointBehaviors
     {
         public static ServiceHeader ReadHeader(OperationContext operationContext)
         {
-            var customData = new ServiceHeader { ApplicationDomainName = "?", ApplicationUserName = "?", EnvironmentDomainName = "?", EnvironmentMachineName = "?", EnvironmentOSVersion = "?", EnvironmentUserName = "?", EnvironmentIPAddress = "?", EnvironmentMACAddress = "?", EnvironmentMotherboardSerialNumber = "?", EnvironmentProcessorId = "?" };
-
+            var customData = new ServiceHeader
+            {
+                ApplicationUserName = "Swiftfin_Dev",
+                ApplicationDomainName = "TestDomain",
+                EnvironmentUserName = "JohnDoe",
+                EnvironmentProcessorId = "john",
+                EnvironmentMachineName = Environment.MachineName,
+                EnvironmentMACAddress = "000000",
+                EnvironmentMotherboardSerialNumber = "000000",
+                EnvironmentDomainName = Environment.UserDomainName,
+                EnvironmentOSVersion = Environment.OSVersion.ToString(),
+                EnvironmentIPAddress = "127.0.0.1"
+            };
             if (operationContext == null)
                 return customData;
 

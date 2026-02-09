@@ -49,11 +49,20 @@
     <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.6.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="MailKit, Version=4.14.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
+      <HintPath>..\packages\MailKit.4.14.1\lib\net47\MailKit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.4\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -104,20 +113,23 @@
     <Reference Include="Microsoft.Net.Http.Headers, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Net.Http.Headers.2.3.0\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.2.2\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.2.2\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.2.2\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.2.2\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeKit, Version=4.14.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+      <HintPath>..\packages\MimeKit.4.14.0\lib\net47\MimeKit.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -137,24 +149,28 @@
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.8.0.1\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    <Reference Include="System.Formats.Asn1, Version=8.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Formats.Asn1.8.0.1\lib\net462\System.Formats.Asn1.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.6.0\lib\net462\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.6.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    <Reference Include="System.Numerics.Vectors, Version=4.1.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.6.0\lib\net462\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.0\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Text.Encodings.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encodings.Web.8.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.0\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
@@ -260,27 +276,204 @@
     <Compile Include="Configuration\DashboardAppConfigSection.cs" />
     <Compile Include="Configuration\DashboardAppSettingsCollection.cs" />
     <Compile Include="Configuration\DashboardAppSettingsElement.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountDetailsController.cs" />
+    <Compile Include="Controllers\AnnualTaxReportsController.cs" />
+    <Compile Include="Controllers\BidAnalysisController.cs" />
+    <Compile Include="Controllers\BudgetManagementController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\CategoryUIController.cs" />
+    <Compile Include="Controllers\CustomerAccountsApiController.cs" />
+    <Compile Include="Controllers\CustomerApiController.cs" />
+    <Compile Include="Controllers\CustomerReceiptController.cs" />
+    <Compile Include="Controllers\CustomersComprehensiveController.cs" />
+    <Compile Include="Controllers\BranchesController.cs" />
+    <Compile Include="Controllers\ChartOfAccountsController.cs" />
+    <Compile Include="Controllers\CompanyAttachedProductsController.cs" />
+    <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\CostCentersController.cs" />
+    <Compile Include="Controllers\CustomerAccountsController.cs" />
+    <Compile Include="Controllers\CustomersController.cs" />
+    <Compile Include="Controllers\CustomerStatementController.cs" />
+    <Compile Include="Controllers\DivisionsController.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
+    <Compile Include="Controllers\EmployeeBanksController.cs" />
+    <Compile Include="Controllers\EmployeeBranchesController.cs" />
+    <Compile Include="Controllers\EmployeeDeductionsController.cs" />
+    <Compile Include="Controllers\EmployeeEarningsController.cs" />
+    <Compile Include="Controllers\EmployeeInsuranceCompaniesController.cs" />
+    <Compile Include="Controllers\EmployeeProfilesController.cs" />
+    <Compile Include="Controllers\FAClassController.cs" />
+    <Compile Include="Controllers\FALocationController.cs" />
+    <Compile Include="Controllers\FASubClassController.cs" />
+    <Compile Include="Controllers\FinancialProductsController.cs" />
+    <Compile Include="Controllers\FixedAssetController.cs" />
+    <Compile Include="Controllers\GRNsController.cs" />
+    <Compile Include="Controllers\GuarantorManagementController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HousingLevyContributionsController.cs" />
+    <Compile Include="Controllers\InventoryPostingAccountController.cs" />
+    <Compile Include="Controllers\InventoryTransactionController.cs" />
+    <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\ItemJournalController.cs" />
+    <Compile Include="Controllers\JournalEntryController.cs" />
+    <Compile Include="Controllers\LoanCaseSectorDTO.cs" />
+    <Compile Include="Controllers\LoanDisbursementController.cs" />
+    <Compile Include="Controllers\LoaningController.cs" />
+    <Compile Include="Controllers\LoanProductsController.cs" />
+    <Compile Include="Controllers\LoansetupsController.cs" />
+    <Compile Include="Controllers\LocationController.cs" />
+    <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MasterController.cs" />
+    <Compile Include="Controllers\MemberExitController.cs" />
+    <Compile Include="Controllers\MemberPortalController.cs" />
+    <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\MWalletController.cs" />
+    <Compile Include="Controllers\NextOfKinController.cs" />
+    <Compile Include="Controllers\ReportingController.cs" />
+    <Compile Include="Controllers\NSSFContributionsController.cs" />
+    <Compile Include="Controllers\PAYEPersonalReliefController.cs" />
+    <Compile Include="Controllers\PAYESetupController.cs" />
+    <Compile Include="Controllers\PAYETaxBandsController.cs" />
+    <Compile Include="Controllers\PayrollClosureController.cs" />
+    <Compile Include="Controllers\PayrollEntriesController.cs" />
+    <Compile Include="Controllers\ProcurementController.cs" />
+    <Compile Include="Controllers\PurchaseOrdersApiController.cs" />
+    <Compile Include="Controllers\ReceiptsController.cs" />
+    <Compile Include="Controllers\RequisitionsController.cs" />
+    <Compile Include="Controllers\RFQController.cs" />
+    <Compile Include="Controllers\SalaryCycleController.cs" />
+    <Compile Include="Controllers\SavingsProductsController.cs" />
+    <Compile Include="Controllers\SHAContributionsController.cs" />
+    <Compile Include="Controllers\StationsController.cs" />
+    <Compile Include="Controllers\StoreRequisitionController.cs" />
+    <Compile Include="Controllers\UnitOfMeasureController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\VendorsApiController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CacheExtensions.cs" />
     <Compile Include="Helpers\ControllerExtensions.cs" />
     <Compile Include="Helpers\HMTLHelperExtensions.cs" />
+    <Compile Include="Helpers\LoanOffsetting.cs" />
+    <Compile Include="Helpers\SmsHelper.cs" />
     <Compile Include="Identity\ApplicationSignInManager.cs" />
     <Compile Include="Identity\EmailService.cs" />
     <Compile Include="Identity\IdentityExtensions.cs" />
     <Compile Include="Identity\SmsService.cs" />
+    <Compile Include="Models\AccountDetails.cs" />
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AnnualTaxReport.cs" />
     <Compile Include="Models\ApiResponse.cs" />
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\CustomerAccountDTO2.cs" />
+    <Compile Include="Models\CustomerDocument.cs" />
+    <Compile Include="Models\CustomerDTO2.cs" />
+    <Compile Include="Models\CustomerFullDetailsResponse.cs" />
     <Compile Include="Models\CustomerJournalDTO.cs" />
+    <Compile Include="Models\CustomerWithAccountsDTO.cs" />
+    <Compile Include="Models\DocumentModel.cs" />
+    <Compile Include="Models\EmployeeBank.cs" />
+    <Compile Include="Models\EmployeeBranch.cs" />
+    <Compile Include="Models\EmployeeDeduction.cs" />
+    <Compile Include="Models\EmployeeEarning.cs" />
+    <Compile Include="Models\EmployeeInsuranceCompany.cs" />
+    <Compile Include="Models\EmployeeProfile.cs" />
+    <Compile Include="Models\FAClass.cs" />
+    <Compile Include="Models\FALocation.cs" />
+    <Compile Include="Models\FASubClass.cs" />
+    <Compile Include="Models\FixedAsset.cs" />
+    <Compile Include="Models\GoodsReceivedNoteDto.cs" />
+    <Compile Include="Models\HousingLevyContribution.cs" />
+    <Compile Include="Models\InventoryPostingAccount.cs" />
+    <Compile Include="Models\InventoryTransaction.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ItemDto.cs" />
+    <Compile Include="Models\ItemDto2.cs" />
+    <Compile Include="Models\ItemJournal.cs" />
+    <Compile Include="Models\LoanCaseDTO2.cs" />
+    <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\MemberBankDetailDTO.cs" />
+    <Compile Include="Models\MemberFullDetailsDTO.cs" />
+    <Compile Include="Models\NextOfKinDTO2.cs" />
+    <Compile Include="Models\NSSFContribution.cs" />
+    <Compile Include="Models\PAYEPersonalRelief.cs" />
+    <Compile Include="Models\PAYESetup.cs" />
+    <Compile Include="Models\PAYETaxBand.cs" />
+    <Compile Include="Models\PaymentDto.cs" />
+    <Compile Include="Models\PayrollClosure.cs" />
+    <Compile Include="Models\PayrollEntry.cs" />
+    <Compile Include="Models\PurchaseOrderDto.cs" />
+    <Compile Include="Models\PurchaseRequisitionDto.cs" />
+    <Compile Include="Models\SalaryCycle.cs" />
+    <Compile Include="Models\SHAContributions.cs" />
+    <Compile Include="Models\StockJournal.cs" />
+    <Compile Include="Models\SupplierInvoiceDto.cs" />
+    <Compile Include="Models\SupplierQuotation.cs" />
+    <Compile Include="Models\SupplierQuotationLine.cs" />
+    <Compile Include="Models\UnitOfMeasure.cs" />
+    <Compile Include="Models\VendorBankDetailDto.cs" />
+    <Compile Include="Models\VendorDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AccountDetailsService.cs" />
+    <Compile Include="Services\AdministrativeDivisionService.cs" />
+    <Compile Include="Services\AnnualTaxReportService.cs" />
+    <Compile Include="Services\BranchService.cs" />
+    <Compile Include="Services\CategoryService.cs" />
+    <Compile Include="Services\ChartOfAccountService.cs" />
+    <Compile Include="Services\CompanyAttachedProductService.cs" />
+    <Compile Include="Services\CompanyService.cs" />
+    <Compile Include="Services\CostCenterService.cs" />
+    <Compile Include="Services\CustomerAccountService.cs" />
+    <Compile Include="Services\CustomerBulkDataService.cs" />
+    <Compile Include="Services\CustomerComprehensiveService.cs" />
+    <Compile Include="Services\CustomerReceiptService.cs" />
+    <Compile Include="Services\CustomerService.cs" />
+    <Compile Include="Services\CustomerStatementPdfService.cs" />
+    <Compile Include="Services\CustomerStatementService.cs" />
+    <Compile Include="Services\DivisionService.cs" />
+    <Compile Include="Services\EmployeeBankService.cs" />
+    <Compile Include="Services\EmployeeBranchService.cs" />
+    <Compile Include="Services\EmployeeDeductionService.cs" />
+    <Compile Include="Services\EmployeeEarningService.cs" />
+    <Compile Include="Services\EmployeeInsuranceCompanyService.cs" />
+    <Compile Include="Services\EmployeeProfileService.cs" />
+    <Compile Include="Services\FAClassService.cs" />
+    <Compile Include="Services\FALocationService.cs" />
+    <Compile Include="Services\FASubClassService.cs" />
+    <Compile Include="Services\FixedAssetService.cs" />
+    <Compile Include="Services\HousingLevyContributionService.cs" />
+    <Compile Include="Services\ImageService.cs" />
+    <Compile Include="Services\InventoryPostingAccountService.cs" />
+    <Compile Include="Services\InventoryTransactionService.cs" />
+    <Compile Include="Services\ItemJournalService.cs" />
+    <Compile Include="Services\ItemService.cs" />
     <Compile Include="Services\IWebConfigurationService.cs" />
+    <Compile Include="Services\JournalEntryService.cs" />
+    <Compile Include="Services\LoanProductService.cs" />
+    <Compile Include="Services\LocationService.cs" />
+    <Compile Include="Services\MembersListPdfService.cs" />
+    <Compile Include="Services\NextOfKinService.cs" />
+    <Compile Include="Services\NSSFContributionService.cs" />
+    <Compile Include="Services\PAYEPersonalReliefService.cs" />
+    <Compile Include="Services\PAYESetupService.cs" />
+    <Compile Include="Services\PAYETaxBandService.cs" />
+    <Compile Include="Services\PayrollClosureService.cs" />
+    <Compile Include="Services\PayrollEntryService.cs" />
+    <Compile Include="Services\ReceiptService.cs" />
+    <Compile Include="Services\SalaryCycleService.cs" />
+    <Compile Include="Services\SavingsProductService.cs" />
+    <Compile Include="Services\SHAContributions.cs" />
+    <Compile Include="Services\StationService.cs" />
+    <Compile Include="Services\UnitOfMeasureService.cs" />
     <Compile Include="Services\WebConfigurationService.cs" />
+    <Compile Include="Services\ZoneService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
+    <Content Include="Assets\Images\rubani-logo.jpeg" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />

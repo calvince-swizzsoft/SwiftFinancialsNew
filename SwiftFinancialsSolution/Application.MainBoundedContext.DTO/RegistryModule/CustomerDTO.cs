@@ -6,6 +6,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Application.MainBoundedContext.DTO.RegistryModule
 {
@@ -488,9 +490,21 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         public object ZoneDivisionEmployerDescription { get; set; }
         public bool HasErrors { get; set; }
 
+        [JsonIgnore] // Break circular reference
+        public CommissionDTO CommissionDTO { get; set; }
+        //[DataMember]
+        //public CommissionDTO CommissionDTO { get; set; }
+
+        public List<NextOfKinDTO> NextOfKins { get; set; }
+        public string PhoneNumber { get; set; }
 
         [DataMember]
-        public CommissionDTO CommissionDTO { get; set; }
+        [Display(Name = "Bank Name")]
+        public string BankName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Branch Name")]
+        public string BranchName { get; set; }
 
     }
 

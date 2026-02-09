@@ -35,6 +35,11 @@ namespace DistributedServices.MainBoundedContext
         }
 
         #region Loan Case
+        public bool MarkLoanCaseDisbursed(LoanDisbursementBatchEntryDTO loanDisbursementBatchEntryDTO)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+            return _loanCaseAppService.MarkLoanCaseDisbursed(loanDisbursementBatchEntryDTO, serviceHeader);
+        }
 
         public LoanCaseDTO AddLoanCase(LoanCaseDTO loanCaseDTO)
         {

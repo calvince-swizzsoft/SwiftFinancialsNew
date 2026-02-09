@@ -171,5 +171,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+        public object ErrorMessageResult { get; set; }
     }
 }

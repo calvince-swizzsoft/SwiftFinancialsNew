@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 
 namespace Application.MainBoundedContext.DTO.RegistryModule
 {
+    [DataContract]
     public class NextOfKinDTO : BindingModelBase<NextOfKinDTO>
     {
         public NextOfKinDTO()
@@ -14,12 +15,15 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             AddAllAttributeValidators();
         }
 
+        [DataMember]
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 
+        [DataMember]
         [Display(Name = "Customer")]
         public Guid CustomerId { get; set; }
 
+        [DataMember]
         [Display(Name = "Customer Type")]
         public byte CustomerType { get; set; }
 
@@ -32,6 +36,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             }
         }
 
+        [DataMember]
         [Display(Name = "Customer Salutation")]
         public byte CustomerIndividualSalutation { get; set; }
 
@@ -44,12 +49,15 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             }
         }
 
+        [DataMember]
         [Display(Name = "Customer First Name")]
         public string CustomerIndividualFirstName { get; set; }
 
+        [DataMember]
         [Display(Name = "Customer Other Names")]
         public string CustomerIndividualLastName { get; set; }
-        
+
+        [DataMember]
         [Display(Name = "Group Name")]
         public string CustomerNonIndividualDescription { get; set; }
 
@@ -78,6 +86,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             }
         }
 
+        [DataMember]
         [Display(Name = "Salutation")]
         public byte Salutation { get; set; }
 
@@ -90,6 +99,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             }
         }
 
+        [DataMember]
         [Display(Name = "Gender")]
         public byte Gender { get; set; }
 
@@ -102,6 +112,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             }
         }
 
+        [DataMember]
         [Display(Name = "Relationship")]
         public byte Relationship { get; set; }
 
@@ -114,9 +125,11 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             }
         }
 
+        [DataMember]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
+        [DataMember]
         [Display(Name = "Other Names")]
         public string LastName { get; set; }
 
@@ -129,6 +142,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             }
         }
 
+        [DataMember]
         [Display(Name = "Identity Card Type")]
         public byte IdentityCardType { get; set; }
 
@@ -141,48 +155,56 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             }
         }
 
+        [DataMember]
         [Display(Name = "Identity Card Number")]
         public string IdentityCardNumber { get; set; }
 
+        [DataMember]
         [Display(Name = "Address Line 1")]
         public string AddressAddressLine1 { get; set; }
 
+        [DataMember]
         [Display(Name = "Address Line 2")]
         public string AddressAddressLine2 { get; set; }
 
+        [DataMember]
         [Display(Name = "Street")]
         public string AddressStreet { get; set; }
 
+        [DataMember]
         [Display(Name = "Postal Code")]
         public string AddressPostalCode { get; set; }
 
+        [DataMember]
         [Display(Name = "City")]
         public string AddressCity { get; set; }
 
+        [DataMember]
         [Display(Name = "E-mail")]
         public string AddressEmail { get; set; }
 
+        [DataMember]
         [Display(Name = "Land Line")]
         public string AddressLandLine { get; set; }
 
+        [DataMember]
         [Display(Name = "Mobile Line")]
         public string AddressMobileLine { get; set; }
 
+        [DataMember]
         [Display(Name = "Nominated Percentage")]
         public double NominatedPercentage { get; set; }
 
+        [DataMember]
         [Display(Name = "Remarks")]
         public string Remarks { get; set; }
 
+        [DataMember]
         [Display(Name = "Created By")]
         public string CreatedBy { get; set; }
 
+        [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
-
-
-        [DataMember]
-        public CustomerDTO CustomerDTO { get; set; }
-
     }
 }

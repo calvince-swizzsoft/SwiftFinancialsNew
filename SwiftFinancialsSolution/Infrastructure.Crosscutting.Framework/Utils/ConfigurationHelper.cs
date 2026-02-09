@@ -18,7 +18,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
             foreach (var settingsItem in serviceBrokerConfigSection.ServiceBrokerSettingsItems)
             {
-                if (((ServiceBrokerSettingsElement)settingsItem).UniqueId == serviceHeader.ApplicationDomainName)
+                if (((ServiceBrokerSettingsElement)settingsItem).UniqueId == "SwiftFin_Dev")
                 {
                     serviceBrokerSettingsElement = (ServiceBrokerSettingsElement)settingsItem;
 

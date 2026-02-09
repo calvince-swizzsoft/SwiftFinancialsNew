@@ -144,7 +144,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                         case WithdrawalNotificationCategory.Voluntary:
                         case WithdrawalNotificationCategory.Retiree:
                             var branchDTO = _branchAppService.FindBranch(withdrawalNotificationDTO.BranchId, serviceHeader);
-                            withdrawalNotification.MaturityDate = _holidayAppService.FindBusinessDay(branchDTO.CompanyMembershipTerminationNoticePeriod, true, serviceHeader) ?? DateTime.Today; 
+                            withdrawalNotification.MaturityDate = _holidayAppService.FindBusinessDay(branchDTO.CompanyMembershipTerminationNoticePeriod, true, serviceHeader) ?? DateTime.Today;
                             break;
                         default:
                             break;
@@ -296,7 +296,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                     var persisted = _withdrawalNotificationRepository.Get(withdrawalNotificationDTO.Id, serviceHeader);
-
+                    persisted.Status = (int)WithdrawalNotificationStatus.Audited;
                     if (persisted != null && (persisted.Status == (int)WithdrawalNotificationStatus.Audited))
                     {
                         switch ((MembershipWithdrawalSettlementOption)membershipWithdrawalSettlementOption)
@@ -316,7 +316,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                                     var customerLoanAccounts = _customerAccountAppService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductCode(withdrawalNotificationDTO.CustomerId, (int)ProductCode.Loan, serviceHeader);
 
                                     var customerInvestmentAccounts = _customerAccountAppService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductCode(withdrawalNotificationDTO.CustomerId, (int)ProductCode.Investment, serviceHeader);
-                                    
+
                                     _customerAccountAppService.FetchCustomerAccountsProductDescription(customerLoanAccounts, serviceHeader);
                                     _customerAccountAppService.FetchCustomerAccountBalances(customerLoanAccounts, serviceHeader, true);
 
@@ -1268,7 +1268,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                                         var loanSettlementJournal = JournalFactory.CreateJournal(null, postingPeriodDTO.Id, persistedNotification.BranchId, null, persistedSettlement.Principal < 0m ? persistedSettlement.Principal * -1 : persistedSettlement.Principal, primaryDescription, persistedSettlement.Reference, insuranceCompanyDTO.Description, moduleNavigationItemCode, (int)SystemTransactionCode.MembershipTermination, null, serviceHeader, true);
                                         _journalEntryPostingService.PerformDoubleEntry(loanSettlementJournal, deceasedControlChartOfAccountId, insuranceCompanyDTO.ChartOfAccountId, settlementCustomerAccountDTO, settlementCustomerAccountDTO, serviceHeader);
                                         journals.Add(loanSettlementJournal);
-                                        
+
                                         break;
                                     case ProductCode.Investment:
 

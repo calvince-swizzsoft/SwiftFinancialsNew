@@ -61,6 +61,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+        public object ErrorMessageResult { get; set; }
 
         public static ValidationResult CheckDurationEndDate(string value, ValidationContext context)
         {

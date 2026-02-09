@@ -8,7 +8,7 @@ using System.ServiceModel;
 namespace SwiftFinancials.Presentation.Contracts.AccountsModule
 {
     [ServiceContract(Name = "ILevyService")]
-    public interface ILevyService
+    public interface ILevyService 
     {
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]

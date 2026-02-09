@@ -91,6 +91,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Posted")]
         public Boolean Posted { get; set; }
-
+        public DateTime CreatedDate { get; set; }
     }
 }
