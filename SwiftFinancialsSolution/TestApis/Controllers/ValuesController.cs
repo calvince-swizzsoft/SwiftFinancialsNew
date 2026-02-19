@@ -8124,10 +8124,10 @@ namespace TestApis.Controllers
         [HttpGet]
         [Route("GetMemberStatement/{customerId}")]
         public async Task<HttpResponseMessage> GetMemberStatement(
-Guid customerId,
-DateTime? startDate = null,
-DateTime? endDate = null,
-bool downloadPdf = false)
+     Guid customerId,
+     DateTime? startDate = null,
+     DateTime? endDate = null,
+     bool downloadPdf = false)
         {
             try
             {
@@ -8144,6 +8144,8 @@ bool downloadPdf = false)
 
                     // ===== GET LOANS INFORMATION =====
                     var allLoanStatements = new List<LoanStatementResult>();
+
+                    // ADD BACK THE LOAN STORED PROCEDURE CALL
                     using (var loanCommand = new SqlCommand("sp_GenerateMemberLoanStatement", connection))
                     {
                         loanCommand.CommandType = CommandType.StoredProcedure;
@@ -8173,7 +8175,7 @@ bool downloadPdf = false)
                                     CustomerAccountId = reader["CustomerAccountId"] != DBNull.Value ? (Guid)reader["CustomerAccountId"] : Guid.Empty,
                                     MemberNumber = reader["MemberNumber"]?.ToString() ?? "",
                                     DisbursedDate = reader["DisbursedDate"] != DBNull.Value ?
-                                        Convert.ToDateTime(reader["DisbursedDate"]).ToString("yyyy-MM-dd") : ""  // ADDED THIS LINE
+                                        Convert.ToDateTime(reader["DisbursedDate"]).ToString("yyyy-MM-dd") : ""
                                 };
 
                                 var statementRows = new List<LoanStatementRow>();
@@ -8181,14 +8183,13 @@ bool downloadPdf = false)
                                 DateTime? statementStartDate = null;
                                 DateTime? statementEndDate = null;
 
-                                // Result Set 2: Statement rows (NEW FORMAT: TransDate, OpeningBalance, Principle, Interest, Amount, LoanBalance)
+                                // Result Set 2: Statement rows
                                 if (await reader.NextResultAsync())
                                 {
                                     while (await reader.ReadAsync())
                                     {
                                         var row = new LoanStatementRow
                                         {
-                                            // New format from stored procedure
                                             TransDate = reader["TransDate"] != DBNull.Value ?
                                                 Convert.ToDateTime(reader["TransDate"]).ToString("yyyy-MM-dd") : "",
                                             OpeningBalance = reader["OpeningBalance"] != DBNull.Value ?
@@ -8201,7 +8202,6 @@ bool downloadPdf = false)
                                                 Convert.ToDecimal(reader["Amount"]) : 0m,
                                             LoanBalance = reader["LoanBalance"] != DBNull.Value ?
                                                 Convert.ToDecimal(reader["LoanBalance"]) : 0m,
-                                            // For backward compatibility
                                             PostingDate = reader["TransDate"] != DBNull.Value ?
                                                 Convert.ToDateTime(reader["TransDate"]).ToString("yyyy-MM-dd") : "",
                                             Balance = reader["LoanBalance"] != DBNull.Value ?
@@ -8265,7 +8265,7 @@ bool downloadPdf = false)
                                         AppliedAmount = loanHeader.AppliedLoanAmount,
                                         MonthlyRepayment = loanHeader.MonthlyRepayment,
                                         MemberNumber = loanHeader.MemberNumber,
-                                        DisbursedDate = loanHeader.DisbursedDate  // ADD THIS LINE
+                                        DisbursedDate = loanHeader.DisbursedDate
                                     },
                                     Statement = statementRows,
                                     Summary = summary,
@@ -8276,13 +8276,14 @@ bool downloadPdf = false)
                                 allLoanStatements.Add(loanStatementResult);
 
                                 // Move to next loan (if any)
-                                await reader.NextResultAsync(); // Move past the summary result set
+                                await reader.NextResultAsync();
                             }
                         }
                     }
 
                     // ===== GET SHARES INFORMATION =====
                     var allSharesStatements = new List<SharesStatementResult>();
+
                     using (var sharesCommand = new SqlCommand("sp_GenerateAllSharesStatement", connection))
                     {
                         sharesCommand.CommandType = CommandType.StoredProcedure;
@@ -8300,108 +8301,126 @@ bool downloadPdf = false)
 
                         using (var reader = await sharesCommand.ExecuteReaderAsync())
                         {
+                            // Dictionary to group transactions by account
+                            var accountTransactions = new Dictionary<Guid, List<SharesTransaction>>();
+                            var accountDetails = new Dictionary<Guid, (string ProductName, decimal TotalContribution)>();
+
+                            // First result set: Detailed Statement
                             while (await reader.ReadAsync())
                             {
                                 // Skip if it's a message result set
                                 if (reader.FieldCount == 1 && reader.GetName(0) == "Message")
                                     continue;
 
-                                // First result set: Account Header
-                                var accountHeader = new
+                                var customerAccountId = reader["CustomerAccountId"] != DBNull.Value ?
+                                    (Guid)reader["CustomerAccountId"] : Guid.Empty;
+
+                                var transaction = new SharesTransaction
                                 {
-                                    StatementType = reader["StatementType"]?.ToString() ?? "",
-                                    ProductName = reader["ProductName"]?.ToString() ?? "",
-                                    AccountType = reader["AccountType"]?.ToString() ?? "",
-                                    ProductCode = reader["ProductCode"] != DBNull.Value ? Convert.ToInt32(reader["ProductCode"]) : 0,
-                                    Period = reader["Period"]?.ToString() ?? "",
-                                    OpeningBalance = reader["OpeningBalance"] != DBNull.Value ? Convert.ToDecimal(reader["OpeningBalance"]) : 0m,
-                                    TotalDeposits = reader["TotalDeposits"] != DBNull.Value ? Convert.ToDecimal(reader["TotalDeposits"]) : 0m,
-                                    TotalWithdrawals = reader["TotalWithdrawals"] != DBNull.Value ? Convert.ToDecimal(reader["TotalWithdrawals"]) : 0m,
-                                    ClosingBalance = reader["ClosingBalance"] != DBNull.Value ? Convert.ToDecimal(reader["ClosingBalance"]) : 0m
+                                    TransactionDate = reader["Date"]?.ToString() ?? "",
+                                    Description = reader["Description"]?.ToString() ?? "",
+                                    DepositAmount = reader["Share Contribution"] != DBNull.Value ?
+                                        Convert.ToDecimal(reader["Share Contribution"]) : 0m,
+                                    WithdrawalAmount = 0m,
+                                    RunningBalance = reader["Cumulative"] != DBNull.Value ?
+                                        Convert.ToDecimal(reader["Cumulative"]) : 0m
                                 };
 
-                                var transactions = new List<SharesTransaction>();
-                                var accountSummary = new SharesAccountSummary();
+                                if (!accountTransactions.ContainsKey(customerAccountId))
+                                    accountTransactions[customerAccountId] = new List<SharesTransaction>();
 
-                                // Result Set 2: Transactions
-                                if (await reader.NextResultAsync())
+                                accountTransactions[customerAccountId].Add(transaction);
+                            }
+
+                            // Second result set: Total Contribution Per Account
+                            if (await reader.NextResultAsync())
+                            {
+                                while (await reader.ReadAsync())
                                 {
-                                    while (await reader.ReadAsync())
-                                    {
-                                        // Skip if it's a message
-                                        if (reader.FieldCount == 1 && reader.GetName(0) == "Message")
-                                            break;
+                                    // Skip if it's a message
+                                    if (reader.FieldCount == 1 && reader.GetName(0) == "Message")
+                                        continue;
 
-                                        var transaction = new SharesTransaction
-                                        {
-                                            TransactionDate = reader["Transaction Date"]?.ToString() ?? "",
-                                            Description = reader["Description"]?.ToString() ?? "",
-                                            DepositAmount = reader["Deposit Amount"] != DBNull.Value ? Convert.ToDecimal(reader["Deposit Amount"]) : 0m,
-                                            WithdrawalAmount = reader["Withdrawal Amount"] != DBNull.Value ? Convert.ToDecimal(reader["Withdrawal Amount"]) : 0m,
-                                            RunningBalance = reader["Running Balance"] != DBNull.Value ? Convert.ToDecimal(reader["Running Balance"]) : 0m
-                                        };
-                                        transactions.Add(transaction);
-                                    }
-                                }
+                                    var customerAccountId = reader["CustomerAccountId"] != DBNull.Value ?
+                                        (Guid)reader["CustomerAccountId"] : Guid.Empty;
+                                    var productName = reader["ProductName"]?.ToString() ?? "";
+                                    var totalContribution = reader["TotalContribution"] != DBNull.Value ?
+                                        Convert.ToDecimal(reader["TotalContribution"]) : 0m;
 
-                                // Result Set 3: Summary
-                                if (await reader.NextResultAsync())
-                                {
-                                    if (await reader.ReadAsync())
-                                    {
-                                        accountSummary = new SharesAccountSummary
-                                        {
-                                            AccountName = reader["AccountName"]?.ToString() ?? "",
-                                            AccountType = reader["AccountType"]?.ToString() ?? "",
-                                            OpeningBalance = reader["OpeningBalance"] != DBNull.Value ? Convert.ToDecimal(reader["OpeningBalance"]) : 0m,
-                                            TotalDeposits = reader["TotalDeposits"] != DBNull.Value ? Convert.ToDecimal(reader["TotalDeposits"]) : 0m,
-                                            TotalWithdrawals = reader["TotalWithdrawals"] != DBNull.Value ? Convert.ToDecimal(reader["TotalWithdrawals"]) : 0m,
-                                            ClosingBalance = reader["ClosingBalance"] != DBNull.Value ? Convert.ToDecimal(reader["ClosingBalance"]) : 0m,
-                                            NetMovement = reader["NetMovement"] != DBNull.Value ? Convert.ToDecimal(reader["NetMovement"]) : 0m
-                                        };
-                                    }
+                                    accountDetails[customerAccountId] = (productName, totalContribution);
                                 }
+                            }
+
+                            // Create shares statement results for each account
+                            foreach (var account in accountDetails)
+                            {
+                                var transactions = accountTransactions.ContainsKey(account.Key)
+                                    ? accountTransactions[account.Key]
+                                    : new List<SharesTransaction>();
+
+                                // Calculate summary values from transactions
+                                decimal openingBalance = 0m;
+                                decimal totalDeposits = transactions.Sum(t => t.DepositAmount);
+                                decimal closingBalance = transactions.Any()
+                                    ? transactions.Last().RunningBalance
+                                    : 0m;
+
+                                // Use the TotalContribution from the SP for the summary
+                                decimal actualTotalContribution = account.Value.TotalContribution;
 
                                 // Create shares statement result
                                 var sharesStatementResult = new SharesStatementResult
                                 {
-                                    StatementType = accountHeader.StatementType,
-                                    ProductName = accountHeader.ProductName,
-                                    AccountType = accountHeader.AccountType,
-                                    ProductCode = accountHeader.ProductCode,
-                                    Period = accountHeader.Period,
-                                    OpeningBalance = accountHeader.OpeningBalance,
-                                    TotalDeposits = accountHeader.TotalDeposits,
-                                    TotalWithdrawals = accountHeader.TotalWithdrawals,
-                                    ClosingBalance = accountHeader.ClosingBalance,
+                                    StatementType = "SHARES/SAVINGS STATEMENT",
+                                    ProductName = account.Value.ProductName,
+                                    AccountType = "Share Account",
+                                    ProductCode = 0,
+                                    Period = $"{(startDate.HasValue ? startDate.Value.ToString("dd/MM/yyyy") : "Beginning")} to {(endDate.HasValue ? endDate.Value.ToString("dd/MM/yyyy") : DateTime.Now.ToString("dd/MM/yyyy"))}",
+                                    OpeningBalance = openingBalance,
+                                    TotalDeposits = totalDeposits,
+                                    TotalWithdrawals = 0m,
+                                    ClosingBalance = closingBalance,
                                     Transactions = transactions,
-                                    Summary = accountSummary
+                                    Summary = new SharesAccountSummary
+                                    {
+                                        AccountName = account.Value.ProductName,
+                                        AccountType = "Share Account",
+                                        OpeningBalance = openingBalance,
+                                        TotalDeposits = actualTotalContribution,
+                                        TotalWithdrawals = 0m,
+                                        ClosingBalance = closingBalance,
+                                        NetMovement = actualTotalContribution
+                                    }
                                 };
 
                                 allSharesStatements.Add(sharesStatementResult);
-
-                                // Move to next account (if any)
-                                await reader.NextResultAsync(); // Move past the summary result set
                             }
                         }
                     }
 
-                    // Get customer info from first loan or shares statement
+                    // Get customer info
                     var customerInfo = allLoanStatements.FirstOrDefault()?.Customer ??
                                      (allSharesStatements.Count > 0 ?
                                          new CustomerInfo
                                          {
                                              FullName = await GetCustomerName(connection, customerId),
-                                             AccountNumber = "N/A"
+                                             AccountNumber = "N/A",
+                                             StaffNo = await GetCustomerStaffNo(connection, customerId),
+                                             Mobile = await GetCustomerMobile(connection, customerId),
+                                             Email = await GetCustomerEmail(connection, customerId),
+                                             PFNumber = await GetCustomerPFNumber(connection, customerId)
                                          } : null);
 
                     if (customerInfo == null)
                     {
-                        // Get basic customer info if no loans or shares
                         customerInfo = new CustomerInfo
                         {
                             FullName = await GetCustomerName(connection, customerId),
-                            AccountNumber = "N/A"
+                            AccountNumber = "N/A",
+                            StaffNo = await GetCustomerStaffNo(connection, customerId),
+                            Mobile = await GetCustomerMobile(connection, customerId),
+                            Email = await GetCustomerEmail(connection, customerId),
+                            PFNumber = await GetCustomerPFNumber(connection, customerId)
                         };
                     }
 
@@ -8543,6 +8562,7 @@ bool downloadPdf = false)
             // Return default if no customer found
             return new CustomerData();
         }
+
         private async Task<string> GetCustomerName(SqlConnection connection, Guid customerId)
         {
             string query = @"
@@ -8561,6 +8581,62 @@ bool downloadPdf = false)
 
                 var result = await cmd.ExecuteScalarAsync();
                 return result?.ToString()?.Trim() ?? "Customer";
+            }
+        }
+
+        private async Task<string> GetCustomerStaffNo(SqlConnection connection, Guid customerId)
+        {
+            string query = @"
+        SELECT Reference2 
+        FROM swiftFin_Customers 
+        WHERE Id = @CustomerId";
+
+            using (var cmd = new SqlCommand(query, connection))
+            {
+                cmd.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customerId;
+                return (await cmd.ExecuteScalarAsync())?.ToString() ?? "N/A";
+            }
+        }
+
+        private async Task<string> GetCustomerMobile(SqlConnection connection, Guid customerId)
+        {
+            string query = @"
+        SELECT Address_MobileLine 
+        FROM swiftFin_Customers 
+        WHERE Id = @CustomerId";
+
+            using (var cmd = new SqlCommand(query, connection))
+            {
+                cmd.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customerId;
+                return (await cmd.ExecuteScalarAsync())?.ToString() ?? "N/A";
+            }
+        }
+
+        private async Task<string> GetCustomerEmail(SqlConnection connection, Guid customerId)
+        {
+            string query = @"
+        SELECT Address_Email 
+        FROM swiftFin_Customers 
+        WHERE Id = @CustomerId";
+
+            using (var cmd = new SqlCommand(query, connection))
+            {
+                cmd.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customerId;
+                return (await cmd.ExecuteScalarAsync())?.ToString() ?? "N/A";
+            }
+        }
+
+        private async Task<string> GetCustomerPFNumber(SqlConnection connection, Guid customerId)
+        {
+            string query = @"
+        SELECT Reference3 
+        FROM swiftFin_Customers 
+        WHERE Id = @CustomerId";
+
+            using (var cmd = new SqlCommand(query, connection))
+            {
+                cmd.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customerId;
+                return (await cmd.ExecuteScalarAsync())?.ToString() ?? "N/A";
             }
         }
 
@@ -8902,6 +8978,8 @@ bool downloadPdf = false)
                     document.Add(periodPara);
                 }
 
+                // In the PDF generation method, update the shares section:
+
                 // ===== SHARES/SAVINGS DETAILED SECTION =====
                 if (memberStatement.SharesStatements.Count > 0)
                 {
@@ -8942,15 +9020,16 @@ bool downloadPdf = false)
                         };
                         document.Add(accountHeaderPara);
 
-                        // Transactions Section (if any)
+                        // Transactions Section - Show ALL transactions (no limit)
                         if (shares.Transactions.Count > 0)
                         {
-                            var recentTransactions = shares.Transactions.Take(5).ToList();
+                            // Use all transactions, not just first 5
+                            var allTransactions = shares.Transactions;
 
                             PdfPTable transTable = new PdfPTable(5)
                             {
                                 WidthPercentage = 100,
-                                SpacingAfter = 5f  // Reduced from 10f
+                                SpacingAfter = 5f
                             };
                             transTable.SetWidths(new float[] { 20, 35, 15, 15, 15 });
 
@@ -9004,6 +9083,7 @@ bool downloadPdf = false)
                             };
                             transTable.AddCell(depositHeaderCell);
 
+                            // Withdrawal header - kept for consistency but will be empty for shares
                             PdfPCell withdrawalHeaderCell = new PdfPCell(new Phrase("Withdrawal", tableHeaderFont))
                             {
                                 BackgroundColor = LightGray,
@@ -9037,11 +9117,11 @@ bool downloadPdf = false)
                             };
                             transTable.AddCell(balanceHeaderCell);
 
-                            // Add transactions - using tableCellFont
-                            for (int i = 0; i < recentTransactions.Count; i++)
+                            // Add ALL transactions - using tableCellFont
+                            for (int i = 0; i < allTransactions.Count; i++)
                             {
-                                var transaction = recentTransactions[i];
-                                bool isLastRow = (i == recentTransactions.Count - 1);
+                                var transaction = allTransactions[i];
+                                bool isLastRow = (i == allTransactions.Count - 1);
 
                                 PdfPCell dateCell = new PdfPCell(new Phrase(transaction.TransactionDate, tableCellFont))
                                 {
@@ -9086,7 +9166,8 @@ bool downloadPdf = false)
                                 };
                                 transTable.AddCell(depositCell);
 
-                                PdfPCell withdrawalCell = new PdfPCell(new Phrase(transaction.WithdrawalAmount.ToString("N2"), tableCellFont))
+                                // Withdrawal cell - always empty for shares
+                                PdfPCell withdrawalCell = new PdfPCell(new Phrase("", tableCellFont))
                                 {
                                     HorizontalAlignment = Element.ALIGN_RIGHT,
                                     Padding = 3,
@@ -9118,16 +9199,6 @@ bool downloadPdf = false)
 
                             document.Add(transTable);
 
-                            if (shares.Transactions.Count > 5)
-                            {
-                                var moreTransPara = new Paragraph($"... and {shares.Transactions.Count - 5} more transactions", smallFont)
-                                {
-                                    Alignment = Element.ALIGN_CENTER,
-                                    SpacingBefore = 3f,
-                                    SpacingAfter = 3f  // Reduced from 8f
-                                };
-                                document.Add(moreTransPara);
-                            }
                         }
 
                         // Account Summary - Show net movement only
@@ -9144,14 +9215,13 @@ bool downloadPdf = false)
                             summaryPara.Add(new Chunk(shares.Summary.NetMovement.ToString("N2"),
                                 FontFactory.GetFont(bookAntiquaFontName, BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 11f, Font.BOLD, shares.Summary.NetMovement >= 0 ? Green : Red)));
 
-                            summaryPara.SpacingAfter = 8f;  // Reduced from 15f
+                            summaryPara.SpacingAfter = 8f;
                             document.Add(summaryPara);
                         }
 
                         sharesCounter++;
                     }
                 }
-
                 // ===== LOANS DETAILED SECTION =====
                 if (memberStatement.LoanStatements.Count > 0)
                 {

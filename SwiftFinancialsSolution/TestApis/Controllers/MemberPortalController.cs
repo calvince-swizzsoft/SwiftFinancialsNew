@@ -2,6 +2,7 @@
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Newtonsoft.Json;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using System;
 using System.Collections.Generic;
@@ -13,20 +14,27 @@ using System.Data.SqlClient;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using TestApis.Helpers;
 using TestApis.Models;
 using TestApis.Services;
+using static TestApis.Controllers.ValuesController;
 
 namespace TestApis.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [AllowAnonymous]
     [RoutePrefix("api/MemberPortal")]
     public class MemberPortalController : ApiController
     {
         private readonly MasterController master;
+
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
         public MemberPortalController()
@@ -295,15 +303,24 @@ namespace TestApis.Controllers
 
         [HttpGet]
         [Route("GetMemberWithDetails/by-reference2/{reference2}")]
-        public async Task<IHttpActionResult> GetMemberWithDetailsByReference2(string reference2, [FromUri] bool includeAccounts = true, [FromUri] bool includeNextOfKin = true, [FromUri] bool includeAccountBalances = true, [FromUri] bool includeProductDescription = true, [FromUri] bool includeInterestBalanceForLoanAccounts = false, [FromUri] bool considerMaturityPeriodForInvestmentAccounts = false, [FromUri] bool includeStatements = false, [FromUri] DateTime? statementStartDate = null, [FromUri] DateTime? statementEndDate = null)
+        public async Task<IHttpActionResult> GetMemberWithDetailsByReference2(
+    string reference2,
+    [FromUri] bool includeAccounts = true,
+    [FromUri] bool includeNextOfKin = true,
+    [FromUri] bool includeAccountBalances = true,
+    [FromUri] bool includeProductDescription = true,
+    [FromUri] bool includeInterestBalanceForLoanAccounts = false,
+    [FromUri] bool considerMaturityPeriodForInvestmentAccounts = false,
+    [FromUri] bool includeStatements = false,
+    [FromUri] DateTime? statementStartDate = null,
+    [FromUri] DateTime? statementEndDate = null)
         {
             try
             {
                 var serviceHeader = master.GetServiceHeader();
 
-                // Strategic assumption: Reference2 is unique (Membership Number)
+                // Get all customers and filter by reference2
                 var customers = await master._channelService.FindCustomersAsync(serviceHeader);
-
                 var customer = customers?.FirstOrDefault(c => c.Reference2 == reference2);
 
                 if (customer == null)
@@ -316,6 +333,7 @@ namespace TestApis.Controllers
                     });
                 }
 
+                // Build member detail object following the same pattern as GetMembersWithDetails
                 var memberDetail = new
                 {
                     Customer = new
@@ -334,28 +352,30 @@ namespace TestApis.Controllers
                         customer.AddressMobileLine,
                         customer.AddressEmail,
                         customer.PersonalIdentificationNumber,
-                        customer.Reference1,
-                        customer.Reference2,
-                        customer.Reference3,
+                        customer.Reference1, // Account Number
+                        customer.Reference2, // Membership Number
+                        customer.Reference3, // Personal File Number
                         customer.BranchDescription,
                         customer.RegistrationDate,
                         customer.RecordStatus,
                         customer.RecordStatusDescription,
                         customer.IsDefaulter,
                         customer.IsLocked,
-                        customer.Age,
-                        customer.MembershipPeriod
+                        customer.MembershipPeriod,
+                        customer.NonIndividualDateEstablished,
+                        customer.IndividualBirthDate,
                     },
                     Accounts = new List<object>(),
                     NextOfKin = new List<object>(),
                     Statements = new List<object>()
                 };
 
-                // Accounts
-                if (includeAccounts)
+                // Get customer accounts if requested
+                if (includeAccounts && customer.Id != Guid.Empty)
                 {
-                    var accounts = await master._channelService
-                        .FindCustomerAccountsByCustomerIdAsync(
+                    try
+                    {
+                        var accounts = await master._channelService.FindCustomerAccountsByCustomerIdAsync(
                             customer.Id,
                             includeAccountBalances,
                             includeProductDescription,
@@ -364,78 +384,99 @@ namespace TestApis.Controllers
                             serviceHeader
                         );
 
-                    if (accounts != null && accounts.Any())
-                    {
-                        var accountIds = accounts.Select(a => a.Id).ToList();
-
-                        Dictionary<Guid, List<object>> accountStatements = null;
-                        if (includeStatements)
+                        if (accounts != null && accounts.Any())
                         {
-                            accountStatements = await GetAccountStatementsAsync(
-                                accountIds,
-                                statementStartDate,
-                                statementEndDate
-                            );
-                        }
+                            var accountIds = accounts.Select(a => a.Id).ToList();
 
-                        foreach (var account in accounts)
-                        {
-                            memberDetail.Accounts.Add(new
+                            // Get statements for all accounts at once if requested
+                            Dictionary<Guid, List<object>> accountStatements = null;
+                            if (includeStatements && accountIds.Any())
                             {
-                                account.Id,
-                                account.FullAccountNumber,
-                                account.CustomerAccountTypeTargetProductDescription,
-                                account.CustomerAccountTypeProductCode,
-                                account.CustomerAccountTypeProductCodeDescription,
-                                account.Status,
-                                account.StatusDescription,
-                                account.RecordStatus,
-                                account.RecordStatusDescription,
-                                account.BookBalance,
-                                account.AvailableBalance,
-                                account.PrincipalBalance,
-                                account.InterestBalance,
-                                account.CarryForwardsBalance,
-                                account.PrincipalArrearagesBalance,
-                                account.InterestArrearagesBalance,
-                                account.CreatedDate,
-                                account.Remarks
-                            });
+                                accountStatements = await GetAccountStatementsAsync(
+                                    accountIds,
+                                    statementStartDate,
+                                    statementEndDate
+                                );
+                            }
 
-                            if (includeStatements &&
-                                accountStatements != null &&
-                                accountStatements.TryGetValue(account.Id, out var stmts))
+                            foreach (var account in accounts)
                             {
-                                memberDetail.Statements.AddRange(stmts);
+                                // Add account to the list
+                                var accountObj = new
+                                {
+                                    account.Id,
+                                    account.FullAccountNumber,
+                                    account.CustomerAccountTypeTargetProductDescription,
+                                    account.CustomerAccountTypeProductCode,
+                                    account.CustomerAccountTypeProductCodeDescription,
+                                    account.Status,
+                                    account.StatusDescription,
+                                    account.RecordStatus,
+                                    account.RecordStatusDescription,
+                                    account.BookBalance,
+                                    account.AvailableBalance,
+                                    account.PrincipalBalance,
+                                    account.InterestBalance,
+                                    account.CarryForwardsBalance,
+                                    account.PrincipalArrearagesBalance,
+                                    account.InterestArrearagesBalance,
+                                    account.CreatedDate,
+                                    account.Remarks
+                                };
+
+                                // Use reflection to add to the anonymous type's Accounts list
+                                ((List<object>)memberDetail.Accounts).Add(accountObj);
+
+                                // Add statements for this account if available
+                                if (includeStatements && accountStatements != null &&
+                                    accountStatements.ContainsKey(account.Id))
+                                {
+                                    ((List<object>)memberDetail.Statements).AddRange(accountStatements[account.Id]);
+                                }
                             }
                         }
                     }
+                    catch (Exception accountEx)
+                    {
+                        System.Diagnostics.Trace.TraceError($"Error fetching accounts for customer {customer.Id}: {accountEx.Message}");
+                    }
                 }
 
-                // Next of Kin
-                if (includeNextOfKin)
+                // Get next of kin if requested
+                if (includeNextOfKin && customer.Id != Guid.Empty)
                 {
-                    var nextOfKins = await master._channelService
-                        .FindNextOfKinCollectionByCustomerIdAsync(customer.Id, serviceHeader);
-
-                    if (nextOfKins != null)
+                    try
                     {
-                        foreach (var nok in nextOfKins)
+                        var nextOfKins = await master._channelService.FindNextOfKinCollectionByCustomerIdAsync(
+                            customer.Id,
+                            serviceHeader
+                        );
+
+                        if (nextOfKins != null && nextOfKins.Any())
                         {
-                            memberDetail.NextOfKin.Add(new
+                            foreach (var nextOfKin in nextOfKins)
                             {
-                                nok.Id,
-                                nok.FullName,
-                                nok.Relationship,
-                                nok.RelationshipDescription,
-                                nok.AddressMobileLine,
-                                nok.AddressEmail,
-                                nok.AddressAddressLine1,
-                                nok.AddressCity,
-                                nok.NominatedPercentage,
-                                nok.CreatedDate
-                            });
+                                var nokObj = new
+                                {
+                                    nextOfKin.Id,
+                                    nextOfKin.FullName,
+                                    nextOfKin.Relationship,
+                                    nextOfKin.RelationshipDescription,
+                                    nextOfKin.AddressMobileLine,
+                                    nextOfKin.AddressEmail,
+                                    nextOfKin.AddressAddressLine1,
+                                    nextOfKin.AddressCity,
+                                    nextOfKin.NominatedPercentage,
+                                    nextOfKin.CreatedDate
+                                };
+
+                                ((List<object>)memberDetail.NextOfKin).Add(nokObj);
+                            }
                         }
+                    }
+                    catch (Exception nextOfKinEx)
+                    {
+                        System.Diagnostics.Trace.TraceError($"Error fetching next of kin for customer {customer.Id}: {nextOfKinEx.Message}");
                     }
                 }
 
@@ -443,18 +484,36 @@ namespace TestApis.Controllers
                 {
                     Success = true,
                     Message = "Member retrieved successfully.",
-                    Data = memberDetail
+                    Data = new
+                    {
+                        Member = memberDetail,
+                        Summary = new
+                        {
+                            IncludeAccounts = includeAccounts,
+                            IncludeNextOfKin = includeNextOfKin,
+                            IncludeStatements = includeStatements,
+                            AccountCount = ((List<object>)memberDetail.Accounts).Count,
+                            NextOfKinCount = ((List<object>)memberDetail.NextOfKin).Count,
+                            StatementCount = ((List<object>)memberDetail.Statements).Count,
+                            StatementDateRange = includeStatements ? new
+                            {
+                                StartDate = statementStartDate?.ToString("yyyy-MM-dd"),
+                                EndDate = statementEndDate?.ToString("yyyy-MM-dd")
+                            } : null
+                        }
+                    }
                 });
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError($"GetMemberWithDetailsByReference2 failed: {ex}");
+                System.Diagnostics.Trace.TraceError($"Error in GetMemberWithDetailsByReference2: {ex.Message}");
+                System.Diagnostics.Trace.TraceError($"Stack Trace: {ex.StackTrace}");
 
                 return Json(new ApiResponse<object>
                 {
                     Success = false,
-                    Message = "Failed to retrieve member details.",
-                    Data = new { ex.Message, Inner = ex.InnerException?.Message }
+                    Message = "An error occurred while retrieving member details.",
+                    Data = new { Error = ex.Message, InnerError = ex.InnerException?.Message }
                 });
             }
         }
@@ -1019,6 +1078,264 @@ ORDER BY AccountBalance DESC;";
         }
 
 
+        [HttpGet]
+        [Route("GetCustomerShareStatementByRef2/{reference2}")]
+        public async Task<HttpResponseMessage> GetCustomerShareStatementByRef2(
+    string reference2,
+    DateTime? startDate = null,
+    DateTime? endDate = null,
+    bool downloadPdf = false)
+        {
+            try
+            {
+                // First, get the customer by Reference2
+                Guid customerId = Guid.Empty;
+                var customerBasicInfo = new
+                {
+                    FirstName = "",
+                    LastName = "",
+                    Mobile = "",
+                    Email = "",
+                    Reference2 = reference2,
+                    Reference3 = ""
+                };
+
+                // List to hold all account statements
+                var allAccountStatements = new List<object>();
+                decimal totalAllContributions = 0;
+
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    // Step 1: Get customer by Reference2
+                    string customerQuery = @"
+                SELECT Id, Individual_FirstName, Individual_LastName, 
+                       Address_MobileLine, Address_Email, Reference2, Reference3
+                FROM [SwiftFinancialsDB_Live].[dbo].[swiftFin_Customers] 
+                WHERE Reference2 = @Reference2";
+
+                    using (var cmd = new SqlCommand(customerQuery, connection))
+                    {
+                        cmd.Parameters.Add("@Reference2", SqlDbType.NVarChar, 50).Value = reference2;
+
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                customerId = (Guid)reader["Id"];
+                                customerBasicInfo = new
+                                {
+                                    FirstName = reader["Individual_FirstName"]?.ToString() ?? "",
+                                    LastName = reader["Individual_LastName"]?.ToString() ?? "",
+                                    Mobile = reader["Address_MobileLine"]?.ToString() ?? "",
+                                    Email = reader["Address_Email"]?.ToString() ?? "",
+                                    Reference2 = reader["Reference2"]?.ToString() ?? "",
+                                    Reference3 = reader["Reference3"]?.ToString() ?? ""
+                                };
+                            }
+                            else
+                            {
+                                // Customer not found
+                                var response = Request.CreateResponse(HttpStatusCode.NotFound);
+                                response.Content = new StringContent(
+                                    JsonConvert.SerializeObject(new ApiResponse<object>
+                                    {
+                                        Success = false,
+                                        Message = $"Customer with Reference2 '{reference2}' not found.",
+                                        Data = null
+                                    }),
+                                    Encoding.UTF8,
+                                    "application/json");
+                                return response;
+                            }
+                        }
+                    }
+
+                    // Step 2: Get all customer accounts for this customer
+                    string accountsQuery = @"
+                SELECT ca.Id as CustomerAccountId,
+                       ca.CustomerAccountType_ProductCode,
+                       ca.CustomerAccountType_TargetProductCode,
+                       b.Code as BranchCode,
+                       c.SerialNumber as CustomerSerialNumber
+                FROM [SwiftFinancialsDB_Live].[dbo].[swiftFin_CustomerAccounts] ca
+                INNER JOIN [SwiftFinancialsDB_Live].[dbo].[swiftFin_Customers] c 
+                    ON ca.CustomerId = c.Id
+                INNER JOIN [SwiftFinancialsDB_Live].[dbo].[swiftFin_Branches] b
+                    ON ca.BranchId = b.Id
+                WHERE ca.CustomerId = @CustomerId";
+
+                    var accounts = new List<(Guid AccountId, int BranchCode, int CustomerSerialNumber, int ProductCode, int TargetProductCode)>();
+
+                    using (var cmd = new SqlCommand(accountsQuery, connection))
+                    {
+                        cmd.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customerId;
+
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                accounts.Add((
+                                    AccountId: (Guid)reader["CustomerAccountId"],
+                                    BranchCode: Convert.ToInt32(reader["BranchCode"]),
+                                    CustomerSerialNumber: Convert.ToInt32(reader["CustomerSerialNumber"]),
+                                    ProductCode: Convert.ToInt32(reader["CustomerAccountType_ProductCode"]),
+                                    TargetProductCode: Convert.ToInt32(reader["CustomerAccountType_TargetProductCode"])
+                                ));
+                            }
+                        }
+                    }
+
+                    if (accounts.Count == 0)
+                    {
+                        var response = Request.CreateResponse(HttpStatusCode.NotFound);
+                        response.Content = new StringContent(
+                            JsonConvert.SerializeObject(new ApiResponse<object>
+                            {
+                                Success = false,
+                                Message = $"No accounts found for customer with Reference2 '{reference2}'.",
+                                Data = null
+                            }),
+                            Encoding.UTF8,
+                            "application/json");
+                        return response;
+                    }
+
+                    // Step 3: For each account, get the share statement
+                    int accountCounter = 1;
+                    foreach (var account in accounts)
+                    {
+                        var statementRows = new List<CustomerShareStatementRow>();
+                        decimal totalContribution = 0;
+
+                        using (var command = new SqlCommand("usp_GetCustomerShareStatement", connection))
+                        {
+                            command.CommandType = CommandType.StoredProcedure;
+
+                            // Add parameters
+                            command.Parameters.Add("@CustomerAccountId", SqlDbType.UniqueIdentifier).Value = account.AccountId;
+                            command.Parameters.Add("@StartDate", SqlDbType.Date).Value = (object)startDate ?? DBNull.Value;
+                            command.Parameters.Add("@EndDate", SqlDbType.Date).Value = (object)endDate ?? DBNull.Value;
+
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                // First result set: Statement rows
+                                while (await reader.ReadAsync())
+                                {
+                                    var row = new CustomerShareStatementRow
+                                    {
+                                        Date = reader["Date"].ToString(),
+                                        ShareContribution = Convert.ToDecimal(reader["Share Contribution"]),
+                                        Cumulative = Convert.ToDecimal(reader["Cumulative"]),
+                                        Description = reader["Description"].ToString()
+                                    };
+                                    statementRows.Add(row);
+                                }
+
+                                // Move to second result set: Total contribution
+                                if (await reader.NextResultAsync())
+                                {
+                                    if (await reader.ReadAsync())
+                                    {
+                                        totalContribution = reader["TotalContribution"] != DBNull.Value ?
+                                            Convert.ToDecimal(reader["TotalContribution"]) : 0;
+                                    }
+                                }
+                            }
+                        }
+
+                        // Build the full account number
+                        string fullAccountNumber = string.Format("{0}-{1}-{2}-{3}",
+                            account.BranchCode.ToString().PadLeft(3, '0'),
+                            account.CustomerSerialNumber.ToString().PadLeft(7, '0'),
+                            account.ProductCode.ToString().PadLeft(3, '0'),
+                            account.TargetProductCode.ToString().PadLeft(3, '0'));
+
+                        // Create the account statement result
+                        var accountStatement = new
+                        {
+                            AccountNumber = fullAccountNumber,
+                            AccountId = account.AccountId,
+                            Statement = statementRows,
+                            TotalContribution = totalContribution
+                        };
+
+                        allAccountStatements.Add(accountStatement);
+                        totalAllContributions += totalContribution;
+
+                        accountCounter++;
+                    }
+                }
+
+                // Create the combined result object with customer info and all account statements
+                var combinedResult = new
+                {
+                    Customer = new
+                    {
+                        FullName = $"{customerBasicInfo.FirstName} {customerBasicInfo.LastName}".Trim(),
+                        StaffNo = customerBasicInfo.Reference2,
+                        PFNumber = customerBasicInfo.Reference3,
+                        Mobile = customerBasicInfo.Mobile,
+                        Email = customerBasicInfo.Email
+                    },
+                    TotalAccounts = allAccountStatements.Count,
+                    TotalAllContributions = totalAllContributions,
+                    Accounts = allAccountStatements
+                };
+
+                // If PDF download is requested
+                if (downloadPdf)
+                {
+                    // You might want to create a combined PDF for all accounts
+                    // For now, we'll just return JSON or you can implement a combined PDF generator
+                    var response = Request.CreateResponse(HttpStatusCode.OK);
+                    response.Content = new StringContent(
+                        JsonConvert.SerializeObject(new ApiResponse<object>
+                        {
+                            Success = true,
+                            Message = $"Found {allAccountStatements.Count} account(s) for customer with Reference2 '{reference2}'.",
+                            Data = combinedResult
+                        }),
+                        Encoding.UTF8,
+                        "application/json");
+                    return response;
+                }
+                else
+                {
+                    // Return JSON response
+                    var response = Request.CreateResponse(HttpStatusCode.OK);
+                    response.Content = new StringContent(
+                        JsonConvert.SerializeObject(new ApiResponse<object>
+                        {
+                            Success = true,
+                            Message = allAccountStatements.Count > 0 ?
+                                $"Share statements retrieved successfully for {allAccountStatements.Count} account(s). Total across all accounts: {totalAllContributions:C}" :
+                                "No transactions found for the given period.",
+                            Data = combinedResult
+                        }),
+                        Encoding.UTF8,
+                        "application/json");
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = Request.CreateResponse(HttpStatusCode.InternalServerError);
+                response.Content = new StringContent(
+                    JsonConvert.SerializeObject(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "An error occurred while retrieving customer share statements by Reference2.",
+                        Data = ex.Message
+                    }),
+                    Encoding.UTF8,
+                    "application/json");
+                return response;
+            }
+        }
+
+
 
         [HttpGet]
         [Route("GetCustomers")]
@@ -1248,4 +1565,7 @@ ORDER BY AccountBalance DESC;";
         }
 
     }
+
+
+
 }
