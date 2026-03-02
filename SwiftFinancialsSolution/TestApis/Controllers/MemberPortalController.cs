@@ -322,166 +322,248 @@ namespace TestApis.Controllers
         {
             try
             {
-                var serviceHeader = master.GetServiceHeader();
-
-                // Get all customers and filter by reference2
-                var customers = await master._channelService.FindCustomersAsync(serviceHeader);
-                var customer = customers?.FirstOrDefault(c => c.Reference2 == reference2);
-
-                if (customer == null)
-                {
-                    return Json(new ApiResponse<object>
-                    {
-                        Success = false,
-                        Message = $"Member with Reference2 '{reference2}' not found.",
-                        Data = null
-                    });
-                }
-
-                // Build member detail object following the same pattern as GetMembersWithDetails
                 var memberDetail = new
                 {
-                    Customer = new
-                    {
-                        customer.Id,
-                        customer.FullName,
-                        customer.SerialNumber,
-                        customer.PaddedSerialNumber,
-                        customer.Type,
-                        customer.TypeDescription,
-                        customer.IndividualType,
-                        customer.IndividualTypeDescription,
-                        customer.IndividualFirstName,
-                        customer.IndividualLastName,
-                        customer.IndividualIdentityCardNumber,
-                        customer.AddressMobileLine,
-                        customer.AddressEmail,
-                        customer.PersonalIdentificationNumber,
-                        customer.Reference1, // Account Number
-                        customer.Reference2, // Membership Number
-                        customer.Reference3, // Personal File Number
-                        customer.BranchDescription,
-                        customer.RegistrationDate,
-                        customer.RecordStatus,
-                        customer.RecordStatusDescription,
-                        customer.IsDefaulter,
-                        customer.IsLocked,
-                        customer.MembershipPeriod,
-                        customer.NonIndividualDateEstablished,
-                        customer.IndividualBirthDate,
-                    },
+                    Customer = (object)null,
                     Accounts = new List<object>(),
                     NextOfKin = new List<object>(),
                     Statements = new List<object>()
                 };
 
-                // Get customer accounts if requested
-                if (includeAccounts && customer.Id != Guid.Empty)
+                // Get customer details using ADO.NET
+                string customerSql = @"
+SELECT 
+    c.Id,
+    c.Individual_FirstName + ' ' + c.Individual_LastName AS FullName,
+    c.SerialNumber,
+    c.Type,
+    c.Individual_Type AS IndividualType,
+    c.Individual_FirstName AS IndividualFirstName,
+    c.Individual_LastName AS IndividualLastName,
+    c.Individual_IdentityCardNumber AS IndividualIdentityCardNumber,
+    c.Address_MobileLine AS AddressMobileLine,
+    c.Address_Email AS AddressEmail,
+    c.PersonalIdentificationNumber,
+    c.Reference1,
+    c.Reference2,
+    c.Reference3,
+    c.RegistrationDate,
+    c.RecordStatus,
+    c.IsDefaulter,
+    c.IsLocked,
+    c.NonIndividual_DateEstablished AS NonIndividualDateEstablished,
+    c.Individual_BirthDate AS IndividualBirthDate
+FROM swiftFin_Customers c
+WHERE c.Reference2 = @reference2";
+
+                using (var conn = new SqlConnection(_connectionString))
                 {
-                    try
+                    await conn.OpenAsync();
+
+                    // Get customer
+                    object customerObj = null;
+                    using (var cmd = new SqlCommand(customerSql, conn))
                     {
-                        var accounts = await master._channelService.FindCustomerAccountsByCustomerIdAsync(
-                            customer.Id,
-                            includeAccountBalances,
-                            includeProductDescription,
-                            includeInterestBalanceForLoanAccounts,
-                            considerMaturityPeriodForInvestmentAccounts,
-                            serviceHeader
-                        );
-
-                        if (accounts != null && accounts.Any())
+                        cmd.Parameters.AddWithValue("@reference2", reference2);
+                        using (var reader = await cmd.ExecuteReaderAsync())
                         {
-                            var accountIds = accounts.Select(a => a.Id).ToList();
-
-                            // Get statements for all accounts at once if requested
-                            Dictionary<Guid, List<object>> accountStatements = null;
-                            if (includeStatements && accountIds.Any())
+                            if (await reader.ReadAsync())
                             {
-                                accountStatements = await GetAccountStatementsAsync(
-                                    accountIds,
-                                    statementStartDate,
-                                    statementEndDate
-                                );
-                            }
-
-                            foreach (var account in accounts)
-                            {
-                                // Add account to the list
-                                var accountObj = new
+                                customerObj = new
                                 {
-                                    account.Id,
-                                    account.FullAccountNumber,
-                                    account.CustomerAccountTypeTargetProductDescription,
-                                    account.CustomerAccountTypeProductCode,
-                                    account.CustomerAccountTypeProductCodeDescription,
-                                    account.Status,
-                                    account.StatusDescription,
-                                    account.RecordStatus,
-                                    account.RecordStatusDescription,
-                                    account.BookBalance,
-                                    account.AvailableBalance,
-                                    account.PrincipalBalance,
-                                    account.InterestBalance,
-                                    account.CarryForwardsBalance,
-                                    account.PrincipalArrearagesBalance,
-                                    account.InterestArrearagesBalance,
-                                    account.CreatedDate,
-                                    account.Remarks
+                                    Id = reader["Id"] != DBNull.Value ? (Guid)reader["Id"] : Guid.Empty,
+                                    FullName = reader["FullName"]?.ToString(),
+                                    SerialNumber = reader["SerialNumber"] != DBNull.Value ? Convert.ToInt32(reader["SerialNumber"]) : 0,
+                                    Type = reader["Type"] != DBNull.Value ? Convert.ToInt32(reader["Type"]) : 0,
+                                    IndividualType = reader["IndividualType"] != DBNull.Value ? Convert.ToInt32(reader["IndividualType"]) : 0,
+                                    IndividualFirstName = reader["IndividualFirstName"]?.ToString(),
+                                    IndividualLastName = reader["IndividualLastName"]?.ToString(),
+                                    IndividualIdentityCardNumber = reader["IndividualIdentityCardNumber"]?.ToString(),
+                                    AddressMobileLine = reader["AddressMobileLine"]?.ToString(),
+                                    AddressEmail = reader["AddressEmail"]?.ToString(),
+                                    PersonalIdentificationNumber = reader["PersonalIdentificationNumber"]?.ToString(),
+                                    Reference1 = reader["Reference1"]?.ToString(),
+                                    Reference2 = reader["Reference2"]?.ToString(),
+                                    Reference3 = reader["Reference3"]?.ToString(),
+                                    RegistrationDate = reader["RegistrationDate"] != DBNull.Value ? (DateTime?)reader["RegistrationDate"] : null,
+                                    RecordStatus = reader["RecordStatus"] != DBNull.Value ? Convert.ToInt32(reader["RecordStatus"]) : 0,
+                                    IsDefaulter = reader["IsDefaulter"] != DBNull.Value && (bool)reader["IsDefaulter"],
+                                    IsLocked = reader["IsLocked"] != DBNull.Value && (bool)reader["IsLocked"],
+                                    NonIndividualDateEstablished = reader["NonIndividualDateEstablished"] != DBNull.Value ? (DateTime?)reader["NonIndividualDateEstablished"] : null,
+                                    IndividualBirthDate = reader["IndividualBirthDate"] != DBNull.Value ? (DateTime?)reader["IndividualBirthDate"] : null
                                 };
+                            }
+                        }
+                    }
 
-                                // Use reflection to add to the anonymous type's Accounts list
-                                ((List<object>)memberDetail.Accounts).Add(accountObj);
+                    if (customerObj == null)
+                    {
+                        return Json(new ApiResponse<object>
+                        {
+                            Success = false,
+                            Message = $"Member with Reference2 '{reference2}' not found.",
+                            Data = null
+                        });
+                    }
 
-                                // Add statements for this account if available
-                                if (includeStatements && accountStatements != null &&
-                                    accountStatements.ContainsKey(account.Id))
+                    // Set customer in memberDetail
+                    memberDetail = new
+                    {
+                        Customer = customerObj,
+                        Accounts = new List<object>(),
+                        NextOfKin = new List<object>(),
+                        Statements = new List<object>()
+                    };
+
+                    var customerId = (Guid)customerObj.GetType().GetProperty("Id").GetValue(customerObj);
+
+                    // Get accounts if requested - UPDATED Status mapping
+                    if (includeAccounts && customerId != Guid.Empty)
+                    {
+                        string accountsSql = @"
+SELECT 
+    ca.Id,
+    -- Build FullAccountNumber from components (you may need to adjust this based on your actual logic)
+    CAST(b.Code AS VARCHAR) + '-' + CAST(c.SerialNumber AS VARCHAR) + '-' + 
+    CAST(ca.CustomerAccountType_ProductCode AS VARCHAR) + '-' + 
+    CAST(ca.CustomerAccountType_TargetProductCode AS VARCHAR) AS FullAccountNumber,
+    COALESCE(lp.Description, sp.Description) AS ProductDescription,
+    ca.CustomerAccountType_ProductCode,
+    ca.CustomerAccountType_TargetProductCode,
+    ca.Status,
+    CASE 
+        WHEN ca.Status = 0 THEN 'Active'      -- Based on your feedback: 0 = Active
+        WHEN ca.Status = 1 THEN 'Inactive'    -- Assuming 1 = Inactive
+        WHEN ca.Status = 2 THEN 'Dormant'     -- You can add other statuses as needed
+        WHEN ca.Status = 3 THEN 'Closed'
+        ELSE 'Unknown'
+    END AS StatusDescription,
+    ca.RecordStatus,
+    ca.CreatedDate,
+    ca.Remarks,
+    -- Get balance from JournalEntries if needed
+    (SELECT ISNULL(SUM(Amount), 0) FROM swiftFin_JournalEntries je WHERE je.CustomerAccountId = ca.Id) AS CalculatedBalance
+FROM swiftFin_CustomerAccounts ca
+INNER JOIN swiftFin_Customers c ON ca.CustomerId = c.Id
+LEFT JOIN swiftFin_Branches b ON ca.BranchId = b.Id
+LEFT JOIN swiftFin_LoanProducts lp ON lp.Id = ca.CustomerAccountType_TargetProductId
+LEFT JOIN swiftFin_SavingsProducts sp ON sp.Id = ca.CustomerAccountType_TargetProductId
+WHERE ca.CustomerId = @customerId";
+
+                        var accounts = new List<object>();
+                        using (var cmd = new SqlCommand(accountsSql, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@customerId", customerId);
+                            using (var reader = await cmd.ExecuteReaderAsync())
+                            {
+                                while (await reader.ReadAsync())
                                 {
-                                    ((List<object>)memberDetail.Statements).AddRange(accountStatements[account.Id]);
+                                    var accountObj = new
+                                    {
+                                        Id = reader["Id"] != DBNull.Value ? (Guid)reader["Id"] : Guid.Empty,
+                                        FullAccountNumber = reader["FullAccountNumber"]?.ToString(),
+                                        ProductDescription = reader["ProductDescription"]?.ToString(),
+                                        CustomerAccountTypeProductCode = reader["CustomerAccountType_ProductCode"] != DBNull.Value ? Convert.ToInt32(reader["CustomerAccountType_ProductCode"]) : 0,
+                                        CustomerAccountTypeTargetProductCode = reader["CustomerAccountType_TargetProductCode"] != DBNull.Value ? Convert.ToInt32(reader["CustomerAccountType_TargetProductCode"]) : 0,
+                                        Status = reader["Status"] != DBNull.Value ? Convert.ToInt32(reader["Status"]) : 0,
+                                        StatusDescription = reader["StatusDescription"]?.ToString() ??
+                                            (reader["Status"] != DBNull.Value ?
+                                                (Convert.ToInt32(reader["Status"]) == 0 ? "Active" : "Unknown") : "Unknown"),
+                                        RecordStatus = reader["RecordStatus"] != DBNull.Value ? Convert.ToInt32(reader["RecordStatus"]) : 0,
+                                        CreatedDate = reader["CreatedDate"] != DBNull.Value ? (DateTime?)reader["CreatedDate"] : null,
+                                        Remarks = reader["Remarks"]?.ToString(),
+                                        // Include balance if needed
+                                        Balance = includeAccountBalances && reader["CalculatedBalance"] != DBNull.Value ?
+                                            Convert.ToDecimal(reader["CalculatedBalance"]) : 0
+                                    };
+                                    accounts.Add(accountObj);
                                 }
                             }
                         }
-                    }
-                    catch (Exception accountEx)
-                    {
-                        System.Diagnostics.Trace.TraceError($"Error fetching accounts for customer {customer.Id}: {accountEx.Message}");
-                    }
-                }
 
-                // Get next of kin if requested
-                if (includeNextOfKin && customer.Id != Guid.Empty)
-                {
-                    try
-                    {
-                        var nextOfKins = await master._channelService.FindNextOfKinCollectionByCustomerIdAsync(
-                            customer.Id,
-                            serviceHeader
-                        );
-
-                        if (nextOfKins != null && nextOfKins.Any())
+                        // Update memberDetail with accounts
+                        var tempMemberDetail = memberDetail;
+                        memberDetail = new
                         {
-                            foreach (var nextOfKin in nextOfKins)
-                            {
-                                var nokObj = new
-                                {
-                                    nextOfKin.Id,
-                                    nextOfKin.FullName,
-                                    nextOfKin.Relationship,
-                                    nextOfKin.RelationshipDescription,
-                                    nextOfKin.AddressMobileLine,
-                                    nextOfKin.AddressEmail,
-                                    nextOfKin.AddressAddressLine1,
-                                    nextOfKin.AddressCity,
-                                    nextOfKin.NominatedPercentage,
-                                    nextOfKin.CreatedDate
-                                };
+                            Customer = tempMemberDetail.Customer,
+                            Accounts = accounts,
+                            NextOfKin = tempMemberDetail.NextOfKin,
+                            Statements = tempMemberDetail.Statements
+                        };
 
-                                ((List<object>)memberDetail.NextOfKin).Add(nokObj);
-                            }
+                        // Get statements if requested
+                        if (includeStatements && accounts.Any())
+                        {
+                            var statements = await GetAccountStatementsUsingAdoNetAsync(conn, customerId, statementStartDate, statementEndDate);
+
+                            tempMemberDetail = memberDetail;
+                            memberDetail = new
+                            {
+                                Customer = tempMemberDetail.Customer,
+                                Accounts = tempMemberDetail.Accounts,
+                                NextOfKin = tempMemberDetail.NextOfKin,
+                                Statements = statements
+                            };
                         }
                     }
-                    catch (Exception nextOfKinEx)
+
+                    // Get next of kin if requested
+                    if (includeNextOfKin && customerId != Guid.Empty)
                     {
-                        System.Diagnostics.Trace.TraceError($"Error fetching next of kin for customer {customer.Id}: {nextOfKinEx.Message}");
+                        string nokSql = @"
+SELECT 
+    Id,
+    FirstName + ' ' + LastName AS FullName,
+    FirstName,
+    LastName,
+    Relationship,
+    -- You might need to join with a lookup table for RelationshipDescription
+    Address_MobileLine AS AddressMobileLine,
+    Address_Email AS AddressEmail,
+    Address_AddressLine1 AS AddressAddressLine1,
+    Address_City AS AddressCity,
+    NominatedPercentage,
+    CreatedDate
+FROM swiftFin_NextOfKin
+WHERE CustomerId = @customerId";
+
+                        var nextOfKins = new List<object>();
+                        using (var cmd = new SqlCommand(nokSql, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@customerId", customerId);
+                            using (var reader = await cmd.ExecuteReaderAsync())
+                            {
+                                while (await reader.ReadAsync())
+                                {
+                                    var nokObj = new
+                                    {
+                                        Id = reader["Id"] != DBNull.Value ? (Guid)reader["Id"] : Guid.Empty,
+                                        FullName = reader["FullName"]?.ToString(),
+                                        FirstName = reader["FirstName"]?.ToString(),
+                                        LastName = reader["LastName"]?.ToString(),
+                                        Relationship = reader["Relationship"] != DBNull.Value ? Convert.ToInt32(reader["Relationship"]) : 0,
+                                        // RelationshipDescription = reader["RelationshipDescription"]?.ToString(), // Comment out if not exists
+                                        AddressMobileLine = reader["AddressMobileLine"]?.ToString(),
+                                        AddressEmail = reader["AddressEmail"]?.ToString(),
+                                        AddressAddressLine1 = reader["AddressAddressLine1"]?.ToString(),
+                                        AddressCity = reader["AddressCity"]?.ToString(),
+                                        NominatedPercentage = reader["NominatedPercentage"] != DBNull.Value ? Convert.ToDecimal(reader["NominatedPercentage"]) : 0,
+                                        CreatedDate = reader["CreatedDate"] != DBNull.Value ? (DateTime?)reader["CreatedDate"] : null
+                                    };
+                                    nextOfKins.Add(nokObj);
+                                }
+                            }
+                        }
+
+                        // Update memberDetail with next of kin
+                        var tempMemberDetail = memberDetail;
+                        memberDetail = new
+                        {
+                            Customer = tempMemberDetail.Customer,
+                            Accounts = tempMemberDetail.Accounts,
+                            NextOfKin = nextOfKins,
+                            Statements = tempMemberDetail.Statements
+                        };
                     }
                 }
 
@@ -521,6 +603,58 @@ namespace TestApis.Controllers
                     Data = new { Error = ex.Message, InnerError = ex.InnerException?.Message }
                 });
             }
+        }
+
+        private async Task<List<object>> GetAccountStatementsUsingAdoNetAsync(
+            SqlConnection connection,
+            Guid customerId,
+            DateTime? startDate,
+            DateTime? endDate)
+        {
+            var statements = new List<object>();
+
+            string statementsSql = @"
+SELECT 
+    je.Id,
+    je.ValueDate,
+    je.Description,
+    je.Amount,
+    je.Balance,
+    ca.Id AS AccountId,
+    ca.FullAccountNumber
+FROM swiftFin_JournalEntries je
+INNER JOIN swiftFin_CustomerAccounts ca ON je.CustomerAccountId = ca.Id
+WHERE ca.CustomerId = @customerId
+AND (@startDate IS NULL OR je.ValueDate >= @startDate)
+AND (@endDate IS NULL OR je.ValueDate <= @endDate)
+ORDER BY je.ValueDate DESC";
+
+            using (var cmd = new SqlCommand(statementsSql, connection))
+            {
+                cmd.Parameters.AddWithValue("@customerId", customerId);
+                cmd.Parameters.AddWithValue("@startDate", startDate ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@endDate", endDate ?? (object)DBNull.Value);
+
+                using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var statementObj = new
+                        {
+                            Id = reader["Id"] != DBNull.Value ? (Guid)reader["Id"] : Guid.Empty,
+                            ValueDate = reader["ValueDate"] != DBNull.Value ? (DateTime?)reader["ValueDate"] : null,
+                            Description = reader["Description"]?.ToString(),
+                            Amount = reader["Amount"] != DBNull.Value ? Convert.ToDecimal(reader["Amount"]) : 0,
+                            Balance = reader["Balance"] != DBNull.Value ? Convert.ToDecimal(reader["Balance"]) : 0,
+                            AccountId = reader["AccountId"] != DBNull.Value ? (Guid)reader["AccountId"] : Guid.Empty,
+                            FullAccountNumber = reader["FullAccountNumber"]?.ToString()
+                        };
+                        statements.Add(statementObj);
+                    }
+                }
+            }
+
+            return statements;
         }
 
         public class CustomerAccountDto

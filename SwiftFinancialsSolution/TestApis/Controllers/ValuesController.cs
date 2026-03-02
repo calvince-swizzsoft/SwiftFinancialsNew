@@ -5155,14 +5155,12 @@ namespace TestApis.Controllers
                     });
                 }
 
-                // Extract values with proper type casting
                 int currentPageIndex = Convert.ToInt32(customersPage.PageIndex);
                 int currentPageSize = Convert.ToInt32(customersPage.PageSize);
                 int totalCount = Convert.ToInt32(customersPage.TotalCount);
                 int totalPages = Convert.ToInt32(customersPage.TotalPages);
                 int pageCollectionCount = customersPage.PageCollection.Count;
 
-                // Create a list to hold member details
                 var membersWithDetails = new List<object>();
 
                 // Process each customer to get their details
@@ -8305,34 +8303,38 @@ namespace TestApis.Controllers
                             var accountTransactions = new Dictionary<Guid, List<SharesTransaction>>();
                             var accountDetails = new Dictionary<Guid, (string ProductName, decimal TotalContribution)>();
 
-                            // First result set: Detailed Statement
-                            while (await reader.ReadAsync())
+                            // SKIP OUTPUT 0: Account Header (first result set)
+                            if (await reader.NextResultAsync())
                             {
-                                // Skip if it's a message result set
-                                if (reader.FieldCount == 1 && reader.GetName(0) == "Message")
-                                    continue;
-
-                                var customerAccountId = reader["CustomerAccountId"] != DBNull.Value ?
-                                    (Guid)reader["CustomerAccountId"] : Guid.Empty;
-
-                                var transaction = new SharesTransaction
+                                // First result set is now the Detailed Statement (OUTPUT 1)
+                                while (await reader.ReadAsync())
                                 {
-                                    TransactionDate = reader["Date"]?.ToString() ?? "",
-                                    Description = reader["Description"]?.ToString() ?? "",
-                                    DepositAmount = reader["Share Contribution"] != DBNull.Value ?
-                                        Convert.ToDecimal(reader["Share Contribution"]) : 0m,
-                                    WithdrawalAmount = 0m,
-                                    RunningBalance = reader["Cumulative"] != DBNull.Value ?
-                                        Convert.ToDecimal(reader["Cumulative"]) : 0m
-                                };
+                                    // Skip if it's a message result set
+                                    if (reader.FieldCount == 1 && reader.GetName(0) == "Message")
+                                        continue;
 
-                                if (!accountTransactions.ContainsKey(customerAccountId))
-                                    accountTransactions[customerAccountId] = new List<SharesTransaction>();
+                                    var customerAccountId = reader["CustomerAccountId"] != DBNull.Value ?
+                                        (Guid)reader["CustomerAccountId"] : Guid.Empty;
 
-                                accountTransactions[customerAccountId].Add(transaction);
+                                    var transaction = new SharesTransaction
+                                    {
+                                        TransactionDate = reader["Date"]?.ToString() ?? "",
+                                        Description = reader["Description"]?.ToString() ?? "",
+                                        DepositAmount = reader["Share Contribution"] != DBNull.Value ?
+                                            Convert.ToDecimal(reader["Share Contribution"]) : 0m,
+                                        WithdrawalAmount = 0m,
+                                        RunningBalance = reader["Cumulative"] != DBNull.Value ?
+                                            Convert.ToDecimal(reader["Cumulative"]) : 0m
+                                    };
+
+                                    if (!accountTransactions.ContainsKey(customerAccountId))
+                                        accountTransactions[customerAccountId] = new List<SharesTransaction>();
+
+                                    accountTransactions[customerAccountId].Add(transaction);
+                                }
                             }
 
-                            // Second result set: Total Contribution Per Account
+                            // Move to Summary result set (OUTPUT 2)
                             if (await reader.NextResultAsync())
                             {
                                 while (await reader.ReadAsync())
@@ -8350,6 +8352,10 @@ namespace TestApis.Controllers
                                     accountDetails[customerAccountId] = (productName, totalContribution);
                                 }
                             }
+
+                            // Skip the third result set (Summary Stats - OUTPUT 3)
+                            // We don't need it, but we need to advance the reader
+                            await reader.NextResultAsync();
 
                             // Create shares statement results for each account
                             foreach (var account in accountDetails)
@@ -9586,16 +9592,16 @@ namespace TestApis.Controllers
                                 transTable.AddCell(balanceCell);
                             }
 
-                            if (loan.Statement.Count > 10)
-                            {
-                                var moreTransPara = new Paragraph($"... and {loan.Statement.Count - 10} more transactions", smallFont)
-                                {
-                                    Alignment = Element.ALIGN_CENTER,
-                                    SpacingBefore = 3f,
-                                    SpacingAfter = 3f  // Reduced from 8f
-                                };
-                                document.Add(moreTransPara);
-                            }
+                            //if (loan.Statement.Count > 10)
+                            //{
+                            //    var moreTransPara = new Paragraph($"... and {loan.Statement.Count - 10} more transactions", smallFont)
+                            //    {
+                            //        Alignment = Element.ALIGN_CENTER,
+                            //        SpacingBefore = 3f,
+                            //        SpacingAfter = 3f  // Reduced from 8f
+                            //    };
+                            //    document.Add(moreTransPara);
+                            //}
                         }
                         else
                         {
