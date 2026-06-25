@@ -332,5 +332,15 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public Guid PaymentVoucherId { get; set; }
 
         public string PaymentVoucherPayee { get; set; }
+
+        public bool Posted { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Name")]
+        public string CustomerName { get; set; }
+
+
+
+
     }
 }

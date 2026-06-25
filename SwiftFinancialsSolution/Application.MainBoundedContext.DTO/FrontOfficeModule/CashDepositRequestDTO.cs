@@ -34,6 +34,10 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public Guid CustomerAccountId { get; set; }
 
         [DataMember]
+        [Display(Name = "Customer Name")]
+        public string CustomerName { get; set; }
+
+        [DataMember]
         [Display(Name = "Customer Type")]
         public int CustomerAccountCustomerType { get; set; }
 
@@ -261,5 +265,9 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Product")]
         public string CustomerAccountCustomerAccountTypeTargetProductDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Posted")]
+        public bool Posted { get; set; }
     }
 }

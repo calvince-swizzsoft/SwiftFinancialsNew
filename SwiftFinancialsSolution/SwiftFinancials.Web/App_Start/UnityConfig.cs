@@ -1,21 +1,6 @@
-using DistributedServices.MainBoundedContext.Identity;
-using Infrastructure.Crosscutting.Framework.Adapter;
-using Infrastructure.Crosscutting.Framework.Logging;
-using LazyCache;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Owin.Security;
 using System;
-using System.Data.Entity;
-using System.Runtime.Caching;
-using System.Web;
+
 using Unity;
-using Unity.Injection;
-using Unity.Lifetime;
-using SwiftFinancials.Web.Identity;
-using SwiftFinancials.Web.Services;
-using SwiftFinancials.Web.TypeAdapterFactory;
-using SwiftFinancials.Presentation.Infrastructure.Services;
 
 namespace SwiftFinancials.Web
 {
@@ -57,36 +42,6 @@ namespace SwiftFinancials.Web
 
             // TODO: Register your type's mappings here.
             // container.RegisterType<IProductRepository, ProductRepository>();
-
-            container.RegisterType<IAppCache, CachingService>(new ContainerControlledLifetimeManager(), new InjectionConstructor(MemoryCache.Default));
-
-            container.RegisterType<DbContext, ApplicationDbContext>(new InjectionConstructor("AuthStore"));
-
-            container.RegisterType<UserManager<ApplicationUser>>();
-
-            container.RegisterType<IUserStore<ApplicationUser>, UserStore<ApplicationUser>>();
-
-            container.RegisterType<IRoleStore<IdentityRole, string>, RoleStore<IdentityRole, string, IdentityUserRole>>();
-
-            container.RegisterType<ApplicationUserManager>();
-
-            container.RegisterType<ApplicationSignInManager>();
-
-            container.RegisterType<ApplicationRoleManager>();
-
-            container.RegisterType<ILogger, SerilogLogger>(new ContainerControlledLifetimeManager());
-
-            container.RegisterType<IChannelService, ChannelService>(new ContainerControlledLifetimeManager());
-
-            container.RegisterType<EmailService>();
-
-            container.RegisterType<SmsService>();
-
-            container.RegisterType<IAuthenticationManager>(new InjectionFactory(c => HttpContext.Current.GetOwinContext().Authentication));
-
-            container.RegisterType<IWebConfigurationService, WebConfigurationService>();
-
-            container.RegisterType<ITypeAdapterFactory, AutomapperTypeAdapterFactory>(new ContainerControlledLifetimeManager());
         }
     }
 }

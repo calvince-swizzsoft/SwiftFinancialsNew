@@ -10,6 +10,7 @@ using Application.MainBoundedContext.DTO.MicroCreditModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Presentation.Infrastructure.Models;
+using SwiftFinancials.Presentation.Shared.Application.MainBoundedContext.DTO.AccountsModule;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -523,6 +524,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<CashWithdrawalRequestDTO>> FindMatureCashWithdrawalRequestsByChartOfAccountIdAsync(Guid chartOfAccountId, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<CashWithdrawalRequestDTO>> FindCashWithdrawalRequestsAsync(ServiceHeader serviceHeader = null);
+
         Task<CashWithdrawalRequestDTO> AddCashWithdrawalRequestAsync(CashWithdrawalRequestDTO cashWithdrawalRequestDTO, ServiceHeader serviceHeader = null);
 
         Task<CashWithdrawalRequestDTO> FindCashWithdrawalRequestAsync(Guid cashWithdrawalRequestId, ServiceHeader serviceHeader = null);
@@ -549,6 +552,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<CashTransferRequestDTO>> FindCashTransferRequestsByStatusAndFilterInPageAsync(DateTime startDate, DateTime endDate, string text, int status, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<CashTransferRequestDTO>> FindCashTransferRequestsAsync(ServiceHeader serviceHeader = null);
 
         #endregion
 
@@ -1999,6 +2003,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<TreasuryDTO>> FindTreasuriesByFilterInPageAsync(string text, int pageIndex, int pageSize, bool includeBalances = false, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<TreasuryDTO>> FindTreasuriesAsync(bool includeBalances, ServiceHeader serviceHeader);
+
         Task<TreasuryDTO> AddTreasuryAsync(TreasuryDTO treasuryDTO, ServiceHeader serviceHeader);
 
         Task<bool> UpdateTreasuryAsync(TreasuryDTO treasuryDTO, ServiceHeader serviceHeader = null);
@@ -2408,6 +2414,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<RecurringBatchDTO>> FindRecurringBatchesByStatusAndFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
+        //Task<ObservableCollection<RecurringBatchDTO>> FindRecurringBatchesAsync(ServiceHeader serviceHeader);
         Task<PageCollectionInfo<RecurringBatchEntryDTO>> FindRecurringBatchEntriesByRecurringBatchIdInPageAsync(Guid recurringBatchId, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<bool> CapitalizeInterestByEmployersAndLoanProductsAsync(RecurringBatchDTO recurringBatchDTO, ObservableCollection<EmployerDTO> employerDTOs, ObservableCollection<LoanProductDTO> loanProductDTOs, ServiceHeader serviceHeader = null);
@@ -3236,6 +3243,23 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<JournalDTO> PostReceiptAsync(ReceiptDTO receiptDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
 
 
+        #endregion
+
+
+        #region ImprestDTO
+
+
+        Task<List<ImprestDTO>> FindImprestsAsync(ServiceHeader serviceHeader);
+
+        Task<List<ImprestLineDTO>> FindImprestLinesAsync(ServiceHeader serviceHeader);
+        Task<ImprestDTO> AddNewImprestAsync(ImprestDTO imprestDTO, ServiceHeader serviceHeader);
+
+        Task<bool> UpdateImprestAsync(ImprestDTO imprestDTO, ServiceHeader serviceHeader);
+
+
+        Task<JournalDTO> PostImprestAsync(ImprestDTO imprestDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
+
+        Task<JournalDTO> PayImprest(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
         #endregion
 
     }

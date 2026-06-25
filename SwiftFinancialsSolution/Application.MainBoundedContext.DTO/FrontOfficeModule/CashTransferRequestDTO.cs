@@ -5,7 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace Application.MainBoundedContext.DTO.FrontOfficeModule
+//namespace SwiftFinancials.Presentation.Infrastructure.Models
 {
+    [DataContract]
     public class CashTransferRequestDTO : BindingModelBase<CashTransferRequestDTO>
     {
 
@@ -15,10 +17,27 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         }
 
         [Display(Name = "Id")]
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
 
-        [Display(Name = "Employee")]
-        public Guid? EmployeeId { get; set; }
+        //[Display(Name = "Employee")]
+        //public Guid? EmployeeId { get; set; }
+
+        Guid? _employeeId;
+        [DataMember]
+        [Display(Name = "Employee Id")]
+        public Guid? EmployeeId
+        {
+            get { return _employeeId; }
+            set
+            {
+                if (_employeeId != value)
+                {
+                    _employeeId = value;
+                    OnPropertyChanged(() => EmployeeId);
+                }
+            }
+        }
+
 
         [Display(Name = "Customer")]
         public Guid EmployeeCustomerId { get; set; }
@@ -66,8 +85,25 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Utilized")]
         public bool Utilized { get; set; }
 
+        //[Display(Name = "Amount")]
+        //public decimal Amount { get; set; }
+
+        decimal _amount;
+        [DataMember]
         [Display(Name = "Amount")]
-        public decimal Amount { get; set; }
+        [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount must be greater than zero!")]
+        public decimal Amount
+        {
+            get { return _amount; }
+            set
+            {
+                if (_amount != value)
+                {
+                    _amount = value;
+                    OnPropertyChanged(() => Amount);
+                }
+            }
+        }
 
         [Display(Name = "Reference")]
         public string Reference { get; set; }
@@ -118,23 +154,124 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         }
 
 
+        //[Display(Name = "Opening Balance")]
+        //public decimal OpeningBalance { get; set; }
+
+        decimal _openingBalance;
+        [DataMember]
         [Display(Name = "Opening Balance")]
-        public decimal OpeningBalance { get; set; }
+        public decimal OpeningBalance
+        {
+            get { return _openingBalance; }
+            set
+            {
+                if (_openingBalance != value)
+                {
+                    _openingBalance = value;
+                    OnPropertyChanged(() => OpeningBalance);
+                }
+            }
+        }
 
+        //[Display(Name = "Closing Balance")]
+        //public decimal ClosingBalance { get; set; }
+
+        decimal _closingBalance;
+        [DataMember]
         [Display(Name = "Closing Balance")]
-        public decimal ClosingBalance { get; set; }
+        //[RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Closing Balance must be greater than zero!")]
+        public decimal ClosingBalance
+        {
+            get { return _closingBalance; }
+            set
+            {
+                if (_closingBalance != value)
+                {
+                    _closingBalance = value;
+                    OnPropertyChanged(() => ClosingBalance);
+                }
+            }
+        }
 
+        //[Display(Name = "Total Payments")]
+        //public decimal TotalDebits { get; set; }
+
+        decimal _totalCredits;
+        [DataMember]
         [Display(Name = "Total Payments")]
-        public decimal TotalDebits { get; set; }
+        //[RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Total Payments must be greater than zero!")]
+        public decimal TotalCredits
+        {
+            get { return _totalCredits; }
+            set
+            {
+                if (_totalCredits != value)
+                {
+                    _totalCredits = value;
+                    OnPropertyChanged(() => TotalCredits);
+                }
+            }
+        }
 
-        [Display(Name = "Total Receipts")]
-        public decimal TotalCredits { get; set; }
+        //[Display(Name = "Total Receipts")]
+        //public decimal TotalDebits { get; set; }
 
+        decimal _totalDebits;
+        [DataMember]
+        [Display(Name = "Total Debits")]
+        //[RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Total Debits must be greater than zero!")]
+        public decimal TotalDebits
+        {
+            get { return _totalDebits; }
+            set
+            {
+                if (_totalDebits != value)
+                {
+                    _totalDebits = value;
+                    OnPropertyChanged(() => TotalDebits);
+                }
+            }
+        }
+
+        //[Display(Name = "Expected Cash")]
+        //public decimal BookBalance { get; set; }
+
+        decimal _bookBalance;
+        [DataMember]
         [Display(Name = "Expected Cash")]
-        public decimal BookBalance { get; set; }
+        //[RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Total Value must be greater than zero!")]
+        public decimal BookBalance
+        {
+            get { return _bookBalance; }
+            set
+            {
+                if (_bookBalance != value)
+                {
+                    _bookBalance = value;
+                    OnPropertyChanged(() => BookBalance);
+                }
+            }
+        }
 
-        [Display(Name = "Cheques Pensing Transfer")]
-        public decimal UntransferredChequesValue { get; set; }
+        //[Display(Name = "Cheques Pensing Transfer")]
+        //public decimal UntransferredChequesValue { get; set; }
+
+        decimal _untransferredChequesValue;
+        [DataMember]
+        [Display(Name = "Cheques Pending Transfer")]
+        //[RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Total Value must be greater than zero!")]
+        public decimal UntransferredChequesValue
+        {
+            get { return _untransferredChequesValue; }
+            set
+            {
+                if (_untransferredChequesValue != value)
+                {
+                    _untransferredChequesValue = value;
+                    OnPropertyChanged(() => UntransferredChequesValue);
+                }
+            }
+        }
 
         [DataMember]
         [Display(Name = "Closing Balance Status")]

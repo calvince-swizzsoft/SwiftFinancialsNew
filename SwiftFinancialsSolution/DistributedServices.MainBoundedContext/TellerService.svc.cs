@@ -46,7 +46,15 @@ namespace DistributedServices.MainBoundedContext
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
-            return _tellerAppService.FindTellers(serviceHeader);
+            var tellers = _tellerAppService.FindTellers(serviceHeader);
+
+            if (tellers != null)
+            {
+                //if (includeBalances)
+                    _tellerAppService.FetchTellerBalances(tellers, serviceHeader);
+            }
+
+            return tellers;
         }
 
         public PageCollectionInfo<TellerDTO> FindTellersInPage(int pageIndex, int pageSize, bool includeBalances)

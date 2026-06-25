@@ -1595,6 +1595,131 @@ namespace Application.MainBoundedContext.Services
             return result;
         }
 
+
+        // Implementation
+
+        public JournalDTO FindLastPrincipalRepaymentByLoanReference(
+    string loanCaseNumber,
+    Guid customerAccountId,
+    ServiceHeader serviceHeader)
+        {
+            JournalDTO result = null;
+
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var sql = @"
+            SELECT TOP 1
+                j.Id,
+                j.Reference,
+                j.ValueDate,
+                j.CreatedDate,
+                j.PrimaryDescription,
+                j.SecondaryDescription
+            FROM swiftFin_JournalEntries je
+            INNER JOIN swiftFin_Journals j ON j.Id = je.JournalId
+            WHERE
+                je.CustomerAccountId = @pCustomerAccountId
+                AND j.Reference      = @pLoanCaseNumber
+                AND je.Amount        < 0
+                AND (
+                    (j.PrimaryDescription LIKE '%Principal%Repayment%'
+                        AND j.SecondaryDescription LIKE '%Normal%')
+                    OR
+                    (j.PrimaryDescription LIKE '%Principal%Repayment%'
+                        AND j.SecondaryDescription LIKE '%Check%Off%')
+                )
+            ORDER BY j.ValueDate DESC, j.CreatedDate DESC";
+
+                var query = _repository.DatabaseSqlQuery<JournalLastPaymentDTO>(
+                    sql,
+                    serviceHeader,
+                    new SqlParameter("pCustomerAccountId", customerAccountId),
+                    new SqlParameter("pLoanCaseNumber", loanCaseNumber));
+
+                if (query != null)
+                {
+                    foreach (var item in query)
+                    {
+                        result = new JournalDTO
+                        {
+                            Id = item.Id,
+                            Reference = item.Reference,
+                            ValueDate = item.ValueDate,
+                            CreatedDate = item.CreatedDate,
+                            PrimaryDescription = item.PrimaryDescription,
+                            SecondaryDescription = item.SecondaryDescription
+                        };
+
+                        break; // TOP 1, but being defensive
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<JournalDTO> FindLastPrincipalRepaymentByLoanReferenceAsync(
+            string loanCaseNumber,
+            Guid customerAccountId,
+            ServiceHeader serviceHeader)
+        {
+            JournalDTO result = null;
+
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var sql = @"
+            SELECT TOP 1
+                j.Id,
+                j.Reference,
+                j.ValueDate,
+                j.CreatedDate,
+                j.PrimaryDescription,
+                j.SecondaryDescription
+            FROM swiftFin_JournalEntries je
+            INNER JOIN swiftFin_Journals j ON j.Id = je.JournalId
+            WHERE
+                je.CustomerAccountId = @pCustomerAccountId
+                AND j.Reference      = @pLoanCaseNumber
+                AND je.Amount        < 0
+                AND (
+                    (j.PrimaryDescription LIKE '%Primary%Repayment%'
+                        AND j.SecondaryDescription LIKE '%Normal%')
+                    OR
+                    (j.PrimaryDescription LIKE '%Principal%Repayment%'
+                        AND j.SecondaryDescription LIKE '%Check%Off%')
+                )
+            ORDER BY j.ValueDate DESC, j.CreatedDate DESC";
+
+                var query = await Task.Run(() =>
+                    _repository.DatabaseSqlQuery<JournalLastPaymentDTO>(
+                        sql,
+                        serviceHeader,
+                        new SqlParameter("pCustomerAccountId", customerAccountId),
+                        new SqlParameter("pLoanCaseNumber", loanCaseNumber)));
+
+                if (query != null)
+                {
+                    foreach (var item in query)
+                    {
+                        result = new JournalDTO
+                        {
+                            Id = item.Id,
+                            Reference = item.Reference,
+                            ValueDate = item.ValueDate,
+                            CreatedDate = item.CreatedDate,
+                            PrimaryDescription = item.PrimaryDescription,
+                            SecondaryDescription = item.SecondaryDescription
+                        };
+
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
     }
 
     public class GLAccountStatisticsBag
@@ -1610,4 +1735,18 @@ namespace Application.MainBoundedContext.Services
         public int Count { get; set; }
 
     }
+
+    public class JournalLastPaymentDTO
+    {
+        public Guid Id { get; set; }
+        public string Reference { get; set; }
+        public DateTime ValueDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string PrimaryDescription { get; set; }
+        public string SecondaryDescription { get; set; }
+    }
+
+
+
+
 }

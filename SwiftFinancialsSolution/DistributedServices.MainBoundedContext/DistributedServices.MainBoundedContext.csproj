@@ -50,6 +50,9 @@
     <Reference Include="CsvHelper, Version=33.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.33.0.1\lib\net47\CsvHelper.dll</HintPath>
     </Reference>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.1.72\lib\net461\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
     </Reference>
@@ -74,8 +77,8 @@
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.4\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.1\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
@@ -264,6 +267,7 @@
     <Content Include="CommissionService.svc" />
     <Content Include="CompanyService.svc" />
     <Content Include="ConditionalLendingService.svc" />
+    <Content Include="ImprestService.svc" />
     <Content Include="PaymentService.svc" />
     <Content Include="PurchaseCreditMemoService.svc" />
     <Content Include="InventoryService.svc" />
@@ -465,6 +469,7 @@
     <Compile Include="Contracts\AccountsModule\ICommissionService.cs" />
     <Compile Include="Contracts\AccountsModule\ICostCenterService.cs" />
     <Compile Include="Contracts\AccountsModule\ICreditBatchService.cs" />
+    <Compile Include="Contracts\AccountsModule\IImprestService.cs" />
     <Compile Include="Contracts\AccountsModule\IPaymentService.cs" />
     <Compile Include="Contracts\AccountsModule\IPurchaseCreditMemoService.cs" />
     <Compile Include="Contracts\AccountsModule\ICreditTypeService.cs" />
@@ -502,6 +507,9 @@
     <Compile Include="Contracts\AccountsModule\IUnPayReasonService.cs" />
     <Compile Include="Contracts\AccountsModule\IWireTransferBatchService.cs" />
     <Compile Include="Contracts\AccountsModule\IWireTransferTypeService.cs" />
+    <Compile Include="ImprestService.svc.cs">
+      <DependentUpon>ImprestService.svc</DependentUpon>
+    </Compile>
     <Compile Include="PaymentService.svc.cs">
       <DependentUpon>PaymentService.svc</DependentUpon>
     </Compile>

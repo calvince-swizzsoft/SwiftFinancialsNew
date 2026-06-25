@@ -214,6 +214,11 @@
     <Compile Include="AccountsModule\Aggregates\GraduatedScaleAgg\GraduatedScale.cs" />
     <Compile Include="AccountsModule\Aggregates\GraduatedScaleAgg\GraduatedScaleFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\GraduatedScaleAgg\GraduatedScaleSpecifications.cs" />
+    <Compile Include="AccountsModule\Aggregates\ImprestAgg\Imprest.cs" />
+    <Compile Include="AccountsModule\Aggregates\ImprestAgg\ImprestFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\ImprestSurrenderLine\ImprestSurrenderLine.cs" />
+    <Compile Include="AccountsModule\Aggregates\ImprestSurrender\ImprestSurrender.cs" />
+    <Compile Include="AccountsModule\Aggregates\ImprestSurrender\ImprestSurrenderFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\InsuranceCompanyAgg\InsuranceComapanyFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\InsuranceCompanyAgg\InsuranceCompany.cs" />
     <Compile Include="AccountsModule\Aggregates\InsuranceCompanyAgg\InsuranceCompanySpecifications.cs" />
@@ -330,6 +335,8 @@
     <Compile Include="AccountsModule\Aggregates\RecurringBatchEntryAgg\RecurringBatchEntry.cs" />
     <Compile Include="AccountsModule\Aggregates\RecurringBatchEntryAgg\RecurringBatchEntryFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\RecurringBatchEntryAgg\RecurringBatchEntrySpecifications.cs" />
+    <Compile Include="AccountsModule\Aggregates\Reimbursement\Reimbursement.cs" />
+    <Compile Include="AccountsModule\Aggregates\Reimbursement\ReimbursementFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\ReportTemplateAgg\ReportTemplate.cs" />
     <Compile Include="AccountsModule\Aggregates\ReportTemplateAgg\ReportTemplateFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\ReportTemplateAgg\ReportTemplateSpecifications.cs" />
@@ -389,6 +396,8 @@
     <Compile Include="AccountsModule\Aggregates\WireTransferTypeCommissionAgg\WireTransferTypeCommission.cs" />
     <Compile Include="AccountsModule\Aggregates\WireTransferTypeCommissionAgg\WireTransferTypeCommissionFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\WireTransferTypeCommissionAgg\WireTransferTypeCommissionSpecifications.cs" />
+    <Compile Include="AccountsModule\Aggregates\ImprestLineAgg\ImprestLine.cs" />
+    <Compile Include="AccountsModule\Aggregates\ImprestLineAgg\ImprestLineFactory.cs" />
     <Compile Include="AdministrationModule\Aggregates\BankAgg\Bank.cs" />
     <Compile Include="AdministrationModule\Aggregates\BankAgg\BankFactory.cs" />
     <Compile Include="AdministrationModule\Aggregates\BankAgg\BankSpecifications.cs" />

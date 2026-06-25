@@ -7,6 +7,8 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
+using Dapper;
 
 namespace TestApis.Services
 {
@@ -24,6 +26,132 @@ namespace TestApis.Services
             _branchService = new BranchService();
             _savingsProductService = new SavingsProductService();
         }
+
+
+        public async Task<IEnumerable<dynamic>> GetAccountsByCustomerIdAsync(Guid customerId)
+        {
+            try
+            {
+                const string sql = @"
+    WITH WithdrawalTypes AS (
+        SELECT * FROM (VALUES 
+            ('Withdrawals'),
+            ('Transfer'),
+            ('Withdrawal'),
+            ('Cash Withdrawal'),
+            ('Bank Transfer'),
+            ('EFT')
+        ) AS wt(Description)
+    ),
+    WithdrawalJournals AS (
+        SELECT DISTINCT j.Id AS JournalId
+        FROM [SwiftFinancialsDB_Live].[dbo].[swiftFin_Journals] j
+        INNER JOIN [SwiftFinancialsDB_Live].[dbo].[swiftFin_JournalEntries] je 
+            ON j.Id = je.JournalId
+        INNER JOIN WithdrawalTypes wt ON j.PrimaryDescription = wt.Description
+        WHERE je.CustomerAccountId IN (
+            SELECT Id FROM [SwiftFinancialsDB_Live].[dbo].[swiftFin_CustomerAccounts]
+            WHERE CustomerId = @CustomerId
+        )
+    )
+    SELECT 
+        a.[Id],
+        a.[CustomerId],
+        a.[BranchId],
+        a.[CustomerAccountType_ProductCode],
+        a.[CustomerAccountType_TargetProductId],
+        a.[CustomerAccountType_TargetProductCode],
+        a.[ScoredLoanDisbursementProductCode],
+        a.[ScoredLoanLimit],
+        a.[ScoredLoanLimitRemarks],
+        a.[ScoredLoanLimitDate],
+        a.[Status],
+        a.[Remarks],
+        a.[RecordStatus],
+        a.[ModifiedBy],
+        a.[ModifiedDate],
+        a.[SigningInstructions],
+        a.[SequentialId],
+        a.[CreatedBy],
+        a.[CreatedDate],
+
+        -- Product description
+        CASE 
+            WHEN lp.[Id] IS NOT NULL THEN lp.[Description]
+            WHEN sp.[Id] IS NOT NULL THEN sp.[Description]
+            ELSE 'Unknown Product Type'
+        END AS ProductDescription,
+
+        -- Product type
+        CASE 
+            WHEN lp.[Id] IS NOT NULL THEN 'Loan'
+            WHEN sp.[Id] IS NOT NULL THEN 'Savings'
+            ELSE 'Unknown'
+        END AS ProductType,
+
+        -- Balance: Loan accounts use TotalLoansBalance from LoanCases
+        --          Savings accounts use journal entries with withdrawal logic
+        CASE
+            WHEN lp.[Id] IS NOT NULL THEN
+                -- LOAN: pull live balance directly from LoanCases (same source as SP)
+                ISNULL((
+                    SELECT TOP 1 ROUND(lc.TotalLoansBalance, 0)
+                    FROM [SwiftFinancialsDB_Live].[dbo].[swiftFin_LoanCases] lc
+                    WHERE lc.CustomerId = a.CustomerId
+                      AND lc.LoanProductId = a.CustomerAccountType_TargetProductId
+                      AND lc.TotalLoansBalance > 0
+                    ORDER BY lc.CreatedDate DESC
+                ), 0)
+
+            WHEN sp.[Id] IS NOT NULL THEN
+                -- SAVINGS/SHARES: credits minus withdrawals from journal entries
+                ISNULL((
+                    SELECT SUM(
+                        CASE 
+                            WHEN je.Amount < 0 AND wj.JournalId IS NULL THEN ABS(je.Amount)
+                            WHEN je.Amount > 0 AND wj.JournalId IS NOT NULL THEN -je.Amount
+                            ELSE 0
+                        END
+                    )
+                    FROM [SwiftFinancialsDB_Live].[dbo].[swiftFin_JournalEntries] je
+                    LEFT JOIN WithdrawalJournals wj ON je.JournalId = wj.JournalId
+                    WHERE je.CustomerAccountId = a.[Id]
+                ), 0)
+
+            ELSE 0
+        END AS AccountBalance,
+
+        -- Last transaction date
+        (
+            SELECT MAX(je.[ValueDate]) 
+            FROM [SwiftFinancialsDB_Live].[dbo].[swiftFin_JournalEntries] je
+            WHERE je.[CustomerAccountId] = a.[Id]
+        ) AS LastTransactionDate
+
+    FROM [SwiftFinancialsDB_Live].[dbo].[swiftFin_CustomerAccounts] a
+    LEFT JOIN [SwiftFinancialsDB_Live].[dbo].[swiftFin_LoanProducts] lp 
+        ON a.[CustomerAccountType_TargetProductId] = lp.[Id]
+    LEFT JOIN [SwiftFinancialsDB_Live].[dbo].[swiftFin_SavingsProducts] sp 
+        ON a.[CustomerAccountType_TargetProductId] = sp.[Id]
+    WHERE a.[CustomerId] = @CustomerId
+    ORDER BY 
+        CASE WHEN lp.[Id] IS NOT NULL THEN 1 ELSE 0 END,
+        sp.[Description], 
+        lp.[Description]";
+
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    var accounts = await connection.QueryAsync(sql, new { CustomerId = customerId });
+                    return accounts;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError($"Error in GetAccountsByCustomerIdAsync: {ex.Message}");
+                throw;
+            }
+        }
+
 
         public IEnumerable<CustomerAccountDTO> GetAll()
         {

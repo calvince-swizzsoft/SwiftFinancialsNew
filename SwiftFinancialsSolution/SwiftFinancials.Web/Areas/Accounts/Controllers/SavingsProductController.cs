@@ -9,7 +9,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class SavingsProductController : MasterController

@@ -33,7 +33,6 @@
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -70,6 +69,7 @@
     <Compile Include="AccountsModule\IElectronicStatementOrderService.cs" />
     <Compile Include="AccountsModule\IFixedDepositTypeService.cs" />
     <Compile Include="AccountsModule\IGeneralLedgerService.cs" />
+    <Compile Include="AccountsModule\IImprestService.cs" />
     <Compile Include="AccountsModule\IInsuranceCompanyService.cs" />
     <Compile Include="AccountsModule\IInterAccountTransferBatchService.cs" />
     <Compile Include="AccountsModule\IInvestmentProductService.cs" />

@@ -414,20 +414,16 @@ FileName = $"Rubani_Statement_{customer.Reference2}_{startDate:yyyyMMdd}_{endDat
 
         [HttpGet]
         [Route("members-list-pdf")]
-        public async Task<IHttpActionResult> DownloadMembersListPdf(
-[FromUri] int pageIndex = 0,
-[FromUri] int pageSize = 20)
+        public async Task<IHttpActionResult> DownloadMembersListPdf()
         {
             try
             {
                 var serviceHeader = master.GetServiceHeader();
-                // Get paginated customers
-                var customersPage = await master._channelService.FindCustomersInPageAsync(
-     pageIndex,
-     pageSize,
-     serviceHeader
-     );
-                if (customersPage == null || customersPage.PageCollection == null || !customersPage.PageCollection.Any())
+
+                // Get ALL customers (no pagination)
+                var customers = await master._channelService.FindCustomersAsync(serviceHeader);
+
+                if (customers == null || !customers.Any())
                 {
                     return Json(new ApiResponse<object>
                     {
@@ -436,87 +432,33 @@ FileName = $"Rubani_Statement_{customer.Reference2}_{startDate:yyyyMMdd}_{endDat
                         Data = null
                     });
                 }
-                // Extract values with proper type casting
-                int currentPageIndex = Convert.ToInt32(customersPage.PageIndex);
-                int currentPageSize = Convert.ToInt32(customersPage.PageSize);
-                int totalCount = Convert.ToInt32(customersPage.TotalCount);
-                int totalPages = Convert.ToInt32(customersPage.TotalPages);
-                int pageCollectionCount = customersPage.PageCollection.Count;
+
                 // Convert to MemberSummaryDTO list
                 var members = new List<MemberSummaryDTO>();
-                // Process each customer to get their details
-                foreach (var customer in customersPage.PageCollection)
+
+                foreach (var customer in customers)
                 {
-                    // Get accounts for each customer to calculate totals
-                    List<AccountBalanceDTO> accounts = null;
-                    try
-                    {
-                        var customerAccounts = await master._channelService.FindCustomerAccountsByCustomerIdAsync(
-                        customer.Id,
-                        true, // includeAccountBalances
-                                               true, // includeProductDescription
-                                               false, // includeInterestBalanceForLoanAccounts
-                                               false, // considerMaturityPeriodForInvestmentAccounts
-                                               serviceHeader
-                        );
-                        if (customerAccounts != null && customerAccounts.Any())
-                        {
-                            accounts = customerAccounts.Select(a => new AccountBalanceDTO
-                            {
-                                BookBalance = a.BookBalance,
-                                AvailableBalance = a.AvailableBalance
-                            }).ToList();
-                        }
-                    }
-                    catch (Exception accountEx)
-                    {
-                        // Log error but continue processing other customers
-                        System.Diagnostics.Trace.TraceError($"Error fetching accounts for customer {customer.Id}: {accountEx.Message}");
-                        // Continue with zero balances if accounts can't be fetched
-                    }
-                    // Combine IndividualFirstName and IndividualLastName for full name
-                    string fullName = "";
-                    if (!string.IsNullOrEmpty(customer.IndividualFirstName) && !string.IsNullOrEmpty(customer.IndividualLastName))
-                    {
-                        fullName = $"{customer.IndividualFirstName} {customer.IndividualLastName}";
-                    }
-                    else if (!string.IsNullOrEmpty(customer.FullName))
-                    {
-                        fullName = customer.FullName; // Fallback to FullName if available
-                    }
-                    else if (!string.IsNullOrEmpty(customer.IndividualFirstName))
-                    {
-                        fullName = customer.IndividualFirstName; // Only first name
-                    }
-                    else if (!string.IsNullOrEmpty(customer.IndividualLastName))
-                    {
-                        fullName = customer.IndividualLastName; // Only last name
-                    }
-                    else
-                    {
-                        fullName = "N/A";
-                    }
                     var member = new MemberSummaryDTO
                     {
-                        MembershipNumber = customer.Reference2, // Member No
-                        FullName = fullName,
+                        MembershipNumber = customer.Reference2,
+                        FullName = !string.IsNullOrEmpty(customer.IndividualFirstName) && !string.IsNullOrEmpty(customer.IndividualLastName)
+                            ? $"{customer.IndividualFirstName} {customer.IndividualLastName}"
+                            : customer.FullName ?? "N/A",
                         IdNumber = customer.IndividualIdentityCardNumber,
                         Mobile = customer.AddressMobileLine,
-                        //Branch = customer.BranchDescription,
-                        RegistrationDate = customer.RegistrationDate,
-                        Status = customer.RecordStatusDescription,
-                        TotalAccounts = accounts?.Count ?? 0,
-                        TotalBalance = accounts?.Sum(a => a.BookBalance) ?? 0
+                        Nationality = customer.IndividualNationalityDescription,
+                        PayrollNumber = customer.IndividualPayrollNumbers,
+                        Email = customer.AddressEmail,
+                        RegistrationDate = customer.RegistrationDate
                     };
+
                     members.Add(member);
                 }
-                // Generate PDF
+
+                // Generate PDF with ALL members
                 var pdfService = new MembersListPdfService();
-                var pdfBytes = pdfService.GenerateMembersListPdf(
-                members,
-                totalCount,
-                currentPageIndex,
-                currentPageSize);
+                var pdfBytes = pdfService.GenerateMembersListPdf(members);
+
                 // Return PDF file
                 var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
                 {
@@ -527,19 +469,33 @@ FileName = $"Rubani_Statement_{customer.Reference2}_{startDate:yyyyMMdd}_{endDat
                 {
                     FileName = $"Rubani_Members_List_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
                 };
+
                 return ResponseMessage(response);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Trace.TraceError($"Error generating members list PDF: {ex.Message}");
-                System.Diagnostics.Trace.TraceError($"Stack Trace: {ex.StackTrace}");
+
                 return Json(new ApiResponse<object>
                 {
                     Success = false,
                     Message = "An error occurred while generating the report.",
-                    Data = new { Error = ex.Message, InnerError = ex.InnerException?.Message }
+                    Data = new { Error = ex.Message }
                 });
             }
+        }
+
+        // DTO for member summary
+        public class MemberSummaryDTO
+        {
+            public string MembershipNumber { get; set; } // Reference2
+            public string FullName { get; set; }
+            public string IdNumber { get; set; } // IndividualIdentityCardNumber
+            public string Mobile { get; set; } // AddressMobileLine
+            public string Nationality { get; set; } // IndividualNationalityDescription
+            public string PayrollNumber { get; set; } // IndividualPayrollNumbers
+            public string Email { get; set; } // AddressEmail
+            public DateTime? RegistrationDate { get; set; }
         }
         // Helper DTO for account balances (add this class inside ValuesController or at the end of the file)
         public class AccountBalanceDTO

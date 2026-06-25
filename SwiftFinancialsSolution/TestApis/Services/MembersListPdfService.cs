@@ -1,10 +1,10 @@
-﻿using Infrastructure.Crosscutting.Framework.Extensions;
-using iTextSharp.text;
+﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static TestApis.Controllers.ReportingController;
 
 namespace TestApis.Services
 {
@@ -17,19 +17,17 @@ namespace TestApis.Services
         private static readonly BaseColor LightGray = new BaseColor(217, 217, 217); // #D9D9D9
         private static readonly BaseColor White = BaseColor.WHITE;
 
-        public byte[] GenerateMembersListPdf(List<MemberSummaryDTO> members, int totalCount, int pageIndex, int pageSize)
+        public byte[] GenerateMembersListPdf(List<MemberSummaryDTO> members)
         {
             using (var ms = new MemoryStream())
             {
                 var document = new Document(PageSize.A4.Rotate(), 30, 30, 50, 30); // Landscape orientation
-                PdfWriter writer = PdfWriter.GetInstance(document, ms);
-
+                PdfWriter.GetInstance(document, ms);
                 document.Open();
 
                 // Fonts
                 var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 16, SkyBlue);
                 var headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10, White);
-                var subHeaderFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12, DarkGray);
                 var normalFont = FontFactory.GetFont(FontFactory.HELVETICA, 9);
                 var boldFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 9);
                 var smallFont = FontFactory.GetFont(FontFactory.HELVETICA, 8, DarkGray);
@@ -38,21 +36,17 @@ namespace TestApis.Services
                 AddCustomHeaderWithLogo(document, "MEMBERS LIST REPORT");
 
                 // ===== REPORT SUMMARY =====
-                AddReportSummary(document, members.Count, totalCount, pageIndex, pageSize, boldFont, normalFont);
+                AddReportSummary(document, members.Count, boldFont, normalFont);
 
                 document.Add(new Paragraph("\n"));
 
                 // ===== MEMBERS TABLE =====
-                var membersTable = CreateMembersTable(members, headerFont, normalFont, boldFont);
+                var membersTable = CreateMembersTable(members, headerFont, normalFont);
                 document.Add(membersTable);
 
                 document.Add(new Paragraph("\n"));
 
-                // ===== CUSTOM FOOTER =====
-                AddCustomFooter(document);
-
                 // ===== FOOTER NOTES =====
-                document.Add(new Paragraph("\n"));
                 document.Add(new Paragraph("This is a system generated report.", smallFont)
                 {
                     Alignment = Element.ALIGN_CENTER
@@ -77,7 +71,7 @@ namespace TestApis.Services
                     WidthPercentage = 100,
                     SpacingAfter = 5f
                 };
-                headerTable.SetWidths(new float[] { 20, 80 }); // Logo left 20%, info center 80%
+                headerTable.SetWidths(new float[] { 20, 80 });
 
                 // Logo cell (left)
                 PdfPCell logoCell = new PdfPCell();
@@ -85,7 +79,7 @@ namespace TestApis.Services
                 logoCell.HorizontalAlignment = Element.ALIGN_LEFT;
                 logoCell.VerticalAlignment = Element.ALIGN_MIDDLE;
 
-                string logoPath = @"C:\Users\Karenju\Desktop\testapidebug\Assets\Images";
+                string logoPath = @"C:\Users\Karenju\Desktop\testapidebug\Assets\Images\logo.png";
                 if (File.Exists(logoPath))
                 {
                     Image logo = Image.GetInstance(logoPath);
@@ -123,7 +117,6 @@ namespace TestApis.Services
                 { Alignment = Element.ALIGN_CENTER });
 
                 headerTable.AddCell(infoCell);
-
                 document.Add(headerTable);
 
                 // Decorative line
@@ -151,22 +144,20 @@ namespace TestApis.Services
             }
         }
 
-        private void AddReportSummary(Document document, int currentCount, int totalCount, int pageIndex, int pageSize, Font boldFont, Font normalFont)
+        private void AddReportSummary(Document document, int currentCount, Font boldFont, Font normalFont)
         {
-            // Two rows, four columns each
             PdfPTable summaryTable = new PdfPTable(4)
             {
-                WidthPercentage = 60, // narrower for centered look
+                WidthPercentage = 60,
                 HorizontalAlignment = Element.ALIGN_CENTER,
                 SpacingAfter = 15f
             };
             summaryTable.SetWidths(new float[] { 25, 25, 25, 25 });
 
-            // Row 1
-            AddSummaryCell(summaryTable, "Report Date:", DateTime.Now.ToString("dd/MM/yyyy"), boldFont, normalFont);
-            AddSummaryCell(summaryTable, "Total Members:", totalCount.ToString("N0"), boldFont, normalFont);
-            AddSummaryCell(summaryTable, "Page Members:", currentCount.ToString("N0"), boldFont, normalFont);
-            AddSummaryCell(summaryTable, "Page:", $"{pageIndex + 1} of {Math.Ceiling((double)totalCount / pageSize)}", boldFont, normalFont);
+            AddSummaryCell(summaryTable, "Report Date:", DateTime.Now.ToString("dd/MM/yyyy HH:mm"), boldFont, normalFont);
+            AddSummaryCell(summaryTable, "Total Members:", currentCount.ToString("N0"), boldFont, normalFont);
+            AddSummaryCell(summaryTable, "Generated By:", "System", boldFont, normalFont);
+            AddSummaryCell(summaryTable, "Status:", "Active Members", boldFont, normalFont);
         }
 
         private void AddSummaryCell(PdfPTable table, string title, string value, Font titleFont, Font valueFont)
@@ -186,16 +177,17 @@ namespace TestApis.Services
             table.AddCell(cell);
         }
 
-        private PdfPTable CreateMembersTable(List<MemberSummaryDTO> members, Font headerFont, Font normalFont, Font boldFont)
+        private PdfPTable CreateMembersTable(List<MemberSummaryDTO> members, Font headerFont, Font normalFont)
         {
-            PdfPTable table = new PdfPTable(10)
+            // 7 columns: No., Member Name, Member No., ID Number, Mobile, Nationality, Payroll No., Email, Reg. Date
+            PdfPTable table = new PdfPTable(9)
             {
                 WidthPercentage = 100,
                 SpacingAfter = 10f
             };
 
             // Set column widths (adjust based on content)
-            table.SetWidths(new float[] { 7, 18, 10, 10, 12, 8, 8, 8, 10, 9 });
+            table.SetWidths(new float[] { 5, 15, 10, 10, 10, 8, 10, 15, 10 });
 
             // Table headers with sky blue background
             string[] headers = {
@@ -204,11 +196,10 @@ namespace TestApis.Services
                 "Member No.",
                 "ID Number",
                 "Mobile",
-                "Branch",
-                "Accounts",
-                "Status",
-                "Reg. Date",
-                "Balance"
+                "Nationality",
+                "Payroll No.",
+                "Email",
+                "Reg. Date"
             };
 
             foreach (var h in headers)
@@ -229,9 +220,6 @@ namespace TestApis.Services
             // Sort members by MemberNo (Reference2)
             var sortedMembers = members.OrderBy(m => m.MembershipNumber).ToList();
 
-            decimal totalBalance = 0;
-            int totalAccounts = 0;
-
             foreach (var member in sortedMembers)
             {
                 var rowColor = alternateRow ? new BaseColor(245, 245, 245) : White;
@@ -243,136 +231,33 @@ namespace TestApis.Services
                 table.AddCell(CellStyled(member.FullName ?? "N/A", normalFont, rowColor));
 
                 // Member No (Reference2)
-                table.AddCell(CellStyled(member.MembershipNumber ?? "N/A", normalFont, rowColor));
+                table.AddCell(CellStyled(member.MembershipNumber ?? "N/A", normalFont, rowColor, Element.ALIGN_CENTER));
 
                 // ID Number
-                table.AddCell(CellStyled(member.IdNumber ?? "N/A", normalFont, rowColor));
+                table.AddCell(CellStyled(member.IdNumber ?? "N/A", normalFont, rowColor, Element.ALIGN_CENTER));
 
                 // Mobile
-                table.AddCell(CellStyled(member.Mobile ?? "N/A", normalFont, rowColor));
+                table.AddCell(CellStyled(member.Mobile ?? "N/A", normalFont, rowColor, Element.ALIGN_CENTER));
 
-                // Branch
-                table.AddCell(CellStyled(member.Branch ?? "N/A", normalFont, rowColor));
+                // Nationality
+                table.AddCell(CellStyled(member.Nationality ?? "N/A", normalFont, rowColor));
 
-                // Total Accounts
-                table.AddCell(CellStyled(member.TotalAccounts.ToString("N0"), normalFont, rowColor, Element.ALIGN_CENTER));
+                // Payroll Number
+                table.AddCell(CellStyled(member.PayrollNumber ?? "N/A", normalFont, rowColor, Element.ALIGN_CENTER));
 
-                // Status
-                var statusCell = new PdfPCell(new Phrase(member.Status ?? "Active", normalFont))
-                {
-                    BackgroundColor = rowColor,
-                    HorizontalAlignment = Element.ALIGN_CENTER,
-                    Padding = 5,
-                    BorderWidth = 0.5f
-                };
-
-                // Color code status
-                if (member.Status != null)
-                {
-                    if (member.Status.Contains("Active", StringComparison.OrdinalIgnoreCase))
-                        statusCell.Phrase.Font = new Font(normalFont) { Color = new BaseColor(0, 128, 0) }; // Green
-                    else if (member.Status.Contains("Inactive", StringComparison.OrdinalIgnoreCase) ||
-                             member.Status.Contains("Closed", StringComparison.OrdinalIgnoreCase))
-                        statusCell.Phrase.Font = new Font(normalFont) { Color = Red };
-                    else if (member.Status.Contains("Locked", StringComparison.OrdinalIgnoreCase))
-                        statusCell.Phrase.Font = new Font(normalFont) { Color = new BaseColor(255, 165, 0) }; // Orange
-                }
-
-                table.AddCell(statusCell);
+                // Email
+                table.AddCell(CellStyled(member.Email ?? "N/A", normalFont, rowColor));
 
                 // Registration Date
                 string regDate = member.RegistrationDate.HasValue ?
                     member.RegistrationDate.Value.ToString("dd/MM/yyyy") : "N/A";
                 table.AddCell(CellStyled(regDate, normalFont, rowColor, Element.ALIGN_CENTER));
 
-                // Total Balance
-                table.AddCell(CellStyled(member.TotalBalance.ToString("N2"), normalFont, rowColor, Element.ALIGN_RIGHT));
-
-                totalBalance += member.TotalBalance;
-                totalAccounts += member.TotalAccounts;
                 rowNumber++;
                 alternateRow = !alternateRow;
             }
 
-            // Add totals row with light gray background
-            if (members.Count > 0)
-            {
-                // Empty cells for first 6 columns
-                for (int i = 0; i < 6; i++)
-                {
-                    table.AddCell(new PdfPCell(new Phrase("", boldFont))
-                    {
-                        BackgroundColor = LightGray,
-                        BorderWidthTop = 1f,
-                        BorderWidthBottom = 0.5f,
-                        BorderWidthLeft = 0.5f,
-                        BorderWidthRight = 0.5f
-                    });
-                }
-
-                // Total Accounts
-                table.AddCell(new PdfPCell(new Phrase(totalAccounts.ToString("N0"), boldFont))
-                {
-                    BackgroundColor = LightGray,
-                    HorizontalAlignment = Element.ALIGN_CENTER,
-                    Padding = 5,
-                    BorderWidthTop = 1f,
-                    BorderWidthBottom = 0.5f,
-                    BorderWidthLeft = 0.5f,
-                    BorderWidthRight = 0.5f
-                });
-
-                // Empty Status cell
-                table.AddCell(new PdfPCell(new Phrase("", boldFont))
-                {
-                    BackgroundColor = LightGray,
-                    BorderWidthTop = 1f,
-                    BorderWidthBottom = 0.5f,
-                    BorderWidthLeft = 0.5f,
-                    BorderWidthRight = 0.5f
-                });
-
-                // Total label
-                table.AddCell(new PdfPCell(new Phrase("TOTALS:", boldFont))
-                {
-                    BackgroundColor = LightGray,
-                    HorizontalAlignment = Element.ALIGN_RIGHT,
-                    Padding = 5,
-                    BorderWidthTop = 1f,
-                    BorderWidthBottom = 0.5f,
-                    BorderWidthLeft = 0.5f,
-                    BorderWidthRight = 0.5f
-                });
-
-                // Total Balance
-                table.AddCell(new PdfPCell(new Phrase(totalBalance.ToString("N2"), boldFont))
-                {
-                    BackgroundColor = LightGray,
-                    HorizontalAlignment = Element.ALIGN_RIGHT,
-                    Padding = 5,
-                    BorderWidthTop = 1f,
-                    BorderWidthBottom = 0.5f,
-                    BorderWidthLeft = 0.5f,
-                    BorderWidthRight = 0.5f
-                });
-            }
-
             return table;
-        }
-
-        private void AddCustomFooter(Document document)
-        {
-            document.Add(new Paragraph("\n"));
-
-            // Print date and page info
-            var footerPara = new Paragraph(
-                $"Printed on: {DateTime.Now:MMMM d, yyyy}   |   Page: 1   |   User ID: SYSTEM",
-                FontFactory.GetFont(FontFactory.HELVETICA, 8, DarkGray))
-            {
-                Alignment = Element.ALIGN_CENTER,
-                SpacingBefore = 10f
-            };
-            document.Add(footerPara);
         }
 
         private static PdfPCell CellStyled(string text, Font font, BaseColor backgroundColor, int align = Element.ALIGN_LEFT)
@@ -385,35 +270,5 @@ namespace TestApis.Services
                 BorderWidth = 0.5f
             };
         }
-
-        private static void AddSummaryRow(PdfPTable table, string label, string value, Font labelFont, Font valueFont)
-        {
-            table.AddCell(new PdfPCell(new Phrase(label, labelFont))
-            {
-                Border = Rectangle.NO_BORDER,
-                Padding = 3,
-                HorizontalAlignment = Element.ALIGN_RIGHT
-            });
-            table.AddCell(new PdfPCell(new Phrase(value ?? "N/A", valueFont))
-            {
-                Border = Rectangle.NO_BORDER,
-                Padding = 3,
-                HorizontalAlignment = Element.ALIGN_LEFT
-            });
-        }
-    }
-
-    // DTO for member summary
-    public class MemberSummaryDTO
-    {
-        public string MembershipNumber { get; set; } // Reference2
-        public string FullName { get; set; }
-        public string IdNumber { get; set; } // IndividualIdentityCardNumber
-        public string Mobile { get; set; } // AddressMobileLine
-        public string Branch { get; set; } // BranchDescription
-        public DateTime? RegistrationDate { get; set; }
-        public string Status { get; set; } // RecordStatusDescription
-        public int TotalAccounts { get; set; }
-        public decimal TotalBalance { get; set; }
     }
 }

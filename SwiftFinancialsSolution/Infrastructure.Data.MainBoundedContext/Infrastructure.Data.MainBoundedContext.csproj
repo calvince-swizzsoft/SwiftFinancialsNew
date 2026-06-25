@@ -172,6 +172,8 @@
     <Compile Include="UnitOfWork\Mapping\AccountsModule\GeneralLedgerEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\GeneralLedgerEntryEntitySpecifications.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\GraduatedScaleEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\ImprestEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AccountsModule\ImprestLineEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\InsuranceCompanyEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\InterAccountTransferBatchDynamicChargeEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AccountsModule\InterAccountTransferBatchEntityConfiguration.cs" />

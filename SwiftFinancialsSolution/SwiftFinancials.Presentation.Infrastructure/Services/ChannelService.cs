@@ -26,6 +26,7 @@ using SwiftFinancials.Presentation.Contracts.MicroCreditModule;
 using SwiftFinancials.Presentation.Contracts.RegistryModule;
 using SwiftFinancials.Presentation.Infrastructure.Disposable;
 using SwiftFinancials.Presentation.Infrastructure.Models;
+using SwiftFinancials.Presentation.Shared.Application.MainBoundedContext.DTO.AccountsModule;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6636,6 +6637,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<CashWithdrawalRequestDTO>> FindCashWithdrawalRequestsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<CashWithdrawalRequestDTO>>();
+
+            ICashWithdrawalRequestService service = GetService<ICashWithdrawalRequestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<CashWithdrawalRequestDTO> response = ((ICashWithdrawalRequestService)result.AsyncState).EndFindCashWithdrawalRequests(result);
+
+                    tcs.TrySetResult(new ObservableCollection<CashWithdrawalRequestDTO>(response ?? new List<CashWithdrawalRequestDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCashWithdrawalRequests(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<CashWithdrawalRequestDTO> AddCashWithdrawalRequestAsync(CashWithdrawalRequestDTO cashWithdrawalRequestDTO, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<CashWithdrawalRequestDTO>();
@@ -6924,6 +6957,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginFindMatureCashTransferRequestsByEmployeeId(employeeId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
+        public Task<ObservableCollection<CashTransferRequestDTO>> FindCashTransferRequestsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<CashTransferRequestDTO>>();
+
+            ICashTransferRequestService service = GetService<ICashTransferRequestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<CashTransferRequestDTO> response = ((ICashTransferRequestService)result.AsyncState).EndFindCashTransferRequests(result);
+
+                    tcs.TrySetResult(new ObservableCollection<CashTransferRequestDTO>(response ?? new List<CashTransferRequestDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCashTransferRequests(asyncCallback, service);
 
             return tcs.Task;
         }
@@ -26663,6 +26729,40 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
+        public Task<ObservableCollection<TreasuryDTO>> FindTreasuriesAsync(bool includeBalances, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<TreasuryDTO>>();
+
+            ITreasuryService service = GetService<ITreasuryService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<TreasuryDTO> response = ((ITreasuryService)result.AsyncState).EndFindTreasuries(result);
+
+                    tcs.TrySetResult(new ObservableCollection<TreasuryDTO>(response ?? new List<TreasuryDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindTreasuries(includeBalances, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         #endregion
 
         #region InsuranceCompanyDTO
@@ -32440,6 +32540,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+
+
+        //public Task<ObservableCollection<RecurringBatchDTO>> FindRecurringBatchesAsync(ServiceHeader serviceHeader)
+        //{
+        //    var tcs = new TaskCompletionSource<ObservableCollection<RecurringBatchDTO>>();
+
+        //    IRecurringBatchService service = GetService<IRecurringBatchService>(serviceHeader);
+
+        //    AsyncCallback asyncCallback = (result =>
+        //    {
+        //        try
+        //        {
+        //           ObservableCollection<RecurringBatchDTO> response = ((IRecurringBatchService)result.AsyncState).EndFindRecurringBatches(result);
+
+        //            tcs.TrySetResult(response);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            HandleFault(ex, (msgcb) =>
+        //            {
+        //                if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+        //            });
+        //        }
+        //        finally
+        //        {
+        //            DisposeService(service as IClientChannel);
+        //        }
+        //    });
+
+        //    service.BeginFindRecurringBatches(asyncCallback, service);
+
+        //    return tcs.Task;
+        //}
 
         public Task<PageCollectionInfo<RecurringBatchEntryDTO>> FindRecurringBatchEntriesByRecurringBatchIdInPageAsync(Guid recurringBatchId, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
@@ -43238,6 +43371,267 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
         #endregion
+
+
+
+
+        public Task<ImprestDTO> AddNewImprestAsync(ImprestDTO imprestDTO, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<ImprestDTO>();
+
+            IImprestService service = GetService<IImprestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    ImprestDTO response = ((IImprestService)result.AsyncState).EndAddImprest(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddImprest(imprestDTO, asyncCallback, service);
+
+            return tcs.Task;
+
+        }
+
+
+
+        public Task<bool> UpdateImprestAsync(ImprestDTO imprestDTO, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            IImprestService service = GetService<IImprestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IImprestService)result.AsyncState).EndUpdateImprest(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateImprest(imprestDTO, asyncCallback, service);
+
+            return tcs.Task;
+
+        }
+
+        public Task<List<ImprestDTO>> FindImprestsAsync(ServiceHeader serviceHeader)
+
+        {
+
+            var tcs = new TaskCompletionSource<List<ImprestDTO>>();
+
+            IImprestService service = GetService<IImprestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+
+                    List<ImprestDTO> response = ((IImprestService)result.AsyncState).EndFindImprests(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginFindImprests(asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+
+
+        public Task<List<ImprestLineDTO>> FindImprestLinesAsync(ServiceHeader serviceHeader)
+
+        {
+
+            var tcs = new TaskCompletionSource<List<ImprestLineDTO>>();
+
+            IImprestService service = GetService<IImprestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+
+                    List<ImprestLineDTO> response = ((IImprestService)result.AsyncState).EndFindImprestLines(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginFindImprestLines(asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+
+        public Task<JournalDTO> PostImprestAsync(ImprestDTO imprestDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<JournalDTO>();
+
+            IImprestService service = GetService<IImprestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+                    JournalDTO response = ((IImprestService)result.AsyncState).EndPostImprest(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginPostImprest(imprestDTO, moduleNavigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
+        public Task<JournalDTO> PayImprest(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<JournalDTO>();
+
+            IImprestService service = GetService<IImprestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+
+                try
+                {
+
+                    JournalDTO response = ((IImprestService)result.AsyncState).EndPayImprest(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+
+
+                }
+
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+
+
+            });
+
+            service.BeginPayImprest(paymentVoucherDTO, moduleNavigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
 
 
 

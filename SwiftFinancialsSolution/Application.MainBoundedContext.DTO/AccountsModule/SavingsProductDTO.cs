@@ -33,10 +33,26 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+
+        string _description; 
         [DataMember]
         [Display(Name = "Name")]
         [Required]
-        public string Description { get; set; }
+        public string Description {
+
+            get { return _description; }
+
+            set { if (_description != value)
+                {
+
+                    _description = value;
+
+                    OnPropertyChanged(() => Description);
+                }
+                    
+                        }
+        
+        }
 
         [DataMember]
         [Display(Name = "Maximum Allowed Withdrawal")]

@@ -30,7 +30,8 @@ namespace TestApis.Controllers
     /// <summary>
     /// Master controller that does setup of things that should always be done.
     /// </summary>
-    public class MasterController : Controller
+   // public class MasterController : Controller
+    public class MasterController : ApiController
     {
         public ObservableCollection<LevySplitDTO> LevySplitDTOs;
         public ObservableCollection<CustomerAccountSignatoryDTO> customerAccountSignatoryDTOs;
@@ -141,15 +142,26 @@ namespace TestApis.Controllers
 
         public ServiceHeader GetServiceHeader()
         {
-            // TEMPORARY TEST CODE
-            var configService = new WebConfigurationService(); // Manually instantiate
-            return configService.GetServiceHeader();
+            try
+            {
+                var configService = new WebConfigurationService();
+                var header = configService.GetServiceHeader();
+
+                if (header == null)
+                    throw new Exception("WebConfigurationService.GetServiceHeader() returned null. Check Web.config settings.");
+
+                return header;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"GetServiceHeader failed: {ex.Message}", ex);
+            }
         }
 
-        public async Task<ApplicationUser> GetCurrentUser()
-        {
-            return await _applicationUserManager.FindByNameAsync(User.Identity.Name);
-        }
+        //public async Task<ApplicationUser> GetCurrentUser()
+        //{
+        //    return await _applicationUserManager.FindByNameAsync(User.Identity.Name);
+        //}
 
 
 
@@ -1955,14 +1967,14 @@ namespace TestApis.Controllers
 
 
 
-        public DashboardAppConfigSection GetDashboardAppConfiguration()
-        {
-            try
-            {
-                return (DashboardAppConfigSection)ConfigurationManager.GetSection("dashboardAppConfiguration");
-            }
-            catch { return null; }
-        }
+        //public DashboardAppConfigSection GetDashboardAppConfiguration()
+        //{
+        //    try
+        //    {
+        //        return (DashboardAppConfigSection)ConfigurationManager.GetSection("dashboardAppConfiguration");
+        //    }
+        //    catch { return null; }
+        //}
 
 
 

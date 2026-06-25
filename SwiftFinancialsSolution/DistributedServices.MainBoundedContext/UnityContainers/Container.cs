@@ -244,6 +244,9 @@ namespace DistributedServices.MainBoundedContext.UnityContainers
 
             Current.RegisterType<IReceiptAppService, ReceiptAppService>();
 
+
+            Current.RegisterType<IImprestAppService, ImprestAppService>();
+
             //-> Distributed Services
         }
 

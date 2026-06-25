@@ -998,12 +998,31 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
 
                         var current = LoanCaseFactory.CreateLoanCase(loanCaseDTO.ParentId, loanCaseDTO.BranchId, loanCaseDTO.CustomerId, loanCaseDTO.LoanProductId, loanCaseDTO.LoanPurposeId, loanCaseDTO.SavingsProductId, loanCaseDTO.Remarks, loanCaseDTO.AmountApplied, loanCaseDTO.ReceivedDate, loanCaseDTO.LoanProductInvestmentsBalance, loanCaseDTO.LoanProductLoanBalance, loanCaseDTO.TotalLoansBalance, loanCaseDTO.LoanProductLatestIncome, loanCaseDTO.Reference, loanInterest, loanRegistration, loanCaseDTO.MaximumAmountPercentage, takeHome);
 
-                        current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
-                        persisted.Status = (int)LoanCaseStatus.Registered;
-                        persisted.CreatedBy = serviceHeader.ApplicationUserName;
-                        persisted.CaseNumber = persisted.CaseNumber;
+                        // Save original values that should NOT be overwritten
+                        var originalStatus = persisted.Status;
+                        var originalCaseNumber = persisted.CaseNumber;
+                        var originalSequentialId = persisted.SequentialId;
+                        var originalCreatedBy = persisted.CreatedBy;
+                        var originalCreatedDate = persisted.CreatedDate;
+
+                        // Set the identity but preserve original values
+                        current.ChangeCurrentIdentity(persisted.Id, originalSequentialId, originalCreatedBy, originalCreatedDate);
+
+                        // Explicitly set CaseNumber to original value
+                        // You may need to add a method to set CaseNumber on the current entity
+                        // or directly on the persisted entity after merge
 
                         _loanCaseRepository.Merge(persisted, current, serviceHeader);
+
+                        // Restore original values that were overwritten
+                        persisted.Status = originalStatus;
+                        persisted.CaseNumber = originalCaseNumber;
+                        persisted.CreatedBy = originalCreatedBy; // Keep original creator
+                        persisted.CreatedDate = originalCreatedDate;
+
+                        // Update modification tracking
+                        persisted.CancelledBy = serviceHeader.ApplicationUserName;
+                        persisted.CreatedDate = DateTime.UtcNow;
 
                         result = await dbContextScope.SaveChangesAsync(serviceHeader) >= 0;
                     }

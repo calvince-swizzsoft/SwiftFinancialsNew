@@ -16,12 +16,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.PurchaseInvoiceAgg
     public class PurchaseInvoice : Entity
     {
 
-        //public Guid Id {  get; set; }
-
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string No { get; set; }
-
-        //public string DocumentNo { get; set; }
 
         public string VendorNo { get; set; }
 

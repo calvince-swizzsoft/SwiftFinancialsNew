@@ -8,6 +8,7 @@ namespace Domain.MainBoundedContext.FrontOfficeModule.Aggregates.CashDepositRequ
         {
             var cashDepositRequest = new CashDepositRequest();
 
+
             cashDepositRequest.GenerateNewIdentity();
 
             cashDepositRequest.BranchId = branchId;

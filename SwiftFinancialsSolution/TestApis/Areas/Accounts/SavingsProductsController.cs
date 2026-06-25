@@ -1,0 +1,307 @@
+using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
+using DistributedServices.MainBoundedContext.Identity;
+using Microsoft.AspNet.Identity;
+using Org.BouncyCastle.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Http;
+using TestApis.Controllers;
+using static TestApis.Controllers.BudgetManagementController;
+
+namespace TestApis.Controllers
+{
+
+    [RoutePrefix("api/savingsproducts")]
+    public class SavingsProductController : MasterController
+    {
+        
+
+        //[HttpPost]
+        //public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        //{
+        //    int totalRecordCount = 0;
+        //    int searchRecordCount = 0;
+
+        //    var pageCollectionInfo = await _channelService.FindSavingsProductsByFilterInPageAsync
+        //        (jQueryDataTablesModel.sSearch, 0, int.MaxValue, GetServiceHeader());
+
+        //    if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+        //    {
+
+        //        var sortedData = pageCollectionInfo.PageCollection
+        //            .OrderByDescending(i => i.CreatedDate)
+        //            .ToList();
+
+        //        totalRecordCount = sortedData.Count;
+
+        //        var paginatedData = sortedData
+        //            .Skip(jQueryDataTablesModel.iDisplayStart)
+        //            .Take(jQueryDataTablesModel.iDisplayLength)
+        //            .ToList();
+
+        //        searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+        //            ? sortedData.Count
+        //            : totalRecordCount;
+
+        //        return this.DataTablesJson(
+        //            items: paginatedData,
+        //            totalRecords: totalRecordCount,
+        //            totalDisplayRecords: searchRecordCount,
+        //            sEcho: jQueryDataTablesModel.sEcho
+        //        );
+        //    }
+
+        //    return this.DataTablesJson(
+        //        items: new List<SavingsProductDTO>(),
+        //        totalRecords: totalRecordCount,
+        //        totalDisplayRecords: searchRecordCount,
+        //        sEcho: jQueryDataTablesModel.sEcho
+        //    );
+        //}
+
+
+        public async Task<IHttpActionResult> ChartOfAccountLookUp(Guid? id, SavingsProductDTO savingsProductDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return Json(new { success = false });
+            }
+
+            var chartOfAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+
+
+            if (chartOfAccount != null)
+            {
+                savingsProductDTO.ChartOfAccountId = chartOfAccount.Id;
+                savingsProductDTO.ChartOfAccountAccountName = chartOfAccount.AccountName;
+
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        ChartOfAccountId = savingsProductDTO.ChartOfAccountId,
+                        ChartOfAccountAccountName = savingsProductDTO.ChartOfAccountAccountName
+                    }
+                });
+            }
+            return Json(new { success = false, message = "Product Not Found!" });
+        }
+
+
+        public async Task<IHttpActionResult> Details(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var savingsProductDTO = await _channelService.FindSavingsProductAsync(id, GetServiceHeader());
+            var commissionDTOs = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProductDTO.Id, savingsProductDTO.ChargeType, GetServiceHeader());
+            var excemptions = await _channelService.FindSavingsProductExemptionsBySavingsProductIdAsync(savingsProductDTO.Id, GetServiceHeader());
+      
+            var rPriority = savingsProductDTO.Priority;
+
+            string savings = "Savings", loans = "Loans", investments = "Investments", directDebits = "Direct Debits";
+
+            var mapping = new Dictionary<string, int>
+            {
+                { "Loans", 0 },
+                { "Investments", 1 },
+                { "Savings", 2 },
+                { "Direct Debits", 3 }
+            };
+
+            if (rPriority == 0)
+            {
+                savingsProductDTO.PriorityDescription = "Loans";
+            }
+
+            if (rPriority == 1)
+            {
+                savingsProductDTO.PriorityDescription = "Investments";
+            }
+
+            if (rPriority == 2)
+            {
+                savingsProductDTO.PriorityDescription = "Savings";
+            }
+
+            if (rPriority == 3)
+            {
+                savingsProductDTO.PriorityDescription = "Direct Debits";
+            }
+
+
+            return Json(
+                new
+                {
+                    success = true,
+                    savingsProductDTO
+                });
+        }
+  
+        [HttpPost]
+        [Route("")]
+        public async Task<IHttpActionResult> Create(SavingsProductDTO savingsProductDTO)
+        {
+            
+            savingsProductDTO.ValidateAll();
+
+            if (!savingsProductDTO.HasErrors)
+            {
+                var results = await _channelService.AddSavingsProductAsync(savingsProductDTO, GetServiceHeader());
+
+               return Json(new
+                {
+                    Success = true,
+                    Message = "Savings Product created successfully"
+                });
+            }
+            else
+            {
+                var errorMessages = savingsProductDTO.ErrorMessages;
+       return Json(new
+                {
+                    Success = false,
+                    Message = "Failed to create Savings Product"
+                });
+            }
+        }
+
+
+        //[HttpPost]
+        //[Route("")]
+        //public async Task<IHttpActionResult> Create(SavingsProductDTO savingsProductDTO, string[] commisionIds, string[] ExcemptedommisionId)
+        //{
+        //    ObservableCollection<SavingsProductExemptionDTO> ExcemptedcommissionDTOs = new ObservableCollection<SavingsProductExemptionDTO>();
+        //    SavingsProductExemptionDTO savingsProductExemptionDTO = new SavingsProductExemptionDTO();
+        //    if (ExcemptedommisionId != null && ExcemptedommisionId.Any())
+        //    {
+        //        var selectedIds = ExcemptedommisionId.Select(Guid.Parse).ToList();
+
+        //        foreach (var Excemptionsavingsproductid in selectedIds)
+        //        {
+        //            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+        //            if (userDTO.BranchId != null)
+        //            {
+        //                savingsProductExemptionDTO.BranchId = (Guid)userDTO.BranchId;
+        //            }
+        //            var savingsProduct = await _channelService.FindSavingsProductAsync(Excemptionsavingsproductid, GetServiceHeader());
+        //            savingsProductExemptionDTO.SavingsProductId = savingsProduct.Id;
+        //            savingsProductExemptionDTO.MinimumBalance = savingsProduct.MinimumBalance;
+        //            savingsProductExemptionDTO.MaximumAllowedDeposit = savingsProduct.MaximumAllowedDeposit;
+        //            savingsProductExemptionDTO.MaximumAllowedWithdrawal = savingsProduct.MaximumAllowedWithdrawal;
+        //            savingsProductExemptionDTO.OperatingBalance = savingsProduct.OperatingBalance;
+        //            savingsProductExemptionDTO.AnnualPercentageYield = savingsProduct.AnnualPercentageYield;
+        //            savingsProductExemptionDTO.WithdrawalNoticePeriod = savingsProduct.WithdrawalNoticePeriod;
+        //            savingsProductExemptionDTO.WithdrawalInterval = savingsProduct.WithdrawalInterval;
+
+        //            ExcemptedcommissionDTOs.Add(savingsProductExemptionDTO);
+        //        }
+        //        // Process the selected IDs as needed
+        //    }
+
+
+
+        //    ObservableCollection<CommissionDTO> commissionDTOs = new ObservableCollection<CommissionDTO>();
+        //    if (commisionIds != null && commisionIds.Any())
+        //    {
+        //        var selectedIds = commisionIds.Select(Guid.Parse).ToList();
+
+        //        foreach (var savingsproductid in selectedIds)
+        //        {
+
+        //            var savingsproduct = await _channelService.FindCommissionAsync(savingsproductid, GetServiceHeader());
+
+        //            commissionDTOs.Add(savingsproduct);
+        //        }
+        //        // Process the selected IDs as needed
+        //    }
+
+
+
+
+        //    savingsProductDTO.ValidateAll();
+
+        //    if (!savingsProductDTO.HasErrors)
+        //    {
+        //        var results = await _channelService.AddSavingsProductAsync(savingsProductDTO, GetServiceHeader());
+
+        //        await _channelService.UpdateCommissionsBySavingsProductIdAsync(results.Id, commissionDTOs, savingsProductDTO.ChargeType, savingsProductDTO.ChargeBenefactor, GetServiceHeader());
+
+        //        await _channelService.UpdateSavingsProductExemptionsBySavingsProductIdAsync(results.Id, ExcemptedcommissionDTOs, GetServiceHeader());
+        //        //TempData["AlertMessage"] = "Savings Product created successfully";
+
+        //        //  return RedirectToAction("Index");
+
+        //        return Json(new
+        //        {
+        //            Success = true,
+        //            Message = "Savings Product created successfully"
+        //        });
+        //    }
+        //    else
+        //    {
+        //        var errorMessages = savingsProductDTO.ErrorMessages;
+        //        return Json(new
+        //        {
+        //            Success = false,
+        //            Message = "Failed to create Savings Product"
+        //        });
+        //    }
+        //}
+
+
+        public async Task<IHttpActionResult> Edit(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var savingsProductDTO = await _channelService.FindSavingsProductAsync(id, GetServiceHeader());
+
+            return Ok(savingsProductDTO);
+        }
+
+        [HttpPost]
+              public async Task<IHttpActionResult> Edit(Guid id, SavingsProductDTO savingsProductBindingModel)
+        {
+            if (ModelState.IsValid)
+            {
+                await _channelService.UpdateSavingsProductAsync(savingsProductBindingModel, GetServiceHeader());
+
+
+                return Json(new
+                {
+
+                    success = true,
+                    message = "Edited Savings Product successfully"
+                });
+            }
+            else
+            {
+             
+                return Json(new
+                {
+
+                    success = false,
+                    message = "Failed to Edit Savings Product"
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<IHttpActionResult> GetSavingsProductsAsync()
+        {
+            var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+
+            return Ok(savingsProductDTOs);
+        }
+    }
+}

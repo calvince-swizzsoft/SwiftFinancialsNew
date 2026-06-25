@@ -14,20 +14,47 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             AddAllAttributeValidators();
         }
 
+      
         [DataMember]
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 
+        Guid? _branchId;
+
         [DataMember]
         [Display(Name = "Branch")]
-        public Guid? BranchId { get; set; }
+        public Guid? BranchId {
+
+            get { return _branchId; }
+            set
+            {
+                if (_branchId != value)
+                {
+                    _branchId = value;
+                    OnPropertyChanged(() => BranchId);
+                }
+            }
+        }
 
         [Display(Name = "Branch")]
         public string BranchDescription { get; set; }
 
+
+        Guid? _postingPeriodId;
         [DataMember]
         [Display(Name = "Posting Period")]
-        public Guid? PostingPeriodId { get; set; }
+        public Guid? PostingPeriodId {
+
+            get { return _postingPeriodId; }
+            set
+            {
+                if (_postingPeriodId != value)
+                {
+                    _postingPeriodId = value;
+                    OnPropertyChanged(() => PostingPeriodId);
+                }
+            }
+        }
 
         [DataMember]
         [Display(Name = "Posting Period")]
@@ -47,9 +74,23 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+
+        int _type;
+        
         [DataMember]
         [Display(Name = "Type")]
-        public int Type { get; set; }
+        public int Type {
+            get { return _type; }
+            set
+            {
+                if (_type != value)
+                {
+                    _type = value;
+                    OnPropertyChanged(() => Type);
+                }
+            }
+
+        }
 
         [DataMember]
         [Display(Name = "Batch Type")]
@@ -61,9 +102,24 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+
+        int _month;
         [DataMember]
         [Display(Name = "Month")]
-        public int Month { get; set; }
+        public int Month {
+
+            get { return _month;  }
+
+            set 
+            {
+                if (_month != value) {
+                    _month = value;
+                    OnPropertyChanged(() => Month);
+                } 
+            
+            }
+        }
+
 
         [DataMember]
         [Display(Name = "Month")]
@@ -84,9 +140,23 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Reference")]
         public string Reference { get; set; }
 
+
+        int _priority;
         [DataMember]
         [Display(Name = "Priority")]
-        public int Priority { get; set; }
+        public int Priority { 
+        
+         get { return _priority; }
+
+         set { if (_priority != value)
+                {
+                    _priority = value;
+
+                    OnPropertyChanged(() => Priority);
+                }
+                        
+          }
+        }
 
         [DataMember]
         [Display(Name = "Priority")]
@@ -98,9 +168,22 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+        int _status;
         [DataMember]
         [Display(Name = "Status")]
-        public int Status { get; set; }
+        public int Status {
+        
+         get { return _status; }
+
+            set { if (_status != value)
+                {
+
+                    _status = value;
+                    OnPropertyChanged(() => Status);
+                }          
+                        
+               }
+        }
 
         [DataMember]
         [Display(Name = "Status")]

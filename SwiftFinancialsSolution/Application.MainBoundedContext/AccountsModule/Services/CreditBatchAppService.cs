@@ -2,11 +2,13 @@
 using Application.MainBoundedContext.BackOfficeModule.Services;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.Services;
 using Application.Seedwork;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.CreditBatchAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.CreditBatchDiscrepancyAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.CreditBatchEntryAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.CustomerAccountAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.CustomerAccountArrearageAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.CustomerAccountCarryForwardAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.JournalAgg;
@@ -52,13 +54,16 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         private readonly ICommissionAppService _commissionAppService;
         private readonly IBranchAppService _branchAppService;
         private readonly IJournalAppService _journalAppService;
+        private readonly IJournalEntryAppService _journalEntryAppService;
         private readonly IChartOfAccountAppService _chartOfAccountAppService;
+        private readonly IRepository<CustomerAccount> _customerAccountRepository;
         private readonly ICustomerAccountAppService _customerAccountAppService;
         private readonly IRecurringBatchAppService _recurringBatchAppService;
         private readonly IBrokerService _brokerService;
         private readonly IAppCache _appCache;
 
         public CreditBatchAppService(
+             IRepository<CustomerAccount> customerAccountRepository,
            IDbContextScopeFactory dbContextScopeFactory,
            IRepository<CreditBatch> creditBatchRepository,
            IRepository<LoanCase> loancaseRepository,
@@ -76,6 +81,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
            ICommissionAppService commissionAppService,
            IBranchAppService branchAppService,
            IJournalAppService journalAppService,
+           IJournalEntryAppService journalEntryAppService,
            IChartOfAccountAppService chartOfAccountAppService,
            ICustomerAccountAppService customerAccountAppService,
            IRecurringBatchAppService recurringBatchAppService,
@@ -84,6 +90,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         {
             if (dbContextScopeFactory == null)
                 throw new ArgumentNullException(nameof(dbContextScopeFactory));
+
+            if (customerAccountRepository == null)
+                throw new ArgumentNullException(nameof(customerAccountRepository));
 
             if (creditBatchRepository == null)
                 throw new ArgumentNullException(nameof(creditBatchRepository));
@@ -165,8 +174,11 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             _commissionAppService = commissionAppService;
             _branchAppService = branchAppService;
             _journalAppService = journalAppService;
+            _journalEntryAppService = journalEntryAppService;
             _chartOfAccountAppService = chartOfAccountAppService;
+            _customerAccountRepository = customerAccountRepository;
             _customerAccountAppService = customerAccountAppService;
+
             _recurringBatchAppService = recurringBatchAppService;
             _brokerService = brokerService;
             _appCache = appCache;
@@ -941,7 +953,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                 var secondaryDescription = string.Format("{0}~{1}", creditBatchDTO.TypeDescription, creditBatchDTO.MonthDescription);
 
-                var reference =  creditBatchEntryDTO.Reference;
+                var reference = creditBatchEntryDTO.Reference;
 
                 var journals = new List<Journal>();
 
@@ -1140,10 +1152,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                     var targetLoanProduct = _loanProductAppService.FindCachedLoanProduct(checkOffCustomerAccount.CustomerAccountTypeTargetProductId, serviceHeader);
 
 
-                                    var PrimaryDescriptionintrest = "Loan Interest Payment";      
+                                    var PrimaryDescriptionintrest = "Loan Interest Payment";
                                     var secoSecondaryDescriptionintrest = "Loan Repayment CheckOff Interest";
 
-                                    var principledescription =" Loan Principal Repayment";
+                                    var principledescription = " Loan Principal Repayment";
                                     var PrincipleSecondarydescription = "Check Off Principal Repayment";
 
 
@@ -1162,7 +1174,27 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                     var principalJournal = JournalFactory.CreateJournal(null, postingPeriodDTO.Id, transactionOwnershipBranchId, null, creditBatchEntryDTO.Principal, principledescription, PrincipleSecondarydescription, reference, moduleNavigationItemCode, (int)SystemTransactionCode.CreditBatchCheckOff, UberUtil.GetLastDayOfMonth(creditBatchEntryDTO.CreditBatchMonth, creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year, creditBatchEntryDTO.CreditBatchEnforceMonthValueDate, creditBatchEntryDTO.CreditBatchValueDate), serviceHeader);
                                     _journalEntryPostingService.PerformDoubleEntry(principalJournal, targetLoanProduct.ChartOfAccountId, creditBatchDTO.CreditTypeChartOfAccountId, checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
                                     journals.Add(principalJournal);
+                                    using (var scope = _dbContextScopeFactory.Create())
+                                    {
+                                        var loanCasesList = _loanCaserepository.GetAllAsync(serviceHeader).Result;
 
+                                        var loanCasesToUpdate = loanCasesList
+                                            .Where(l => l.CaseNumber == Convert.ToInt32(creditBatchEntryDTO.Reference)
+                                                     && l.DisbursedDate.HasValue
+                                                     && l.TotalLoansBalance > 1)
+                                            .ToList();
+
+                                        foreach (var loanCase in loanCasesToUpdate)
+                                        {
+                                            var original = _loanCaserepository.GetAsync(loanCase.Id, serviceHeader).Result;
+
+                                            loanCase.TotalLoansBalance -= creditBatchEntryDTO.Principal;
+
+                                            _loanCaserepository.Merge(original, loanCase, serviceHeader);
+                                        }
+
+                                        scope.SaveChanges(serviceHeader); // commits all changes
+                                    }
                                     var loanStandingOrders = FindStandingOrdersByBeneficiaryCustomerAccountId(checkOffCustomerAccount.Id, (int)StandingOrderTrigger.CheckOff, serviceHeader);
 
                                     if (loanStandingOrders != null && loanStandingOrders.Any(x => !x.IsLocked))
@@ -1289,6 +1321,72 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                     break;
                                 default:
                                     break;
+
+                                case ProductCode.Investment:
+
+                                    #region Investment Check-Off
+
+                                    var investmentProduct = _investmentProductAppService.FindCachedInvestmentProduct(checkOffCustomerAccount.CustomerAccountTypeTargetProductId, serviceHeader);
+                                    secondaryDescription = string.Format("{0} ({1})", secondaryDescription, investmentProduct.Description);
+
+                                    // Investment Check-Off Journal: Credit InvestmentProduct.ChartOfAccountId, Debit SystemGeneralLedgerAccountCode.CommonControl
+                                    var investmetJournal = JournalFactory.CreateJournal(null, postingPeriodDTO.Id, transactionOwnershipBranchId, null, creditBatchEntryDTO.Principal + creditBatchEntryDTO.Interest, primaryDescription, secondaryDescription, reference, moduleNavigationItemCode, (int)SystemTransactionCode.CreditBatchCheckOff, UberUtil.GetLastDayOfMonth(creditBatchEntryDTO.CreditBatchMonth, creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year, creditBatchEntryDTO.CreditBatchEnforceMonthValueDate, creditBatchEntryDTO.CreditBatchValueDate), serviceHeader);
+                                    _journalEntryPostingService.PerformDoubleEntry(investmetJournal, investmentProduct.ChartOfAccountId, creditBatchDTO.CreditTypeChartOfAccountId, checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
+                                    journals.Add(investmetJournal);
+
+                                    var StandingOrders = FindStandingOrdersByBeneficiaryCustomerAccountId(checkOffCustomerAccount.Id, (int)StandingOrderTrigger.CheckOff, serviceHeader);
+
+                                    if (StandingOrders != null && StandingOrders.Any(x => !x.IsLocked))
+                                    {
+                                        if (StandingOrders.Count == 1)
+                                        {
+                                            var targetInvestmentStandingOrder = StandingOrders[0];
+
+                                            var principalArrears = 0m;
+
+                                            var interestArrears = 0m;
+
+                                            //if (targetInvestmentProduct.TrackArrears)
+                                            //{
+                                            //    principalArrears = checkOffCustomerAccount.PrincipalArrearagesBalance * -1 < 0m ? checkOffCustomerAccount.PrincipalArrearagesBalance : 0m;
+
+                                            //    interestArrears = checkOffCustomerAccount.InterestArrearagesBalance * -1 < 0m ? checkOffCustomerAccount.InterestArrearagesBalance : 0m;
+
+                                            //    if ((principalArrears + interestArrears) > 0m)
+                                            //    {
+                                            //        // cumulate
+                                            //        interestArrears += (creditBatchEntryDTO.Interest - interestArrears);
+                                            //        principalArrears += (creditBatchEntryDTO.Principal - principalArrears);
+                                            //    }
+                                            //    else
+                                            //    {
+                                            //        // track new
+                                            //        interestArrears = targetInvestmentStandingOrder.Interest - creditBatchEntryDTO.Interest;
+                                            //        principalArrears = targetInvestmentStandingOrder.Principal - creditBatchEntryDTO.Principal;
+                                            //    }
+
+                                            //    interestArrears = interestArrears * -1 > 0m ? 0m : interestArrears;
+                                            //    principalArrears = principalArrears * -1 > 0m ? 0m : principalArrears;
+                                            //}
+
+                                            var history = StandingOrderHistoryFactory.CreateStandingOrderHistory(targetInvestmentStandingOrder.Id, postingPeriodDTO.Id, targetInvestmentStandingOrder.BenefactorCustomerAccountId, targetInvestmentStandingOrder.BeneficiaryCustomerAccountId, new Duration(targetInvestmentStandingOrder.DurationStartDate, targetInvestmentStandingOrder.DurationEndDate), new Schedule(targetInvestmentStandingOrder.ScheduleFrequency, targetInvestmentStandingOrder.ScheduleExpectedRunDate, targetInvestmentStandingOrder.ScheduleActualRunDate, targetInvestmentStandingOrder.ScheduleExecuteAttemptCount, targetInvestmentStandingOrder.ScheduleForceExecute), new Charge(targetInvestmentStandingOrder.ChargeType, targetInvestmentStandingOrder.ChargePercentage, targetInvestmentStandingOrder.ChargeFixedAmount), creditBatchEntryDTO.CreditBatchMonth, targetInvestmentStandingOrder.Trigger, targetInvestmentStandingOrder.Principal, targetInvestmentStandingOrder.Interest, creditBatchEntryDTO.Principal, creditBatchEntryDTO.Interest, targetInvestmentStandingOrder.Remarks);
+                                            history.CreatedBy = serviceHeader.ApplicationUserName;
+                                            standingOrderHistories.Add(history);
+
+                                            // Do we need to update arrearage history?
+                                            var customerAccountInterestArrearage = CustomerAccountArrearageFactory.CreateCustomerAccountArrearage(checkOffCustomerAccount.Id, (int)ArrearageCategory.Interest, interestArrears, reference);
+                                            customerAccountInterestArrearage.CreatedBy = serviceHeader.ApplicationUserName;
+                                            customerAccountArrearages.Add(customerAccountInterestArrearage);
+
+                                            var customerAccountPrincipalArrearage = CustomerAccountArrearageFactory.CreateCustomerAccountArrearage(checkOffCustomerAccount.Id, (int)ArrearageCategory.Principal, principalArrears, reference);
+                                            customerAccountPrincipalArrearage.CreatedBy = serviceHeader.ApplicationUserName;
+                                            customerAccountArrearages.Add(customerAccountPrincipalArrearage);
+                                        }
+                                    }
+
+                                    #endregion
+
+                                    break;
                             }
                         }
 
@@ -1332,6 +1430,677 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
             return result;
         }
+
+        //public bool PostCreditBatchEntry(Guid creditBatchEntryId, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        //{
+        //    var result = default(bool);
+
+        //    if (MarkCreditBatchEntryPosted(creditBatchEntryId, serviceHeader))
+        //    {
+        //        var creditBatchEntryDTO = FindCreditBatchEntry(creditBatchEntryId, serviceHeader);
+        //        if (creditBatchEntryDTO == null || creditBatchEntryDTO.Status != (int)BatchEntryStatus.Posted)
+        //            return result;
+
+        //        var creditBatchDTO = FindCachedCreditBatch(creditBatchEntryDTO.CreditBatchId, serviceHeader);
+        //        if (creditBatchDTO == null)
+        //            return result;
+
+        //        var postingPeriodDTO = _postingPeriodAppService.FindPostingPeriod(creditBatchEntryDTO.CreditBatchPostingPeriodId ?? Guid.Empty, serviceHeader) ?? _postingPeriodAppService.FindCachedCurrentPostingPeriod(serviceHeader);
+        //        if (postingPeriodDTO == null)
+        //            return result;
+
+        //        serviceHeader.ApplicationUserName = creditBatchDTO.AuthorizedBy ?? serviceHeader.ApplicationUserName;
+
+        //        var primaryDescription = creditBatchDTO.Reference;
+
+        //        var secondaryDescription = string.Format("{0}~{1}", creditBatchDTO.TypeDescription, creditBatchDTO.MonthDescription);
+
+        //        var reference = creditBatchEntryDTO.Reference;
+
+        //        var journals = new List<Journal>();
+
+        //        var standingOrderHistories = new List<StandingOrderHistory>();
+
+        //        var customerAccountCarryForwards = new List<CustomerAccountCarryForward>();
+
+        //        var customerAccountArrearages = new List<CustomerAccountArrearage>();
+
+        //        var transactionOwnershipBranchId = Guid.Empty;
+
+        //        switch ((CreditBatchType)creditBatchDTO.Type)
+        //        {
+        //            case CreditBatchType.Payout:
+
+        //                #region Savings Payout (e.g salary)
+
+        //                var payoutCustomerAccount = _sqlCommandAppService.FindCustomerAccountById(creditBatchEntryDTO.CustomerAccountId ?? Guid.Empty, serviceHeader);
+
+        //                switch ((TransactionOwnership)creditBatchDTO.CreditTypeTransactionOwnership)
+        //                {
+        //                    case TransactionOwnership.InitiatingBranch:
+        //                        transactionOwnershipBranchId = creditBatchDTO.BranchId;
+        //                        break;
+        //                    case TransactionOwnership.BeneficiaryBranch:
+        //                        transactionOwnershipBranchId = payoutCustomerAccount.BranchId;
+        //                        break;
+        //                    default:
+        //                        break;
+        //                }
+
+        //                var targetSavingsProduct = _savingsProductAppService.FindCachedSavingsProduct(payoutCustomerAccount.CustomerAccountTypeTargetProductId, payoutCustomerAccount.BranchId, serviceHeader);
+
+        //                var payoutTariffs = _commissionAppService.ComputeTariffsByPayoutCreditType(creditBatchDTO.CreditTypeId, (creditBatchEntryDTO.Principal + creditBatchEntryDTO.Interest), payoutCustomerAccount, serviceHeader);
+
+        //                var primaryJournal = _journalAppService.AddNewJournal(transactionOwnershipBranchId, null, (creditBatchEntryDTO.Principal + creditBatchEntryDTO.Interest), primaryDescription, secondaryDescription, reference, moduleNavigationItemCode, (int)SystemTransactionCode.CreditBatchPayout, UberUtil.GetLastDayOfMonth(creditBatchEntryDTO.CreditBatchMonth, creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year, creditBatchEntryDTO.CreditBatchEnforceMonthValueDate, creditBatchEntryDTO.CreditBatchValueDate), targetSavingsProduct.ChartOfAccountId, creditBatchDTO.CreditTypeChartOfAccountId, payoutCustomerAccount, payoutCustomerAccount, payoutTariffs, serviceHeader);
+
+        //                if (primaryJournal != null)
+        //                {
+        //                    var availableBalance = _sqlCommandAppService.FindCustomerAccountAvailableBalance(payoutCustomerAccount, DateTime.Now, serviceHeader);
+
+        //                    if (creditBatchDTO.PreserveAccountBalance)
+        //                    {
+        //                        var minimumBalance = availableBalance > targetSavingsProduct.MinimumBalance ? 0m : targetSavingsProduct.MinimumBalance;
+        //                        availableBalance = (creditBatchEntryDTO.Principal + creditBatchEntryDTO.Interest) - (payoutTariffs.Sum(x => x.Amount) + minimumBalance);
+        //                    }
+
+        //                    if ((availableBalance > 0m))
+        //                    {
+        //                        var totalRecoveryDeductions = 0m;
+
+        //                        var concessionExemptTuple = RecoverAttachedConcessionExemptLoans(transactionOwnershipBranchId, primaryJournal.Id, postingPeriodDTO.Id, creditBatchEntryDTO, secondaryDescription, reference, moduleNavigationItemCode, journals, standingOrderHistories, customerAccountCarryForwards, customerAccountArrearages, payoutCustomerAccount, availableBalance, targetSavingsProduct, totalRecoveryDeductions, serviceHeader);
+
+        //                        totalRecoveryDeductions = concessionExemptTuple.Item1;
+        //                        availableBalance = concessionExemptTuple.Item2;
+
+        //                        if (creditBatchDTO.PreserveAccountBalance)
+        //                        {
+        //                            var maximumAmountAvailabeForRecovery = 0m;
+
+        //                            switch ((ChargeType)creditBatchDTO.ConcessionType)
+        //                            {
+        //                                case ChargeType.Percentage:
+        //                                    maximumAmountAvailabeForRecovery = Math.Round(Convert.ToDecimal(((100d - creditBatchDTO.ConcessionPercentage) * Convert.ToDouble(creditBatchEntryDTO.Principal + creditBatchEntryDTO.Interest)) / 100), 4, MidpointRounding.AwayFromZero);
+        //                                    break;
+        //                                case ChargeType.FixedAmount:
+        //                                    maximumAmountAvailabeForRecovery = (creditBatchEntryDTO.Principal + creditBatchEntryDTO.Interest) - creditBatchDTO.ConcessionFixedAmount;
+        //                                    break;
+        //                                default:
+        //                                    break;
+        //                            }
+
+        //                            availableBalance = Math.Min(maximumAmountAvailabeForRecovery, availableBalance);
+        //                        }
+
+        //                        if ((availableBalance > 0m))
+        //                        {
+        //                            var branchDTO = _branchAppService.FindCachedBranch(payoutCustomerAccount.BranchId, serviceHeader);
+
+        //                            if (branchDTO != null && !string.IsNullOrWhiteSpace(branchDTO.CompanyRecoveryPriority))
+        //                            {
+        //                                var buffer = branchDTO.CompanyRecoveryPriority.Split(new char[] { ',' });
+
+        //                                Array.ForEach(buffer, (item) =>
+        //                                {
+        //                                    switch ((RecoveryPriority)Enum.Parse(typeof(RecoveryPriority), item))
+        //                                    {
+        //                                        case RecoveryPriority.Loans:
+        //                                            var loansTuple = RecoverAttachedLoans(transactionOwnershipBranchId, primaryJournal.Id, postingPeriodDTO.Id, creditBatchEntryDTO, secondaryDescription, reference, moduleNavigationItemCode, journals, standingOrderHistories, customerAccountCarryForwards, customerAccountArrearages, payoutCustomerAccount, availableBalance, targetSavingsProduct, totalRecoveryDeductions, serviceHeader);
+        //                                            totalRecoveryDeductions = loansTuple.Item1;
+        //                                            availableBalance = loansTuple.Item2;
+        //                                            break;
+
+        //                                        case RecoveryPriority.Investments:
+        //                                            var investmentsTuple = RecoverAttachedInvestments(transactionOwnershipBranchId, primaryJournal.Id, postingPeriodDTO.Id, creditBatchEntryDTO, secondaryDescription, reference, moduleNavigationItemCode, journals, customerAccountArrearages, standingOrderHistories, payoutCustomerAccount, availableBalance, targetSavingsProduct, totalRecoveryDeductions, serviceHeader);
+        //                                            totalRecoveryDeductions = investmentsTuple.Item1;
+        //                                            availableBalance = investmentsTuple.Item2;
+        //                                            break;
+
+        //                                        case RecoveryPriority.Savings:
+        //                                            var savingsTuple = RecoverAttachedSavings(transactionOwnershipBranchId, primaryJournal.Id, postingPeriodDTO.Id, creditBatchEntryDTO, secondaryDescription, reference, moduleNavigationItemCode, journals, standingOrderHistories, payoutCustomerAccount, availableBalance, targetSavingsProduct, totalRecoveryDeductions, serviceHeader);
+        //                                            totalRecoveryDeductions = savingsTuple.Item1;
+        //                                            availableBalance = savingsTuple.Item2;
+        //                                            break;
+
+        //                                        case RecoveryPriority.DirectDebits:
+        //                                            var directDebitsTuple = RecoverAttachedDirectDebits(transactionOwnershipBranchId, primaryJournal.Id, postingPeriodDTO.Id, creditBatchEntryDTO, secondaryDescription, reference, moduleNavigationItemCode, journals, payoutCustomerAccount, availableBalance, targetSavingsProduct, totalRecoveryDeductions, serviceHeader);
+        //                                            totalRecoveryDeductions = directDebitsTuple.Item1;
+        //                                            availableBalance = directDebitsTuple.Item2;
+        //                                            break;
+
+        //                                        default:
+        //                                            break;
+        //                                    }
+        //                                });
+        //                            }
+        //                        }
+        //                    }
+        //                }
+
+        //                #endregion
+
+        //                break;
+
+        //            case CreditBatchType.CheckOff:
+
+        //                #region Loan/Investment
+
+        //                var checkOffCustomerAccount = _sqlCommandAppService.FindCustomerAccountById(creditBatchEntryDTO.CustomerAccountId ?? Guid.Empty, serviceHeader);
+
+        //                _customerAccountAppService.FetchCustomerAccountBalances(new List<CustomerAccountDTO> { checkOffCustomerAccount }, serviceHeader, true);
+
+        //                switch ((TransactionOwnership)creditBatchDTO.CreditTypeTransactionOwnership)
+        //                {
+        //                    case TransactionOwnership.InitiatingBranch:
+        //                        transactionOwnershipBranchId = creditBatchDTO.BranchId;
+        //                        break;
+        //                    case TransactionOwnership.BeneficiaryBranch:
+        //                        transactionOwnershipBranchId = checkOffCustomerAccount.BranchId;
+        //                        break;
+        //                    default:
+        //                        break;
+        //                }
+
+        //                if (creditBatchEntryDTO.ChartOfAccountId != null && creditBatchEntryDTO.ChartOfAccountId != Guid.Empty)
+        //                {
+        //                    // Credit CreditBatchEntryDTO.ChartOfAccountId, Debit CreditBatchDTO.CreditTypeChartOfAccountId
+        //                    var checkOffJournal = JournalFactory.CreateJournal(null, postingPeriodDTO.Id, transactionOwnershipBranchId, null, creditBatchEntryDTO.Principal, primaryDescription, secondaryDescription, reference, moduleNavigationItemCode, (int)SystemTransactionCode.CreditBatchCheckOff, UberUtil.GetLastDayOfMonth(creditBatchEntryDTO.CreditBatchMonth, creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year, creditBatchEntryDTO.CreditBatchEnforceMonthValueDate, creditBatchEntryDTO.CreditBatchValueDate), serviceHeader);
+        //                    _journalEntryPostingService.PerformDoubleEntry(checkOffJournal, creditBatchEntryDTO.ChartOfAccountId.Value, creditBatchDTO.CreditTypeChartOfAccountId, checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
+        //                    journals.Add(checkOffJournal);
+        //                }
+        //                else
+        //                {
+        //                    switch ((ProductCode)checkOffCustomerAccount.CustomerAccountTypeProductCode)
+        //                    {
+        //                        case ProductCode.Loan:
+        //                            #region Loan Check-Off with Proper Missed Interest Handling
+
+        //                            var targetLoanProduct = _loanProductAppService.FindCachedLoanProduct(
+        //                                checkOffCustomerAccount.CustomerAccountTypeTargetProductId, serviceHeader);
+
+        //                            var PrimaryDescriptioninterest = "Loan Interest Payment";
+        //                            var secoSecondaryDescriptioninterest = "Loan Repayment CheckOff Interest";
+        //                            var principledescription = "Loan Principal Repayment";
+        //                            var PrincipleSecondarydescription = "Check Off Principal Repayment";
+
+        //                            // Calculate missed months compound interest
+        //                            decimal missedInterestTotal = 0m;
+
+        //                            // 1. Find last principal payment
+        //                            var lastPrincipalPayment = _sqlCommandAppService
+        //                                .FindLastPrincipalRepaymentByLoanReference(
+        //                                    creditBatchEntryDTO.Reference,
+        //                                    checkOffCustomerAccount.Id,
+        //                                    serviceHeader);
+
+        //                            // 2. Batch month normalised to first of month
+        //                            var batchMonth = new DateTime(
+        //                                creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year,
+        //                                creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Month,
+        //                                1);
+
+        //                            // 3. Determine last paid month
+        //                            DateTime lastPaidMonth;
+        //                            bool isFirstPayment = false;
+
+        //                            if (lastPrincipalPayment != null)
+        //                            {
+        //                                lastPaidMonth = lastPrincipalPayment.ValueDate.HasValue
+        //                                    ? new DateTime(
+        //                                        lastPrincipalPayment.ValueDate.Value.Year,
+        //                                        lastPrincipalPayment.ValueDate.Value.Month,
+        //                                        1)
+        //                                    : batchMonth;
+        //                            }
+        //                            else
+        //                            {
+        //                                // This is the first payment
+        //                                isFirstPayment = true;
+
+        //                                LoanCase loanCaseForBaseline = null;
+        //                                using (_dbContextScopeFactory.CreateReadOnly())
+        //                                {
+        //                                    loanCaseForBaseline = _loanCaserepository
+        //                                        .GetAllAsync(serviceHeader).Result
+        //                                        .FirstOrDefault(l =>
+        //                                            l.CaseNumber == Convert.ToInt32(creditBatchEntryDTO.Reference)
+        //                                            && l.DisbursedDate.HasValue);
+        //                                }
+
+        //                                if (loanCaseForBaseline != null && loanCaseForBaseline.DisbursedDate.HasValue)
+        //                                {
+        //                                    var disbursementDate = loanCaseForBaseline.DisbursedDate.Value;
+        //                                    lastPaidMonth = new DateTime(
+        //                                        disbursementDate.Year,
+        //                                        disbursementDate.Month,
+        //                                        1);
+        //                                }
+        //                                else
+        //                                {
+        //                                    lastPaidMonth = batchMonth;
+        //                                }
+        //                            }
+
+        //                            // 4. Calculate missed months (excluding current month)
+        //                            int monthsDifference = ((batchMonth.Year - lastPaidMonth.Year) * 12
+        //                                                 + batchMonth.Month - lastPaidMonth.Month);
+
+        //                            int missedMonths;
+
+        //                            if (isFirstPayment)
+        //                            {
+        //                                // For first payment, all months from disbursement to batch month are missed
+        //                                // This includes the current month if this is the first payment
+        //                                missedMonths = monthsDifference;
+        //                            }
+        //                            else
+        //                            {
+        //                                // For subsequent payments, exclude the last paid month
+        //                                missedMonths = monthsDifference - 1;
+        //                            }
+
+        //                            if (missedMonths < 0) missedMonths = 0;
+
+        //                            // 5. Calculate compound interest for missed months
+        //                            decimal monthlyRate = (decimal)targetLoanProduct.LoanInterestAnnualPercentageRate / 100m / 12m;
+        //                            decimal runningBalance = checkOffCustomerAccount.PrincipalBalance * -1 > 0m
+        //                                ? checkOffCustomerAccount.PrincipalBalance * -1
+        //                                : 0m;
+
+        //                            // Calculate interest for all missed months
+        //                            for (int m = 0; m < missedMonths; m++)
+        //                            {
+        //                                var monthInterest = Math.Round(
+        //                                    runningBalance * monthlyRate, 2,
+        //                                    MidpointRounding.AwayFromZero);
+
+        //                                missedInterestTotal += monthInterest;
+        //                                runningBalance += monthInterest; // Compound
+        //                            }
+
+        //                            // 6. Post missed interest as separate journal entries
+        //                            // Split the total payment: first recover missed interest, then apply current month's payment
+        //                            decimal totalPayment = creditBatchEntryDTO.Principal + creditBatchEntryDTO.Interest;
+        //                            decimal missedInterestRecovered = Math.Min(missedInterestTotal, totalPayment);
+
+        //                            if (missedInterestRecovered > 0)
+        //                            {
+        //                                // Create journal for missed interest recovery
+        //                                var missedInterestJournal = JournalFactory.CreateJournal(
+        //                                    null, postingPeriodDTO.Id, transactionOwnershipBranchId, null,
+        //                                    missedInterestRecovered,
+        //                                    "Missed Interest Recovery",
+        //                                    string.Format("Compound interest for missed months: {0} month(s)", missedMonths),
+        //                                    reference, moduleNavigationItemCode,
+        //                                    (int)SystemTransactionCode.CreditBatchCheckOff,
+        //                                    UberUtil.GetLastDayOfMonth(
+        //                                        creditBatchEntryDTO.CreditBatchMonth,
+        //                                        creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year,
+        //                                        creditBatchEntryDTO.CreditBatchEnforceMonthValueDate,
+        //                                        creditBatchEntryDTO.CreditBatchValueDate),
+        //                                    serviceHeader);
+
+        //                                _journalEntryPostingService.PerformDoubleEntry(
+        //                                    missedInterestJournal,
+        //                                    targetLoanProduct.InterestReceivableChartOfAccountId,
+        //                                    creditBatchDTO.CreditTypeChartOfAccountId,
+        //                                    checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
+
+        //                                journals.Add(missedInterestJournal);
+
+        //                                // Reduce the remaining payment amount
+        //                                totalPayment -= missedInterestRecovered;
+        //                            }
+
+        //                            // 7. Post current month's interest (if any payment remains)
+        //                            decimal currentInterestToPost = Math.Min(creditBatchEntryDTO.Interest, totalPayment);
+        //                            decimal currentPrincipalToPost = totalPayment - currentInterestToPost;
+
+        //                            // Current month interest journal
+        //                            if (currentInterestToPost > 0)
+        //                            {
+        //                                var interestReceivableJournal = JournalFactory.CreateJournal(
+        //                                    null, postingPeriodDTO.Id, transactionOwnershipBranchId, null,
+        //                                    currentInterestToPost,
+        //                                    PrimaryDescriptioninterest, secoSecondaryDescriptioninterest,
+        //                                    reference, moduleNavigationItemCode,
+        //                                    (int)SystemTransactionCode.CreditBatchCheckOff,
+        //                                    UberUtil.GetLastDayOfMonth(
+        //                                        creditBatchEntryDTO.CreditBatchMonth,
+        //                                        creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year,
+        //                                        creditBatchEntryDTO.CreditBatchEnforceMonthValueDate,
+        //                                        creditBatchEntryDTO.CreditBatchValueDate),
+        //                                    serviceHeader);
+
+        //                                _journalEntryPostingService.PerformDoubleEntry(
+        //                                    interestReceivableJournal,
+        //                                    targetLoanProduct.InterestReceivableChartOfAccountId,
+        //                                    creditBatchDTO.CreditTypeChartOfAccountId,
+        //                                    checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
+
+        //                                journals.Add(interestReceivableJournal);
+        //                            }
+
+        //                            // Principal journal
+        //                            if (currentPrincipalToPost > 0)
+        //                            {
+        //                                var principalJournal = JournalFactory.CreateJournal(
+        //                                    null, postingPeriodDTO.Id, transactionOwnershipBranchId, null,
+        //                                    currentPrincipalToPost,
+        //                                    principledescription, PrincipleSecondarydescription,
+        //                                    reference, moduleNavigationItemCode,
+        //                                    (int)SystemTransactionCode.CreditBatchCheckOff,
+        //                                    UberUtil.GetLastDayOfMonth(
+        //                                        creditBatchEntryDTO.CreditBatchMonth,
+        //                                        creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year,
+        //                                        creditBatchEntryDTO.CreditBatchEnforceMonthValueDate,
+        //                                        creditBatchEntryDTO.CreditBatchValueDate),
+        //                                    serviceHeader);
+
+        //                                _journalEntryPostingService.PerformDoubleEntry(
+        //                                    principalJournal,
+        //                                    targetLoanProduct.ChartOfAccountId,
+        //                                    creditBatchDTO.CreditTypeChartOfAccountId,
+        //                                    checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
+
+        //                                journals.Add(principalJournal);
+        //                            }
+
+        //                            // Update TotalLoansBalance with the principal portion only
+        //                            using (var scope = _dbContextScopeFactory.Create())
+        //                            {
+        //                                var loanCasesList = _loanCaserepository.GetAllAsync(serviceHeader).Result;
+        //                                var loanCasesToUpdate = loanCasesList
+        //                                    .Where(l => l.CaseNumber == Convert.ToInt32(creditBatchEntryDTO.Reference)
+        //                                             && l.DisbursedDate.HasValue
+        //                                             && l.TotalLoansBalance > 1)
+        //                                    .ToList();
+
+        //                                foreach (var loanCase in loanCasesToUpdate)
+        //                                {
+        //                                    var original = _loanCaserepository.GetAsync(loanCase.Id, serviceHeader).Result;
+        //                                    loanCase.TotalLoansBalance -= currentPrincipalToPost;
+        //                                    _loanCaserepository.Merge(original, loanCase, serviceHeader);
+        //                                }
+
+        //                                scope.SaveChanges(serviceHeader);
+        //                            }
+
+        //                            // Rest of your standing orders and arrearage logic...
+        //                            var loanStandingOrders = FindStandingOrdersByBeneficiaryCustomerAccountId(
+        //                                checkOffCustomerAccount.Id,
+        //                                (int)StandingOrderTrigger.CheckOff,
+        //                                serviceHeader);
+
+        //                            if (loanStandingOrders != null && loanStandingOrders.Any(x => !x.IsLocked))
+        //                            {
+        //                                if (loanStandingOrders.Count == 1)
+        //                                {
+        //                                    var targetLoanStandingOrder = loanStandingOrders[0];
+
+        //                                    var principalArrears = 0m;
+        //                                    var interestArrears = 0m;
+
+        //                                    if (targetLoanProduct.LoanRegistrationTrackArrears)
+        //                                    {
+        //                                        var principalBalance = checkOffCustomerAccount.PrincipalBalance + creditBatchEntryDTO.Principal;
+        //                                        var interestBalance = checkOffCustomerAccount.InterestBalance + creditBatchEntryDTO.Interest;
+
+        //                                        principalArrears = Math.Min(
+        //                                            ((principalBalance * -1 > 0m) ? (principalBalance * -1) : 0m),
+        //                                            checkOffCustomerAccount.PrincipalArrearagesBalance * -1 < 0m
+        //                                                ? checkOffCustomerAccount.PrincipalArrearagesBalance : 0m);
+
+        //                                        interestArrears = Math.Min(
+        //                                            ((interestBalance * -1 > 0m) ? (interestBalance * -1) : 0m),
+        //                                            checkOffCustomerAccount.InterestArrearagesBalance * -1 < 0m
+        //                                                ? checkOffCustomerAccount.InterestArrearagesBalance : 0m);
+
+        //                                        if ((principalArrears + interestArrears) > 0m)
+        //                                        {
+        //                                            interestArrears += (creditBatchEntryDTO.Interest - interestArrears);
+        //                                            principalArrears += (creditBatchEntryDTO.Principal - principalArrears);
+        //                                        }
+        //                                        else
+        //                                        {
+        //                                            interestArrears = targetLoanStandingOrder.Interest - creditBatchEntryDTO.Interest;
+        //                                            principalArrears = targetLoanStandingOrder.Principal - creditBatchEntryDTO.Principal;
+        //                                        }
+
+        //                                        interestArrears = interestArrears * -1 > 0m ? 0m : interestArrears;
+        //                                        principalArrears = principalArrears * -1 > 0m ? 0m : principalArrears;
+        //                                    }
+
+        //                                    var history = StandingOrderHistoryFactory.CreateStandingOrderHistory(
+        //                                        targetLoanStandingOrder.Id, postingPeriodDTO.Id,
+        //                                        targetLoanStandingOrder.BenefactorCustomerAccountId,
+        //                                        targetLoanStandingOrder.BeneficiaryCustomerAccountId,
+        //                                        new Duration(targetLoanStandingOrder.DurationStartDate, targetLoanStandingOrder.DurationEndDate),
+        //                                        new Schedule(targetLoanStandingOrder.ScheduleFrequency, targetLoanStandingOrder.ScheduleExpectedRunDate, targetLoanStandingOrder.ScheduleActualRunDate, targetLoanStandingOrder.ScheduleExecuteAttemptCount, targetLoanStandingOrder.ScheduleForceExecute),
+        //                                        new Charge(targetLoanStandingOrder.ChargeType, targetLoanStandingOrder.ChargePercentage, targetLoanStandingOrder.ChargeFixedAmount),
+        //                                        creditBatchEntryDTO.CreditBatchMonth,
+        //                                        targetLoanStandingOrder.Trigger,
+        //                                        targetLoanStandingOrder.Principal,
+        //                                        targetLoanStandingOrder.Interest,
+        //                                        creditBatchEntryDTO.Principal,
+        //                                        creditBatchEntryDTO.Interest,
+        //                                        targetLoanStandingOrder.Remarks);
+
+        //                                    history.CreatedBy = serviceHeader.ApplicationUserName;
+        //                                    standingOrderHistories.Add(history);
+
+        //                                    var customerAccountInterestArrearage = CustomerAccountArrearageFactory.CreateCustomerAccountArrearage(
+        //                                        checkOffCustomerAccount.Id, (int)ArrearageCategory.Interest, interestArrears, reference);
+        //                                    customerAccountInterestArrearage.CreatedBy = serviceHeader.ApplicationUserName;
+        //                                    customerAccountArrearages.Add(customerAccountInterestArrearage);
+
+        //                                    var customerAccountPrincipalArrearage = CustomerAccountArrearageFactory.CreateCustomerAccountArrearage(
+        //                                        checkOffCustomerAccount.Id, (int)ArrearageCategory.Principal, principalArrears, reference);
+        //                                    customerAccountPrincipalArrearage.CreatedBy = serviceHeader.ApplicationUserName;
+        //                                    customerAccountArrearages.Add(customerAccountPrincipalArrearage);
+        //                                }
+        //                            }
+
+        //                            #endregion
+
+        //                            break;
+
+        //                        case ProductCode.Savings:
+
+        //                            #region Investment Check-Off
+
+        //                            var targetInvestmentProduct = _savingsProductAppService.FindCachedSavingsProduct(
+        //                                checkOffCustomerAccount.CustomerAccountTypeTargetProductId,
+        //                                checkOffCustomerAccount.BranchId, serviceHeader);
+
+        //                            secondaryDescription = string.Format("{0} ({1})", secondaryDescription, targetInvestmentProduct.Description);
+
+        //                            var investmentJournal = JournalFactory.CreateJournal(
+        //                                null, postingPeriodDTO.Id, transactionOwnershipBranchId, null,
+        //                                creditBatchEntryDTO.Principal + creditBatchEntryDTO.Interest,
+        //                                primaryDescription, secondaryDescription,
+        //                                reference, moduleNavigationItemCode,
+        //                                (int)SystemTransactionCode.CreditBatchCheckOff,
+        //                                UberUtil.GetLastDayOfMonth(
+        //                                    creditBatchEntryDTO.CreditBatchMonth,
+        //                                    creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year,
+        //                                    creditBatchEntryDTO.CreditBatchEnforceMonthValueDate,
+        //                                    creditBatchEntryDTO.CreditBatchValueDate),
+        //                                serviceHeader);
+
+        //                            _journalEntryPostingService.PerformDoubleEntry(
+        //                                investmentJournal,
+        //                                targetInvestmentProduct.ChartOfAccountId,
+        //                                creditBatchDTO.CreditTypeChartOfAccountId,
+        //                                checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
+
+        //                            journals.Add(investmentJournal);
+
+        //                            var investmentStandingOrders = FindStandingOrdersByBeneficiaryCustomerAccountId(
+        //                                checkOffCustomerAccount.Id, (int)StandingOrderTrigger.CheckOff, serviceHeader);
+
+        //                            if (investmentStandingOrders != null && investmentStandingOrders.Any(x => !x.IsLocked))
+        //                            {
+        //                                if (investmentStandingOrders.Count == 1)
+        //                                {
+        //                                    var targetInvestmentStandingOrder = investmentStandingOrders[0];
+
+        //                                    var history = StandingOrderHistoryFactory.CreateStandingOrderHistory(
+        //                                        targetInvestmentStandingOrder.Id, postingPeriodDTO.Id,
+        //                                        targetInvestmentStandingOrder.BenefactorCustomerAccountId,
+        //                                        targetInvestmentStandingOrder.BeneficiaryCustomerAccountId,
+        //                                        new Duration(targetInvestmentStandingOrder.DurationStartDate, targetInvestmentStandingOrder.DurationEndDate),
+        //                                        new Schedule(targetInvestmentStandingOrder.ScheduleFrequency, targetInvestmentStandingOrder.ScheduleExpectedRunDate, targetInvestmentStandingOrder.ScheduleActualRunDate, targetInvestmentStandingOrder.ScheduleExecuteAttemptCount, targetInvestmentStandingOrder.ScheduleForceExecute),
+        //                                        new Charge(targetInvestmentStandingOrder.ChargeType, targetInvestmentStandingOrder.ChargePercentage, targetInvestmentStandingOrder.ChargeFixedAmount),
+        //                                        creditBatchEntryDTO.CreditBatchMonth,
+        //                                        targetInvestmentStandingOrder.Trigger,
+        //                                        targetInvestmentStandingOrder.Principal,
+        //                                        targetInvestmentStandingOrder.Interest,
+        //                                        creditBatchEntryDTO.Principal,
+        //                                        creditBatchEntryDTO.Interest,
+        //                                        targetInvestmentStandingOrder.Remarks);
+
+        //                                    history.CreatedBy = serviceHeader.ApplicationUserName;
+        //                                    standingOrderHistories.Add(history);
+
+        //                                    var customerAccountInterestArrearage = CustomerAccountArrearageFactory.CreateCustomerAccountArrearage(
+        //                                        checkOffCustomerAccount.Id, (int)ArrearageCategory.Interest, 0m, reference);
+        //                                    customerAccountInterestArrearage.CreatedBy = serviceHeader.ApplicationUserName;
+        //                                    customerAccountArrearages.Add(customerAccountInterestArrearage);
+
+        //                                    var customerAccountPrincipalArrearage = CustomerAccountArrearageFactory.CreateCustomerAccountArrearage(
+        //                                        checkOffCustomerAccount.Id, (int)ArrearageCategory.Principal, 0m, reference);
+        //                                    customerAccountPrincipalArrearage.CreatedBy = serviceHeader.ApplicationUserName;
+        //                                    customerAccountArrearages.Add(customerAccountPrincipalArrearage);
+        //                                }
+        //                            }
+
+        //                            #endregion
+
+        //                            break;
+
+        //                        case ProductCode.Investment:
+
+        //                            #region Investment Check-Off
+
+        //                            var investmentProduct = _investmentProductAppService.FindCachedInvestmentProduct(
+        //                                checkOffCustomerAccount.CustomerAccountTypeTargetProductId, serviceHeader);
+
+        //                            secondaryDescription = string.Format("{0} ({1})", secondaryDescription, investmentProduct.Description);
+
+        //                            var investmetJournal = JournalFactory.CreateJournal(
+        //                                null, postingPeriodDTO.Id, transactionOwnershipBranchId, null,
+        //                                creditBatchEntryDTO.Principal + creditBatchEntryDTO.Interest,
+        //                                primaryDescription, secondaryDescription,
+        //                                reference, moduleNavigationItemCode,
+        //                                (int)SystemTransactionCode.CreditBatchCheckOff,
+        //                                UberUtil.GetLastDayOfMonth(
+        //                                    creditBatchEntryDTO.CreditBatchMonth,
+        //                                    creditBatchEntryDTO.CreditBatchPostingPeriodDurationEndDate.Year,
+        //                                    creditBatchEntryDTO.CreditBatchEnforceMonthValueDate,
+        //                                    creditBatchEntryDTO.CreditBatchValueDate),
+        //                                serviceHeader);
+
+        //                            _journalEntryPostingService.PerformDoubleEntry(
+        //                                investmetJournal,
+        //                                investmentProduct.ChartOfAccountId,
+        //                                creditBatchDTO.CreditTypeChartOfAccountId,
+        //                                checkOffCustomerAccount, checkOffCustomerAccount, serviceHeader);
+
+        //                            journals.Add(investmetJournal);
+
+        //                            var StandingOrders = FindStandingOrdersByBeneficiaryCustomerAccountId(
+        //                                checkOffCustomerAccount.Id, (int)StandingOrderTrigger.CheckOff, serviceHeader);
+
+        //                            if (StandingOrders != null && StandingOrders.Any(x => !x.IsLocked))
+        //                            {
+        //                                if (StandingOrders.Count == 1)
+        //                                {
+        //                                    var targetInvestmentStandingOrder = StandingOrders[0];
+
+        //                                    var history = StandingOrderHistoryFactory.CreateStandingOrderHistory(
+        //                                        targetInvestmentStandingOrder.Id, postingPeriodDTO.Id,
+        //                                        targetInvestmentStandingOrder.BenefactorCustomerAccountId,
+        //                                        targetInvestmentStandingOrder.BeneficiaryCustomerAccountId,
+        //                                        new Duration(targetInvestmentStandingOrder.DurationStartDate, targetInvestmentStandingOrder.DurationEndDate),
+        //                                        new Schedule(targetInvestmentStandingOrder.ScheduleFrequency, targetInvestmentStandingOrder.ScheduleExpectedRunDate, targetInvestmentStandingOrder.ScheduleActualRunDate, targetInvestmentStandingOrder.ScheduleExecuteAttemptCount, targetInvestmentStandingOrder.ScheduleForceExecute),
+        //                                        new Charge(targetInvestmentStandingOrder.ChargeType, targetInvestmentStandingOrder.ChargePercentage, targetInvestmentStandingOrder.ChargeFixedAmount),
+        //                                        creditBatchEntryDTO.CreditBatchMonth,
+        //                                        targetInvestmentStandingOrder.Trigger,
+        //                                        targetInvestmentStandingOrder.Principal,
+        //                                        targetInvestmentStandingOrder.Interest,
+        //                                        creditBatchEntryDTO.Principal,
+        //                                        creditBatchEntryDTO.Interest,
+        //                                        targetInvestmentStandingOrder.Remarks);
+
+        //                                    history.CreatedBy = serviceHeader.ApplicationUserName;
+        //                                    standingOrderHistories.Add(history);
+
+        //                                    var customerAccountInterestArrearage = CustomerAccountArrearageFactory.CreateCustomerAccountArrearage(
+        //                                        checkOffCustomerAccount.Id, (int)ArrearageCategory.Interest, 0m, reference);
+        //                                    customerAccountInterestArrearage.CreatedBy = serviceHeader.ApplicationUserName;
+        //                                    customerAccountArrearages.Add(customerAccountInterestArrearage);
+
+        //                                    var customerAccountPrincipalArrearage = CustomerAccountArrearageFactory.CreateCustomerAccountArrearage(
+        //                                        checkOffCustomerAccount.Id, (int)ArrearageCategory.Principal, 0m, reference);
+        //                                    customerAccountPrincipalArrearage.CreatedBy = serviceHeader.ApplicationUserName;
+        //                                    customerAccountArrearages.Add(customerAccountPrincipalArrearage);
+        //                                }
+        //                            }
+
+        //                            #endregion
+
+        //                            break;
+
+        //                        default:
+        //                            break;
+        //                    }
+        //                }
+
+        //                #endregion
+
+        //                break;
+
+        //            case CreditBatchType.CashPickup:
+        //            case CreditBatchType.SundryPayments:
+
+        //                #region Flag True
+
+        //                result = true;
+
+        //                #endregion
+
+        //                break;
+
+        //            default:
+        //                break;
+        //        }
+
+        //        #region Bulk-Insert journals
+
+        //        result = _journalEntryPostingService.BulkSave(serviceHeader, journals, customerAccountCarryForwards, standingOrderHistories, customerAccountArrearages);
+
+        //        #endregion
+
+        //        #region trigger arrears recovery?
+
+        //        if (result && creditBatchEntryDTO.CreditBatchType.In((int)CreditBatchType.Payout) && creditBatchEntryDTO.CreditBatchRecoverArrearages)
+        //        {
+        //            var creditTypeAttachedProducts = _creditTypeAppService.FindCachedAttachedProducts(
+        //                creditBatchEntryDTO.CreditBatchCreditTypeId, serviceHeader);
+
+        //            if (creditTypeAttachedProducts != null)
+        //            {
+        //                _recurringBatchAppService.RecoverArrears(creditBatchEntryDTO,
+        //                    creditTypeAttachedProducts.LoanProductCollection,
+        //                    (int)QueuePriority.High, serviceHeader);
+        //            }
+        //        }
+
+        //        #endregion
+        //    }
+
+        //    return result;
+        //}
         public List<CreditBatchDTO> FindCreditBatches(ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
@@ -1722,6 +2491,228 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
         }
 
+        //public List<BatchImportEntryWrapper> ParseCreditBatchImport(Guid creditBatchId, string fileUploadDirectory, string fileName, ServiceHeader serviceHeader)
+        //{
+        //    using (_dbContextScopeFactory.CreateReadOnly())
+        //    {
+        //        var persisted = _creditBatchRepository.Get(creditBatchId, serviceHeader);
+
+        //        if (persisted != null && persisted.Status == (int)BatchStatus.Pending && !string.IsNullOrWhiteSpace(fileUploadDirectory) && !string.IsNullOrWhiteSpace(fileName))
+        //        {
+        //            var path = Path.Combine(fileUploadDirectory, fileName);
+
+        //            if (System.IO.File.Exists(path))
+        //            {
+        //                var importEntries = new List<BatchImportEntryWrapper> { };
+
+        //                using (var streamReader = new StreamReader(path))
+        //                using (var reader = new CsvReader(streamReader))
+        //                {
+        //                    // the CSV file has a header record, so we read that first
+        //                    reader.ReadHeaderRecord();
+
+        //                    while (reader.HasMoreRecords)
+        //                    {
+        //                        var dataRecord = reader.ReadDataRecord();
+
+        //                        switch ((CreditBatchType)persisted.Type)
+        //                        {
+        //                            case CreditBatchType.Payout:
+
+        //                                if (dataRecord.Count == 5)
+        //                                {
+        //                                    var payoutEntry = new BatchImportEntryWrapper
+        //                                    {
+        //                                        Column1 = dataRecord[0], //Payroll Number
+        //                                        Column2 = dataRecord[1], //Customer Name
+        //                                        Column3 = dataRecord[2], //Amount
+        //                                        Column4 = dataRecord[3], //Savings Product Credit Code
+        //                                        Column5 = dataRecord[4], //YourReference
+        //                                    };
+
+        //                                    importEntries.Add(payoutEntry);
+        //                                }
+
+        //                                break;
+        //                            case CreditBatchType.CheckOff:
+        //                                if (dataRecord.Count == 6)
+        //                                {
+        //                                    string payrolNumber = dataRecord[0];
+        //                                    decimal total = Convert.ToDecimal(dataRecord[3]);
+        //                                    string productTypeCode = dataRecord[5];
+
+        //                                    var customerSavingsAccounts = _sqlCommandAppService
+        //                                        .FindCustomersByPayrollNumber(payrolNumber, serviceHeader);
+        //                                    Guid customerID = customerSavingsAccounts.FirstOrDefault().Id;
+
+        //                                    // DEFAULTER LOAN: full amount goes directly, no splitting
+        //                                    if (productTypeCode == "DEF")
+        //                                    {
+        //                                        var checkOffEntry = new BatchImportEntryWrapper
+        //                                        {
+        //                                            Column1 = dataRecord[0], // Payroll Number
+        //                                            Column2 = total.ToString(), // Full amount
+        //                                            Column3 = dataRecord[3], // Contribution
+        //                                            Column4 = "2",           // DEFAULTER LOAN DB code
+        //                                            Column5 = "2",           // Type = sLoan
+        //                                            Column6 = dataRecord[4], // Reference
+        //                                        };
+        //                                        importEntries.Add(checkOffEntry);
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        // All other rows: split across ALL active loan cases for this customer
+        //                                        var loanCasesList = _loanCaserepository
+        //                                            .GetAllAsync(serviceHeader)
+        //                                            .Result;
+
+        //                                        var loanCase = loanCasesList
+        //                                            .Where(l => l.CustomerId == customerID
+        //                                                     && l.DisbursedDate.HasValue
+        //                                                     && l.TotalLoansBalance > 1)
+        //                                            .ToList();
+
+        //                                        for (int i = 0; i < loanCase.Count; i++)
+        //                                        {
+        //                                            if (total <= 0) break;
+
+        //                                            var item = loanCase[i];
+        //                                            var monthlyPayback = item.MonthlyPaybackAmount;
+
+        //                                            if (total < monthlyPayback)
+        //                                                monthlyPayback = total;
+
+        //                                            var checkOffEntry = new BatchImportEntryWrapper
+        //                                            {
+        //                                                Column1 = dataRecord[0],
+        //                                                Column2 = monthlyPayback.ToString(),
+        //                                                Column3 = dataRecord[3],
+        //                                                Column4 = item.LoanProduct.Code.ToString(), // Each loan's own product code
+        //                                                Column5 = "2",                              // sLoan
+        //                                                Column6 = dataRecord[4],
+        //                                            };
+        //                                            importEntries.Add(checkOffEntry);
+        //                                            total -= monthlyPayback;
+        //                                        }
+
+        //                                        // Post any remaining amount to Member Deposits
+        //                                        if (total > 0)
+        //                                        {
+        //                                            var depositEntry = new BatchImportEntryWrapper
+        //                                            {
+        //                                                Column1 = dataRecord[0], // Payroll Number
+        //                                                Column2 = total.ToString(), // Remaining amount
+        //                                                Column3 = dataRecord[3], // Contribution
+        //                                                Column4 = "222",           // DEPOSITS savings product DB code
+        //                                                Column5 = "1",           // wCont (savings contribution)
+        //                                                Column6 = dataRecord[4], // Reference
+        //                                            };
+        //                                            importEntries.Add(depositEntry);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                break;
+        //                            case CreditBatchType.CashPickup:
+
+        //                                if (dataRecord.Count == 4)
+        //                                {
+        //                                    var payoutEntry = new BatchImportEntryWrapper
+        //                                    {
+        //                                        Column1 = dataRecord[0], //Beneficiary
+        //                                        Column2 = dataRecord[1], //Reference
+        //                                        Column3 = dataRecord[2], //Amount
+        //                                        Column4 = dataRecord[3], //YourReference
+        //                                    };
+
+        //                                    importEntries.Add(payoutEntry);
+        //                                }
+
+        //                                break;
+        //                            case CreditBatchType.SundryPayments:
+
+        //                                if (dataRecord.Count == 4)
+        //                                {
+        //                                    var payoutEntry = new BatchImportEntryWrapper
+        //                                    {
+        //                                        Column1 = dataRecord[0], //G/L Account Code
+        //                                        Column2 = dataRecord[1], //Reference
+        //                                        Column3 = dataRecord[2], //Amount
+        //                                        Column4 = dataRecord[3], //YourReference
+        //                                    };
+
+        //                                    importEntries.Add(payoutEntry);
+        //                                }
+
+        //                                break;
+
+        //                            default:
+        //                                break;
+        //                        }
+        //                    }
+        //                }
+
+        //                if (importEntries.Any())
+        //                {
+        //                    BatchImportParseInfo parseInfo = null;
+
+        //                    switch ((CreditBatchType)persisted.Type)
+        //                    {
+        //                        case CreditBatchType.Payout:
+        //                            parseInfo = ParsePayout(importEntries, serviceHeader);
+        //                            break;
+        //                        case CreditBatchType.CheckOff:
+        //                            parseInfo = persisted.FuzzyMatching ? ParseCheckOff_Fuzzy(persisted, importEntries, serviceHeader) : ParseCheckOff(persisted, importEntries, serviceHeader);
+        //                            break;
+        //                        case CreditBatchType.CashPickup:
+        //                            parseInfo = ParseCashPickup(importEntries);
+        //                            break;
+        //                        case CreditBatchType.SundryPayments:
+        //                            parseInfo = ParseSundryPayments(importEntries, serviceHeader);
+        //                            break;
+        //                        default:
+        //                            break;
+        //                    }
+
+        //                    if (parseInfo != null)
+        //                    {
+        //                        UpdateCreditBatchEntries(creditBatchId, parseInfo.MatchedCollection1, serviceHeader);
+
+        //                        if (persisted.Type.In((int)CreditBatchType.Payout, (int)CreditBatchType.CheckOff))
+        //                        {
+        //                            var discrepancies = new List<CreditBatchDiscrepancyDTO>();
+
+        //                            foreach (var item in parseInfo.MismatchedCollection)
+        //                            {
+        //                                discrepancies.Add(new CreditBatchDiscrepancyDTO
+        //                                {
+        //                                    Column1 = item.Column1,
+        //                                    Column2 = item.Column2,
+        //                                    Column3 = item.Column3,
+        //                                    Column4 = item.Column4,
+        //                                    Column5 = item.Column5,
+        //                                    Column6 = item.Column6,
+        //                                    Column7 = item.Column7,
+        //                                    Column8 = item.Column8,
+        //                                    Remarks = item.Remarks,
+        //                                });
+        //                            }
+
+        //                            UpdateCreditBatchDiscrepancies(creditBatchId, discrepancies, serviceHeader);
+        //                        }
+
+        //                        return parseInfo.MismatchedCollection;
+        //                    }
+        //                    else return null;
+        //                }
+        //                else return null;
+        //            }
+        //            else return null;
+        //        }
+        //        else return null;
+        //    }
+        //}
+
+
         public List<BatchImportEntryWrapper> ParseCreditBatchImport(Guid creditBatchId, string fileUploadDirectory, string fileName, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
@@ -1765,28 +2756,141 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                         }
 
                                         break;
+
                                     case CreditBatchType.CheckOff:
 
+                                        // Skip empty rows
+                                        if (string.IsNullOrWhiteSpace(dataRecord[0]))
+                                            break;
 
-                                        //if (dataRecord.Count == 8)
                                         if (dataRecord.Count == 6)
                                         {
-                                            var checkOffEntry = new BatchImportEntryWrapper
+                                            string payrollNumber = dataRecord[0];
+                                            string productTypeCode = dataRecord[5].Trim();
+
+                                            string rawAmount = dataRecord[3].Replace(",", "").Trim();
+                                            if (!decimal.TryParse(rawAmount, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal total))
+                                                break;
+
+                                            // DEFAULTER LOAN: full amount goes directly, no splitting — ORIGINAL UNCHANGED
+                                            if (productTypeCode == "DEF")
                                             {
-                                                Column1 = dataRecord[0], //Ministry Department -- Payroll
-                                                Column2 = dataRecord[1], //Payroll Number -- Beneficiary 
-                                                Column3 = dataRecord[2], //Contribution -- Contribution
-                                                Column4 = dataRecord[3], //Product Balance -- Loan/Investment Product Credit Code  
-                                                Column5 = dataRecord[4], //Beneficiary -- Type (sInterest, sLoan, sShare, wCont)
-                                                Column6 = dataRecord[5], //Loan/Investment Product Credit Code --Reference
-                                                                         //Column7 = dataRecord[6], //Type (sInterest,sLoan,sShare,wCont)
-                                                                         //Column8 = dataRecord[7], //YourReference
-                                            };
+                                                var checkOffEntry = new BatchImportEntryWrapper
+                                                {
+                                                    Column1 = dataRecord[0], // Payroll Number
+                                                    Column2 = total.ToString(), // Full amount
+                                                    Column3 = dataRecord[3],    // Contribution
+                                                    Column4 = "2",              // DEFAULTER LOAN DB code
+                                                    Column5 = "2",              // ← ORIGINAL
+                                                    Column6 = dataRecord[4],    // Reference
+                                                };
+                                                importEntries.Add(checkOffEntry);
+                                            }
 
-                                            importEntries.Add(checkOffEntry);
+                                            // ── NEW: DEPOSITS ──
+                                            else if (productTypeCode == "DEP")
+                                            {
+                                                var checkOffEntry = new BatchImportEntryWrapper
+                                                {
+                                                    Column1 = dataRecord[0],
+                                                    Column2 = total.ToString(),
+                                                    Column3 = dataRecord[3],
+                                                    Column4 = "1",              // DEP DB code
+                                                    Column5 = nameof(CheckOffEntryType.sShare),
+                                                    Column6 = dataRecord[4],
+                                                };
+                                                importEntries.Add(checkOffEntry);
+                                            }
+
+                                            // ── NEW: RUBANI BENEVOLENT FUND ──
+                                            else if (productTypeCode == "RBF")
+                                            {
+                                                var checkOffEntry = new BatchImportEntryWrapper
+                                                {
+                                                    Column1 = dataRecord[0],
+                                                    Column2 = total.ToString(),
+                                                    Column3 = dataRecord[3],
+                                                    Column4 = "3",              // RBF DB code
+                                                    Column5 = nameof(CheckOffEntryType.sShare),
+                                                    Column6 = dataRecord[4],
+                                                };
+                                                importEntries.Add(checkOffEntry);
+                                            }
+
+                                            // ── NEW: SHARE CAPITAL ──
+                                            else if (productTypeCode == "SHP")
+                                            {
+                                                var checkOffEntry = new BatchImportEntryWrapper
+                                                {
+                                                    Column1 = dataRecord[0],
+                                                    Column2 = total.ToString(),
+                                                    Column3 = dataRecord[3],
+                                                    Column4 = "2",              // SHP DB code
+                                                    Column5 = nameof(CheckOffEntryType.sShare),
+                                                    Column6 = dataRecord[4],
+                                                };
+                                                importEntries.Add(checkOffEntry);
+                                            }
+
+                                            else
+                                            {
+                                                // All other rows (normal loans): split across ALL active loan cases — ORIGINAL UNCHANGED
+                                                var customerSavingsAccounts = _sqlCommandAppService
+                                                    .FindCustomersByPayrollNumber(payrollNumber, serviceHeader);
+
+                                                Guid customerID = customerSavingsAccounts.FirstOrDefault().Id;
+
+                                                var loanCasesList = _loanCaserepository
+                                                    .GetAllAsync(serviceHeader)
+                                                    .Result;
+
+                                                var loanCase = loanCasesList
+                                                    .Where(l => l.CustomerId == customerID
+                                                             && l.DisbursedDate.HasValue
+                                                             && l.TotalLoansBalance > 1)
+                                                    .ToList();
+
+                                                for (int i = 0; i < loanCase.Count; i++)
+                                                {
+                                                    if (total <= 0) break;
+
+                                                    var item = loanCase[i];
+                                                    var monthlyPayback = item.MonthlyPaybackAmount;
+
+                                                    if (total < monthlyPayback)
+                                                        monthlyPayback = total;
+
+                                                    var checkOffEntry = new BatchImportEntryWrapper
+                                                    {
+                                                        Column1 = dataRecord[0],
+                                                        Column2 = monthlyPayback.ToString(),
+                                                        Column3 = dataRecord[3],
+                                                        Column4 = item.LoanProduct.Code.ToString(), // Each loan's own product code
+                                                        Column5 = "2",                              // ← ORIGINAL
+                                                        Column6 = dataRecord[4],
+                                                    };
+                                                    importEntries.Add(checkOffEntry);
+                                                    total -= monthlyPayback;
+                                                }
+
+                                                // Post any remaining amount to Member Deposits — ORIGINAL UNCHANGED
+                                                if (total > 0)
+                                                {
+                                                    var depositEntry = new BatchImportEntryWrapper
+                                                    {
+                                                        Column1 = dataRecord[0],
+                                                        Column2 = total.ToString(),
+                                                        Column3 = dataRecord[3],
+                                                        Column4 = "222",           // ← ORIGINAL DEPOSITS savings product DB code
+                                                        Column5 = "1",             // ← ORIGINAL wCont
+                                                        Column6 = dataRecord[4],
+                                                    };
+                                                    importEntries.Add(depositEntry);
+                                                }
+                                            }
                                         }
-
                                         break;
+
                                     case CreditBatchType.CashPickup:
 
                                         if (dataRecord.Count == 4)
@@ -1803,6 +2907,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                         }
 
                                         break;
+
                                     case CreditBatchType.SundryPayments:
 
                                         if (dataRecord.Count == 4)
@@ -1886,6 +2991,314 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 else return null;
             }
         }
+
+        //public List<BatchImportEntryWrapper> ParseCreditBatchImport(Guid creditBatchId, string fileUploadDirectory, string fileName, ServiceHeader serviceHeader)
+        //{
+        //    using (_dbContextScopeFactory.CreateReadOnly())
+        //    {
+        //        var persisted = _creditBatchRepository.Get(creditBatchId, serviceHeader);
+
+        //        if (persisted != null && persisted.Status == (int)BatchStatus.Pending && !string.IsNullOrWhiteSpace(fileUploadDirectory) && !string.IsNullOrWhiteSpace(fileName))
+        //        {
+        //            var path = Path.Combine(fileUploadDirectory, fileName);
+
+        //            if (System.IO.File.Exists(path))
+        //            {
+        //                var importEntries = new List<BatchImportEntryWrapper> { };
+
+        //                using (var streamReader = new StreamReader(path))
+        //                using (var reader = new CsvReader(streamReader))
+        //                {
+        //                    // the CSV file has a header record, so we read that first
+        //                    reader.ReadHeaderRecord();
+
+        //                    while (reader.HasMoreRecords)
+        //                    {
+        //                        var dataRecord = reader.ReadDataRecord();
+
+        //                        switch ((CreditBatchType)persisted.Type)
+        //                        {
+        //                            case CreditBatchType.Payout:
+
+        //                                if (dataRecord.Count == 5)
+        //                                {
+        //                                    var payoutEntry = new BatchImportEntryWrapper
+        //                                    {
+        //                                        Column1 = dataRecord[0], //Payroll Number
+        //                                        Column2 = dataRecord[1], //Customer Name
+        //                                        Column3 = dataRecord[2], //Amount
+        //                                        Column4 = dataRecord[3], //Savings Product Credit Code
+        //                                        Column5 = dataRecord[4], //YourReference
+        //                                    };
+
+        //                                    importEntries.Add(payoutEntry);
+        //                                }
+
+        //                                break;
+        //                            //case CreditBatchType.CheckOff:
+        //                            //    if (dataRecord.Count == 6)
+        //                            //    {
+        //                            //        string payrolNumber = dataRecord[0];
+        //                            //        decimal total = Convert.ToDecimal(dataRecord[3]);
+        //                            //        string productTypeCode = dataRecord[5];
+
+        //                            //        var customerSavingsAccounts = _sqlCommandAppService
+        //                            //            .FindCustomersByPayrollNumber(payrolNumber, serviceHeader);
+        //                            //        Guid customerID = customerSavingsAccounts.FirstOrDefault().Id;
+
+        //                            //        // DEFAULTER LOAN: full amount goes directly, no splitting
+        //                            //        if (productTypeCode == "DEF")
+        //                            //        {
+        //                            //            var checkOffEntry = new BatchImportEntryWrapper
+        //                            //            {
+        //                            //                Column1 = dataRecord[0], // Payroll Number
+        //                            //                Column2 = total.ToString(), // Full amount
+        //                            //                Column3 = dataRecord[3], // Contribution
+        //                            //                Column4 = "2",           // DEFAULTER LOAN DB code
+        //                            //                Column5 = "2",           // Type = sLoan
+        //                            //                Column6 = dataRecord[4], // Reference
+        //                            //            };
+        //                            //            importEntries.Add(checkOffEntry);
+        //                            //        }
+        //                            //        else
+        //                            //        {
+        //                            //            // All other rows: split across ALL active loan cases for this customer
+        //                            //            var loanCasesList = _loanCaserepository
+        //                            //                .GetAllAsync(serviceHeader)
+        //                            //                .Result;
+
+        //                            //            var loanCase = loanCasesList
+        //                            //                .Where(l => l.CustomerId == customerID
+        //                            //                         && l.DisbursedDate.HasValue
+        //                            //                         && l.TotalLoansBalance > 1)
+        //                            //                .ToList();
+
+        //                            //            for (int i = 0; i < loanCase.Count; i++)
+        //                            //            {
+        //                            //                if (total <= 0) break;
+
+        //                            //                var item = loanCase[i];
+        //                            //                var monthlyPayback = item.MonthlyPaybackAmount;
+
+        //                            //                if (total < monthlyPayback)
+        //                            //                    monthlyPayback = total;
+
+        //                            //                var checkOffEntry = new BatchImportEntryWrapper
+        //                            //                {
+        //                            //                    Column1 = dataRecord[0],
+        //                            //                    Column2 = monthlyPayback.ToString(),
+        //                            //                    Column3 = dataRecord[3],
+        //                            //                    Column4 = item.LoanProduct.Code.ToString(), // Each loan's own product code
+        //                            //                    Column5 = "2",                              // sLoan
+        //                            //                    Column6 = dataRecord[4],
+        //                            //                };
+        //                            //                importEntries.Add(checkOffEntry);
+        //                            //                total -= monthlyPayback;
+        //                            //            }
+
+        //                            //            // Post any remaining amount to Member Deposits
+        //                            //            if (total > 0)
+        //                            //            {
+        //                            //                var depositEntry = new BatchImportEntryWrapper
+        //                            //                {
+        //                            //                    Column1 = dataRecord[0], // Payroll Number
+        //                            //                    Column2 = total.ToString(), // Remaining amount
+        //                            //                    Column3 = dataRecord[3], // Contribution
+        //                            //                    Column4 = "222",           // DEPOSITS savings product DB code
+        //                            //                    Column5 = "1",           // wCont (savings contribution)
+        //                            //                    Column6 = dataRecord[4], // Reference
+        //                            //                };
+        //                            //                importEntries.Add(depositEntry);
+        //                            //            }
+        //                            //        }
+        //                            //    }
+        //                            //    break;
+        //                            case CreditBatchType.CheckOff:
+        //                                if (dataRecord.Count == 6)
+        //                                {
+        //                                    string payrollNumber = dataRecord[0];
+        //                                    decimal total = Convert.ToDecimal(dataRecord[3]);
+        //                                    string productTypeCode = dataRecord[5];
+
+        //                                    var customerSavingsAccounts = _sqlCommandAppService
+        //                                        .FindCustomersByPayrollNumber(payrollNumber, serviceHeader);
+        //                                    Guid customerID = customerSavingsAccounts.FirstOrDefault().Id;
+
+        //                                    if (productTypeCode == "DEF")
+        //                                    {
+        //                                        var checkOffEntry = new BatchImportEntryWrapper
+        //                                        {
+        //                                            Column1 = dataRecord[0],
+        //                                            Column2 = total.ToString(),
+        //                                            Column3 = dataRecord[3],
+        //                                            Column4 = "2",
+        //                                            Column5 = "2",
+        //                                            Column6 = dataRecord[4],
+        //                                        };
+        //                                        importEntries.Add(checkOffEntry);
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        var loanCasesList = _loanCaserepository
+        //                                            .GetAllAsync(serviceHeader)
+        //                                            .Result;
+
+        //                                        // ✅ FIX: Exclude loan product code "2" (DEF/DEFAULTER loans)
+        //                                        // to avoid double-counting amounts already handled by a DEF row
+        //                                        // for the same member in this import batch.
+        //                                        var loanCase = loanCasesList
+        //                                            .Where(l => l.CustomerId == customerID
+        //                                                     && l.DisbursedDate.HasValue
+        //                                                     && l.TotalLoansBalance > 1
+        //                                                     && l.LoanProduct.Code.ToString() != "2") // <-- exclude DEF loan product
+        //                                            .ToList();
+
+        //                                        // ✅ FIX: Also subtract any DEF amount already added for this
+        //                                        // member in this batch, so the remaining split starts correctly.
+        //                                        var alreadyAllocatedForMember = importEntries
+        //                                            .Where(e => e.Column1 == payrollNumber && e.Column4 == "2" && e.Column5 == "2")
+        //                                            .Sum(e => Convert.ToDecimal(e.Column2));
+
+        //                                        total -= alreadyAllocatedForMember;
+
+        //                                        for (int i = 0; i < loanCase.Count; i++)
+        //                                        {
+        //                                            if (total <= 0) break;
+
+        //                                            var item = loanCase[i];
+        //                                            var monthlyPayback = item.MonthlyPaybackAmount;
+
+        //                                            if (total < monthlyPayback)
+        //                                                monthlyPayback = total;
+
+        //                                            var checkOffEntry = new BatchImportEntryWrapper
+        //                                            {
+        //                                                Column1 = dataRecord[0],
+        //                                                Column2 = monthlyPayback.ToString(),
+        //                                                Column3 = dataRecord[3],
+        //                                                Column4 = item.LoanProduct.Code.ToString(),
+        //                                                Column5 = "2",
+        //                                                Column6 = dataRecord[4],
+        //                                            };
+        //                                            importEntries.Add(checkOffEntry);
+        //                                            total -= monthlyPayback;
+        //                                        }
+
+        //                                        if (total > 0)
+        //                                        {
+        //                                            var depositEntry = new BatchImportEntryWrapper
+        //                                            {
+        //                                                Column1 = dataRecord[0],
+        //                                                Column2 = total.ToString(),
+        //                                                Column3 = dataRecord[3],
+        //                                                Column4 = "222",
+        //                                                Column5 = "1",
+        //                                                Column6 = dataRecord[4],
+        //                                            };
+        //                                            importEntries.Add(depositEntry);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                break;
+        //                            case CreditBatchType.CashPickup:
+
+        //                                if (dataRecord.Count == 4)
+        //                                {
+        //                                    var payoutEntry = new BatchImportEntryWrapper
+        //                                    {
+        //                                        Column1 = dataRecord[0], //Beneficiary
+        //                                        Column2 = dataRecord[1], //Reference
+        //                                        Column3 = dataRecord[2], //Amount
+        //                                        Column4 = dataRecord[3], //YourReference
+        //                                    };
+
+        //                                    importEntries.Add(payoutEntry);
+        //                                }
+
+        //                                break;
+        //                            case CreditBatchType.SundryPayments:
+
+        //                                if (dataRecord.Count == 4)
+        //                                {
+        //                                    var payoutEntry = new BatchImportEntryWrapper
+        //                                    {
+        //                                        Column1 = dataRecord[0], //G/L Account Code
+        //                                        Column2 = dataRecord[1], //Reference
+        //                                        Column3 = dataRecord[2], //Amount
+        //                                        Column4 = dataRecord[3], //YourReference
+        //                                    };
+
+        //                                    importEntries.Add(payoutEntry);
+        //                                }
+
+        //                                break;
+
+        //                            default:
+        //                                break;
+        //                        }
+        //                    }
+        //                }
+
+        //                if (importEntries.Any())
+        //                {
+        //                    BatchImportParseInfo parseInfo = null;
+
+        //                    switch ((CreditBatchType)persisted.Type)
+        //                    {
+        //                        case CreditBatchType.Payout:
+        //                            parseInfo = ParsePayout(importEntries, serviceHeader);
+        //                            break;
+        //                        case CreditBatchType.CheckOff:
+        //                            parseInfo = persisted.FuzzyMatching ? ParseCheckOff_Fuzzy(persisted, importEntries, serviceHeader) : ParseCheckOff(persisted, importEntries, serviceHeader);
+        //                            break;
+        //                        case CreditBatchType.CashPickup:
+        //                            parseInfo = ParseCashPickup(importEntries);
+        //                            break;
+        //                        case CreditBatchType.SundryPayments:
+        //                            parseInfo = ParseSundryPayments(importEntries, serviceHeader);
+        //                            break;
+        //                        default:
+        //                            break;
+        //                    }
+
+        //                    if (parseInfo != null)
+        //                    {
+        //                        UpdateCreditBatchEntries(creditBatchId, parseInfo.MatchedCollection1, serviceHeader);
+
+        //                        if (persisted.Type.In((int)CreditBatchType.Payout, (int)CreditBatchType.CheckOff))
+        //                        {
+        //                            var discrepancies = new List<CreditBatchDiscrepancyDTO>();
+
+        //                            foreach (var item in parseInfo.MismatchedCollection)
+        //                            {
+        //                                discrepancies.Add(new CreditBatchDiscrepancyDTO
+        //                                {
+        //                                    Column1 = item.Column1,
+        //                                    Column2 = item.Column2,
+        //                                    Column3 = item.Column3,
+        //                                    Column4 = item.Column4,
+        //                                    Column5 = item.Column5,
+        //                                    Column6 = item.Column6,
+        //                                    Column7 = item.Column7,
+        //                                    Column8 = item.Column8,
+        //                                    Remarks = item.Remarks,
+        //                                });
+        //                            }
+
+        //                            UpdateCreditBatchDiscrepancies(creditBatchId, discrepancies, serviceHeader);
+        //                        }
+
+        //                        return parseInfo.MismatchedCollection;
+        //                    }
+        //                    else return null;
+        //                }
+        //                else return null;
+        //            }
+        //            else return null;
+        //        }
+        //        else return null;
+        //    }
+        //}
         private BatchImportParseInfo ParsePayout(List<BatchImportEntryWrapper> importEntries, ServiceHeader serviceHeader)
         {
             var result = new BatchImportParseInfo
@@ -1979,6 +3392,647 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
             return result;
         }
+        //private BatchImportParseInfo ParseCheckOff(CreditBatch creditBatch, List<BatchImportEntryWrapper> importEntries, ServiceHeader serviceHeader)
+        //{
+        //    var result = new BatchImportParseInfo
+        //    {
+        //        MatchedCollection1 = new List<CreditBatchEntryDTO> { },
+        //        MismatchedCollection = new List<BatchImportEntryWrapper> { }
+        //    };
+
+        //    var loanProducts = _loanProductAppService.FindLoanProducts(serviceHeader);
+
+        //    var investmentProducts = _investmentProductAppService.FindInvestmentProducts(serviceHeader);
+
+        //    var savingProducts = _savingsProductAppService.FindSavingsProducts(serviceHeader);
+
+        //    var count = 0;
+
+        //    importEntries.ForEach(async item =>
+        //    {
+        //        var contributionAmount = default(decimal);
+
+        //        var productBalance = default(decimal);
+
+        //        //if (decimal.TryParse(item.Column3, NumberStyles.Any, CultureInfo.InvariantCulture, out contributionAmount) && decimal.TryParse(item.Column4, NumberStyles.Any, CultureInfo.InvariantCulture, out productBalance))
+        //        if (decimal.TryParse(item.Column2, NumberStyles.Any, CultureInfo.InvariantCulture, out contributionAmount))
+        //        {
+        //            var productCode = default(int);
+
+        //            if (int.TryParse(item.Column4, out productCode))
+        //            {
+        //                switch ((CheckOffEntryType)Enum.Parse(typeof(CheckOffEntryType), item.Column5))
+        //                {
+        //                    case CheckOffEntryType.sLoan:
+
+        //                        #region sLoan
+
+        //                        var sLoan_MatchedLoanProducts = loanProducts.Where(x => x.Code == productCode);
+
+        //                        if (sLoan_MatchedLoanProducts != null && sLoan_MatchedLoanProducts.Any() && sLoan_MatchedLoanProducts.Count() == 1)
+        //                        {
+        //                            var targetLoanPrincipalProduct = sLoan_MatchedLoanProducts.First();
+
+        //                            var customerLoanPrincipalAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetLoanPrincipalProduct.Id, item.Column1, serviceHeader);
+
+        //                            if (customerLoanPrincipalAccounts.Any())
+        //                            {
+        //                                if (customerLoanPrincipalAccounts.Count >= 1)
+        //                                {
+        //                                    var targetCustomerAccount = customerLoanPrincipalAccounts[0];
+
+        //                                    var existingEntries = from b in result.MatchedCollection1
+        //                                                          where b.CustomerAccountId == targetCustomerAccount.Id
+        //                                                          select b;
+
+        //                                    if (existingEntries != null && existingEntries.Any())
+        //                                    {
+        //                                        if (existingEntries.Count() == 1)
+        //                                        {
+        //                                            existingEntries.Single().Principal += contributionAmount;
+        //                                            existingEntries.Single().Balance += productBalance;
+        //                                        }
+        //                                        else
+        //                                        {
+        //                                            item.Remarks = string.Format("Record #{0} ~ (sLoan) >> Existing entry couldn't be matched!", count);
+
+        //                                            result.MismatchedCollection.Add(item);
+        //                                        }
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        // Get the first loan case for the customer (without await)
+        //                                        var loanCasesList = _loanCaserepository
+        //                                            .GetAllAsync(serviceHeader)
+        //                                            .Result;
+
+        //                                        var now = DateTime.Now; // or DateTime.UtcNow if you prefer UTC
+
+        //                                        var loanCase = loanCasesList
+        //                                   .Where(l => l.CustomerId == targetCustomerAccount.CustomerId
+        //                                            && l.DisbursedDate.HasValue
+        //                                            && loanProducts.Any(p => p.Id == l.LoanProductId && p.Code == productCode))
+        //                                   .OrderBy(l => Math.Abs((l.DisbursedDate.Value - now).TotalSeconds))
+        //                                   .FirstOrDefault();
+
+
+
+        //                                        if (loanCase != null && targetLoanPrincipalProduct != null)
+        //                                        {
+
+        //                                            // ================== OPENING BALANCE ==================
+        //                                            decimal principalBalance = loanCase.TotalLoansBalance;
+
+        //                                            // ================== MONTHLY INTEREST RATE ==================
+        //                                            decimal monthlyRate = (decimal)targetLoanPrincipalProduct.LoanInterestAnnualPercentageRate / 100m / 12m;
+
+        //                                            // ================== INTEREST FOR CONTRIBUTION ==================
+        //                                            decimal interestAmount = Math.Round(principalBalance * monthlyRate, 2, MidpointRounding.AwayFromZero);
+
+        //                                            // ================== PRINCIPAL PORTION ==================
+        //                                            decimal principalPortion = contributionAmount - interestAmount;
+
+        //                                            // ================== NEW BALANCE ==================
+        //                                            decimal newBalance = principalBalance - principalPortion;
+
+        //                                            // ================== CHECK FIRST MONTH / INTEREST ALREADY CHARGED ==================
+        //                                            bool isFirstMonth = loanCase.DisbursedDate.HasValue &&
+        //                                                                loanCase.DisbursedDate.Value.Year == now.Year &&
+        //                                                                loanCase.DisbursedDate.Value.Month == now.Month;
+
+        //                                            if (isFirstMonth)
+        //                                            {
+        //                                                // Skip interest in first month, entire payment goes to principal
+        //                                                principalPortion = contributionAmount;
+        //                                                interestAmount = 0;
+        //                                                newBalance = principalBalance - principalPortion;
+        //                                            }
+
+        //                                            // ================== POPULATE DTO ==================
+        //                                            CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO
+        //                                            {
+        //                                                CustomerAccountId = targetCustomerAccount.Id,
+        //                                                CustomerAccountBranchId = targetCustomerAccount.BranchId,
+        //                                                CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode,
+        //                                                CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId,
+        //                                                CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode,
+        //                                                CustomerAccountCustomerId = targetCustomerAccount.CustomerId,
+        //                                                CustomerAccountCustomerIndividualPayrollNumbers = item.Column1,
+        //                                                Beneficiary = item.Column3,
+        //                                                ProductDescription = targetLoanPrincipalProduct.Description,
+        //                                                Principal = principalPortion,
+        //                                                Interest = interestAmount,
+        //                                                Balance = newBalance,
+        //                                                Reference = loanCase.CaseNumber.ToString(),
+        //                                            };
+
+        //                                            result.MatchedCollection1.Add(creditBatchEntry);
+
+        //                                        }
+
+
+        //                                    }
+
+
+        //                                }
+        //                                else
+        //                                {
+        //                                    item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanPrincipalAccounts.Count(), item.Column1);
+
+        //                                    result.MismatchedCollection.Add(item);
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column1);
+
+        //                                result.MismatchedCollection.Add(item);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            item.Remarks = string.Format("Record #{0} ~ no match for loan product", count);
+
+        //                            result.MismatchedCollection.Add(item);
+        //                        }
+
+        //                        #endregion
+
+        //                        break;
+
+        //                    case CheckOffEntryType.sInterest:
+
+        //                        #region sInterest
+
+        //                        var sInterest_MatchedLoanProducts = loanProducts.Where(x => x.Code == productCode);
+
+        //                        if (sInterest_MatchedLoanProducts != null && sInterest_MatchedLoanProducts.Any() && sInterest_MatchedLoanProducts.Count() == 1)
+        //                        {
+        //                            var targetLoanInterestProduct = sInterest_MatchedLoanProducts.First();
+
+        //                            var customerLoanInterestAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetLoanInterestProduct.Id, item.Column1, serviceHeader);
+
+        //                            if (customerLoanInterestAccounts.Any())
+        //                            {
+        //                                if (customerLoanInterestAccounts.Count == 1)
+        //                                {
+        //                                    var targetCustomerAccount = customerLoanInterestAccounts[0];
+
+        //                                    var existingEntries = from b in result.MatchedCollection1
+        //                                                          where b.CustomerAccountId == targetCustomerAccount.Id
+        //                                                          select b;
+
+        //                                    if (existingEntries != null && existingEntries.Any())
+        //                                    {
+        //                                        if (existingEntries.Count() == 1)
+        //                                        {
+        //                                            existingEntries.Single().Interest += contributionAmount;
+        //                                            existingEntries.Single().Balance += productBalance;
+        //                                        }
+        //                                        else
+        //                                        {
+        //                                            item.Remarks = string.Format("Record #{0} ~ (sInterest) >> Existing entry couldn't be matched!", count);
+
+        //                                            result.MismatchedCollection.Add(item);
+        //                                        }
+        //                                    }
+        //                                    else
+        //                                    {
+
+        //                                        CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO();
+
+        //                                        creditBatchEntry.CustomerAccountId = targetCustomerAccount.Id;
+        //                                        creditBatchEntry.CustomerAccountBranchId = targetCustomerAccount.BranchId;
+        //                                        creditBatchEntry.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
+        //                                        creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
+        //                                        creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
+        //                                        creditBatchEntry.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
+        //                                        creditBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+        //                                        creditBatchEntry.Beneficiary = item.Column3;
+        //                                        creditBatchEntry.ProductDescription = targetLoanInterestProduct.Description;
+        //                                        creditBatchEntry.Interest = contributionAmount;
+        //                                        creditBatchEntry.Balance = productBalance;
+        //                                        creditBatchEntry.Reference = item.Column1;
+
+        //                                        result.MatchedCollection1.Add(creditBatchEntry);
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanInterestAccounts.Count(), item.Column1);
+
+        //                                    result.MismatchedCollection.Add(item);
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column1);
+
+        //                                result.MismatchedCollection.Add(item);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            item.Remarks = string.Format("Record #{0} ~ no match for loan product", count);
+
+        //                            result.MismatchedCollection.Add(item);
+        //                        }
+
+        //                        #endregion
+
+        //                        break;
+
+        //                    case CheckOffEntryType.sShare:
+        //                    case CheckOffEntryType.wCont:
+        //                    case CheckOffEntryType.sInvest:
+        //                        #region sShare/wCont/sInvest/sRisk/wLoan
+        //                        var investmentProductDTOs = investmentProducts.Where(x => x.Code == productCode);
+        //                        if (investmentProductDTOs != null && investmentProductDTOs.Any() && investmentProductDTOs.Count() == 1)
+        //                        {
+        //                            var targetInvestmentProduct = investmentProductDTOs.First();
+        //                            var customerInvestmentAccounts = _sqlCommandAppService
+        //                                .FindCustomerAccountsByTargetProductIdAndReference3(
+        //                                    targetInvestmentProduct.Id, item.Column1, serviceHeader);
+
+        //                            if (customerInvestmentAccounts.Any())
+        //                            {
+        //                                if (customerInvestmentAccounts.Count == 1) // Fixed: was >= 1 which made the else unreachable
+        //                                {
+        //                                    var targetCustomerAccount = customerInvestmentAccounts[0];
+        //                                    CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO();
+        //                                    creditBatchEntry.CustomerAccountId = targetCustomerAccount.Id;
+        //                                    creditBatchEntry.CustomerAccountBranchId = targetCustomerAccount.BranchId;
+        //                                    creditBatchEntry.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
+        //                                    creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
+        //                                    creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
+        //                                    creditBatchEntry.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
+        //                                    creditBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+        //                                    creditBatchEntry.Beneficiary = item.Column3;
+        //                                    creditBatchEntry.ProductDescription = targetInvestmentProduct.Description;
+        //                                    creditBatchEntry.Principal = contributionAmount;
+        //                                    creditBatchEntry.Balance = productBalance;
+        //                                    creditBatchEntry.Reference = "Loan Overpayment";
+        //                                    result.MatchedCollection1.Add(creditBatchEntry);
+        //                                }
+        //                                else
+        //                                {
+        //                                    // Fixed: Count > 1 means ambiguous match — log and reject
+        //                                    item.Remarks = string.Format(
+        //                                        "Record #{0} ~ found {1} customer account matches by personal file number {2}",
+        //                                        count, customerInvestmentAccounts.Count, item.Column1);
+        //                                    result.MismatchedCollection.Add(item);
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                item.Remarks = string.Format(
+        //                                    "Record #{0} ~ no match for investment product customer account by personal file number {1}",
+        //                                    count, item.Column1);
+
+        //                                var customers = _sqlCommandAppService.FindCustomersByPayrollNumber(item.Column1, serviceHeader);
+        //                                if (customers != null && customers.Any())
+        //                                {
+        //                                    // 1. Build DTO instead of domain entity
+        //                                    CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO();
+
+
+        //                                    customerAccountDTO.CustomerId = customers[0].Id;
+        //                                    customerAccountDTO.BranchId = creditBatch.BranchId;
+        //                                    customerAccountDTO.CustomerAccountTypeProductCode = (int)ProductCode.Investment;
+        //                                    customerAccountDTO.CustomerAccountTypeTargetProductId = targetInvestmentProduct.Id;
+        //                                    customerAccountDTO.CustomerAccountTypeTargetProductCode = targetInvestmentProduct.Code;
+        //                                    customerAccountDTO.Status = (int)CustomerAccountStatus.Normal;
+        //                                    customerAccountDTO.RecordStatus = (int)RecordStatus.Approved;
+
+
+        //                                    // 2. Call AppService (this should handle Add + Save)
+        //                                    customerAccountDTO = _customerAccountAppService.AddNewCustomerAccount(customerAccountDTO, serviceHeader);
+
+        //                                    // ⚠️ Always check result
+        //                                    if (customerAccountDTO == null)
+        //                                        throw new Exception("Failed to create customer account");
+
+        //                                    // 3. Build Credit Batch Entry using returned DTO
+        //                                    var creditBatchEntry = new CreditBatchEntryDTO
+        //                                    {
+        //                                        CustomerAccountId = customerAccountDTO.Id,
+        //                                        CustomerAccountBranchId = customerAccountDTO.BranchId,
+        //                                        CustomerAccountCustomerAccountTypeProductCode = customerAccountDTO.CustomerAccountTypeProductCode,
+        //                                        CustomerAccountCustomerAccountTypeTargetProductId = customerAccountDTO.CustomerAccountTypeTargetProductId,
+        //                                        CustomerAccountCustomerAccountTypeTargetProductCode = customerAccountDTO.CustomerAccountTypeTargetProductCode,
+        //                                        CustomerAccountCustomerId = customerAccountDTO.CustomerId,
+        //                                        CustomerAccountCustomerIndividualPayrollNumbers = item.Column1,
+        //                                        Beneficiary = item.Column3,
+        //                                        ProductDescription = targetInvestmentProduct.Description,
+        //                                        Principal = contributionAmount,
+        //                                        Balance = productBalance,
+        //                                        Reference = "Loan Overpayment"
+        //                                    };
+
+        //                                    result.MatchedCollection1.Add(creditBatchEntry);
+        //                                }
+        //                                else
+        //                                {
+        //                                    item.Remarks = string.Format(
+        //                                        "Record #{0} ~ no customer found for payroll number {1}",
+        //                                        count, item.Column1);
+        //                                    result.MismatchedCollection.Add(item);
+        //                                }
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            item.Remarks = string.Format("Record #{0} ~ no match for investment product", count);
+        //                            result.MismatchedCollection.Add(item);
+        //                        }
+        //                        #endregion
+        //                        break;
+
+        //                    case CheckOffEntryType.sRisk:
+        //                    case CheckOffEntryType.wLoan:
+
+        //                        #region sShare/wCont/sInvest/sRisk/wLoan
+
+        //                        //fix to use savingProducts not investmentProducts
+        //                        //var matchedInvestmentProducts = investmentProducts.Where(x => x.Code == productCode);
+
+
+        //                        var matchedInvestmentProducts = savingProducts.Where(x => x.Code == productCode);
+
+
+
+        //                        if (matchedInvestmentProducts != null && matchedInvestmentProducts.Any() && matchedInvestmentProducts.Count() == 1)
+        //                        {
+        //                            var targetInvestmentProduct = matchedInvestmentProducts.First();
+
+        //                            var customerInvestmentAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetInvestmentProduct.Id, item.Column1, serviceHeader);
+
+        //                            if (customerInvestmentAccounts.Any())
+        //                            {
+        //                                if (customerInvestmentAccounts.Count == 1)
+        //                                {
+        //                                    var targetCustomerAccount = customerInvestmentAccounts[0];
+
+        //                                    CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO();
+
+        //                                    creditBatchEntry.CustomerAccountId = targetCustomerAccount.Id;
+        //                                    creditBatchEntry.CustomerAccountBranchId = targetCustomerAccount.BranchId;
+        //                                    creditBatchEntry.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
+        //                                    creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
+        //                                    creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
+        //                                    creditBatchEntry.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
+        //                                    creditBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+        //                                    creditBatchEntry.Beneficiary = item.Column3;
+        //                                    creditBatchEntry.ProductDescription = targetInvestmentProduct.Description;
+        //                                    creditBatchEntry.Principal = contributionAmount;
+        //                                    creditBatchEntry.Balance = productBalance;
+        //                                    creditBatchEntry.Reference = item.Column1;
+
+        //                                    result.MatchedCollection1.Add(creditBatchEntry);
+        //                                }
+        //                                else
+        //                                {
+        //                                    item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerInvestmentAccounts.Count(), item.Column1);
+
+        //                                    result.MismatchedCollection.Add(item);
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                item.Remarks = string.Format("Record #{0} ~ no match for investment product customer account by personal file number {1}", count, item.Column1);
+
+        //                                result.MismatchedCollection.Add(item);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            item.Remarks = string.Format("Record #{0} ~ no match for investment product", count);
+
+        //                            result.MismatchedCollection.Add(item);
+        //                        }
+
+        //                        #endregion
+
+        //                        break;
+
+        //                    case CheckOffEntryType.sLoanInterest:
+
+        //                        #region sLoanInterest
+
+        //                        var matchedLoanProducts = loanProducts.Where(x => x.Code == productCode);
+
+        //                        if (matchedLoanProducts != null && matchedLoanProducts.Any() && matchedLoanProducts.Count() == 1)
+        //                        {
+        //                            var targetLoanProduct = matchedLoanProducts.First();
+
+        //                            var customerLoanAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetLoanProduct.Id, item.Column1, serviceHeader);
+
+        //                            if (customerLoanAccounts.Any())
+        //                            {
+        //                                if (customerLoanAccounts.Count == 1)
+        //                                {
+        //                                    var targetCustomerAccount = customerLoanAccounts[0];
+
+        //                                    targetCustomerAccount.PrincipalBalance = _sqlCommandAppService.FindCustomerAccountBookBalance(targetCustomerAccount, 1, DateTime.Now, serviceHeader);
+        //                                    targetCustomerAccount.PrincipalBalance = targetCustomerAccount.PrincipalBalance * -1 > 0m ? targetCustomerAccount.PrincipalBalance : 0m;
+
+        //                                    targetCustomerAccount.InterestBalance = _sqlCommandAppService.FindCustomerAccountBookBalance(targetCustomerAccount, 2, DateTime.Now, serviceHeader);
+        //                                    targetCustomerAccount.InterestBalance = targetCustomerAccount.InterestBalance * -1 > 0m ? targetCustomerAccount.InterestBalance : 0m;
+
+        //                                    targetCustomerAccount.BookBalance = targetCustomerAccount.PrincipalBalance + targetCustomerAccount.InterestBalance;
+
+        //                                    var checkOffTariffs = _commissionAppService.ComputeTariffsByCheckOffCreditType(creditBatch.CreditTypeId, contributionAmount, creditBatch.CreditType.ChartOfAccountId, serviceHeader);
+
+        //                                    contributionAmount -= checkOffTariffs.Sum(x => x.Amount);
+
+        //                                    switch ((AggregateCheckOffRecoveryMode)targetLoanProduct.LoanRegistrationAggregateCheckOffRecoveryMode)
+        //                                    {
+        //                                        case AggregateCheckOffRecoveryMode.OutstandingBalance:
+
+        //                                            if (checkOffTariffs != null && checkOffTariffs.Any())
+        //                                            {
+        //                                                checkOffTariffs.ForEach(tariff =>
+        //                                                {
+        //                                                    CreditBatchEntryDTO creditBatchEntryTariff_OutstandingBalance = new CreditBatchEntryDTO();
+
+        //                                                    creditBatchEntryTariff_OutstandingBalance.ChartOfAccountId = tariff.CreditGLAccountId;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.CustomerAccountId = targetCustomerAccount.Id;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.CustomerAccountBranchId = targetCustomerAccount.BranchId;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.Beneficiary = item.Column3;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.ProductDescription = targetLoanProduct.Description;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.Principal = tariff.Amount;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.Balance = targetCustomerAccount.BookBalance;
+        //                                                    creditBatchEntryTariff_OutstandingBalance.Reference = string.Format("{0}~{1}", item.Column1, tariff.Description);
+
+        //                                                    result.MatchedCollection1.Add(creditBatchEntryTariff_OutstandingBalance);
+        //                                                });
+        //                                            }
+
+        //                                            // reset expected interest & expected principal >> NB: interest has priority over principal!
+        //                                            var actualLoanInterestOutstandingBalance = Math.Min(Math.Abs(targetCustomerAccount.InterestBalance), contributionAmount);
+
+        //                                            var actualLoanPrincipalOutstandingBalance = contributionAmount - actualLoanInterestOutstandingBalance;
+
+        //                                            CreditBatchEntryDTO creditBatchEntryOutstandingBalance = new CreditBatchEntryDTO();
+
+        //                                            creditBatchEntryOutstandingBalance.CustomerAccountId = targetCustomerAccount.Id;
+        //                                            creditBatchEntryOutstandingBalance.CustomerAccountBranchId = targetCustomerAccount.BranchId;
+        //                                            creditBatchEntryOutstandingBalance.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
+        //                                            creditBatchEntryOutstandingBalance.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
+        //                                            creditBatchEntryOutstandingBalance.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
+        //                                            creditBatchEntryOutstandingBalance.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
+        //                                            creditBatchEntryOutstandingBalance.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+        //                                            creditBatchEntryOutstandingBalance.Beneficiary = item.Column3;
+        //                                            creditBatchEntryOutstandingBalance.ProductDescription = targetLoanProduct.Description;
+        //                                            creditBatchEntryOutstandingBalance.Interest = actualLoanInterestOutstandingBalance;
+        //                                            creditBatchEntryOutstandingBalance.Principal = actualLoanPrincipalOutstandingBalance;
+        //                                            creditBatchEntryOutstandingBalance.Balance = targetCustomerAccount.BookBalance;
+        //                                            creditBatchEntryOutstandingBalance.Reference = item.Column1;
+
+        //                                            result.MatchedCollection1.Add(creditBatchEntryOutstandingBalance);
+
+        //                                            break;
+        //                                        case AggregateCheckOffRecoveryMode.StandingOrder:
+
+        //                                            var standingOrders = FindStandingOrdersByBeneficiaryCustomerAccountId(targetCustomerAccount.Id, (int)StandingOrderTrigger.CheckOff, serviceHeader);
+
+        //                                            if (standingOrders != null && standingOrders.Any(x => !x.IsLocked))
+        //                                            {
+        //                                                if (standingOrders.Count == 1)
+        //                                                {
+        //                                                    if (checkOffTariffs != null && checkOffTariffs.Any())
+        //                                                    {
+        //                                                        checkOffTariffs.ForEach(tariff =>
+        //                                                        {
+        //                                                            CreditBatchEntryDTO creditBatchEntryTariff_StandingOrder = new CreditBatchEntryDTO();
+
+        //                                                            creditBatchEntryTariff_StandingOrder.ChartOfAccountId = tariff.CreditGLAccountId;
+        //                                                            creditBatchEntryTariff_StandingOrder.CustomerAccountId = targetCustomerAccount.Id;
+        //                                                            creditBatchEntryTariff_StandingOrder.CustomerAccountBranchId = targetCustomerAccount.BranchId;
+        //                                                            creditBatchEntryTariff_StandingOrder.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
+        //                                                            creditBatchEntryTariff_StandingOrder.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
+        //                                                            creditBatchEntryTariff_StandingOrder.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
+        //                                                            creditBatchEntryTariff_StandingOrder.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
+        //                                                            creditBatchEntryTariff_StandingOrder.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+        //                                                            creditBatchEntryTariff_StandingOrder.Beneficiary = item.Column3;
+        //                                                            creditBatchEntryTariff_StandingOrder.ProductDescription = targetLoanProduct.Description;
+        //                                                            creditBatchEntryTariff_StandingOrder.Principal = tariff.Amount;
+        //                                                            creditBatchEntryTariff_StandingOrder.Balance = targetCustomerAccount.BookBalance;
+        //                                                            creditBatchEntryTariff_StandingOrder.Reference = string.Format("{0}~{1}", item.Column1, tariff.Description);
+
+        //                                                            result.MatchedCollection1.Add(creditBatchEntryTariff_StandingOrder);
+        //                                                        });
+        //                                                    }
+
+        //                                                    var targetStandingOrder = standingOrders[0];
+
+        //                                                    // reset expected interest & expected principal >> NB: interest has priority over principal!
+        //                                                    var actualLoanInterestStandingOrder = Math.Min(Math.Min(Math.Abs(targetCustomerAccount.InterestBalance), targetStandingOrder.Interest), contributionAmount);
+
+        //                                                    var actualLoanPrincipalStandingOrder = contributionAmount - actualLoanInterestStandingOrder;
+
+        //                                                    CreditBatchEntryDTO creditBatchEntryStandingOrder = new CreditBatchEntryDTO();
+
+        //                                                    creditBatchEntryStandingOrder.CustomerAccountId = targetCustomerAccount.Id;
+        //                                                    creditBatchEntryStandingOrder.CustomerAccountBranchId = targetCustomerAccount.BranchId;
+        //                                                    creditBatchEntryStandingOrder.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
+        //                                                    creditBatchEntryStandingOrder.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
+        //                                                    creditBatchEntryStandingOrder.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
+        //                                                    creditBatchEntryStandingOrder.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
+        //                                                    creditBatchEntryStandingOrder.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+        //                                                    creditBatchEntryStandingOrder.Beneficiary = item.Column3;
+        //                                                    creditBatchEntryStandingOrder.ProductDescription = targetLoanProduct.Description;
+        //                                                    creditBatchEntryStandingOrder.Interest = actualLoanInterestStandingOrder;
+        //                                                    creditBatchEntryStandingOrder.Principal = actualLoanPrincipalStandingOrder;
+        //                                                    creditBatchEntryStandingOrder.Balance = targetCustomerAccount.BookBalance;
+        //                                                    creditBatchEntryStandingOrder.Reference = item.Column1;
+
+        //                                                    result.MatchedCollection1.Add(creditBatchEntryStandingOrder);
+        //                                                }
+        //                                                else
+        //                                                {
+        //                                                    item.Remarks = string.Format("Record #{0} ~ found {1} standing order matches", count, standingOrders.Count);
+
+        //                                                    result.MismatchedCollection.Add(item);
+        //                                                }
+        //                                            }
+        //                                            else
+        //                                            {
+        //                                                item.Remarks = string.Format("Record #{0} ~ no match for {1} standing order", count, targetLoanProduct.Description);
+
+        //                                                result.MismatchedCollection.Add(item);
+        //                                            }
+
+        //                                            break;
+        //                                        default:
+
+        //                                            item.Remarks = string.Format("Record #{0} ~ {1} has undefined check-off recovery mode (Agg.)", count, targetLoanProduct.Description);
+
+        //                                            result.MismatchedCollection.Add(item);
+
+        //                                            break;
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanAccounts.Count(), item.Column1);
+
+        //                                    result.MismatchedCollection.Add(item);
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column1);
+
+        //                                result.MismatchedCollection.Add(item);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            item.Remarks = string.Format("Record #{0} ~ no match for loan product", count);
+
+        //                            result.MismatchedCollection.Add(item);
+        //                        }
+
+        //                        #endregion
+
+        //                        break;
+
+        //                    default:
+
+        //                        item.Remarks = string.Format("Record #{0} ~ unable to parse check-off type {1}", count, item.Column5);
+
+        //                        result.MismatchedCollection.Add(item);
+
+        //                        break;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                item.Remarks = string.Format("Record #{0} ~ unable to parse product code {1}", count, item.Column4);
+
+        //                result.MismatchedCollection.Add(item);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            item.Remarks = string.Format("Record #{0} ~ unable to parse amount(s) {1}/{2}", count, item.Column3, item.Column2);
+
+        //            result.MismatchedCollection.Add(item);
+        //        }
+
+        //        // tally
+        //        count += 1;
+        //    });
+
+        //    return result;
+        //}
+
         private BatchImportParseInfo ParseCheckOff(CreditBatch creditBatch, List<BatchImportEntryWrapper> importEntries, ServiceHeader serviceHeader)
         {
             var result = new BatchImportParseInfo
@@ -1988,9 +4042,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             };
 
             var loanProducts = _loanProductAppService.FindLoanProducts(serviceHeader);
-
             var investmentProducts = _investmentProductAppService.FindInvestmentProducts(serviceHeader);
-
             var savingProducts = _savingsProductAppService.FindSavingsProducts(serviceHeader);
 
             var count = 0;
@@ -1998,10 +4050,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             importEntries.ForEach(async item =>
             {
                 var contributionAmount = default(decimal);
-
                 var productBalance = default(decimal);
 
-                //if (decimal.TryParse(item.Column3, NumberStyles.Any, CultureInfo.InvariantCulture, out contributionAmount) && decimal.TryParse(item.Column4, NumberStyles.Any, CultureInfo.InvariantCulture, out productBalance))
                 if (decimal.TryParse(item.Column2, NumberStyles.Any, CultureInfo.InvariantCulture, out contributionAmount))
                 {
                     var productCode = default(int);
@@ -2024,7 +4074,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                                     if (customerLoanPrincipalAccounts.Any())
                                     {
-                                        if (customerLoanPrincipalAccounts.Count == 1)
+                                        if (customerLoanPrincipalAccounts.Count >= 1)
                                         {
                                             var targetCustomerAccount = customerLoanPrincipalAccounts[0];
 
@@ -2042,59 +4092,93 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                 else
                                                 {
                                                     item.Remarks = string.Format("Record #{0} ~ (sLoan) >> Existing entry couldn't be matched!", count);
-
                                                     result.MismatchedCollection.Add(item);
                                                 }
                                             }
                                             else
                                             {
-                                                // Get the first loan case for the customer (without await)
-                                                var loanCasesList = _loanCaserepository
-                                                    .GetAllAsync(serviceHeader)
-                                                    .Result;
+                                                var loanCasesList = _loanCaserepository.GetAllAsync(serviceHeader).Result;
 
-                                                var now = DateTime.Now; // or DateTime.UtcNow if you prefer UTC
+                                                var now = DateTime.Now;
 
                                                 var loanCase = loanCasesList
-                                                    .Where(l => l.CustomerId == targetCustomerAccount.CustomerId && l.DisbursedDate.HasValue)
+                                                    .Where(l => l.CustomerId == targetCustomerAccount.CustomerId
+                                                             && l.DisbursedDate.HasValue
+                                                             && loanProducts.Any(p => p.Id == l.LoanProductId && p.Code == productCode))
                                                     .OrderBy(l => Math.Abs((l.DisbursedDate.Value - now).TotalSeconds))
                                                     .FirstOrDefault();
 
-
-
-
                                                 if (loanCase != null && targetLoanPrincipalProduct != null)
                                                 {
-
-                                                    // ================== OPENING BALANCE ==================
                                                     decimal principalBalance = loanCase.TotalLoansBalance;
-
-                                                    // ================== MONTHLY INTEREST RATE ==================
                                                     decimal monthlyRate = (decimal)targetLoanPrincipalProduct.LoanInterestAnnualPercentageRate / 100m / 12m;
+                                                    decimal remainingAmount = contributionAmount;
 
-                                                    // ================== INTEREST FOR CONTRIBUTION ==================
-                                                    decimal interestAmount = Math.Round(contributionAmount * monthlyRate, 2, MidpointRounding.AwayFromZero);
+                                                    // ── STEP 1: Fetch existing arrears from the customer account ──
+                                                    var loanCustomerAccount = _sqlCommandAppService
+                                                        .FindCustomerAccountsByTargetProductIdAndReference3(
+                                                            targetLoanPrincipalProduct.Id, item.Column1, serviceHeader)
+                                                        .FirstOrDefault();
 
-                                                    // ================== PRINCIPAL PORTION ==================
-                                                    decimal principalPortion = contributionAmount - interestAmount;
+                                                    decimal existingPrincipalArrears = 0m;
+                                                    decimal existingInterestArrears = 0m;
 
-                                                    // ================== NEW BALANCE ==================
-                                                    decimal newBalance = principalBalance - principalPortion;
-
-                                                    // ================== CHECK FIRST MONTH / INTEREST ALREADY CHARGED ==================
-                                                    bool isFirstMonth = loanCase.DisbursedDate.HasValue &&
-                                                                        loanCase.DisbursedDate.Value.Year == now.Year &&
-                                                                        loanCase.DisbursedDate.Value.Month == now.Month;
-
-                                                    if (isFirstMonth)
+                                                    if (loanCustomerAccount != null)
                                                     {
-                                                        // Skip interest in first month, entire payment goes to principal
-                                                        principalPortion = contributionAmount;
-                                                        interestAmount = 0;
-                                                        newBalance = principalBalance - principalPortion;
+                                                        existingPrincipalArrears = loanCustomerAccount.PrincipalArrearagesBalance * -1 > 0m
+                                                            ? loanCustomerAccount.PrincipalArrearagesBalance * -1 : 0m;
+
+                                                        existingInterestArrears = loanCustomerAccount.InterestArrearagesBalance * -1 > 0m
+                                                            ? loanCustomerAccount.InterestArrearagesBalance * -1 : 0m;
                                                     }
 
-                                                    // ================== POPULATE DTO ==================
+                                                    decimal totalArrears = existingPrincipalArrears + existingInterestArrears;
+
+                                                    decimal interestAmount = 0m;
+                                                    decimal principalPortion = 0m;
+
+                                                    if (totalArrears > 0m)
+                                                    {
+                                                        // ── STEP 2: Member has arrears — recover arrears first ──
+                                                        // Priority: interest arrears → principal arrears → current month interest → principal
+                                                        decimal arrearInterestRecovered = Math.Min(existingInterestArrears, remainingAmount);
+                                                        remainingAmount -= arrearInterestRecovered;
+
+                                                        decimal arrearPrincipalRecovered = Math.Min(existingPrincipalArrears, remainingAmount);
+                                                        remainingAmount -= arrearPrincipalRecovered;
+
+                                                        // ── STEP 3: Whatever is left goes to current month ──
+                                                        decimal currentMonthInterest = Math.Round(principalBalance * monthlyRate, 2, MidpointRounding.AwayFromZero);
+                                                        decimal currentMonthInterestRecovered = Math.Min(currentMonthInterest, remainingAmount);
+                                                        remainingAmount -= currentMonthInterestRecovered;
+
+                                                        // Total interest = arrear interest + current month interest
+                                                        interestAmount = arrearInterestRecovered + currentMonthInterestRecovered;
+
+                                                        // Remaining goes to principal
+                                                        principalPortion = arrearPrincipalRecovered + remainingAmount;
+                                                    }
+                                                    else
+                                                    {
+                                                        // ── No arrears — normal flow ──
+                                                        bool isFirstMonth = loanCase.DisbursedDate.HasValue &&
+                                                                            loanCase.DisbursedDate.Value.Year == now.Year &&
+                                                                            loanCase.DisbursedDate.Value.Month == now.Month;
+
+                                                        if (isFirstMonth)
+                                                        {
+                                                            principalPortion = contributionAmount;
+                                                            interestAmount = 0m;
+                                                        }
+                                                        else
+                                                        {
+                                                            interestAmount = Math.Round(principalBalance * monthlyRate, 2, MidpointRounding.AwayFromZero);
+                                                            principalPortion = contributionAmount - interestAmount;
+                                                        }
+                                                    }
+
+                                                    decimal newBalance = principalBalance - (principalPortion - existingPrincipalArrears);
+
                                                     CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO
                                                     {
                                                         CustomerAccountId = targetCustomerAccount.Id,
@@ -2113,30 +4197,24 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                     };
 
                                                     result.MatchedCollection1.Add(creditBatchEntry);
-
                                                 }
                                             }
-
-
                                         }
                                         else
                                         {
                                             item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanPrincipalAccounts.Count(), item.Column1);
-
                                             result.MismatchedCollection.Add(item);
                                         }
                                     }
                                     else
                                     {
                                         item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column1);
-
                                         result.MismatchedCollection.Add(item);
                                     }
                                 }
                                 else
                                 {
                                     item.Remarks = string.Format("Record #{0} ~ no match for loan product", count);
-
                                     result.MismatchedCollection.Add(item);
                                 }
 
@@ -2176,15 +4254,12 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                 else
                                                 {
                                                     item.Remarks = string.Format("Record #{0} ~ (sInterest) >> Existing entry couldn't be matched!", count);
-
                                                     result.MismatchedCollection.Add(item);
                                                 }
                                             }
                                             else
                                             {
-
                                                 CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO();
-
                                                 creditBatchEntry.CustomerAccountId = targetCustomerAccount.Id;
                                                 creditBatchEntry.CustomerAccountBranchId = targetCustomerAccount.BranchId;
                                                 creditBatchEntry.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
@@ -2197,28 +4272,24 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                 creditBatchEntry.Interest = contributionAmount;
                                                 creditBatchEntry.Balance = productBalance;
                                                 creditBatchEntry.Reference = item.Column1;
-
                                                 result.MatchedCollection1.Add(creditBatchEntry);
                                             }
                                         }
                                         else
                                         {
                                             item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanInterestAccounts.Count(), item.Column1);
-
                                             result.MismatchedCollection.Add(item);
                                         }
                                     }
                                     else
                                     {
                                         item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column1);
-
                                         result.MismatchedCollection.Add(item);
                                     }
                                 }
                                 else
                                 {
                                     item.Remarks = string.Format("Record #{0} ~ no match for loan product", count);
-
                                     result.MismatchedCollection.Add(item);
                                 }
 
@@ -2227,26 +4298,119 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                 break;
 
                             case CheckOffEntryType.sShare:
+
+                                #region sShare — Savings Products (DEP/RBF/SHP) — looks up savingProducts only
+
+                                var sShare_MatchedSavingsProducts = savingProducts.Where(x => x.Code == productCode);
+
+                                if (sShare_MatchedSavingsProducts != null && sShare_MatchedSavingsProducts.Any() && sShare_MatchedSavingsProducts.Count() == 1)
+                                {
+                                    var targetSavingsProduct = sShare_MatchedSavingsProducts.First();
+
+                                    var customerSavingsAccounts = _sqlCommandAppService
+                                        .FindCustomerAccountsByTargetProductIdAndReference3(
+                                            targetSavingsProduct.Id, item.Column1, serviceHeader);
+
+                                    if (customerSavingsAccounts.Any())
+                                    {
+                                        // Savings: a member has exactly one account per savings product
+                                        var targetCustomerAccount = customerSavingsAccounts[0];
+
+                                        CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO
+                                        {
+                                            CustomerAccountId = targetCustomerAccount.Id,
+                                            CustomerAccountBranchId = targetCustomerAccount.BranchId,
+                                            CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode,
+                                            CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId,
+                                            CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode,
+                                            CustomerAccountCustomerId = targetCustomerAccount.CustomerId,
+                                            CustomerAccountCustomerIndividualPayrollNumbers = item.Column1,
+                                            Beneficiary = item.Column3,
+                                            ProductDescription = targetSavingsProduct.Description,
+                                            Principal = contributionAmount,
+                                            Balance = productBalance,
+                                            Reference = item.Column6,
+                                        };
+
+                                        result.MatchedCollection1.Add(creditBatchEntry);
+                                    }
+                                    else
+                                    {
+                                        // No savings account found — auto-create it
+                                        var customers = _sqlCommandAppService
+                                            .FindCustomersByPayrollNumber(item.Column1, serviceHeader);
+
+                                        if (customers != null && customers.Any())
+                                        {
+                                            CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO
+                                            {
+                                                CustomerId = customers[0].Id,
+                                                BranchId = creditBatch.BranchId,
+                                                CustomerAccountTypeProductCode = (int)ProductCode.Savings,
+                                                CustomerAccountTypeTargetProductId = targetSavingsProduct.Id,
+                                                CustomerAccountTypeTargetProductCode = targetSavingsProduct.Code,
+                                                Status = (int)CustomerAccountStatus.Normal,
+                                                RecordStatus = (int)RecordStatus.Approved,
+                                            };
+
+                                            customerAccountDTO = _customerAccountAppService
+                                                .AddNewCustomerAccount(customerAccountDTO, serviceHeader);
+
+                                            if (customerAccountDTO == null)
+                                                throw new Exception("Failed to create savings customer account");
+
+                                            var creditBatchEntry = new CreditBatchEntryDTO
+                                            {
+                                                CustomerAccountId = customerAccountDTO.Id,
+                                                CustomerAccountBranchId = customerAccountDTO.BranchId,
+                                                CustomerAccountCustomerAccountTypeProductCode = customerAccountDTO.CustomerAccountTypeProductCode,
+                                                CustomerAccountCustomerAccountTypeTargetProductId = customerAccountDTO.CustomerAccountTypeTargetProductId,
+                                                CustomerAccountCustomerAccountTypeTargetProductCode = customerAccountDTO.CustomerAccountTypeTargetProductCode,
+                                                CustomerAccountCustomerId = customerAccountDTO.CustomerId,
+                                                CustomerAccountCustomerIndividualPayrollNumbers = item.Column1,
+                                                Beneficiary = item.Column3,
+                                                ProductDescription = targetSavingsProduct.Description,
+                                                Principal = contributionAmount,
+                                                Balance = productBalance,
+                                                Reference = item.Column6,
+                                            };
+
+                                            result.MatchedCollection1.Add(creditBatchEntry);
+                                        }
+                                        else
+                                        {
+                                            item.Remarks = string.Format(
+                                                "Record #{0} ~ no customer found for payroll number {1}",
+                                                count, item.Column1);
+                                            result.MismatchedCollection.Add(item);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    item.Remarks = string.Format(
+                                        "Record #{0} ~ no match for savings product with code {1}",
+                                        count, productCode);
+                                    result.MismatchedCollection.Add(item);
+                                }
+
+                                #endregion
+
+                                break;
+
                             case CheckOffEntryType.wCont:
                             case CheckOffEntryType.sInvest:
-                            case CheckOffEntryType.sRisk:
-                            case CheckOffEntryType.wLoan:
 
-                                #region sShare/wCont/sInvest/sRisk/wLoan
+                                #region wCont/sInvest
 
-                                //fix to use savingProducts not investmentProducts
-                                //var matchedInvestmentProducts = investmentProducts.Where(x => x.Code == productCode);
+                                var investmentProductDTOs = investmentProducts.Where(x => x.Code == productCode);
 
-
-                                var matchedInvestmentProducts = savingProducts.Where(x => x.Code == productCode);
-
-
-
-                                if (matchedInvestmentProducts != null && matchedInvestmentProducts.Any() && matchedInvestmentProducts.Count() == 1)
+                                if (investmentProductDTOs != null && investmentProductDTOs.Any() && investmentProductDTOs.Count() == 1)
                                 {
-                                    var targetInvestmentProduct = matchedInvestmentProducts.First();
-
-                                    var customerInvestmentAccounts = _sqlCommandAppService.FindCustomerAccountsByTargetProductIdAndReference3(targetInvestmentProduct.Id, item.Column1, serviceHeader);
+                                    var targetInvestmentProduct = investmentProductDTOs.First();
+                                    var customerInvestmentAccounts = _sqlCommandAppService
+                                        .FindCustomerAccountsByTargetProductIdAndReference3(
+                                            targetInvestmentProduct.Id, item.Column1, serviceHeader);
 
                                     if (customerInvestmentAccounts.Any())
                                     {
@@ -2255,7 +4419,64 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                             var targetCustomerAccount = customerInvestmentAccounts[0];
 
                                             CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO();
+                                            creditBatchEntry.CustomerAccountId = targetCustomerAccount.Id;
+                                            creditBatchEntry.CustomerAccountBranchId = targetCustomerAccount.BranchId;
+                                            creditBatchEntry.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
+                                            creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductId = targetCustomerAccount.CustomerAccountTypeTargetProductId;
+                                            creditBatchEntry.CustomerAccountCustomerAccountTypeTargetProductCode = targetCustomerAccount.CustomerAccountTypeTargetProductCode;
+                                            creditBatchEntry.CustomerAccountCustomerId = targetCustomerAccount.CustomerId;
+                                            creditBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers = item.Column1;
+                                            creditBatchEntry.Beneficiary = item.Column3;
+                                            creditBatchEntry.ProductDescription = targetInvestmentProduct.Description;
+                                            creditBatchEntry.Principal = contributionAmount;
+                                            creditBatchEntry.Balance = productBalance;
+                                            creditBatchEntry.Reference = "Loan Overpayment";
+                                            result.MatchedCollection1.Add(creditBatchEntry);
+                                        }
+                                        else
+                                        {
+                                            item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerInvestmentAccounts.Count, item.Column1);
+                                            result.MismatchedCollection.Add(item);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        item.Remarks = string.Format("Record #{0} ~ no match for investment product customer account by personal file number {1}", count, item.Column1);
+                                        result.MismatchedCollection.Add(item);
+                                    }
+                                }
+                                else
+                                {
+                                    item.Remarks = string.Format("Record #{0} ~ no match for investment product", count);
+                                    result.MismatchedCollection.Add(item);
+                                }
 
+                                #endregion
+
+                                break;
+
+                            case CheckOffEntryType.sRisk:
+                            case CheckOffEntryType.wLoan:
+
+                                #region sRisk/wLoan
+
+                                var matchedInvestmentProducts = savingProducts.Where(x => x.Code == productCode);
+
+                                if (matchedInvestmentProducts != null && matchedInvestmentProducts.Any() && matchedInvestmentProducts.Count() == 1)
+                                {
+                                    var targetInvestmentProduct = matchedInvestmentProducts.First();
+
+                                    var customerInvestmentAccounts = _sqlCommandAppService
+                                        .FindCustomerAccountsByTargetProductIdAndReference3(
+                                            targetInvestmentProduct.Id, item.Column1, serviceHeader);
+
+                                    if (customerInvestmentAccounts.Any())
+                                    {
+                                        if (customerInvestmentAccounts.Count == 1)
+                                        {
+                                            var targetCustomerAccount = customerInvestmentAccounts[0];
+
+                                            CreditBatchEntryDTO creditBatchEntry = new CreditBatchEntryDTO();
                                             creditBatchEntry.CustomerAccountId = targetCustomerAccount.Id;
                                             creditBatchEntry.CustomerAccountBranchId = targetCustomerAccount.BranchId;
                                             creditBatchEntry.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
@@ -2268,27 +4489,23 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                             creditBatchEntry.Principal = contributionAmount;
                                             creditBatchEntry.Balance = productBalance;
                                             creditBatchEntry.Reference = item.Column1;
-
                                             result.MatchedCollection1.Add(creditBatchEntry);
                                         }
                                         else
                                         {
                                             item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerInvestmentAccounts.Count(), item.Column1);
-
                                             result.MismatchedCollection.Add(item);
                                         }
                                     }
                                     else
                                     {
                                         item.Remarks = string.Format("Record #{0} ~ no match for investment product customer account by personal file number {1}", count, item.Column1);
-
                                         result.MismatchedCollection.Add(item);
                                     }
                                 }
                                 else
                                 {
                                     item.Remarks = string.Format("Record #{0} ~ no match for investment product", count);
-
                                     result.MismatchedCollection.Add(item);
                                 }
 
@@ -2335,7 +4552,6 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                         checkOffTariffs.ForEach(tariff =>
                                                         {
                                                             CreditBatchEntryDTO creditBatchEntryTariff_OutstandingBalance = new CreditBatchEntryDTO();
-
                                                             creditBatchEntryTariff_OutstandingBalance.ChartOfAccountId = tariff.CreditGLAccountId;
                                                             creditBatchEntryTariff_OutstandingBalance.CustomerAccountId = targetCustomerAccount.Id;
                                                             creditBatchEntryTariff_OutstandingBalance.CustomerAccountBranchId = targetCustomerAccount.BranchId;
@@ -2349,18 +4565,14 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                             creditBatchEntryTariff_OutstandingBalance.Principal = tariff.Amount;
                                                             creditBatchEntryTariff_OutstandingBalance.Balance = targetCustomerAccount.BookBalance;
                                                             creditBatchEntryTariff_OutstandingBalance.Reference = string.Format("{0}~{1}", item.Column1, tariff.Description);
-
                                                             result.MatchedCollection1.Add(creditBatchEntryTariff_OutstandingBalance);
                                                         });
                                                     }
 
-                                                    // reset expected interest & expected principal >> NB: interest has priority over principal!
                                                     var actualLoanInterestOutstandingBalance = Math.Min(Math.Abs(targetCustomerAccount.InterestBalance), contributionAmount);
-
                                                     var actualLoanPrincipalOutstandingBalance = contributionAmount - actualLoanInterestOutstandingBalance;
 
                                                     CreditBatchEntryDTO creditBatchEntryOutstandingBalance = new CreditBatchEntryDTO();
-
                                                     creditBatchEntryOutstandingBalance.CustomerAccountId = targetCustomerAccount.Id;
                                                     creditBatchEntryOutstandingBalance.CustomerAccountBranchId = targetCustomerAccount.BranchId;
                                                     creditBatchEntryOutstandingBalance.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
@@ -2374,10 +4586,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                     creditBatchEntryOutstandingBalance.Principal = actualLoanPrincipalOutstandingBalance;
                                                     creditBatchEntryOutstandingBalance.Balance = targetCustomerAccount.BookBalance;
                                                     creditBatchEntryOutstandingBalance.Reference = item.Column1;
-
                                                     result.MatchedCollection1.Add(creditBatchEntryOutstandingBalance);
 
                                                     break;
+
                                                 case AggregateCheckOffRecoveryMode.StandingOrder:
 
                                                     var standingOrders = FindStandingOrdersByBeneficiaryCustomerAccountId(targetCustomerAccount.Id, (int)StandingOrderTrigger.CheckOff, serviceHeader);
@@ -2391,7 +4603,6 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                                 checkOffTariffs.ForEach(tariff =>
                                                                 {
                                                                     CreditBatchEntryDTO creditBatchEntryTariff_StandingOrder = new CreditBatchEntryDTO();
-
                                                                     creditBatchEntryTariff_StandingOrder.ChartOfAccountId = tariff.CreditGLAccountId;
                                                                     creditBatchEntryTariff_StandingOrder.CustomerAccountId = targetCustomerAccount.Id;
                                                                     creditBatchEntryTariff_StandingOrder.CustomerAccountBranchId = targetCustomerAccount.BranchId;
@@ -2405,20 +4616,15 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                                     creditBatchEntryTariff_StandingOrder.Principal = tariff.Amount;
                                                                     creditBatchEntryTariff_StandingOrder.Balance = targetCustomerAccount.BookBalance;
                                                                     creditBatchEntryTariff_StandingOrder.Reference = string.Format("{0}~{1}", item.Column1, tariff.Description);
-
                                                                     result.MatchedCollection1.Add(creditBatchEntryTariff_StandingOrder);
                                                                 });
                                                             }
 
                                                             var targetStandingOrder = standingOrders[0];
-
-                                                            // reset expected interest & expected principal >> NB: interest has priority over principal!
                                                             var actualLoanInterestStandingOrder = Math.Min(Math.Min(Math.Abs(targetCustomerAccount.InterestBalance), targetStandingOrder.Interest), contributionAmount);
-
                                                             var actualLoanPrincipalStandingOrder = contributionAmount - actualLoanInterestStandingOrder;
 
                                                             CreditBatchEntryDTO creditBatchEntryStandingOrder = new CreditBatchEntryDTO();
-
                                                             creditBatchEntryStandingOrder.CustomerAccountId = targetCustomerAccount.Id;
                                                             creditBatchEntryStandingOrder.CustomerAccountBranchId = targetCustomerAccount.BranchId;
                                                             creditBatchEntryStandingOrder.CustomerAccountCustomerAccountTypeProductCode = targetCustomerAccount.CustomerAccountTypeProductCode;
@@ -2432,51 +4638,43 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                                             creditBatchEntryStandingOrder.Principal = actualLoanPrincipalStandingOrder;
                                                             creditBatchEntryStandingOrder.Balance = targetCustomerAccount.BookBalance;
                                                             creditBatchEntryStandingOrder.Reference = item.Column1;
-
                                                             result.MatchedCollection1.Add(creditBatchEntryStandingOrder);
                                                         }
                                                         else
                                                         {
                                                             item.Remarks = string.Format("Record #{0} ~ found {1} standing order matches", count, standingOrders.Count);
-
                                                             result.MismatchedCollection.Add(item);
                                                         }
                                                     }
                                                     else
                                                     {
                                                         item.Remarks = string.Format("Record #{0} ~ no match for {1} standing order", count, targetLoanProduct.Description);
-
                                                         result.MismatchedCollection.Add(item);
                                                     }
 
                                                     break;
+
                                                 default:
-
                                                     item.Remarks = string.Format("Record #{0} ~ {1} has undefined check-off recovery mode (Agg.)", count, targetLoanProduct.Description);
-
                                                     result.MismatchedCollection.Add(item);
-
                                                     break;
                                             }
                                         }
                                         else
                                         {
                                             item.Remarks = string.Format("Record #{0} ~ found {1} customer account matches by personal file number {2}", count, customerLoanAccounts.Count(), item.Column1);
-
                                             result.MismatchedCollection.Add(item);
                                         }
                                     }
                                     else
                                     {
                                         item.Remarks = string.Format("Record #{0} ~ no match for loan product customer account by personal file number {1}", count, item.Column1);
-
                                         result.MismatchedCollection.Add(item);
                                     }
                                 }
                                 else
                                 {
                                     item.Remarks = string.Format("Record #{0} ~ no match for loan product", count);
-
                                     result.MismatchedCollection.Add(item);
                                 }
 
@@ -2485,25 +4683,20 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                                 break;
 
                             default:
-
                                 item.Remarks = string.Format("Record #{0} ~ unable to parse check-off type {1}", count, item.Column5);
-
                                 result.MismatchedCollection.Add(item);
-
                                 break;
                         }
                     }
                     else
                     {
                         item.Remarks = string.Format("Record #{0} ~ unable to parse product code {1}", count, item.Column4);
-
                         result.MismatchedCollection.Add(item);
                     }
                 }
                 else
                 {
                     item.Remarks = string.Format("Record #{0} ~ unable to parse amount(s) {1}/{2}", count, item.Column3, item.Column2);
-
                     result.MismatchedCollection.Add(item);
                 }
 

@@ -1,7 +1,7 @@
 1. Set project to Release mode
 2. Publish the WCF and Web projects and save to individual folders(make sure they are empty).
 3. Copy the Utility and Windows Service release files from the SwiftFinancials Solution root directory.
-   Utility: "D:\works\SwiftFinancials\SwiftFinancialsSolution\SwiftFinancials.Utility\bin\Release" according to your Utility release files.
+   Utility: "D:\works\SwiftFinancials\SwiftFinancialsSolution\SwiftFinancials.Utility\bin\Release" according to your Utility release files  and run SwiftFinancials.Utility.exe SwiftFin_Live command.
    Windows Service: "D:\works\SwiftFinancials\SwiftFinancialsSolution\SwiftFinancials.WindowsService\bin\Release" according to your WindowsService realease files.
 4. Host the WCF and Web projects to IIS.
 5. In all the projects, make sure to change the following contents of file extension ".CONFIG":

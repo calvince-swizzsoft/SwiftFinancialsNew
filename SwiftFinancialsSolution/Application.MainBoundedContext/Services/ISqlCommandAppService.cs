@@ -175,5 +175,16 @@ namespace Application.MainBoundedContext.Services
         List<MonthlySummaryValuesDTO> FindEmailAlertsMonthlyStatistics(Guid companyId, DateTime startDate, DateTime endDate, ServiceHeader serviceHeader);
 
         List<MonthlySummaryValuesDTO> FindTextAlertsMonthlyStatatistics(Guid companyId, DateTime startDate, DateTime endDate, ServiceHeader serviceHeader);
+
+        //  Add to the interface  
+        JournalDTO FindLastPrincipalRepaymentByLoanReference(
+    string loanCaseNumber,
+    Guid customerAccountId,
+    ServiceHeader serviceHeader);
+
+        Task<JournalDTO> FindLastPrincipalRepaymentByLoanReferenceAsync(
+            string loanCaseNumber,
+            Guid customerAccountId,
+            ServiceHeader serviceHeader);
     }
 }

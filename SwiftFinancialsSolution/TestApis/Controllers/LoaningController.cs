@@ -637,7 +637,6 @@ namespace TestApis.Controllers
         //        }
 
         #endregion
-
         [HttpPost]
         [Route("LoanApplication")]
         public async Task<IHttpActionResult> Create([FromBody] LoanCaseDTO2 loanCaseDTO)
@@ -664,6 +663,7 @@ namespace TestApis.Controllers
 
                 if (loanCaseDTO.AmountApplied <= 0)
                     return Ok(ApiResponse<string>.Fail("Error posting this loan.", "Amount must be greater than zero."));
+
                 var branches = await master._channelService.FindBranchesAsync(serviceHeader);
                 var branch = branches?.FirstOrDefault(b =>
                     b.Description != null &&
@@ -677,7 +677,6 @@ namespace TestApis.Controllers
                 if (loanCaseDTO.AmountApplied <= 0)
                     return Ok(ApiResponse<string>.Fail("Error posting this loan.", "Amount must be greater than zero."));
 
-
                 // ---- Amount vs product limits ----
                 if (loanCaseDTO.AmountApplied < loanProduct.LoanRegistrationMinimumAmount)
                     return Ok(ApiResponse<string>.Fail(
@@ -689,17 +688,24 @@ namespace TestApis.Controllers
                         "Error posting this loan.",
                         $"Maximum loan amount is {loanProduct.LoanRegistrationMaximumAmount:N2}."));
 
-
                 // ---- Membership period ----
-                var membershipMonths =
-                    ((DateTime.UtcNow.Year - customer.CreatedDate.Year) * 12) +
-                    (DateTime.UtcNow.Month - customer.CreatedDate.Month);
+                int membershipMonths;
+
+                if (customer.RegistrationDate != null && customer.RegistrationDate.Value <= DefaultSettings.Instance.ServerDate)
+                {
+                    membershipMonths = UberUtil.GetPeriod(DefaultSettings.Instance.ServerDate, customer.RegistrationDate.Value);
+                }
+                else
+                {
+                    membershipMonths = -1;
+                }
 
                 if (membershipMonths < loanProduct.LoanRegistrationMinimumMembershipPeriod)
+                {
                     return Ok(ApiResponse<string>.Fail(
                         "Error posting this loan.",
                         "Member does not meet minimum membership period."));
-
+                }
 
                 // ---- Interest sanity ----
                 if (loanProduct.LoanInterestAnnualPercentageRate <= 0)
@@ -707,21 +713,27 @@ namespace TestApis.Controllers
                         "Error posting this loan.",
                         "Invalid interest configuration for selected product."));
 
+                // ================== CHECK FOR EXISTING ACTIVE LOAN ==================
+                // Check if user already has an active loan for the same product that is not finished
+                var allLoans = await master._channelService.FindLoanCasesAsync(serviceHeader);
 
-                // ---- Outstanding loan rule ----
-                //if (loanProduct.LoanRegistrationRejectIfMemberHasBalance)
-                //{
-                //    var existingLoans = await master._channelService.FindLoanCasesAsync(serviceHeader);
+                var existingActiveLoan = allLoans?.FirstOrDefault(l =>
+                    l.CustomerId == customer.Id &&
+                    l.LoanProductId == loanProduct.Id &&
+                    l.TotalLoansBalance > 0  // Loan is not finished (has balance)
+                );
 
-                //    var hasActiveLoan = existingLoans?.Any(l =>
-                //        l.CustomerId == customer.Id &&
-                //        l.TotalLoansBalance > 0);
-
-                //    if (hasActiveLoan == true)
-                //        return Ok(ApiResponse<string>.Fail(
-                //            "Error posting this loan.",
-                //            "Member has an outstanding loan balance."));
-                //}
+                if (existingActiveLoan != null)
+                {
+                    return Ok(ApiResponse<string>.Fail(
+                        "Error posting this loan.",
+                        $"You already have an active {loanProduct.Description} loan that is not yet completed. " +
+                        $"Reference: {existingActiveLoan.Reference ?? existingActiveLoan.Id.ToString()}, " +
+                        $"Outstanding Balance: {existingActiveLoan.TotalLoansBalance:N2}. " +
+                        $"Please complete the existing loan before applying for a new one."
+                    ));
+                }
+                // ================== END ACTIVE LOAN CHECK ==================
 
                 // ---- Guarantors ----
                 var guarantors = loanCaseDTO.Guarantors ?? new List<LoanGuarantorDTO>();
@@ -763,7 +775,6 @@ namespace TestApis.Controllers
                         "Error posting this loan.",
                         "Loan is not fully secured by guarantors."));
 
-
                 // ---- Term consistency ----
                 if (loanCaseDTO.LoanRegistrationTermInMonths > 0 &&
                     loanCaseDTO.LoanRegistrationTermInMonths != loanProduct.LoanRegistrationTermInMonths)
@@ -772,10 +783,6 @@ namespace TestApis.Controllers
                         "Invalid loan term for selected product."));
 
                 // ================== END VALIDATIONS ==================
-
-
-
-
 
                 // 6. COLLATERALS
                 var collateralDocuments = new List<CustomerDocumentDTO>();
@@ -826,13 +833,18 @@ namespace TestApis.Controllers
                 loanCaseDTO.Status = 48826;
                 loanCaseDTO.ReceivedDate = DateTime.UtcNow;
 
+                // Fix for BatchNumber constraint
+                if (loanCaseDTO.BatchNumber == null || loanCaseDTO.BatchNumber == 0)
+                {
+                    // Generate a unique batch number using timestamp
+                    loanCaseDTO.BatchNumber = int.Parse(DateTime.UtcNow.ToString("yyyyMMddHHmmss"));
+                }
+
                 var createResult = await master._channelService
                     .AddLoanCaseAsync(loanCaseDTO.MapTo<LoanCaseDTO>(), serviceHeader);
 
                 if (!string.IsNullOrWhiteSpace(createResult.ErrorMessageResult))
                     return Ok(ApiResponse<string>.Fail("Error posting this loan.", createResult.ErrorMessageResult));
-
-
 
                 #region // 10. SECTOR
                 using (var conn = new SqlConnection(_connectionString))
@@ -850,7 +862,6 @@ VALUES
                     await cmd.ExecuteNonQueryAsync();
                 }
                 #endregion
-
 
                 // 11. COLLATERALS
                 if (collateralDocuments.Any())
@@ -882,15 +893,46 @@ VALUES
         }
 
 
-        [HttpGet]
+        [HttpPut]
         [Route("UpdateLoanCase")]
         public async Task<IHttpActionResult> UpdateLoanCase(LoanCaseDTO loanCaseDTO)
         {
-            var serviceHeader = master.GetServiceHeader();
+            try
+            {
+                // Validate input
+                if (loanCaseDTO == null || loanCaseDTO.Id == Guid.Empty)
+                {
+                    return Ok(ApiResponse<string>.Fail(
+                        "Invalid request. Loan case data is required and ID must be provided."));
+                }
 
-            var success = await master._channelService.UpdateLoanCaseAsync(loanCaseDTO, serviceHeader);
+                var serviceHeader = master.GetServiceHeader();
 
-            return Ok(success);
+                // Optional: Add authorization check (implement this method if needed)
+                // if (!UserHasPermission(serviceHeader, "UpdateLoanCase"))
+                // {
+                //     return Unauthorized();
+                // }
+
+                var success = await master._channelService.UpdateLoanCaseAsync(loanCaseDTO, serviceHeader);
+
+                if (success)
+                {
+                    return Ok(ApiResponse<bool>.Ok(true, "Loan case updated successfully."));
+                }
+                else
+                {
+                    return Ok(ApiResponse<bool>.Fail(
+                        "Failed to update loan case. The loan case could not be updated."));
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                // _logger.LogError(ex, "Error updating loan case with ID: {LoanCaseId}", loanCaseDTO?.Id);
+
+                return InternalServerError(new Exception("An error occurred while updating the loan case.", ex));
+            }
         }
 
 

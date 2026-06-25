@@ -60,7 +60,8 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
                 {
                     var cashDepositRequest = CashDepositRequestFactory.CreateCashDepositRequest(cashDepositRequestDTO.BranchId, cashDepositRequestDTO.CustomerAccountId, cashDepositRequestDTO.Amount, cashDepositRequestDTO.Remarks);
 
-                    cashDepositRequest.Status = (int)CashDepositRequestAuthStatus.Pending;
+                    //cashDepositRequest.Status = (int)CashDepositRequestAuthStatus.Pending;
+                    cashDepositRequest.Status = (byte)cashDepositRequestDTO.Status;
                     cashDepositRequest.CreatedBy = serviceHeader.ApplicationUserName;
 
                     _cashDepositRequestRepository.Add(cashDepositRequest, serviceHeader);

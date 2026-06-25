@@ -14,7 +14,7 @@ namespace TestApis.Helpers
             {
                 // Match the Java implementation exactly
                 string smsGatewayUrl = "http://138.201.58.10:8093/SendMessageFON";
-                string orgCode = "58";
+                string orgCode = "83";
 
                 // Format phone number: remove + if present and ensure it's valid
                 string formattedPhoneNumber = FormatPhoneNumber(phoneNumber);
@@ -75,7 +75,7 @@ namespace TestApis.Helpers
             {
                 // Match the Java implementation exactly
                 string smsGatewayUrl = "http://138.201.58.10:8093/SendMessageFON";
-                string orgCode = "58";
+                string orgCode = "83";
 
                 // Format phone number: remove + if present and ensure it's valid
                 string formattedPhoneNumber = FormatPhoneNumber(phoneNumber);

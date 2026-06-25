@@ -3866,9 +3866,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         Rejected = 3,
         [Description("Low Stock")]
         LowStock = 4
-
     }
-
 
 
 
@@ -3883,5 +3881,34 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         Rejected = 2,
         [Description("Completed")]
         Completed = 3
+    }
+
+
+    public enum ImprestStatus
+    {
+        Draft,
+        PendingApproval,
+        Approved,
+        Rejected,
+        Paid,
+        Surrendered,
+        Closed
+    }
+
+    public enum SurrenderStatus
+    {
+        Draft,
+        PendingApproval,
+        Approved,
+        Rejected
+    }
+
+    public enum ReimbursementStatus
+    {
+        Draft,
+        PendingApproval,
+        Approved,
+        Rejected,
+        Paid
     }
 }

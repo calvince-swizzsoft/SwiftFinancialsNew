@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity.Validation;
@@ -45,6 +46,7 @@ using System.Web.Http.Cors;
 using TestApis.Models;
 using TestApis.Services;
 using static SwiftFinancials.Presentation.Infrastructure.Models.CustomerTransactionModel;
+using CustomerAccountService = TestApis.Services.CustomerAccountService;
 
 namespace TestApis.Controllers
 {
@@ -306,6 +308,59 @@ namespace TestApis.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("UpdateChartOfAccount")]
+        public async Task<IHttpActionResult> UpdateChartOfAccount([FromBody] ChartOfAccountDTO chartOfAccountDTO)
+        {
+            try
+            {
+                if (chartOfAccountDTO == null)
+                {
+                    return Json(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "Chart of account data is required.",
+                        Data = null
+                    });
+                }
+
+                // Validate the DTO using DataAnnotations
+                var validationContext = new ValidationContext(chartOfAccountDTO);
+                var validationResults = new List<ValidationResult>();
+                bool isValid = Validator.TryValidateObject(chartOfAccountDTO, validationContext, validationResults, true);
+
+                if (!isValid)
+                {
+                    var errors = validationResults.Select(vr => vr.ErrorMessage).ToList();
+                    return Json(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "Validation failed.",
+                        Data = errors
+                    });
+                }
+
+                var serviceHeader = master.GetServiceHeader();
+                var result = await master._channelService.UpdateChartOfAccountAsync(chartOfAccountDTO, serviceHeader);
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = result,
+                    Message = result ? "Chart of account updated successfully." : "Failed to update chart of account.",
+                    Data = result ? chartOfAccountDTO : null
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "An error occurred while updating chart of account.",
+                    Data = ex.Message
+                });
+            }
+        }
+
 
         [HttpGet]
         [Route("getBanks")]
@@ -369,10 +424,8 @@ namespace TestApis.Controllers
         [Route("GetPaymentAccountTypeSelectList")]
         public async Task<IHttpActionResult> GetPaymentAccountTypes()
         {
-
             try
             {
-
                 var serviceHeader = master.GetServiceHeader();
 
                 var accountTypes = master.GetPaymentAccountTypeSelectList("Vendor");
@@ -385,10 +438,7 @@ namespace TestApis.Controllers
 
                 return Json(ex.Message);
 
-
             }
-
-
         }
 
 
@@ -397,7 +447,6 @@ namespace TestApis.Controllers
         [Route("GetPaymentDocumentTypeSelectList")]
         public async Task<IHttpActionResult> GetPaymentDocumentTypes()
         {
-
             try
             {
 
@@ -441,11 +490,7 @@ namespace TestApis.Controllers
             {
 
                 return Json(ex.Message);
-
-
             }
-
-
         }
 
 
@@ -454,10 +499,8 @@ namespace TestApis.Controllers
         [Route("getSystemMappings")]
         public async Task<IHttpActionResult> getSystemMappings()
         {
-
             try
             {
-
                 var serviceHeader = master.GetServiceHeader();
 
                 var mappings = await master._channelService.FindSystemGeneralLedgerAccountMappingsAsync(serviceHeader);
@@ -475,15 +518,12 @@ namespace TestApis.Controllers
                     // else: do nothing if not found
                 }
 
-
-
                 return Json(new ApiResponse<object>
                 {
                     Success = true,
                     Message = mappings?.Count > 0 ? $"{mappings.Count} Mappings Found." : "No Mapping  found.",
                     Data = mappings?.ToList()
                 });
-
             }
 
             catch (Exception ex)
@@ -1343,47 +1383,133 @@ namespace TestApis.Controllers
 
         [HttpGet]
         [Route("GeneralLedgerTransactions")]
-        public async Task<IHttpActionResult> GetGeneralLedgerTransactions(Guid chartOfAccountId)
+        public async Task<IHttpActionResult> GetGeneralLedgerTransactions(
+Guid chartOfAccountId,
+int pageIndex = 0,
+int pageSize = 20,
+DateTime? fromDate = null,
+DateTime? toDate = null,
+string filter = "",
+int? transactionType = null,
+int? sortOrder = 1)
         {
-
-            bool tallyDebitsCredits = true;
-            int transactionDateFilter = 1;
-            int journalEntryFilter = 0;
-            string textFilter = "";
-            int pageIndex = 0;
-            int pageSize = 20;
             try
             {
+                if (chartOfAccountId == Guid.Empty)
+                {
+                    return Json(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "Invalid chartOfAccountId",
+                        Data = null
+                    });
+                }
+
+                // Validate page size (prevent abuse)
+                if (pageSize < 1 || pageSize > 500)
+                {
+                    return Json(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "PageSize must be between 1 and 500",
+                        Data = null
+                    });
+                }
+
+                if (master == null || master._channelService == null)
+                {
+                    return Json(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "Service not initialized.",
+                        Data = null
+                    });
+                }
+
                 var serviceHeader = master.GetServiceHeader();
+                if (serviceHeader == null)
+                {
+                    return Json(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "ServiceHeader is NULL.",
+                        Data = null
+                    });
+                }
 
-                var effectiveStartDate = new DateTime(1900, 1, 1);
+                // Set default date range if not provided
+                var startDate = fromDate ?? new DateTime(1900, 1, 1);
+                var endDate = toDate ?? DateTime.Today;
 
-                var effectiveEndDate = DateTime.Today;
+                var channelService = master._channelService;
 
-                var result = await master._channelService
-                    .FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
+                var result = await Task.Run(() =>
+                    channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
                         pageIndex,
                         pageSize,
                         chartOfAccountId,
-                        (DateTime)effectiveStartDate,
-                        (DateTime)effectiveEndDate,
-                        textFilter,
-                        journalEntryFilter,
-                        transactionDateFilter,
-                        tallyDebitsCredits,
-                        serviceHeader);
-                result.PageIndex = pageIndex;
-                result.PageSize = pageSize;
-                result.TotalPages = (int)Math.Ceiling((double)result.ItemsCount / pageSize);
-                return Ok(result);
+                        startDate,
+                        endDate,
+                        filter ?? "",
+                        transactionType ?? 0,
+                        sortOrder ?? 1,
+                        true,
+                        serviceHeader
+                    )
+                ).ConfigureAwait(false);
+
+                // FIXED: ItemsCount is int (non-nullable), not int?
+                var totalItems = result?.ItemsCount ?? 0;
+
+                // Calculate pagination metadata
+                var totalPages = totalItems > 0
+                    ? (int)Math.Ceiling((double)totalItems / pageSize)
+                    : 0;
+
+                var response = new
+                {
+                    result?.ItemsCount,
+                    PageIndex = pageIndex,
+                    PageSize = pageSize,
+                    TotalPages = totalPages,
+                    HasNextPage = pageIndex < totalPages - 1,
+                    HasPreviousPage = pageIndex > 0,
+                    DateRange = new { FromDate = startDate, ToDate = endDate },
+                    Filters = new { FilterText = filter, TransactionType = transactionType },
+                    Transactions = result?.PageCollection,
+                    result?.BookBalanceBroughtFoward,
+                    result?.BookBalanceCarriedForward,
+                    result?.AvailableBalanceBroughtFoward,
+                    result?.AvailableBalanceCarriedForward,
+                    result?.TotalCredits,
+                    result?.TotalDebits,
+                    result?.TotalApportioned,
+                    result?.TotalShortage
+                };
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = true,
+                    Message = result != null && totalItems > 0
+                        ? $"Showing page {pageIndex + 1} of {totalPages} ({totalItems} total transactions)"
+                        : "No transactions found.",
+                    Data = response
+                });
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                var realError = ex;
+                while (realError.InnerException != null)
+                    realError = realError.InnerException;
+
+                return Json(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = realError.Message,
+                    Data = realError.StackTrace
+                });
             }
         }
-
-
 
         [HttpPost]
         [Route("PostJournalVoucher")]
@@ -4131,8 +4257,16 @@ namespace TestApis.Controllers
                         // 1A) INTEREST: CLEAR RECEIVABLE (DR BANK / CR INT RECEIVED)
                         // ==========================================================
 
-                        var periodTransactions = await master._channelService.FindGeneralLedgerTransactionsByDateRangeAndFilterInPageAsync(int.MaxValue,int.MaxValue,postingPeriod.DurationStartDate,postingPeriod.DurationEndDate,"",(int)JournalEntryFilter.JournalSecondaryDescription,serviceHeader);
-
+                        var periodTransactions = await master._channelService
+                            .FindGeneralLedgerTransactionsByDateRangeAndFilterInPageAsync(
+                                1,      // page number
+                                500,    // page size — reasonable limit
+                                postingPeriod.DurationStartDate,
+                                postingPeriod.DurationEndDate,
+                                "",
+                                (int)JournalEntryFilter.JournalSecondaryDescription,
+                                serviceHeader
+                            );
                         var now = DateTime.UtcNow;
 
                         // Check if loan was disbursed this month
@@ -4263,7 +4397,8 @@ namespace TestApis.Controllers
 
 
 
-                        return Ok(new
+                        // Replace the return Ok(...) inside the loop with results.Add(...)
+                        results.Add(new
                         {
                             customerAccountId = transactionModel.CustomerAccount.Id,
                             success = true,
@@ -4284,6 +4419,10 @@ namespace TestApis.Controllers
                                 reference = principalJournal.Reference
                             }
                         });
+                        successfulTransactions++;
+                        totalAmount += principalPortion;
+                        receiptCounter++;
+                        continue; // ← move to next receipt
 
                     }
 
@@ -4386,47 +4525,6 @@ namespace TestApis.Controllers
         }
 
 
-        [HttpGet]
-        [Route("GeneralLedgerTransactions")]
-        public async Task<IHttpActionResult> GetGeneralLedgerTransactions(Guid chartOfAccountId, int pageIndex, int pageSize)
-        {
-
-            bool tallyDebitsCredits = true;
-            int transactionDateFilter = 1;
-            int journalEntryFilter = 0;
-            string textFilter = "";
-            //int pageIndex = pageIndex;
-            //int pageSize = pageSize;
-            try
-            {
-                var serviceHeader = master.GetServiceHeader();
-
-                var effectiveStartDate = new DateTime(1900, 1, 1);
-
-                var effectiveEndDate = DateTime.Today;
-
-                var result = await master._channelService
-                    .FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
-                        pageIndex,
-                        pageSize,
-                        chartOfAccountId,
-                        (DateTime)effectiveStartDate,
-                        (DateTime)effectiveEndDate,
-                        textFilter,
-                        journalEntryFilter,
-                        transactionDateFilter,
-                        tallyDebitsCredits,
-                        serviceHeader);
-                result.PageIndex = pageIndex;
-                result.PageSize = pageSize;
-                result.TotalPages = (int)Math.Ceiling((double)result.ItemsCount / pageSize);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-        }
 
         [HttpPost]
         [Route("PostCustomerReceipt")]
@@ -5117,35 +5215,20 @@ namespace TestApis.Controllers
                 });
             }
         }
-
-
         [HttpGet]
         [Route("GetMembersWithDetails")]
         public async Task<IHttpActionResult> GetMembersWithDetails(
-            [FromUri] int pageIndex = 0,
-            [FromUri] int pageSize = 20,
-            [FromUri] bool includeAccounts = true,
             [FromUri] bool includeNextOfKin = true,
-            [FromUri] bool includeAccountBalances = true,
-            [FromUri] bool includeProductDescription = true,
-            [FromUri] bool includeInterestBalanceForLoanAccounts = false,
-            [FromUri] bool considerMaturityPeriodForInvestmentAccounts = false,
-            [FromUri] bool includeStatements = false,
-            [FromUri] DateTime? statementStartDate = null,
-            [FromUri] DateTime? statementEndDate = null)
+            [FromUri] bool includeAccounts = true)
         {
             try
             {
                 var serviceHeader = master.GetServiceHeader();
 
-                // Get paginated customers
-                var customersPage = await master._channelService.FindCustomersInPageAsync(
-                    pageIndex,
-                    pageSize,
-                    serviceHeader
-                );
+                // Get all customers
+                var customers = await master._channelService.FindCustomersAsync(serviceHeader);
 
-                if (customersPage == null || customersPage.PageCollection == null || !customersPage.PageCollection.Any())
+                if (customers == null || !customers.Any())
                 {
                     return Json(new ApiResponse<object>
                     {
@@ -5155,196 +5238,34 @@ namespace TestApis.Controllers
                     });
                 }
 
-                int currentPageIndex = Convert.ToInt32(customersPage.PageIndex);
-                int currentPageSize = Convert.ToInt32(customersPage.PageSize);
-                int totalCount = Convert.ToInt32(customersPage.TotalCount);
-                int totalPages = Convert.ToInt32(customersPage.TotalPages);
-                int pageCollectionCount = customersPage.PageCollection.Count;
+                // Initialize the CustomerAccountService
+                var customerAccountService = new CustomerAccountService();
 
+                // Process customers to add calculated age, next of kin, and accounts
                 var membersWithDetails = new List<object>();
 
-                // Process each customer to get their details
-                foreach (var customer in customersPage.PageCollection)
+                foreach (var customer in customers)
                 {
                     var memberDetail = new
                     {
-                        Customer = new
-                        {
-                            customer.Id,
-                            customer.FullName,
-                            customer.SerialNumber,
-                            customer.PaddedSerialNumber,
-                            customer.Type,
-                            customer.TypeDescription,
-                            customer.IndividualType,
-                            customer.IndividualTypeDescription,
-                            customer.IndividualFirstName,
-                            customer.IndividualLastName,
-                            customer.IndividualIdentityCardNumber,
-                            customer.AddressMobileLine,
-                            customer.AddressEmail,
-                            customer.PersonalIdentificationNumber,
-                            customer.Reference1, // Account Number
-                            customer.Reference2, // Membership Number
-                            customer.Reference3, // Personal File Number
-                            customer.BranchDescription,
-                            customer.RegistrationDate,
-                            customer.RecordStatus,
-                            customer.RecordStatusDescription,
-                            customer.IsDefaulter,
-                            customer.IsLocked,
-                            Age = CalculateProperAge(customer),
-                            customer.MembershipPeriod,
-                            customer.NonIndividualDateEstablished,
-                            customer.IndividualBirthDate,
-                        },
-                        Accounts = new List<object>(),
-                        NextOfKin = new List<object>(),
-                        Statements = new List<object>()
+                        // Include all original customer properties
+                        Customer = customer,
+                        // Add calculated age
+                        Age = CalculateAgeFromBirthDate(customer.IndividualBirthDate),
+                        // Add next of kin if requested
+                        NextOfKin = includeNextOfKin ? await GetNextOfKinForCustomer(customer.Id, serviceHeader) : null,
+                        // Add accounts if requested
+                        Accounts = includeAccounts ? await customerAccountService.GetAccountsByCustomerIdAsync(customer.Id) : null
                     };
-
-                    // Get customer accounts if requested
-                    if (includeAccounts && customer.Id != Guid.Empty)
-                    {
-                        try
-                        {
-                            var accounts = await master._channelService.FindCustomerAccountsByCustomerIdAsync(
-                                customer.Id,
-                                includeAccountBalances,
-                                includeProductDescription,
-                                includeInterestBalanceForLoanAccounts,
-                                considerMaturityPeriodForInvestmentAccounts,
-                                serviceHeader
-                            );
-
-                            if (accounts != null && accounts.Any())
-                            {
-                                var accountIds = accounts.Select(a => a.Id).ToList();
-
-                                // Get statements for all accounts at once if requested
-                                Dictionary<Guid, List<object>> accountStatements = null;
-                                if (includeStatements && accountIds.Any())
-                                {
-                                    accountStatements = await GetAccountStatementsAsync(
-                                        accountIds,
-                                        statementStartDate,
-                                        statementEndDate
-                                    );
-                                }
-
-                                foreach (var account in accounts)
-                                {
-                                    memberDetail.Accounts.Add(new
-                                    {
-                                        account.Id,
-                                        account.FullAccountNumber,
-                                        account.CustomerAccountTypeTargetProductDescription,
-                                        account.CustomerAccountTypeProductCode,
-                                        account.CustomerAccountTypeProductCodeDescription,
-                                        account.Status,
-                                        account.StatusDescription,
-                                        account.RecordStatus,
-                                        account.RecordStatusDescription,
-                                        account.BookBalance,
-                                        account.AvailableBalance,
-                                        account.PrincipalBalance,
-                                        account.InterestBalance,
-                                        account.CarryForwardsBalance,
-                                        account.PrincipalArrearagesBalance,
-                                        account.InterestArrearagesBalance,
-                                        account.CreatedDate,
-                                        account.Remarks
-                                    });
-
-                                    // Add statements for this account if available
-                                    if (includeStatements && accountStatements != null &&
-                                        accountStatements.ContainsKey(account.Id))
-                                    {
-                                        memberDetail.Statements.AddRange(accountStatements[account.Id]);
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception accountEx)
-                        {
-                            // Log error but continue processing other customers
-                            System.Diagnostics.Trace.TraceError($"Error fetching accounts for customer {customer.Id}: {accountEx.Message}");
-                        }
-                    }
-
-                    // Get next of kin if requested
-                    if (includeNextOfKin && customer.Id != Guid.Empty)
-                    {
-                        try
-                        {
-                            var nextOfKins = await master._channelService.FindNextOfKinCollectionByCustomerIdAsync(
-                                customer.Id,
-                                serviceHeader
-                            );
-
-                            if (nextOfKins != null && nextOfKins.Any())
-                            {
-                                foreach (var nextOfKin in nextOfKins)
-                                {
-                                    memberDetail.NextOfKin.Add(new
-                                    {
-                                        nextOfKin.Id,
-                                        nextOfKin.FullName,
-                                        nextOfKin.Relationship,
-                                        nextOfKin.RelationshipDescription,
-                                        nextOfKin.AddressMobileLine,
-                                        nextOfKin.AddressEmail,
-                                        nextOfKin.AddressAddressLine1,
-                                        nextOfKin.AddressCity,
-                                        nextOfKin.NominatedPercentage,
-                                        nextOfKin.CreatedDate
-                                    });
-                                }
-                            }
-                        }
-                        catch (Exception nextOfKinEx)
-                        {
-                            // Log error but continue processing other customers
-                            System.Diagnostics.Trace.TraceError($"Error fetching next of kin for customer {customer.Id}: {nextOfKinEx.Message}");
-                        }
-                    }
 
                     membersWithDetails.Add(memberDetail);
                 }
 
-                // Prepare pagination metadata with proper type casting
-                var paginationInfo = new
-                {
-                    PageIndex = currentPageIndex,
-                    PageSize = currentPageSize,
-                    TotalCount = totalCount,
-                    TotalPages = totalPages,
-                    HasPreviousPage = currentPageIndex > 0,
-                    HasNextPage = currentPageIndex < totalPages - 1
-                };
-
                 return Json(new ApiResponse<object>
                 {
                     Success = true,
-                    Message = $"Retrieved {pageCollectionCount} members with details.",
-                    Data = new
-                    {
-                        Pagination = paginationInfo,
-                        Members = membersWithDetails,
-                        Summary = new
-                        {
-                            TotalMembers = totalCount,
-                            MembersInPage = pageCollectionCount,
-                            IncludeAccounts = includeAccounts,
-                            IncludeNextOfKin = includeNextOfKin,
-                            IncludeStatements = includeStatements,
-                            StatementDateRange = includeStatements ? new
-                            {
-                                StartDate = statementStartDate?.ToString("yyyy-MM-dd"),
-                                EndDate = statementEndDate?.ToString("yyyy-MM-dd")
-                            } : null
-                        }
-                    }
+                    Message = $"Successfully retrieved {membersWithDetails.Count} members with details.",
+                    Data = membersWithDetails
                 });
             }
             catch (Exception ex)
@@ -5356,64 +5277,46 @@ namespace TestApis.Controllers
                 {
                     Success = false,
                     Message = "An error occurred while retrieving member details.",
-                    Data = new { Error = ex.Message, InnerError = ex.InnerException?.Message }
+                    Data = new { Error = ex.Message }
                 });
             }
         }
 
-        private int CalculateProperAge(CustomerDTO customer)
+        private int CalculateAgeFromBirthDate(DateTime? birthDate)
         {
-            DateTime? dateToUse = null;
+            if (!birthDate.HasValue || birthDate.Value == DateTime.MinValue)
+                return -1;
 
-            switch ((CustomerType)customer.Type)
-            {
-                case CustomerType.Individual:
-                    dateToUse = customer.IndividualBirthDate;
-                    break;
-                case CustomerType.Partnership:
-                case CustomerType.Corporation:
-                case CustomerType.MicroCredit:
-                    dateToUse = customer.NonIndividualDateEstablished ?? customer.IndividualBirthDate;
-                    break;
-                default:
-                    dateToUse = customer.IndividualBirthDate ?? customer.NonIndividualDateEstablished;
-                    break;
-            }
+            var today = DateTime.Today;
+            var age = today.Year - birthDate.Value.Year;
 
-            if (dateToUse.HasValue && dateToUse.Value <= DateTime.Now)
-            {
-                var today = DateTime.Today;
-                var age = today.Year - dateToUse.Value.Year;
+            // Adjust age if birthday hasn't occurred yet this year
+            if (birthDate.Value.Date > today.AddYears(-age))
+                age--;
 
-                if (dateToUse.Value.Date > today.AddYears(-age))
-                    age--;
-
-                return age;
-            }
-
-            return -1;
+            return age >= 0 ? age : -1;
         }
 
-        private int CalculateAgeBasedOnData(CustomerDTO customer)
+        private async Task<object> GetNextOfKinForCustomer(Guid customerId, ServiceHeader serviceHeader)
         {
-            if (customer.Type == (byte)CustomerType.Individual && customer.IndividualBirthDate.HasValue)
+            try
             {
-                // Use IndividualBirthDate for individuals
-                return UberUtil.GetAge(customer.IndividualBirthDate.Value);
-            }
-            else if (customer.NonIndividualDateEstablished.HasValue)
-            {
-                // Use NonIndividualDateEstablished for non-individuals
-                return UberUtil.GetAge(customer.NonIndividualDateEstablished.Value);
-            }
-            else if (customer.Type != (byte)CustomerType.Individual && customer.IndividualBirthDate.HasValue)
-            {
-                // Fallback: if non-individual has birth date, use it
-                return UberUtil.GetAge(customer.IndividualBirthDate.Value);
-            }
+                var nextOfKins = await master._channelService.FindNextOfKinCollectionByCustomerIdAsync(customerId, serviceHeader);
 
-            return -1;
+                if (nextOfKins == null || !nextOfKins.Any())
+                    return null;
+
+                return nextOfKins;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError($"Error fetching next of kin for customer {customerId}: {ex.Message}");
+                return null;
+            }
         }
+
+
+
 
         // Helper method to get account statements using direct SQL queries
         public async Task<Dictionary<Guid, List<object>>> GetAccountStatementsAsync(
@@ -5782,39 +5685,30 @@ namespace TestApis.Controllers
             try
             {
                 var httpRequest = HttpContext.Current.Request;
-
                 if (httpRequest.Files.Count == 0)
                     return BadRequest("No file uploaded.");
 
                 var postedFile = httpRequest.Files[0];
-
                 if (postedFile == null || postedFile.ContentLength == 0)
                     return BadRequest("Invalid file.");
 
-                // 🔹 Fixed upload directory
                 var uploadDirectory = @"C:\swiftfin_file_uploads\";
-
                 if (!Directory.Exists(uploadDirectory))
                     Directory.CreateDirectory(uploadDirectory);
 
-                // 🔹 Sanitize filename
                 var fileName = Path.GetFileName(postedFile.FileName);
-
-                // 🔹 Optional: make filename unique
                 var uniqueFileName =
                     $"{Path.GetFileNameWithoutExtension(fileName)}_{DateTime.UtcNow:yyyyMMddHHmmss}{Path.GetExtension(fileName)}";
-
                 var filePath = Path.Combine(uploadDirectory, uniqueFileName);
 
-                // 🔹 Save file
                 postedFile.SaveAs(filePath);
 
                 var serviceHeader = master.GetServiceHeader();
 
-                // 🔹 Pass saved file path to service
+                // ✅ Pass only the unique filename, directory is handled inside the service
                 var mismatches = await master._channelService.ParseCreditBatchImportAsync(
                     batchId,
-                    filePath,
+                    uniqueFileName,
                     serviceHeader
                 );
 
@@ -6674,6 +6568,8 @@ namespace TestApis.Controllers
 
             return cell;
         }
+
+
 
         public class SasraForm6Row
         {
@@ -8122,10 +8018,10 @@ namespace TestApis.Controllers
         [HttpGet]
         [Route("GetMemberStatement/{customerId}")]
         public async Task<HttpResponseMessage> GetMemberStatement(
-     Guid customerId,
-     DateTime? startDate = null,
-     DateTime? endDate = null,
-     bool downloadPdf = false)
+    Guid customerId,
+    DateTime? startDate = null,
+    DateTime? endDate = null,
+    bool downloadPdf = false)
         {
             try
             {
@@ -8143,7 +8039,7 @@ namespace TestApis.Controllers
                     // ===== GET LOANS INFORMATION =====
                     var allLoanStatements = new List<LoanStatementResult>();
 
-                    // ADD BACK THE LOAN STORED PROCEDURE CALL
+                    // Only try to get loans if the SP might return data
                     using (var loanCommand = new SqlCommand("sp_GenerateMemberLoanStatement", connection))
                     {
                         loanCommand.CommandType = CommandType.StoredProcedure;
@@ -8161,9 +8057,21 @@ namespace TestApis.Controllers
 
                         using (var reader = await loanCommand.ExecuteReaderAsync())
                         {
-                            while (await reader.ReadAsync())
+                            // Check if there are any result sets at all
+                            bool hasResults = false;
+
+                            // Process each loan (each iteration through the outer while loop is one loan)
+                            do
                             {
-                                // First result set: Loan Header for current loan
+                                // Result Set 1: Loan Header for current loan
+                                if (!await reader.ReadAsync())
+                                {
+                                    // No more loans or no loans at all
+                                    break;
+                                }
+
+                                hasResults = true;
+
                                 var loanHeader = new
                                 {
                                     LoanNumber = reader["LoanNumber"]?.ToString() ?? "",
@@ -8181,7 +8089,7 @@ namespace TestApis.Controllers
                                 DateTime? statementStartDate = null;
                                 DateTime? statementEndDate = null;
 
-                                // Result Set 2: Statement rows
+                                // Result Set 2: Statement rows for this loan
                                 if (await reader.NextResultAsync())
                                 {
                                     while (await reader.ReadAsync())
@@ -8209,7 +8117,7 @@ namespace TestApis.Controllers
                                     }
                                 }
 
-                                // Result Set 3: Summary
+                                // Result Set 3: Summary for this loan
                                 if (await reader.NextResultAsync())
                                 {
                                     if (await reader.ReadAsync())
@@ -8273,9 +8181,10 @@ namespace TestApis.Controllers
 
                                 allLoanStatements.Add(loanStatementResult);
 
-                                // Move to next loan (if any)
-                                await reader.NextResultAsync();
-                            }
+                                // Move to next loan's first result set (if any)
+                            } while (await reader.NextResultAsync());
+
+                            // If no loans were found, that's fine - we just continue with empty list
                         }
                     }
 
@@ -8303,7 +8212,10 @@ namespace TestApis.Controllers
                             var accountTransactions = new Dictionary<Guid, List<SharesTransaction>>();
                             var accountDetails = new Dictionary<Guid, (string ProductName, decimal TotalContribution)>();
 
-                            // SKIP OUTPUT 0: Account Header (first result set)
+                            // Check if there are any result sets
+                            bool hasSharesData = false;
+
+                            // OUTPUT 0: Account Header (first result set) - Skip it
                             if (await reader.NextResultAsync())
                             {
                                 // First result set is now the Detailed Statement (OUTPUT 1)
@@ -8312,6 +8224,8 @@ namespace TestApis.Controllers
                                     // Skip if it's a message result set
                                     if (reader.FieldCount == 1 && reader.GetName(0) == "Message")
                                         continue;
+
+                                    hasSharesData = true;
 
                                     var customerAccountId = reader["CustomerAccountId"] != DBNull.Value ?
                                         (Guid)reader["CustomerAccountId"] : Guid.Empty;
@@ -8335,7 +8249,7 @@ namespace TestApis.Controllers
                             }
 
                             // Move to Summary result set (OUTPUT 2)
-                            if (await reader.NextResultAsync())
+                            if (hasSharesData && await reader.NextResultAsync())
                             {
                                 while (await reader.ReadAsync())
                                 {
@@ -8353,9 +8267,11 @@ namespace TestApis.Controllers
                                 }
                             }
 
-                            // Skip the third result set (Summary Stats - OUTPUT 3)
-                            // We don't need it, but we need to advance the reader
-                            await reader.NextResultAsync();
+                            // Skip the third result set (Summary Stats - OUTPUT 3) if it exists
+                            if (hasSharesData)
+                            {
+                                await reader.NextResultAsync();
+                            }
 
                             // Create shares statement results for each account
                             foreach (var account in accountDetails)
@@ -8404,20 +8320,30 @@ namespace TestApis.Controllers
                         }
                     }
 
-                    // Get customer info
-                    var customerInfo = allLoanStatements.FirstOrDefault()?.Customer ??
-                                     (allSharesStatements.Count > 0 ?
-                                         new CustomerInfo
-                                         {
-                                             FullName = await GetCustomerName(connection, customerId),
-                                             AccountNumber = "N/A",
-                                             StaffNo = await GetCustomerStaffNo(connection, customerId),
-                                             Mobile = await GetCustomerMobile(connection, customerId),
-                                             Email = await GetCustomerEmail(connection, customerId),
-                                             PFNumber = await GetCustomerPFNumber(connection, customerId)
-                                         } : null);
+                    // Get customer info from either loans or shares, or directly from DB
+                    CustomerInfo customerInfo = null;
 
-                    if (customerInfo == null)
+                    // Try to get from loans first
+                    if (allLoanStatements.Count > 0)
+                    {
+                        customerInfo = allLoanStatements.First().Customer;
+                    }
+                    // Then try from shares
+                    else if (allSharesStatements.Count > 0)
+                    {
+                        // For shares, we need to get customer info separately since shares SP doesn't return it
+                        customerInfo = new CustomerInfo
+                        {
+                            FullName = await GetCustomerName(connection, customerId),
+                            AccountNumber = "N/A", // We don't have account number from shares SP
+                            StaffNo = await GetCustomerStaffNo(connection, customerId),
+                            Mobile = await GetCustomerMobile(connection, customerId),
+                            Email = await GetCustomerEmail(connection, customerId),
+                            PFNumber = await GetCustomerPFNumber(connection, customerId)
+                        };
+                    }
+                    // If no accounts at all, still get basic customer info
+                    else
                     {
                         customerInfo = new CustomerInfo
                         {
@@ -8439,67 +8365,70 @@ namespace TestApis.Controllers
                     memberStatement.TotalLoanBalance = allLoanStatements.Sum(l => l.Summary?.TotalOutstandingBalance ?? 0);
                     memberStatement.TotalSharesBalance = allSharesStatements.Sum(s => s.ClosingBalance);
                     memberStatement.TotalAccounts = allLoanStatements.Count + allSharesStatements.Count;
-                }
 
-                // Check if we found any data
-                if (memberStatement.LoanStatements.Count == 0 && memberStatement.SharesStatements.Count == 0)
-                {
-                    var errorResponse = Request.CreateResponse(HttpStatusCode.NotFound);
-                    errorResponse.Content = new StringContent(
-                        JsonConvert.SerializeObject(new ApiResponse<object>
-                        {
-                            Success = false,
-                            Message = "No loan or shares accounts found for this customer.",
-                            Data = null
-                        }),
-                        Encoding.UTF8,
-                        "application/json");
-                    return errorResponse;
-                }
-
-                // If PDF download is requested
-                if (downloadPdf)
-                {
-                    byte[] pdfBytes = GenerateMemberStatementPdf(memberStatement, startDate, endDate);
-
-                    var response = new HttpResponseMessage(HttpStatusCode.OK)
+                    // Check if we found any data - but don't return 404, just return empty lists with customer info
+                    if (memberStatement.LoanStatements.Count == 0 && memberStatement.SharesStatements.Count == 0)
                     {
-                        Content = new ByteArrayContent(pdfBytes)
-                    };
+                        // Return success with empty data and appropriate message
+                        var emptyResponse = Request.CreateResponse(HttpStatusCode.OK);
+                        emptyResponse.Content = new StringContent(
+                            JsonConvert.SerializeObject(new ApiResponse<object>
+                            {
+                                Success = true,
+                                Message = "No active loan or shares accounts found for this customer. Customer information is provided.",
+                                Data = memberStatement
+                            }),
+                            Encoding.UTF8,
+                            "application/json");
+                        return emptyResponse;
+                    }
 
-                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+                    // If PDF download is requested
+                    if (downloadPdf)
+                    {
+                        byte[] pdfBytes = GenerateMemberStatementPdf(memberStatement, startDate, endDate);
 
-                    string customerName = memberStatement.Customer?.FullName?.Replace(" ", "_") ?? "Customer";
-                    string dateRange = "";
-                    if (startDate.HasValue && endDate.HasValue)
-                        dateRange = $"{startDate.Value:yyyyMMdd}_{endDate.Value:yyyyMMdd}";
-                    else if (startDate.HasValue)
-                        dateRange = $"from_{startDate.Value:yyyyMMdd}";
-                    else if (endDate.HasValue)
-                        dateRange = $"to_{endDate.Value:yyyyMMdd}";
-
-                    response.Content.Headers.ContentDisposition =
-                        new ContentDispositionHeaderValue("attachment")
+                        var response = new HttpResponseMessage(HttpStatusCode.OK)
                         {
-                            FileName = $"MemberStatement_{customerName}_{dateRange}_{DateTime.Now:yyyyMMdd}.pdf"
+                            Content = new ByteArrayContent(pdfBytes)
                         };
 
-                    return response;
-                }
-                else
-                {
-                    // Return JSON response
-                    var response = Request.CreateResponse(HttpStatusCode.OK);
-                    response.Content = new StringContent(
-                        JsonConvert.SerializeObject(new ApiResponse<object>
-                        {
-                            Success = true,
-                            Message = $"Found {memberStatement.LoanStatements.Count} loan(s) and {memberStatement.SharesStatements.Count} shares/savings account(s).",
-                            Data = memberStatement
-                        }),
-                        Encoding.UTF8,
-                        "application/json");
-                    return response;
+                        response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+
+                        string customerName = memberStatement.Customer?.FullName?.Replace(" ", "_") ?? "Customer";
+                        string dateRange = "";
+                        if (startDate.HasValue && endDate.HasValue)
+                            dateRange = $"{startDate.Value:yyyyMMdd}_{endDate.Value:yyyyMMdd}";
+                        else if (startDate.HasValue)
+                            dateRange = $"from_{startDate.Value:yyyyMMdd}";
+                        else if (endDate.HasValue)
+                            dateRange = $"to_{endDate.Value:yyyyMMdd}";
+
+                        response.Content.Headers.ContentDisposition =
+                            new ContentDispositionHeaderValue("attachment")
+                            {
+                                FileName = $"MemberStatement_{customerName}_{dateRange}_{DateTime.Now:yyyyMMdd}.pdf"
+                            };
+
+                        return response;
+                    }
+                    else
+                    {
+                        // Return JSON response
+                        var response = Request.CreateResponse(HttpStatusCode.OK);
+                        string message = $"Found {memberStatement.LoanStatements.Count} loan(s) and {memberStatement.SharesStatements.Count} shares/savings account(s).";
+
+                        response.Content = new StringContent(
+                            JsonConvert.SerializeObject(new ApiResponse<object>
+                            {
+                                Success = true,
+                                Message = message,
+                                Data = memberStatement
+                            }),
+                            Encoding.UTF8,
+                            "application/json");
+                        return response;
+                    }
                 }
             }
             catch (Exception ex)

@@ -1149,6 +1149,10 @@
       <Link>Application.MainBoundedContext.DTO\PageCollectionInfo.cs</Link>
     </Compile>
     <Compile Include="Application.MainBoundedContext.DTO\AccountsModule\ARCustomerDTO.cs" />
+    <Compile Include="Application.MainBoundedContext.DTO\AccountsModule\ImprestDTO.cs" />
+    <Compile Include="Application.MainBoundedContext.DTO\AccountsModule\ImprestLineDTO.cs" />
+    <Compile Include="Application.MainBoundedContext.DTO\AccountsModule\ImprestSurrenderDTO.cs" />
+    <Compile Include="Application.MainBoundedContext.DTO\AccountsModule\ImprestSurrenderLineDTO.cs" />
     <Compile Include="Application.MainBoundedContext.DTO\AccountsModule\PaymentDTO.cs" />
     <Compile Include="Application.MainBoundedContext.DTO\AccountsModule\PaymentLineDTO.cs" />
     <Compile Include="Application.MainBoundedContext.DTO\AccountsModule\PurchaseCreditMemoDTO.cs" />

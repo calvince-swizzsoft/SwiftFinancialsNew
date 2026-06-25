@@ -24,6 +24,7 @@ using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Presentation.Infrastructure.Models;
 using Domain.MainBoundedContext.AdministrationModule.Aggregates.BankBranchAgg;
+using System.Web.Http;
 //using Application.MainBoundedContext.FrontOfficeModule.Services;
 
 namespace SwiftFinancials.Web.Controllers
@@ -32,7 +33,8 @@ namespace SwiftFinancials.Web.Controllers
     /// Master controller that does setup of things that should always be done.
     /// </summary>
     [CustomErrorHandling]
-    public class MasterController : Controller
+    //public class MasterController : Controller
+    public class MasterController : ApiController
     {
         public ObservableCollection<LevySplitDTO> LevySplitDTOs;
         public ObservableCollection<CustomerAccountSignatoryDTO> customerAccountSignatoryDTOs;
