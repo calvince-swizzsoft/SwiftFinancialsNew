@@ -148,7 +148,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 }
                 else
                 {
-                    using (var dbContextScope = _dbContextScopeFactory.Create())
+                    using (var dbContextScope = _dbContextScopeFactory.Create(DbContextScopeOption.ForceCreateNew))
                     {
                         var customerAccountType = new CustomerAccountType(customerAccountDTO.CustomerAccountTypeProductCode, customerAccountDTO.CustomerAccountTypeTargetProductId, customerAccountDTO.CustomerAccountTypeTargetProductCode);
 

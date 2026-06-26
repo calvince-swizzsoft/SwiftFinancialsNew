@@ -16842,34 +16842,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<bool> SettleWithdrawalNotificationAsync(WithdrawalNotificationDTO withdrawalNotificationDTO, int membershipWithdrawalSettlementOption, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        public Task<bool> SettleWithdrawalNotificationAsync(
+     WithdrawalNotificationDTO withdrawalNotificationDTO,
+     int membershipWithdrawalSettlementOption,
+     int moduleNavigationItemCode,
+     ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();
 
-            IWithdrawalNotificationService service = GetService<IWithdrawalNotificationService>(serviceHeader);
+            var service = GetService<IWithdrawalNotificationService>(serviceHeader);
 
-            AsyncCallback asyncCallback = (result =>
-            {
-                try
+            service.BeginSettleWithdrawalNotification(
+                withdrawalNotificationDTO,
+                membershipWithdrawalSettlementOption,
+                moduleNavigationItemCode,
+                ar =>
                 {
-                    bool response = ((IWithdrawalNotificationService)result.AsyncState).EndSettleWithdrawalNotification(result);
-
-                    tcs.TrySetResult(response);
-                }
-                catch (Exception ex)
-                {
-                    HandleFault(ex, (msgcb) =>
+                    try
                     {
-                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
-                    });
-                }
-                finally
-                {
-                    DisposeService(service as IClientChannel);
-                }
-            });
-
-            service.BeginSettleWithdrawalNotification(withdrawalNotificationDTO, membershipWithdrawalSettlementOption, moduleNavigationItemCode, asyncCallback, service);
+                        var result = service.EndSettleWithdrawalNotification(ar);
+                        tcs.TrySetResult(result);
+                    }
+                    catch (Exception ex)
+                    {
+                        tcs.TrySetException(ex);
+                    }
+                    finally
+                    {
+                        DisposeService(service as IClientChannel);
+                    }
+                },
+                null);
 
             return tcs.Task;
         }

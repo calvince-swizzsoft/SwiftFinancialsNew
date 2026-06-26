@@ -33,7 +33,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Cost Center")]
-        [ValidGuid]
         public Guid? CostCenterId { get; set; }
 
         [DataMember]

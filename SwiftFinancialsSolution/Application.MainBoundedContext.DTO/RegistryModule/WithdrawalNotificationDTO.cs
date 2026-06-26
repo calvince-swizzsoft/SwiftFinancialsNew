@@ -20,7 +20,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [DataMember]
         [Display(Name = "Member Name")]
-        [ValidGuid]
+        //[ValidGuid]
         public Guid CustomerId { get; set; }
 
 
@@ -240,7 +240,6 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [DataMember]
         [Display(Name = "Remarks")]
-        [Required]
         public string Remarks { get; set; }
 
         [DataMember]
@@ -317,12 +316,12 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [DataMember]
         [Display(Name = "Net Refundable Validation")]
-        [CustomValidation(typeof(WithdrawalNotificationDTO), "ValidateNetRefundable", ErrorMessage = "The net refundable amount is less than zero!")]
+        //[CustomValidation(typeof(WithdrawalNotificationDTO), "ValidateNetRefundable", ErrorMessage = "The net refundable amount is less than zero!")]
         public string NetRefundableValidation { get; set; }
 
         [DataMember]
         [Display(Name = "Loans Guaranteed")]
-        [CustomValidation(typeof(WithdrawalNotificationDTO), "ValidateLoansGuaranteed", ErrorMessage = "The number of loans guaranteed must be zero!")]
+        //[CustomValidation(typeof(WithdrawalNotificationDTO), "ValidateLoansGuaranteed", ErrorMessage = "The number of loans guaranteed must be zero!")]
         public int TotalLoansGuaranteed { get; set; }
 
         public static ValidationResult ValidateNetRefundable(object value, ValidationContext context)

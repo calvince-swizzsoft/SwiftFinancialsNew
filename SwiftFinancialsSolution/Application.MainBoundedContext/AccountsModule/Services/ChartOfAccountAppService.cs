@@ -319,38 +319,28 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
         public List<GeneralLedgerAccount> FindGeneralLedgerAccountsWithCategoryAndText(string text, int? accountCategory, ServiceHeader serviceHeader, bool updateDepth)
         {
-            //var chartOfAccounts = FindChartOfAccounts(serviceHeader);
             using (_dbContextScopeFactory.CreateReadOnly())
             {
-
-
                 var filter = ChartOfAccountSpecifications.ChartOfAccountFullTextAndCategory(text, accountCategory);
-
                 ISpecification<ChartOfAccount> spec = filter;
 
-
                 var chartOfAccounts = _chartOfAccountRepository.AllMatching(spec, serviceHeader, c => c.Children);
-
-
 
                 if (chartOfAccounts != null && chartOfAccounts.Any())
                 {
                     var glAccountsList = new List<GeneralLedgerAccount>();
 
-                    Action<ChartOfAccount> traverse = null;
+                    // First, get only root accounts (ParentId is null)
+                    var rootAccounts = chartOfAccounts.Where(c => c.ParentId == null).OrderBy(c => c.AccountCode).ToList();
 
-                    /* recursive lambda */
-                    traverse = (node) =>
+                    // Recursive function to traverse and add accounts
+                    void Traverse(ChartOfAccount node, int depth)
                     {
+                        // Create tabs based on depth
                         string tabs = string.Empty;
-                        int depth = 0;
-
-                        var tempNode = node;
-                        while (tempNode.Parent != null)
+                        for (int i = 0; i < depth; i++)
                         {
-                            tempNode = tempNode.Parent;
                             tabs += "\t";
-                            depth++;
                         }
 
                         var glAccount = new GeneralLedgerAccount();
@@ -374,49 +364,33 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         if (node.CostCenterId != null)
                         {
                             glAccount.CostCenterId = node.CostCenterId;
-                            //.CostCenterDescription = node.CostCenterDescription;
                         }
 
                         glAccountsList.Add(glAccount);
 
-                        if (node.Children != null)
+                        // Process children (order them by AccountCode or Name as needed)
+                        if (node.Children != null && node.Children.Any())
                         {
-                            foreach (var item in node.Children)
+                            foreach (var child in node.Children.OrderBy(c => c.AccountCode))
                             {
-                                traverse(item);
+                                Traverse(child, depth + 1);
                             }
                         }
-                    };
+                    }
 
-                    foreach (var c in chartOfAccounts)
+                    // Process each root account
+                    foreach (var root in rootAccounts)
                     {
-                        traverse(c);
+                        Traverse(root, 0);
                     }
 
                     #region update depth
-                    // TODO:
-                    //if (updateDepth && glAccountsList.Any())
-                    //{
-                    //    glAccountsList.ForEach(item =>
-                    //    {
-                    //        if (item != null)
-                    //        {
-                    //            var chartOfAccount = _chartOfAccountRepository.Get(item.Id);
-
-                    //            if (chartOfAccount != null)
-                    //                chartOfAccount.Depth = item.Depth;
-                    //        }
-                    //    });
-
-                    //   dbContextScope.SaveChanges(serviceHeader);
-                    //}
-
+                    // TODO: Your existing update depth logic
                     #endregion
 
                     return glAccountsList;
                 }
                 else return null;
-
             }
         }
 

@@ -141,9 +141,20 @@ namespace TestApis.Controllers
 
         public ServiceHeader GetServiceHeader()
         {
-            // TEMPORARY TEST CODE
-            var configService = new WebConfigurationService(); // Manually instantiate
-            return configService.GetServiceHeader();
+            try
+            {
+                var configService = new WebConfigurationService();
+                var header = configService.GetServiceHeader();
+
+                if (header == null)
+                    throw new Exception("WebConfigurationService.GetServiceHeader() returned null. Check Web.config settings.");
+
+                return header;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"GetServiceHeader failed: {ex.Message}", ex);
+            }
         }
 
         public async Task<ApplicationUser> GetCurrentUser()

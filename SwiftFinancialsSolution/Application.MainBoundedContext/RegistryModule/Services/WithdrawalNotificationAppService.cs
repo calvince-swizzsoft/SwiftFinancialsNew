@@ -108,14 +108,19 @@ namespace Application.MainBoundedContext.RegistryModule.Services
 
         public WithdrawalNotificationDTO AddNewWithdrawalNotification(WithdrawalNotificationDTO withdrawalNotificationDTO, ServiceHeader serviceHeader)
         {
-            if (withdrawalNotificationDTO != null)
-            {
-                var existingNotifications = FindWithdrawalNotificationsByCustomerId(withdrawalNotificationDTO.CustomerId, serviceHeader);
+            if (withdrawalNotificationDTO == null)
+                return null;
 
-                if (existingNotifications != null && existingNotifications.Any(x => x.Category == withdrawalNotificationDTO.Category))
+            // Check for existing notifications
+            var existingNotifications = FindWithdrawalNotificationsByCustomerId(withdrawalNotificationDTO.CustomerId, serviceHeader);
+
+            if (existingNotifications != null && existingNotifications.Any(x => x.Category == withdrawalNotificationDTO.Category))
+            {
+                foreach (var item in existingNotifications)
                 {
-                    foreach (var item in existingNotifications)
+                    switch ((WithdrawalNotificationStatus)item.Status)
                     {
+<<<<<<< Updated upstream
                         switch ((WithdrawalNotificationStatus)item.Status)
                         {
                             case WithdrawalNotificationStatus.Registered:
@@ -146,71 +151,177 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                             var branchDTO = _branchAppService.FindBranch(withdrawalNotificationDTO.BranchId, serviceHeader);
                             withdrawalNotification.MaturityDate = _holidayAppService.FindBusinessDay(branchDTO.CompanyMembershipTerminationNoticePeriod, true, serviceHeader) ?? DateTime.Today; 
                             break;
+=======
+                        case WithdrawalNotificationStatus.Registered:
+                        case WithdrawalNotificationStatus.Approved:
+                        case WithdrawalNotificationStatus.Audited:
+                        case WithdrawalNotificationStatus.WithdrawalSettled:
+                        case WithdrawalNotificationStatus.DeathClaimSettled:
+                            withdrawalNotificationDTO.ErrorMessageResult = "Sorry, but a membership termination notification for the selected customer is currently undergoing processing!";
+                            return withdrawalNotificationDTO;
+                        case WithdrawalNotificationStatus.Deferred:
+>>>>>>> Stashed changes
                         default:
                             break;
                     }
-
-                    withdrawalNotification.SettlementType = (int)MembershipWithdrawalSettlementType.Normal;
-                    withdrawalNotification.Status = (int)WithdrawalNotificationStatus.Registered;
-                    withdrawalNotification.CreatedBy = serviceHeader.ApplicationUserName;
-
-                    _withdrawalNotificationRepository.Add(withdrawalNotification, serviceHeader);
-
-                    #region Lock Customer
-
-                    var persistedCustomer = _customerRepository.Get(withdrawalNotificationDTO.CustomerId, serviceHeader);
-                    persistedCustomer.Remarks = string.Format("{0} Membership Termination Notice Placed", EnumHelper.GetDescription((WithdrawalNotificationCategory)withdrawalNotificationDTO.Category));
-                    persistedCustomer.Lock();
-
-                    #endregion
-
-                    #region Lock Customer Accounts
-
-                    var customerLoanAccounts = _customerAccountAppService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductCode(withdrawalNotificationDTO.CustomerId, (int)ProductCode.Loan, serviceHeader);
-
-                    if (customerLoanAccounts != null && customerLoanAccounts.Any())
-                    {
-                        foreach (var customerLoanAccount in customerLoanAccounts)
-                        {
-                            // freeze
-                            _customerAccountAppService.ManageCustomerAccount(customerLoanAccount.Id, (int)CustomerAccountManagementAction.Deactivation, string.Format("{0} Membership Termination Notice Placed", EnumHelper.GetDescription((WithdrawalNotificationCategory)withdrawalNotificationDTO.Category)), (int)CustomerAccountRemarkType.Actionable, serviceHeader);
-                        }
-                    }
-
-                    var customerInvestmentAccounts = _customerAccountAppService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductCode(withdrawalNotificationDTO.CustomerId, (int)ProductCode.Investment, serviceHeader);
-
-                    if (customerInvestmentAccounts != null && customerInvestmentAccounts.Any())
-                    {
-                        foreach (var customerInvestmentAccount in customerInvestmentAccounts)
-                        {
-                            // freeze
-                            _customerAccountAppService.ManageCustomerAccount(customerInvestmentAccount.Id, (int)CustomerAccountManagementAction.Deactivation, string.Format("{0} Membership Termination Notice Placed", EnumHelper.GetDescription((WithdrawalNotificationCategory)withdrawalNotificationDTO.Category)), (int)CustomerAccountRemarkType.Actionable, serviceHeader);
-                        }
-                    }
-
-                    var customerSavingsAccounts = _customerAccountAppService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductCode(withdrawalNotificationDTO.CustomerId, (int)ProductCode.Savings, serviceHeader);
-
-                    if (customerSavingsAccounts != null && customerSavingsAccounts.Any())
-                    {
-                        foreach (var customerSavingsAccount in customerSavingsAccounts)
-                        {
-                            // freeze
-                            _customerAccountAppService.ManageCustomerAccount(customerSavingsAccount.Id, (int)CustomerAccountManagementAction.Deactivation, string.Format("{0} Membership Termination Notice Placed", EnumHelper.GetDescription((WithdrawalNotificationCategory)withdrawalNotificationDTO.Category)), (int)CustomerAccountRemarkType.Actionable, serviceHeader);
-                        }
-                    }
-
-                    #endregion
-
-                    if (dbContextScope.SaveChanges(serviceHeader) >= 0)
-                    {
-                        return withdrawalNotification.ProjectedAs<WithdrawalNotificationDTO>();
-                    }
-                    else return null;
                 }
             }
-            else return null;
+
+            using (var dbContextScope = _dbContextScopeFactory.Create())
+            {
+                var withdrawalNotification = WithdrawalNotificationFactory.CreateWithdrawalNotification(
+                    withdrawalNotificationDTO.CustomerId,
+                    withdrawalNotificationDTO.BranchId,
+                    withdrawalNotificationDTO.Category,
+                    withdrawalNotificationDTO.Remarks);
+
+                // Calculate maturity date based on category
+                switch ((WithdrawalNotificationCategory)withdrawalNotificationDTO.Category)
+                {
+                    case WithdrawalNotificationCategory.Deceased:
+                        withdrawalNotification.MaturityDate = DateTime.Today;
+                        break;
+
+                    case WithdrawalNotificationCategory.Voluntary:
+                    case WithdrawalNotificationCategory.Retiree:
+                        var branchDTO = _branchAppService.FindBranch(withdrawalNotificationDTO.BranchId, serviceHeader);
+
+                        if (branchDTO == null)
+                        {
+                            throw new InvalidOperationException($"Branch not found for ID: {withdrawalNotificationDTO.BranchId}");
+                        }
+
+                        int noticePeriodDays = branchDTO.CompanyMembershipTerminationNoticePeriod;
+
+                        // Validate notice period - should be 60 days based on your requirements
+                        if (noticePeriodDays <= 0 || noticePeriodDays > 365)
+                        {
+                            // Log warning here
+                            noticePeriodDays = 60; // Default to 60 days
+                        }
+
+                        // Calculate maturity date
+                        DateTime? calculatedDate = _holidayAppService.FindBusinessDay(noticePeriodDays, true, serviceHeader);
+
+                        if (calculatedDate.HasValue)
+                        {
+                            withdrawalNotification.MaturityDate = calculatedDate.Value;
+                        }
+                        else
+                        {
+                            // Fallback: add notice period days, skipping weekends
+                            withdrawalNotification.MaturityDate = CalculateBusinessDaysFromToday(noticePeriodDays);
+                        }
+
+                        break;
+
+                    default:
+                        // If no category matched, set default maturity date
+                        withdrawalNotification.MaturityDate = DateTime.Today.AddDays(60);
+                        break;
+                }
+
+                withdrawalNotification.SettlementType = (int)MembershipWithdrawalSettlementType.Normal;
+                withdrawalNotification.Status = (int)WithdrawalNotificationStatus.Registered;
+                withdrawalNotification.CreatedBy = serviceHeader.ApplicationUserName;
+                withdrawalNotification.CreatedDate = DateTime.Now;
+
+                _withdrawalNotificationRepository.Add(withdrawalNotification, serviceHeader);
+
+                #region Lock Customer
+                var persistedCustomer = _customerRepository.Get(withdrawalNotificationDTO.CustomerId, serviceHeader);
+                if (persistedCustomer != null)
+                {
+                    persistedCustomer.Remarks = string.Format("{0} Membership Termination Notice Placed",
+                        EnumHelper.GetDescription((WithdrawalNotificationCategory)withdrawalNotificationDTO.Category));
+                    persistedCustomer.Lock();
+                }
+                #endregion
+
+                #region Lock Customer Accounts
+                // Lock Loan Accounts
+                var customerLoanAccounts = _customerAccountAppService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductCode(
+                    withdrawalNotificationDTO.CustomerId, (int)ProductCode.Loan, serviceHeader);
+
+                if (customerLoanAccounts != null && customerLoanAccounts.Any())
+                {
+                    foreach (var customerLoanAccount in customerLoanAccounts)
+                    {
+                        _customerAccountAppService.ManageCustomerAccount(
+                            customerLoanAccount.Id,
+                            (int)CustomerAccountManagementAction.Deactivation,
+                            string.Format("{0} Membership Termination Notice Placed",
+                                EnumHelper.GetDescription((WithdrawalNotificationCategory)withdrawalNotificationDTO.Category)),
+                            (int)CustomerAccountRemarkType.Actionable,
+                            serviceHeader);
+                    }
+                }
+
+                // Lock Investment Accounts
+                var customerInvestmentAccounts = _customerAccountAppService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductCode(
+                    withdrawalNotificationDTO.CustomerId, (int)ProductCode.Investment, serviceHeader);
+
+                if (customerInvestmentAccounts != null && customerInvestmentAccounts.Any())
+                {
+                    foreach (var customerInvestmentAccount in customerInvestmentAccounts)
+                    {
+                        _customerAccountAppService.ManageCustomerAccount(
+                            customerInvestmentAccount.Id,
+                            (int)CustomerAccountManagementAction.Deactivation,
+                            string.Format("{0} Membership Termination Notice Placed",
+                                EnumHelper.GetDescription((WithdrawalNotificationCategory)withdrawalNotificationDTO.Category)),
+                            (int)CustomerAccountRemarkType.Actionable,
+                            serviceHeader);
+                    }
+                }
+
+                // Lock Savings Accounts
+                var customerSavingsAccounts = _customerAccountAppService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductCode(
+                    withdrawalNotificationDTO.CustomerId, (int)ProductCode.Savings, serviceHeader);
+
+                if (customerSavingsAccounts != null && customerSavingsAccounts.Any())
+                {
+                    foreach (var customerSavingsAccount in customerSavingsAccounts)
+                    {
+                        _customerAccountAppService.ManageCustomerAccount(
+                            customerSavingsAccount.Id,
+                            (int)CustomerAccountManagementAction.Deactivation,
+                            string.Format("{0} Membership Termination Notice Placed",
+                                EnumHelper.GetDescription((WithdrawalNotificationCategory)withdrawalNotificationDTO.Category)),
+                            (int)CustomerAccountRemarkType.Actionable,
+                            serviceHeader);
+                    }
+                }
+                #endregion
+
+                if (dbContextScope.SaveChanges(serviceHeader) >= 0)
+                {
+                    return withdrawalNotification.ProjectedAs<WithdrawalNotificationDTO>();
+                }
+
+                return null;
+            }
         }
 
+        // Helper method to calculate business days
+        private DateTime CalculateBusinessDaysFromToday(int businessDays)
+        {
+            var currentDate = DateTime.Today;
+            var daysAdded = 0;
+
+            while (daysAdded < businessDays)
+            {
+                currentDate = currentDate.AddDays(1);
+
+                // Skip weekends (Saturday = 6, Sunday = 0)
+                if (currentDate.DayOfWeek != DayOfWeek.Saturday && currentDate.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    daysAdded++;
+                }
+            }
+
+            return currentDate;
+        }
         public bool ApproveWithdrawalNotification(WithdrawalNotificationDTO withdrawalNotificationDTO, int membershipWithdrawalApprovalOption, ServiceHeader serviceHeader)
         {
             var approvalOK = default(bool);

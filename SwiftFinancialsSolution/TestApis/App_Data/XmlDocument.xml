@@ -486,5 +486,60 @@
             Master controller that does setup of things that should always be done.
             </summary>
         </member>
+<<<<<<< Updated upstream
+=======
+        <member name="M:TestApis.Controllers.MemberExitController.GetLoanGuaranteed(System.Guid)">
+            <summary>
+            GET: withdrawal-notifications/GetLoanGuaranteed?customerId={id}
+            Fetches all loans a member is currently guaranteeing.
+            Call this first to show the user what needs to be substituted.
+            </summary>
+        </member>
+        <member name="M:TestApis.Controllers.MemberExitController.SubstituteGuarantor(TestApis.Controllers.MemberExitController.SubstituteGuarantorDTO)">
+             <summary>
+             POST: withdrawal-notifications/SubstituteGuarantor
+             Transfers all active guarantor obligations from an exiting member
+             to a replacement member, then verifies the exiting member is fully released.
+            
+             Typical flow:
+               1. Call GetLoanGuaranteed to retrieve the exiting member's attached loans.
+               2. User selects a replacement guarantor.
+               3. Call this endpoint — it substitutes all attached loans in one operation.
+               4. Response confirms the member is fully released and safe to proceed with exit.
+             </summary>
+        </member>
+        <member name="M:TestApis.Controllers.MemberPortalController.UpdateLoginTracking(System.Data.SqlClient.SqlConnection,System.String,System.String,System.String)">
+            <summary>
+            Resets failed trials and updates all login tracking fields.
+            </summary>
+        </member>
+        <member name="M:TestApis.Controllers.MemberPortalController.GetClientIp">
+            <summary>
+            Extracts real client IP — handles proxies and load balancers.
+            </summary>
+        </member>
+        <member name="M:TestApis.Controllers.ValuesController.CreateGeneralLedger(Application.MainBoundedContext.DTO.AccountsModule.GeneralLedgerDTO)">
+            <summary>
+            Creates a new general ledger with entries
+            </summary>
+        </member>
+        <member name="M:TestApis.Controllers.ValuesController.CreateGeneralLedgerEntry(Application.MainBoundedContext.DTO.AccountsModule.GeneralLedgerEntryDTO)">
+            <summary>
+            Creates a new general ledger entry for an existing ledger
+            </summary>
+        </member>
+        <member name="M:TestApis.Controllers.ValuesController.CreateCompleteGeneralLedger(TestApis.Controllers.ValuesController.CreateCompleteGeneralLedgerRequest)">
+            <summary>
+            Creates a complete general ledger with balanced entries in one request
+            </summary>
+        </member>
+        <member name="P:TestApis.Controllers.ValuesController.CreateWithdrawalNotificationRequest.MaturityDate">
+            <summary>
+            Only used for Deceased category to allow backdating a death claim date.
+            For Voluntary and Retiree this is always ignored — MaturityDate is
+            calculated server-side as 60 business days from today.
+            </summary>
+        </member>
+>>>>>>> Stashed changes
     </members>
 </doc>
