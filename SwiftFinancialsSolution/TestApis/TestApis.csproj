@@ -49,12 +49,33 @@
     <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+<<<<<<< Updated upstream
+=======
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.6.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.1.72\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+>>>>>>> Stashed changes
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+<<<<<<< Updated upstream
+=======
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="LumenWorks.Framework.IO, Version=3.8.0.0, Culture=neutral, PublicKeyToken=5ad3ea2f85776344, processorArchitecture=MSIL">
+      <HintPath>..\packages\LumenWorks.Framework.IO.3.8.0\lib\net20\LumenWorks.Framework.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="MailKit, Version=4.14.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
+      <HintPath>..\packages\MailKit.4.14.1\lib\net47\MailKit.dll</HintPath>
+    </Reference>
+>>>>>>> Stashed changes
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.4\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -76,8 +97,8 @@
     <Reference Include="Microsoft.AspNetCore.Http.Features, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Http.Features.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.1\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -262,6 +283,34 @@
     <Compile Include="Configuration\DashboardAppSettingsElement.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MasterController.cs" />
+<<<<<<< Updated upstream
+=======
+    <Compile Include="Controllers\MemberExitController.cs" />
+    <Compile Include="Controllers\MemberPortalController.cs" />
+    <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\MobileAppController.cs" />
+    <Compile Include="Controllers\MWalletController.cs" />
+    <Compile Include="Controllers\NextOfKinController.cs" />
+    <Compile Include="Controllers\ReportingController.cs" />
+    <Compile Include="Controllers\NSSFContributionsController.cs" />
+    <Compile Include="Controllers\PAYEPersonalReliefController.cs" />
+    <Compile Include="Controllers\PAYESetupController.cs" />
+    <Compile Include="Controllers\PAYETaxBandsController.cs" />
+    <Compile Include="Controllers\PayrollClosureController.cs" />
+    <Compile Include="Controllers\PayrollEntriesController.cs" />
+    <Compile Include="Controllers\ProcurementController.cs" />
+    <Compile Include="Controllers\PurchaseOrdersApiController.cs" />
+    <Compile Include="Controllers\ReceiptsController.cs" />
+    <Compile Include="Controllers\RequisitionsController.cs" />
+    <Compile Include="Controllers\RFQController.cs" />
+    <Compile Include="Controllers\SalaryCycleController.cs" />
+    <Compile Include="Controllers\SavingsProductsController.cs" />
+    <Compile Include="Controllers\SHAContributionsController.cs" />
+    <Compile Include="Controllers\StationsController.cs" />
+    <Compile Include="Controllers\StoreRequisitionController.cs" />
+    <Compile Include="Controllers\UnitOfMeasureController.cs" />
+    <Compile Include="Controllers\USSDController.cs" />
+>>>>>>> Stashed changes
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -275,6 +324,54 @@
     <Compile Include="Identity\SmsService.cs" />
     <Compile Include="Models\ApiResponse.cs" />
     <Compile Include="Models\CustomerJournalDTO.cs" />
+<<<<<<< Updated upstream
+=======
+    <Compile Include="Models\CustomerWithAccountsDTO.cs" />
+    <Compile Include="Models\DocumentModel.cs" />
+    <Compile Include="Models\EmployeeBank.cs" />
+    <Compile Include="Models\EmployeeBranch.cs" />
+    <Compile Include="Models\EmployeeDeduction.cs" />
+    <Compile Include="Models\EmployeeEarning.cs" />
+    <Compile Include="Models\EmployeeInsuranceCompany.cs" />
+    <Compile Include="Models\EmployeeProfile.cs" />
+    <Compile Include="Models\FAClass.cs" />
+    <Compile Include="Models\FALocation.cs" />
+    <Compile Include="Models\FASubClass.cs" />
+    <Compile Include="Models\FixedAsset.cs" />
+    <Compile Include="Models\GoodsReceivedNoteDto.cs" />
+    <Compile Include="Models\HousingLevyContribution.cs" />
+    <Compile Include="Models\InventoryPostingAccount.cs" />
+    <Compile Include="Models\InventoryTransaction.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ItemDto.cs" />
+    <Compile Include="Models\ItemDto2.cs" />
+    <Compile Include="Models\ItemJournal.cs" />
+    <Compile Include="Models\LoanCaseDTO2.cs" />
+    <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\MemberBankDetailDTO.cs" />
+    <Compile Include="Models\MemberFullDetailsDTO.cs" />
+    <Compile Include="Models\NextOfKinDTO2.cs" />
+    <Compile Include="Models\NSSFContribution.cs" />
+    <Compile Include="Models\PAYEPersonalRelief.cs" />
+    <Compile Include="Models\PAYESetup.cs" />
+    <Compile Include="Models\PAYETaxBand.cs" />
+    <Compile Include="Models\PaymentDto.cs" />
+    <Compile Include="Models\PayrollClosure.cs" />
+    <Compile Include="Models\PayrollEntry.cs" />
+    <Compile Include="Models\PurchaseOrderDto.cs" />
+    <Compile Include="Models\PurchaseRequisitionDto.cs" />
+    <Compile Include="Models\SalaryCycle.cs" />
+    <Compile Include="Models\SHAContributions.cs" />
+    <Compile Include="Models\StockJournal.cs" />
+    <Compile Include="Models\SupplierInvoiceDto.cs" />
+    <Compile Include="Models\SupplierQuotation.cs" />
+    <Compile Include="Models\SupplierQuotationLine.cs" />
+    <Compile Include="Models\UnitOfMeasure.cs" />
+    <Compile Include="Models\VendorBankDetailDto.cs" />
+    <Compile Include="Models\VendorDto.cs" />
+    <Compile Include="App_Start\PreflightHandler.cs" />
+>>>>>>> Stashed changes
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IWebConfigurationService.cs" />
     <Compile Include="Services\WebConfigurationService.cs" />
